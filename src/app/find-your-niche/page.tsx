@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { findNicheAction, NicheFinderState } from "./actions";
@@ -20,10 +20,10 @@ const initialState: NicheFinderState = {
   pending: false,
 };
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto">
+    <Button type="submit" disabled={pending || disabled} className="w-full md:w-auto">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -41,6 +41,7 @@ function SubmitButton() {
 
 export default function FindYourNichePage() {
   const [state, formAction] = useActionState(findNicheAction, initialState);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -55,7 +56,7 @@ export default function FindYourNichePage() {
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
-              <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations only consider typical government visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
+              <p className="text-xs text-muted-foreground pt-1">All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -79,7 +80,7 @@ export default function FindYourNichePage() {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 pt-4">
                 <Label>Family Status</Label>
                 <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
@@ -234,8 +235,25 @@ export default function FindYourNichePage() {
                 </RadioGroup>
               </div>
             </CardContent>
-            <CardFooter>
-              <SubmitButton />
+            <CardFooter className="flex-col items-start gap-4">
+                <div className="w-full space-y-1">
+                    <Label>Verification</Label>
+                    <p className="text-xs text-muted-foreground">Complete the CAPTCHA to unlock your three niche recommendations.</p>
+                    
+                    {/* This is a placeholder for a real CAPTCHA */}
+                    <div className="mt-2 p-3 rounded-md bg-muted/50 border flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="captcha" onCheckedChange={(checked) => setIsCaptchaVerified(!!checked)} />
+                            <Label htmlFor="captcha" className="font-normal">I am not a robot</Label>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full">
+                    <SubmitButton disabled={!isCaptchaVerified} />
+                    {!isCaptchaVerified && (
+                        <p className="text-xs text-muted-foreground mt-2">The "Find My Niche" button is currently disabled and will activate once the CAPTCHA is verified.</p>
+                    )}
+                </div>
             </CardFooter>
           </form>
         </Card>
