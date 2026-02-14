@@ -250,13 +250,18 @@ export default function TrueCostsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <Landmark className="h-6 w-6" />
                     </div>
                     <div>
                         <CardTitle className="text-lg font-bold tracking-tight normal-case">Contract Perks</CardTitle>
-                        <p className="text-sm text-muted-foreground">The Income Boosters</p>
+                        <p className="text-sm text-muted-foreground capitalize">
+                            {selectedCountry}
+                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                            {' | '}
+                            {familyStatus.replace('family', 'Family (2+1)')}
+                        </p>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
@@ -290,13 +295,18 @@ export default function TrueCostsPage() {
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <ShoppingBasket className="h-6 w-6" />
                     </div>
                     <div>
                         <CardTitle className="text-lg font-bold tracking-tight normal-case">True Lifestyle</CardTitle>
-                        <p className="text-sm text-muted-foreground">The Daily Outgoings</p>
+                         <p className="text-sm text-muted-foreground capitalize">
+                            {selectedCountry}
+                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                            {' | '}
+                            {familyStatus.replace('family', 'Family (2+1)')}
+                        </p>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
@@ -325,13 +335,18 @@ export default function TrueCostsPage() {
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <LineChart className="h-6 w-6" />
                     </div>
                      <div>
                         <CardTitle className="text-lg font-bold tracking-tight normal-case">Financial Strategy</CardTitle>
-                        <p className="text-sm text-muted-foreground">The Wealth Tracker</p>
+                         <p className="text-sm text-muted-foreground capitalize">
+                             {selectedCountry}
+                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                             {' | '}
+                             {familyStatus.replace('family', 'Family (2+1)')}
+                        </p>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
