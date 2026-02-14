@@ -65,13 +65,8 @@ export default function ForumPage() {
             The "Ghost Author" Policy
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-muted-foreground">
-          <p>To maintain a high-quality professional resource, this forum utilizes a Ghost Author System to ensure complete neutrality and prevent personality-driven drama.</p>
-          <ul className="list-disc pl-5 space-y-2 text-sm">
-            <li><strong className="text-foreground/90">Zero Profiles:</strong> There are no user profiles, avatars, or "rankings."</li>
-            <li><strong className="text-foreground/90">Total Anonymity:</strong> Every approved post is automatically assigned a generic name like "Anon" or "User_[RandomID]".</li>
-            <li><strong className="text-foreground/90">Admin Gatekeeping:</strong> No post or reply goes live without being vetted for professional utility and the removal of all school-specific identifiers.</li>
-          </ul>
+        <CardContent className="text-muted-foreground">
+          <p>This forum operates under a strict Ghost Author policy to maintain professional standards and prevent drama. There are no user profiles or avatars. All contributions are anonymised, and every post is vetted by an administrator to ensure professional utility and the removal of school-specific identifiers before publication.</p>
         </CardContent>
       </Card>
 
