@@ -30,6 +30,7 @@ export async function findNicheAction(
     preferences: preferences,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
+    familyStatus: String(formData.get("familyStatus")),
   };
 
   if (!input.qualifications) {

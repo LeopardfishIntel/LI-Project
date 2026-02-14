@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap } from "lucide-react";
+import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap, Users } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -80,10 +80,27 @@ export default function FindYourNichePage() {
                     </div>
                   </RadioGroup>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nationality">Nationality</Label>
-                  <Input id="nationality" name="nationality" placeholder="e.g., Canadian" required />
+                 <div className="space-y-2">
+                  <Label>Family Status</Label>
+                  <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="single" id="fs-single" />
+                      <Label htmlFor="fs-single" className="font-normal">Single</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="couple" id="fs-couple" />
+                      <Label htmlFor="fs-couple" className="font-normal">Couple</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="family" id="fs-family" />
+                      <Label htmlFor="fs-family" className="font-normal">Family with Children</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nationality">Nationality</Label>
+                <Input id="nationality" name="nationality" placeholder="e.g., Canadian" required />
               </div>
               <div className="space-y-2">
                 <Label>Qualifications</Label>

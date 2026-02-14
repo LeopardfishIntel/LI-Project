@@ -11,7 +11,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const FindYourNicheInputSchema = z.object({
-  age: z.number().describe('The teacher\'s age.'),
+  age: z.number().describe("The teacher's age."),
   qualifications: z
     .string()
     .describe(
@@ -33,6 +33,7 @@ const FindYourNicheInputSchema = z.object({
     ),
   goal: z.enum(["saving", "adventure", "growth", "balanced", "culture"]).describe("The teacher's primary goal for their next move. Options are 'saving', 'adventure', 'growth', 'balanced', or 'culture'. 'culture' prioritizes locations with rich history, arts, and vibrant city life (e.g., Prague, Berlin)."),
   availableSchools: z.string().describe("A JSON string representing an array of available schools. Each school object has properties like id, name, country, and curriculum."),
+  familyStatus: z.string().describe("The teacher's family status (e.g., 'single', 'couple', 'family with children'). This is crucial for considering housing and dependent benefits."),
 });
 export type FindYourNicheInput = z.infer<typeof FindYourNicheInputSchema>;
 
@@ -69,7 +70,7 @@ const prompt = ai.definePrompt({
   output: { schema: FindYourNicheOutputSchema },
   prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in.
 
-Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences and primary goal.
+Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences, primary goal, and family status.
 
 After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on the teacher's subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with an American curriculum. Your reasoning for recommending a school should be brief and mention this connection.
 
@@ -77,6 +78,7 @@ Crucially, your recommendations must take into account common visa and immigrati
 
 Teacher Profile:
 - Age: {{{age}}}
+- Family Status: {{{familyStatus}}}
 - Qualifications: {{{qualifications}}}
 - Nationality: {{{nationality}}}
 - Experience: {{{experience}}}
