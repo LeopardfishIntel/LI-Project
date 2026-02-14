@@ -97,8 +97,8 @@ export default function FindYourNichePage() {
                             <Label htmlFor="q_masters" className="font-normal">Master's Degree</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_tefl" name="qualifications_cb" value="TEFL/TESOL Certified" />
-                            <Label htmlFor="q_tefl" className="font-normal">TEFL/TESOL Certified</Label>
+                            <Checkbox id="q_npqsl" name="qualifications_cb" value="NPQSL" />
+                            <Label htmlFor="q_npqsl" className="font-normal">NPQSL</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Checkbox id="q_license" name="qualifications_cb" value="Teaching License" />
