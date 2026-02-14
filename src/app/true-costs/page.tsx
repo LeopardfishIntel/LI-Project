@@ -269,7 +269,7 @@ export default function TrueCostsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-2 text-sm text-muted-foreground mb-6">
+                    <div className="space-y-1 text-sm text-muted-foreground">
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
                             <span>{formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
@@ -335,7 +335,6 @@ export default function TrueCostsPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
-                     <p className="text-sm text-muted-foreground">These are contract-specific items that can change a job's value by over $20,000 annually.</p>
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
                         title="Tax Status"
