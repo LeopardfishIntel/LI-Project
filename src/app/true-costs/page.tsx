@@ -139,6 +139,13 @@ export default function TrueCostsPage() {
   const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
   const selectedSchool = selectedSchoolId ? schools.find(s => s.id === selectedSchoolId) : null;
 
+  const familyStatusLabels: {[key: string]: string} = {
+    single: 'Single',
+    couple: 'Couple',
+    family: 'Family (2+1)',
+    family2: 'Family (2+2)',
+  };
+
   let adults = 1;
   let children = 0;
   if (familyStatus === 'couple') {
@@ -147,6 +154,9 @@ export default function TrueCostsPage() {
   } else if (familyStatus === 'family') {
     adults = 2;
     children = 1;
+  } else if (familyStatus === 'family2') {
+    adults = 2;
+    children = 2;
   }
 
   const calculateTotal = (school: School | null) => {
@@ -206,6 +216,7 @@ export default function TrueCostsPage() {
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="couple">Couple</SelectItem>
                 <SelectItem value="family">Family (2+1)</SelectItem>
+                <SelectItem value="family2">Family (2+2)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -265,7 +276,7 @@ export default function TrueCostsPage() {
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                             {' | '}
-                            {familyStatus.replace('family', 'Family (2+1)')}
+                            {familyStatusLabels[familyStatus]}
                         </p>
                     </div>
                 </CardHeader>
@@ -310,7 +321,7 @@ export default function TrueCostsPage() {
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                             {' | '}
-                            {familyStatus.replace('family', 'Family (2+1)')}
+                            {familyStatusLabels[familyStatus]}
                         </p>
                     </div>
                 </CardHeader>
@@ -350,7 +361,7 @@ export default function TrueCostsPage() {
                              {selectedCountry}
                              {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                              {' | '}
-                             {familyStatus.replace('family', 'Family (2+1)')}
+                             {familyStatusLabels[familyStatus]}
                         </p>
                     </div>
                 </CardHeader>
