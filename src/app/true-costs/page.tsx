@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, ShoppingBasket } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, ShoppingBasket, Globe } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -399,7 +399,7 @@ export default function TrueCostsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
-                        icon={<ShoppingBasket className="w-5 h-5" />}
+                        icon={<Globe className="w-5 h-5" />}
                         title="Imported Goods"
                         description={data.importedGoods.text}
                         score={data.importedGoods.score}
