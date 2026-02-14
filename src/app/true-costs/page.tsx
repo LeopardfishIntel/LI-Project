@@ -241,7 +241,7 @@ export default function TrueCostsPage() {
                     
                     <div className="mt-4 pt-4 border-t border-border">
                         <div className="flex justify-between items-center text-lg font-bold">
-                            <span className="text-primary-foreground">Estimated Monthly Total</span>
+                            <span className="text-primary-foreground">Estimated Monthly Total*</span>
                             <span className="text-primary">{formatCurrency(calculateTotal(selectedSchool))}</span>
                         </div>
                     </div>
@@ -269,7 +269,7 @@ export default function TrueCostsPage() {
                         <Landmark className="h-6 w-6" />
                     </span>
                     <div>
-                      <h3 className="text-lg md:text-xl font-bold tracking-tight">CONTRACT PERKS</h3>
+                      <h3 className="text-lg md:text-xl font-bold tracking-tight">CONTRACT PERKS*</h3>
                       <p className="text-sm text-muted-foreground font-normal normal-case">The Income Boosters</p>
                     </div>
                 </div>
@@ -312,7 +312,7 @@ export default function TrueCostsPage() {
                         <ShoppingBasket className="h-6 w-6" />
                     </span>
                     <div>
-                        <h3 className="text-lg md:text-xl font-bold tracking-tight">TRUE LIFESTYLE</h3>
+                        <h3 className="text-lg md:text-xl font-bold tracking-tight">TRUE LIFESTYLE*</h3>
                         <p className="text-sm text-muted-foreground font-normal normal-case">The Daily Outgoings</p>
                     </div>
                 </div>
@@ -350,7 +350,7 @@ export default function TrueCostsPage() {
                         <LineChart className="h-6 w-6" />
                     </span>
                      <div>
-                        <h3 className="text-lg md:text-xl font-bold tracking-tight">FINANCIAL STRATEGY</h3>
+                        <h3 className="text-lg md:text-xl font-bold tracking-tight">FINANCIAL STRATEGY*</h3>
                         <p className="text-sm text-muted-foreground font-normal normal-case">The Wealth Tracker</p>
                     </div>
                 </div>
@@ -379,12 +379,10 @@ export default function TrueCostsPage() {
         </Accordion>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
+          <p>*Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
 
       </div>
     </div>
   );
 }
-
-    
