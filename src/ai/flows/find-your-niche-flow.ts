@@ -64,6 +64,8 @@ const prompt = ai.definePrompt({
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences and primary goal.
 
+Crucially, your recommendations must take into account common visa and immigration requirements for the teacher's nationality. For example, do not recommend a country where it is notoriously difficult for a teacher of that nationality to get a work visa.
+
 Teacher Profile:
 - Age: {{{age}}}
 - Qualifications: {{{qualifications}}}

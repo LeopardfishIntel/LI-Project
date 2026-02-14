@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -54,6 +53,7 @@ export default function FindYourNichePage() {
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
               <CardDescription>The more detail you provide, the better the recommendations.</CardDescription>
+              <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations consider typical visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
