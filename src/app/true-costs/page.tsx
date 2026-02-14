@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, Info, FileText, DollarSign, Utensils, TramFront, Zap } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -160,10 +159,10 @@ export default function TrueCostsPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">See the True Costs</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-            A high salary doesn't always mean high savings. Standard cost-of-living data is a good start, but it misses the nuances of an international teacher's lifestyle. Our "True Costs" model breaks down the three pillars that truly determine your savings potential—Contract Perks, Lifestyle Reality, and Financial Strategy—to reveal the hidden variables that impact your financial future.
+            A high salary doesn't always mean high savings. Standard cost-of-living data is a good start, but it misses the nuances of an international teacher's lifestyle. Our "True Costs" model breaks down the three pillars that truly determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
         </p>
         
         <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -249,23 +248,20 @@ export default function TrueCostsPage() {
             </Card>
         )}
 
-        <Accordion type="single" collapsible defaultValue="item-1" className="w-full space-y-4">
-          <AccordionItem value="item-1" className="bg-card/70 backdrop-blur-sm border-border rounded-lg px-6">
-            <AccordionTrigger className="text-xl font-bold hover:no-underline py-6">
-                <div className="flex items-center gap-4 text-left">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <Landmark className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <h3 className="text-lg md:text-xl font-bold tracking-tight">CONTRACT PERKS*</h3>
-                      <p className="text-sm text-muted-foreground font-normal normal-case">The Income Boosters</p>
                     </div>
-                </div>
-            </AccordionTrigger>
-            <AccordionContent className="pt-2 pb-6">
-                <p className="text-muted-foreground mb-6">These items are specific to international teaching contracts and can change the "value" of a job by $20,000+ per year.</p>
-                <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                    <FeatureDetail 
+                    <div>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Contract Perks</CardTitle>
+                        <p className="text-sm text-muted-foreground">The Income Boosters</p>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4 flex-grow pt-0">
+                     <p className="text-sm text-muted-foreground">These are contract-specific items that can change a job's value by over $20,000 annually.</p>
+                     <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
                         title="Tax Status"
                         description={data.taxStatus}
@@ -287,35 +283,32 @@ export default function TrueCostsPage() {
                     />
                      <FeatureDetail 
                         icon={<Award className="w-5 h-5" />}
-                        title="Gratuity / End-of-Service Bonus"
+                        title="Gratuity / Bonus"
                         description={data.gratuity}
                     />
-                </div>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2" className="bg-card/70 backdrop-blur-sm border-border rounded-lg px-6">
-            <AccordionTrigger className="text-xl font-bold hover:no-underline py-6">
-                 <div className="flex items-center gap-4 text-left">
-                     <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
+                </CardContent>
+            </Card>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <ShoppingBasket className="h-6 w-6" />
-                    </span>
-                    <div>
-                        <h3 className="text-lg md:text-xl font-bold tracking-tight">TRUE LIFESTYLE*</h3>
-                        <p className="text-sm text-muted-foreground font-normal normal-case">The Daily Outgoings</p>
                     </div>
-                </div>
-            </AccordionTrigger>
-            <AccordionContent className="pt-2 pb-6">
-                <p className="text-muted-foreground mb-6">Standard data uses 'local' prices, but expats often have an 'Expat Premium' on their spending that can drastically alter budgets.</p>
-                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                    <FeatureDetail 
+                    <div>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">True Lifestyle</CardTitle>
+                        <p className="text-sm text-muted-foreground">The Daily Outgoings</p>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4 flex-grow pt-0">
+                    <p className="text-sm text-muted-foreground">Expats often have a premium on spending that standard data misses. This is the reality of your daily budget.</p>
+                     <FeatureDetail 
                         icon={<ShoppingBasket className="w-5 h-5" />}
                         title="Imported Goods"
                         description={data.importedGoods}
                     />
                      <FeatureDetail 
                         icon={<Thermometer className="w-5 h-5" />}
-                        title="Utilities (The AC/Heat Factor)"
+                        title="Utilities (AC/Heat)"
                         description={data.utilities}
                     />
                      <FeatureDetail 
@@ -328,43 +321,39 @@ export default function TrueCostsPage() {
                         title="Social & Leisure"
                         description={data.socialLeisure}
                     />
-                </div>
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3" className="bg-card/70 backdrop-blur-sm border-border rounded-lg px-6">
-            <AccordionTrigger className="text-xl font-bold hover:no-underline py-6">
-                <div className="flex items-center gap-4 text-left">
-                     <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
+                </CardContent>
+            </Card>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                <CardHeader className="flex-row items-center gap-4 space-y-0 pb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <LineChart className="h-6 w-6" />
-                    </span>
-                     <div>
-                        <h3 className="text-lg md:text-xl font-bold tracking-tight">FINANCIAL STRATEGY*</h3>
-                        <p className="text-sm text-muted-foreground font-normal normal-case">The Wealth Tracker</p>
                     </div>
-                </div>
-            </AccordionTrigger>
-            <AccordionContent className="pt-2 pb-6">
-                 <p className="text-muted-foreground mb-6">This is what transforms a job into a wealth-building opportunity. We help you track what really matters.</p>
-                 <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                    <FeatureDetail 
+                     <div>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Financial Strategy</CardTitle>
+                        <p className="text-sm text-muted-foreground">The Wealth Tracker</p>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4 flex-grow pt-0">
+                    <p className="text-sm text-muted-foreground">This is what transforms a job into a wealth-building opportunity. Track what really matters.</p>
+                     <FeatureDetail 
                         icon={<ArrowRightLeft className="w-5 h-5" />}
-                        title="Currency Arbitrage & Fees"
+                        title="Currency & Fees"
                         description={data.currency}
                     />
                      <FeatureDetail 
                         icon={<PiggyBank className="w-5 h-5" />}
-                        title="Home Country Obligations"
+                        title="Home Obligations"
                         description={data.homeObligations}
                     />
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
-                        title="The 'True Savings Potential' Result"
+                        title="True Savings Potential"
                         description={data.savings}
                     />
-                </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+                </CardContent>
+            </Card>
+        </div>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
           <p>*Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
