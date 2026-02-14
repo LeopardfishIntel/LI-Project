@@ -9,6 +9,7 @@ import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { SchoolCard } from '@/components/school-card';
 
 type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
 
@@ -192,6 +193,10 @@ export default function ComparePage() {
                                 <TableHead>Housing</TableHead>
                                 {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.housing.value}</TableCell>)}
                             </TableRow>
+                            <TableRow>
+                                <TableHead>Health Insurance</TableHead>
+                                {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.healthInsurance}</TableCell>)}
+                            </TableRow>
 
                              <TableRow><TableCell colSpan={selectedSchools.length + 1} className="font-semibold text-primary-foreground bg-muted/30">Academics</TableCell></TableRow>
                             <TableRow>
@@ -210,6 +215,17 @@ export default function ComparePage() {
                     </Table>
                 </CardContent>
             </Card>
+
+            <div className="mt-16">
+                <h2 className="text-3xl font-bold tracking-tight text-center mb-8">School Overviews</h2>
+                 {selectedSchools.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {selectedSchools.map((school) => (
+                            <SchoolCard key={school.id} school={school} />
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
