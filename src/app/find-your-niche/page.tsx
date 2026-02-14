@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { findNicheAction, NicheFinderState } from "./actions";
@@ -20,10 +20,10 @@ const initialState: NicheFinderState = {
   pending: false,
 };
 
-function SubmitButton({ disabled }: { disabled: boolean }) {
+function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending || disabled} className="w-full md:w-auto">
+    <Button type="submit" disabled={pending} className="w-full md:w-auto">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -41,7 +41,6 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function FindYourNichePage() {
   const [state, formAction] = useActionState(findNicheAction, initialState);
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -235,24 +234,12 @@ export default function FindYourNichePage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-4">
-                <div className="w-full space-y-1">
-                    <Label>Verification</Label>
-                    <p className="text-xs text-muted-foreground pt-1">All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.</p>
-                    
-                    {/* This is a placeholder for a real CAPTCHA */}
-                    <div className="mt-2 p-3 rounded-md bg-muted/50 border flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="captcha" onCheckedChange={(checked) => setIsCaptchaVerified(!!checked)} />
-                            <Label htmlFor="captcha" className="font-normal">I understand, please continue</Label>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full">
-                    <SubmitButton disabled={!isCaptchaVerified} />
-                    {!isCaptchaVerified && (
-                        <p className="text-xs text-muted-foreground mt-2">The "Find My Niche" button is currently disabled and will activate once you check the box to continue.</p>
-                    )}
-                </div>
+              <div className="w-full space-y-2">
+                <SubmitButton />
+                <p className="text-xs text-muted-foreground pt-1">
+                    All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.
+                </p>
+              </div>
             </CardFooter>
           </form>
         </Card>
