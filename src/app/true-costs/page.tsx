@@ -321,7 +321,7 @@ export default function TrueCostsPage() {
                         <div>
                             <h4 className="font-semibold text-primary-foreground/90 mb-1">Health</h4>
                              <div className="flex justify-between items-center">
-                                <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Uncovered Medical</span>
+                                <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Medical Gaps (e.g. Dental)</span>
                                 <span>{formatCurrency(convert(selectedSchool.costOfLiving.uncoveredMedical * adults + selectedSchool.costOfLiving.uncoveredMedical * 0.5 * children), currency)}</span>
                             </div>
                         </div>
