@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const initialState: NicheFinderState = {
   result: null,
@@ -136,7 +137,26 @@ export default function FindYourNichePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject Taught</Label>
-                  <Input id="subject" name="subject" placeholder="e.g., High School Physics" required />
+                  <Select name="subject" defaultValue="Primary" required>
+                    <SelectTrigger id="subject">
+                      <SelectValue placeholder="Select a subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Primary">Primary</SelectItem>
+                      <SelectItem value="Early Years">Early Years</SelectItem>
+                      <SelectItem value="English">English</SelectItem>
+                      <SelectItem value="Maths">Maths</SelectItem>
+                      <SelectItem value="Science">Science</SelectItem>
+                      <SelectItem value="Humanities">Humanities</SelectItem>
+                      <SelectItem value="Art">Art</SelectItem>
+                      <SelectItem value="Music">Music</SelectItem>
+                      <SelectItem value="PE">Physical Education (PE)</SelectItem>
+                      <SelectItem value="EAL/ESL">EAL / ESL</SelectItem>
+                      <SelectItem value="SEN">Special Education (SEN)</SelectItem>
+                      <SelectItem value="Leadership">Leadership</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="space-y-2">
