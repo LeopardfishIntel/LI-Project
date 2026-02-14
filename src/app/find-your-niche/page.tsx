@@ -86,8 +86,11 @@ export default function FindYourNichePage() {
               <div className="space-y-2">
                 <Label>Qualifications</Label>
                  <div className="space-y-2 pt-2">
-                    <p className="text-sm text-muted-foreground">Select all that apply.</p>
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="q_pgce" name="qualifications_cb" value="PGCE/iPGCE" />
+                            <Label htmlFor="q_pgce" className="font-normal">PGCE/iPGCE</Label>
+                        </div>
                         <div className="flex items-center space-x-2">
                             <Checkbox id="q_bed" name="qualifications_cb" value="B.Ed" />
                             <Label htmlFor="q_bed" className="font-normal">B.Ed</Label>
@@ -106,7 +109,6 @@ export default function FindYourNichePage() {
               <div className="space-y-2">
                 <Label>Teaching License</Label>
                  <div className="space-y-2 pt-2">
-                    <p className="text-sm text-muted-foreground">Select all that apply.</p>
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
                             <Checkbox id="l_qts" name="teaching_license_cb" value="QTS or iQTS" />
@@ -159,7 +161,6 @@ export default function FindYourNichePage() {
                         <Label htmlFor="p_adventure" className="font-normal">Outdoor/Adventure</Label>
                     </div>
                 </div>
-                <p className="text-sm text-muted-foreground pt-1">Select all that apply.</p>
               </div>
               <div className="space-y-2">
                 <Label>What is your primary goal?</Label>
