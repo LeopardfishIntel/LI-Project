@@ -88,10 +88,7 @@ export default function Header() {
 
         <div className="flex flex-1 items-center justify-end space-x-2">
           <Link href="/login">
-            <Button variant="ghost">Sign In</Button>
-          </Link>
-          <Link href="/signup">
-            <Button>Sign Up</Button>
+            <Button>Login / Sign Up</Button>
           </Link>
         </div>
       </div>
