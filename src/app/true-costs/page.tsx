@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -7,117 +8,126 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
-import { formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
+
+type FeatureScore = 'good' | 'neutral' | 'bad';
+type Feature = { text: string; score: FeatureScore };
 
 type CountryData = {
   [country: string]: {
-    taxStatus: string;
-    housing: string;
-    flightAllowance: string;
-    dependentTuition: string;
-    gratuity: string;
-    importedGoods: string;
-    utilities: string;
-    transportation: string;
-    socialLeisure: string;
-    currency: string;
-    homeObligations: string;
-    savings: string;
+    taxStatus: Feature;
+    housing: Feature;
+    flightAllowance: Feature;
+    dependentTuition: Feature;
+    gratuity: Feature;
+    importedGoods: Feature;
+    utilities: Feature;
+    transportation: Feature;
+    socialLeisure: Feature;
+    currency: Feature;
+    homeObligations: Feature;
+    savings: Feature;
   };
 };
 
 const countrySpecificData: CountryData = {
     'United Kingdom': {
-        taxStatus: "Salaries are subject to UK income tax and National Insurance contributions. Tax-free salaries are not a feature here.",
-        housing: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.",
-        flightAllowance: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.",
-        dependentTuition: "If you work in a state school, your children can attend for free. In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.",
-        gratuity: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension scheme (like the Teachers' Pension Scheme).",
-        importedGoods: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.",
-        utilities: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.",
-        transportation: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.",
-        socialLeisure: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.",
-        currency: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard.",
-        homeObligations: "This is your home base. The tool helps you budget your UK salary against your existing UK financial commitments like mortgages or loans.",
-        savings: "The 'True Savings Potential' calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted."
+        taxStatus: { text: "Salaries are subject to UK income tax (20-45%) and National Insurance contributions. Tax-free salaries are not a feature here.", score: 'bad' },
+        housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.", score: 'bad' },
+        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad' },
+        dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral' },
+        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension scheme (like the Teachers' Pension Scheme).", score: 'neutral' },
+        importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral' },
+        utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad' },
+        transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral' },
+        socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad' },
+        currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard.", score: 'neutral' },
+        homeObligations: { text: "This is your home base. The tool helps you budget your UK salary against your existing UK financial commitments like mortgages or loans.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted.", score: 'neutral' }
     },
     'UAE': {
-        taxStatus: "Salaries are 100% tax-free. This is the single biggest financial advantage of working in the UAE and a primary driver for high savings potential.",
-        housing: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.",
-        flightAllowance: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents, as family flights can be a major cost.",
-        dependentTuition: "This is crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.",
-        gratuity: "An end-of-service gratuity is legally required. It's typically calculated as 21 days' basic salary for each of the first five years of service, and 30 days for each year after.",
-        importedGoods: "Supermarkets are full of imported Western brands (Waitrose, etc.), but they come at a premium. Eating and buying local is cheaper.",
-        utilities: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. Some housing includes 'chiller fees' (for AC), others don't. A major variable.",
-        transportation: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).",
-        socialLeisure: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is only available in licensed venues and is heavily taxed, making it a luxury item.",
-        currency: "You're paid in UAE Dirhams (AED), which is pegged to the US Dollar. This provides stability if you are saving or remitting in USD. Fees for sending money are low.",
-        homeObligations: "Your tax-free salary makes it easier to cover obligations back home. The tool lets you input these to see your true disposable income.",
-        savings: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package."
+        taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good' },
+        housing: { text: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.", score: 'good' },
+        flightAllowance: { text: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good' },
+        dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good' },
+        gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good' },
+        importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral' },
+        utilities: { text: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. 'Chiller fees' (for AC) can be a major variable.", score: 'bad' },
+        transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral' },
+        socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad' },
+        currency: { text: "You're paid in UAE Dirhams (AED), which is pegged to the US Dollar. This provides stability if you are saving or remitting in USD. Fees for sending money are low.", score: 'good' },
+        homeObligations: { text: "Your tax-free salary makes it easier to cover obligations back home. The tool lets you input these to see your true disposable income.", score: 'good' },
+        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' }
     },
     'Japan': {
-        taxStatus: "Your salary is subject to Japanese income tax, inhabitant tax, and social security contributions. Taxes are significant but generally lower than in many Western European countries.",
-        housing: "This varies. Some schools (often in smaller cities) provide subsidized or free housing. In Tokyo, you'll likely get an allowance that may not cover the full rent, requiring a top-up.",
-        flightAllowance: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.",
-        dependentTuition: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of international education in Japan.",
-        gratuity: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.",
-        importedGoods: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.",
-        utilities: "Utilities are reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.",
-        transportation: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.",
-        socialLeisure: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.",
-        currency: "You are paid in Japanese Yen (JPY). It's a major world currency, but it can be volatile. Factor in remittance fees when sending money home.",
-        homeObligations: "Use the tool to see how your net JPY salary stacks up against your financial commitments in your home currency after conversion.",
-        savings: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential."
+        taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security. Taxes are significant but often lower than Western Europe.", score: 'neutral' },
+        housing: { text: "Varies. Some schools provide subsidized/free housing. In Tokyo, you'll likely get an allowance that may not cover the full rent, requiring a top-up.", score: 'neutral' },
+        flightAllowance: { text: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.", score: 'neutral' },
+        dependentTuition: { text: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of education in Japan.", score: 'good' },
+        gratuity: { text: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.", score: 'neutral' },
+        importedGoods: { text: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.", score: 'bad' },
+        utilities: { text: "Reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.", score: 'neutral' },
+        transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good' },
+        socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good' },
+        currency: { text: "You are paid in Japanese Yen (JPY). It's a major world currency, but it can be volatile. Factor in remittance fees when sending money home.", score: 'neutral' },
+        homeObligations: { text: "Use the tool to see how your net JPY salary stacks up against your financial commitments in your home currency after conversion.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' }
     },
     'Switzerland': {
-        taxStatus: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high. However, salaries are also among the highest in the world.",
-        housing: "Housing is not provided and is extremely expensive, especially in cities like Zurich and Geneva. This is the largest expense for most teachers.",
-        flightAllowance: "Not a standard benefit. Flights are typically paid for by the teacher.",
-        dependentTuition: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.",
-        gratuity: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.",
-        importedGoods: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.",
-        utilities: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.",
-        transportation: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.",
-        socialLeisure: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.",
-        currency: "You're paid in Swiss Francs (CHF). A strong, stable currency. Converting to other currencies is easy but subject to exchange rates.",
-        homeObligations: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.",
-        savings: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs."
+        taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high (up to 40% combined). However, salaries are also among the highest in the world.", score: 'neutral' },
+        housing: { text: "Housing is not provided and is extremely expensive, especially in cities like Zurich and Geneva. This is the largest expense for most teachers.", score: 'bad' },
+        flightAllowance: { text: "Not a standard benefit. Flights are typically paid for by the teacher.", score: 'bad' },
+        dependentTuition: { text: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.", score: 'good' },
+        gratuity: { text: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.", score: 'neutral' },
+        importedGoods: { text: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.", score: 'neutral' },
+        utilities: { text: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.", score: 'bad' },
+        transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral' },
+        socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad' },
+        currency: { text: "You're paid in Swiss Francs (CHF). A strong, stable currency. Converting to other currencies is easy but subject to exchange rates.", score: 'good' },
+        homeObligations: { text: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' }
     },
     'Singapore': {
-        taxStatus: "Income tax is progressive and relatively low compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.",
-        housing: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.",
-        flightAllowance: "An annual flight allowance is common, often as a cash benefit, providing flexibility.",
-        dependentTuition: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.",
-        gratuity: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.",
-        importedGoods: "Singapore is a major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.",
-        utilities: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.",
-        transportation: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive due to high taxes and COE (Certificate of Entitlement).",
-        socialLeisure: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships and other activities are comparable to other major world cities.",
-        currency: "Payment is in Singapore Dollars (SGD). It's a strong and stable currency. Sending money overseas is straightforward.",
-        homeObligations: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.",
-        savings: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out."
+        taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good' },
+        housing: { text: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.", score: 'bad' },
+        flightAllowance: { text: "An annual flight allowance is common, often as a cash benefit, providing flexibility.", score: 'good' },
+        dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good' },
+        gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral' },
+        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral' },
+        utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad' },
+        transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good' },
+        socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad' },
+        currency: { text: "Payment is in Singapore Dollars (SGD). It's a strong and stable currency. Sending money overseas is straightforward.", score: 'good' },
+        homeObligations: { text: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.", score: 'neutral' },
+        savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' }
     },
     'South Korea': {
-        taxStatus: "Income is subject to South Korean income tax. Rates are progressive. Your school will handle deductions.",
-        housing: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.",
-        flightAllowance: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.",
-        dependentTuition: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.",
-        gratuity: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.",
-        importedGoods: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.",
-        utilities: "Utilities are reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.",
-        transportation: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.",
-        socialLeisure: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.",
-        currency: "You are paid in South Korean Won (KRW). The currency can fluctuate, so this is a consideration when sending money home.",
-        homeObligations: "With housing often provided, it can be easier to manage home country financial obligations from your Korean salary.",
-        savings: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions."
+        taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral' },
+        housing: { text: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.", score: 'good' },
+        flightAllowance: { text: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good' },
+        dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral' },
+        gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good' },
+        importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad' },
+        utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.", score: 'good' },
+        transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good' },
+        socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good' },
+        currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate, so this is a consideration when sending money home.", score: 'bad' },
+        homeObligations: { text: "With housing often provided, it can be easier to manage home country financial obligations from your Korean salary.", score: 'good' },
+        savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' }
     }
 };
 
-const FeatureDetail = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
+const scoreColorClasses = {
+  good: 'text-green-400',
+  neutral: 'text-amber-400',
+  bad: 'text-red-400',
+};
+
+const FeatureDetail = ({ icon, title, description, score }: { icon: React.ReactNode, title: string, description: string, score: FeatureScore }) => (
     <div className="flex items-start gap-4">
         <div className="mt-1 text-primary">{icon}</div>
         <div>
-            <h4 className="font-semibold tracking-tight">{title}</h4>
+            <h4 className={cn("font-semibold tracking-tight", scoreColorClasses[score])}>{title}</h4>
             <p className="text-sm text-muted-foreground">{description}</p>
         </div>
     </div>
@@ -338,27 +348,32 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
                         title="Tax Status"
-                        description={data.taxStatus}
+                        description={data.taxStatus.text}
+                        score={data.taxStatus.score}
                     />
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
                         title="Housing Arrangement"
-                        description={data.housing}
+                        description={data.housing.text}
+                        score={data.housing.score}
                     />
                      <FeatureDetail 
                         icon={<Plane className="w-5 h-5" />}
                         title="Annual Flight Allowance"
-                        description={data.flightAllowance}
+                        description={data.flightAllowance.text}
+                        score={data.flightAllowance.score}
                     />
                      <FeatureDetail 
                         icon={<SchoolIcon className="w-5 h-5" />}
                         title="Dependent Tuition"
-                        description={data.dependentTuition}
+                        description={data.dependentTuition.text}
+                        score={data.dependentTuition.score}
                     />
                      <FeatureDetail 
                         icon={<Award className="w-5 h-5" />}
                         title="Gratuity / Bonus"
-                        description={data.gratuity}
+                        description={data.gratuity.text}
+                        score={data.gratuity.score}
                     />
                 </CardContent>
             </Card>
@@ -379,26 +394,29 @@ export default function TrueCostsPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
-                    <p className="text-sm text-muted-foreground">Expats often have a premium on spending that standard data misses. This is the reality of your daily budget.</p>
                      <FeatureDetail 
                         icon={<ShoppingBasket className="w-5 h-5" />}
                         title="Imported Goods"
-                        description={data.importedGoods}
+                        description={data.importedGoods.text}
+                        score={data.importedGoods.score}
                     />
                      <FeatureDetail 
                         icon={<Thermometer className="w-5 h-5" />}
                         title="Utilities (AC/Heat)"
-                        description={data.utilities}
+                        description={data.utilities.text}
+                        score={data.utilities.score}
                     />
                      <FeatureDetail 
                         icon={<Car className="w-5 h-5" />}
                         title="Transportation"
-                        description={data.transportation}
+                        description={data.transportation.text}
+                        score={data.transportation.score}
                     />
                      <FeatureDetail 
                         icon={<Beer className="w-5 h-5" />}
                         title="Social & Leisure"
-                        description={data.socialLeisure}
+                        description={data.socialLeisure.text}
+                        score={data.socialLeisure.score}
                     />
                 </CardContent>
             </Card>
@@ -419,21 +437,23 @@ export default function TrueCostsPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
-                    <p className="text-sm text-muted-foreground">This is what transforms a job into a wealth-building opportunity. Track what really matters.</p>
                      <FeatureDetail 
                         icon={<ArrowRightLeft className="w-5 h-5" />}
                         title="Currency & Fees"
-                        description={data.currency}
+                        description={data.currency.text}
+                        score={data.currency.score}
                     />
                      <FeatureDetail 
                         icon={<PiggyBank className="w-5 h-5" />}
                         title="Home Obligations"
-                        description={data.homeObligations}
+                        description={data.homeObligations.text}
+                        score={data.homeObligations.score}
                     />
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
                         title="True Savings Potential"
-                        description={data.savings}
+                        description={data.savings.text}
+                        score={data.savings.score}
                     />
                 </CardContent>
             </Card>
@@ -447,3 +467,5 @@ export default function TrueCostsPage() {
     </div>
   );
 }
+
+    
