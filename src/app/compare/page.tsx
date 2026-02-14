@@ -6,11 +6,37 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
-type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize';
+type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
+
+const calculateMonthlyCost = (school: School): number => {
+    const { costOfLiving, intel } = school;
+    // Calculation for a single adult
+    const adults = 1;
+    const children = 0;
+
+    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
+    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
+    const mobileCost = costOfLiving.mobile * adults;
+    const diningSocialCost = costOfLiving.diningSocial * adults;
+    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
+    const apartmentCost = intel.housing.provided ? 0 : costOfLiving.apartment;
+
+    return (
+      apartmentCost +
+      foodCost +
+      transportCost +
+      costOfLiving.utilities +
+      costOfLiving.internet +
+      mobileCost +
+      diningSocialCost +
+      costOfLiving.vehicleInsuranceMaint +
+      uncoveredMedicalCost
+    );
+};
 
 const getNumericValue = (school: School, metric: ComparisonMetric) => {
     switch (metric) {
@@ -25,6 +51,8 @@ const getNumericValue = (school: School, metric: ComparisonMetric) => {
             return school.rating;
         case 'classSize':
             return school.intel.classSize;
+        case 'monthlyCost':
+            return calculateMonthlyCost(school);
         default:
             return 0;
     }
@@ -34,7 +62,7 @@ const compareSchools = (schoolsToCompare: School[], metric: ComparisonMetric, hi
     if (schoolsToCompare.length < 2) return {};
 
     const values = schoolsToCompare.map(school => getNumericValue(school, metric));
-    const bestValue = higherIsBetter ? Math.max(...values) : Math.min(...values.filter(v => v > 0)));
+    const bestValue = higherIsBetter ? Math.max(...values) : Math.min(...values.filter(v => v > 0));
     const worstValue = higherIsBetter ? Math.min(...values) : Math.max(...values);
     
     const results: { [schoolId: string]: 'best' | 'worst' | 'neutral' } = {};
@@ -86,6 +114,7 @@ export default function ComparePage() {
         savings: compareSchools(selectedSchools, 'savings', true),
         rating: compareSchools(selectedSchools, 'rating', true),
         classSize: compareSchools(selectedSchools, 'classSize', false),
+        monthlyCost: compareSchools(selectedSchools, 'monthlyCost', false),
     };
     
     const cellClass = (schoolId: string, metric: ComparisonMetric) => {
@@ -154,6 +183,10 @@ export default function ComparePage() {
                             <TableRow>
                                 <TableHead>Savings Potential</TableHead>
                                 {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'savings')}>{s.intel.savingsPotential.value}</TableCell>)}
+                            </TableRow>
+                            <TableRow>
+                                <TableHead>Est. Monthly Costs (Single)</TableHead>
+                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'monthlyCost')}>{formatCurrency(calculateMonthlyCost(s), 'USD')}</TableCell>)}
                             </TableRow>
                             <TableRow>
                                 <TableHead>Housing</TableHead>
