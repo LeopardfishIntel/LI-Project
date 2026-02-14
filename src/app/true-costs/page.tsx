@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Cheese } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -384,7 +384,7 @@ export default function TrueCostsPage() {
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <ShoppingBasket className="h-6 w-6" />
+                        <Cheese className="h-6 w-6" />
                     </div>
                     <div>
                         <CardTitle className="text-lg font-bold tracking-tight normal-case">True Lifestyle</CardTitle>
@@ -399,7 +399,7 @@ export default function TrueCostsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
-                        icon={<ShoppingBasket className="w-5 h-5" />}
+                        icon={<Cheese className="w-5 h-5" />}
                         title="Imported Goods"
                         description={data.importedGoods.text}
                         score={data.importedGoods.score}
