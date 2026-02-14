@@ -12,7 +12,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 z-10">
           <div className="bg-black/50 backdrop-blur-sm p-8 rounded-lg">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-primary-foreground mb-4">
-              Know Before You Go
+              Leopardfish Intel
             </h1>
             <p className="max-w-2xl mx-auto text-muted-foreground md:text-xl mb-8">
               Compare salaries, benefits, and living costs at international schools worldwide. Make informed decisions about your next teaching adventure.

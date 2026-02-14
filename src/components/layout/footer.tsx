@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex items-center mb-4 md:mb-0">
           <GraduationCap className="h-6 w-6 text-primary mr-2" />
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Know Before You Go. All rights reserved.
+            &copy; {new Date().getFullYear()} Leopardfish Intel. All rights reserved.
           </p>
         </div>
         <nav className="flex gap-4 sm:gap-6">

@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['700'], variable: '--font-montserrat' })
 
 export const metadata: Metadata = {
-  title: 'Know Before You Go',
-  description: 'Find your next teaching job abroad with confidence.',
+  title: 'Leopardfish Intel',
+  description: 'Compare salaries, benefits, and living costs at international schools worldwide. Make informed decisions about your next teaching adventure.',
 };
 
 export default function RootLayout({
