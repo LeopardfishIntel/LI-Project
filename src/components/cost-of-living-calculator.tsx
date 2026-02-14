@@ -35,8 +35,10 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
     const diningSocialCost = costOfLiving.diningSocial * adults;
     const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
     
+    const apartmentCost = school.intel.housing.provided ? 0 : costOfLiving.apartment;
+    
     const total =
-      costOfLiving.apartment +
+      apartmentCost +
       foodCost +
       transportCost +
       costOfLiving.utilities +
@@ -98,7 +100,7 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
         <div className="space-y-2 text-sm text-muted-foreground mb-6">
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-            <span>{formatCurrency(convert(costOfLiving.apartment), currency)}</span>
+            <span>{school.intel.housing.provided ? 'Provided' : formatCurrency(convert(costOfLiving.apartment), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities (Water/Elec/Gas)</span>
@@ -144,3 +146,5 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
     </Card>
   );
 }
+
+    

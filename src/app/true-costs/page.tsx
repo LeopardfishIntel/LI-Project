@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, ShoppingBasket, Globe } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -186,15 +186,17 @@ export default function TrueCostsPage() {
 
   const calculateTotal = (school: School | null) => {
     if (!school) return 0;
-    const { costOfLiving } = school;
+    const { costOfLiving, intel } = school;
     const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
     const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
     const mobileCost = costOfLiving.mobile * adults;
     const diningSocialCost = costOfLiving.diningSocial * adults;
     const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
 
+    const apartmentCost = intel.housing.provided ? 0 : costOfLiving.apartment;
+
     const total =
-      costOfLiving.apartment +
+      apartmentCost +
       foodCost +
       transportCost +
       costOfLiving.utilities +
@@ -206,6 +208,52 @@ export default function TrueCostsPage() {
       
     return total;
   };
+  
+  const getAverageAnnualSalary = (salaryRange: string): number => {
+    const cleanedRange = salaryRange.replace(/[\$,]|(\(tax-free\))/gi, '').trim();
+    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+    if (!numbers) return 0;
+    
+    const scale = cleanedRange.includes('k') ? 1000 : 1;
+    
+    if (numbers.length >= 2) {
+      return ((numbers[0] + numbers[1]) / 2) * scale;
+    }
+    if (numbers.length === 1) {
+      return numbers[0] * scale;
+    }
+    return 0;
+  };
+
+  let savingsDescription = data.savings.text;
+  let savingsScore: FeatureScore = data.savings.score;
+
+  if (selectedSchool) {
+    const monthlyExpenses = calculateTotal(selectedSchool);
+    const annualSalary = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    const monthlySalary = annualSalary / 12;
+    const monthlySavings = monthlySalary - monthlyExpenses;
+    const annualSavings = monthlySavings * 12;
+
+    const convertedAnnualSavings = convert(annualSavings);
+    const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
+
+    let taxInfo = '';
+    if (!selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+        taxInfo = ` This is a pre-tax estimate. Your actual savings will be lower after income taxes, which vary by country.`;
+    }
+
+    savingsDescription = `Based on an average salary and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
+
+    if (monthlySavings > (monthlySalary * 0.3)) { // saving > 30% of salary
+        savingsScore = 'good';
+    } else if (monthlySavings > (monthlySalary * 0.1)) { // saving > 10%
+        savingsScore = 'neutral';
+    } else {
+        savingsScore = 'bad';
+    }
+  }
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -285,7 +333,7 @@ export default function TrueCostsPage() {
                     <div className="space-y-1 text-sm text-muted-foreground">
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                            <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities (Water/Elec/Gas)</span>
@@ -384,7 +432,7 @@ export default function TrueCostsPage() {
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <ShoppingBasket className="h-6 w-6" />
+                        <Globe className="h-6 w-6" />
                     </div>
                     <div>
                         <CardTitle className="text-lg font-bold tracking-tight normal-case">True Lifestyle</CardTitle>
@@ -460,8 +508,8 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
                         title="True Savings Potential"
-                        description={data.savings.text}
-                        score={data.savings.score}
+                        description={savingsDescription}
+                        score={savingsScore}
                     />
                 </CardContent>
             </Card>
@@ -475,3 +523,5 @@ export default function TrueCostsPage() {
     </div>
   );
 }
+
+    
