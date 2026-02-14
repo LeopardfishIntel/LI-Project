@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "tokyo-international-school",
+      "description": "Tokyo International School campus",
+      "imageUrl": "https://images.unsplash.com/photo-1589572368687-c093a494522a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBzY2hvb2wlMjB0b2t5b3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern school tokyo"
+    },
+    {
+      "id": "dubai-american-academy",
+      "description": "Dubai American Academy building",
+      "imageUrl": "https://images.unsplash.com/photo-1586172784607-3540a4fc3b26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmdXR1cmlzdGljJTIwc2Nob29sJTIwZHViYWl8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "futuristic school dubai"
+    },
+    {
+      "id": "zurich-international-school",
+      "description": "Zurich International School with mountains in the background",
+      "imageUrl": "https://images.unsplash.com/photo-1621178854067-6af42f05a486?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzY2hvb2wlMjBzd2l0emVybGFuZCUyMG1vdW50YWluc3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school switzerland mountains"
+    },
+    {
+      "id": "singapore-american-school",
+      "description": "Singapore American School lush campus",
+      "imageUrl": "https://images.unsplash.com/photo-1760259906745-5dbce396a116?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0cm9waWNhbCUyMHNjaG9vbCUyMGNhbXB1c3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tropical school campus"
+    },
+    {
+      "id": "seoul-foreign-school",
+      "description": "Seoul Foreign School main entrance",
+      "imageUrl": "https://images.unsplash.com/photo-1501909991051-7c054658fde0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzY2hvb2wlMjBzZW91bHxlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school seoul"
+    },
+    {
+      "id": "amsterdam-international-school",
+      "description": "Amsterdam International School near a canal",
+      "imageUrl": "https://images.unsplash.com/photo-1504975692386-cfacf81e1022?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "school amsterdam"
+    }
+  ]
 }
