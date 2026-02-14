@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, Info, FileText } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, Info, FileText, DollarSign, Utensils, TramFront, Zap } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
+import type { School } from '@/lib/types';
+import { formatCurrency } from '@/lib/utils';
 
 type CountryData = {
   [country: string]: {
@@ -126,6 +128,7 @@ const FeatureDetail = ({ icon, title, description }: { icon: React.ReactNode, ti
 export default function TrueCostsPage() {
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
+  const [familyStatus, setFamilyStatus] = useState('single');
   const data = countrySpecificData[selectedCountry];
 
   const handleCountryChange = (country: string) => {
@@ -134,6 +137,26 @@ export default function TrueCostsPage() {
   };
 
   const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
+  const selectedSchool = selectedSchoolId ? schools.find(s => s.id === selectedSchoolId) : null;
+
+  let adults = 1;
+  let children = 0;
+  if (familyStatus === 'couple') {
+    adults = 2;
+    children = 0;
+  } else if (familyStatus === 'family') {
+    adults = 2;
+    children = 1;
+  }
+
+  const calculateTotal = (school: School | null) => {
+    if (!school) return 0;
+    const { costOfLiving } = school;
+    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
+    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
+    const total = costOfLiving.apartment + foodCost + transportCost + costOfLiving.utilities;
+    return total;
+  };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -143,9 +166,9 @@ export default function TrueCostsPage() {
           A high salary doesn't always mean high savings. Understand the hidden variables that impact your financial future abroad.
         </p>
         
-        <div className="mb-12 space-y-4">
+        <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label htmlFor="country-select" className="text-base font-semibold">View Stats For Your Target Country</Label>
+            <Label htmlFor="country-select" className="text-base font-semibold">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
               <SelectTrigger id="country-select" className="mt-2">
                 <SelectValue placeholder="Select a country" />
@@ -158,12 +181,11 @@ export default function TrueCostsPage() {
             </Select>
           </div>
 
-          {schoolsInCountry.length > 0 && (
-            <div>
-              <Label htmlFor="school-select" className="text-base font-semibold">Select a School (Optional)</Label>
-              <Select value={selectedSchoolId ?? 'all'} onValueChange={(value) => setSelectedSchoolId(value === 'all' ? null : value)}>
+          <div>
+            <Label htmlFor="school-select" className="text-base font-semibold">School (Optional)</Label>
+             <Select value={selectedSchoolId ?? 'all'} onValueChange={(value) => setSelectedSchoolId(value === 'all' ? null : value)} disabled={schoolsInCountry.length === 0}>
                 <SelectTrigger id="school-select" className="mt-2">
-                  <SelectValue placeholder="Select a school in this country" />
+                  <SelectValue placeholder="Select a school" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">-- All Schools in {selectedCountry} --</SelectItem>
@@ -172,13 +194,60 @@ export default function TrueCostsPage() {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-          )}
-
-          <p className="text-sm text-muted-foreground pt-2">
-            Content will adjust to reflect financial realities related to the selected country.
-          </p>
+          </div>
+          
+          <div>
+            <Label htmlFor="family-status-select" className="text-base font-semibold">Family Status</Label>
+            <Select value={familyStatus} onValueChange={setFamilyStatus}>
+              <SelectTrigger id="family-status-select" className="mt-2">
+                <SelectValue placeholder="Select family status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="single">Single</SelectItem>
+                <SelectItem value="couple">Couple</SelectItem>
+                <SelectItem value="family">Family (2+1)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        {selectedSchool && (
+            <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
+                <CardHeader>
+                    <CardTitle className="flex items-center text-xl">
+                        <DollarSign className="w-5 h-5 mr-2 text-primary" />
+                        Cost Estimator: {selectedSchool.name}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2 text-sm text-muted-foreground mb-6">
+                        <div className="flex justify-between items-center">
+                            <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Apartment (1-2 bed)</span>
+                            <span>{formatCurrency(selectedSchool.costOfLiving.apartment)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
+                            <span>~{formatCurrency(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
+                            <span>~{formatCurrency(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
+                            <span>{formatCurrency(selectedSchool.costOfLiving.utilities)}</span>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-border">
+                        <div className="flex justify-between items-center text-lg font-bold">
+                            <span className="text-primary-foreground">Estimated Monthly Total</span>
+                            <span className="text-primary">{formatCurrency(calculateTotal(selectedSchool))}</span>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        )}
 
         <Card className="mb-8 bg-blue-900/20 border-blue-500/30">
             <CardHeader className="flex-row items-center gap-4">
@@ -308,8 +377,14 @@ export default function TrueCostsPage() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+        
+        <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+          <p>Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
+        </div>
 
       </div>
     </div>
   );
 }
+
+    
