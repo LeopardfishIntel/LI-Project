@@ -86,7 +86,7 @@ export default function FindYourNichePage() {
               <div className="space-y-2">
                 <Label>Qualifications</Label>
                  <div className="space-y-2 pt-2">
-                    <p className="text-sm text-muted-foreground">Select common qualifications and/or add details below.</p>
+                    <p className="text-sm text-muted-foreground">Select all that apply.</p>
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
                             <Checkbox id="q_bed" name="qualifications_cb" value="B.Ed" />
@@ -106,11 +106,10 @@ export default function FindYourNichePage() {
                         </div>
                     </div>
                 </div>
-                <Textarea name="qualifications_text" placeholder="e.g., Master's in Physics, 10 years as department head..." />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="experience">Teaching Experience</Label>
-                <Textarea id="experience" name="experience" placeholder="e.g., 5 years teaching high school science, 2 years IB DP in Vietnam" required />
+                <Label htmlFor="experience">Years of Teaching Experience</Label>
+                <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
               </div>
               <div className="space-y-2">
                 <Label>Preferences</Label>
