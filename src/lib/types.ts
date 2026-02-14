@@ -24,6 +24,10 @@ export type School = {
     transport: number;
     utilities: number;
     internet: number;
+    mobile: number;
+    diningSocial: number;
+    vehicleInsuranceMaint: number;
+    uncoveredMedical: number;
   };
 };
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -176,7 +176,21 @@ export default function TrueCostsPage() {
     const { costOfLiving } = school;
     const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
     const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const total = costOfLiving.apartment + foodCost + transportCost + costOfLiving.utilities + costOfLiving.internet;
+    const mobileCost = costOfLiving.mobile * adults;
+    const diningSocialCost = costOfLiving.diningSocial * adults;
+    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
+
+    const total =
+      costOfLiving.apartment +
+      foodCost +
+      transportCost +
+      costOfLiving.utilities +
+      costOfLiving.internet +
+      mobileCost +
+      diningSocialCost +
+      costOfLiving.vehicleInsuranceMaint +
+      uncoveredMedicalCost;
+      
     return total;
   };
 
@@ -255,26 +269,61 @@ export default function TrueCostsPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-2 text-sm text-muted-foreground mb-6">
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Apartment (1-2 bed)</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                    <div className="space-y-4 text-sm text-muted-foreground mb-6">
+                        <div>
+                            <h4 className="font-semibold text-primary-foreground/90 mb-1">Housing & Setup</h4>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
+
+                        <div>
+                            <h4 className="font-semibold text-primary-foreground/90 mb-1">Utilities & Tech</h4>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities (Water/Elec/Gas)</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> High-Speed Internet</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-slate-400" /> Mobile</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+
+                        <div>
+                            <h4 className="font-semibold text-primary-foreground/90 mb-1">Daily Living</h4>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
+                            </div>
+                             <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining & Social</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
+
+                        <div>
+                            <h4 className="font-semibold text-primary-foreground/90 mb-1">Transport</h4>
+                            <div className="flex justify-between items-center">
+                                <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport / Fuel</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+                            </div>
+                             {selectedSchool.costOfLiving.vehicleInsuranceMaint > 0 && <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Car className="w-4 h-4 mr-2 text-neutral-400" /> Vehicle Insurance/Maint.</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.vehicleInsuranceMaint), currency)}</span>
+                            </div>}
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
+
+                        <div>
+                            <h4 className="font-semibold text-primary-foreground/90 mb-1">Health</h4>
+                             <div className="flex justify-between items-center">
+                                <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Uncovered Medical</span>
+                                <span>{formatCurrency(convert(selectedSchool.costOfLiving.uncoveredMedical * adults + selectedSchool.costOfLiving.uncoveredMedical * 0.5 * children), currency)}</span>
+                            </div>
                         </div>
                     </div>
                     

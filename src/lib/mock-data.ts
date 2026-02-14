@@ -32,7 +32,7 @@ export const schools: School[] = [
       { id: 'r1', author: 'Jane D.', isVerified: true, timestamp: '2 weeks ago', rating: 5, text: 'Fantastic school with great resources and supportive admin. The students are wonderful.' },
       { id: 'r2', author: 'John S.', isVerified: false, timestamp: '1 month ago', rating: 4, text: 'Good salary and benefits, but the workload can be intense at times.' },
     ],
-    costOfLiving: { apartment: 2000, food: 500, transport: 150, utilities: 200, internet: 50 },
+    costOfLiving: { apartment: 2000, food: 500, transport: 150, utilities: 200, internet: 50, mobile: 40, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
   },
   {
     id: 'dubai-american-academy',
@@ -56,7 +56,7 @@ export const schools: School[] = [
       { id: 'r3', author: 'Emily R.', isVerified: true, timestamp: '3 days ago', rating: 5, text: 'The facilities are state-of-the-art and the community is very welcoming. Savings potential is unbeatable.' },
       { id: 'r4', author: 'Michael B.', isVerified: true, timestamp: '2 months ago', rating: 4, text: 'A fast-paced environment. Great for career growth but expect to work hard.' },
     ],
-    costOfLiving: { apartment: 2500, food: 600, transport: 200, utilities: 300, internet: 80 },
+    costOfLiving: { apartment: 2500, food: 600, transport: 200, utilities: 300, internet: 80, mobile: 70, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
   },
   {
     id: 'zurich-international-school',
@@ -80,7 +80,7 @@ export const schools: School[] = [
       { id: 'r5', author: 'Sarah K.', isVerified: true, timestamp: '1 week ago', rating: 4, text: 'High salary is offset by the high cost of living, but the quality of life is amazing. Beautiful country.' },
       { id: 'r6', author: 'Tom H.', isVerified: false, timestamp: '3 months ago', rating: 3, text: 'Finding housing is a major challenge. The school is professional but can feel a bit formal.' },
     ],
-    costOfLiving: { apartment: 3500, food: 1000, transport: 250, utilities: 250, internet: 70 },
+    costOfLiving: { apartment: 3500, food: 1000, transport: 250, utilities: 250, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
   },
   {
     id: 'singapore-american-school',
@@ -100,7 +100,7 @@ export const schools: School[] = [
       healthInsurance: 'Full Coverage International Plan',
     },
     reviews: [],
-    costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60 },
+    costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
   },
   {
     id: 'seoul-foreign-school',
@@ -120,7 +120,7 @@ export const schools: School[] = [
       healthInsurance: 'National Health Insurance',
     },
     reviews: [],
-    costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40 },
+    costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
   },
   {
     id: 'acs-cobham-international-school',
@@ -144,7 +144,7 @@ export const schools: School[] = [
       { id: 'r7', author: 'David L.', isVerified: true, timestamp: '1 month ago', rating: 5, text: 'Top-tier facilities and a strong academic program. The campus is beautiful, and it\'s a great place for families.' },
       { id: 'r8', author: 'Maria G.', isVerified: true, timestamp: '4 months ago', rating: 4, text: 'A very American-style school, which has its pros and cons. The pay is good for the UK, but the cost of living in Surrey is very high.' },
     ],
-    costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60 },
+    costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
   },
   {
     id: 'amsterdam-international-school',
@@ -164,7 +164,7 @@ export const schools: School[] = [
       healthInsurance: 'Private insurance required',
     },
     reviews: [],
-    costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55 },
+    costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
   }
 ];
 
