@@ -48,7 +48,7 @@ export default function FindYourNichePage() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Niche</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8">
-          Match your profile to the perfect international school around the globe.
+          Match your profile to the perfect international school.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -56,7 +56,6 @@ export default function FindYourNichePage() {
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
-              <p className="text-xs text-muted-foreground pt-1">All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -238,13 +237,13 @@ export default function FindYourNichePage() {
             <CardFooter className="flex-col items-start gap-4">
                 <div className="w-full space-y-1">
                     <Label>Verification</Label>
-                    <p className="text-xs text-muted-foreground">Complete the CAPTCHA to unlock your three niche recommendations.</p>
+                    <p className="text-xs text-muted-foreground pt-1">All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.</p>
                     
                     {/* This is a placeholder for a real CAPTCHA */}
                     <div className="mt-2 p-3 rounded-md bg-muted/50 border flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Checkbox id="captcha" onCheckedChange={(checked) => setIsCaptchaVerified(!!checked)} />
-                            <Label htmlFor="captcha" className="font-normal">I am not a robot</Label>
+                            <Label htmlFor="captcha" className="font-normal">I understand, please continue</Label>
                         </div>
                     </div>
                 </div>
