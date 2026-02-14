@@ -39,8 +39,8 @@ export default function ForumPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <ForumCategoryCard 
                   icon={<MessageSquare className="h-6 w-6 text-primary" />}
-                  title="General Discussion"
-                  description="Chat about anything and everything related to international teaching."
+                  title="Share Your Intel"
+                  description="Share the things you love and hate about your current school and position."
                   href="#"
               />
               <ForumCategoryCard 
