@@ -52,7 +52,7 @@ export default function FindYourNichePage() {
           <form action={formAction}>
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
-              <CardDescription>The more detail you provide, the better the recommendations.</CardDescription>
+              <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
               <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations only consider typical government visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
