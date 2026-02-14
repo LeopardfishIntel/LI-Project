@@ -1,9 +1,20 @@
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, MoveRight } from 'lucide-react';
+import { Search, MoveRight, Wallet, BarChart3, Lightbulb } from 'lucide-react';
 import { SchoolCard } from '@/components/school-card';
 import { spotlightSchools } from '@/lib/mock-data';
+
+const FeatureCard = ({ icon, title, description, href }: { icon: React.ReactNode; title: string; description: string; href: string }) => (
+  <Link href={href}>
+    <div className="bg-card/70 backdrop-blur-sm border-border p-6 rounded-lg h-full text-center hover:border-primary/50 transition-colors flex flex-col items-center shadow-lg hover:shadow-primary/20 duration-300">
+      <div className="mb-4">{icon}</div>
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-muted-foreground text-sm flex-grow">{description}</p>
+    </div>
+  </Link>
+);
+
 
 export default function Home() {
   return (
@@ -34,6 +45,37 @@ export default function Home() {
       </section>
 
       <section className="w-full py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <FeatureCard
+                icon={<Search className="w-8 h-8 text-primary" />}
+                title="Find a School"
+                description="Search our database of hundreds of international schools."
+                href="/search"
+            />
+            <FeatureCard
+                icon={<Wallet className="w-8 h-8 text-primary" />}
+                title="See True Costs"
+                description="Calculate your estimated monthly expenses in different cities."
+                href="/true-costs"
+            />
+            <FeatureCard
+                icon={<BarChart3 className="w-8 h-8 text-primary" />}
+                title="Compare Savings"
+                description="Compare salary and savings potential side-by-side."
+                href="/compare"
+            />
+            <FeatureCard
+                icon={<Lightbulb className="w-8 h-8 text-primary" />}
+                title="Find Your Niche"
+                description="Get AI-powered recommendations for your next destination."
+                href="/find-your-niche"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full py-16 md:py-24 bg-accent/10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">
