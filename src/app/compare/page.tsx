@@ -1,17 +1,19 @@
 "use client";
 
 import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
-import { SchoolCard } from '@/components/school-card';
+import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { VerifiedBadge } from '@/components/verified-badge';
 
 type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
+type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
     const { costOfLiving, intel } = school;
@@ -59,172 +61,197 @@ const getNumericValue = (school: School, metric: ComparisonMetric) => {
     }
 };
 
-const compareSchools = (schoolsToCompare: School[], metric: ComparisonMetric, higherIsBetter: boolean) => {
-    if (schoolsToCompare.length < 2) return {};
+const ComparisonRow = ({ label, value1, value2, result1, result2, format1, format2, icon }: {
+    label: string;
+    value1: any;
+    value2: any;
+    result1: ComparisonResult;
+    result2: ComparisonResult;
+    format1?: (value: any) => string;
+    format2?: (value: any) => string;
+    icon: React.ReactNode;
+}) => {
+    const resultColor = (result: ComparisonResult) => {
+        if (result === 'best') return 'text-green-400';
+        if (result === 'worst') return 'text-red-400';
+        return 'text-primary-foreground';
+    };
 
-    const values = schoolsToCompare.map(school => getNumericValue(school, metric));
-    const bestValue = higherIsBetter ? Math.max(...values) : Math.min(...values.filter(v => v > 0));
-    const worstValue = higherIsBetter ? Math.min(...values) : Math.max(...values);
-    
-    const results: { [schoolId: string]: 'best' | 'worst' | 'neutral' } = {};
-    schoolsToCompare.forEach((school, index) => {
-        if (values[index] === bestValue) {
-            results[school.id] = 'best';
-        } else if (values[index] === worstValue) {
-            results[school.id] = 'worst';
-        } else {
-            results[school.id] = 'neutral';
-        }
-    });
+    return (
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center text-center border-b last:border-b-0 py-3 relative">
+            <div className={cn("text-lg font-semibold", resultColor(result1))}>{format1 ? format1(value1) : value1}</div>
+            
+            <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full z-10 border">
+                {icon}
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{label}</span>
+            </div>
 
-    if(bestValue === worstValue) {
-      schoolsToCompare.forEach(school => results[school.id] = 'neutral');
-    }
-
-    return results;
+            <div className={cn("text-lg font-semibold", resultColor(result2))}>{format2 ? format2(value2) : value2}</div>
+        </div>
+    );
 };
 
 
 export default function ComparePage() {
-    const [selectedSchools, setSelectedSchools] = useState<School[]>([schools[0], schools[1], schools[2]].filter(Boolean));
+    const [school1Id, setSchool1Id] = useState<string>(schools[0].id);
+    const [school2Id, setSchool2Id] = useState<string>(schools[1].id);
 
-    const handleSelectSchool = (index: number, schoolId: string) => {
-        const school = schools.find(s => s.id === schoolId);
-        if (school) {
-            const newSelection = [...selectedSchools];
-            newSelection[index] = school;
-            setSelectedSchools(newSelection);
+    const school1 = schools.find(s => s.id === school1Id)!;
+    const school2 = schools.find(s => s.id === school2Id)!;
+
+    const handleSelectSchool1 = (schoolId: string) => {
+        if (schoolId === school2Id) setSchool2Id(school1Id);
+        setSchool1Id(schoolId);
+    };
+
+    const handleSelectSchool2 = (schoolId: string) => {
+        if (schoolId === school1Id) setSchool1Id(school2Id);
+        setSchool2Id(schoolId);
+    };
+    
+    const compare = (metric: ComparisonMetric, higherIsBetter: boolean): { res1: ComparisonResult, res2: ComparisonResult } => {
+        const val1 = getNumericValue(school1, metric);
+        const val2 = getNumericValue(school2, metric);
+
+        if (val1 === val2) return { res1: 'neutral', res2: 'neutral' };
+
+        let val1isBest;
+        if (higherIsBetter) {
+            val1isBest = val1 > val2;
+        } else {
+            if (val1 === 0) val1isBest = true;
+            else if (val2 === 0) val1isBest = false;
+            else val1isBest = val1 < val2;
         }
+        
+        return val1isBest ? { res1: 'best', res2: 'worst' } : { res1: 'worst', res2: 'best' };
     };
     
-    const removeSchool = (index: number) => {
-        const newSelection = [...selectedSchools];
-        newSelection.splice(index, 1);
-        setSelectedSchools(newSelection);
-    }
-    
-    const addSchool = () => {
-       const availableSchool = schools.find(s => !selectedSchools.some(ss => ss.id === s.id));
-       if(availableSchool) {
-           setSelectedSchools([...selectedSchools, availableSchool]);
-       }
-    }
+    const ratingComp = compare('rating', true);
+    const salaryComp = compare('salary', true);
+    const savingsComp = compare('savings', true);
+    const monthlyCostComp = compare('monthlyCost', false);
+    const classSizeComp = compare('classSize', false);
 
-    const comparisonResults: { [metric: string]: { [schoolId: string]: 'best' | 'worst' | 'neutral' } } = {
-        salary: compareSchools(selectedSchools, 'salary', true),
-        savings: compareSchools(selectedSchools, 'savings', true),
-        rating: compareSchools(selectedSchools, 'rating', true),
-        classSize: compareSchools(selectedSchools, 'classSize', false),
-        monthlyCost: compareSchools(selectedSchools, 'monthlyCost', false),
-    };
-    
-    const cellClass = (schoolId: string, metric: ComparisonMetric) => {
-        const result = comparisonResults[metric]?.[schoolId];
-        return cn({
-            'bg-emerald-900/20 text-green-400': result === 'best',
-            'bg-red-900/20 text-red-400': result === 'worst',
-        });
-    };
+    const SchoolInfo = ({ school, onSelect, otherSchoolId }: { school: School, onSelect: (id: string) => void, otherSchoolId: string }) => (
+        <div className="flex flex-col items-center gap-4">
+            <div className="w-full max-w-sm">
+                 <Select value={school.id} onValueChange={onSelect}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a school" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {schools.map(s => (
+                            <SelectItem key={s.id} value={s.id} disabled={s.id === otherSchoolId}>
+                                {s.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+            <Link href={`/schools/${school.id}`} className="block w-full max-w-sm">
+                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group">
+                    <div className="relative aspect-video">
+                        <Image src={school.imageUrl} alt={school.name} layout="fill" objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                    <CardHeader>
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors">{school.name}</CardTitle>
+                         <div className="flex items-center text-muted-foreground text-sm pt-1">
+                            <MapPin className="w-4 h-4 mr-1.5" />
+                            <span>{school.location}, {school.country}</span>
+                        </div>
+                    </CardHeader>
+                </Card>
+            </Link>
+        </div>
+    );
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">Compare Schools</h1>
-            <p className="text-muted-foreground mb-8">Select up to 3 schools to compare side-by-side.</p>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center">Compare Schools</h1>
+            <p className="text-muted-foreground mb-12 text-center">Select two schools for a side-by-side comparison of key data.</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-8">
+                <SchoolInfo school={school1} onSelect={handleSelectSchool1} otherSchoolId={school2Id} />
+                <SchoolInfo school={school2} onSelect={handleSelectSchool2} otherSchoolId={school1Id} />
+            </div>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
-                <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="hover:bg-transparent">
-                                <TableHead className="w-[200px] min-w-[150px] align-middle">School</TableHead>
-                                {selectedSchools.map((school, index) => (
-                                    <TableHead key={school.id} className="min-w-[300px]">
-                                        <div className="flex justify-between items-center">
-                                            <Select value={school.id} onValueChange={(value) => handleSelectSchool(index, value)}>
-                                                <SelectTrigger className="w-full border-0 shadow-none bg-transparent hover:bg-muted focus:ring-0 focus:ring-offset-0">
-                                                    <SelectValue placeholder="Select a school" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {schools.map(s => (
-                                                        <SelectItem key={s.id} value={s.id} disabled={selectedSchools.some(ss => ss.id === s.id && s.id !== school.id)}>
-                                                            {s.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 ml-2 flex-shrink-0" onClick={() => removeSchool(index)}>
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </TableHead>
-                                ))}
-                                {selectedSchools.length < 3 && (
-                                    <TableHead>
-                                        <Button variant="outline" onClick={addSchool} className="w-full">Add School</Button>
-                                    </TableHead>
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            <TableRow><TableCell colSpan={selectedSchools.length + 1} className="font-semibold text-primary-foreground bg-muted/30">Ratings & Reviews</TableCell></TableRow>
-                            <TableRow>
-                                <TableHead>Overall Rating</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'rating')}>{s.rating.toFixed(1)} / 5</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Review Count</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id}>{s.reviewsCount}</TableCell>)}
-                            </TableRow>
+                <CardContent className="p-4 md:p-6 divide-y divide-border">
+                    <div className="py-2">
+                        <h3 className="font-semibold text-lg text-center mb-4">Ratings & Reviews</h3>
+                        <ComparisonRow label="Overall Rating" value1={`${school1.rating.toFixed(1)}/5`} value2={`${school2.rating.toFixed(1)}/5`} result1={ratingComp.res1} result2={ratingComp.res2} icon={<Star className="w-4 h-4 text-amber-400" />} />
+                        <ComparisonRow label="Review Count" value1={school1.reviewsCount} value2={school2.reviewsCount} result1='neutral' result2='neutral' icon={<Users className="w-4 h-4 text-rose-400" />} />
+                    </div>
 
-                            <TableRow><TableCell colSpan={selectedSchools.length + 1} className="font-semibold text-primary-foreground bg-muted/30">Financial</TableCell></TableRow>
-                            <TableRow>
-                                <TableHead>Salary Range</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'salary')}>{s.intel.salary.value}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Savings Potential</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'savings')}>{s.intel.savingsPotential.value}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Est. Monthly Costs (Single)</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'monthlyCost')}>{formatCurrency(calculateMonthlyCost(s), 'USD')}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Housing</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.housing.value}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Health Insurance</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.healthInsurance}</TableCell>)}
-                            </TableRow>
-
-                             <TableRow><TableCell colSpan={selectedSchools.length + 1} className="font-semibold text-primary-foreground bg-muted/30">Academics</TableCell></TableRow>
-                            <TableRow>
-                                <TableHead>Curriculum</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.curriculum}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Average Class Size</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id} className={cellClass(s.id, 'classSize')}>{s.intel.classSize}</TableCell>)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead>Student-Teacher Ratio</TableHead>
-                                {selectedSchools.map(s => <TableCell key={s.id}>{s.intel.studentTeacherRatio}</TableCell>)}
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+                    <div className="py-2">
+                        <h3 className="font-semibold text-lg text-center mb-4 pt-4">Financial</h3>
+                        <ComparisonRow label="Salary Range" value1={school1.intel.salary.value} value2={school2.intel.salary.value} result1={salaryComp.res1} result2={salaryComp.res2} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                        <ComparisonRow label="Savings Potential" value1={school1.intel.savingsPotential.value} value2={school2.intel.savingsPotential.value} result1={savingsComp.res1} result2={savingsComp.res2} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                        <ComparisonRow label="Est. Monthly Costs (Single)" value1={calculateMonthlyCost(school1)} value2={calculateMonthlyCost(school2)} result1={monthlyCostComp.res1} result2={monthlyCostComp.res2} format1={(v) => formatCurrency(v, 'USD')} format2={(v) => formatCurrency(v, 'USD')} icon={<DollarSign className="w-4 h-4 text-red-400" />} />
+                        <ComparisonRow label="Housing" value1={school1.intel.housing.value} value2={school2.intel.housing.value} result1='neutral' result2='neutral' icon={<Home className="w-4 h-4 text-blue-400" />} />
+                        <ComparisonRow label="Health Insurance" value1={school1.intel.healthInsurance} value2={school2.intel.healthInsurance} result1='neutral' result2='neutral' icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
+                    </div>
+                    
+                    <div className="py-2">
+                        <h3 className="font-semibold text-lg text-center mb-4 pt-4">Academics</h3>
+                        <ComparisonRow label="Curriculum" value1={school1.intel.curriculum} value2={school2.intel.curriculum} result1='neutral' result2='neutral' icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                        <ComparisonRow label="Average Class Size" value1={school1.intel.classSize} value2={school2.intel.classSize} result1={classSizeComp.res1} result2={classSizeComp.res2} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                        <ComparisonRow label="Student-Teacher Ratio" value1={school1.intel.studentTeacherRatio} value2={school2.intel.studentTeacherRatio} result1='neutral' result2='neutral' icon={<Users className="w-4 h-4 text-rose-400" />} />
+                    </div>
                 </CardContent>
             </Card>
 
-            <div className="mt-16">
-                <h2 className="text-3xl font-bold tracking-tight text-center mb-8">School Overviews</h2>
-                 {selectedSchools.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {selectedSchools.map((school) => (
-                            <SchoolCard key={school.id} school={school} />
-                        ))}
-                    </div>
-                )}
+            <div className="mt-12">
+                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">Teacher Reviews</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <Card className="bg-card/70 backdrop-blur-sm border-border">
+                        <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
+                        <CardContent className="space-y-6">
+                            {school1.reviews.length > 0 ? school1.reviews.map(review => (
+                                <div key={review.id}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold">{review.author}</p>
+                                            {review.isVerified && <VerifiedBadge />}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">{review.timestamp}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1 mb-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star key={i} className={cn("w-4 h-4", i < review.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50")}/>
+                                        ))}
+                                    </div>
+                                    <p className="text-muted-foreground">{review.text}</p>
+                                    {school1.reviews.indexOf(review) < school1.reviews.length - 1 && <Separator className="mt-6" />}
+                                </div>
+                            )) : <p className="text-muted-foreground text-center py-4">No reviews yet for this school.</p>}
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-card/70 backdrop-blur-sm border-border">
+                        <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
+                        <CardContent className="space-y-6">
+                            {school2.reviews.length > 0 ? school2.reviews.map(review => (
+                                <div key={review.id}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold">{review.author}</p>
+                                            {review.isVerified && <VerifiedBadge />}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">{review.timestamp}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1 mb-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star key={i} className={cn("w-4 h-4", i < review.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50")}/>
+                                        ))}
+                                    </div>
+                                    <p className="text-muted-foreground">{review.text}</p>
+                                    {school2.reviews.indexOf(review) < school2.reviews.length - 1 && <Separator className="mt-6" />}
+                                </div>
+                            )) : <p className="text-muted-foreground text-center py-4">No reviews yet for this school.</p>}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
