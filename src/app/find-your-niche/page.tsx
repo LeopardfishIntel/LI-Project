@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const initialState: NicheFinderState = {
   result: null,
@@ -74,6 +75,27 @@ export default function FindYourNichePage() {
               <div className="space-y-2">
                 <Label htmlFor="preferences">Preferences</Label>
                 <Textarea id="preferences" name="preferences" placeholder="e.g., Warm climate, high savings potential, good work-life balance, strong expat community" required />
+              </div>
+              <div className="space-y-2">
+                <Label>What is your primary goal?</Label>
+                <RadioGroup name="goal" defaultValue="balanced" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="saving" id="saving" />
+                    <Label htmlFor="saving">Maximize Savings</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="adventure" id="adventure" />
+                    <Label htmlFor="adventure">Seek Adventure</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="growth" id="growth" />
+                    <Label htmlFor="growth">Career Growth</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="balanced" id="balanced" />
+                    <Label htmlFor="balanced">Balanced Lifestyle</Label>
+                  </div>
+                </RadioGroup>
               </div>
             </CardContent>
             <CardFooter>

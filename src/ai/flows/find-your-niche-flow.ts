@@ -30,6 +30,7 @@ const FindYourNicheInputSchema = z.object({
     .describe(
       'A detailed description of the teacher\'s preferences for a teaching location (e.g., "warm climate, good work-life balance, high savings potential, strong expat community").'
     ),
+  goal: z.enum(["saving", "adventure", "growth", "balanced"]).describe("The teacher's primary goal for their next move. Options are 'saving', 'adventure', 'growth', or 'balanced'."),
 });
 export type FindYourNicheInput = z.infer<typeof FindYourNicheInputSchema>;
 
@@ -61,14 +62,15 @@ const prompt = ai.definePrompt({
   output: { schema: FindYourNicheOutputSchema },
   prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in.
 
-Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, and specific preferences.
+Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences and primary goal.
 
 Teacher Profile:
 - Age: {{{age}}}
 - Qualifications: {{{qualifications}}}
 - Nationality: {{{nationality}}}
 - Experience: {{{experience}}}
-- Preferences: {{{preferences}}}`,
+- Preferences: {{{preferences}}}
+- Primary Goal: {{{goal}}}`,
 });
 
 const findYourNicheFlow = ai.defineFlow(
