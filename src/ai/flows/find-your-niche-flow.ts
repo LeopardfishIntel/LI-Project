@@ -17,10 +17,8 @@ const FindYourNicheInputSchema = z.object({
     .describe(
       'A detailed description of the teacher\'s educational qualifications (e.g., "B.Ed, Master\'s in English, TEFL certified").'
     ),
-  nationality: z
-    .string()
-    .describe('The teacher\'s nationality (e.g., "US", "UK", "Canadian").'),
   currentLocation: z.string().describe("The teacher's current location (e.g., 'London, UK').").optional(),
+  currentSalary: z.string().describe("The teacher's current annual salary (e.g., '$50,000 USD').").optional(),
   experience: z
     .string()
     .describe(
@@ -71,20 +69,20 @@ const prompt = ai.definePrompt({
   output: { schema: FindYourNicheOutputSchema },
   prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in.
 
-Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences, primary goal, and family status. Do not recommend the teacher's current location.
+Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, specific preferences, primary goal, and family status. Do not recommend the teacher's current location.
+
+You can use the teacher's current salary as a benchmark for what might be an attractive offer, but do not make it the primary factor unless their goal is 'saving'.
 
 After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on the teacher's subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with an American curriculum. Your reasoning for recommending a school should be brief and mention this connection.
-
-Crucially, your recommendations must take into account common visa and immigration requirements for the teacher's nationality. For example, do not recommend a country where it is notoriously difficult for a teacher of that nationality to get a work visa.
 
 Teacher Profile:
 - Age: {{{age}}}
 - Family Status: {{{familyStatus}}}
 - Qualifications: {{{qualifications}}}
-- Nationality: {{{nationality}}}
-- Current Location: {{{currentLocation}}}
 - Experience: {{{experience}}}
 - Subject: {{{subject}}}
+- Current Location: {{{currentLocation}}}
+- Current Salary: {{{currentSalary}}}
 - Preferences: {{{preferences}}}
 - Primary Goal: {{{goal}}}
 

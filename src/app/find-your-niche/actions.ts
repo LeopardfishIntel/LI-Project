@@ -24,8 +24,8 @@ export async function findNicheAction(
   const input: FindYourNicheInput = {
     age: Number(formData.get("age")),
     qualifications: allQualifications,
-    nationality: String(formData.get("nationality")),
     currentLocation: String(formData.get("currentLocation")),
+    currentSalary: String(formData.get("currentSalary")),
     experience: `${experienceYears} years`,
     subject: String(formData.get("subject")),
     preferences: preferences,

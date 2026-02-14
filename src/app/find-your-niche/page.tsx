@@ -97,12 +97,12 @@ export default function FindYourNichePage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="nationality">Nationality</Label>
-                    <Input id="nationality" name="nationality" placeholder="e.g., Canadian" required />
-                </div>
-                <div className="space-y-2">
                     <Label htmlFor="current-location">Current Location</Label>
                     <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="current-salary">Current Salary (Optional)</Label>
+                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" />
                 </div>
               </div>
               <div className="space-y-2">
