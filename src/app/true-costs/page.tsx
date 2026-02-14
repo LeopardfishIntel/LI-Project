@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -395,6 +394,7 @@ export default function TrueCostsPage() {
                             {' | '}
                             {familyStatusLabels[familyStatus]}
                         </p>
+                        <p className="text-xs text-muted-foreground pt-1">Multipliers are cost estimates vs. a UK/USA baseline.</p>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4 flex-grow pt-0">
@@ -475,9 +475,3 @@ export default function TrueCostsPage() {
     </div>
   );
 }
-
-    
-
-    
-
-    
