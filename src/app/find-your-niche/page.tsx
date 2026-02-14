@@ -58,45 +58,43 @@ export default function FindYourNichePage() {
               <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations only consider typical government visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Age Range</Label>
-                  <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="25" id="age-25-34" />
-                      <Label htmlFor="age-25-34" className="font-normal">25-34</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="35" id="age-35-49" />
-                      <Label htmlFor="age-35-49" className="font-normal">35-49</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="50" id="age-50-64" />
-                      <Label htmlFor="age-50-64" className="font-normal">50-64</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="65" id="age-65-plus" />
-                      <Label htmlFor="age-65-plus" className="font-normal">65+</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-                 <div className="space-y-2">
-                  <Label>Family Status</Label>
-                  <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="single" id="fs-single" />
-                      <Label htmlFor="fs-single" className="font-normal">Single</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="couple" id="fs-couple" />
-                      <Label htmlFor="fs-couple" className="font-normal">Couple</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="family" id="fs-family" />
-                      <Label htmlFor="fs-family" className="font-normal">Family with Children</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
+              <div className="space-y-2">
+                <Label>Age Range</Label>
+                <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="25" id="age-25-34" />
+                    <Label htmlFor="age-25-34" className="font-normal">25-34</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="35" id="age-35-49" />
+                    <Label htmlFor="age-35-49" className="font-normal">35-49</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="50" id="age-50-64" />
+                    <Label htmlFor="age-50-64" className="font-normal">50-64</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="65" id="age-65-plus" />
+                    <Label htmlFor="age-65-plus" className="font-normal">65+</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <Label>Family Status</Label>
+                <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="single" id="fs-single" />
+                    <Label htmlFor="fs-single" className="font-normal">Single</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="couple" id="fs-couple" />
+                    <Label htmlFor="fs-couple" className="font-normal">Couple</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="family" id="fs-family" />
+                    <Label htmlFor="fs-family" className="font-normal">Family with Children</Label>
+                  </div>
+                </RadioGroup>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nationality">Nationality</Label>
