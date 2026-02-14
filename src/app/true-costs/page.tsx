@@ -41,7 +41,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad', multiplier: "1.3x" },
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', multiplier: "1.2x" },
         socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad', multiplier: "1.4x" },
-        currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard.", score: 'neutral' },
+        currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard, averaging 0.5-2% via banks or online services.", score: 'neutral' },
         homeObligations: { text: "This is your home base. The tool helps you budget your UK salary against your existing UK financial commitments like mortgages or loans.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted.", score: 'neutral' }
     },
@@ -55,7 +55,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. 'Chiller fees' (for AC) can be a major variable.", score: 'bad', multiplier: "1.2x" },
         transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral', multiplier: "1.0x" },
         socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad', multiplier: "1.8x" },
-        currency: { text: "You're paid in UAE Dirhams (AED), which is pegged to the US Dollar. This provides stability if you are saving or remitting in USD. Fees for sending money are low.", score: 'good' },
+        currency: { text: "You're paid in UAE Dirhams (AED), pegged to the USD. This provides stability. Remittance fees are very low, often a small fixed fee rather than a percentage, making it cheap to send money home.", score: 'good' },
         homeObligations: { text: "Your tax-free salary makes it easier to cover obligations back home. The tool lets you input these to see your true disposable income.", score: 'good' },
         savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' }
     },
@@ -69,7 +69,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "Reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.", score: 'neutral', multiplier: "0.9x" },
         transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good', multiplier: "0.7x" },
         socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good', multiplier: "0.8x" },
-        currency: { text: "You are paid in Japanese Yen (JPY). It's a major world currency, but it can be volatile. Factor in remittance fees when sending money home.", score: 'neutral' },
+        currency: { text: "You are paid in Japanese Yen (JPY), a major but sometimes volatile currency. Standard bank remittance fees can be high; using a service like Wise or Revolut is recommended to minimize costs, which can be under 1%.", score: 'neutral' },
         homeObligations: { text: "Use the tool to see how your net JPY salary stacks up against your financial commitments in your home currency after conversion.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' }
     },
@@ -83,7 +83,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.", score: 'bad', multiplier: "1.6x" },
         transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral', multiplier: "1.5x" },
         socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad', multiplier: "2.0x" },
-        currency: { text: "You're paid in Swiss Francs (CHF). A strong, stable currency. Converting to other currencies is easy but subject to exchange rates.", score: 'good' },
+        currency: { text: "You're paid in Swiss Francs (CHF), a strong, stable currency. International bank transfers can be costly (1-3%), so using dedicated currency exchange services is advisable for better rates and lower fees.", score: 'good' },
         homeObligations: { text: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' }
     },
@@ -97,7 +97,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad', multiplier: "1.3x" },
         transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', multiplier: "0.8x" },
         socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', multiplier: "1.7x" },
-        currency: { text: "Payment is in Singapore Dollars (SGD). It's a strong and stable currency. Sending money overseas is straightforward.", score: 'good' },
+        currency: { text: "Payment is in Singapore Dollars (SGD), a stable regional currency. Sending money overseas is efficient with competitive fees, especially through Singapore's fintech solutions which often beat traditional bank rates.", score: 'good' },
         homeObligations: { text: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.", score: 'neutral' },
         savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' }
     },
@@ -111,7 +111,7 @@ const countrySpecificData: CountryData = {
         utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.", score: 'good', multiplier: "0.9x" },
         transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good', multiplier: "0.7x" },
         socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good', multiplier: "0.8x" },
-        currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate, so this is a consideration when sending money home.", score: 'bad' },
+        currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate. Strict regulations can make sending large sums of money out of the country more complex; plan remittances carefully. Fees can be moderate.", score: 'bad' },
         homeObligations: { text: "With housing often provided, it can be easier to manage home country financial obligations from your Korean salary.", score: 'good' },
         savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' }
     }
@@ -475,5 +475,7 @@ export default function TrueCostsPage() {
     </div>
   );
 }
+
+    
 
     
