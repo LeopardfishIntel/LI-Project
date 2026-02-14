@@ -9,7 +9,7 @@
     {
       "id": "dubai-american-academy",
       "description": "Dubai American Academy building",
-      "imageUrl": "https://images.unsplash.com/photo-1586172784607-3540a4fc3b26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmdXR1cmlzdGljJTIwc2Nob29sJTIwZHViYWl8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-158617274607-3540a4fc3b26?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmdXR1cmlzdGljJTIwc2Nob29sJTIwZHViYWl8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "futuristic school dubai"
     },
     {
@@ -35,6 +35,12 @@
       "description": "Amsterdam International School near a canal",
       "imageUrl": "https://images.unsplash.com/photo-1504975692386-cfacf81e1022?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school amsterdam"
+    },
+    {
+      "id": "acs-cobham-international-school",
+      "description": "ACS Cobham International School campus",
+      "imageUrl": "https://images.unsplash.com/photo-1628775926522-40212d1b82e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpbmdsaXNoJTIwYm9hcmRpbmclMjBzY2hvb2x8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "english school campus"
     }
   ]
 }
