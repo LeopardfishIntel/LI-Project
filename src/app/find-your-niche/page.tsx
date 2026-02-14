@@ -45,7 +45,7 @@ export default function FindYourNichePage() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Niche</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8">
-          Let our advisor match your profile to the perfect teaching destinations around the globe.
+          Match your profile to the perfect teaching destinations around the globe.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -129,9 +129,15 @@ export default function FindYourNichePage() {
                     </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="experience">Years of Teaching Experience</Label>
-                <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="experience">Years of Teaching Experience</Label>
+                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="subject">Subject Taught</Label>
+                  <Input id="subject" name="subject" placeholder="e.g., High School Physics" required />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Preferences</Label>

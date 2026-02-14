@@ -25,6 +25,7 @@ const FindYourNicheInputSchema = z.object({
     .describe(
       'A detailed description of the teacher\'s teaching experience (e.g., "5 years teaching high school science", "3 years teaching primary school in China").'
     ),
+  subject: z.string().describe('The primary subject the teacher teaches (e.g., "High School Physics", "Primary English").'),
   preferences: z
     .string()
     .describe(
@@ -71,6 +72,7 @@ Teacher Profile:
 - Qualifications: {{{qualifications}}}
 - Nationality: {{{nationality}}}
 - Experience: {{{experience}}}
+- Subject: {{{subject}}}
 - Preferences: {{{preferences}}}
 - Primary Goal: {{{goal}}}`,
 });
