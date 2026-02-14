@@ -161,12 +161,12 @@ export default function TrueCostsPage() {
           {schoolsInCountry.length > 0 && (
             <div>
               <Label htmlFor="school-select" className="text-base font-semibold">Select a School (Optional)</Label>
-              <Select value={selectedSchoolId ?? ''} onValueChange={(value) => setSelectedSchoolId(value || null)}>
+              <Select value={selectedSchoolId ?? 'all'} onValueChange={(value) => setSelectedSchoolId(value === 'all' ? null : value)}>
                 <SelectTrigger id="school-select" className="mt-2">
                   <SelectValue placeholder="Select a school in this country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">-- All Schools in {selectedCountry} --</SelectItem>
+                  <SelectItem value="all">-- All Schools in {selectedCountry} --</SelectItem>
                   {schoolsInCountry.map(school => (
                     <SelectItem key={school.id} value={school.id}>{school.name}</SelectItem>
                   ))}
