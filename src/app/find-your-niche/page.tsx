@@ -53,7 +53,7 @@ export default function FindYourNichePage() {
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
               <CardDescription>The more detail you provide, the better the recommendations.</CardDescription>
-              <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations consider typical visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
+              <p className="text-xs text-muted-foreground pt-1">Please note: Recommendations only consider typical government visa and immigration regulations which are subject to change. Always verify current requirements with official sources.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
