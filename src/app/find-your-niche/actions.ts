@@ -13,7 +13,9 @@ export async function findNicheAction(
   formData: FormData
 ): Promise<NicheFinderState> {
   
-  const allQualifications = formData.getAll("qualifications_cb").join(", ");
+  const qualifications = formData.getAll("qualifications_cb");
+  const licenses = formData.getAll("teaching_license_cb");
+  const allQualifications = [...qualifications, ...licenses].join(", ");
   
   const preferences = formData.getAll("preferences").join(", ");
   const experienceYears = formData.get("experience");

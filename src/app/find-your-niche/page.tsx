@@ -100,9 +100,29 @@ export default function FindYourNichePage() {
                             <Checkbox id="q_npqsl" name="qualifications_cb" value="NPQSL" />
                             <Label htmlFor="q_npqsl" className="font-normal">NPQSL</Label>
                         </div>
+                    </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Teaching License</Label>
+                 <div className="space-y-2 pt-2">
+                    <p className="text-sm text-muted-foreground">Select all that apply.</p>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_license" name="qualifications_cb" value="Teaching License" />
-                            <Label htmlFor="q_license" className="font-normal">Teaching License</Label>
+                            <Checkbox id="l_qts" name="teaching_license_cb" value="QTS or iQTS" />
+                            <Label htmlFor="l_qts" className="font-normal">QTS or iQTS</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="l_us" name="teaching_license_cb" value="US State Teaching License" />
+                            <Label htmlFor="l_us" className="font-normal">US State Teaching License</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="l_sace" name="teaching_license_cb" value="SACE / OCT / VIT" />
+                            <Label htmlFor="l_sace" className="font-normal">SACE / OCT / VIT</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
+                            <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
                     </div>
                 </div>
