@@ -25,6 +25,7 @@ export async function findNicheAction(
     age: Number(formData.get("age")),
     qualifications: allQualifications,
     nationality: String(formData.get("nationality")),
+    currentLocation: String(formData.get("currentLocation")),
     experience: `${experienceYears} years`,
     subject: String(formData.get("subject")),
     preferences: preferences,

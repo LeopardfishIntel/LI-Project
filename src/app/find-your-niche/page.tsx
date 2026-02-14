@@ -54,7 +54,7 @@ export default function FindYourNichePage() {
           <form action={formAction}>
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
-              <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
+              <CardDescription>The more detail you provide, the better the analysis. All data is collected anonymously.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -95,9 +95,15 @@ export default function FindYourNichePage() {
                   </div>
                 </RadioGroup>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="nationality">Nationality</Label>
-                <Input id="nationality" name="nationality" placeholder="e.g., Canadian" required />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <Label htmlFor="nationality">Nationality</Label>
+                    <Input id="nationality" name="nationality" placeholder="e.g., Canadian" required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="current-location">Current Location</Label>
+                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label>Qualifications</Label>
