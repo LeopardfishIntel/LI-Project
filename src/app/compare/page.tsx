@@ -106,9 +106,9 @@ export default function ComparePage() {
                     <Table>
                         <TableHeader>
                             <TableRow className="hover:bg-transparent">
-                                <TableHead className="w-[200px] min-w-[150px] align-middle">Metric</TableHead>
+                                <TableHead className="w-[200px] min-w-[150px] align-middle">School</TableHead>
                                 {selectedSchools.map((school, index) => (
-                                    <TableHead key={school.id} className="min-w-[200px]">
+                                    <TableHead key={school.id} className="min-w-[300px]">
                                         <div className="flex justify-between items-center">
                                             <Select value={school.id} onValueChange={(value) => handleSelectSchool(index, value)}>
                                                 <SelectTrigger className="w-full border-0 shadow-none bg-transparent hover:bg-muted focus:ring-0 focus:ring-offset-0">
