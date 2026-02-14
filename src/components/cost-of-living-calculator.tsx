@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/utils';
 import type { School } from '@/lib/types';
-import { DollarSign, Home, Utensils, Tram, Zap } from 'lucide-react';
+import { DollarSign, Home, Utensils, TramFront, Zap } from 'lucide-react';
 
 interface CostOfLivingCalculatorProps {
   school: School;
@@ -69,7 +69,7 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
             <span>~{formatCurrency(costOfLiving.food * adults + costOfLiving.food * 0.5 * children)}</span>
           </div>
            <div className="flex justify-between items-center">
-            <span className="flex items-center"><Tram className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
+            <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
             <span>~{formatCurrency(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children)}</span>
           </div>
           <div className="flex justify-between items-center">
