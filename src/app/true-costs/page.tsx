@@ -128,7 +128,16 @@ export default function TrueCostsPage() {
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>('acs-cobham-international-school');
   const [familyStatus, setFamilyStatus] = useState('single');
+  const [currency, setCurrency] = useState('GBP');
   const data = countrySpecificData[selectedCountry];
+
+  const conversionRates: { [key: string]: number } = {
+    USD: 1, // Base currency in mock data
+    GBP: 0.8,
+    EUR: 0.92,
+  };
+
+  const convert = (amount: number) => amount * conversionRates[currency];
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
@@ -176,7 +185,7 @@ export default function TrueCostsPage() {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">See the True Costs</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-          Standard cost-of-living data is a good start, but it misses the nuances of an international teacher's lifestyle. Our "True Costs" model analyzes the three pillars that determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
+          A high salary doesn't always mean high savings. Our "True Costs" model analyzes contract perks, lifestyle realities, and financial strategy to reveal your true savings potential.
         </p>
         
         <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -227,40 +236,52 @@ export default function TrueCostsPage() {
 
         {selectedSchool && (
             <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
-                <CardHeader>
+                <CardHeader className="flex-row items-center justify-between">
                     <CardTitle className="flex items-center text-xl">
                         <DollarSign className="w-5 h-5 mr-2 text-primary" />
                         Cost Estimator: {selectedSchool.name}
                     </CardTitle>
+                    <div className="w-[120px]">
+                        <Select value={currency} onValueChange={setCurrency}>
+                            <SelectTrigger id="currency-select-page">
+                                <SelectValue placeholder="Currency" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="GBP">GBP (£)</SelectItem>
+                                <SelectItem value="USD">USD ($)</SelectItem>
+                                <SelectItem value="EUR">EUR (€)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-2 text-sm text-muted-foreground mb-6">
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Apartment (1-2 bed)</span>
-                            <span>{formatCurrency(selectedSchool.costOfLiving.apartment)}</span>
+                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-                            <span>{formatCurrency(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children)}</span>
+                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
-                            <span>{formatCurrency(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children)}</span>
+                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
-                            <span>{formatCurrency(selectedSchool.costOfLiving.utilities)}</span>
+                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                            <span>{formatCurrency(selectedSchool.costOfLiving.internet)}</span>
+                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
                         </div>
                     </div>
                     
                     <div className="mt-4 pt-4 border-t border-border">
                         <div className="flex justify-between items-center text-lg font-bold">
                             <span className="text-primary-foreground">Estimated Monthly Total</span>
-                            <span className="text-primary">{formatCurrency(calculateTotal(selectedSchool))}</span>
+                            <span className="text-primary">{formatCurrency(convert(calculateTotal(selectedSchool)), currency)}</span>
                         </div>
                     </div>
                 </CardContent>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/utils';
 import type { School } from '@/lib/types';
 import { DollarSign, Home, Utensils, TramFront, Zap, Wifi } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface CostOfLivingCalculatorProps {
   school: School;
@@ -15,6 +16,15 @@ interface CostOfLivingCalculatorProps {
 export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
+  const [currency, setCurrency] = useState('GBP');
+
+  const conversionRates: { [key: string]: number } = {
+    USD: 1, // Base currency in mock data
+    GBP: 0.8,
+    EUR: 0.92,
+  };
+
+  const convert = (amount: number) => amount * conversionRates[currency];
 
   const { costOfLiving } = school;
 
@@ -29,11 +39,23 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
 
   return (
     <Card className="bg-card/70 backdrop-blur-sm border-border">
-      <CardHeader>
+      <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="flex items-center">
           <DollarSign className="w-6 h-6 mr-2 text-primary" />
           Cost of Living Estimator
         </CardTitle>
+        <div className="w-[120px]">
+          <Select value={currency} onValueChange={setCurrency}>
+              <SelectTrigger id="currency-select-component">
+                  <SelectValue placeholder="Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="GBP">GBP (£)</SelectItem>
+                  <SelectItem value="USD">USD ($)</SelectItem>
+                  <SelectItem value="EUR">EUR (€)</SelectItem>
+              </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -62,30 +84,30 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
         <div className="space-y-2 text-sm text-muted-foreground mb-6">
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Apartment (1-2 bed)</span>
-            <span>{formatCurrency(costOfLiving.apartment)}</span>
+            <span>{formatCurrency(convert(costOfLiving.apartment), currency)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-            <span>{formatCurrency(costOfLiving.food * adults + costOfLiving.food * 0.5 * children)}</span>
+            <span>{formatCurrency(convert(costOfLiving.food * adults + costOfLiving.food * 0.5 * children), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
-            <span>{formatCurrency(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children)}</span>
+            <span>{formatCurrency(convert(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children), currency)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
-            <span>{formatCurrency(costOfLiving.utilities)}</span>
+            <span>{formatCurrency(convert(costOfLiving.utilities), currency)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-            <span>{formatCurrency(costOfLiving.internet)}</span>
+            <span>{formatCurrency(convert(costOfLiving.internet), currency)}</span>
           </div>
         </div>
         
         <div className="mt-4 pt-4 border-t border-border">
           <div className="flex justify-between items-center text-lg font-bold">
             <span className="text-primary-foreground">Estimated Monthly Total</span>
-            <span className="text-primary">{formatCurrency(totalCost)}</span>
+            <span className="text-primary">{formatCurrency(convert(totalCost), currency)}</span>
           </div>
         </div>
       </CardContent>
