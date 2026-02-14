@@ -212,6 +212,10 @@ export default function FindYourNichePage() {
                     <RadioGroupItem value="balanced" id="balanced" />
                     <Label htmlFor="balanced" className="font-normal">Balanced Lifestyle</Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="culture" id="culture" />
+                    <Label htmlFor="culture" className="font-normal">Cultural Immersion</Label>
+                  </div>
                 </RadioGroup>
               </div>
             </CardContent>

@@ -28,7 +28,7 @@ export async function findNicheAction(
     experience: `${experienceYears} years`,
     subject: String(formData.get("subject")),
     preferences: preferences,
-    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
+    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
   };
 
