@@ -13,14 +13,36 @@ export async function findNicheAction(
   formData: FormData
 ): Promise<NicheFinderState> {
   
+  const qualificationsCheckboxes = formData.getAll("qualifications_cb").join(", ");
+  const qualificationsText = String(formData.get("qualifications_text") || "");
+  const allQualifications = [qualificationsCheckboxes, qualificationsText].filter(Boolean).join(", ");
+  
+  const preferences = formData.getAll("preferences").join(", ");
+
   const input: FindYourNicheInput = {
     age: Number(formData.get("age")),
-    qualifications: String(formData.get("qualifications")),
+    qualifications: allQualifications,
     nationality: String(formData.get("nationality")),
     experience: String(formData.get("experience")),
-    preferences: String(formData.get("preferences")),
+    preferences: preferences,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
   };
+
+  if (!input.qualifications) {
+    return {
+      result: null,
+      error: "Please provide your qualifications.",
+      pending: false,
+    };
+  }
+  
+  if (!input.preferences) {
+    return {
+      result: null,
+      error: "Please select at least one preference.",
+      pending: false,
+    };
+  }
 
   try {
     const result = await findYourNiche(input);
