@@ -162,8 +162,8 @@ export default function TrueCostsPage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">See the True Costs</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-8">
-          A high salary doesn't always mean high savings. Understand the hidden variables that impact your financial future abroad.
+        <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
+            A high salary doesn't always mean high savings. Standard cost-of-living data is a good start, but it misses the nuances of an international teacher's lifestyle. Our "True Costs" model breaks down the three pillars that truly determine your savings potential—Contract Perks, Lifestyle Reality, and Financial Strategy—to reveal the hidden variables that impact your financial future.
         </p>
         
         <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -248,18 +248,6 @@ export default function TrueCostsPage() {
                 </CardContent>
             </Card>
         )}
-
-        <Card className="mb-8 bg-blue-900/20 border-blue-500/30">
-            <CardHeader className="flex-row items-center gap-4">
-                <Info className="w-6 h-6 text-blue-400" />
-                <CardTitle className="text-blue-200 normal-case tracking-tight">Why "Cost of Living" Isn't Enough</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="text-blue-300/80">
-                    Standard cost-of-living data is a good start, but it often misses the nuances of an international teacher's lifestyle. Our "True Costs" model breaks down the three pillars that truly determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
-                </p>
-            </CardContent>
-        </Card>
 
         <Accordion type="single" collapsible defaultValue="item-1" className="w-full space-y-4">
           <AccordionItem value="item-1" className="bg-card/70 backdrop-blur-sm border-border rounded-lg px-6">
