@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/compare", label: "Compare" },
   { href: "/true-costs", label: "True Costs" },
   { href: "/find-your-niche", label: "Find Your Niche" },
-  { href: "/forum", label: "Forum" },
+  { href: "/forum", label: "Spotlights" },
 ];
 
 export default function Header() {
