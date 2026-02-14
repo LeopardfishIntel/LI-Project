@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, Info, FileText } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { schools } from '@/lib/mock-data';
 
 type CountryData = {
   [country: string]: {
@@ -124,7 +125,15 @@ const FeatureDetail = ({ icon, title, description }: { icon: React.ReactNode, ti
 
 export default function TrueCostsPage() {
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const data = countrySpecificData[selectedCountry];
+
+  const handleCountryChange = (country: string) => {
+    setSelectedCountry(country);
+    setSelectedSchoolId(null);
+  };
+
+  const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -134,19 +143,39 @@ export default function TrueCostsPage() {
           A high salary doesn't always mean high savings. Understand the hidden variables that impact your financial future abroad.
         </p>
         
-        <div className="mb-12">
-          <Label htmlFor="country-select" className="text-base font-semibold">View Stats For Your Target Country</Label>
-          <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-            <SelectTrigger id="country-select" className="mt-2">
-              <SelectValue placeholder="Select a country" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.keys(countrySpecificData).map(country => (
-                <SelectItem key={country} value={country}>{country}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="text-sm text-muted-foreground mt-2">
+        <div className="mb-12 space-y-4">
+          <div>
+            <Label htmlFor="country-select" className="text-base font-semibold">View Stats For Your Target Country</Label>
+            <Select value={selectedCountry} onValueChange={handleCountryChange}>
+              <SelectTrigger id="country-select" className="mt-2">
+                <SelectValue placeholder="Select a country" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(countrySpecificData).map(country => (
+                  <SelectItem key={country} value={country}>{country}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {schoolsInCountry.length > 0 && (
+            <div>
+              <Label htmlFor="school-select" className="text-base font-semibold">Select a School (Optional)</Label>
+              <Select value={selectedSchoolId ?? ''} onValueChange={(value) => setSelectedSchoolId(value || null)}>
+                <SelectTrigger id="school-select" className="mt-2">
+                  <SelectValue placeholder="Select a school in this country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">-- All Schools in {selectedCountry} --</SelectItem>
+                  {schoolsInCountry.map(school => (
+                    <SelectItem key={school.id} value={school.id}>{school.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <p className="text-sm text-muted-foreground pt-2">
             Content will adjust to reflect financial realities related to the selected country.
           </p>
         </div>
