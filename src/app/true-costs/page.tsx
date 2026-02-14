@@ -254,6 +254,56 @@ export default function TrueCostsPage() {
     }
   }
 
+  const lifestyleData = {
+    importedGoods: { ...data.importedGoods },
+    utilities: { ...data.utilities },
+    transportation: { ...data.transportation },
+    socialLeisure: { ...data.socialLeisure },
+  };
+
+  if (selectedSchool) {
+      const { costOfLiving, location } = selectedSchool;
+
+      // Utilities
+      if (costOfLiving.utilities > 250) {
+          lifestyleData.utilities.score = 'bad';
+          lifestyleData.utilities.text = `AC in summer or heating in winter can lead to high utility bills in ${location}. Expect costs to be a significant budget item.`;
+      } else if (costOfLiving.utilities < 150) {
+          lifestyleData.utilities.score = 'good';
+          lifestyleData.utilities.text = `Utility costs in ${location} are generally reasonable, helping to keep monthly expenses down.`;
+      } else {
+           lifestyleData.utilities.score = 'neutral';
+           lifestyleData.utilities.text = `Utility costs in ${location} are average for the region. ${data.utilities.text}`;
+      }
+
+      // Transportation
+      if (costOfLiving.transport > 200) {
+          lifestyleData.transportation.score = 'bad';
+          lifestyleData.transportation.text = `Transportation in ${location} can be costly. Whether using public transit or owning a car, this should be factored into your budget.`;
+      } else if (costOfLiving.transport < 100) {
+          lifestyleData.transportation.score = 'good';
+          lifestyleData.transportation.text = `Getting around ${location} is affordable, with efficient and cost-effective public transport options available.`;
+      } else {
+          lifestyleData.transportation.score = 'neutral';
+          lifestyleData.transportation.text = `Transportation costs in ${location} are moderate. ${data.transportation.text}`;
+      }
+
+      // Social & Leisure
+      if (costOfLiving.diningSocial > 400) {
+          lifestyleData.socialLeisure.score = 'bad';
+          lifestyleData.socialLeisure.text = `The social scene in ${location} is vibrant but can be expensive. Dining out and entertainment are premium-priced.`;
+      } else if (costOfLiving.diningSocial < 250) {
+          lifestyleData.socialLeisure.score = 'good';
+          lifestyleData.socialLeisure.text = `Enjoying a social life in ${location} is quite affordable, with many budget-friendly options for dining and leisure.`;
+      } else {
+          lifestyleData.socialLeisure.score = 'neutral';
+          lifestyleData.socialLeisure.text = `The cost of social activities in ${location} is on par with other major cities. ${data.socialLeisure.text}`;
+      }
+      
+      // Imported Goods
+      lifestyleData.importedGoods.text = `In ${location}, you'll find supermarkets full of imported Western brands, but they often come at a premium. ${data.importedGoods.text}`;
+  }
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -449,30 +499,30 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<Globe className="w-5 h-5" />}
                         title="Imported Goods"
-                        description={data.importedGoods.text}
-                        score={data.importedGoods.score}
-                        percentage={data.importedGoods.percentage}
+                        description={lifestyleData.importedGoods.text}
+                        score={lifestyleData.importedGoods.score}
+                        percentage={lifestyleData.importedGoods.percentage}
                     />
                      <FeatureDetail 
                         icon={<Thermometer className="w-5 h-5" />}
                         title="Utilities (AC/Heat)"
-                        description={data.utilities.text}
-                        score={data.utilities.score}
-                        percentage={data.utilities.percentage}
+                        description={lifestyleData.utilities.text}
+                        score={lifestyleData.utilities.score}
+                        percentage={lifestyleData.utilities.percentage}
                     />
                      <FeatureDetail 
                         icon={<Car className="w-5 h-5" />}
                         title="Transportation"
-                        description={data.transportation.text}
-                        score={data.transportation.score}
-                        percentage={data.transportation.percentage}
+                        description={lifestyleData.transportation.text}
+                        score={lifestyleData.transportation.score}
+                        percentage={lifestyleData.transportation.percentage}
                     />
                      <FeatureDetail 
                         icon={<Beer className="w-5 h-5" />}
                         title="Social &amp; Leisure"
-                        description={data.socialLeisure.text}
-                        score={data.socialLeisure.score}
-                        percentage={data.socialLeisure.percentage}
+                        description={lifestyleData.socialLeisure.text}
+                        score={lifestyleData.socialLeisure.score}
+                        percentage={lifestyleData.socialLeisure.percentage}
                     />
                 </CardContent>
             </Card>
