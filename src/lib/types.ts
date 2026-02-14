@@ -23,6 +23,7 @@ export type School = {
     food: number;
     transport: number;
     utilities: number;
+    internet: number;
   };
 };
 

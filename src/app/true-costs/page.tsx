@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, ShoppingBasket, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -154,7 +154,7 @@ export default function TrueCostsPage() {
     const { costOfLiving } = school;
     const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
     const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const total = costOfLiving.apartment + foodCost + transportCost + costOfLiving.utilities;
+    const total = costOfLiving.apartment + foodCost + transportCost + costOfLiving.utilities + costOfLiving.internet;
     return total;
   };
 
@@ -236,6 +236,10 @@ export default function TrueCostsPage() {
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
                             <span>{formatCurrency(selectedSchool.costOfLiving.utilities)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
+                            <span>{formatCurrency(selectedSchool.costOfLiving.internet)}</span>
                         </div>
                     </div>
                     
