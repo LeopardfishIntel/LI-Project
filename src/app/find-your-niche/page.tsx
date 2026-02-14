@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useFormStatus } from "react";
 import { findNicheAction, NicheFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ function SubmitButton() {
 }
 
 export default function FindYourNichePage() {
-  const [state, formAction] = useFormState(findNicheAction, initialState);
+  const [state, formAction] = useActionState(findNicheAction, initialState);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
