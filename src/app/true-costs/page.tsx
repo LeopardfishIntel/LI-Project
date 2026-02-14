@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -173,7 +172,7 @@ export default function TrueCostsPage() {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">See the True Costs</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-            A high salary doesn't always mean high savings. Our "True Costs" model breaks down the three pillars that truly determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
+            A high salary doesn't always mean high savings. Understand the hidden variables that impact your financial future abroad. Our "True Costs" model breaks down the three pillars that truly determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
         </p>
         
         <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -238,11 +237,11 @@ export default function TrueCostsPage() {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-                            <span>~{formatCurrency(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children)}</span>
+                            <span>{formatCurrency(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
-                            <span>~{formatCurrency(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children)}</span>
+                            <span>{formatCurrency(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
@@ -256,7 +255,7 @@ export default function TrueCostsPage() {
                     
                     <div className="mt-4 pt-4 border-t border-border">
                         <div className="flex justify-between items-center text-lg font-bold">
-                            <span className="text-primary-foreground">Estimated Monthly Total*</span>
+                            <span className="text-primary-foreground">Estimated Monthly Total</span>
                             <span className="text-primary">{formatCurrency(calculateTotal(selectedSchool))}</span>
                         </div>
                     </div>
@@ -387,7 +386,7 @@ export default function TrueCostsPage() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>*Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
+          <p>Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
 
       </div>

@@ -66,11 +66,11 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-            <span>~{formatCurrency(costOfLiving.food * adults + costOfLiving.food * 0.5 * children)}</span>
+            <span>{formatCurrency(costOfLiving.food * adults + costOfLiving.food * 0.5 * children)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport</span>
-            <span>~{formatCurrency(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children)}</span>
+            <span>{formatCurrency(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
