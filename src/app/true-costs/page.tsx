@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -141,6 +142,7 @@ export default function TrueCostsPage() {
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>('acs-cobham-international-school');
   const [familyStatus, setFamilyStatus] = useState('single');
   const [currency, setCurrency] = useState('GBP');
+  const [homeCountry, setHomeCountry] = useState('United Kingdom');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -304,6 +306,42 @@ export default function TrueCostsPage() {
       lifestyleData.importedGoods.text = `In ${location}, you'll find supermarkets full of imported Western brands, but they often come at a premium. ${data.importedGoods.text}`;
   }
 
+  const contractPerksData = {
+    taxStatus: data.taxStatus,
+    housing: data.housing,
+    flightAllowance: data.flightAllowance,
+    dependentTuition: data.dependentTuition,
+    gratuity: data.gratuity,
+  };
+
+  if (selectedSchool) {
+    if (selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+      contractPerksData.taxStatus = { text: 'This school offers a 100% tax-free salary, a major financial advantage.', score: 'good' };
+    } else {
+      contractPerksData.taxStatus = { ...data.taxStatus, text: `At this school, salaries are subject to ${selectedCountry}'s income tax. ${data.taxStatus.text}`};
+    }
+
+    if (selectedSchool.intel.housing.provided) {
+      contractPerksData.housing = { text: `This school provides housing (${selectedSchool.intel.housing.value}), removing a teacher's largest monthly expense.`, score: 'good' };
+    } else {
+      contractPerksData.housing = { text: `Housing is not provided by this school (${selectedSchool.intel.housing.value}). Rent will be a significant monthly cost.`, score: 'bad' };
+    }
+
+    const note = "Note: This is a school-specific benefit. Verify contract details.";
+    contractPerksData.flightAllowance = { ...data.flightAllowance, text: `${data.flightAllowance.text} ${note}` };
+    contractPerksData.dependentTuition = { ...data.dependentTuition, text: `${data.dependentTuition.text} ${note}` };
+    contractPerksData.gratuity = { ...data.gratuity, text: `${data.gratuity.text} ${note}` };
+  }
+
+  const homeObligationsData = { ...data.homeObligations };
+  if (homeCountry === selectedCountry) {
+    homeObligationsData.text = `As your target country is also your home country, you can manage financial commitments like mortgages or student loans directly from your local salary.`;
+    homeObligationsData.score = 'good';
+  } else {
+    homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments in ${homeCountry}.`;
+    homeObligationsData.score = 'neutral';
+  }
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -313,11 +351,27 @@ export default function TrueCostsPage() {
           A high salary doesn't always mean high savings. Our "True Costs" model analyzes contract perks, lifestyle realities, and financial strategy to reveal your true savings potential.
         </p>
         
-        <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <Label htmlFor="country-select" className="text-base font-semibold block text-center">Target Country</Label>
+            <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
+            <Select value={homeCountry} onValueChange={setHomeCountry}>
+              <SelectTrigger id="home-country-select">
+                <SelectValue placeholder="Select home country" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(countrySpecificData).map(country => (
+                  <SelectItem key={country} value={country}>{country}</SelectItem>
+                ))}
+                 <SelectItem value="USA">USA</SelectItem>
+                 <SelectItem value="Canada">Canada</SelectItem>
+                 <SelectItem value="Australia">Australia</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="country-select" className="text-base font-semibold block text-center mb-2">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
-              <SelectTrigger id="country-select" className="mt-2">
+              <SelectTrigger id="country-select">
                 <SelectValue placeholder="Select a country" />
               </SelectTrigger>
               <SelectContent>
@@ -327,11 +381,10 @@ export default function TrueCostsPage() {
               </SelectContent>
             </Select>
           </div>
-
           <div>
-            <Label htmlFor="school-select" className="text-base font-semibold block text-center">School (Optional)</Label>
+            <Label htmlFor="school-select" className="text-base font-semibold block text-center mb-2">School (Optional)</Label>
              <Select value={selectedSchoolId ?? 'all'} onValueChange={(value) => setSelectedSchoolId(value === 'all' ? null : value)} disabled={schoolsInCountry.length === 0}>
-                <SelectTrigger id="school-select" className="mt-2">
+                <SelectTrigger id="school-select">
                   <SelectValue placeholder="Select a school" />
                 </SelectTrigger>
                 <SelectContent>
@@ -342,11 +395,10 @@ export default function TrueCostsPage() {
                 </SelectContent>
               </Select>
           </div>
-          
           <div>
-            <Label htmlFor="family-status-select" className="text-base font-semibold block text-center">Family Status</Label>
+            <Label htmlFor="family-status-select" className="text-base font-semibold block text-center mb-2">Family Status</Label>
             <Select value={familyStatus} onValueChange={setFamilyStatus}>
-              <SelectTrigger id="family-status-select" className="mt-2">
+              <SelectTrigger id="family-status-select">
                 <SelectValue placeholder="Select family status" />
               </SelectTrigger>
               <SelectContent>
@@ -449,32 +501,32 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
                         title="Tax Status"
-                        description={data.taxStatus.text}
-                        score={data.taxStatus.score}
+                        description={contractPerksData.taxStatus.text}
+                        score={contractPerksData.taxStatus.score}
                     />
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
                         title="Housing Arrangement"
-                        description={data.housing.text}
-                        score={data.housing.score}
+                        description={contractPerksData.housing.text}
+                        score={contractPerksData.housing.score}
                     />
                      <FeatureDetail 
                         icon={<Plane className="w-5 h-5" />}
                         title="Annual Flight Allowance"
-                        description={data.flightAllowance.text}
-                        score={data.flightAllowance.score}
+                        description={contractPerksData.flightAllowance.text}
+                        score={contractPerksData.flightAllowance.score}
                     />
                      <FeatureDetail 
                         icon={<SchoolIcon className="w-5 h-5" />}
                         title="Dependent Tuition"
-                        description={data.dependentTuition.text}
-                        score={data.dependentTuition.score}
+                        description={contractPerksData.dependentTuition.text}
+                        score={contractPerksData.dependentTuition.score}
                     />
                      <FeatureDetail 
                         icon={<Award className="w-5 h-5" />}
                         title="Gratuity / Bonus"
-                        description={data.gratuity.text}
-                        score={data.gratuity.score}
+                        description={contractPerksData.gratuity.text}
+                        score={contractPerksData.gratuity.score}
                     />
                 </CardContent>
             </Card>
@@ -552,8 +604,8 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<PiggyBank className="w-5 h-5" />}
                         title="Home Obligations"
-                        description={data.homeObligations.text}
-                        score={data.homeObligations.score}
+                        description={homeObligationsData.text}
+                        score={homeObligationsData.score}
                     />
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
