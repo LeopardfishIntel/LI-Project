@@ -250,7 +250,7 @@ export default function FindYourNichePage() {
                 <div className="w-full">
                     <SubmitButton disabled={!isCaptchaVerified} />
                     {!isCaptchaVerified && (
-                        <p className="text-xs text-muted-foreground mt-2">The "Find My Niche" button is currently disabled and will activate once the CAPTCHA is verified.</p>
+                        <p className="text-xs text-muted-foreground mt-2">The "Find My Niche" button is currently disabled and will activate once you check the box to continue.</p>
                     )}
                 </div>
             </CardFooter>
