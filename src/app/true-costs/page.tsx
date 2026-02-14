@@ -126,13 +126,17 @@ const FeatureDetail = ({ icon, title, description }: { icon: React.ReactNode, ti
 
 export default function TrueCostsPage() {
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
-  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>('acs-cobham-international-school');
   const [familyStatus, setFamilyStatus] = useState('single');
   const data = countrySpecificData[selectedCountry];
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
-    setSelectedSchoolId(null);
+    if (country === 'United Kingdom') {
+      setSelectedSchoolId('acs-cobham-international-school');
+    } else {
+      setSelectedSchoolId(null);
+    }
   };
 
   const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
@@ -172,7 +176,7 @@ export default function TrueCostsPage() {
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">See the True Costs</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-            A high salary doesn't always mean high savings. Understand the hidden variables that impact your financial future abroad. Our "True Costs" model breaks down the three pillars that truly determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
+          Standard cost-of-living data is a good start, but it misses the nuances of an international teacher's lifestyle. Our "True Costs" model analyzes the three pillars that determine your savings potential: Contract Perks, Lifestyle Reality, and Financial Strategy.
         </p>
         
         <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
