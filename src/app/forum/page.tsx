@@ -30,7 +30,7 @@ export default function ForumPage() {
           Community Forum
         </h1>
         <p className="mt-4 max-w-2xl text-muted-foreground md:text-lg">
-          A professional resource for international educators. All posts are anonymized and moderated.
+          A professional resource for international educators. To maintain professional standards and anonymity, there are no user profiles. All posts are anonymised and vetted by an administrator before publication.
         </p>
       </div>
 
@@ -57,18 +57,6 @@ export default function ForumPage() {
           </div>
       </div>
       
-      <Card className="mb-16 bg-card/70 backdrop-blur-sm border-border">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <Shield className="h-6 w-6 text-primary" />
-            The "Ghost Author" Policy
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-muted-foreground">
-          <p>This forum operates under a strict Ghost Author policy to maintain professional standards and prevent drama. There are no user profiles or avatars. All contributions are anonymised, and every post is vetted by an administrator to ensure professional utility and the removal of school-specific identifiers before publication.</p>
-        </CardContent>
-      </Card>
-
       <div>
         <div className="flex flex-col items-center text-center mb-12">
             <h2 className="text-2xl font-bold tracking-tight text-primary">
