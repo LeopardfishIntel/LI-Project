@@ -2,13 +2,14 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 import { findNicheAction, NicheFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
+import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -242,6 +243,24 @@ export default function FindYourNichePage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">{rec.reasoning}</p>
+                    {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
+                        <div className="mt-6 pt-4 border-t border-border/50">
+                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2">
+                                <GraduationCap className="h-5 w-5 text-primary" />
+                                School Suggestions
+                            </h4>
+                            <div className="space-y-3">
+                                {rec.recommendedSchools.map(school => (
+                                    <div key={school.id} className="p-3 bg-accent/40 rounded-md border border-transparent hover:border-primary/30 transition-colors">
+                                        <Link href={`/schools/${school.id}`} className="font-semibold hover:text-primary transition-colors">
+                                            {school.name}
+                                        </Link>
+                                        <p className="text-sm text-muted-foreground mt-1">{school.reasoning}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}

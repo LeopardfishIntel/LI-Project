@@ -32,6 +32,7 @@ const FindYourNicheInputSchema = z.object({
       'A detailed description of the teacher\'s preferences for a teaching location (e.g., "warm climate, good work-life balance, high savings potential, strong expat community").'
     ),
   goal: z.enum(["saving", "adventure", "growth", "balanced"]).describe("The teacher's primary goal for their next move. Options are 'saving', 'adventure', 'growth', or 'balanced'."),
+  availableSchools: z.string().describe("A JSON string representing an array of available schools. Each school object has properties like id, name, country, and curriculum."),
 });
 export type FindYourNicheInput = z.infer<typeof FindYourNicheInputSchema>;
 
@@ -46,6 +47,11 @@ const FindYourNicheOutputSchema = z.object({
         .describe(
           'The reasoning for this recommendation, explaining how it aligns with the teacher\'s profile and preferences.'
         ),
+      recommendedSchools: z.array(z.object({
+          id: z.string().describe("The ID of the recommended school."),
+          name: z.string().describe("The name of the recommended school."),
+          reasoning: z.string().describe("A brief reason why this specific school is a good fit.")
+      })).describe("A list of specific schools from the provided list that are in this region/country and are a good fit.").optional(),
     })
   ),
 });
@@ -65,6 +71,8 @@ const prompt = ai.definePrompt({
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, nationality, specific preferences and primary goal.
 
+After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on the teacher's subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with an American curriculum. Your reasoning for recommending a school should be brief and mention this connection.
+
 Crucially, your recommendations must take into account common visa and immigration requirements for the teacher's nationality. For example, do not recommend a country where it is notoriously difficult for a teacher of that nationality to get a work visa.
 
 Teacher Profile:
@@ -74,7 +82,10 @@ Teacher Profile:
 - Experience: {{{experience}}}
 - Subject: {{{subject}}}
 - Preferences: {{{preferences}}}
-- Primary Goal: {{{goal}}}`,
+- Primary Goal: {{{goal}}}
+
+Available Schools (JSON format):
+{{{availableSchools}}}`,
 });
 
 const findYourNicheFlow = ai.defineFlow(

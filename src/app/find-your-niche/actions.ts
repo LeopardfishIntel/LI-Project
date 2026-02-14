@@ -1,6 +1,7 @@
 "use server";
 
 import { findYourNiche, FindYourNicheInput, FindYourNicheOutput } from "@/ai/flows/find-your-niche-flow";
+import { schools } from "@/lib/mock-data";
 
 export type NicheFinderState = {
   result: FindYourNicheOutput | null;
@@ -28,6 +29,7 @@ export async function findNicheAction(
     subject: String(formData.get("subject")),
     preferences: preferences,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
+    availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
   };
 
   if (!input.qualifications) {
