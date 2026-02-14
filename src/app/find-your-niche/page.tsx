@@ -98,6 +98,10 @@ export default function FindYourNichePage() {
                             <Label htmlFor="q_bed" className="font-normal">B.Ed</Label>
                         </div>
                         <div className="flex items-center space-x-2">
+                            <Checkbox id="q_bachelors" name="qualifications_cb" value="Bachelor's Degree" />
+                            <Label htmlFor="q_bachelors" className="font-normal">Bachelor's Degree</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
                             <Checkbox id="q_masters" name="qualifications_cb" value="Master's Degree" />
                             <Label htmlFor="q_masters" className="font-normal">Master's Degree</Label>
                         </div>
