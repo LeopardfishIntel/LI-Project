@@ -25,7 +25,7 @@ export type School = {
   rating: number;
   reviewsCount: number;
   intel: {
-    salary: { value: string; score: 'good' | 'neutral' | 'bad' };
+    salary: { value: string; score: 'good' | 'neutral' | 'bad'; isTaxFree?: boolean; };
     housing: { value: string; provided: boolean };
     savingsPotential: { value: string; score: 'good' | 'neutral' | 'bad' };
     curriculum: string;

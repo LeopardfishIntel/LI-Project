@@ -786,7 +786,7 @@ function TrueCostsSection() {
   };
   
   const getAverageAnnualSalary = (salaryRange: string): number => {
-    const cleanedRange = salaryRange.replace(/[\$,]|(\(tax-free\))/gi, '').trim();
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
     const numbers = cleanedRange.match(/\d+/g)?.map(Number);
     if (!numbers) return 0;
     
@@ -815,7 +815,7 @@ function TrueCostsSection() {
     const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
 
     let taxInfo = '';
-    if (!selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+    if (!selectedSchool.intel.salary.isTaxFree) {
         taxInfo = ` This is a pre-tax estimate. Your actual savings will be lower after income taxes, which vary by country.`;
     }
 
@@ -890,7 +890,7 @@ function TrueCostsSection() {
   };
 
   if (selectedSchool) {
-    if (selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+    if (selectedSchool.intel.salary.isTaxFree) {
       contractPerksData.taxStatus = { text: 'This school offers a 100% tax-free salary, a major financial advantage.', score: 'good' };
     } else {
       contractPerksData.taxStatus = { ...data.taxStatus, text: `At this school, salaries are subject to ${selectedCountry}'s income tax. ${data.taxStatus.text}`};

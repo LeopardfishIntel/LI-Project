@@ -61,7 +61,7 @@ export const schools: School[] = [
     rating: 4.5,
     reviewsCount: 210,
     intel: {
-      salary: { value: '$60k - $80k (tax-free)', score: 'good' },
+      salary: { value: '$60k - $80k', score: 'good', isTaxFree: true },
       housing: { value: 'Allowance', provided: false },
       savingsPotential: { value: 'V High', score: 'good' },
       curriculum: 'US',

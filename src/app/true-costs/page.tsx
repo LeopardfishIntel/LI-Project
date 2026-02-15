@@ -127,8 +127,8 @@ const countrySpecificData: CountryData = {
         homeObligations: { text: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' },
         safety: {
-            text: (
-                 <>
+             text: (
+                <>
                     Ranked 10th on the 2023 Global Peace Index. Crime rates are very low. Be aware of petty crimes in tourist areas. Both UK and US advisories recommend normal precautions.{' '}
                     <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
                     <Link href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
@@ -153,8 +153,8 @@ const countrySpecificData: CountryData = {
         homeObligations: { text: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.", score: 'neutral' },
         savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' },
         safety: {
-            text: (
-                 <>
+             text: (
+                <>
                     Ranked 6th on the 2023 Global Peace Index. Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
                     <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
                     <Link href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
@@ -318,7 +318,7 @@ export default function TrueCostsPage() {
   };
   
   const getAverageAnnualSalary = (salaryRange: string): number => {
-    const cleanedRange = salaryRange.replace(/[\$,]|(\(tax-free\))/gi, '').trim();
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
     const numbers = cleanedRange.match(/\d+/g)?.map(Number);
     if (!numbers) return 0;
     
@@ -347,7 +347,7 @@ export default function TrueCostsPage() {
     const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
 
     let taxInfo = '';
-    if (!selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+    if (!selectedSchool.intel.salary.isTaxFree) {
         taxInfo = ` This is a pre-tax estimate. Your actual savings will be lower after income taxes, which vary by country.`;
     }
 
@@ -422,7 +422,7 @@ export default function TrueCostsPage() {
   };
 
   if (selectedSchool) {
-    if (selectedSchool.intel.salary.value.toLowerCase().includes('tax-free')) {
+    if (selectedSchool.intel.salary.isTaxFree) {
       contractPerksData.taxStatus = { text: 'This school offers a 100% tax-free salary, a major financial advantage.', score: 'good' };
     } else {
       contractPerksData.taxStatus = { ...data.taxStatus, text: `At this school, salaries are subject to ${selectedCountry}'s income tax. ${data.taxStatus.text}`};
