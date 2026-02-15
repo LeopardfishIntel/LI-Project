@@ -24,7 +24,7 @@ export default function Roadmap() {
     {
       id: '02',
       title: 'Evaluate',
-      desc: "See the full financial picture before you even apply. Our forecaster goes beyond salary, modeling your true take-home pay after local taxes, and calculating your estimated monthly expenses to reveal your real savings potential. Move forward with confidence.",
+      desc: "Get the full financial lowdown before you even apply. Our true cost modeller looks beyond the headline salary, calculating your actual take-home pay after local taxes and essential outgoings to reveal your genuine savings potential. Move forward with absolute confidence.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step'
     },
