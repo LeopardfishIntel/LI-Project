@@ -52,7 +52,7 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-base md:text-lg font-bold tracking-tighter text-primary-foreground">
+    <div ref={ref} className="text-lg md:text-xl font-bold tracking-tighter text-primary-foreground">
       {format(count)}
     </div>
   );
@@ -73,25 +73,25 @@ export function KeyFactsSection() {
 
   const stats = [
     {
-      icon: <Building className="w-4 h-4 text-primary" />,
+      icon: <Building className="w-5 h-5 text-primary" />,
       endValue: 13000,
       label: 'International Schools',
       format: (val: number) => `${Math.floor(val/1000)}k+`,
     },
     {
-      icon: <Globe className="w-4 h-4 text-primary" />,
+      icon: <Globe className="w-5 h-5 text-primary" />,
       endValue: 195,
       label: 'Countries',
       format: (val: number) => `${Math.floor(val)}`,
     },
     {
-      icon: <Users className="w-4 h-4 text-primary" />,
+      icon: <Users className="w-5 h-5 text-primary" />,
       endValue: 500000,
       label: 'Teachers Worldwide',
       format: (val: number) => `${Math.floor(val/1000)}k+`,
     },
     {
-      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      icon: <BarChart3 className="w-5 h-5 text-primary" />,
       endValue: comparisonsMade,
       label: 'Comparisons Made',
       format: (val: number) => val.toLocaleString('en-US'),
@@ -99,14 +99,14 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full py-2 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
+    <div className="w-full py-4 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           {stats.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               {stat.icon}
               <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
             </div>
           ))}
         </div>
