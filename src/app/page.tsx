@@ -13,7 +13,7 @@ export default function Home() {
       <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-cover bg-center" style={{backgroundImage: "url('https://picsum.photos/seed/hero/1200/800')"}}>
         <div className="container mx-auto px-4 md:px-6 z-10">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-primary-foreground mb-4 normal-case">
-              <span className="text-accent">Leopard</span>fish Intel
+              <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
             </h1>
             <p className="max-w-2xl mx-auto text-primary md:text-xl mb-8">
               Your international teaching journey, mapped. Find your ideal destination, calculate your real-world savings, and compare school offers side-by-side. Stop guessing—start planning with precision.
