@@ -15,7 +15,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-primary-foreground md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
+            <p className="max-w-2xl mx-auto text-primary md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
               Your international teaching journey, mapped. Find your ideal destination, calculate your real-world savings, and compare school offers side-by-side. Stop guessing—start planning with precision.
             </p>
             <form action="/search" className="max-w-xl mx-auto flex gap-2">
