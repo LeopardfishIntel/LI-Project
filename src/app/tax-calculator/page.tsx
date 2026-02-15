@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -12,8 +13,8 @@ import { Calculator, Info } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { ChartContainer, ChartTooltipContent, type ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { PieChart, Pie, Cell } from 'recharts';
+import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 
 type TaxBracket = { upto: number; rate: number };
 type FilingStatusBrackets = { brackets: TaxBracket[] };
@@ -26,6 +27,7 @@ type SpecialRegime = {
 const taxData: { [key: string]: {
     currency: string;
     socialSecurity: { rate: number; floor?: number; cap?: number };
+    childTaxCredit?: number;
     specialRegime?: SpecialRegime;
     filingStatuses: {
         single: FilingStatusBrackets;
@@ -35,6 +37,7 @@ const taxData: { [key: string]: {
     "Italy": {
         currency: "EUR",
         socialSecurity: { rate: 0.0919 }, // Employee INPS contribution
+        childTaxCredit: 950, // Simplified annual credit per child
         specialRegime: {
             name: "New Arrival Tax Discount",
             description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime). Social security is still calculated on the full gross salary.",
@@ -56,6 +59,7 @@ const taxData: { [key: string]: {
     "Japan": {
         currency: "JPY",
         socialSecurity: { rate: 0.145, cap: 8160000 }, // Simplified Pension + Health
+        childTaxCredit: 200000, // Simplified annual credit
         filingStatuses: { // Simplified, actual system is more complex
             single: { brackets: [
                 { upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 },
@@ -72,6 +76,7 @@ const taxData: { [key: string]: {
     "Netherlands": {
         currency: "EUR",
         socialSecurity: { rate: 0.2765, cap: 38098 }, // Volksverzekeringen
+        childTaxCredit: 800, // Simplified
         filingStatuses: { // Individual taxation
             single: { brackets: [
                 { upto: 38098, rate: 0.0932 },
@@ -88,6 +93,7 @@ const taxData: { [key: string]: {
     "Singapore": {
         currency: "SGD",
         socialSecurity: { rate: 0.20, cap: 6000 * 12 }, // Employee CPF contribution
+        childTaxCredit: 2000, // Simplified
         filingStatuses: {
             single: { brackets: [
                 { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
@@ -104,6 +110,7 @@ const taxData: { [key: string]: {
     "South Korea": {
         currency: "KRW",
         socialSecurity: { rate: 0.09, cap: 70800000 }, // Pension + Health + Employment
+        childTaxCredit: 150000, // Simplified
         filingStatuses: { // Individual taxation
             single: { brackets: [
                 { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
@@ -120,6 +127,7 @@ const taxData: { [key: string]: {
     "Switzerland": {
         currency: "CHF",
         socialSecurity: { rate: 0.064 }, // Simplified AHV/DI/EO/ALV
+        childTaxCredit: 1200, // Simplified
         filingStatuses: {
             single: { brackets: [ // Simplified combined cantonal/federal for Zurich
                 { upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 },
@@ -134,6 +142,7 @@ const taxData: { [key: string]: {
     "UAE": {
         currency: "AED",
         socialSecurity: { rate: 0 },
+        childTaxCredit: 0,
         filingStatuses: {
             single: { brackets: [{ upto: Infinity, rate: 0 }] },
             married: { brackets: [{ upto: Infinity, rate: 0 }] },
@@ -142,6 +151,7 @@ const taxData: { [key: string]: {
     "United Kingdom": {
         currency: "GBP",
         socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 }, // Simplified NI Class 1
+        childTaxCredit: 0, // Child benefit is a payment, too complex to model as a credit
         filingStatuses: { // UK tax is individual, so brackets are the same
             single: { brackets: [
                 { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
@@ -156,6 +166,7 @@ const taxData: { [key: string]: {
     "USA": {
         currency: "USD",
         socialSecurity: { rate: 0.0765, cap: 168600 }, // Social Security (6.2%) + Medicare (1.45%)
+        childTaxCredit: 2000, // Federal Child Tax Credit
         filingStatuses: {
             single: { brackets: [
                 { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
@@ -173,11 +184,11 @@ const taxData: { [key: string]: {
 
 const conversionRatesToUSD: { [key: string]: number } = { "GBP": 1.25, "EUR": 1.08, "AED": 0.27, "JPY": 0.0064, "CHF": 1.10, "SGD": 0.74, "KRW": 0.00073, "USD": 1 };
 
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean) => {
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
     const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0 };
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0 };
     
-    const { socialSecurity, filingStatuses, specialRegime } = countryData;
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
     const brackets = filingStatuses[filingStatus].brackets;
     
     // 1. Calculate Social Security (on full income)
@@ -207,11 +218,15 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
         }
     }
     
+    // 3. Apply tax credits for dependents
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    incomeTax = Math.max(0, incomeTax - taxCredit);
+
     const totalTax = incomeTax + socialSecurityContrib;
     const netIncome = income - totalTax;
     const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
 
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate };
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit };
 };
 
 const chartConfig = {
@@ -226,8 +241,9 @@ export default function TaxCalculatorPage() {
     const [country, setCountry] = useState('United Kingdom');
     const [currency, setCurrency] = useState('GBP');
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
+    const [dependents, setDependents] = useState('0');
     const [applySpecialRegime, setApplySpecialRegime] = useState(false);
-    const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number } | null>(null);
+    const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number, taxCredit: number } | null>(null);
     
     const countriesWithCalculators = Object.keys(taxData).sort();
     const currencies = Object.keys(conversionRatesToUSD).sort();
@@ -243,13 +259,14 @@ export default function TaxCalculatorPage() {
 
     const handleCalculate = () => {
         const income = parseFloat(salary);
+        const numDependents = parseInt(dependents) || 0;
         const incomeInLocalCurrency = income * (conversionRatesToUSD[currency] || 1) / (conversionRatesToUSD[taxData[country].currency] || 1);
         
         if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
             setResult(null);
             return;
         }
-        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime);
+        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime, numDependents);
         setResult(calcResult);
     };
 
@@ -261,10 +278,40 @@ export default function TaxCalculatorPage() {
             { name: 'socialContributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
         ].filter(d => d.value > 0);
     }, [result]);
+    
+    const CustomLegend = () => {
+      if (!result) return null;
+        
+      const data = [
+        { name: 'netPay', value: result.netIncome },
+        { name: 'incomeTax', value: result.incomeTax },
+        { name: 'socialContributions', value: result.socialSecurity },
+      ];
+
+      return (
+        <div className="space-y-2 text-sm">
+          <h3 className="font-semibold">Breakdown</h3>
+          {data.map(item => {
+              const config = chartConfig[item.name as keyof typeof chartConfig];
+              if (item.value <= 0) return null;
+              return (
+                <div key={item.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: config.color }}></span>
+                        <span>{config.label}</span>
+                    </div>
+                    <span className="font-mono font-medium">{formatCurrency(item.value, taxData[country].currency)}</span>
+                </div>
+              )
+          })}
+        </div>
+      );
+    };
+
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Worldwide Salary Tax Calculator</h1>
                 <p className="text-muted-foreground text-center mt-4 mb-8">
                     Estimate your take-home pay in different countries. This tool calculates based on standard local resident tax rates.
@@ -275,7 +322,7 @@ export default function TaxCalculatorPage() {
                         <CardTitle className="flex items-center gap-2"><Calculator className="w-6 h-6 text-primary" /> Calculator</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="salary">Gross Annual Salary</Label>
                                 <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} placeholder="e.g., 60000" />
@@ -291,8 +338,6 @@ export default function TaxCalculatorPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                        </div>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="country">Tax Country</Label>
                                 <Select value={country} onValueChange={setCountry}>
@@ -304,7 +349,9 @@ export default function TaxCalculatorPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                             <div className="space-y-2">
+                        </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
                                 <Label>Filing Status</Label>
                                 <RadioGroup name="filingStatus" value={filingStatus} onValueChange={(val: 'single' | 'married') => setFilingStatus(val)} className="flex pt-2 gap-6">
                                   <div className="flex items-center space-x-2">
@@ -317,6 +364,10 @@ export default function TaxCalculatorPage() {
                                   </div>
                                 </RadioGroup>
                               </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="dependents">Number of Dependents</Label>
+                                <Input id="dependents" type="number" value={dependents} onChange={e => setDependents(e.target.value)} min="0" placeholder="e.g., 2" />
+                            </div>
                         </div>
 
                         {country === 'Italy' && taxData['Italy'].specialRegime && (
@@ -364,6 +415,12 @@ export default function TaxCalculatorPage() {
                                     <span >Social Contributions</span>
                                     <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
                                 </div>
+                                {result.taxCredit > 0 && (
+                                    <div className="flex justify-between items-center text-blue-400 text-base">
+                                        <span >Tax Credits (Dependents)</span>
+                                        <span className="font-bold">+{formatCurrency(result.taxCredit, taxData[country].currency)}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between items-center text-green-400 font-bold border-t pt-4 mt-2">
                                     <span >Net Take-Home Pay (Annual)</span>
                                     <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
@@ -380,29 +437,15 @@ export default function TaxCalculatorPage() {
                                 <CardHeader>
                                     <CardTitle>Salary Breakdown</CardTitle>
                                 </CardHeader>
-                                <CardContent>
-                                    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[300px]">
+                                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                    <CustomLegend />
+                                    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
                                         <PieChart>
-                                            <Tooltip
-                                                cursor={false}
-                                                content={<ChartTooltipContent hideLabel formatter={(value, name) => {
-                                                    const itemConfig = chartConfig[name as keyof typeof chartConfig];
-                                                    return (
-                                                        <div className="flex flex-col gap-0.5">
-                                                            <div className="font-medium">{itemConfig?.label || name}</div>
-                                                            <div className="text-muted-foreground">
-                                                            {formatCurrency(value as number, taxData[country].currency)}
-                                                            </div>
-                                                        </div>
-                                                        )
-                                                }} />}
-                                            />
-                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} strokeWidth={5}>
-                                                {chartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={entry.fill} className="stroke-background focus:outline-none" />
+                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} strokeWidth={5} labelLine={false} label={false}>
+                                                {chartData.map((entry) => (
+                                                    <Cell key={`cell-${entry.name}`} fill={entry.fill} className="stroke-background focus:outline-none" />
                                                 ))}
                                             </Pie>
-                                            <ChartLegend content={<ChartLegendContent />} />
                                         </PieChart>
                                     </ChartContainer>
                                 </CardContent>
@@ -411,10 +454,13 @@ export default function TaxCalculatorPage() {
                     </>
                 )}
                  <p className="text-xs text-muted-foreground text-center mt-4 animate-pulse-slow">
-                    Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax and social security rates, excluding other potential deductions or tax credits. Expatriate tax laws can be complex; always consult a professional financial advisor.
+                    Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax rates, and any child tax credits are simplified estimates. Expatriate tax laws can be complex; always consult a professional financial advisor.
                 </p>
             </div>
         </div>
     );
 }
 
+
+
+    
