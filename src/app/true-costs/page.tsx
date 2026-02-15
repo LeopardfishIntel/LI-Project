@@ -50,12 +50,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                 <>
-                    UK/US travel advisories note a "substantial" terrorism threat level, but day-to-day life is generally safe. Exercise the same precautions you would in any major Western city regarding petty crime.{' '}
+                    Ranked 37th on the 2023 Global Peace Index. UK/US travel advisories note a "substantial" terrorism threat, but day-to-day life is generally safe. Exercise standard precautions for petty crime.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/united-kingdom" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-kingdom-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'neutral'
+            score: 'neutral',
+            percentage: '7/10'
         },
     },
     'UAE': {
@@ -74,12 +76,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                  <>
-                    Crime rates are exceptionally low. However, US advisories highlight the risk of regional missile or drone attacks. Strict adherence to local laws and customs is essential.{' '}
+                    Ranked 75th on the 2023 Global Peace Index. Crime rates are very low, but US advisories highlight the risk of regional conflict. Adherence to local laws is essential.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/uae" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-arab-emirates-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good'
+            score: 'neutral',
+            percentage: '6/10'
         },
     },
     'Japan': {
@@ -98,12 +102,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                 <>
-                    Japan has very low crime rates and is considered one of the safest countries in the world. Both UK and US advisories recommend normal precautions.{' '}
+                    Ranked 9th on the 2023 Global Peace Index. Japan has very low crime rates and is one of the safest countries in the world. UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/japan" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/japan-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good'
+            score: 'good',
+            percentage: '9/10'
         },
     },
     'Switzerland': {
@@ -122,12 +128,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                  <>
-                    Crime rates are very low. Be aware of petty crimes like pickpocketing in major tourist areas and cities. Both UK and US advisories recommend normal precautions.{' '}
+                    Ranked 10th on the 2023 Global Peace Index. Crime rates are very low. Be aware of petty crimes in tourist areas. Both UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/switzerland-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good'
+            score: 'good',
+            percentage: '9/10'
         },
     },
     'Singapore': {
@@ -146,12 +154,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                  <>
-                    Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
+                    Ranked 6th on the 2023 Global Peace Index. Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/singapore-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good'
+            score: 'good',
+            percentage: '10/10'
         },
     },
     'South Korea': {
@@ -170,12 +180,14 @@ const countrySpecificData: CountryData = {
         safety: {
             text: (
                 <>
-                    Daily life is very safe with low crime rates. The political situation with North Korea is a long-standing issue but rarely affects residents. Normal precautions are advised.{' '}
+                    Ranked 43rd on the 2023 Global Peace Index. Daily life is very safe with low crime rates. The political situation with North Korea is a long-standing issue but rarely affects residents.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/south-korea" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good'
+            score: 'good',
+            percentage: '7/10'
         },
     },
     'Netherlands': {
@@ -194,12 +206,14 @@ const countrySpecificData: CountryData = {
         safety: {
              text: (
                 <>
-                    Crime rates are low, but petty crime like bike theft and pickpocketing is common in major cities. UK and US advisories mention a terrorism threat.{' '}
+                    Ranked 16th on the 2023 Global Peace Index. Crime rates are low, but petty crime like bike theft and pickpocketing is common in major cities. UK and US advisories mention a terrorism threat.{' '}
+                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
                     <a href="https://www.gov.uk/foreign-travel-advice/netherlands" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'neutral'
+            score: 'good',
+            percentage: '8/10'
         }
     },
 };
@@ -675,6 +689,7 @@ export default function TrueCostsPage() {
                         title="Safety &amp; Travel Advice"
                         description={lifestyleData.safety.text}
                         score={lifestyleData.safety.score}
+                        percentage={lifestyleData.safety.percentage}
                     />
                 </CardContent>
             </Card>
@@ -720,7 +735,7 @@ export default function TrueCostsPage() {
         <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
             <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl">
-                    <ShieldAlert className="w-6 h-6 text-destructive" />
+                    <ShieldAlert className="w-6 w-6 text-destructive" />
                     Contract Intelligence: Financial Red Flags
                 </CardTitle>
             </CardHeader>
