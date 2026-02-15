@@ -8,7 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const FindYourNicheInputSchema = z.object({
   age: z.number().describe("The teacher's age."),
