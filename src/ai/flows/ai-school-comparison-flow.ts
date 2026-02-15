@@ -25,7 +25,7 @@ const SchoolDataSchema = z.object({
     ),
 });
 
-export const AiSchoolComparisonInputSchema = z.object({
+const AiSchoolComparisonInputSchema = z.object({
   schools: z.array(SchoolDataSchema).describe('An array of school data objects to be compared.'),
   teacherProfile: z.string().describe('A summary of the teacher\'s profile and preferences to contextualize the recommendation. e.g., "A teacher with 10 years experience looking for high savings potential and good work-life balance."')
 });
@@ -33,7 +33,7 @@ export type AiSchoolComparisonInput = z.infer<
   typeof AiSchoolComparisonInputSchema
 >;
 
-export const AiSchoolComparisonOutputSchema = z.object({
+const AiSchoolComparisonOutputSchema = z.object({
   overallSummary: z
     .string()
     .describe(
