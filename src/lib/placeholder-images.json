@@ -44,21 +44,21 @@
     },
     {
       "id": "discover-step",
-      "description": "A person looking at a map.",
-      "imageUrl": "https://images.unsplash.com/photo-1586863065451-6a82fa7e81b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXAlMjBqb3VybmV5fGVufDB8fHx8MTc3MTE4MDc1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "map journey"
+      "description": "A person walking on a wooden bridge towards a beautiful mountain landscape, representing the journey of discovery.",
+      "imageUrl": "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "travel destination"
     },
     {
       "id": "evaluate-step",
-      "description": "A calculator and financial charts.",
-      "imageUrl": "https://images.unsplash.com/photo-1635236269199-3c71295855b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmaW5hbmNpYWwlMjBncmFwaHxlbnwwfHx8fDE3NzExNzc3NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "financial graph"
+      "description": "A vibrant, bustling city market in Marrakesh, representing the evaluation of local cost of living.",
+      "imageUrl": "https://images.unsplash.com/photo-1543088242-273674994273?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "city market"
     },
     {
       "id": "decide-step",
-      "description": "A person comparing two options on a checklist.",
-      "imageUrl": "https://images.unsplash.com/photo-1648025665834-d5fadfa8896a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjaGVja2xpc3QlMjBjb21wYXJpc29ufGVufDB8fHx8MTc3MTE4MDc1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "checklist comparison"
+      "description": "A path splitting into a crossroads in a forest, symbolizing the moment of decision.",
+      "imageUrl": "https://images.unsplash.com/photo-1545641203-7d072a14e3b2?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "crossroads path"
     }
   ]
 }

@@ -14,9 +14,27 @@ const getImage = (id: string) => {
 
 export default function Roadmap() {
   const steps = [
-    { id: '01', title: 'Discover', desc: 'Find your perfect destination with our AI Niche Finder.', link: '/discover', imageId: 'discover-step' },
-    { id: '02', title: 'Evaluate', desc: 'Calculate taxes and cost of living to see your real savings.', link: '/financial-forecaster', imageId: 'evaluate-step' },
-    { id: '03', title: 'Decide', desc: 'Compare your top school offers side-by-side.', link: '/compare', imageId: 'decide-step' },
+    {
+      id: '01',
+      title: 'Discover',
+      desc: "Don't just find a job, find your place in the world. Our AI-powered Niche Finder goes beyond simple job boards, analyzing your unique qualifications, teaching style, and personal aspirations to recommend countries and even specific schools where you'll not only fit in, but thrive.",
+      link: '/discover',
+      imageId: 'discover-step'
+    },
+    {
+      id: '02',
+      title: 'Evaluate',
+      desc: "See the full financial picture before you even apply. Our forecaster goes beyond salary, modeling your true take-home pay after local taxes, and calculating your estimated monthly expenses to reveal your real savings potential. Move forward with confidence.",
+      link: '/financial-forecaster',
+      imageId: 'evaluate-step'
+    },
+    {
+      id: '03',
+      title: 'Decide',
+      desc: "Making the final choice can be tough. Our side-by-side comparison tool lays out all the critical data points from your top school offers—from salary and housing to class size and health insurance—so you can make a clear, informed decision.",
+      link: '/compare',
+      imageId: 'decide-step'
+    },
   ];
 
   return (
