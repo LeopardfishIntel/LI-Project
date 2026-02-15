@@ -12,10 +12,10 @@ export default function Home() {
     <div className="flex flex-col items-center">
       <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-cover bg-center" style={{backgroundImage: "url('https://picsum.photos/seed/hero/1200/800')"}}>
         <div className="container mx-auto px-4 md:px-6 z-10">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-primary-foreground mb-4 normal-case drop-shadow-lg">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
             </h1>
-            <p className="max-w-2xl mx-auto text-primary md:text-xl mb-8">
+            <p className="max-w-2xl mx-auto text-primary md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
               Your international teaching journey, mapped. Find your ideal destination, calculate your real-world savings, and compare school offers side-by-side. Stop guessing—start planning with precision.
             </p>
             <form action="/search" className="max-w-xl mx-auto flex gap-2">
