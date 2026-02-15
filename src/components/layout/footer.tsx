@@ -29,7 +29,7 @@ export default function Footer() {
              <div className="text-center md:text-right">
                 <h4 className="font-semibold mb-4 uppercase tracking-wider">Connect</h4>
                  <div className="flex justify-center md:justify-end gap-4 mb-4">
-                     <Link href="#" aria-label="LinkedIn profile" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
+                     <Link href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" aria-label="LinkedIn profile" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
                         <Linkedin className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                      <Link href="#" aria-label="Facebook page" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
