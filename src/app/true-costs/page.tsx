@@ -57,7 +57,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'neutral',
-            percentage: '7/10'
+            percentage: 'Rank 37'
         },
     },
     'UAE': {
@@ -83,7 +83,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'neutral',
-            percentage: '6/10'
+            percentage: 'Rank 75'
         },
     },
     'Japan': {
@@ -109,7 +109,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'good',
-            percentage: '9/10'
+            percentage: 'Rank 9'
         },
     },
     'Switzerland': {
@@ -135,7 +135,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'good',
-            percentage: '9/10'
+            percentage: 'Rank 10'
         },
     },
     'Singapore': {
@@ -161,7 +161,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'good',
-            percentage: '10/10'
+            percentage: 'Rank 6'
         },
     },
     'South Korea': {
@@ -186,8 +186,8 @@ const countrySpecificData: CountryData = {
                     <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
                 </>
             ),
-            score: 'good',
-            percentage: '7/10'
+            score: 'neutral',
+            percentage: 'Rank 43'
         },
     },
     'Netherlands': {
@@ -213,7 +213,7 @@ const countrySpecificData: CountryData = {
                 </>
             ),
             score: 'good',
-            percentage: '8/10'
+            percentage: 'Rank 16'
         }
     },
 };
