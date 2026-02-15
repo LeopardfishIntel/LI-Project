@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState } from 'react';
@@ -124,7 +125,7 @@ const scoreColorClasses = {
   bad: 'text-red-400',
 };
 
-const FeatureDetail = ({ icon, title, description, score, percentage }: { icon: React.ReactNode, title: string, description: string, score: FeatureScore, percentage?: string }) => (
+const FeatureDetail = ({ icon, title, description, score, percentage }: { icon: React.ReactNode, title: string, description: React.ReactNode, score: FeatureScore, percentage?: string }) => (
     <div className="flex items-start gap-4">
         <div className="mt-1 text-primary">{icon}</div>
         <div className="w-full">
@@ -228,7 +229,7 @@ export default function TrueCostsPage() {
     return 0;
   };
 
-  let savingsDescription = data.savings.text;
+  let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
@@ -502,14 +503,15 @@ export default function TrueCostsPage() {
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
                         title="Tax Status"
-                        description={contractPerksData.taxStatus.text}
+                        description={<>
+                            {contractPerksData.taxStatus.text}
+                            {' '}
+                            <Link href="/tax-calculator" className="text-sm text-sky-400 hover:underline inline-flex items-center gap-1.5">
+                                Worldwide Salary Tax Calculator <ExternalLink className="w-4 h-4" />
+                            </Link>
+                        </>}
                         score={contractPerksData.taxStatus.score}
                     />
-                    <div className="pl-9 -mt-2">
-                        <Link href="/tax-calculator" className="text-sm text-primary hover:underline flex items-center gap-1.5">
-                            Worldwide Salary Tax Calculator <ExternalLink className="w-4 h-4" />
-                        </Link>
-                    </div>
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
                         title="Housing Arrangement"
