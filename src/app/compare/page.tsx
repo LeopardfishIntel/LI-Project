@@ -63,14 +63,11 @@ const getNumericValue = (school: School, metric: ComparisonMetric) => {
     }
 };
 
-const ComparisonRow = ({ label, value1, value2, result1, result2, format1, format2, icon }: {
+const ComparisonRow = ({ label, values, results, formats, icon }: {
     label: string;
-    value1: any;
-    value2: any;
-    result1: ComparisonResult;
-    result2: ComparisonResult;
-    format1?: (value: any) => string;
-    format2?: (value: any) => string;
+    values: any[];
+    results: ComparisonResult[];
+    formats?: ((value: any) => string)[];
     icon: React.ReactNode;
 }) => {
     const resultColor = (result: ComparisonResult) => {
@@ -80,23 +77,29 @@ const ComparisonRow = ({ label, value1, value2, result1, result2, format1, forma
     };
 
     return (
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center text-center border-b last:border-b-0 py-3 relative">
-            <div className={cn("text-lg font-semibold", resultColor(result1))}>{format1 ? format1(value1) : value1}</div>
-            
-            <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full z-10 border">
+        <div className="text-center border-b last:border-b-0 py-3">
+            <div className="flex items-center justify-center gap-2 mb-2">
                 {icon}
-                <span className="text-xs text-muted-foreground whitespace-nowrap">{label}</span>
+                <span className="text-xs text-muted-foreground">{label}</span>
             </div>
-
-            <div className={cn("text-lg font-semibold", resultColor(result2))}>{format2 ? format2(value2) : value2}</div>
+            <div className="grid grid-cols-3 items-center gap-2">
+                {values.map((value, index) => (
+                    <div key={index} className={cn("text-lg font-semibold", resultColor(results[index]))}>
+                        {formats && formats[index] ? formats[index](value) : (value.toString())}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
 
 export default function ComparePage() {
-    const [school1Id, setSchool1Id] = useState<string>(schools[0].id);
-    const [school2Id, setSchool2Id] = useState<string>(schools[1].id);
+    const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>([
+        schools[0].id,
+        schools[1].id,
+        schools[2].id,
+    ]);
     
     const firestore = useFirestore();
 
@@ -107,44 +110,46 @@ export default function ComparePage() {
         }
     }, [firestore]);
 
-    const school1 = schools.find(s => s.id === school1Id)!;
-    const school2 = schools.find(s => s.id === school2Id)!;
+    const selectedSchools = selectedSchoolIds.map(id => schools.find(s => s.id === id)!);
 
-    const handleSelectSchool1 = (schoolId: string) => {
-        if (schoolId === school2Id) setSchool2Id(school1Id);
-        setSchool1Id(schoolId);
-    };
+    const handleSelectSchool = (index: number, newSchoolId: string) => {
+        const currentlySelectedIds = [...selectedSchoolIds];
+        const alreadySelectedIndex = currentlySelectedIds.indexOf(newSchoolId);
 
-    const handleSelectSchool2 = (schoolId: string) => {
-        if (schoolId === school1Id) setSchool1Id(school2Id);
-        setSchool2Id(schoolId);
-    };
-    
-    const compare = (metric: ComparisonMetric, higherIsBetter: boolean): { res1: ComparisonResult, res2: ComparisonResult } => {
-        const val1 = getNumericValue(school1, metric);
-        const val2 = getNumericValue(school2, metric);
-
-        if (val1 === val2) return { res1: 'neutral', res2: 'neutral' };
-
-        let val1isBest;
-        if (higherIsBetter) {
-            val1isBest = val1 > val2;
-        } else {
-            if (val1 === 0) val1isBest = true;
-            else if (val2 === 0) val1isBest = false;
-            else val1isBest = val1 < val2;
+        if (alreadySelectedIndex > -1) {
+            const schoolIdToSwap = currentlySelectedIds[index];
+            currentlySelectedIds[alreadySelectedIndex] = schoolIdToSwap;
         }
         
-        return val1isBest ? { res1: 'best', res2: 'worst' } : { res1: 'worst', res2: 'best' };
+        currentlySelectedIds[index] = newSchoolId;
+        setSelectedSchoolIds(currentlySelectedIds);
     };
     
-    const ratingComp = compare('rating', true);
-    const salaryComp = compare('salary', true);
-    const savingsComp = compare('savings', true);
-    const monthlyCostComp = compare('monthlyCost', false);
-    const classSizeComp = compare('classSize', false);
+    const compareThree = (metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] => {
+        const values = selectedSchools.map(school => getNumericValue(school, metric));
+        
+        if (values.every(v => v === values[0])) return ['neutral', 'neutral', 'neutral'];
 
-    const SchoolInfo = ({ school, onSelect, otherSchoolId }: { school: School, onSelect: (id: string) => void, otherSchoolId: string }) => (
+        const sortedValues = [...values].sort((a, b) => higherIsBetter ? b - a : a - b);
+        const bestValue = sortedValues[0];
+        const worstValue = sortedValues[sortedValues.length - 1];
+
+        if (bestValue === worstValue) return ['neutral', 'neutral', 'neutral'];
+
+        return values.map(val => {
+            if (val === bestValue) return 'best';
+            if (val === worstValue) return 'worst';
+            return 'neutral';
+        });
+    };
+    
+    const ratingComp = compareThree('rating', true);
+    const salaryComp = compareThree('salary', true);
+    const savingsComp = compareThree('savings', true);
+    const monthlyCostComp = compareThree('monthlyCost', false);
+    const classSizeComp = compareThree('classSize', false);
+
+    const SchoolInfo = ({ school, onSelect, selectedIds }: { school: School, onSelect: (id: string) => void, selectedIds: string[] }) => (
         <div className="flex flex-col items-center gap-4">
             <div className="w-full max-w-[280px]">
                  <Select value={school.id} onValueChange={onSelect}>
@@ -153,7 +158,7 @@ export default function ComparePage() {
                     </SelectTrigger>
                     <SelectContent>
                         {schools.map(s => (
-                            <SelectItem key={s.id} value={s.id} disabled={s.id === otherSchoolId}>
+                            <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
                                 {s.name}
                             </SelectItem>
                         ))}
@@ -163,7 +168,7 @@ export default function ComparePage() {
             <Link href={`/schools/${school.id}`} className="block w-full max-w-[280px]">
                 <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group">
                     <div className="relative aspect-video">
-                        <Image src={school.imageUrl} alt={school.name} layout="fill" objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
+                        <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
                     </div>
                     <CardHeader>
                         <CardTitle className="text-xl group-hover:text-primary transition-colors">{school.name}</CardTitle>
@@ -180,66 +185,69 @@ export default function ComparePage() {
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center">Compare Schools</h1>
-            <p className="text-muted-foreground mb-12 text-center">Select two schools for a side-by-side comparison of key data.</p>
+            <p className="text-muted-foreground mb-12 text-center">Select up to three schools for a side-by-side comparison of key data.</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-8 justify-items-center">
-                <SchoolInfo school={school1} onSelect={handleSelectSchool1} otherSchoolId={school2Id} />
-                <SchoolInfo school={school2} onSelect={handleSelectSchool2} otherSchoolId={school1Id} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-8 justify-items-center">
+                {selectedSchools.map((school, index) => (
+                     <SchoolInfo key={school.id} school={school} onSelect={(id) => handleSelectSchool(index, id)} selectedIds={selectedSchoolIds} />
+                ))}
             </div>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardContent className="p-4 md:p-6 divide-y divide-border">
                     <div className="py-2">
-                        <ComparisonRow label="Overall Rating" value1={`${school1.rating.toFixed(1)}/5`} value2={`${school2.rating.toFixed(1)}/5`} result1={ratingComp.res1} result2={ratingComp.res2} icon={<Star className="w-4 h-4 text-amber-400" />} />
+                        <ComparisonRow 
+                            label="Overall Rating" 
+                            values={selectedSchools.map(s => `${s.rating.toFixed(1)}/5`)} 
+                            results={ratingComp} 
+                            icon={<Star className="w-4 h-4 text-amber-400" />} />
                     </div>
 
                     <div className="py-2 pt-6">
-                        <ComparisonRow label="Salary Range" value1={school1.intel.salary.value} value2={school2.intel.salary.value} result1={salaryComp.res1} result2={salaryComp.res2} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                        <ComparisonRow label="Savings Potential" value1={school1.intel.savingsPotential.value} value2={school2.intel.savingsPotential.value} result1={savingsComp.res1} result2={savingsComp.res2} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
-                        <ComparisonRow label="Est. Monthly Costs (Single)" value1={calculateMonthlyCost(school1)} value2={calculateMonthlyCost(school2)} result1={monthlyCostComp.res1} result2={monthlyCostComp.res2} format1={(v) => formatCurrency(v, 'USD')} format2={(v) => formatCurrency(v, 'USD')} icon={<DollarSign className="w-4 h-4 text-red-400" />} />
-                        <ComparisonRow label="Housing" value1={school1.intel.housing.value} value2={school2.intel.housing.value} result1='neutral' result2='neutral' icon={<Home className="w-4 h-4 text-blue-400" />} />
-                        <ComparisonRow label="Health Insurance" value1={school1.intel.healthInsurance} value2={school2.intel.healthInsurance} result1='neutral' result2='neutral' icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
+                        <ComparisonRow label="Salary Range" values={selectedSchools.map(s => s.intel.salary.value)} results={salaryComp} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                        <ComparisonRow label="Savings Potential" values={selectedSchools.map(s => s.intel.savingsPotential.value)} results={savingsComp} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                        <ComparisonRow 
+                            label="Est. Monthly Costs (Single)" 
+                            values={selectedSchools.map(s => calculateMonthlyCost(s))} 
+                            results={monthlyCostComp} 
+                            formats={selectedSchools.map(() => (v) => formatCurrency(v, 'USD'))}
+                            icon={<DollarSign className="w-4 h-4 text-red-400" />} />
+                        <ComparisonRow label="Housing" values={selectedSchools.map(s => s.intel.housing.value)} results={['neutral', 'neutral', 'neutral']} icon={<Home className="w-4 h-4 text-blue-400" />} />
+                        <ComparisonRow label="Health Insurance" values={selectedSchools.map(s => s.intel.healthInsurance)} results={['neutral', 'neutral', 'neutral']} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
                     </div>
                     
                     <div className="py-2 pt-6">
-                        <ComparisonRow label="Curriculum" value1={school1.intel.curriculum} value2={school2.intel.curriculum} result1='neutral' result2='neutral' icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                        <ComparisonRow label="Average Class Size" value1={school1.intel.classSize} value2={school2.intel.classSize} result1={classSizeComp.res1} result2={classSizeComp.res2} icon={<Building className="w-4 h-4 text-sky-400" />} />
-                        <ComparisonRow label="Student-Teacher Ratio" value1={school1.intel.studentTeacherRatio} value2={school2.intel.studentTeacherRatio} result1='neutral' result2='neutral' icon={<Users className="w-4 h-4 text-rose-400" />} />
+                        <ComparisonRow label="Curriculum" values={selectedSchools.map(s => s.intel.curriculum)} results={['neutral', 'neutral', 'neutral']} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                        <ComparisonRow label="Average Class Size" values={selectedSchools.map(s => s.intel.classSize)} results={classSizeComp} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                        <ComparisonRow label="Student-Teacher Ratio" values={selectedSchools.map(s => s.intel.studentTeacherRatio)} results={['neutral', 'neutral', 'neutral']} icon={<Users className="w-4 h-4 text-rose-400" />} />
                     </div>
                 </CardContent>
             </Card>
 
             <div className="mt-12">
                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-items-center">
-                    <div className="w-full max-w-[280px]">
-                        <Card className="bg-card/70 backdrop-blur-sm border-border">
-                            <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
-                            <CardContent>
-                                <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                    <p className="text-muted-foreground">Video coming soon</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                    <div className="w-full max-w-[280px]">
-                        <Card className="bg-card/70 backdrop-blur-sm border-border">
-                            <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
-                            <CardContent>
-                                <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                    <p className="text-muted-foreground">Video coming soon</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start justify-items-center">
+                    {selectedSchools.map(school => (
+                        <div key={school.id} className="w-full max-w-[280px]">
+                            <Card className="bg-card/70 backdrop-blur-sm border-border">
+                                <CardHeader><CardTitle className="text-xl">{school.name}</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                        <p className="text-muted-foreground">Video coming soon</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    ))}
                 </div>
             </div>
 
             <div className="mt-12">
                  <h2 className="text-2xl font-bold tracking-tight text-center mb-8">LeopardFish Insights</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <LeopardFishInsights school={school1} />
-                    <LeopardFishInsights school={school2} />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    {selectedSchools.map(school => (
+                         <LeopardFishInsights key={school.id} school={school} />
+                    ))}
                 </div>
             </div>
         </div>
