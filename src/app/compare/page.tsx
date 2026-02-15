@@ -86,8 +86,8 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
                 {icon}
                 <span className="text-xs text-muted-foreground">{label}</span>
             </div>
-            <div className={cn("flex items-center gap-2 text-base font-semibold text-right", resultColor(result))}>
-                <span>{format ? format(value) : (value.toString())}</span>
+            <div className={cn("flex items-center gap-2 text-sm font-semibold text-right", resultColor(result))}>
+                <span className="whitespace-nowrap">{format ? format(value) : (value.toString())}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
                         <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
