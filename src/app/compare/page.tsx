@@ -86,8 +86,8 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
                 {icon}
                 <span className="text-xs text-muted-foreground">{label}</span>
             </div>
-            <div className={cn("flex items-center gap-2 text-sm font-semibold text-right", resultColor(result))}>
-                <span className="whitespace-nowrap">{format ? format(value) : (value.toString())}</span>
+            <div className={cn("flex items-center gap-2 text-sm font-semibold text-right whitespace-nowrap", resultColor(result))}>
+                <span>{format ? format(value) : (value.toString())}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
                         <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
@@ -334,37 +334,6 @@ export default function ComparePage() {
             </div>
 
             <div className="mt-12">
-                <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start justify-items-center">
-                    {selectedSchools.map(school => (
-                        <div key={school.id} className="w-full max-w-sm">
-                            <Card className="bg-card/70 backdrop-blur-sm border-border">
-                                <CardHeader><CardTitle className="text-xl">{school.name}</CardTitle></CardHeader>
-                                <CardContent>
-                                    {school.videoUrl ? (
-                                        <div className="aspect-video">
-                                            <iframe
-                                                className="w-full h-full rounded-md"
-                                                src={school.videoUrl}
-                                                title={`School video for ${school.name}`}
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                            ></iframe>
-                                        </div>
-                                    ) : (
-                                        <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                            <p className="text-muted-foreground">Video coming soon</p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-12">
                  <h2 className="text-2xl font-bold tracking-tight text-center mb-8">LeopardFish Insights</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
                     {selectedSchools.map(school => (
@@ -375,3 +344,5 @@ export default function ComparePage() {
         </div>
     );
 }
+
+    
