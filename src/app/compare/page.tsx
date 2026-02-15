@@ -180,7 +180,7 @@ export default function ComparePage() {
                         <div className="relative aspect-video">
                             <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
                         </div>
-                        <CardHeader>
+                        <CardHeader className="min-h-[8rem]">
                             <CardTitle className="text-xl group-hover:text-primary transition-colors">{school.name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-sm pt-1">
                                 <MapPin className="w-4 h-4 mr-1.5" />
@@ -271,7 +271,7 @@ export default function ComparePage() {
 
             <div className="mt-12">
                  <h2 className="text-2xl font-bold tracking-tight text-center mb-8">LeopardFish Insights</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
                     {selectedSchools.map(school => (
                          <LeopardFishInsights key={school.id} school={school} />
                     ))}
