@@ -736,7 +736,7 @@ export default function TrueCostsPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl">
                     <ShieldAlert className="w-6 w-6 text-destructive" />
-                    Contract Intelligence: Financial Red Flags
+                    Leopardfish Intel: Financial Red Flags
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
