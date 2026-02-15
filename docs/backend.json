@@ -18,9 +18,9 @@
           "type": "boolean",
           "description": "Indicates if the teacher's profile has been verified, enabling access to exclusive features and displaying a 'Verified Teacher' badge."
         },
-        "nationality": {
+        "familyStatus": {
           "type": "string",
-          "description": "The teacher's nationality, used for the 'Find Your Niche' matching engine and anonymized review display."
+          "description": "The teacher's family status (e.g., 'Single', 'Couple', 'Family (2+1)', 'Family (2+2)') which impacts cost of living calculations."
         },
         "ageGroup": {
           "type": "string",
@@ -66,7 +66,7 @@
         "id",
         "fullName",
         "isVerifiedTeacher",
-        "nationality",
+        "familyStatus",
         "ageGroup",
         "qualifications",
         "yearsOfExperience",
@@ -201,7 +201,7 @@
         },
         "authorTeacherProfileId": {
           "type": "string",
-          "description": "Reference to the TeacherProfile of the author. Used for internal tracking and verification, but details are anonymized in public display. (Relationship: TeacherProfile 1:N SchoolReview)"
+          "description": "Reference to the TeacherProfile of the author. Used for internal tracking and verification. (Relationship: TeacherProfile 1:N SchoolReview)"
         },
         "rating": {
           "type": "number",
@@ -232,10 +232,6 @@
           "description": "The date and time when the review was posted.",
           "format": "date-time"
         },
-        "reviewerNationality": {
-          "type": "string",
-          "description": "The nationality of the reviewer, used for anonymized display (e.g., 'Teacher from UK')."
-        },
         "reviewerYearsOfExperience": {
           "type": "number",
           "description": "The years of experience of the reviewer, used for anonymized display (e.g., 'Teacher with 5 years experience')."
@@ -252,7 +248,6 @@
         "cons",
         "recommendation",
         "datePosted",
-        "reviewerNationality",
         "reviewerYearsOfExperience"
       ]
     },
@@ -526,7 +521,7 @@
           "schema": {
             "$ref": "#/backend/entities/SchoolReview"
           },
-          "description": "Stores anonymized teacher reviews for a specific school. Accessible to all users for reading. Creation is restricted to verified teachers. Includes denormalized `reviewerNationality` and `reviewerYearsOfExperience` for display, and `schoolId` and `authorTeacherProfileId` for linking and creation authorization (auth independence)."
+          "description": "Stores anonymized teacher reviews for a specific school. Accessible to all users for reading. Creation is restricted to verified teachers. Includes denormalized reviewerYearsOfExperience for display, and schoolId and authorTeacherProfileId for linking and creation authorization (auth independence)."
         }
       },
       {
@@ -600,7 +595,7 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed with a strong emphasis on Authorization Independence, Structural Segregation, and DBAC (Database Access Control) to ensure robust security rules and efficient queries. \n\n**Authorization Independence:**\nCritical to this design is the avoidance of `get()` calls in security rules, which can break atomic operations and complicate debugging. This is achieved primarily through denormalization and path-based ownership:\n\n1.  **TeacherProfile:** Stored under `/users/{userId}/teacherProfile`. Access for a teacher's own profile is granted by matching `request.auth.uid` directly with the `{userId}` wildcard in the path. This makes authorization atomic and eliminates the need to `get()` any other document to verify ownership.\n2.  **SchoolReview, ForumPost, ForumReply:** For user-generated content, the `authorTeacherProfileId` is denormalized directly into the document. This allows security rules to instantly verify `request.auth.uid == resource.data.authorTeacherProfileId` for `create`, `update`, and `delete` operations without needing to fetch a separate user or profile document. This maintains atomicity and debuggability.\n3.  **Roles (Admin, Verified Teacher):** Instead of relying on a flag within a user profile document that would require a `get()`, roles are managed through dedicated top-level collections (e.g., `/roles_admin/{userId}`, `/roles_verifiedTeachers/{userId}`). Authorization checks become `exists(/roles_admin/$(request.auth.uid))` or `exists(/roles_verifiedTeachers/$(request.auth.uid))`. This is an atomic existence check, fulfilling the DBAC principle and avoiding complex `get()` calls.\n\n**QAPs (Rules are not Filters):**\nQueryability and list operations are a key consideration, ensuring that security rules don't inadvertently act as filters, which is inefficient and insecure. This is achieved by:\n\n1.  **Structural Segregation:** Data with different security postures are stored in separate collections. For example, publicly viewable `School` data, `LocationCostOfLiving`, `ForumCategory`, `ForumPost`, and `ForumReply` are all placed in top-level or clearly nested public collections, allowing for broad `allow read: if true;` rules. This permits full collection scans and efficient `list` queries without complex filtering logic in rules.\n2.  **Path-based Ownership for Private Data:** `TeacherProfile` data, being private, is nested under `/users/{userId}`. This structure inherently limits listing to the owner's specific profile, preventing accidental exposure of all teacher profiles in a `list` operation on a public collection.\n3.  **Denormalization for Public Display:** `SchoolReview` includes denormalized `reviewerNationality` and `reviewerYearsOfExperience` to allow public display without needing to join or `get()` the original `TeacherProfile` data, supporting public list views of reviews efficiently.\n\nThis architecture provides clear separation of concerns, simplifies security rule writing, enhances debuggability, and scales effectively for an application with diverse data access requirements."
+    "reasoning": "The Firestore data structure is designed with a strong emphasis on Authorization Independence, Structural Segregation, and DBAC (Database Access Control) to ensure robust security rules and efficient queries. \n\n**Authorization Independence:**\nCritical to this design is the avoidance of `get()` calls in security rules, which can break atomic operations and complicate debugging. This is achieved primarily through denormalization and path-based ownership:\n\n1.  **TeacherProfile:** Stored under `/users/{userId}/teacherProfile`. Access for a teacher's own profile is granted by matching `request.auth.uid` directly with the `{userId}` wildcard in the path. This makes authorization atomic and eliminates the need to `get()` any other document to verify ownership.\n2.  **SchoolReview, ForumPost, ForumReply:** For user-generated content, the `authorTeacherProfileId` is denormalized directly into the document. This allows security rules to instantly verify `request.auth.uid == resource.data.authorTeacherProfileId` for `create`, `update`, and `delete` operations without needing to fetch a separate user or profile document. This maintains atomicity and debuggability.\n3.  **Roles (Admin, Verified Teacher):** Instead of relying on a flag within a user profile document that would require a `get()`, roles are managed through dedicated top-level collections (e.g., `/roles_admin/{userId}`, `/roles_verifiedTeachers/{userId}`). Authorization checks become `exists(/roles_admin/$(request.auth.uid))` or `exists(/roles_verifiedTeachers/$(request.auth.uid))`. This is an atomic existence check, fulfilling the DBAC principle and avoiding complex `get()` calls.\n\n**QAPs (Rules are not Filters):**\nQueryability and list operations are a key consideration, ensuring that security rules don't inadvertently act as filters, which is inefficient and insecure. This is achieved by:\n\n1.  **Structural Segregation:** Data with different security postures are stored in separate collections. For example, publicly viewable `School` data, `LocationCostOfLiving`, `ForumCategory`, `ForumPost`, and `ForumReply` are all placed in top-level or clearly nested public collections, allowing for broad `allow read: if true;` rules. This permits full collection scans and efficient `list` queries without complex filtering logic in rules.\n2.  **Path-based Ownership for Private Data:** `TeacherProfile` data, being private, is nested under `/users/{userId}`. This structure inherently limits listing to the owner's specific profile, preventing accidental exposure of all teacher profiles in a `list` operation on a public collection.\n3.  **Denormalization for Public Display:** `SchoolReview` includes a denormalized `reviewerYearsOfExperience` to allow public display without needing to join or `get()` the original `TeacherProfile` data, supporting public list views of reviews efficiently.\n\nThis architecture provides clear separation of concerns, simplifies security rule writing, enhances debuggability, and scales effectively for an application with diverse data access requirements."
   }
 }
     

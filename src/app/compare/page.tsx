@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -22,9 +21,29 @@ type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
     const { costOfLiving, intel } = school;
-    // Calculation for a single adult
-    const adults = 1;
-    const children = 0;
+    
+    let adults = 1;
+    let children = 0;
+
+    switch (teacherProfile.familyStatus) {
+        case 'Couple':
+            adults = 2;
+            children = 0;
+            break;
+        case 'Family (2+1)':
+            adults = 2;
+            children = 1;
+            break;
+        case 'Family (2+2)':
+            adults = 2;
+            children = 2;
+            break;
+        case 'Single':
+        default:
+            adults = 1;
+            children = 0;
+            break;
+    }
 
     const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
     const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
@@ -262,7 +281,7 @@ export default function ComparePage() {
                                 />
                              )}
                              <MetricRow
-                                label="Est. Monthly Costs (Single)"
+                                label={`Est. Monthly Costs (${teacherProfile.familyStatus})`}
                                 value={calculateMonthlyCost(school)}
                                 result={comparisonResults.monthlyCost}
                                 format={(v) => formatCurrency(v, 'USD')}
