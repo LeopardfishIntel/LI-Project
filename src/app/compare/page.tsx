@@ -170,7 +170,7 @@ export default function ComparePage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center">Compare Schools</h1>
             <p className="text-muted-foreground mb-12 text-center">Select two schools for a side-by-side comparison of key data.</p>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-8">
                 <SchoolInfo school={school1} onSelect={handleSelectSchool1} otherSchoolId={school2Id} />
                 <SchoolInfo school={school2} onSelect={handleSelectSchool2} otherSchoolId={school1Id} />
             </div>
