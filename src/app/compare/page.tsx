@@ -218,7 +218,7 @@ export default function ComparePage() {
                             <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
                         </div>
                         <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors">{school.name}</CardTitle>
+                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">{school.name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-sm pt-1">
                                 <MapPin className="w-4 h-4 mr-1.5" />
                                 <span>{school.location}, {school.country}</span>
