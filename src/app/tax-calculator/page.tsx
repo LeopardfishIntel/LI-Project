@@ -366,7 +366,17 @@ export default function TaxCalculatorPage() {
                               </div>
                              <div className="space-y-2">
                                 <Label htmlFor="dependents">Number of Dependents</Label>
-                                <Input id="dependents" type="number" value={dependents} onChange={e => setDependents(e.target.value)} min="0" placeholder="e.g., 2" />
+                                <Select value={dependents} onValueChange={setDependents}>
+                                    <SelectTrigger id="dependents">
+                                        <SelectValue placeholder="Select dependents" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="0">0</SelectItem>
+                                        <SelectItem value="1">1</SelectItem>
+                                        <SelectItem value="2">2</SelectItem>
+                                        <SelectItem value="3">3</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
 
@@ -460,6 +470,3 @@ export default function TaxCalculatorPage() {
         </div>
     );
 }
-
-
-
