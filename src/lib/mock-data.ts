@@ -67,7 +67,7 @@ export const schools: School[] = [
       curriculum: 'US',
       studentTeacherRatio: '12:1',
       classSize: 22,
-      healthInsurance: 'Comprehensive',
+      healthInsurance: 'Comp',
     },
     reviews: [
       { id: 'r3', author: 'Emily R.', isVerified: true, timestamp: '3 days ago', rating: 5, text: 'The facilities are state-of-the-art and the community is very welcoming. Savings potential is unbeatable.' },
@@ -160,7 +160,7 @@ export const schools: School[] = [
     },
     reviews: [
       { id: 'r7', author: 'David L.', isVerified: true, timestamp: '1 month ago', rating: 5, text: 'Top-tier facilities and a strong academic program. The campus is beautiful, and it\'s a great place for families.' },
-      { id: 'r8', author: 'Maria G.', isVerified: true, timestamp: '4 months ago', rating: 4, text: 'A very American-style school, which has its pros and cons. The pay is good for the UK, but the cost of living in Surrey is very high.' },
+      { id: 'r8', author: 'Maria G.', isVerified: true, timestamp: '4 months ago', rating: 4, text: 'A very US-style school, which has its pros and cons. The pay is good for the UK, but the cost of living in Surrey is very high.' },
     ],
     costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
   },

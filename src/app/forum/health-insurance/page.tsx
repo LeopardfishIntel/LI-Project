@@ -33,7 +33,7 @@ export default function HealthInsurancePage() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
-                <AccordionTrigger>Comprehensive</AccordionTrigger>
+                <AccordionTrigger>Comprehensive (Comp)</AccordionTrigger>
                 <AccordionContent>
                   A very good level of cover, but may have some limitations compared to 'Premium'. It might have a smaller international network, higher co-pays, or lower limits on certain treatments like dental. It's a solid plan but requires checking the fine print for out-of-country coverage.
                 </AccordionContent>
