@@ -5,6 +5,7 @@ export type School = {
   country: string;
   imageUrl: string;
   imageHint: string;
+  videoUrl?: string;
   spotlight?: boolean;
   rating: number;
   reviewsCount: number;

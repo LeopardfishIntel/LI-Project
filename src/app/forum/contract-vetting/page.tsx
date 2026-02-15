@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { FileWarning, FileText, Landmark, Milestone } from 'lucide-react';
+import { FileWarning } from 'lucide-react';
 
 export default function ContractVettingPage() {
   return (
@@ -52,40 +52,6 @@ export default function ContractVettingPage() {
           </CardContent>
         </Card>
         
-        <h2 className="text-2xl font-bold tracking-tight text-center mb-6 mt-16">
-          Contract Red Flag Checklist
-        </h2>
-
-        <div className="space-y-4">
-          <Alert variant="destructive">
-            <Landmark className="h-4 w-4" />
-            <AlertTitle>Local Labor Law vs. Your Contract</AlertTitle>
-            <AlertDescription>
-              Many teachers don't realize that local labor law often supersedes the school's contract. If your contract states "no notice allowed," but local law permits a 30-day notice period, the law typically prevails.
-            </AlertDescription>
-          </Alert>
-          <Alert variant="destructive">
-            <FileText className="h-4 w-4" />
-            <AlertTitle>"Subject to Change" Clauses</AlertTitle>
-            <AlertDescription>
-              Be extremely wary of any clause that allows the school to unilaterally change your salary, benefits, or duties. This is a major red flag.
-            </AlertDescription>
-          </Alert>
-          <Alert variant="destructive">
-            <Milestone className="h-4 w-4" />
-            <AlertTitle>Visa & Residency Fees</AlertTitle>
-            <AlertDescription>
-              Ensure the contract explicitly states that the school pays for all visa and residency fees for you and your dependents. Some schools may try to recoup these costs if a teacher leaves early, so check the fine print.
-            </AlertDescription>
-          </Alert>
-           <Alert variant="destructive">
-            <FileText className="h-4 w-4" />
-            <AlertTitle>Repatriation Flights</AlertTitle>
-            <AlertDescription>
-             Verify if the flight allowance is "annual" or only at the "end of the two-year term." This can have a significant financial impact.
-            </AlertDescription>
-          </Alert>
-        </div>
       </div>
     </div>
   );

@@ -232,9 +232,22 @@ export default function ComparePage() {
                             <Card className="bg-card/70 backdrop-blur-sm border-border">
                                 <CardHeader><CardTitle className="text-xl">{school.name}</CardTitle></CardHeader>
                                 <CardContent>
-                                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                        <p className="text-muted-foreground">Video coming soon</p>
-                                    </div>
+                                    {school.videoUrl ? (
+                                        <div className="aspect-video">
+                                            <iframe
+                                                className="w-full h-full rounded-md"
+                                                src={school.videoUrl}
+                                                title={`School video for ${school.name}`}
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    ) : (
+                                        <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                            <p className="text-muted-foreground">Video coming soon</p>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </div>

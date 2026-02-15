@@ -5,12 +5,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 type FeatureScore = 'good' | 'neutral' | 'bad';
 type Feature = { text: React.ReactNode; score: FeatureScore; percentage?: string };
@@ -744,6 +745,42 @@ export default function TrueCostsPage() {
                     />
                 </CardContent>
             </Card>
+        </div>
+
+        <div className="mt-12">
+            <h2 className="text-2xl font-bold tracking-tight text-center mb-8">
+                🚩 Contract Red Flags 🚩
+            </h2>
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Alert variant="destructive">
+                    <Landmark className="h-4 w-4" />
+                    <AlertTitle>Local Labor Law vs. Your Contract</AlertTitle>
+                    <AlertDescription>
+                        Many teachers don't realize that local labor law often supersedes the school's contract. If your contract states "no notice allowed," but local law permits a 30-day notice period, the law typically prevails.
+                    </AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                    <FileText className="h-4 w-4" />
+                    <AlertTitle>"Subject to Change" Clauses</AlertTitle>
+                    <AlertDescription>
+                        Be extremely wary of any clause that allows the school to unilaterally change your salary, benefits, or duties. This is a major red flag.
+                    </AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                    <Milestone className="h-4 w-4" />
+                    <AlertTitle>Visa & Residency Fees</AlertTitle>
+                    <AlertDescription>
+                        Ensure the contract explicitly states that the school pays for all visa and residency fees for you and your dependents. Some schools may try to recoup these costs if a teacher leaves early, so check the fine print.
+                    </AlertDescription>
+                </Alert>
+                <Alert variant="destructive">
+                    <FileText className="h-4 w-4" />
+                    <AlertTitle>Repatriation Flights</AlertTitle>
+                    <AlertDescription>
+                        Verify if the flight allowance is "annual" or only at the "end of the two-year term." This can have a significant financial impact.
+                    </AlertDescription>
+                </Alert>
+            </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
