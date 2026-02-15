@@ -605,7 +605,7 @@ export default function TrueCostsPage() {
                         <Landmark className="h-6 w-6" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Leopardfish Intel</CardTitle>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">📄 Leopardfish Intel</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -617,7 +617,7 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
-                        title="📄 Tax Status"
+                        title="Tax Status"
                         description={<>
                             {contractPerksData.taxStatus.text}
                             {' '}
@@ -629,25 +629,25 @@ export default function TrueCostsPage() {
                     />
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
-                        title="🏡 Housing Arrangement"
+                        title="Housing Arrangement"
                         description={contractPerksData.housing.text}
                         score={contractPerksData.housing.score}
                     />
                      <FeatureDetail 
                         icon={<Plane className="w-5 h-5" />}
-                        title="✈️ Annual Flight Allowance"
+                        title="Annual Flight Allowance"
                         description={contractPerksData.flightAllowance.text}
                         score={contractPerksData.flightAllowance.score}
                     />
                      <FeatureDetail 
                         icon={<SchoolIcon className="w-5 h-5" />}
-                        title="🎓 Dependent Tuition"
+                        title="Dependent Tuition"
                         description={contractPerksData.dependentTuition.text}
                         score={contractPerksData.dependentTuition.score}
                     />
                      <FeatureDetail 
                         icon={<Award className="w-5 h-5" />}
-                        title="🏆 Gratuity / Bonus"
+                        title="Gratuity / Bonus"
                         description={contractPerksData.gratuity.text}
                         score={contractPerksData.gratuity.score}
                     />
@@ -660,7 +660,7 @@ export default function TrueCostsPage() {
                         <Globe className="h-6 w-6" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">True Lifestyle</CardTitle>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">✈️ True Lifestyle</CardTitle>
                          <p className="text-sm text-muted-foreground capitalize">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -673,35 +673,35 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<Globe className="w-5 h-5" />}
-                        title="🛒 Imported Goods"
+                        title="Imported Goods"
                         description={lifestyleData.importedGoods.text}
                         score={lifestyleData.importedGoods.score}
                         percentage={lifestyleData.importedGoods.percentage}
                     />
                      <FeatureDetail 
                         icon={<Thermometer className="w-5 h-5" />}
-                        title="💡 Utilities (AC/Heat)"
+                        title="Utilities (AC/Heat)"
                         description={lifestyleData.utilities.text}
                         score={lifestyleData.utilities.score}
                         percentage={lifestyleData.utilities.percentage}
                     />
                      <FeatureDetail 
                         icon={<Car className="w-5 h-5" />}
-                        title="🚗 Transportation"
+                        title="Transportation"
                         description={lifestyleData.transportation.text}
                         score={lifestyleData.transportation.score}
                         percentage={lifestyleData.transportation.percentage}
                     />
                      <FeatureDetail 
                         icon={<Beer className="w-5 h-5" />}
-                        title="🍻 Social & Leisure"
+                        title="Social & Leisure"
                         description={lifestyleData.socialLeisure.text}
                         score={lifestyleData.socialLeisure.score}
                         percentage={lifestyleData.socialLeisure.percentage}
                     />
                     <FeatureDetail 
                         icon={<ShieldAlert className="w-5 h-5" />}
-                        title="🛡️ Safety & Travel Advice"
+                        title="Safety & Travel Advice"
                         description={lifestyleData.safety.text}
                         score={lifestyleData.safety.score}
                         percentage={lifestyleData.safety.percentage}
@@ -715,7 +715,7 @@ export default function TrueCostsPage() {
                         <LineChart className="h-6 w-6" />
                     </div>
                      <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Financial Strategy</CardTitle>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">💰 Financial Strategy</CardTitle>
                          <p className="text-sm text-muted-foreground capitalize">
                              {selectedCountry}
                              {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -727,19 +727,19 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<ArrowRightLeft className="w-5 h-5" />}
-                        title="💱 Currency & Fees"
+                        title="Currency & Fees"
                         description={data.currency.text}
                         score={data.currency.score}
                     />
                      <FeatureDetail 
                         icon={<PiggyBank className="w-5 h-5" />}
-                        title="🏦 Home Obligations"
+                        title="Home Obligations"
                         description={homeObligationsData.text}
                         score={homeObligationsData.score}
                     />
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
-                        title="📈 True Savings Potential"
+                        title="True Savings Potential"
                         description={savingsDescription}
                         score={savingsScore}
                     />
@@ -748,39 +748,28 @@ export default function TrueCostsPage() {
         </div>
 
         <div className="mt-12">
-            <h2 className="text-2xl font-bold tracking-tight text-center mb-8">
-                🚩 Contract Red Flags 🚩
-            </h2>
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Alert variant="destructive">
-                    <Landmark className="h-4 w-4" />
-                    <AlertTitle>Local Labor Law vs. Your Contract</AlertTitle>
-                    <AlertDescription>
-                        Many teachers don't realize that local labor law often supersedes the school's contract. If your contract states "no notice allowed," but local law permits a 30-day notice period, the law typically prevails.
-                    </AlertDescription>
-                </Alert>
-                <Alert variant="destructive">
-                    <FileText className="h-4 w-4" />
-                    <AlertTitle>"Subject to Change" Clauses</AlertTitle>
-                    <AlertDescription>
-                        Be extremely wary of any clause that allows the school to unilaterally change your salary, benefits, or duties. This is a major red flag.
-                    </AlertDescription>
-                </Alert>
-                <Alert variant="destructive">
-                    <Milestone className="h-4 w-4" />
-                    <AlertTitle>Visa & Residency Fees</AlertTitle>
-                    <AlertDescription>
-                        Ensure the contract explicitly states that the school pays for all visa and residency fees for you and your dependents. Some schools may try to recoup these costs if a teacher leaves early, so check the fine print.
-                    </AlertDescription>
-                </Alert>
-                <Alert variant="destructive">
-                    <FileText className="h-4 w-4" />
-                    <AlertTitle>Repatriation Flights</AlertTitle>
-                    <AlertDescription>
-                        Verify if the flight allowance is "annual" or only at the "end of the two-year term." This can have a significant financial impact.
-                    </AlertDescription>
-                </Alert>
-            </div>
+            <Card className="bg-destructive/10 border-destructive/50">
+                <CardHeader>
+                    <CardTitle className="text-destructive flex items-center gap-2">
+                        <ShieldAlert className="h-6 w-6" />
+                        Contract Intelligence: Financial Red Flags
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold text-foreground">Hidden Tax & Social Security Deductions</h4>
+                        <p className="text-muted-foreground mt-1">
+                            Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-foreground">Currency Fluctuations</h4>
+                        <p className="text-muted-foreground mt-1">
+                            Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
