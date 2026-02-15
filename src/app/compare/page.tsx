@@ -178,7 +178,6 @@ export default function ComparePage() {
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardContent className="p-4 md:p-6 divide-y divide-border">
                     <div className="py-2">
-                        <h3 className="font-semibold text-lg text-center mb-4">Ratings & Reviews</h3>
                         <ComparisonRow label="Overall Rating" value1={`${school1.rating.toFixed(1)}/5`} value2={`${school2.rating.toFixed(1)}/5`} result1={ratingComp.res1} result2={ratingComp.res2} icon={<Star className="w-4 h-4 text-amber-400" />} />
                     </div>
 
@@ -200,23 +199,27 @@ export default function ComparePage() {
 
             <div className="mt-12">
                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <Card className="bg-card/70 backdrop-blur-sm border-border">
-                        <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                <p className="text-muted-foreground">Video coming soon</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-card/70 backdrop-blur-sm border-border">
-                        <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                <p className="text-muted-foreground">Video coming soon</p>
-                            </div>
-                        </CardContent>
-                    </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-items-center">
+                    <div className="w-full max-w-xs">
+                        <Card className="bg-card/70 backdrop-blur-sm border-border">
+                            <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
+                            <CardContent>
+                                <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                    <p className="text-muted-foreground">Video coming soon</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="w-full max-w-xs">
+                        <Card className="bg-card/70 backdrop-blur-sm border-border">
+                            <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
+                            <CardContent>
+                                <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                    <p className="text-muted-foreground">Video coming soon</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
 
