@@ -9,8 +9,7 @@ import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { VerifiedBadge } from '@/components/verified-badge';
+import { LeopardFishInsights } from '@/components/leopardfish-insights';
 
 type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
@@ -203,54 +202,32 @@ export default function ComparePage() {
             </Card>
 
             <div className="mt-12">
-                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">Teacher Reviews</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     <Card className="bg-card/70 backdrop-blur-sm border-border">
                         <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
-                        <CardContent className="space-y-6">
-                            {school1.reviews.length > 0 ? school1.reviews.map(review => (
-                                <div key={review.id}>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-semibold">{review.author}</p>
-                                            {review.isVerified && <VerifiedBadge />}
-                                        </div>
-                                        <p className="text-xs text-muted-foreground">{review.timestamp}</p>
-                                    </div>
-                                    <div className="flex items-center gap-1 mb-2">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} className={cn("w-4 h-4", i < review.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50")}/>
-                                        ))}
-                                    </div>
-                                    <p className="text-muted-foreground">{review.text}</p>
-                                    {school1.reviews.indexOf(review) < school1.reviews.length - 1 && <Separator className="mt-6" />}
-                                </div>
-                            )) : <p className="text-muted-foreground text-center py-4">No reviews yet for this school.</p>}
+                        <CardContent>
+                            <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                <p className="text-muted-foreground">Video coming soon</p>
+                            </div>
                         </CardContent>
                     </Card>
                     <Card className="bg-card/70 backdrop-blur-sm border-border">
                         <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
-                        <CardContent className="space-y-6">
-                            {school2.reviews.length > 0 ? school2.reviews.map(review => (
-                                <div key={review.id}>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-semibold">{review.author}</p>
-                                            {review.isVerified && <VerifiedBadge />}
-                                        </div>
-                                        <p className="text-xs text-muted-foreground">{review.timestamp}</p>
-                                    </div>
-                                    <div className="flex items-center gap-1 mb-2">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} className={cn("w-4 h-4", i < review.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50")}/>
-                                        ))}
-                                    </div>
-                                    <p className="text-muted-foreground">{review.text}</p>
-                                    {school2.reviews.indexOf(review) < school2.reviews.length - 1 && <Separator className="mt-6" />}
-                                </div>
-                            )) : <p className="text-muted-foreground text-center py-4">No reviews yet for this school.</p>}
+                        <CardContent>
+                            <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
+                                <p className="text-muted-foreground">Video coming soon</p>
+                            </div>
                         </CardContent>
                     </Card>
+                </div>
+            </div>
+
+            <div className="mt-12">
+                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">LeopardFish Insights</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <LeopardFishInsights school={school1} />
+                    <LeopardFishInsights school={school2} />
                 </div>
             </div>
         </div>
