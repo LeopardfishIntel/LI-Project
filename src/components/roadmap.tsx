@@ -1,27 +1,56 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+const getImage = (id: string) => {
+  const image = PlaceHolderImages.find(img => img.id === id);
+  return {
+    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/placeholder/600/400",
+    imageHint: image?.imageHint ?? "placeholder"
+  };
+};
 
 export default function Roadmap() {
   const steps = [
-    { id: '01', title: 'Discover', desc: 'Find your perfect destination with our AI Niche Finder.', link: '/discover' },
-    { id: '02', title: 'Evaluate', desc: 'Calculate taxes and cost of living to see your real savings.', link: '/financial-forecaster' },
-    { id: '03', title: 'Decide', desc: 'Compare your top school offers side-by-side.', link: '/compare' },
+    { id: '01', title: 'Discover', desc: 'Find your perfect destination with our AI Niche Finder.', link: '/discover', imageId: 'discover-step' },
+    { id: '02', title: 'Evaluate', desc: 'Calculate taxes and cost of living to see your real savings.', link: '/financial-forecaster', imageId: 'evaluate-step' },
+    { id: '03', title: 'Decide', desc: 'Compare your top school offers side-by-side.', link: '/compare', imageId: 'decide-step' },
   ];
 
   return (
     <section className="w-full py-16 md:py-24 bg-background">
-      <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-10">Your Path to Teaching Abroad</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step) => (
-            <div key={step.id} className="relative p-6 border rounded-xl hover:shadow-lg transition bg-card/70 backdrop-blur-sm border-border hover:border-primary/50 hover:shadow-primary/20">
-              <span className="text-5xl font-black text-muted-foreground/10 absolute top-2 right-4 -z-10">{step.id}</span>
-              <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-              <p className="text-muted-foreground mb-4">{step.desc}</p>
-              <Link href={step.link} className="text-sky-400 font-semibold hover:underline">
-                Get Started →
-              </Link>
-            </div>
-          ))}
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-16">Your Path to Teaching Abroad</h2>
+        <div className="space-y-24">
+          {steps.map((step, index) => {
+            const { imageUrl, imageHint } = getImage(step.imageId);
+            return (
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+                <div className={cn("relative", index % 2 === 1 && "md:order-last")}>
+                    <Image 
+                      src={imageUrl}
+                      alt={step.desc}
+                      width={600}
+                      height={450}
+                      className="rounded-xl shadow-2xl object-cover w-full h-auto"
+                      data-ai-hint={imageHint}
+                    />
+                </div>
+                <div className={cn("flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
+                  <span className="text-sm font-bold text-primary uppercase tracking-widest">Step {parseInt(step.id)}</span>
+                  <h3 className="text-4xl font-bold mt-2 mb-4">{step.title}</h3>
+                  <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
+                  <Link href={step.link} passHref>
+                    <Button size="lg">
+                      {step.title}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

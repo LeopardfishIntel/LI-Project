@@ -41,6 +41,24 @@
       "description": "ACS Cobham International School campus",
       "imageUrl": "https://images.unsplash.com/photo-1628775926522-40212d1b82e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpbmdsaXNoJTIwYm9hcmRpbmclMjBzY2hvb2x8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "english school campus"
+    },
+    {
+      "id": "discover-step",
+      "description": "A person looking at a map.",
+      "imageUrl": "https://images.unsplash.com/photo-1586863065451-6a82fa7e81b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXAlMjBqb3VybmV5fGVufDB8fHx8MTc3MTE4MDc1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "map journey"
+    },
+    {
+      "id": "evaluate-step",
+      "description": "A calculator and financial charts.",
+      "imageUrl": "https://images.unsplash.com/photo-1635236269199-3c71295855b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmaW5hbmNpYWwlMjBncmFwaHxlbnwwfHx8fDE3NzExNzc3NDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial graph"
+    },
+    {
+      "id": "decide-step",
+      "description": "A person comparing two options on a checklist.",
+      "imageUrl": "https://images.unsplash.com/photo-1648025665834-d5fadfa8896a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjaGVja2xpc3QlMjBjb21wYXJpc29ufGVufDB8fHx8MTc3MTE4MDc1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "checklist comparison"
     }
   ]
 }
