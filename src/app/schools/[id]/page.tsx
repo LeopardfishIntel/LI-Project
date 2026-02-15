@@ -1,9 +1,11 @@
+
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSchoolById } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home } from 'lucide-react';
+import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info } from 'lucide-react';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -86,9 +88,16 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                                     <div className="mr-3 mt-1">{intelIcons[item.key as IntelKey]}</div>
                                     <div>
                                         <p className="font-semibold text-muted-foreground">{item.label}</p>
-                                        <p className={cn("text-lg", item.score && scoreColorClasses[item.score])}>
-                                            {item.value.toString()}
-                                        </p>
+                                        <div className="flex items-center gap-2">
+                                            <p className={cn("text-lg", item.score && scoreColorClasses[item.score])}>
+                                                {item.value.toString()}
+                                            </p>
+                                            {item.key === 'healthInsurance' && (
+                                                <Link href="/forum/health-insurance" aria-label="Learn more about health insurance tiers">
+                                                    <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
+                                                </Link>
+                                            )}
+                                        </div>
                                     </div>
                                 </li>
                             ))}

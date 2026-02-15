@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
-import { Users, FileText, DollarSign, Shield } from 'lucide-react';
+import { Users, FileText, DollarSign, Shield, HeartPulse } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const ForumCategoryCard = ({ icon, title, description, href }: { icon: React.ReactNode, title: string, description: string, href: string }) => (
@@ -33,7 +34,7 @@ export default function ForumPage() {
       </div>
 
       <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <ForumCategoryCard 
                   icon={<FileText className="h-6 w-6 text-primary" />}
                   title="Visas, Logistics & Vetting"
@@ -47,9 +48,15 @@ export default function ForumPage() {
                   href="#"
               />
               <ForumCategoryCard 
+                  icon={<HeartPulse className="h-6 w-6 text-primary" />}
+                  title="Health Insurance Explained"
+                  description="Decode the different tiers of health insurance offered by schools, from 'Premium' to 'National' plans."
+                  href="/forum/health-insurance"
+              />
+              <ForumCategoryCard 
                   icon={<Users className="h-6 w-6 text-primary" />}
                   title="Life Abroad & Cultural Integration"
-                  description="Share tips on navigating local culture, healthcare, banking, and building a professional network in your new host country."
+                  description="Share tips on navigating local culture, banking, and building a professional network in your new host country."
                   href="#"
               />
           </div>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -10,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { schools, teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank } from 'lucide-react';
+import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info } from 'lucide-react';
 import { LeopardFishInsights } from '@/components/leopardfish-insights';
 import { useFirestore } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
@@ -65,12 +66,13 @@ const calculateMonthlyCost = (school: School): number => {
     );
 };
 
-const MetricRow = ({ label, value, result, format, icon }: {
+const MetricRow = ({ label, value, result, format, icon, link }: {
     label: string;
     value: any;
     result: ComparisonResult;
     format?: (value: any) => string;
     icon: React.ReactNode;
+    link?: { href: string; ariaLabel: string; };
 }) => {
     const resultColor = (result: ComparisonResult) => {
         if (result === 'best') return 'text-green-400';
@@ -84,8 +86,13 @@ const MetricRow = ({ label, value, result, format, icon }: {
                 {icon}
                 <span className="text-xs text-muted-foreground">{label}</span>
             </div>
-            <div className={cn("text-lg font-semibold text-right", resultColor(result))}>
-                {format ? format(value) : (value.toString())}
+            <div className={cn("flex items-center gap-2 text-lg font-semibold text-right", resultColor(result))}>
+                <span>{format ? format(value) : (value.toString())}</span>
+                 {link && (
+                    <Link href={link.href} aria-label={link.ariaLabel}>
+                        <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
+                    </Link>
+                )}
             </div>
         </div>
     );
@@ -288,7 +295,13 @@ export default function ComparePage() {
                                 icon={<DollarSign className="w-4 h-4 text-red-400" />}
                             />
                              <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
-                             <MetricRow label="Health Insurance" value={school.intel.healthInsurance} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
+                             <MetricRow 
+                                label="Health Insurance" 
+                                value={school.intel.healthInsurance} 
+                                result={'neutral'} 
+                                icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
+                                link={{ href: "/forum/health-insurance", ariaLabel: "Learn more about health insurance tiers" }}
+                            />
                         </div>
                          <div className="pt-4">
                              <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
