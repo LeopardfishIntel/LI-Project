@@ -52,9 +52,9 @@ const countrySpecificData: CountryData = {
             text: (
                 <>
                     Ranked 37th on the 2023 Global Peace Index. UK/US travel advisories note a "substantial" terrorism threat, but day-to-day life is generally safe. Exercise standard precautions for petty crime.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/united-kingdom" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-kingdom-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/united-kingdom" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-kingdom-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'neutral',
@@ -78,9 +78,9 @@ const countrySpecificData: CountryData = {
             text: (
                  <>
                     Ranked 75th on the 2023 Global Peace Index. Crime rates are very low, but US advisories highlight the risk of regional conflict. Adherence to local laws is essential.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/uae" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-arab-emirates-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/uae" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-arab-emirates-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'neutral',
@@ -104,9 +104,9 @@ const countrySpecificData: CountryData = {
             text: (
                 <>
                     Ranked 9th on the 2023 Global Peace Index. Japan has very low crime rates and is one of the safest countries in the world. UK and US advisories recommend normal precautions.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/japan" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/japan-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/japan" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/japan-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'good',
@@ -130,9 +130,9 @@ const countrySpecificData: CountryData = {
             text: (
                  <>
                     Ranked 10th on the 2023 Global Peace Index. Crime rates are very low. Be aware of petty crimes in tourist areas. Both UK and US advisories recommend normal precautions.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/switzerland-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/switzerland-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'good',
@@ -156,9 +156,9 @@ const countrySpecificData: CountryData = {
             text: (
                  <>
                     Ranked 6th on the 2023 Global Peace Index. Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/singapore-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/singapore-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'good',
@@ -182,9 +182,9 @@ const countrySpecificData: CountryData = {
             text: (
                 <>
                     Ranked 43rd on the 2023 Global Peace Index. Daily life is very safe with low crime rates. The political situation with North Korea is a long-standing issue but rarely affects residents.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/south-korea" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/south-korea" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'neutral',
@@ -208,9 +208,9 @@ const countrySpecificData: CountryData = {
              text: (
                 <>
                     Ranked 16th on the 2023 Global Peace Index. Crime rates are low, but petty crime like bike theft and pickpocketing is common in major cities. UK and US advisories mention a terrorism threat.{' '}
-                    <a href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</a> / {' '}
-                    <a href="https://www.gov.uk/foreign-travel-advice/netherlands" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
-                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
+                    <Link href="https://www.gov.uk/foreign-travel-advice/netherlands" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
+                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
                 </>
             ),
             score: 'good',
@@ -752,18 +752,18 @@ export default function TrueCostsPage() {
                 <CardHeader>
                     <CardTitle className="text-destructive flex items-center gap-2">
                         <ShieldAlert className="h-6 w-6" />
-                        Contract Intelligence: Financial Red Flags
+                        Leopardfish Intel: Financial Red Flags
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <h4 className="font-semibold text-foreground">Hidden Tax & Social Security Deductions</h4>
+                        <h4 className="font-semibold text-foreground">🚩 Hidden Tax & Social Security Deductions</h4>
                         <p className="text-muted-foreground mt-1">
                             Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
                         </p>
                     </div>
                     <div>
-                        <h4 className="font-semibold text-foreground">Currency Fluctuations</h4>
+                        <h4 className="font-semibold text-foreground">🚩 Currency Fluctuations</h4>
                         <p className="text-muted-foreground mt-1">
                             Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
                         </p>
