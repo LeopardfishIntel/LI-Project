@@ -31,7 +31,7 @@ export default function Roadmap() {
     {
       id: '03',
       title: 'Decide',
-      desc: "Making the final choice can be tough. Our side-by-side comparison tool lays out all the critical data points from your top school offers—from salary and housing to class size and health insurance—so you can make a clear, informed decision.",
+      desc: "Weighing up multiple offers can be a challenge. Our side-by-side comparison tool breaks down the finer details of your potential contracts—from headline salary and housing allowances to class sizes and medical cover. You can even input your specific offer numbers to see the bottom line clearly. We lay out the data, so you can make your final call with total peace of mind",
       link: '/compare',
       imageId: 'decide-step'
     },
