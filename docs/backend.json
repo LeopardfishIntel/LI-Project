@@ -1,0 +1,581 @@
+{
+  "entities": {
+    "TeacherProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TeacherProfile",
+      "type": "object",
+      "description": "Represents the profile information of a teacher using the 'Know Before You Go' application, excluding sensitive authentication data.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the TeacherProfile entity."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the teacher."
+        },
+        "isVerifiedTeacher": {
+          "type": "boolean",
+          "description": "Indicates if the teacher's profile has been verified, enabling access to exclusive features and displaying a 'Verified Teacher' badge."
+        },
+        "nationality": {
+          "type": "string",
+          "description": "The teacher's nationality, used for the 'Find Your Niche' matching engine and anonymized review display."
+        },
+        "ageGroup": {
+          "type": "string",
+          "description": "The age range of the teacher (e.g., '20-30', '30-40'), used for matching. Stores a range for privacy."
+        },
+        "qualifications": {
+          "type": "array",
+          "description": "A list of academic or professional qualifications held by the teacher (e.g., 'PGCE', 'Master's in Education').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "yearsOfExperience": {
+          "type": "number",
+          "description": "The number of years of teaching experience the teacher has, used for matching and anonymized review display."
+        },
+        "linkedInProfileUrl": {
+          "type": "string",
+          "description": "URL to the teacher's LinkedIn profile, used for verification purposes.",
+          "format": "uri"
+        },
+        "preferredRegions": {
+          "type": "array",
+          "description": "A list of geographic regions the teacher prefers for job searching (e.g., 'Southeast Asia', 'Middle East').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preferredCountries": {
+          "type": "array",
+          "description": "A list of specific countries the teacher prefers for job searching (e.g., 'Thailand', 'UAE').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memberSince": {
+          "type": "string",
+          "description": "The date and time the teacher registered their profile.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "fullName",
+        "isVerifiedTeacher",
+        "nationality",
+        "ageGroup",
+        "qualifications",
+        "yearsOfExperience",
+        "memberSince"
+      ]
+    },
+    "School": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "School",
+      "type": "object",
+      "description": "Represents a school listing in the application, including its core data points and descriptive information.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the School entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the school."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the school."
+        },
+        "country": {
+          "type": "string",
+          "description": "The country where the school is located."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city where the school is located."
+        },
+        "address": {
+          "type": "string",
+          "description": "The physical address of the school."
+        },
+        "websiteUrl": {
+          "type": "string",
+          "description": "The official website URL of the school.",
+          "format": "uri"
+        },
+        "videoUrls": {
+          "type": "array",
+          "description": "A list of URLs to promotional or informational videos about the school.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "averageSalaryMin": {
+          "type": "number",
+          "description": "The estimated minimum average annual salary for teachers at the school."
+        },
+        "averageSalaryMax": {
+          "type": "number",
+          "description": "The estimated maximum average annual salary for teachers at the school."
+        },
+        "averageHousingCost": {
+          "type": "number",
+          "description": "The estimated average monthly housing cost in the school's vicinity."
+        },
+        "savingsPotentialMin": {
+          "type": "number",
+          "description": "The estimated minimum monthly savings potential for teachers."
+        },
+        "savingsPotentialMax": {
+          "type": "number",
+          "description": "The estimated maximum monthly savings potential for teachers."
+        },
+        "teacherStudentRatio": {
+          "type": "number",
+          "description": "The ratio of teachers to students at the school."
+        },
+        "classSizeAverage": {
+          "type": "number",
+          "description": "The average class size at the school."
+        },
+        "curriculum": {
+          "type": "string",
+          "description": "The primary curriculum followed by the school (e.g., 'IB', 'British National Curriculum', 'American Common Core')."
+        },
+        "accreditation": {
+          "type": "string",
+          "description": "The accreditation status or bodies for the school (e.g., 'CIS', 'WASC')."
+        },
+        "schoolType": {
+          "type": "string",
+          "description": "The type of school (e.g., 'International', 'Public', 'Private')."
+        },
+        "isSpotlight": {
+          "type": "boolean",
+          "description": "Indicates if the school is featured as a 'School Spotlight' on the homepage."
+        },
+        "overallRating": {
+          "type": "number",
+          "description": "The average overall rating for the school, typically derived from teacher reviews."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "country",
+        "city",
+        "websiteUrl",
+        "averageSalaryMin",
+        "averageSalaryMax",
+        "averageHousingCost",
+        "savingsPotentialMin",
+        "savingsPotentialMax",
+        "teacherStudentRatio",
+        "classSizeAverage",
+        "curriculum",
+        "accreditation",
+        "schoolType",
+        "isSpotlight",
+        "overallRating"
+      ]
+    },
+    "SchoolReview": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SchoolReview",
+      "type": "object",
+      "description": "Represents an anonymized review submitted by a verified teacher for a specific school.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the SchoolReview entity."
+        },
+        "schoolId": {
+          "type": "string",
+          "description": "Reference to the School this review is for. (Relationship: School 1:N SchoolReview)"
+        },
+        "authorTeacherProfileId": {
+          "type": "string",
+          "description": "Reference to the TeacherProfile of the author. Used for internal tracking and verification, but details are anonymized in public display. (Relationship: TeacherProfile 1:N SchoolReview)"
+        },
+        "rating": {
+          "type": "number",
+          "description": "The star rating given by the teacher (e.g., 1-5)."
+        },
+        "title": {
+          "type": "string",
+          "description": "A concise title for the review."
+        },
+        "content": {
+          "type": "string",
+          "description": "The main body of the review."
+        },
+        "pros": {
+          "type": "string",
+          "description": "A summary of the positive aspects of the school or experience."
+        },
+        "cons": {
+          "type": "string",
+          "description": "A summary of the negative aspects or areas for improvement."
+        },
+        "recommendation": {
+          "type": "boolean",
+          "description": "Indicates if the reviewer would recommend the school."
+        },
+        "datePosted": {
+          "type": "string",
+          "description": "The date and time when the review was posted.",
+          "format": "date-time"
+        },
+        "reviewerNationality": {
+          "type": "string",
+          "description": "The nationality of the reviewer, used for anonymized display (e.g., 'Teacher from UK')."
+        },
+        "reviewerYearsOfExperience": {
+          "type": "number",
+          "description": "The years of experience of the reviewer, used for anonymized display (e.g., 'Teacher with 5 years experience')."
+        }
+      },
+      "required": [
+        "id",
+        "schoolId",
+        "authorTeacherProfileId",
+        "rating",
+        "title",
+        "content",
+        "pros",
+        "cons",
+        "recommendation",
+        "datePosted",
+        "reviewerNationality",
+        "reviewerYearsOfExperience"
+      ]
+    },
+    "LocationCostOfLiving": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LocationCostOfLiving",
+      "type": "object",
+      "description": "Stores cost of living data for a specific geographic location, which can be either a country or a city.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the LocationCostOfLiving entity."
+        },
+        "locationName": {
+          "type": "string",
+          "description": "The name of the location (e.g., 'Bangkok', 'Thailand')."
+        },
+        "locationType": {
+          "type": "string",
+          "description": "The type of location this data applies to ('country' or 'city')."
+        },
+        "countryName": {
+          "type": "string",
+          "description": "The name of the country this location belongs to (required if locationType is 'city')."
+        },
+        "currencyCode": {
+          "type": "string",
+          "description": "The ISO 4217 currency code for the location (e.g., 'THB', 'USD')."
+        },
+        "averageMealCost": {
+          "type": "number",
+          "description": "Estimated average cost of a meal at a mid-range restaurant."
+        },
+        "monthlyRent1BR": {
+          "type": "number",
+          "description": "Estimated average monthly rent for a 1-bedroom apartment in the city center."
+        },
+        "transportPassCost": {
+          "type": "number",
+          "description": "Estimated monthly cost for a public transport pass."
+        },
+        "utilitiesMonthly": {
+          "type": "number",
+          "description": "Estimated average monthly cost for basic utilities (electricity, heating, cooling, water, garbage)."
+        },
+        "internetMonthly": {
+          "type": "number",
+          "description": "Estimated average monthly cost for internet service."
+        },
+        "childcareMonthly": {
+          "type": "number",
+          "description": "Estimated average monthly cost for childcare (e.g., kindergarten or preschool)."
+        },
+        "localPurchasingPowerIndex": {
+          "type": "number",
+          "description": "An index indicating the relative purchasing power of residents in the location."
+        },
+        "groceriesIndex": {
+          "type": "number",
+          "description": "An index comparing grocery prices to a reference city."
+        },
+        "restaurantPriceIndex": {
+          "type": "number",
+          "description": "An index comparing restaurant prices to a reference city."
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "The date and time when this cost of living data was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "locationName",
+        "locationType",
+        "currencyCode",
+        "averageMealCost",
+        "monthlyRent1BR",
+        "transportPassCost",
+        "utilitiesMonthly",
+        "internetMonthly",
+        "localPurchasingPowerIndex",
+        "groceriesIndex",
+        "restaurantPriceIndex",
+        "lastUpdated"
+      ]
+    },
+    "ForumCategory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ForumCategory",
+      "type": "object",
+      "description": "Represents a category for organizing forum posts and discussions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ForumCategory entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the forum category (e.g., 'Visas & Immigration', 'Contract Analysis')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the category's purpose or topics."
+        },
+        "slug": {
+          "type": "string",
+          "description": "A URL-friendly identifier for the category."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "slug"
+      ]
+    },
+    "ForumPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ForumPost",
+      "type": "object",
+      "description": "Represents a main discussion thread within the community forum.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ForumPost entity."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Reference to the ForumCategory this post belongs to. (Relationship: ForumCategory 1:N ForumPost)"
+        },
+        "authorTeacherProfileId": {
+          "type": "string",
+          "description": "Reference to the TeacherProfile of the post's author. (Relationship: TeacherProfile 1:N ForumPost)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the forum post."
+        },
+        "content": {
+          "type": "string",
+          "description": "The main content or body of the forum post."
+        },
+        "datePosted": {
+          "type": "string",
+          "description": "The date and time when the post was created.",
+          "format": "date-time"
+        },
+        "lastEditedDate": {
+          "type": "string",
+          "description": "The date and time when the post was last edited.",
+          "format": "date-time"
+        },
+        "viewCount": {
+          "type": "number",
+          "description": "The number of times the post has been viewed."
+        },
+        "likeCount": {
+          "type": "number",
+          "description": "The number of 'likes' or positive reactions the post has received."
+        }
+      },
+      "required": [
+        "id",
+        "categoryId",
+        "authorTeacherProfileId",
+        "title",
+        "content",
+        "datePosted",
+        "viewCount",
+        "likeCount"
+      ]
+    },
+    "ForumReply": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ForumReply",
+      "type": "object",
+      "description": "Represents a reply to a forum post or another reply, allowing for threaded discussions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ForumReply entity."
+        },
+        "postId": {
+          "type": "string",
+          "description": "Reference to the ForumPost this reply belongs to. (Relationship: ForumPost 1:N ForumReply)"
+        },
+        "parentId": {
+          "type": "string",
+          "description": "Optional reference to a parent ForumReply if this is a nested reply. (Relationship: ForumReply 1:N ForumReply)"
+        },
+        "authorTeacherProfileId": {
+          "type": "string",
+          "description": "Reference to the TeacherProfile of the reply's author. (Relationship: TeacherProfile 1:N ForumReply)"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the forum reply."
+        },
+        "datePosted": {
+          "type": "string",
+          "description": "The date and time when the reply was created.",
+          "format": "date-time"
+        },
+        "lastEditedDate": {
+          "type": "string",
+          "description": "The date and time when the reply was last edited.",
+          "format": "date-time"
+        },
+        "likeCount": {
+          "type": "number",
+          "description": "The number of 'likes' or positive reactions the reply has received."
+        }
+      },
+      "required": [
+        "id",
+        "postId",
+        "authorTeacherProfileId",
+        "content",
+        "datePosted",
+        "likeCount"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/teacherProfile",
+        "definition": {
+          "entityName": "TeacherProfile",
+          "schema": {
+            "$ref": "#/backend/entities/TeacherProfile"
+          },
+          "description": "Stores the private profile data for a specific teacher. Accessible only by the owning user (UID matches `userId` in path). This path ensures authorization independence for profile management."
+        }
+      },
+      {
+        "path": "/schools/{schoolId}",
+        "definition": {
+          "entityName": "School",
+          "schema": {
+            "$ref": "#/backend/entities/School"
+          },
+          "description": "Stores publicly accessible data for individual schools. Supports global search and display on school profile pages. Includes `isSpotlight` for homepage featuring. All documents in this collection share the same public security posture."
+        }
+      },
+      {
+        "path": "/schools/{schoolId}/reviews/{reviewId}",
+        "definition": {
+          "entityName": "SchoolReview",
+          "schema": {
+            "$ref": "#/backend/entities/SchoolReview"
+          },
+          "description": "Stores anonymized teacher reviews for a specific school. Accessible to all users for reading. Creation is restricted to verified teachers. Includes denormalized `reviewerNationality` and `reviewerYearsOfExperience` for display, and `schoolId` and `authorTeacherProfileId` for linking and creation authorization (auth independence)."
+        }
+      },
+      {
+        "path": "/locations_costOfLiving/{locationId}",
+        "definition": {
+          "entityName": "LocationCostOfLiving",
+          "schema": {
+            "$ref": "#/backend/entities/LocationCostOfLiving"
+          },
+          "description": "Stores publicly accessible cost of living data for countries and cities. Used for calculators and school comparisons. All documents in this collection share the same public security posture."
+        }
+      },
+      {
+        "path": "/forum_categories/{categoryId}",
+        "definition": {
+          "entityName": "ForumCategory",
+          "schema": {
+            "$ref": "#/backend/entities/ForumCategory"
+          },
+          "description": "Stores publicly accessible categories for the community forum. Managed by administrators. All documents in this collection share the same public security posture for reads."
+        }
+      },
+      {
+        "path": "/forum_posts/{postId}",
+        "definition": {
+          "entityName": "ForumPost",
+          "schema": {
+            "$ref": "#/backend/entities/ForumPost"
+          },
+          "description": "Stores main discussion threads for the community forum. Publicly readable. Only the author (`authorTeacherProfileId`) can modify or delete their post. Includes `authorTeacherProfileId` for authorization independence."
+        }
+      },
+      {
+        "path": "/forum_posts/{postId}/replies/{replyId}",
+        "definition": {
+          "entityName": "ForumReply",
+          "schema": {
+            "$ref": "#/backend/entities/ForumReply"
+          },
+          "description": "Stores replies to forum posts. Publicly readable within the context of a post. Only the author (`authorTeacherProfileId`) can modify or delete their reply. Includes `authorTeacherProfileId` for authorization independence and `postId` for linking to its parent post."
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/AdminRole"
+          },
+          "description": "Grants administrative privileges. Existence of a document at `/roles_admin/{uid}` indicates the user `uid` is an administrator (DBAC). This allows for atomic role checks without `get()`."
+        }
+      },
+      {
+        "path": "/roles_verifiedTeachers/{userId}",
+        "definition": {
+          "entityName": "VerifiedTeacherRole",
+          "schema": {
+            "$ref": "#/backend/entities/VerifiedTeacherRole"
+          },
+          "description": "Indicates a user is a verified teacher. Existence of a document at `/roles_verifiedTeachers/{uid}` means user `uid` is verified (DBAC). This allows for atomic verification checks without `get()`, particularly for `SchoolReview` creation."
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed with a strong emphasis on Authorization Independence, Structural Segregation, and DBAC (Database Access Control) to ensure robust security rules and efficient queries. \n\n**Authorization Independence:**\nCritical to this design is the avoidance of `get()` calls in security rules, which can break atomic operations and complicate debugging. This is achieved primarily through denormalization and path-based ownership:\n\n1.  **TeacherProfile:** Stored under `/users/{userId}/teacherProfile`. Access for a teacher's own profile is granted by matching `request.auth.uid` directly with the `{userId}` wildcard in the path. This makes authorization atomic and eliminates the need to `get()` any other document to verify ownership.\n2.  **SchoolReview, ForumPost, ForumReply:** For user-generated content, the `authorTeacherProfileId` is denormalized directly into the document. This allows security rules to instantly verify `request.auth.uid == resource.data.authorTeacherProfileId` for `create`, `update`, and `delete` operations without needing to fetch a separate user or profile document. This maintains atomicity and debuggability.\n3.  **Roles (Admin, Verified Teacher):** Instead of relying on a flag within a user profile document that would require a `get()`, roles are managed through dedicated top-level collections (e.g., `/roles_admin/{userId}`, `/roles_verifiedTeachers/{userId}`). Authorization checks become `exists(/roles_admin/$(request.auth.uid))` or `exists(/roles_verifiedTeachers/$(request.auth.uid))`. This is an atomic existence check, fulfilling the DBAC principle and avoiding complex `get()` calls.\n\n**QAPs (Rules are not Filters):**\nQueryability and list operations are a key consideration, ensuring that security rules don't inadvertently act as filters, which is inefficient and insecure. This is achieved by:\n\n1.  **Structural Segregation:** Data with different security postures are stored in separate collections. For example, publicly viewable `School` data, `LocationCostOfLiving`, `ForumCategory`, `ForumPost`, and `ForumReply` are all placed in top-level or clearly nested public collections, allowing for broad `allow read: if true;` rules. This permits full collection scans and efficient `list` queries without complex filtering logic in rules.\n2.  **Path-based Ownership for Private Data:** `TeacherProfile` data, being private, is nested under `/users/{userId}`. This structure inherently limits listing to the owner's specific profile, preventing accidental exposure of all teacher profiles in a `list` operation on a public collection.\n3.  **Denormalization for Public Display:** `SchoolReview` includes denormalized `reviewerNationality` and `reviewerYearsOfExperience` to allow public display without needing to join or `get()` the original `TeacherProfile` data, supporting public list views of reviews efficiently.\n\nThis architecture provides clear separation of concerns, simplifies security rule writing, enhances debuggability, and scales effectively for an application with diverse data access requirements."
+  }
+}

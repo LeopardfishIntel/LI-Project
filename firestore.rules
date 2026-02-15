@@ -1,0 +1,263 @@
+/**
+ * =================================================================================
+ * Firebase Security Rules for "Know Before You Go" (Prototyping Mode)
+ * =================================================================================
+ *
+ * @version 2
+ *
+ * Core Philosophy:
+ * This ruleset enforces a hybrid security model prioritizing Authorization Independence,
+ * Structural Segregation, and Database Access Control (DBAC). The model is designed
+ * to be highly secure in terms of user permissions while remaining flexible on data
+ * schemas to support rapid application prototyping.
+ *
+ * Data Structure:
+ * The data is organized into two main categories:
+ * 1. Private User Data: Stored under `/users/{userId}/...`, this data is strictly
+ *    owned by and accessible only to the authenticated user.
+ * 2. Shared & Public Data: Stored in top-level collections (e.g., `/schools`,
+ *    `/forum_posts`). Access is either public for reads or controlled by ownership
+ *    fields within the documents themselves.
+ * 3. Role-Based Access: User roles (Admin, Verified Teacher) are managed in
+ *    dedicated collections (`/roles_admin`, `/roles_verifiedTeachers`). This DBAC
+ *    pattern allows for fast, atomic, and performant role checks using `exists()`.
+ *
+ * Key Security Decisions:
+ * - No User Listing: The structure prevents the listing of all application users.
+ *   Each user can only access their own data tree.
+ * - Public Data is Read-Only by Default: Collections like `/schools` and
+ *   `/locations_costOfLiving` are publicly readable, but write access is
+ *   restricted to administrators to ensure data integrity.
+ * - User-Generated Content (UGC): For UGC like reviews and forum posts, reads are
+ *   public, but writes (`create`, `update`, `delete`) are strictly limited to the
+ *   original author, enforced via a denormalized `authorTeacherProfileId` field.
+ *
+ * Denormalization for Authorization:
+ * To avoid slow and costly `get()` calls in rules, authorization data is denormalized.
+ * - Ownership fields (e.g., `authorTeacherProfileId`) are stored directly on UGC
+ *   documents, enabling fast ownership checks.
+ * - Role collections (`/roles_admin`, `/roles_verifiedTeachers`) allow for efficient
+ *   `exists()` checks, which are superior to fetching a user profile document to
+ *   check a role flag.
+ *
+ * Structural Segregation:
+ * Data with different security needs are stored in separate collections. For example,
+ * private `teacherProfile` data is isolated under a user-specific path, while
+ * public `schools` data is in a top-level collection. This prevents accidental
+ * data exposure and simplifies rules for `list` operations.
+ *
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =====================================================================
+    // Helper Functions
+    // =====================================================================
+
+    /**
+     * @description Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the authenticated user's UID matches the provided userId.
+     * @param userId The UID to check against.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks for the existence of an admin role document for the current user.
+     * This is an efficient, atomic alternative to get().
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /**
+     * @description Checks for the existence of a verified teacher role document.
+     */
+    function isVerifiedTeacher() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_verifiedTeachers/$(request.auth.uid));
+    }
+
+    /**
+     * @description Validates that the author ID in a new document matches the requestor's UID.
+     * @param authorFieldName The name of the field containing the author's UID.
+     */
+    function isAuthorOfNewDoc(authorFieldName) {
+      return isSignedIn() && request.resource.data[authorFieldName] == request.auth.uid;
+    }
+
+    /**
+     * @description Validates that the author ID in an existing document matches the requestor's UID.
+     * Ensures the document exists before checking ownership.
+     * @param authorFieldName The name of the field containing the author's UID.
+     */
+    function isAuthorOfExistingDoc(authorFieldName) {
+      return isSignedIn() && resource != null && resource.data[authorFieldName] == request.auth.uid;
+    }
+
+    /**
+     * @description Validates that a specific field in a document is not being changed during an update.
+     * @param fieldName The name of the field to check for immutability.
+     */
+    function isImmutable(fieldName) {
+      return request.resource.data[fieldName] == resource.data[fieldName];
+    }
+
+    // =====================================================================
+    // User-Specific Data
+    // =====================================================================
+
+    /**
+     * @description Manages a teacher's private profile data.
+     * @path /users/{userId}/teacherProfile/{profileId}
+     * @allow (create, get, update, delete) A signed-in user accessing their own profile document.
+     * @deny (any) A user trying to access another user's profile.
+     * @principle Restricts access to a user's own data tree using path-based ownership.
+     */
+    match /users/{userId}/teacherProfile/{profileId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && resource != null && isImmutable('id');
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    // =====================================================================
+    // Public Content & User-Generated Content (UGC)
+    // =====================================================================
+
+    /**
+     * @description Publicly readable school listings. Writable only by admins.
+     * @path /schools/{schoolId}
+     * @allow (get, list) Any user, signed in or not, reading school data.
+     * @deny (create, update, delete) Any non-admin user trying to modify school data.
+     * @principle Segregates public read-only data from private data. Writes are role-based.
+     */
+    match /schools/{schoolId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description School reviews. Publicly readable. Verified teachers can create them.
+     * Authors can edit or delete their own reviews.
+     * @path /schools/{schoolId}/reviews/{reviewId}
+     * @allow (create) A user with a 'verified teacher' role creating a review for themselves.
+     * @deny (update) A user trying to edit a review they did not write.
+     * @principle Enforces document ownership for writes on publicly readable UGC. Creation is role-based.
+     */
+    match /schools/{schoolId}/reviews/{reviewId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isVerifiedTeacher() && isAuthorOfNewDoc('authorTeacherProfileId');
+      allow update: if isAuthorOfExistingDoc('authorTeacherProfileId') && isImmutable('authorTeacherProfileId') && isImmutable('schoolId');
+      allow delete: if isAuthorOfExistingDoc('authorTeacherProfileId');
+    }
+
+    /**
+     * @description Publicly readable cost of living data. Writable only by admins.
+     * @path /locations_costOfLiving/{locationId}
+     * @allow (get, list) Any user reading location data.
+     * @deny (create, update, delete) Any non-admin user trying to modify location data.
+     * @principle Segregates public read-only data, with writes restricted by admin role.
+     */
+    match /locations_costOfLiving/{locationId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Publicly readable forum categories. Writable only by admins.
+     * @path /forum_categories/{categoryId}
+     * @allow (get, list) Any user reading forum categories.
+     * @deny (create, update, delete) Any non-admin user trying to modify categories.
+     * @principle Segregates public read-only data, with writes restricted by admin role.
+     */
+    match /forum_categories/{categoryId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Forum posts. Publicly readable. Signed-in users can create.
+     * Authors can edit or delete their own posts.
+     * @path /forum_posts/{postId}
+     * @allow (create) A signed-in user creating a new post and setting themselves as the author.
+     * @deny (delete) A user trying to delete a post written by someone else.
+     * @principle Enforces document ownership for writes on publicly readable UGC.
+     */
+    match /forum_posts/{postId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn() && isAuthorOfNewDoc('authorTeacherProfileId');
+      allow update: if isAuthorOfExistingDoc('authorTeacherProfileId') && isImmutable('authorTeacherProfileId');
+      allow delete: if isAuthorOfExistingDoc('authorTeacherProfileId');
+
+      /**
+       * @description Forum replies. Publicly readable. Signed-in users can create.
+       * Authors can edit or delete their own replies.
+       * @path /forum_posts/{postId}/replies/{replyId}
+       * @allow (create) A signed-in user replying to post {postId}.
+       * @deny (update) A user trying to change the `postId` of a reply after creation.
+       * @principle Enforces document ownership and relational integrity for nested UGC.
+       */
+      match /replies/{replyId} {
+        allow get: if true;
+        allow list: if true;
+        allow create: if isSignedIn() && isAuthorOfNewDoc('authorTeacherProfileId') && request.resource.data.postId == postId;
+        allow update: if isAuthorOfExistingDoc('authorTeacherProfileId') && isImmutable('authorTeacherProfileId') && isImmutable('postId');
+        allow delete: if isAuthorOfExistingDoc('authorTeacherProfileId');
+      }
+    }
+
+    // =====================================================================
+    // Role-Based Access Control (DBAC) Collections
+    // =====================================================================
+
+    /**
+     * @description Manages admin user roles. Readable and writable only by other admins.
+     * @path /roles_admin/{userId}
+     * @allow (any) An existing admin granting or revoking another user's admin role.
+     * @deny (any) A non-admin attempting to read the admin list or grant themselves a role.
+     * @principle Secures the role-management system itself, preventing privilege escalation.
+     */
+    match /roles_admin/{userId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Manages verified teacher roles. Readable and writable only by admins.
+     * @path /roles_verifiedTeachers/{userId}
+     * @allow (any) An admin granting or revoking a user's 'verified teacher' status.
+     * @deny (any) A non-admin attempting to verify themselves or view the verified list.
+     * @principle Secures the role-management system itself, preventing privilege escalation.
+     */
+    match /roles_verifiedTeachers/{userId} {
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+  }
+}
