@@ -1,10 +1,10 @@
 "use server";
 
-import { findYourNiche, FindYourNicheInput, FindYourNicheOutput } from "@/ai/flows/find-your-niche-flow";
+import { findYourNook, FindYourNookInput, FindYourNookOutput } from "@/ai/flows/find-your-niche-flow";
 import { schools } from "@/lib/mock-data";
 
 export type NicheFinderState = {
-  result: FindYourNicheOutput | null;
+  result: FindYourNookOutput | null;
   error: string | null;
   pending: boolean;
 };
@@ -22,7 +22,7 @@ export async function findNicheAction(
   const preferences = formData.getAll("preferences").join(", ");
   const experienceYears = formData.get("experience");
 
-  const input: FindYourNicheInput = {
+  const input: FindYourNookInput = {
     age: Number(formData.get("age")),
     qualifications: allQualifications,
     currentLocation: String(formData.get("currentLocation")),
@@ -31,7 +31,7 @@ export async function findNicheAction(
     subject: String(formData.get("subject")),
     preferredRegions: regions,
     preferences: preferences,
-    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
+    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
     familyStatus: String(formData.get("familyStatus")),
   };
@@ -53,7 +53,7 @@ export async function findNicheAction(
   }
 
   try {
-    const result = await findYourNiche(input);
+    const result = await findYourNook(input);
     return { result, error: null, pending: false };
   } catch (e: any) {
     console.error(e);

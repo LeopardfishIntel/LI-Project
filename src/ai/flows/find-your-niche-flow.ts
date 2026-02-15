@@ -32,7 +32,7 @@ const FindYourNookInputSchema = z.object({
       'A detailed description of the teacher\'s preferences for a teaching location (e.g., "warm climate, good work-life balance, high savings potential, strong expat community").'
     ),
   preferredCurriculums: z.string().describe("A comma-separated list of the teacher's preferred curriculum (e.g., 'UK, IB').").optional(),
-  goal: z.enum(["saving", "adventure", "growth", "balanced", "culture"]).describe("The teacher's primary goal for their next move. Options are 'saving', 'adventure', 'growth', 'balanced', or 'culture'. 'culture' prioritizes locations with rich history, arts, and vibrant city life (e.g., Prague, Berlin)."),
+  goal: z.enum(["saving", "adventure", "growth", "balanced"]).describe("The teacher's primary goal for their next move. Options are 'saving', 'adventure', 'growth', or 'balanced'."),
   availableSchools: z.string().describe("A JSON string representing an array of available schools. Each school object has properties like id, name, country, and curriculum."),
   familyStatus: z.string().describe("The teacher's family status (e.g., 'single', 'couple', 'family with children'). This is crucial for considering housing and dependent benefits."),
 });

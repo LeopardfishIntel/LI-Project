@@ -40,7 +40,7 @@ export async function findNookAction(
     preferredRegions: regions,
     preferences: preferences,
     preferredCurriculums: curriculums,
-    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
+    goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
     familyStatus: String(formData.get("familyStatus")),
   };

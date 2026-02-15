@@ -289,6 +289,10 @@ export default function FindYourNookPage() {
                         <Checkbox id="p_adventure" name="preferences" value="Outdoor/Adventure" />
                         <Label htmlFor="p_adventure" className="font-normal">Outdoor/Adventure</Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="p_culture" name="preferences" value="Cultural immersion" />
+                        <Label htmlFor="p_culture" className="font-normal">Cultural Immersion</Label>
+                    </div>
                 </div>
               </div>
               <div className="space-y-2">
@@ -309,10 +313,6 @@ export default function FindYourNookPage() {
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="balanced" id="balanced" />
                     <Label htmlFor="balanced" className="font-normal">Balanced Lifestyle</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="culture" id="culture" />
-                    <Label htmlFor="culture" className="font-normal">Cultural Immersion</Label>
                   </div>
                 </RadioGroup>
               </div>
