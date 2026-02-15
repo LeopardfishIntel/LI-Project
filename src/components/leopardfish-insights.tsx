@@ -1,40 +1,59 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { School } from '@/lib/types';
 import { getSchoolInsights } from '@/app/compare/actions';
 import type { AiSchoolInsightsSummaryOutput } from '@/ai/flows/ai-school-insights-summary-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThumbsUp, ThumbsDown, Loader2, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ThumbsUp, ThumbsDown, Loader2, Sparkles, ServerCrash } from 'lucide-react';
 
 export function LeopardFishInsights({ school }: { school: School }) {
     const [result, setResult] = useState<{ insights: AiSchoolInsightsSummaryOutput | null, error?: string } | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        async function fetchInsights() {
-            if (!school) return;
-            setLoading(true);
-            const res = await getSchoolInsights(school);
-            setResult(res);
-            setLoading(false);
-        }
-        fetchInsights();
-    }, [school]);
+    async function handleFetchInsights() {
+        if (!school) return;
+        setLoading(true);
+        setResult(null);
+        const res = await getSchoolInsights(school);
+        setResult(res);
+        setLoading(false);
+    }
 
     return (
-        <Card className="bg-card/70 backdrop-blur-sm border-border h-full">
+        <Card className="bg-card/70 backdrop-blur-sm border-border h-full flex flex-col">
             <CardHeader>
                 <CardTitle className="text-xl">{school.name}</CardTitle>
             </CardHeader>
-            <CardContent>
-                {loading && (
-                    <div className="flex items-center justify-center py-8 min-h-[200px]">
-                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                        <p className="ml-4 text-muted-foreground">Generating LeopardFish Insights...</p>
+            <CardContent className="flex-grow flex flex-col">
+                {!loading && !result && (
+                    <div className="flex flex-col items-center justify-center text-center flex-grow py-8 min-h-[200px]">
+                        <Sparkles className="w-8 h-8 text-amber-400 mb-4" />
+                        <h3 className="font-semibold text-lg mb-2">LeopardFish Insights</h3>
+                        <p className="text-muted-foreground mb-4 text-sm">Get an AI-powered summary of this school's pros & cons based on teacher reviews.</p>
+                        <Button onClick={handleFetchInsights}>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Generate Analysis
+                        </Button>
                     </div>
                 )}
-                {result?.error && <p className="text-destructive-foreground bg-destructive/50 p-3 rounded-md">{result.error}</p>}
+                {loading && (
+                    <div className="flex items-center justify-center flex-grow py-8 min-h-[200px]">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                        <p className="ml-4 text-muted-foreground">Analyzing reviews...</p>
+                    </div>
+                )}
+                {result?.error && (
+                     <div className="flex flex-col items-center justify-center text-center flex-grow py-8 min-h-[200px] bg-destructive/10 rounded-md">
+                        <ServerCrash className="w-8 h-8 text-destructive mb-4" />
+                        <h3 className="font-semibold text-lg text-destructive mb-2">Analysis Failed</h3>
+                        <p className="text-destructive/80 mb-4 text-sm px-4">There was an error generating the insights. This can happen due to high traffic. Please try again in a moment.</p>
+                        <Button variant="destructive" onClick={handleFetchInsights}>
+                            Try Again
+                        </Button>
+                    </div>
+                )}
                 {result?.insights && (
                     <div className="space-y-6">
                         <div>
@@ -65,6 +84,10 @@ export function LeopardFishInsights({ school }: { school: School }) {
                                 )}
                             </div>
                         </div>
+                        <Button variant="ghost" size="sm" onClick={handleFetchInsights} className="w-full text-muted-foreground">
+                            <Sparkles className="w-4 h-4 mr-2"/>
+                            Regenerate
+                        </Button>
                     </div>
                 )}
             </CardContent>
