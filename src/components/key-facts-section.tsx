@@ -114,5 +114,3 @@ export function KeyFactsSection() {
     </section>
   );
 }
-
-    

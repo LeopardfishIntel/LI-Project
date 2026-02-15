@@ -182,7 +182,7 @@ export default function ComparePage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center">Compare Schools</h1>
             <p className="text-muted-foreground mb-12 text-center">Select two schools for a side-by-side comparison of key data.</p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-start mb-8 justify-items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-8 justify-items-center">
                 <SchoolInfo school={school1} onSelect={handleSelectSchool1} otherSchoolId={school2Id} />
                 <SchoolInfo school={school2} onSelect={handleSelectSchool2} otherSchoolId={school1Id} />
             </div>
@@ -211,7 +211,7 @@ export default function ComparePage() {
 
             <div className="mt-12">
                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-start justify-items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-items-center">
                     <div className="w-full max-w-[280px]">
                         <Card className="bg-card/70 backdrop-blur-sm border-border">
                             <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
@@ -245,5 +245,3 @@ export default function ComparePage() {
         </div>
     );
 }
-
-    
