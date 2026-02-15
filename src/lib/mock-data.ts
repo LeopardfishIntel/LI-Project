@@ -37,7 +37,7 @@ export const schools: School[] = [
     reviewsCount: 124,
     intel: {
       salary: { value: '$55k - $75k', score: 'good' },
-      housing: { value: '2-bed apartment provided', provided: true },
+      housing: { value: '2-bed Apt Provided', provided: true },
       savingsPotential: { value: 'High', score: 'good' },
       curriculum: 'IB',
       studentTeacherRatio: '8:1',
@@ -62,7 +62,7 @@ export const schools: School[] = [
     reviewsCount: 210,
     intel: {
       salary: { value: '$60k - $80k (tax-free)', score: 'good' },
-      housing: { value: 'Housing allowance provided', provided: false },
+      housing: { value: 'Allowance', provided: false },
       savingsPotential: { value: 'Very High', score: 'good' },
       curriculum: 'US',
       studentTeacherRatio: '12:1',
@@ -87,7 +87,7 @@ export const schools: School[] = [
     reviewsCount: 88,
     intel: {
       salary: { value: '$80k - $100k', score: 'good' },
-      housing: { value: 'Not provided', provided: false },
+      housing: { value: 'Not Provided', provided: false },
       savingsPotential: { value: 'Moderate', score: 'neutral' },
       curriculum: 'IB/AP',
       studentTeacherRatio: '10:1',
@@ -110,7 +110,7 @@ export const schools: School[] = [
     reviewsCount: 150,
     intel: {
       salary: { value: '$70k - $90k', score: 'good' },
-      housing: { value: 'Subsidized housing available', provided: true },
+      housing: { value: 'Subsidised', provided: true },
       savingsPotential: { value: 'High', score: 'good' },
       curriculum: 'AP',
       studentTeacherRatio: '11:1',
@@ -130,7 +130,7 @@ export const schools: School[] = [
     reviewsCount: 95,
     intel: {
       salary: { value: '$45k - $65k', score: 'neutral' },
-      housing: { value: 'Provided, furnished', provided: true },
+      housing: { value: 'Furnished Apt Provided', provided: true },
       savingsPotential: { value: 'Moderate', score: 'neutral' },
       curriculum: 'IB/British',
       studentTeacherRatio: '15:1',
@@ -151,7 +151,7 @@ export const schools: School[] = [
     reviewsCount: 85,
     intel: {
       salary: { value: '$60k - $85k', score: 'good' },
-      housing: { value: 'Allowance, support finding', provided: false },
+      housing: { value: 'Allowance', provided: false },
       savingsPotential: { value: 'Moderate', score: 'neutral' },
       curriculum: 'IB & AP',
       studentTeacherRatio: '10:1',
@@ -174,7 +174,7 @@ export const schools: School[] = [
     reviewsCount: 72,
     intel: {
       salary: { value: '$50k - $70k', score: 'neutral' },
-      housing: { value: 'Allowance / Support', provided: false },
+      housing: { value: 'Allowance', provided: false },
       savingsPotential: { value: 'Low', score: 'bad' },
       curriculum: 'IB',
       studentTeacherRatio: '9:1',
