@@ -616,7 +616,7 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<FileText className="w-5 h-5" />}
-                        title="Tax Status"
+                        title="📄 Tax Status"
                         description={<>
                             {contractPerksData.taxStatus.text}
                             {' '}
@@ -628,25 +628,25 @@ export default function TrueCostsPage() {
                     />
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
-                        title="Housing Arrangement"
+                        title="🏡 Housing Arrangement"
                         description={contractPerksData.housing.text}
                         score={contractPerksData.housing.score}
                     />
                      <FeatureDetail 
                         icon={<Plane className="w-5 h-5" />}
-                        title="Annual Flight Allowance"
+                        title="✈️ Annual Flight Allowance"
                         description={contractPerksData.flightAllowance.text}
                         score={contractPerksData.flightAllowance.score}
                     />
                      <FeatureDetail 
                         icon={<SchoolIcon className="w-5 h-5" />}
-                        title="Dependent Tuition"
+                        title="🎓 Dependent Tuition"
                         description={contractPerksData.dependentTuition.text}
                         score={contractPerksData.dependentTuition.score}
                     />
                      <FeatureDetail 
                         icon={<Award className="w-5 h-5" />}
-                        title="Gratuity / Bonus"
+                        title="🏆 Gratuity / Bonus"
                         description={contractPerksData.gratuity.text}
                         score={contractPerksData.gratuity.score}
                     />
@@ -672,35 +672,35 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<Globe className="w-5 h-5" />}
-                        title="Imported Goods"
+                        title="🛒 Imported Goods"
                         description={lifestyleData.importedGoods.text}
                         score={lifestyleData.importedGoods.score}
                         percentage={lifestyleData.importedGoods.percentage}
                     />
                      <FeatureDetail 
                         icon={<Thermometer className="w-5 h-5" />}
-                        title="Utilities (AC/Heat)"
+                        title="💡 Utilities (AC/Heat)"
                         description={lifestyleData.utilities.text}
                         score={lifestyleData.utilities.score}
                         percentage={lifestyleData.utilities.percentage}
                     />
                      <FeatureDetail 
                         icon={<Car className="w-5 h-5" />}
-                        title="Transportation"
+                        title="🚗 Transportation"
                         description={lifestyleData.transportation.text}
                         score={lifestyleData.transportation.score}
                         percentage={lifestyleData.transportation.percentage}
                     />
                      <FeatureDetail 
                         icon={<Beer className="w-5 h-5" />}
-                        title="Social &amp; Leisure"
+                        title="🍻 Social & Leisure"
                         description={lifestyleData.socialLeisure.text}
                         score={lifestyleData.socialLeisure.score}
                         percentage={lifestyleData.socialLeisure.percentage}
                     />
                     <FeatureDetail 
                         icon={<ShieldAlert className="w-5 h-5" />}
-                        title="Safety &amp; Travel Advice"
+                        title="🛡️ Safety & Travel Advice"
                         description={lifestyleData.safety.text}
                         score={lifestyleData.safety.score}
                         percentage={lifestyleData.safety.percentage}
@@ -726,19 +726,19 @@ export default function TrueCostsPage() {
                 <CardContent className="space-y-4 flex-grow pt-0">
                      <FeatureDetail 
                         icon={<ArrowRightLeft className="w-5 h-5" />}
-                        title="Currency &amp; Fees"
+                        title="💱 Currency & Fees"
                         description={data.currency.text}
                         score={data.currency.score}
                     />
                      <FeatureDetail 
                         icon={<PiggyBank className="w-5 h-5" />}
-                        title="Home Obligations"
+                        title="🏦 Home Obligations"
                         description={homeObligationsData.text}
                         score={homeObligationsData.score}
                     />
                      <FeatureDetail 
                         icon={<LineChart className="w-5 h-5" />}
-                        title="True Savings Potential"
+                        title="📈 True Savings Potential"
                         description={savingsDescription}
                         score={savingsScore}
                     />
@@ -746,29 +746,6 @@ export default function TrueCostsPage() {
             </Card>
         </div>
         
-        <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-xl">
-                    <ShieldAlert className="w-6 w-6 text-destructive" />
-                    Leopardfish Intel: 🚩 Financial Red Flags 🚩
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div>
-                    <h4 className="font-semibold text-lg mb-2">Hidden Tax &amp; Social Security Deductions</h4>
-                    <p className="text-muted-foreground">
-                        Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
-                    </p>
-                </div>
-                 <div>
-                    <h4 className="font-semibold text-lg mb-2">Currency Fluctuations</h4>
-                    <p className="text-muted-foreground">
-                        Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
-                    </p>
-                </div>
-            </CardContent>
-        </Card>
-
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
           <p className="animate-pulse-slow">Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
