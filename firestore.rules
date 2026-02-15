@@ -226,6 +226,18 @@ service cloud.firestore {
       }
     }
 
+    /**
+     * @description Application-wide metrics, like page counters.
+     * @path /app_metrics/{metricId}
+     * @allow (get) Publicly readable.
+     * @allow (write) Allow incrementing the comparison counter for prototyping.
+     */
+    match /app_metrics/{metricId} {
+      allow get: if true;
+      allow list: if true;
+      allow write: if metricId == 'page_views';
+    }
+
     // =====================================================================
     // Role-Based Access Control (DBAC) Collections
     // =====================================================================
@@ -261,3 +273,5 @@ service cloud.firestore {
     }
   }
 }
+
+    

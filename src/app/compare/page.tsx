@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,9 @@ import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users } from 'lucide-react';
 import { LeopardFishInsights } from '@/components/leopardfish-insights';
+import { useFirestore } from '@/firebase';
+import { doc, increment } from 'firebase/firestore';
+import { setDocumentNonBlocking } from '@/firebase';
 
 type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
@@ -94,6 +97,15 @@ const ComparisonRow = ({ label, value1, value2, result1, result2, format1, forma
 export default function ComparePage() {
     const [school1Id, setSchool1Id] = useState<string>(schools[0].id);
     const [school2Id, setSchool2Id] = useState<string>(schools[1].id);
+    
+    const firestore = useFirestore();
+
+    useEffect(() => {
+        if (firestore) {
+            const counterRef = doc(firestore, 'app_metrics', 'page_views');
+            setDocumentNonBlocking(counterRef, { comparisons_made: increment(1) }, { merge: true });
+        }
+    }, [firestore]);
 
     const school1 = schools.find(s => s.id === school1Id)!;
     const school2 = schools.find(s => s.id === school2Id)!;
@@ -134,7 +146,7 @@ export default function ComparePage() {
 
     const SchoolInfo = ({ school, onSelect, otherSchoolId }: { school: School, onSelect: (id: string) => void, otherSchoolId: string }) => (
         <div className="flex flex-col items-center gap-4">
-            <div className="w-full max-w-xs">
+            <div className="w-full max-w-[280px]">
                  <Select value={school.id} onValueChange={onSelect}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select a school" />
@@ -148,7 +160,7 @@ export default function ComparePage() {
                     </SelectContent>
                 </Select>
             </div>
-            <Link href={`/schools/${school.id}`} className="block w-full max-w-xs">
+            <Link href={`/schools/${school.id}`} className="block w-full max-w-[280px]">
                 <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group">
                     <div className="relative aspect-video">
                         <Image src={school.imageUrl} alt={school.name} layout="fill" objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
@@ -170,7 +182,7 @@ export default function ComparePage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center">Compare Schools</h1>
             <p className="text-muted-foreground mb-12 text-center">Select two schools for a side-by-side comparison of key data.</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-start mb-8 justify-items-center">
                 <SchoolInfo school={school1} onSelect={handleSelectSchool1} otherSchoolId={school2Id} />
                 <SchoolInfo school={school2} onSelect={handleSelectSchool2} otherSchoolId={school1Id} />
             </div>
@@ -199,8 +211,8 @@ export default function ComparePage() {
 
             <div className="mt-12">
                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">School Videos</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-items-center">
-                    <div className="w-full max-w-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-start justify-items-center">
+                    <div className="w-full max-w-[280px]">
                         <Card className="bg-card/70 backdrop-blur-sm border-border">
                             <CardHeader><CardTitle className="text-xl">{school1.name}</CardTitle></CardHeader>
                             <CardContent>
@@ -210,7 +222,7 @@ export default function ComparePage() {
                             </CardContent>
                         </Card>
                     </div>
-                    <div className="w-full max-w-xs">
+                    <div className="w-full max-w-[280px]">
                         <Card className="bg-card/70 backdrop-blur-sm border-border">
                             <CardHeader><CardTitle className="text-xl">{school2.name}</CardTitle></CardHeader>
                             <CardContent>
@@ -233,3 +245,5 @@ export default function ComparePage() {
         </div>
     );
 }
+
+    

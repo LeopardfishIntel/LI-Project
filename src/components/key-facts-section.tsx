@@ -2,33 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { Building, Globe, Users, BarChart3 } from 'lucide-react';
-
-const stats = [
-  {
-    icon: <Building className="w-10 h-10 text-primary mb-2" />,
-    endValue: 13000,
-    label: 'International Schools',
-    format: (val: number) => `${Math.floor(val/1000)}k+`,
-  },
-  {
-    icon: <Globe className="w-10 h-10 text-primary mb-2" />,
-    endValue: 195,
-    label: 'Countries',
-    format: (val: number) => `${Math.floor(val)}`,
-  },
-  {
-    icon: <Users className="w-10 h-10 text-primary mb-2" />,
-    endValue: 500000,
-    label: 'Teachers Worldwide',
-    format: (val: number) => `${Math.floor(val/1000)}k+`,
-  },
-  {
-    icon: <BarChart3 className="w-10 h-10 text-primary mb-2" />,
-    endValue: 750000,
-    label: 'Comparisons Made',
-    format: (val: number) => `${Math.floor(val/1000)}k+`,
-  },
-];
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val: number) => string; }) => {
   const [count, setCount] = useState(0);
@@ -85,6 +60,44 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
 
 
 export function KeyFactsSection() {
+  const firestore = useFirestore();
+  
+  const metricsRef = useMemoFirebase(() => {
+      if (!firestore) return null;
+      return doc(firestore, 'app_metrics', 'page_views');
+  }, [firestore]);
+
+  const { data: metrics } = useDoc<{ comparisons_made: number }>(metricsRef);
+
+  const comparisonsMade = metrics?.comparisons_made || 0;
+
+  const stats = [
+    {
+      icon: <Building className="w-10 h-10 text-primary mb-2" />,
+      endValue: 13000,
+      label: 'International Schools',
+      format: (val: number) => `${Math.floor(val/1000)}k+`,
+    },
+    {
+      icon: <Globe className="w-10 h-10 text-primary mb-2" />,
+      endValue: 195,
+      label: 'Countries',
+      format: (val: number) => `${Math.floor(val)}`,
+    },
+    {
+      icon: <Users className="w-10 h-10 text-primary mb-2" />,
+      endValue: 500000,
+      label: 'Teachers Worldwide',
+      format: (val: number) => `${Math.floor(val/1000)}k+`,
+    },
+    {
+      icon: <BarChart3 className="w-10 h-10 text-primary mb-2" />,
+      endValue: comparisonsMade,
+      label: 'Comparisons Made',
+      format: (val: number) => val.toLocaleString('en-US'),
+    },
+  ];
+  
   return (
     <section className="w-full py-12 bg-background border-y border-border">
       <div className="container mx-auto px-4 md:px-6">
@@ -101,3 +114,5 @@ export function KeyFactsSection() {
     </section>
   );
 }
+
+    
