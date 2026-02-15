@@ -134,7 +134,7 @@ export default function ComparePage() {
 
     const SchoolInfo = ({ school, onSelect, otherSchoolId }: { school: School, onSelect: (id: string) => void, otherSchoolId: string }) => (
         <div className="flex flex-col items-center gap-4">
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-xs">
                  <Select value={school.id} onValueChange={onSelect}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select a school" />
@@ -148,7 +148,7 @@ export default function ComparePage() {
                     </SelectContent>
                 </Select>
             </div>
-            <Link href={`/schools/${school.id}`} className="block w-full max-w-sm">
+            <Link href={`/schools/${school.id}`} className="block w-full max-w-xs">
                 <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group">
                     <div className="relative aspect-video">
                         <Image src={school.imageUrl} alt={school.name} layout="fill" objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
