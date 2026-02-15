@@ -1,20 +1,22 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users } from 'lucide-react';
+import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank } from 'lucide-react';
 import { LeopardFishInsights } from '@/components/leopardfish-insights';
 import { useFirestore } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 
-type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost';
+type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
@@ -41,26 +43,6 @@ const calculateMonthlyCost = (school: School): number => {
       costOfLiving.vehicleInsuranceMaint +
       uncoveredMedicalCost
     );
-};
-
-const getNumericValue = (school: School, metric: ComparisonMetric) => {
-    switch (metric) {
-        case 'salary':
-            return parseInt(school.intel.salary.value.split(' - ')[1].replace('k', '000').replace('$', '')) || 0;
-        case 'savings':
-            if (school.intel.savingsPotential.value === 'Very High') return 3;
-            if (school.intel.savingsPotential.value === 'High') return 2;
-            if (school.intel.savingsPotential.value === 'Moderate') return 1;
-            return 0;
-        case 'rating':
-            return school.rating;
-        case 'classSize':
-            return school.intel.classSize;
-        case 'monthlyCost':
-            return calculateMonthlyCost(school);
-        default:
-            return 0;
-    }
 };
 
 const MetricRow = ({ label, value, result, format, icon }: {
@@ -96,6 +78,7 @@ export default function ComparePage() {
         schools[1].id,
         schools[2].id,
     ]);
+    const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
     
     const firestore = useFirestore();
 
@@ -120,9 +103,39 @@ export default function ComparePage() {
         currentlySelectedIds[index] = newSchoolId;
         setSelectedSchoolIds(currentlySelectedIds);
     };
+
+    const handleNetSalaryChange = (index: number, value: string) => {
+        const newSalaries = [...netSalaries];
+        newSalaries[index] = value;
+        setNetSalaries(newSalaries);
+    };
+    
+    const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
+        switch (metric) {
+            case 'salary':
+                return parseInt(school.intel.salary.value.split(' - ')[1].replace('k', '000').replace('$', '')) || 0;
+            case 'savings':
+                if (school.intel.savingsPotential.value === 'Very High') return 3;
+                if (school.intel.savingsPotential.value === 'High') return 2;
+                if (school.intel.savingsPotential.value === 'Moderate') return 1;
+                return 0;
+            case 'rating':
+                return school.rating;
+            case 'classSize':
+                return school.intel.classSize;
+            case 'monthlyCost':
+                return calculateMonthlyCost(school);
+            case 'yourSavings':
+                const netSalary = parseFloat(netSalaries[index]) || 0;
+                if (netSalary <= 0) return -Infinity; // Treat no/zero salary as the worst for comparison
+                return (netSalary / 12) - calculateMonthlyCost(school);
+            default:
+                return 0;
+        }
+    };
     
     const compareThree = (metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] => {
-        const values = selectedSchools.map(school => getNumericValue(school, metric));
+        const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
         
         if (values.every(v => v === values[0])) return ['neutral', 'neutral', 'neutral'];
 
@@ -144,12 +157,15 @@ export default function ComparePage() {
     const savingsComp = compareThree('savings', true);
     const monthlyCostComp = compareThree('monthlyCost', false);
     const classSizeComp = compareThree('classSize', false);
+    const yourSavingsComp = compareThree('yourSavings', true);
 
-    const SchoolComparisonColumn = ({ school, index, onSelect, selectedIds }: {
+    const SchoolComparisonColumn = ({ school, index, onSelect, selectedIds, netSalary, onNetSalaryChange }: {
         school: School;
         index: number;
         onSelect: (id: string) => void;
         selectedIds: string[];
+        netSalary: string;
+        onNetSalaryChange: (value: string) => void;
     }) => {
         const comparisonResults = {
             rating: ratingComp[index],
@@ -157,7 +173,14 @@ export default function ComparePage() {
             savings: savingsComp[index],
             monthlyCost: monthlyCostComp[index],
             classSize: classSizeComp[index],
+            yourSavings: yourSavingsComp[index],
         };
+
+        const yourMonthlySavings = useMemo(() => {
+            const parsedSalary = parseFloat(netSalary) || 0;
+            if (parsedSalary <= 0) return null;
+            return (parsedSalary / 12) - calculateMonthlyCost(school);
+        }, [netSalary, school]);
 
         return (
             <div className="flex flex-col gap-4 items-center">
@@ -175,6 +198,18 @@ export default function ComparePage() {
                         </SelectContent>
                     </Select>
                 </div>
+
+                <div className="w-full max-w-sm space-y-2">
+                    <Label htmlFor={`net-salary-${index}`}>Offered Net Salary (Annual)</Label>
+                    <Input
+                        id={`net-salary-${index}`}
+                        type="number"
+                        placeholder="e.g., 55000"
+                        value={netSalary}
+                        onChange={(e) => onNetSalaryChange(e.target.value)}
+                    />
+                </div>
+
                 <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm">
                     <Link href={`/schools/${school.id}`} className="block">
                         <div className="relative aspect-video">
@@ -200,6 +235,15 @@ export default function ComparePage() {
                         <div className="pt-4">
                              <MetricRow label="Salary Range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                              <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                             {yourMonthlySavings !== null && (
+                                <MetricRow
+                                    label="Your Est. Monthly Savings"
+                                    value={yourMonthlySavings}
+                                    result={comparisonResults.yourSavings}
+                                    format={(v) => formatCurrency(v, 'USD')}
+                                    icon={<PiggyBank className="w-4 h-4 text-green-500" />}
+                                />
+                             )}
                              <MetricRow
                                 label="Est. Monthly Costs (Single)"
                                 value={calculateMonthlyCost(school)}
@@ -233,7 +277,9 @@ export default function ComparePage() {
                         school={school} 
                         index={index}
                         onSelect={(id) => handleSelectSchool(index, id)} 
-                        selectedIds={selectedSchoolIds} 
+                        selectedIds={selectedSchoolIds}
+                        netSalary={netSalaries[index]}
+                        onNetSalaryChange={(value) => handleNetSalaryChange(index, value)}
                     />
                 ))}
             </div>
