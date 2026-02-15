@@ -54,7 +54,7 @@ export default function FindYourNichePage() {
           <form action={formAction}>
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
-              <CardDescription>The more detail you provide, the better the analysis. All data is collected anonymously.</CardDescription>
+              <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -167,21 +167,69 @@ export default function FindYourNichePage() {
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Primary">Primary</SelectItem>
                       <SelectItem value="Early Years">Early Years</SelectItem>
+                      <SelectItem value="Primary">Primary</SelectItem>
+                      <SelectItem value="Other Primary">Other Primary</SelectItem>
                       <SelectItem value="English">English</SelectItem>
                       <SelectItem value="Maths">Maths</SelectItem>
-                      <SelectItem value="Science">Science</SelectItem>
-                      <SelectItem value="Humanities">Humanities</SelectItem>
-                      <SelectItem value="Art">Art</SelectItem>
+                      <SelectItem value="Science (General)">Science (General)</SelectItem>
+                      <SelectItem value="Biology">Biology</SelectItem>
+                      <SelectItem value="Chemistry">Chemistry</SelectItem>
+                      <SelectItem value="Physics">Physics</SelectItem>
+                      <SelectItem value="Humanities / Social Studies">Humanities / Social Studies</SelectItem>
+                      <SelectItem value="History">History</SelectItem>
+                      <SelectItem value="Geography">Geography</SelectItem>
+                      <SelectItem value="Modern Foreign Languages (MFL)">Modern Foreign Languages (MFL)</SelectItem>
+                      <SelectItem value="Art & Design">Art & Design</SelectItem>
                       <SelectItem value="Music">Music</SelectItem>
-                      <SelectItem value="PE">Physical Education (PE)</SelectItem>
+                      <SelectItem value="Drama / Theatre">Drama / Theatre</SelectItem>
+                      <SelectItem value="Physical Education (PE)">Physical Education (PE)</SelectItem>
+                      <SelectItem value="Design & Technology (DT)">Design & Technology (DT)</SelectItem>
+                      <SelectItem value="Computer Science / IT">Computer Science / IT</SelectItem>
                       <SelectItem value="EAL/ESL">EAL / ESL</SelectItem>
-                      <SelectItem value="SEN">Special Education (SEN)</SelectItem>
+                      <SelectItem value="Special Education (SEN)">Special Education (SEN)</SelectItem>
                       <SelectItem value="Leadership">Leadership</SelectItem>
+                      <SelectItem value="Other Secondary">Other Secondary</SelectItem>
                       <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Preferred Regions</Label>
+                 <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_sea" name="regions" value="Southeast Asia" />
+                        <Label htmlFor="r_sea" className="font-normal">Southeast Asia</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_ea" name="regions" value="East Asia" />
+                        <Label htmlFor="r_ea" className="font-normal">East Asia</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_me" name="regions" value="Middle East" />
+                        <Label htmlFor="r_me" className="font-normal">Middle East</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_eu" name="regions" value="Europe" />
+                        <Label htmlFor="r_eu" className="font-normal">Europe</Label>
+                    </div>
+                     <div className="flex items-center space-x-2">
+                        <Checkbox id="r_af" name="regions" value="Africa" />
+                        <Label htmlFor="r_af" className="font-normal">Africa</Label>
+                    </div>
+                     <div className="flex items-center space-x-2">
+                        <Checkbox id="r_na" name="regions" value="North America" />
+                        <Label htmlFor="r_na" className="font-normal">North America</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_sca" name="regions" value="South & Central America" />
+                        <Label htmlFor="r_sca" className="font-normal">South & Central America</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="r_oc" name="regions" value="Oceania" />
+                        <Label htmlFor="r_oc" className="font-normal">Oceania</Label>
+                    </div>
                 </div>
               </div>
               <div className="space-y-2">

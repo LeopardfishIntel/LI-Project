@@ -18,6 +18,7 @@ export async function findNicheAction(
   const licenses = formData.getAll("teaching_license_cb");
   const allQualifications = [...qualifications, ...licenses].join(", ");
   
+  const regions = formData.getAll("regions").join(", ");
   const preferences = formData.getAll("preferences").join(", ");
   const experienceYears = formData.get("experience");
 
@@ -28,6 +29,7 @@ export async function findNicheAction(
     currentSalary: String(formData.get("currentSalary")),
     experience: `${experienceYears} years`,
     subject: String(formData.get("subject")),
+    preferredRegions: regions,
     preferences: preferences,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
@@ -42,10 +44,10 @@ export async function findNicheAction(
     };
   }
   
-  if (!input.preferences) {
+  if (!input.preferences && !input.preferredRegions) {
     return {
       result: null,
-      error: "Please select at least one preference.",
+      error: "Please select at least one region or preference.",
       pending: false,
     };
   }

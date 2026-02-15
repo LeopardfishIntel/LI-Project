@@ -25,6 +25,7 @@ const FindYourNicheInputSchema = z.object({
       'A detailed description of the teacher\'s teaching experience (e.g., "5 years teaching high school science", "3 years teaching primary school in China").'
     ),
   subject: z.string().describe('The primary subject the teacher teaches (e.g., "High School Physics", "Primary English").'),
+  preferredRegions: z.string().describe("A comma-separated list of the teacher's preferred geographic regions (e.g., 'Southeast Asia, Europe').").optional(),
   preferences: z
     .string()
     .describe(
@@ -67,7 +68,7 @@ const prompt = ai.definePrompt({
   name: 'findYourNichePrompt',
   input: { schema: FindYourNicheInputSchema },
   output: { schema: FindYourNicheOutputSchema },
-  prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to the teacher's 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
+  prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. Consider their preferred regions strongly when making recommendations. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to the teacher's 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, specific preferences, primary goal, and family status. Do not recommend the teacher's current location.
 
@@ -83,6 +84,7 @@ Teacher Profile:
 - Subject: {{{subject}}}
 - Current Location: {{{currentLocation}}}
 - Current Salary: {{{currentSalary}}}
+- Preferred Regions: {{{preferredRegions}}}
 - Preferences: {{{preferences}}}
 - Primary Goal: {{{goal}}}
 
