@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { Building, Globe, Users, BookOpenText } from 'lucide-react';
+import { Building, Globe, Users, BarChart3 } from 'lucide-react';
 
 const stats = [
   {
@@ -23,9 +23,9 @@ const stats = [
     format: (val: number) => `${Math.floor(val/1000)}k+`,
   },
   {
-    icon: <BookOpenText className="w-10 h-10 text-primary mb-2" />,
+    icon: <BarChart3 className="w-10 h-10 text-primary mb-2" />,
     endValue: 750000,
-    label: 'Salaries Shared',
+    label: 'Comparisons Made',
     format: (val: number) => `${Math.floor(val/1000)}k+`,
   },
 ];
