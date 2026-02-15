@@ -156,7 +156,7 @@ export default function ComparePage() {
             case 'salary':
                 return parseInt(school.intel.salary.value.split(' - ')[1].replace('k', '000').replace('$', '')) || 0;
             case 'savings':
-                if (school.intel.savingsPotential.value === 'Very High') return 3;
+                if (school.intel.savingsPotential.value === 'V High') return 3;
                 if (school.intel.savingsPotential.value === 'High') return 2;
                 if (school.intel.savingsPotential.value === 'Moderate') return 1;
                 return 0;

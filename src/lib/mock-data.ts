@@ -63,7 +63,7 @@ export const schools: School[] = [
     intel: {
       salary: { value: '$60k - $80k (tax-free)', score: 'good' },
       housing: { value: 'Allowance', provided: false },
-      savingsPotential: { value: 'Very High', score: 'good' },
+      savingsPotential: { value: 'V High', score: 'good' },
       curriculum: 'US',
       studentTeacherRatio: '12:1',
       classSize: 22,
