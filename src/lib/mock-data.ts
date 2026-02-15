@@ -1,4 +1,3 @@
-
 import type { School, TeacherProfile } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -115,7 +114,7 @@ export const schools: School[] = [
       curriculum: 'AP',
       studentTeacherRatio: '11:1',
       classSize: 20,
-      healthInsurance: 'Full',
+      healthInsurance: 'Premium',
     },
     reviews: [],
     costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
