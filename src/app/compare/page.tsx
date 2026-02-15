@@ -180,11 +180,9 @@ export default function ComparePage() {
                     <div className="py-2">
                         <h3 className="font-semibold text-lg text-center mb-4">Ratings & Reviews</h3>
                         <ComparisonRow label="Overall Rating" value1={`${school1.rating.toFixed(1)}/5`} value2={`${school2.rating.toFixed(1)}/5`} result1={ratingComp.res1} result2={ratingComp.res2} icon={<Star className="w-4 h-4 text-amber-400" />} />
-                        <ComparisonRow label="Review Count" value1={school1.reviewsCount} value2={school2.reviewsCount} result1='neutral' result2='neutral' icon={<Users className="w-4 h-4 text-rose-400" />} />
                     </div>
 
-                    <div className="py-2">
-                        <h3 className="font-semibold text-lg text-center mb-4 pt-4">Financial</h3>
+                    <div className="py-2 pt-6">
                         <ComparisonRow label="Salary Range" value1={school1.intel.salary.value} value2={school2.intel.salary.value} result1={salaryComp.res1} result2={salaryComp.res2} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                         <ComparisonRow label="Savings Potential" value1={school1.intel.savingsPotential.value} value2={school2.intel.savingsPotential.value} result1={savingsComp.res1} result2={savingsComp.res2} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                         <ComparisonRow label="Est. Monthly Costs (Single)" value1={calculateMonthlyCost(school1)} value2={calculateMonthlyCost(school2)} result1={monthlyCostComp.res1} result2={monthlyCostComp.res2} format1={(v) => formatCurrency(v, 'USD')} format2={(v) => formatCurrency(v, 'USD')} icon={<DollarSign className="w-4 h-4 text-red-400" />} />
@@ -192,8 +190,7 @@ export default function ComparePage() {
                         <ComparisonRow label="Health Insurance" value1={school1.intel.healthInsurance} value2={school2.intel.healthInsurance} result1='neutral' result2='neutral' icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
                     </div>
                     
-                    <div className="py-2">
-                        <h3 className="font-semibold text-lg text-center mb-4 pt-4">Academics</h3>
+                    <div className="py-2 pt-6">
                         <ComparisonRow label="Curriculum" value1={school1.intel.curriculum} value2={school2.intel.curriculum} result1='neutral' result2='neutral' icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
                         <ComparisonRow label="Average Class Size" value1={school1.intel.classSize} value2={school2.intel.classSize} result1={classSizeComp.res1} result2={classSizeComp.res2} icon={<Building className="w-4 h-4 text-sky-400" />} />
                         <ComparisonRow label="Student-Teacher Ratio" value1={school1.intel.studentTeacherRatio} value2={school2.intel.studentTeacherRatio} result1='neutral' result2='neutral' icon={<Users className="w-4 h-4 text-rose-400" />} />
