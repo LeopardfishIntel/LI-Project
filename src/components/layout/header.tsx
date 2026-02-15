@@ -14,6 +14,7 @@ const navLinks = [
   { href: "/true-costs", label: "True Costs" },
   { href: "/tax-calculator", label: "Tax Calculator" },
   { href: "/find-your-niche", label: "Find Your Niche" },
+  { href: "/directory", label: "Directory" },
   { href: "/forum", label: "Forums" },
 ];
 
@@ -97,5 +98,3 @@ export default function Header() {
     </header>
   );
 }
-
-    

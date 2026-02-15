@@ -1,8 +1,6 @@
 "use client";
 
 import Link from 'next/link';
-import { SchoolCard } from '@/components/school-card';
-import { spotlightSchools } from '@/lib/mock-data';
 import { Users, FileText, DollarSign, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -55,22 +53,6 @@ export default function ForumPage() {
                   href="#"
               />
           </div>
-      </div>
-      
-      <div>
-        <div className="flex flex-col items-center text-center mb-12">
-            <h2 className="text-2xl font-bold tracking-tight text-primary">
-            Popular Schools
-            </h2>
-            <p className="mt-4 max-w-2xl text-muted-foreground">
-            Join the conversation on some of the most talked-about schools.
-            </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {spotlightSchools.map((school) => (
-            <SchoolCard key={school.id} school={school} />
-            ))}
-        </div>
       </div>
     </div>
   );
