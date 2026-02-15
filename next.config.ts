@@ -30,6 +30,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/tax-calculator',
+        destination: '/financial-forecaster',
+        permanent: true,
+      },
+      {
+        source: '/true-costs',
+        destination: '/financial-forecaster',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

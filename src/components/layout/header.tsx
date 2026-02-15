@@ -26,10 +26,9 @@ const user = {
 };
 
 const navLinks = [
-  { href: "/compare", label: "Compare" },
-  { href: "/true-costs", label: "True Costs" },
-  { href: "/tax-calculator", label: "Tax Calculator" },
-  { href: "/find-your-niche", label: "Find Your Niche" },
+  { href: "/discover", label: "Discover" },
+  { href: "/financial-forecaster", label: "Evaluate" },
+  { href: "/compare", label: "Decide" },
   { href: "/directory", label: "Directory" },
   { href: "/forum", label: "Forums" },
 ];
