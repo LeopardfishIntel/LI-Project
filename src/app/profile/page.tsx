@@ -5,21 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { VerifiedBadge } from "@/components/verified-badge"
 import { MapPin, Globe, Calendar, Briefcase, Linkedin, GraduationCap, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-// This is a sample teacher profile. In a real application, this would be fetched from Firestore.
-const teacherProfile = {
-  fullName: "Jane Doe",
-  avatarUrl: "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop",
-  isVerifiedTeacher: true,
-  nationality: "British",
-  ageGroup: "35-49",
-  memberSince: new Date("2022-08-15"),
-  yearsOfExperience: 12,
-  qualifications: ["PGCE", "Master's in Education", "NPQSL"],
-  linkedInProfileUrl: "https://www.linkedin.com/in/example",
-  preferredRegions: ["Southeast Asia", "Middle East"],
-  preferredCountries: ["Thailand", "UAE", "Singapore"],
-};
+import { teacherProfile } from "@/lib/mock-data"
 
 export default function ProfilePage() {
   return (

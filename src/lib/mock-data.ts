@@ -1,4 +1,5 @@
-import type { School } from './types';
+
+import type { School, TeacherProfile } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
 const getImage = (id: string) => {
@@ -7,6 +8,20 @@ const getImage = (id: string) => {
     imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/placeholder/600/400",
     imageHint: image?.imageHint ?? "school building"
   };
+};
+
+export const teacherProfile: TeacherProfile = {
+  fullName: "Jane Doe",
+  avatarUrl: "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop",
+  isVerifiedTeacher: true,
+  nationality: "British",
+  ageGroup: "35-49",
+  memberSince: new Date("2022-08-15"),
+  yearsOfExperience: 12,
+  qualifications: ["PGCE", "Master's in Education", "NPQSL"],
+  linkedInProfileUrl: "https://www.linkedin.com/in/example",
+  preferredRegions: ["Southeast Asia", "Middle East"],
+  preferredCountries: ["Thailand", "UAE", "Singapore"],
 };
 
 export const schools: School[] = [

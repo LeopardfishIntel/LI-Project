@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { schools } from '@/lib/mock-data';
+import { schools, teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank } from 'lucide-react';
@@ -73,11 +74,25 @@ const MetricRow = ({ label, value, result, format, icon }: {
 
 
 export default function ComparePage() {
-    const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>([
-        schools[0].id,
-        schools[1].id,
-        schools[2].id,
-    ]);
+    const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>(() => {
+        // Prioritize schools from preferred countries
+        const preferredSchools = schools
+            .filter(school => teacherProfile.preferredCountries.includes(school.country))
+            .sort((a, b) => b.rating - a.rating); // Sort by rating to show best first
+
+        // Get other schools to fill up the slots
+        const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
+
+        // Combine and ensure no duplicates, then take the top 3
+        const initialSchoolIds = [...new Set([...preferredSchools, ...otherSchools].map(s => s.id))].slice(0, 3);
+        
+        // Fallback if we don't have 3 schools for some reason
+        if (initialSchoolIds.length < 3) {
+            return schools.slice(0, 3).map(s => s.id);
+        }
+
+        return initialSchoolIds;
+    });
     const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
     
     const firestore = useFirestore();

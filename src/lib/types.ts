@@ -1,3 +1,18 @@
+
+export type TeacherProfile = {
+  fullName: string;
+  avatarUrl: string;
+  isVerifiedTeacher: boolean;
+  nationality: string;
+  ageGroup: string;
+  memberSince: Date;
+  yearsOfExperience: number;
+  qualifications: string[];
+  linkedInProfileUrl: string;
+  preferredRegions: string[];
+  preferredCountries: string[];
+};
+
 export type School = {
   id: string;
   name: string;
