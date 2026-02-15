@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Search, MoveRight, Wallet, BarChart3, Lightbulb } from 'lucide-react';
 import { SchoolCard } from '@/components/school-card';
 import { spotlightSchools } from '@/lib/mock-data';
+import { KeyFactsSection } from '@/components/key-facts-section';
 
 const FeatureCard = ({ icon, title, description, href }: { icon: React.ReactNode; title: string; description: string; href: string }) => (
   <Link href={href}>
@@ -43,6 +44,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <KeyFactsSection />
 
       <section className="w-full py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
