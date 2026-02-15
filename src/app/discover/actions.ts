@@ -1,18 +1,18 @@
 "use server";
 
-import { findYourNiche, FindYourNicheInput, FindYourNicheOutput } from "@/ai/flows/find-your-niche-flow";
+import { findYourSweetSpot, FindYourSweetSpotInput, FindYourSweetSpotOutput } from "@/ai/flows/find-your-niche-flow";
 import { schools } from "@/lib/mock-data";
 
-export type NicheFinderState = {
-  result: FindYourNicheOutput | null;
+export type SweetSpotFinderState = {
+  result: FindYourSweetSpotOutput | null;
   error: string | null;
   pending: boolean;
 };
 
-export async function findNicheAction(
-  prevState: NicheFinderState,
+export async function findSweetSpotAction(
+  prevState: SweetSpotFinderState,
   formData: FormData
-): Promise<NicheFinderState> {
+): Promise<SweetSpotFinderState> {
   
   const qualifications = formData.getAll("qualifications_cb");
   const licenses = formData.getAll("teaching_license_cb");
@@ -29,7 +29,7 @@ export async function findNicheAction(
   const preferences = formData.getAll("preferences").join(", ");
   const experienceYears = formData.get("experience");
 
-  const input: FindYourNicheInput = {
+  const input: FindYourSweetSpotInput = {
     age: Number(formData.get("age")),
     qualifications: allQualifications,
     currentLocation: String(formData.get("currentLocation")),
@@ -60,7 +60,7 @@ export async function findNicheAction(
   }
 
   try {
-    const result = await findYourNiche(input);
+    const result = await findYourSweetSpot(input);
     return { result, error: null, pending: false };
   } catch (e: any) {
     console.error(e);

@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useState } from "react";
-import { findNicheAction, NicheFinderState } from "./actions";
+import { findSweetSpotAction, SweetSpotFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const initialState: NicheFinderState = {
+const initialState: SweetSpotFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -33,23 +33,23 @@ function SubmitButton() {
       ) : (
         <>
           <Wand2 className="mr-2 h-4 w-4" />
-          Find My Niche
+          Find My Sweet Spot
         </>
       )}
     </Button>
   );
 }
 
-export default function FindYourNichePage() {
-  const [state, formAction] = useActionState(findNicheAction, initialState);
+export default function FindYourSweetSpotPage() {
+  const [state, formAction] = useActionState(findSweetSpotAction, initialState);
   const [otherLicense, setOtherLicense] = useState(false);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Niche</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Sweet Spot</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8">
-          Match your profile to the perfect international school.
+          Match your profile to the perfect teaching environment.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -324,7 +324,7 @@ export default function FindYourNichePage() {
 
         {state.result && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Niches</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Sweet Spots</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
