@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { useState } from "react";
 import { findNicheAction, NicheFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ function SubmitButton() {
 
 export default function FindYourNichePage() {
   const [state, formAction] = useActionState(findNicheAction, initialState);
+  const [otherLicense, setOtherLicense] = useState(false);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -152,8 +154,18 @@ export default function FindYourNichePage() {
                             <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
                             <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="l_other" onCheckedChange={(checked) => setOtherLicense(!!checked)} />
+                            <Label htmlFor="l_other" className="font-normal">Other</Label>
+                        </div>
                     </div>
                 </div>
+                 {otherLicense && (
+                    <div className="space-y-2 pl-2 pt-2">
+                        <Label htmlFor="teaching_license_other" className="text-xs text-muted-foreground">Please specify your license</Label>
+                        <Input id="teaching_license_other" name="teaching_license_other" placeholder="e.g., Special Education Certificate" />
+                    </div>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">

@@ -16,8 +16,15 @@ export async function findNicheAction(
   
   const qualifications = formData.getAll("qualifications_cb");
   const licenses = formData.getAll("teaching_license_cb");
-  const allQualifications = [...qualifications, ...licenses].join(", ");
-  
+  const otherLicenseText = formData.get("teaching_license_other") as string | null;
+
+  const combinedLicenses = [...licenses];
+  if (otherLicenseText) {
+    combinedLicenses.push(otherLicenseText);
+  }
+
+  const allQualifications = [...qualifications, ...combinedLicenses].join(", ");
+
   const regions = formData.getAll("regions").join(", ");
   const preferences = formData.getAll("preferences").join(", ");
   const experienceYears = formData.get("experience");
