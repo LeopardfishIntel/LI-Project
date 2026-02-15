@@ -1,18 +1,38 @@
 'use client';
 
-import React, { useMemo, type ReactNode } from 'react';
+import React, { useState, useEffect, type ReactNode } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
+import type { FirebaseApp } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
+
 
 interface FirebaseClientProviderProps {
   children: ReactNode;
 }
 
+type FirebaseServices = {
+  firebaseApp: FirebaseApp;
+  auth: Auth;
+  firestore: Firestore;
+} | null;
+
 export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  const firebaseServices = useMemo(() => {
-    // Initialize Firebase on the client side, once per component mount.
-    return initializeFirebase();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  const [firebaseServices, setFirebaseServices] = useState<FirebaseServices>(null);
+
+  useEffect(() => {
+    const init = async () => {
+      const services = await initializeFirebase();
+      setFirebaseServices(services);
+    };
+
+    init();
+  }, []);
+
+  if (!firebaseServices) {
+    return null; // or a loading component
+  }
 
   return (
     <FirebaseProvider
