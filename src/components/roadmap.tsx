@@ -57,7 +57,7 @@ export default function Roadmap() {
                     />
                 </div>
                 <div className={cn("flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
-                  <span className="text-sm font-bold text-primary uppercase tracking-widest">Step {parseInt(step.id)}</span>
+                  <span className="text-sm font-bold text-accent uppercase tracking-widest">Step {parseInt(step.id)}</span>
                   <h3 className="text-4xl font-bold mt-2 mb-4">{step.title}</h3>
                   <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
                   <Link href={step.link} passHref>
