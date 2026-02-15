@@ -350,7 +350,7 @@ export default function TaxCalculatorPage() {
                                 </Select>
                             </div>
                         </div>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col md:flex-row gap-6 md:items-center">
                             <div className="space-y-2">
                                 <Label>Filing Status</Label>
                                 <RadioGroup name="filingStatus" value={filingStatus} onValueChange={(val: 'single' | 'married') => setFilingStatus(val)} className="flex pt-2 gap-6">
@@ -363,8 +363,8 @@ export default function TaxCalculatorPage() {
                                     <Label htmlFor="married" className="font-normal">Married</Label>
                                   </div>
                                 </RadioGroup>
-                              </div>
-                             <div className="space-y-2">
+                            </div>
+                             <div className="space-y-2 w-full md:w-48">
                                 <Label htmlFor="dependents">Number of Dependents</Label>
                                 <Select value={dependents} onValueChange={setDependents}>
                                     <SelectTrigger id="dependents">
