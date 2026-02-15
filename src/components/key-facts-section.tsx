@@ -52,7 +52,7 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-2xl md:text-3xl font-bold tracking-tighter text-primary-foreground">
+    <div ref={ref} className="text-xl md:text-2xl font-bold tracking-tighter text-primary-foreground">
       {format(count)}
     </div>
   );
@@ -73,25 +73,25 @@ export function KeyFactsSection() {
 
   const stats = [
     {
-      icon: <Building className="w-6 h-6 text-primary mb-1" />,
+      icon: <Building className="w-5 h-5 text-primary mb-1" />,
       endValue: 13000,
       label: 'International Schools',
       format: (val: number) => `${Math.floor(val/1000)}k+`,
     },
     {
-      icon: <Globe className="w-6 h-6 text-primary mb-1" />,
+      icon: <Globe className="w-5 h-5 text-primary mb-1" />,
       endValue: 195,
       label: 'Countries',
       format: (val: number) => `${Math.floor(val)}`,
     },
     {
-      icon: <Users className="w-6 h-6 text-primary mb-1" />,
+      icon: <Users className="w-5 h-5 text-primary mb-1" />,
       endValue: 500000,
       label: 'Teachers Worldwide',
       format: (val: number) => `${Math.floor(val/1000)}k+`,
     },
     {
-      icon: <BarChart3 className="w-6 h-6 text-primary mb-1" />,
+      icon: <BarChart3 className="w-5 h-5 text-primary mb-1" />,
       endValue: comparisonsMade,
       label: 'Comparisons Made',
       format: (val: number) => val.toLocaleString('en-US'),
@@ -99,9 +99,9 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full py-3 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
+    <div className="w-full py-2 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           {stats.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               {stat.icon}
