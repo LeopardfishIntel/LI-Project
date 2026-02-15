@@ -17,7 +17,7 @@ export default function Roadmap() {
     {
       id: '01',
       title: 'Discover',
-      desc: "Don't just find a job, find your place in the world. Our AI-powered Niche Finder goes beyond simple job boards, analyzing your unique qualifications, teaching style, and personal aspirations to recommend countries and even specific schools where you'll not only fit in, but thrive.",
+      desc: "Forget the broad strokes of a standard job search. We use our specialist intelligence and years in the field to navigate the complexities of the international circuit for you. By aligning your specific expertise with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
       link: '/discover',
       imageId: 'discover-step'
     },
