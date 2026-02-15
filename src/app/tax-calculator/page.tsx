@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -470,7 +471,7 @@ export default function TaxCalculatorPage() {
                                                 {chartData.map((entry) => (
                                                     <Cell key={`cell-${entry.name}`} fill={entry.fill} className="stroke-background focus:outline-none" />
                                                 ))}
-                                            </PieChart>
+                                            </Pie>
                                         </PieChart>
                                     </ChartContainer>
                                 </CardContent>
@@ -485,5 +486,3 @@ export default function TaxCalculatorPage() {
         </div>
     );
 }
-
-    
