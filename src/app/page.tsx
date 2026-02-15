@@ -26,9 +26,9 @@ export default function Home() {
                     Start Your Journey
                 </Button>
             </Link>
-          </div>
-          <div className="mt-auto">
-             <KeyFactsSection />
+            <div className="mt-16">
+              <KeyFactsSection />
+            </div>
           </div>
         </div>
       </section>
