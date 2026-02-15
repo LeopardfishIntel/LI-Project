@@ -230,7 +230,11 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: { icon: 
         <div className="w-full">
             <div className="flex justify-between items-baseline">
                 <h4 className={cn("font-semibold tracking-tight", scoreColorClasses[score])}>{title}</h4>
-                {percentage && <span className={cn("font-bold text-sm", scoreColorClasses[score])}>{percentage}</span>}
+                {percentage && <span className={cn("font-bold text-sm", 
+                    score.includes('good') ? 'text-green-400' :
+                    score.includes('bad') ? 'text-red-400' :
+                    'text-amber-400'
+                )}>{percentage}</span>}
             </div>
             <p className="text-sm text-muted-foreground">{description}</p>
         </div>
@@ -444,6 +448,16 @@ export default function TrueCostsPage() {
     homeObligationsData.score = 'neutral';
   }
 
+    const getSafetyScore = (rankString: string | undefined): FeatureScore => {
+        if (!rankString) return 'neutral';
+        const rank = parseInt(rankString.replace('Rank ', ''));
+        if (rank <= 20) return 'good';
+        if (rank <= 60) return 'neutral';
+        return 'bad';
+    };
+
+    lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -590,7 +604,7 @@ export default function TrueCostsPage() {
                         <Landmark className="h-6 w-6" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Contract Perks</CardTitle>
+                        <CardTitle className="text-lg font-bold tracking-tight normal-case">Leopardfish Intel</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -736,7 +750,7 @@ export default function TrueCostsPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl">
                     <ShieldAlert className="w-6 w-6 text-destructive" />
-                    Leopardfish Intel: Financial Red Flags
+                    Leopardfish Intel: 🚩 Financial Red Flags 🚩
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -756,7 +770,7 @@ export default function TrueCostsPage() {
         </Card>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
+          <p className="animate-pulse-slow">Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
 
       </div>
