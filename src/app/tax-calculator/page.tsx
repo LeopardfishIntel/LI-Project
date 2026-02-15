@@ -12,8 +12,8 @@ import { Calculator, Info } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PieChart, Pie, Cell, Tooltip } from 'recharts';
-import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { ChartContainer, ChartTooltipContent, type ChartConfig, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 
 type TaxBracket = { upto: number; rate: number };
 type FilingStatusBrackets = { brackets: TaxBracket[] };
@@ -256,9 +256,9 @@ export default function TaxCalculatorPage() {
     const chartData = useMemo(() => {
         if (!result) return [];
         return [
-            { name: 'Net Pay', value: result.netIncome, fill: 'var(--color-netPay)' },
-            { name: 'Income Tax', value: result.incomeTax, fill: 'var(--color-incomeTax)' },
-            { name: 'Social Contributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
+            { name: 'netPay', value: result.netIncome, fill: 'var(--color-netPay)' },
+            { name: 'incomeTax', value: result.incomeTax, fill: 'var(--color-incomeTax)' },
+            { name: 'socialContributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
         ].filter(d => d.value > 0);
     }, [result]);
 
@@ -381,19 +381,20 @@ export default function TaxCalculatorPage() {
                                     <CardTitle>Salary Breakdown</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
+                                    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[300px]">
                                         <PieChart>
                                             <Tooltip
                                                 cursor={false}
-                                                content={<ChartTooltipContent hideLabel nameKey="name" formatter={(value, name, item) => {
+                                                content={<ChartTooltipContent hideLabel formatter={(value, name) => {
+                                                    const itemConfig = chartConfig[name as keyof typeof chartConfig];
                                                     return (
                                                         <div className="flex flex-col gap-0.5">
-                                                          <div className="font-medium">{item.payload.name}</div>
-                                                          <div className="text-muted-foreground">
+                                                            <div className="font-medium">{itemConfig?.label || name}</div>
+                                                            <div className="text-muted-foreground">
                                                             {formatCurrency(value as number, taxData[country].currency)}
-                                                          </div>
+                                                            </div>
                                                         </div>
-                                                      )
+                                                        )
                                                 }} />}
                                             />
                                             <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} strokeWidth={5}>
@@ -401,6 +402,7 @@ export default function TaxCalculatorPage() {
                                                     <Cell key={`cell-${index}`} fill={entry.fill} className="stroke-background focus:outline-none" />
                                                 ))}
                                             </Pie>
+                                            <ChartLegend content={<ChartLegendContent />} />
                                         </PieChart>
                                     </ChartContainer>
                                 </CardContent>
@@ -408,10 +410,11 @@ export default function TaxCalculatorPage() {
                         )}
                     </>
                 )}
-                 <p className="text-xs text-muted-foreground text-center mt-4">
+                 <p className="text-xs text-muted-foreground text-center mt-4 animate-pulse-slow">
                     Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax and social security rates, excluding other potential deductions or tax credits. Expatriate tax laws can be complex; always consult a professional financial advisor.
                 </p>
             </div>
         </div>
     );
 }
+
