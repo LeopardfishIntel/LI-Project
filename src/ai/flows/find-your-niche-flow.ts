@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent that recommends suitable regions and countries for teachers based on their profile and preferences.
@@ -75,7 +76,7 @@ Provide clear, concise recommendations along with detailed reasoning for each, e
 
 You can use the teacher's current salary as a benchmark for what might be an attractive offer, but do not make it the primary factor unless their goal is 'saving'.
 
-After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on the teacher's subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with an American curriculum. Your reasoning for recommending a school should be brief and mention this connection.
+After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on the teacher's subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with a US curriculum. Your reasoning for recommending a school should be brief and mention this connection.
 
 Teacher Profile:
 - Age: {{{age}}}

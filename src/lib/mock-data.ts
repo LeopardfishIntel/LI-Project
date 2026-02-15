@@ -1,3 +1,4 @@
+
 import type { School, TeacherProfile } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -63,7 +64,7 @@ export const schools: School[] = [
       salary: { value: '$60k - $80k (tax-free)', score: 'good' },
       housing: { value: 'Housing allowance provided', provided: false },
       savingsPotential: { value: 'Very High', score: 'good' },
-      curriculum: 'American',
+      curriculum: 'US',
       studentTeacherRatio: '12:1',
       classSize: 22,
       healthInsurance: 'Comprehensive',
