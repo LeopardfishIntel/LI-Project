@@ -321,7 +321,7 @@ export default function FindYourNookPage() {
               <div className="w-full space-y-2">
                 <SubmitButton />
                 <p className="text-xs text-muted-foreground pt-1">
-                    All Leopardfish Intel niche suggestions reflect individual government visa and immigration regulations. We have no influence over individual country or school hiring policies; always verify current requirements with official sources.
+                    Leopardfish Intel operates with complete impartiality. While our suggestions are strictly aligned with current international immigration and visa regulations, we remain independent of individual country and school recruitment policies. We advise all teachers to verify the latest requirements with the relevant official authorities.
                 </p>
               </div>
             </CardFooter>
