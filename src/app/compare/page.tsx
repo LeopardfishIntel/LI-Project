@@ -203,7 +203,9 @@ export default function ComparePage() {
                     <Label htmlFor={`net-salary-${index}`}>Offered Net Salary (Annual)</Label>
                     <Input
                         id={`net-salary-${index}`}
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
