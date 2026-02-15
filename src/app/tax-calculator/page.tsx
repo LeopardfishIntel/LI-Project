@@ -1,27 +1,58 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
-import { Calculator } from 'lucide-react';
+import { Calculator, Info } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 type TaxBracket = { upto: number; rate: number };
 type FilingStatusBrackets = { brackets: TaxBracket[] };
+type SpecialRegime = {
+    name: string;
+    description: string;
+    taxablePercentage: number;
+};
 
 const taxData: { [key: string]: {
     currency: string;
     socialSecurity: { rate: number; floor?: number; cap?: number };
+    specialRegime?: SpecialRegime;
     filingStatuses: {
         single: FilingStatusBrackets;
         married: FilingStatusBrackets;
     };
 } } = {
+    "Italy": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.0919 }, // Employee INPS contribution
+        specialRegime: {
+            name: "New Arrival Tax Discount",
+            description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime). Social security is still calculated on the full gross salary.",
+            taxablePercentage: 0.30
+        },
+        filingStatuses: {
+            single: { brackets: [ // IRPEF 2024 (simplified)
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+            married: { brackets: [ // Italy has individual taxation
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+        },
+    },
     "Japan": {
         currency: "JPY",
         socialSecurity: { rate: 0.145, cap: 8160000 }, // Simplified Pension + Health
@@ -142,14 +173,14 @@ const taxData: { [key: string]: {
 
 const conversionRatesToUSD: { [key: string]: number } = { "GBP": 1.25, "EUR": 1.08, "AED": 0.27, "JPY": 0.0064, "CHF": 1.10, "SGD": 0.74, "KRW": 0.00073, "USD": 1 };
 
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married') => {
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean) => {
     const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0 };
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0 };
     
-    const { socialSecurity, filingStatuses } = countryData;
+    const { socialSecurity, filingStatuses, specialRegime } = countryData;
     const brackets = filingStatuses[filingStatus].brackets;
     
-    // 1. Calculate Social Security
+    // 1. Calculate Social Security (on full income)
     let socialSecurityContrib = 0;
     const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
     const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
@@ -157,12 +188,18 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
         socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
     }
 
+    // Determine taxable income for income tax
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
     // 2. Calculate Income Tax
     let incomeTax = 0;
     let lastBracketUpto = 0;
     for (const bracket of brackets) {
-        if (income > lastBracketUpto) {
-            const taxableInBracket = Math.min(income, bracket.upto) - lastBracketUpto;
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
             incomeTax += taxableInBracket * bracket.rate;
             lastBracketUpto = bracket.upto;
         } else {
@@ -177,11 +214,19 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
     return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate };
 };
 
+const chartConfig = {
+  netPay: { label: "Net Pay", color: "hsl(var(--chart-1))" },
+  incomeTax: { label: "Income Tax", color: "hsl(var(--chart-2))" },
+  socialContributions: { label: "Social Contributions", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig;
+
+
 export default function TaxCalculatorPage() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
     const [currency, setCurrency] = useState('GBP');
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
+    const [applySpecialRegime, setApplySpecialRegime] = useState(false);
     const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number } | null>(null);
     
     const countriesWithCalculators = Object.keys(taxData).sort();
@@ -190,6 +235,9 @@ export default function TaxCalculatorPage() {
     useEffect(() => {
         if (taxData[country]) {
             setCurrency(taxData[country].currency);
+        }
+        if (country !== 'Italy') {
+            setApplySpecialRegime(false);
         }
     }, [country]);
 
@@ -201,9 +249,18 @@ export default function TaxCalculatorPage() {
             setResult(null);
             return;
         }
-        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus);
+        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime);
         setResult(calcResult);
     };
+
+    const chartData = useMemo(() => {
+        if (!result) return [];
+        return [
+            { name: 'Net Pay', value: result.netIncome, fill: 'var(--color-netPay)' },
+            { name: 'Income Tax', value: result.incomeTax, fill: 'var(--color-incomeTax)' },
+            { name: 'Social Contributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
+        ].filter(d => d.value > 0);
+    }, [result]);
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -261,42 +318,95 @@ export default function TaxCalculatorPage() {
                                 </RadioGroup>
                               </div>
                         </div>
+
+                        {country === 'Italy' && taxData['Italy'].specialRegime && (
+                            <div className="space-y-2 pt-2">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox id="special-regime" checked={applySpecialRegime} onCheckedChange={(checked) => setApplySpecialRegime(!!checked)} />
+                                    <Label htmlFor="special-regime" className="font-normal">{taxData['Italy'].specialRegime.name}</Label>
+                                </div>
+                                {applySpecialRegime && (
+                                     <Alert className="mt-2" variant="destructive">
+                                        <Info className="h-4 w-4" />
+                                        <AlertTitle>Special Regime Active</AlertTitle>
+                                        <AlertDescription>
+                                            {taxData['Italy'].specialRegime.description} This significantly reduces income tax but is subject to specific eligibility criteria.
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                            </div>
+                        )}
+
                         <Button onClick={handleCalculate} className="w-full">Calculate</Button>
                     </CardContent>
                 </Card>
 
                 {result && (
-                    <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
-                        <CardHeader>
-                            <CardTitle>Estimated Annual Results in {taxData[country].currency}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 text-lg">
-                             <div className="flex justify-between items-center text-sm border-b pb-2">
-                                <span className="text-muted-foreground">Original Gross Salary</span>
-                                <span className="font-bold">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground">Gross Salary in {taxData[country].currency}</span>
-                                <span className="font-bold">{formatCurrency(parseFloat(salary) * (conversionRatesToUSD[currency] || 1) / (conversionRatesToUSD[taxData[country].currency] || 1), taxData[country].currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-red-400">
-                                <span >Estimated Income Tax</span>
-                                <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
-                            </div>
-                             <div className="flex justify-between items-center text-orange-400">
-                                <span >Social Contributions</span>
-                                <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-green-400 font-bold border-t pt-4 mt-2">
-                                <span >Net Take-Home Pay (Annual)</span>
-                                <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
-                            </div>
-                             <div className="flex justify-between items-center text-sm pt-2 border-t mt-2">
-                                <span className="text-muted-foreground">Effective Tax Rate (incl. social)</span>
-                                <span className="font-bold">{result.effectiveRate.toFixed(2)}%</span>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <>
+                        <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
+                            <CardHeader>
+                                <CardTitle>Estimated Annual Results in {taxData[country].currency}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 text-lg">
+                                <div className="flex justify-between items-center text-sm border-b pb-2">
+                                    <span className="text-muted-foreground">Original Gross Salary</span>
+                                    <span className="font-bold">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-muted-foreground">Gross Salary in {taxData[country].currency}</span>
+                                    <span className="font-bold">{formatCurrency(parseFloat(salary) * (conversionRatesToUSD[currency] || 1) / (conversionRatesToUSD[taxData[country].currency] || 1), taxData[country].currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-red-400">
+                                    <span >Estimated Income Tax</span>
+                                    <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-orange-400">
+                                    <span >Social Contributions</span>
+                                    <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-green-400 font-bold border-t pt-4 mt-2">
+                                    <span >Net Take-Home Pay (Annual)</span>
+                                    <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm pt-2 border-t mt-2">
+                                    <span className="text-muted-foreground">Effective Tax Rate (incl. social)</span>
+                                    <span className="font-bold">{result.effectiveRate.toFixed(2)}%</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {chartData.length > 0 && (
+                            <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
+                                <CardHeader>
+                                    <CardTitle>Salary Breakdown</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
+                                        <PieChart>
+                                            <Tooltip
+                                                cursor={false}
+                                                content={<ChartTooltipContent hideLabel nameKey="name" formatter={(value, name, item) => {
+                                                    return (
+                                                        <div className="flex flex-col gap-0.5">
+                                                          <div className="font-medium">{item.payload.name}</div>
+                                                          <div className="text-muted-foreground">
+                                                            {formatCurrency(value as number, taxData[country].currency)}
+                                                          </div>
+                                                        </div>
+                                                      )
+                                                }} />}
+                                            />
+                                            <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} strokeWidth={5}>
+                                                {chartData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} className="stroke-background focus:outline-none" />
+                                                ))}
+                                            </Pie>
+                                        </PieChart>
+                                    </ChartContainer>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </>
                 )}
                  <p className="text-xs text-muted-foreground text-center mt-4">
                     Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax and social security rates, excluding other potential deductions or tax credits. Expatriate tax laws can be complex; always consult a professional financial advisor.
