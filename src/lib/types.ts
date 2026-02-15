@@ -3,7 +3,7 @@ export type TeacherProfile = {
   fullName: string;
   avatarUrl: string;
   isVerifiedTeacher: boolean;
-  nationality: string;
+  familyStatus: string;
   ageGroup: string;
   memberSince: Date;
   yearsOfExperience: number;

@@ -14,7 +14,7 @@ export const teacherProfile: TeacherProfile = {
   fullName: "Jane Doe",
   avatarUrl: "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop",
   isVerifiedTeacher: true,
-  nationality: "British",
+  familyStatus: "Couple",
   ageGroup: "35-49",
   memberSince: new Date("2022-08-15"),
   yearsOfExperience: 12,

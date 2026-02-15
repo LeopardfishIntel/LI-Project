@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { VerifiedBadge } from "@/components/verified-badge"
-import { MapPin, Globe, Calendar, Briefcase, Linkedin, GraduationCap, Pencil } from "lucide-react"
+import { MapPin, Users, Calendar, Briefcase, Linkedin, GraduationCap, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { teacherProfile } from "@/lib/mock-data"
 
@@ -70,7 +70,7 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <Globe className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-muted-foreground">Preferred Regions</h3>
                      <div className="flex flex-wrap gap-2 mt-2">
@@ -98,8 +98,8 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <Globe className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                  <p><span className="font-semibold text-muted-foreground">Nationality:</span> {teacherProfile.nationality}</p>
+                  <Users className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <p><span className="font-semibold text-muted-foreground">Family Status:</span> {teacherProfile.familyStatus}</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" />
