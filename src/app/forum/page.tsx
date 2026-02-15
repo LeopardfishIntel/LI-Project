@@ -38,7 +38,7 @@ export default function ForumPage() {
                   icon={<FileText className="h-6 w-6 text-primary" />}
                   title="Visas, Logistics & Vetting"
                   description="Discuss visa processing times, shipping companies, and how to vet school contracts before you sign."
-                  href="#"
+                  href="/forum/contract-vetting"
               />
               <ForumCategoryCard 
                   icon={<DollarSign className="h-6 w-6 text-primary" />}

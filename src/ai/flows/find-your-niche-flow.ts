@@ -67,7 +67,7 @@ const prompt = ai.definePrompt({
   name: 'findYourNichePrompt',
   input: { schema: FindYourNicheInputSchema },
   output: { schema: FindYourNicheOutputSchema },
-  prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in.
+  prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to the teacher's 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with the teacher's qualifications, experience, age, specific preferences, primary goal, and family status. Do not recommend the teacher's current location.
 

@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -625,6 +625,29 @@ export default function TrueCostsPage() {
             </Card>
         </div>
         
+        <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-xl">
+                    <ShieldAlert className="w-6 h-6 text-destructive" />
+                    Contract Intelligence: Financial Red Flags
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div>
+                    <h4 className="font-semibold text-lg mb-2">Hidden Tax &amp; Social Security Deductions</h4>
+                    <p className="text-muted-foreground">
+                        Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
+                    </p>
+                </div>
+                 <div>
+                    <h4 className="font-semibold text-lg mb-2">Currency Fluctuations</h4>
+                    <p className="text-muted-foreground">
+                        Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
+                    </p>
+                </div>
+            </CardContent>
+        </Card>
+
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
           <p>Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
@@ -633,7 +656,3 @@ export default function TrueCostsPage() {
     </div>
   );
 }
-
-    
-
-    
