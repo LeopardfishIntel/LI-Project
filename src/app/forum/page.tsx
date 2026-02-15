@@ -26,11 +26,11 @@ export default function ForumPage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="flex flex-col items-center text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary flex items-center gap-2">
-          <Users className="h-8 w-8 text-primary" />
-          Community Forum
+          <Shield className="h-8 w-8 text-primary" />
+          The Leopardfish Bowl
         </h1>
         <p className="mt-4 max-w-2xl text-muted-foreground md:text-lg">
-          A professional resource for international educators. To maintain professional standards and anonymity, there are no user profiles. All posts are anonymised and vetted by an administrator before publication.
+          An anonymous professional community for international educators. Discuss salaries, compare schools, and share advice with verified peers. All posts are vetted to maintain professional standards.
         </p>
       </div>
 
@@ -38,20 +38,20 @@ export default function ForumPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                <ForumCategoryCard 
                   icon={<FileText className="h-6 w-6 text-primary" />}
-                  title="Global Compliance & Logistics"
-                  description="Verified technical data for international relocation. Visa timelines, fiscal planning, and shipping logistics."
+                  title="Visas, Logistics & Vetting"
+                  description="Discuss visa processing times, shipping companies, and how to vet school contracts before you sign."
                   href="#"
               />
               <ForumCategoryCard 
                   icon={<DollarSign className="h-6 w-6 text-primary" />}
-                  title="Anonymous Package Reporting"
-                  description="Clean, anonymized data for market benchmarking. Compare verified salaries, benefits, and contract clauses."
+                  title="Salary & Package Discussions"
+                  description="Anonymously share and compare salary, benefits, and contract details from schools around the world."
                   href="#"
               />
               <ForumCategoryCard 
                   icon={<Users className="h-6 w-6 text-primary" />}
-                  title="Host Country Integration"
-                  description="Professional navigation of workplace etiquette, local culture, healthcare systems, and insurance."
+                  title="Life Abroad & Cultural Integration"
+                  description="Share tips on navigating local culture, healthcare, banking, and building a professional network in your new host country."
                   href="#"
               />
           </div>
