@@ -13,7 +13,7 @@ import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 
 type FeatureScore = 'good' | 'neutral' | 'bad';
-type Feature = { text: string; score: FeatureScore; percentage?: string };
+type Feature = { text: React.ReactNode; score: FeatureScore; percentage?: string };
 
 type CountryData = {
   [country: string]: {
@@ -29,6 +29,7 @@ type CountryData = {
     currency: Feature;
     homeObligations: Feature;
     savings: Feature;
+    safety: Feature;
   };
 };
 
@@ -45,7 +46,17 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad', percentage: "+40%" },
         currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard, averaging 0.5-2% via banks or online services. For example, making 6 transfers a year of a significant portion of your savings could easily add up to over £100-£200 in annual fees.", score: 'neutral' },
         homeObligations: { text: "This is your home base. The tool helps you budget your UK salary against your existing UK financial commitments like mortgages or loans.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted.", score: 'neutral' }
+        savings: { text: "Calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted.", score: 'neutral' },
+        safety: {
+            text: (
+                <>
+                    UK/US travel advisories note a "substantial" terrorism threat level, but day-to-day life is generally safe. Exercise the same precautions you would in any major Western city regarding petty crime.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/united-kingdom" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-kingdom-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'neutral'
+        },
     },
     'UAE': {
         taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good' },
@@ -59,7 +70,17 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad', percentage: "+80%" },
         currency: { text: "You're paid in UAE Dirhams (AED), pegged to the USD. This provides stability. Remittance fees are very low, often a small fixed fee. For example, 6 transfers a year would likely cost less than £50 in total, maximizing what you send home.", score: 'good' },
         homeObligations: { text: "Your tax-free salary makes it easier to cover obligations back home. The tool lets you input these to see your true disposable income.", score: 'good' },
-        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' }
+        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' },
+        safety: {
+            text: (
+                 <>
+                    Crime rates are exceptionally low. However, US advisories highlight the risk of regional missile or drone attacks. Strict adherence to local laws and customs is essential.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/uae" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-arab-emirates-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'good'
+        },
     },
     'Japan': {
         taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security. Taxes are significant but often lower than Western Europe.", score: 'neutral' },
@@ -73,7 +94,17 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good', percentage: "-20%" },
         currency: { text: "You are paid in Japanese Yen (JPY), a major but sometimes volatile currency. Standard bank remittance fees can be high; using a service like Wise is recommended to minimize costs (under 1%). With bank fees being higher, 6 transfers a year could cost several hundred dollars if not managed carefully.", score: 'neutral' },
         homeObligations: { text: "Use the tool to see how your net JPY salary stacks up against your financial commitments in your home currency after conversion.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' }
+        savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' },
+        safety: {
+            text: (
+                <>
+                    Japan has very low crime rates and is considered one of the safest countries in the world. Both UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/japan" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/japan-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'good'
+        },
     },
     'Switzerland': {
         taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high (up to 40% combined). However, salaries are also among the highest in the world.", score: 'neutral' },
@@ -87,7 +118,17 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad', percentage: "+100%" },
         currency: { text: "You're paid in Swiss Francs (CHF), a strong, stable currency. International bank transfers can be costly (1-3%). For 6 annual transfers, this could mean paying over £500 a year in fees on a high savings amount. Choosing a low-fee provider is crucial.", score: 'good' },
         homeObligations: { text: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' }
+        savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' },
+        safety: {
+            text: (
+                 <>
+                    Crime rates are very low. Be aware of petty crimes like pickpocketing in major tourist areas and cities. Both UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/switzerland-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'good'
+        },
     },
     'Singapore': {
         taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good' },
@@ -101,7 +142,17 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', percentage: "+70%" },
         currency: { text: "Payment is in Singapore Dollars (SGD), a stable regional currency. Sending money overseas is efficient with competitive fees, especially through Singapore's fintech solutions. 6 annual transfers of your savings would likely cost well under £100 with the right service.", score: 'good' },
         homeObligations: { text: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.", score: 'neutral' },
-        savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' }
+        savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' },
+        safety: {
+            text: (
+                 <>
+                    Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/singapore-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'good'
+        },
     },
     'South Korea': {
         taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral' },
@@ -115,8 +166,42 @@ const countrySpecificData: CountryData = {
         socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good', percentage: "-20%" },
         currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate. Strict regulations can make sending large sums of money out of the country more complex; plan remittances carefully. Fees can be moderate. Plan for 6 annual transfers of your savings to cost a couple of hundred pounds, and be aware of regulations on large transfers.", score: 'bad' },
         homeObligations: { text: "With housing often provided, it can be easier to manage home country financial obligations from your Korean salary.", score: 'good' },
-        savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' }
-    }
+        savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' },
+        safety: {
+            text: (
+                <>
+                    Daily life is very safe with low crime rates. The political situation with North Korea is a long-standing issue but rarely affects residents. Normal precautions are advised.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/south-korea" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'good'
+        },
+    },
+    'Netherlands': {
+        taxStatus: { text: "Salaries are subject to a high income tax rate (up to 49.5%) and social security contributions. The '30% ruling' for skilled migrants can provide a significant tax advantage.", score: 'neutral' },
+        housing: { text: "Housing is very expensive and in short supply in major cities like Amsterdam. Most schools offer an allowance, but it may not cover the full cost.", score: 'bad' },
+        flightAllowance: { text: "Not a standard benefit for schools in the Netherlands.", score: 'bad' },
+        dependentTuition: { text: "Most international schools offer a discount, but 100% free tuition is rare. This is a significant cost to factor in.", score: 'neutral' },
+        gratuity: { text: "There is no end-of-service gratuity. Schools contribute to a mandatory pension scheme.", score: 'neutral' },
+        importedGoods: { text: "As part of the EU, there's a wide availability of goods, but general grocery costs are high.", score: 'neutral', percentage: "+15%" },
+        utilities: { text: "Energy prices are high in Europe. Expect significant heating costs in the winter.", score: 'bad', percentage: "+40%" },
+        transportation: { text: "Cycling is king and very cheap. Public transport is efficient but can be expensive. Many residents do not own a car.", score: 'good', percentage: "-40%" },
+        socialLeisure: { text: "Eating out and social activities are on par with other major Western European cities - relatively expensive.", score: 'bad', percentage: "+50%" },
+        currency: { text: "You are paid in Euros (€). As a major world currency, it's stable. Remittance fees are low within the SEPA zone but can be higher for sending money outside of it. Using a fintech service is recommended.", score: 'good' },
+        homeObligations: { text: "The high cost of living, particularly rent, can make it challenging to cover significant financial commitments back home.", score: 'bad' },
+        savings: { text: "Savings potential is generally considered low to moderate unless you secure a high salary and benefit from the 30% ruling.", score: 'bad' },
+        safety: {
+             text: (
+                <>
+                    Crime rates are low, but petty crime like bike theft and pickpocketing is common in major cities. UK and US advisories mention a terrorism threat.{' '}
+                    <a href="https://www.gov.uk/foreign-travel-advice/netherlands" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</a> / {' '}
+                    <a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</a>
+                </>
+            ),
+            score: 'neutral'
+        }
+    },
 };
 
 const scoreColorClasses = {
@@ -263,6 +348,7 @@ export default function TrueCostsPage() {
     utilities: { ...data.utilities },
     transportation: { ...data.transportation },
     socialLeisure: { ...data.socialLeisure },
+    safety: { ...data.safety },
   };
 
   if (selectedSchool) {
@@ -583,6 +669,12 @@ export default function TrueCostsPage() {
                         description={lifestyleData.socialLeisure.text}
                         score={lifestyleData.socialLeisure.score}
                         percentage={lifestyleData.socialLeisure.percentage}
+                    />
+                    <FeatureDetail 
+                        icon={<ShieldAlert className="w-5 h-5" />}
+                        title="Safety &amp; Travel Advice"
+                        description={lifestyleData.safety.text}
+                        score={lifestyleData.safety.score}
                     />
                 </CardContent>
             </Card>
