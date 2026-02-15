@@ -3,23 +3,31 @@
 import { findYourNook, FindYourNookInput, FindYourNookOutput } from "@/ai/flows/find-your-niche-flow";
 import { schools } from "@/lib/mock-data";
 
-export type NicheFinderState = {
+export type NookFinderState = {
   result: FindYourNookOutput | null;
   error: string | null;
   pending: boolean;
 };
 
-export async function findNicheAction(
-  prevState: NicheFinderState,
+export async function findNookAction(
+  prevState: NookFinderState,
   formData: FormData
-): Promise<NicheFinderState> {
+): Promise<NookFinderState> {
   
   const qualifications = formData.getAll("qualifications_cb");
   const licenses = formData.getAll("teaching_license_cb");
-  const allQualifications = [...qualifications, ...licenses].join(", ");
+  const otherLicenseText = formData.get("teaching_license_other") as string | null;
+
+  const combinedLicenses = [...licenses];
+  if (otherLicenseText) {
+    combinedLicenses.push(otherLicenseText);
+  }
+
+  const allQualifications = [...qualifications, ...combinedLicenses].join(", ");
 
   const regions = formData.getAll("regions").join(", ");
   const preferences = formData.getAll("preferences").join(", ");
+  const curriculums = formData.getAll("curriculum").join(", ");
   const experienceYears = formData.get("experience");
 
   const input: FindYourNookInput = {
@@ -31,6 +39,7 @@ export async function findNicheAction(
     subject: String(formData.get("subject")),
     preferredRegions: regions,
     preferences: preferences,
+    preferredCurriculums: curriculums,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
     familyStatus: String(formData.get("familyStatus")),

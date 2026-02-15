@@ -3,18 +3,19 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { findNicheAction, NicheFinderState } from "./actions";
+import { useState } from "react";
+import { findNookAction, NookFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap, Users } from "lucide-react";
+import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const initialState: NicheFinderState = {
+const initialState: NookFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -32,7 +33,7 @@ function SubmitButton() {
       ) : (
         <>
           <Wand2 className="mr-2 h-4 w-4" />
-          Find My Niche
+          Find My Nook
         </>
       )}
     </Button>
@@ -40,17 +41,15 @@ function SubmitButton() {
 }
 
 export default function FindYourNichePage() {
-  const [state, formAction] = useActionState(findNicheAction, initialState);
+  const [state, formAction] = useActionState(findNookAction, initialState);
+  const [otherLicense, setOtherLicense] = useState(false);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Niche</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-8">
-          Match your profile to the perfect international school.
-        </p>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Nook</h1>
 
-        <Card className="bg-card/70 backdrop-blur-sm border-border">
+        <Card className="bg-card/70 backdrop-blur-sm border-border mt-8">
           <form action={formAction}>
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
@@ -152,6 +151,37 @@ export default function FindYourNichePage() {
                             <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
                             <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="l_other" onCheckedChange={(checked) => setOtherLicense(!!checked)} />
+                            <Label htmlFor="l_other" className="font-normal">Other</Label>
+                        </div>
+                    </div>
+                </div>
+                 {otherLicense && (
+                    <div className="space-y-2 pl-2 pt-2">
+                        <Label htmlFor="teaching_license_other" className="text-xs text-muted-foreground">Please specify your license</Label>
+                        <Input id="teaching_license_other" name="teaching_license_other" placeholder="e.g., Special Education Certificate" />
+                    </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Curriculum Preference</Label>
+                 <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="c_uk" name="curriculum" value="UK" />
+                        <Label htmlFor="c_uk" className="font-normal">UK</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="c_us" name="curriculum" value="US" />
+                        <Label htmlFor="c_us" className="font-normal">US</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="c_ib" name="curriculum" value="IB" />
+                        <Label htmlFor="c_ib" className="font-normal">IB</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="c_other" name="curriculum" value="Other" />
+                        <Label htmlFor="c_other" className="font-normal">Other</Label>
                     </div>
                 </div>
               </div>
@@ -162,7 +192,7 @@ export default function FindYourNichePage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject Taught</Label>
-                   <Select name="subject" defaultValue="Primary" required>
+                  <Select name="subject" defaultValue="Primary" required>
                     <SelectTrigger id="subject">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
@@ -259,7 +289,7 @@ export default function FindYourNichePage() {
                         <Checkbox id="p_adventure" name="preferences" value="Outdoor/Adventure" />
                         <Label htmlFor="p_adventure" className="font-normal">Outdoor/Adventure</Label>
                     </div>
-                     <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2">
                         <Checkbox id="p_culture" name="preferences" value="Cultural immersion" />
                         <Label htmlFor="p_culture" className="font-normal">Cultural Immersion</Label>
                     </div>
@@ -312,7 +342,7 @@ export default function FindYourNichePage() {
 
         {state.result && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Niches</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Nooks</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">

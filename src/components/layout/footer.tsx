@@ -32,7 +32,7 @@ export default function Footer() {
                      <Link href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" aria-label="LinkedIn profile" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
                         <Linkedin className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
-                     <Link href="#" aria-label="Facebook page" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
+                     <Link href="https://www.facebook.com/leopardfish" aria-label="Facebook page" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-primary/10 transition-colors group">
                         <Facebook className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                 </div>
