@@ -17,7 +17,7 @@ export default function Roadmap() {
     {
       id: '01',
       title: 'Discover',
-      desc: "Forget the broad strokes of a standard job search. We use our specialist intelligence and years in the field to navigate the complexities of the international circuit for you. By aligning your specific expertise with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
+      desc: "Take the guesswork out of your next move. Use our specialist intelligence and years in the field to navigate the complexities of the international circuit. By aligning your specific expertise with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
       link: '/discover',
       imageId: 'discover-step'
     },
