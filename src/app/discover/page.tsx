@@ -49,7 +49,7 @@ export default function FindYourSweetSpotPage() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Sweet Spot</h1>
         <p className="text-muted-foreground text-center mt-4 mb-8">
-          Match your profile to the perfect teaching environment.
+          Let us recommend the perfect destination to meet your goals.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
