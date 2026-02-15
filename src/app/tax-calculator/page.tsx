@@ -22,44 +22,6 @@ const taxData: { [key: string]: {
         married: FilingStatusBrackets;
     };
 } } = {
-    "USA": {
-        currency: "USD",
-        socialSecurity: { rate: 0.0765, cap: 168600 }, // Social Security (6.2%) + Medicare (1.45%)
-        filingStatuses: {
-            single: { brackets: [
-                { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
-                { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 },
-                { upto: Infinity, rate: 0.37 },
-            ]},
-            married: { brackets: [
-                { upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 },
-                { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 },
-                { upto: Infinity, rate: 0.37 },
-            ]},
-        },
-    },
-    "United Kingdom": {
-        currency: "GBP",
-        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 }, // Simplified NI Class 1
-        filingStatuses: { // UK tax is individual, so brackets are the same
-            single: { brackets: [
-                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
-                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
-            ]},
-            married: { brackets: [
-                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
-                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
-            ]},
-        },
-    },
-    "UAE": {
-        currency: "AED",
-        socialSecurity: { rate: 0 },
-        filingStatuses: {
-            single: { brackets: [{ upto: Infinity, rate: 0 }] },
-            married: { brackets: [{ upto: Infinity, rate: 0 }] },
-        },
-    },
     "Japan": {
         currency: "JPY",
         socialSecurity: { rate: 0.145, cap: 8160000 }, // Simplified Pension + Health
@@ -76,6 +38,22 @@ const taxData: { [key: string]: {
             ]},
         },
     },
+    "Netherlands": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.2765, cap: 38098 }, // Volksverzekeringen
+        filingStatuses: { // Individual taxation
+            single: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+            married: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+        },
+    },
     "Singapore": {
         currency: "SGD",
         socialSecurity: { rate: 0.20, cap: 6000 * 12 }, // Employee CPF contribution
@@ -89,6 +67,74 @@ const taxData: { [key: string]: {
                 { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
                 { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
                 { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
+            ]},
+        },
+    },
+    "South Korea": {
+        currency: "KRW",
+        socialSecurity: { rate: 0.09, cap: 70800000 }, // Pension + Health + Employment
+        filingStatuses: { // Individual taxation
+            single: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "Switzerland": {
+        currency: "CHF",
+        socialSecurity: { rate: 0.064 }, // Simplified AHV/DI/EO/ALV
+        filingStatuses: {
+            single: { brackets: [ // Simplified combined cantonal/federal for Zurich
+                { upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 },
+                { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 },
+            ]},
+            married: { brackets: [ // Simplified married brackets
+                { upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 },
+                { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 },
+            ]},
+        },
+    },
+    "UAE": {
+        currency: "AED",
+        socialSecurity: { rate: 0 },
+        filingStatuses: {
+            single: { brackets: [{ upto: Infinity, rate: 0 }] },
+            married: { brackets: [{ upto: Infinity, rate: 0 }] },
+        },
+    },
+    "United Kingdom": {
+        currency: "GBP",
+        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 }, // Simplified NI Class 1
+        filingStatuses: { // UK tax is individual, so brackets are the same
+            single: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "USA": {
+        currency: "USD",
+        socialSecurity: { rate: 0.0765, cap: 168600 }, // Social Security (6.2%) + Medicare (1.45%)
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
+                { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
+            ]},
+            married: { brackets: [
+                { upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 },
+                { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
             ]},
         },
     },
@@ -138,8 +184,8 @@ export default function TaxCalculatorPage() {
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
     const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number } | null>(null);
     
-    const countriesWithCalculators = Object.keys(taxData);
-    const currencies = Object.keys(conversionRatesToUSD);
+    const countriesWithCalculators = Object.keys(taxData).sort();
+    const currencies = Object.keys(conversionRatesToUSD).sort();
 
     useEffect(() => {
         if (taxData[country]) {
