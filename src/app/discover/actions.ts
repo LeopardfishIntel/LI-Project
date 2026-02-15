@@ -1,18 +1,18 @@
 "use server";
 
-import { findYourSweetSpot, FindYourSweetSpotInput, FindYourSweetSpotOutput } from "@/ai/flows/find-your-niche-flow";
+import { findYourNook, FindYourNookInput, FindYourNookOutput } from "@/ai/flows/find-your-niche-flow";
 import { schools } from "@/lib/mock-data";
 
-export type SweetSpotFinderState = {
-  result: FindYourSweetSpotOutput | null;
+export type NookFinderState = {
+  result: FindYourNookOutput | null;
   error: string | null;
   pending: boolean;
 };
 
-export async function findSweetSpotAction(
-  prevState: SweetSpotFinderState,
+export async function findNookAction(
+  prevState: NookFinderState,
   formData: FormData
-): Promise<SweetSpotFinderState> {
+): Promise<NookFinderState> {
   
   const qualifications = formData.getAll("qualifications_cb");
   const licenses = formData.getAll("teaching_license_cb");
@@ -27,9 +27,10 @@ export async function findSweetSpotAction(
 
   const regions = formData.getAll("regions").join(", ");
   const preferences = formData.getAll("preferences").join(", ");
+  const curriculums = formData.getAll("curriculum").join(", ");
   const experienceYears = formData.get("experience");
 
-  const input: FindYourSweetSpotInput = {
+  const input: FindYourNookInput = {
     age: Number(formData.get("age")),
     qualifications: allQualifications,
     currentLocation: String(formData.get("currentLocation")),
@@ -38,6 +39,7 @@ export async function findSweetSpotAction(
     subject: String(formData.get("subject")),
     preferredRegions: regions,
     preferences: preferences,
+    preferredCurriculums: curriculums,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced" | "culture",
     availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
     familyStatus: String(formData.get("familyStatus")),
@@ -60,7 +62,7 @@ export async function findSweetSpotAction(
   }
 
   try {
-    const result = await findYourSweetSpot(input);
+    const result = await findYourNook(input);
     return { result, error: null, pending: false };
   } catch (e: any) {
     console.error(e);
