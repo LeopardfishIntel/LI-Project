@@ -2,8 +2,9 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe } from 'lucide-react';
+import { Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { schools } from '@/lib/mock-data';
@@ -504,6 +505,11 @@ export default function TrueCostsPage() {
                         description={contractPerksData.taxStatus.text}
                         score={contractPerksData.taxStatus.score}
                     />
+                    <div className="pl-9 -mt-2">
+                        <Link href="/tax-calculator" className="text-sm text-primary hover:underline flex items-center gap-1.5">
+                            Worldwide Salary Tax Calculator <ExternalLink className="w-4 h-4" />
+                        </Link>
+                    </div>
                      <FeatureDetail 
                         icon={<Home className="w-5 h-5" />}
                         title="Housing Arrangement"
@@ -625,5 +631,7 @@ export default function TrueCostsPage() {
     </div>
   );
 }
+
+    
 
     

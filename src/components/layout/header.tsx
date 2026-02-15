@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -11,6 +12,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const navLinks = [
   { href: "/compare", label: "Compare" },
   { href: "/true-costs", label: "True Costs" },
+  { href: "/tax-calculator", label: "Tax Calculator" },
   { href: "/find-your-niche", label: "Find Your Niche" },
   { href: "/forum", label: "Forums" },
 ];
@@ -95,3 +97,5 @@ export default function Header() {
     </header>
   );
 }
+
+    
