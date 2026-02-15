@@ -99,7 +99,7 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <section className="w-full py-12 bg-background border-y border-border">
+    <div className="w-full py-6 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {stats.map((stat, index) => (
@@ -111,6 +111,6 @@ export function KeyFactsSection() {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

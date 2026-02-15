@@ -6,8 +6,15 @@ import { Button } from '@/components/ui/button';
 export default function Home() {
   return (
     <div className="flex flex-col items-center">
-      <section className="w-full py-20 md:py-32 lg:py-40 text-center bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop')"}}>
-        <div className="container mx-auto px-4 md:px-6 z-10">
+      <section className="relative w-full">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{backgroundImage: "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop')"}}
+        >
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
+        <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[85vh] py-20">
+          <div className="flex-grow flex flex-col items-center justify-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
             </h1>
@@ -19,10 +26,12 @@ export default function Home() {
                     Start Your Journey
                 </Button>
             </Link>
+          </div>
+          <div className="mt-auto">
+             <KeyFactsSection />
+          </div>
         </div>
       </section>
-
-      <KeyFactsSection />
 
       <Roadmap />
     </div>
