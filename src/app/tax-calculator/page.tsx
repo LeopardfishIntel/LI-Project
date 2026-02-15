@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -186,7 +185,7 @@ const conversionRatesToUSD: { [key: string]: number } = { "GBP": 1.25, "EUR": 1.
 
 const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
     const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0 };
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
     
     const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
     const brackets = filingStatuses[filingStatus].brackets;
@@ -206,12 +205,12 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
     }
 
     // 2. Calculate Income Tax
-    let incomeTax = 0;
+    let incomeTaxBeforeCredit = 0;
     let lastBracketUpto = 0;
     for (const bracket of brackets) {
         if (incomeForTaxCalculation > lastBracketUpto) {
             const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTax += taxableInBracket * bracket.rate;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
             lastBracketUpto = bracket.upto;
         } else {
             break;
@@ -220,13 +219,13 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
     
     // 3. Apply tax credits for dependents
     const taxCredit = (childTaxCredit || 0) * dependents;
-    incomeTax = Math.max(0, incomeTax - taxCredit);
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
 
     const totalTax = incomeTax + socialSecurityContrib;
     const netIncome = income - totalTax;
     const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
 
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit };
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
 };
 
 const chartConfig = {
@@ -243,7 +242,7 @@ export default function TaxCalculatorPage() {
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
     const [dependents, setDependents] = useState('0');
     const [applySpecialRegime, setApplySpecialRegime] = useState(false);
-    const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number, taxCredit: number } | null>(null);
+    const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number, taxCredit: number, incomeTaxBeforeCredit: number } | null>(null);
     
     const countriesWithCalculators = Object.keys(taxData).sort();
     const currencies = Object.keys(conversionRatesToUSD).sort();
@@ -282,25 +281,41 @@ export default function TaxCalculatorPage() {
     const CustomLegend = () => {
       if (!result) return null;
         
-      const data = [
+      const chartItems = [
         { name: 'netPay', value: result.netIncome },
         { name: 'incomeTax', value: result.incomeTax },
         { name: 'socialContributions', value: result.socialSecurity },
       ];
+      const localCurrency = taxData[country].currency;
 
       return (
         <div className="space-y-2 text-sm">
           <h3 className="font-semibold">Breakdown</h3>
-          {data.map(item => {
+          {chartItems.map(item => {
               const config = chartConfig[item.name as keyof typeof chartConfig];
-              if (item.value <= 0) return null;
+              if (item.value < 0) return null;
+              
               return (
-                <div key={item.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: config.color }}></span>
-                        <span>{config.label}</span>
-                    </div>
-                    <span className="font-mono font-medium">{formatCurrency(item.value, taxData[country].currency)}</span>
+                <div key={item.name}>
+                  <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: config.color }}></span>
+                          <span>{config.label}</span>
+                      </div>
+                      <span className="font-mono font-medium">{formatCurrency(item.value, localCurrency)}</span>
+                  </div>
+                  {item.name === 'incomeTax' && result.taxCredit > 0 && (
+                      <div className="pl-5 mt-1 text-xs space-y-1 text-muted-foreground border-l ml-1.5 pl-4 border-dashed">
+                          <div className="flex justify-between">
+                              <span>Gross Tax</span>
+                              <span>{formatCurrency(result.incomeTaxBeforeCredit, localCurrency)}</span>
+                          </div>
+                          <div className="flex justify-between text-blue-400">
+                              <span>Credits</span>
+                              <span>-{formatCurrency(result.taxCredit, localCurrency)}</span>
+                          </div>
+                      </div>
+                  )}
                 </div>
               )
           })}
@@ -455,7 +470,7 @@ export default function TaxCalculatorPage() {
                                                 {chartData.map((entry) => (
                                                     <Cell key={`cell-${entry.name}`} fill={entry.fill} className="stroke-background focus:outline-none" />
                                                 ))}
-                                            </Pie>
+                                            </PieChart>
                                         </PieChart>
                                     </ChartContainer>
                                 </CardContent>
@@ -470,3 +485,5 @@ export default function TaxCalculatorPage() {
         </div>
     );
 }
+
+    
