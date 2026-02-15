@@ -1,0 +1,129 @@
+"use client";
+
+import { useState } from 'react';
+import type { School } from '@/lib/types';
+import { getSchoolComparisonInsights } from '@/app/compare/actions';
+import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Loader2, Sparkles, ServerCrash, ThumbsUp, ThumbsDown, GraduationCap, Trophy } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
+export function LeopardfishComparisonInsights({ schools }: { schools: School[] }) {
+    const [result, setResult] = useState<{ comparison: AiSchoolComparisonOutput | null, error?: string } | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    async function handleFetchComparison() {
+        if (!schools || schools.length < 2) return;
+        setLoading(true);
+        setResult(null);
+        const res = await getSchoolComparisonInsights(schools);
+        setResult(res);
+        setLoading(false);
+    }
+
+    return (
+        <Card className="bg-card/70 backdrop-blur-sm border-border w-full">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold tracking-tight text-center mb-4">LeopardFish Comparative Insights</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow flex flex-col items-center">
+                {!loading && !result && (
+                    <div className="flex flex-col items-center justify-center text-center flex-grow py-8 min-h-[200px]">
+                        <Sparkles className="w-10 h-10 text-amber-400 mb-4" />
+                        <h3 className="font-semibold text-xl mb-2">Compare Your Top Schools</h3>
+                        <p className="text-muted-foreground mb-6 text-base max-w-2xl">Get an AI-powered comparative analysis of your selected schools, highlighting the key trade-offs and recommending the best fit for your profile.</p>
+                        <Button onClick={handleFetchComparison} size="lg">
+                            <Sparkles className="w-5 h-5 mr-2" />
+                            Generate Comparison
+                        </Button>
+                    </div>
+                )}
+                {loading && (
+                    <div className="flex items-center justify-center flex-grow py-8 min-h-[200px]">
+                        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                        <p className="ml-4 text-muted-foreground text-lg">Analyzing schools...</p>
+                    </div>
+                )}
+                {result?.error && (
+                     <div className="flex flex-col items-center justify-center text-center flex-grow py-8 min-h-[200px] bg-destructive/10 rounded-md w-full">
+                        <ServerCrash className="w-10 h-10 text-destructive mb-4" />
+                        <h3 className="font-semibold text-xl text-destructive mb-2">Analysis Failed</h3>
+                        <p className="text-destructive/80 mb-6 text-base px-4">{result.error}</p>
+                        <Button variant="destructive" onClick={handleFetchComparison}>
+                            Try Again
+                        </Button>
+                    </div>
+                )}
+                {result?.comparison && (
+                    <div className="space-y-8 w-full text-left">
+                        <div>
+                            <h3 className="font-bold text-xl flex items-center gap-2 mb-3"><Trophy className="w-6 h-6 text-amber-400" /> Best Fit Recommendation</h3>
+                             <Card className="bg-primary/10 border-primary/40">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <GraduationCap className="w-6 h-6 text-primary"/>
+                                        {result.comparison.bestFit.schoolName}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-muted-foreground">{result.comparison.bestFit.reasoning}</p>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                         <div>
+                            <h3 className="font-bold text-xl flex items-center gap-2 mb-3"><Sparkles className="w-6 h-6 text-amber-400" /> Overall Summary</h3>
+                            <blockquote className="text-muted-foreground italic border-l-2 border-primary pl-4 text-base">
+                                "{result.comparison.overallSummary}"
+                            </blockquote>
+                        </div>
+                        
+                        <div>
+                             <h3 className="font-bold text-xl flex items-center gap-2 mb-3">School Breakdowns</h3>
+                            <Accordion type="single" collapsible className="w-full" defaultValue={result.comparison.schoolBreakdowns[0]?.schoolName}>
+                                {result.comparison.schoolBreakdowns.map(school => (
+                                     <AccordionItem value={school.schoolName} key={school.schoolName}>
+                                        <AccordionTrigger className="text-lg font-semibold">{school.schoolName}</AccordionTrigger>
+                                        <AccordionContent className="space-y-6 pt-4">
+                                            <p className="text-muted-foreground">{school.summary}</p>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <h4 className="font-semibold flex items-center gap-2 mb-2"><ThumbsUp className="w-5 h-5 text-green-400" /> Pros</h4>
+                                                    {school.pros.length > 0 ? (
+                                                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
+                                                            {school.pros.map((pro, i) => <li key={i}>{pro}</li>)}
+                                                        </ul>
+                                                    ): (
+                                                        <p className="text-muted-foreground text-sm">No specific pros identified.</p>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold flex items-center gap-2 mb-2"><ThumbsDown className="w-5 h-5 text-red-400" /> Cons</h4>
+                                                    {school.cons.length > 0 ? (
+                                                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
+                                                            {school.cons.map((con, i) => <li key={i}>{con}</li>)}
+                                                        </ul>
+                                                    ): (
+                                                        <p className="text-muted-foreground text-sm">No specific cons identified.</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        </div>
+                        
+                        <div className="text-center pt-4">
+                            <Button variant="ghost" size="sm" onClick={handleFetchComparison} className="text-muted-foreground">
+                                <Sparkles className="w-4 h-4 mr-2"/>
+                                Regenerate Comparison
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+}

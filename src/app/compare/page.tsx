@@ -12,7 +12,7 @@ import { schools, teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info } from 'lucide-react';
-import { LeopardFishInsights } from '@/components/leopardfish-insights';
+import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
@@ -333,16 +333,9 @@ export default function ComparePage() {
                 ))}
             </div>
 
-            <div className="mt-12">
-                 <h2 className="text-2xl font-bold tracking-tight text-center mb-8">LeopardFish Insights</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-                    {selectedSchools.map(school => (
-                         <LeopardFishInsights key={school.id} school={school} />
-                    ))}
-                </div>
+            <div className="mt-16 flex justify-center">
+                 <LeopardfishComparisonInsights schools={selectedSchools} />
             </div>
         </div>
     );
 }
-
-    

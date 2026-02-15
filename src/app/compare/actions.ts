@@ -1,41 +1,43 @@
 "use server";
 
-import { aiSchoolInsightsSummary, AiSchoolInsightsSummaryInput } from '@/ai/flows/ai-school-insights-summary-flow';
+import { aiSchoolComparison, AiSchoolComparisonInput } from '@/ai/flows/ai-school-comparison-flow';
 import type { School } from '@/lib/types';
+import { teacherProfile } from '@/lib/mock-data';
 
-export async function getSchoolInsights(school: School) {
+export async function getSchoolComparisonInsights(schools: School[]) {
     try {
-        const coreSchoolData = JSON.stringify({
-            salary: school.intel.salary.value,
-            housing: school.intel.housing.value,
-            savingsPotential: school.intel.savingsPotential.value,
-            curriculum: school.intel.curriculum,
-            studentTeacherRatio: school.intel.studentTeacherRatio,
-            classSize: school.intel.classSize,
+        const schoolData = schools.map(school => {
+            const coreSchoolData = JSON.stringify({
+                salary: school.intel.salary.value,
+                taxFree: school.intel.salary.isTaxFree ? 'Yes' : 'No',
+                housing: school.intel.housing.value,
+                savingsPotential: school.intel.savingsPotential.value,
+                curriculum: school.intel.curriculum,
+                studentTeacherRatio: school.intel.studentTeacherRatio,
+                classSize: school.intel.classSize,
+            });
+            const teacherReviews = school.reviews.map(r => `Review: ${r.text}`).join(' ');
+
+            return { schoolName: school.name, coreSchoolData, teacherReviews };
         });
 
-        const teacherReviews = school.reviews.map(r => `Review: ${r.text}`).join(' ');
-        
-        const input: AiSchoolInsightsSummaryInput = {
-            schoolName: school.name,
-            coreSchoolData,
-            teacherReviews
-        };
-        
-        if (!teacherReviews) {
-            return { insights: {
-                summary: "No reviews available to generate insights.",
-                pros: [],
-                cons: []
-            }};
-        }
-        
-        const insights = await aiSchoolInsightsSummary(input);
+        const teacherProfileSummary = `Family Status: ${teacherProfile.familyStatus}, Experience: ${teacherProfile.yearsOfExperience} years, Qualifications: ${teacherProfile.qualifications.join(', ')}, Prefers: ${[...teacherProfile.preferredRegions, ...teacherProfile.preferredCountries].join(', ')}.`;
 
-        return { insights };
+        const input: AiSchoolComparisonInput = {
+            schools: schoolData.filter(s => s.teacherReviews), // Only include schools with reviews
+            teacherProfile: teacherProfileSummary
+        };
+
+        if (input.schools.length < 2) {
+             return { comparison: null, error: "Please select at least two schools with reviews to generate a comparison." };
+        }
+
+        const comparison = await aiSchoolComparison(input);
+        return { comparison };
+
     } catch (error) {
         console.error(error);
         const err = error as Error;
-        return { insights: null, error: err.message || 'Failed to generate insights.' };
+        return { comparison: null, error: err.message || 'Failed to generate comparison.' };
     }
 }
