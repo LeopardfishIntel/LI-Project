@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone } from 'lucide-react';
+import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -1270,7 +1270,7 @@ export default function FinancialForecasterPage() {
                 30% of teachers break their contracts because the financial reality was a total shock.
             </p>
             <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-                Don't be one of the 30% use our Contract Decoder to hack through the recruitment fluff, calculate your actual take-home pay, and map out the cost of your daily grind to find your genuine disposable income. It’s the only way to fix your focus on your real financial position and see if you’ll actually grow a savings pot or just treading water. It is absolutely vital you review our own due diligence tests before you pack your life into a suitcase and set off on your new adventure.
+                Our Contract Decoder hacks through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.
             </p>
             
             <MiniMenu />
@@ -1288,3 +1288,5 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
+
+    
