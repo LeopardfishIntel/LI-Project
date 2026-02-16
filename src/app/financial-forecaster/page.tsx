@@ -1028,11 +1028,11 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer. For an accurate net salary, use the{' '}
+                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer.
+                            For an accurate net salary, use the{' '}
                             <Link href="#tax-calculator" className="text-sky-400 hover:underline">
-                                (tax calculator)
-                            </Link>
-                            .
+                                tax calculator
+                            </Link>.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1183,6 +1183,7 @@ function TrueCostsSection() {
                           <p className="text-amber-400">
                               Please ensure your Family Status is correct
                           </p>
+                           <p className="text-muted-foreground text-sm mt-1">For an accurate net salary, use the tax calculator.</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
@@ -1270,7 +1271,6 @@ function TrueCostsSection() {
                             {' | '}
                             {familyStatusLabels[familyStatus]}
                         </p>
-                        <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
                     </CardHeader>
                     <CardContent className="flex-grow pt-0">
                         <div className="space-y-4">
@@ -1316,7 +1316,7 @@ function TrueCostsSection() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                 <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
                         <CardTitle>Financial</CardTitle>
@@ -1423,8 +1423,6 @@ export default function FinancialForecasterPage() {
             <section id="true-costs-analysis" className="scroll-mt-20">
                <TrueCostsSection />
             </section>
-
-            <Separator className="my-16" />
 
             <section id="tax-calculator" className="scroll-mt-20">
               <TaxCalculatorSection />
