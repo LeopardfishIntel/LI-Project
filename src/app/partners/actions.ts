@@ -47,16 +47,17 @@ Regards,
 
 The Leopardfish Intel Team`;
   } else {
-    emailSubject = 'Service Partnership Inquiry: Next Steps';
+    emailSubject = 'Service Partnership Enquiry: Initial Review';
     emailBody = `Hello ${name},
 
-Thanks for contacting Leopardfish Intel regarding a potential partnership.
+Thanks for your interest in partnering with Leopardfish Intel.
 
-We have received your enquiry to showcase your services to our international teaching community.
+We have received your enquiry to showcase your services to our community. We are currently conducting an initial review to ensure your offering aligns with our members' needs.
 
-Our team will now review the information you provided to ensure it aligns with our current member requirements. We aim to get back to you within 3 working days to discuss any potential collaboration.
+What happens next?
+If your enquiry is approved, you will receive an invitation to set up your Service Provider Profile. This will allow you to manage your listing, upload your logo, and provide details about your services directly on our platform.
 
-In the meantime, if you have a media kit or further documentation, please feel free to reply directly to this email.
+You should hear from us within 3 working days.
 
 Regards,
 
