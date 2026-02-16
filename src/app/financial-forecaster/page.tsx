@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil } from 'lucide-react';
+import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -721,6 +721,7 @@ function TrueCostsSection() {
   const [homeCountry, setHomeCountry] = useState('United Kingdom');
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
+  const [partnerIncome, setPartnerIncome] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -820,10 +821,11 @@ function TrueCostsSection() {
 
   const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
   const numericOtherMonthlyBenefits = parseFloat(otherMonthlyBenefits) || 0;
-  
+  const numericPartnerIncome = parseFloat(partnerIncome) || 0;
+
   const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : estimatedNetMonthlySalary;
 
-  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits;
+  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits + numericPartnerIncome;
   const totalMonthlyCosts = selectedSchool ? calculateTotal(selectedSchool) : 0;
   const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
@@ -1063,6 +1065,20 @@ function TrueCostsSection() {
                                         placeholder="0"
                                         value={otherMonthlyBenefits}
                                         onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
+                                        <Users className="w-4 h-4 mr-2" /> Other / Partner Income
+                                    </Label>
+                                    <Input
+                                        id="partner-income"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={partnerIncome}
+                                        onChange={(e) => setPartnerIncome(e.target.value)}
                                         className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
                                     />
                                 </div>
