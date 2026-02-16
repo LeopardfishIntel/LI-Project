@@ -1062,6 +1062,51 @@ function TrueCostsSection() {
                     Add any additional cash benefits to improve accuracy.
                   </p>
                 </div>
+                <Separator />
+                <div>
+                  <Label>Housing Benefit Analysis</Label>
+                  <div className="p-3 mt-2 rounded-md bg-muted/50 text-sm">
+                    {selectedSchool.intel.housing.provided ? (
+                      <div className="flex items-start gap-3">
+                        <Home className="w-5 h-5 mt-1 text-green-400 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            Housing Provided ({selectedSchool.intel.housing.value})
+                          </p>
+                          <p className="text-muted-foreground mt-1">
+                            This adds an estimated annual value of{' '}
+                            <span className="font-bold text-foreground">
+                              {formatCurrency(
+                                convert(selectedSchool.costOfLiving.apartment * 12),
+                                currency
+                              )}
+                            </span>{' '}
+                            to your package.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start gap-3">
+                        <Home className="w-5 h-5 mt-1 text-amber-400 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            Housing Allowance / Rent
+                          </p>
+                          <p className="text-muted-foreground mt-1">
+                            Estimated annual rent is{' '}
+                            <span className="font-bold text-foreground">
+                              {formatCurrency(
+                                convert(selectedSchool.costOfLiving.apartment * 12),
+                                currency
+                              )}
+                            </span>
+                            . Enter your allowance in 'Other Benefits' above to see how it compares.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     For a detailed tax breakdown, use the{' '}
