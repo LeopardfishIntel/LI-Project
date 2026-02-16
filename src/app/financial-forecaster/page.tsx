@@ -824,17 +824,16 @@ function TrueCostsSection() {
   const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : estimatedNetMonthlySalary;
 
   const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits;
+  const totalMonthlyCosts = selectedSchool ? calculateTotal(selectedSchool) : 0;
+  const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
+  const annualSavings = monthlySavings * 12;
+
   
   let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyExpenses = calculateTotal(selectedSchool);
     const monthlyIncome = salaryToUse;
-
-    const monthlySavings = monthlyIncome - monthlyExpenses;
-    const annualSavings = monthlySavings * 12;
-
     const convertedAnnualSavings = convert(annualSavings);
     const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
 
@@ -1009,78 +1008,17 @@ function TrueCostsSection() {
         </div>
 
         {selectedSchool && (
-          <>
             <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle className="flex items-center text-xl">
-                  <GraduationCap className="w-5 h-5 mr-2 text-primary" />
-                  Income Estimator: {selectedSchool.name}
-                </CardTitle>
-                <CardDescription>
-                  The salary is an estimate. Enter your actual offered net salary to improve accuracy.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                            <Pencil className="w-4 h-4 mr-2" /> Your Offered Net Salary (Monthly, USD)
-                        </Label>
-                        <Input
-                            id="offered-salary"
-                            type="number"
-                            placeholder={`${Math.round(estimatedNetMonthlySalary)}`}
-                            value={offeredNetMonthlySalary}
-                            onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
-                            className="mt-0 max-w-[150px] h-8 text-right bg-input/40"
-                        />
+                <CardHeader className="flex-row items-center justify-between pb-4">
+                    <div>
+                        <CardTitle className="flex items-center text-xl">
+                            <LineChart className="w-5 h-5 mr-2 text-primary" />
+                            Financial Snapshot: {selectedSchool.name}
+                        </CardTitle>
+                        <CardDescription className="mt-1">
+                            Estimate your monthly budget. Enter your offered net salary for a more accurate forecast.
+                        </CardDescription>
                     </div>
-                    
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                            <Award className="w-4 h-4 mr-2" /> Other Cash Benefits (Monthly, USD)
-                        </Label>
-                        <Input
-                            id="other-benefits"
-                            type="number"
-                            placeholder="e.g., 500"
-                            value={otherMonthlyBenefits}
-                            onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
-                            className="mt-0 max-w-[150px] h-8 text-right bg-input/40"
-                        />
-                    </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="flex justify-between items-center text-lg font-bold">
-                    <span className="text-primary-foreground flex items-center"><LineChart className="w-5 h-5 mr-2" /> Est. Total Monthly Value</span>
-                    <span className="text-primary">{
-                        formatCurrency(convert(totalMonthlyPackage), currency)
-                    }</span>
-                </div>
-                
-                <div className="text-center pt-2">
-                  <p className="text-xs text-muted-foreground">
-                    Placeholder is an estimated net salary assuming a 20% tax rate. For an accurate calculation, use the{' '}
-                    <Link
-                      href="#tax-calculator"
-                      className="text-sky-400 hover:underline"
-                    >
-                      full tax calculator
-                    </Link>
-                    .
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
-                <CardHeader className="flex-row items-center justify-between">
-                    <CardTitle className="flex items-center text-xl">
-                        <DollarSign className="w-5 h-5 mr-2 text-primary" />
-                        Cost Estimator: {selectedSchool.name}
-                    </CardTitle>
                     <div className="w-[120px]">
                         <Select value={currency} onValueChange={setCurrency}>
                             <SelectTrigger id="currency-select-page">
@@ -1094,55 +1032,104 @@ function TrueCostsSection() {
                         </Select>
                     </div>
                 </CardHeader>
-                <CardContent>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-                            <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                        {/* Income & Benefits Column */}
+                        <div className="space-y-4">
+                            <h3 className="font-semibold text-lg text-primary-foreground border-b pb-2">Income & Benefits (Monthly)</h3>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
+                                        <Pencil className="w-4 h-4 mr-2" /> Your Offered Net Salary
+                                    </Label>
+                                    <Input
+                                        id="offered-salary"
+                                        type="number"
+                                        placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
+                                        value={offeredNetMonthlySalary}
+                                        onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label className="flex items-center text-muted-foreground">
+                                        <Award className="w-4 h-4 mr-2" /> Housing Benefit (Est. Value)
+                                    </Label>
+                                    <span className="font-medium text-foreground">{formatCurrency(convert(numericOtherMonthlyBenefits), currency)}</span>
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="flex justify-between items-center font-bold text-base">
+                                <span className="text-primary-foreground">Total Monthly Package</span>
+                                <span className="text-primary-foreground">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                            </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities (Water/Elec/Gas)</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> High-Speed Internet</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-slate-400" /> Mobile</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
-                        </div>
-                         <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport / Fuel</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
-                        </div>
-                         {selectedSchool.costOfLiving.vehicleInsuranceMaint > 0 && <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Car className="w-4 h-4 mr-2 text-neutral-400" /> Vehicle Insurance/Maint.</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.vehicleInsuranceMaint), currency)}</span>
-                        </div>}
-                         <div className="flex justify-between items-center">
-                            <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Medical Gaps (e.g. Dental)</span>
-                            <span>{formatCurrency(convert(selectedSchool.costOfLiving.uncoveredMedical * adults + selectedSchool.costOfLiving.uncoveredMedical * 0.5 * children), currency)}</span>
+
+                        {/* Estimated Costs Column */}
+                        <div className="space-y-4">
+                            <h3 className="font-semibold text-lg text-primary-foreground border-b pb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
+                                    <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining & Social</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+                                </div>
+                            </div>
+                            <Separator />
+                            <div className="flex justify-between items-center font-bold text-base">
+                                <span className="text-primary-foreground">Total Estimated Costs</span>
+                                <span className="text-primary-foreground">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div className="mt-4 pt-4 border-t border-border">
-                        <div className="flex justify-between items-center text-lg font-bold">
-                            <span className="text-primary-foreground">Estimated Monthly Total</span>
-                            <span className="text-primary">{formatCurrency(convert(calculateTotal(selectedSchool)), currency)}</span>
+                    <div className="pt-6">
+                        <Separator className="mb-6" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                            <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
+                                <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
+                                <p className={cn("text-3xl font-bold mt-1", monthlySavings >= 0 ? "text-green-400" : "text-red-400")}>
+                                    {formatCurrency(convert(monthlySavings), currency)}
+                                </p>
+                            </div>
+                             <div className={cn("p-4 rounded-lg", annualSavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
+                                <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED ANNUAL SAVINGS</h4>
+                                <p className={cn("text-3xl font-bold mt-1", annualSavings >= 0 ? "text-green-400" : "text-red-400")}>
+                                    {formatCurrency(convert(annualSavings), currency)}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="text-center pt-4">
+                            <p className="text-xs text-muted-foreground">
+                                Your salary is an estimate. For an accurate calculation, use the{' '}
+                                <Link href="#tax-calculator" className="text-sky-400 hover:underline">
+                                    full tax calculator
+                                </Link>
+                                .
+                            </p>
                         </div>
                     </div>
                 </CardContent>
             </Card>
-            </>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
