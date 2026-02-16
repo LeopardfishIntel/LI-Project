@@ -24,7 +24,7 @@ export default function Roadmap() {
     {
       id: '02',
       title: 'Evaluate',
-      desc: "Our Contract Decoder hacks through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.",
+      desc: "Our Contract Decoder cuts through the fluff, calculate your actual take-home pay, and map your genuine disposable income. Focus on your real financial position, can you save or will you be treading water.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step'
     },
@@ -56,7 +56,7 @@ export default function Roadmap() {
                       data-ai-hint={imageHint}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[2.45rem] font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
+                      <span className="text-5xl font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
                     </div>
                 </div>
                 <div className={cn("flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
