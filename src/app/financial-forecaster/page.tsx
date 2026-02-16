@@ -1106,6 +1106,7 @@ function TrueCostsSection() {
                                     />
                                 </div>
                             </div>
+                            <div className="flex-grow"></div>
                             <Separator className="my-4"/>
                             <div className="flex justify-between items-center font-bold text-lg">
                                 <span className="text-primary-foreground">Total Monthly Package</span>
@@ -1349,20 +1350,20 @@ function TrueCostsSection() {
                 </Card>
                 <Card id="red-flags" className="bg-destructive/10 border-destructive/50 scroll-mt-24">
                     <CardHeader>
-                        <CardTitle className="text-destructive flex items-center gap-2">
+                        <CardTitle className="text-foreground flex items-center gap-2">
                             <ShieldAlert className="h-6 w-6" />
                             Financial Red Flags
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <h4 className="font-semibold text-foreground">🚩 Hidden Tax &amp; Social Security Deductions</h4>
+                            <h4 className="font-semibold text-destructive">🚩 Hidden Tax &amp; Social Security Deductions</h4>
                             <p className="text-muted-foreground mt-1">
                                 Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
                             </p>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-foreground">🚩 Currency Fluctuations</h4>
+                            <h4 className="font-semibold text-destructive">🚩 Currency Fluctuations</h4>
                             <p className="text-muted-foreground mt-1">
                                 Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
                             </p>
