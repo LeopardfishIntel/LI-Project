@@ -1108,9 +1108,9 @@ function TrueCostsSection() {
                                 </div>
                             </div>
                             <Separator />
-                            <div className="flex justify-between items-center font-bold text-base">
+                            <div className="flex justify-between items-center font-bold text-lg">
                                 <span className="text-primary-foreground">Total Monthly Package</span>
-                                <span className="text-primary-foreground">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                                <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
                             </div>
                             <div className="text-right pt-1">
                                 <p className="text-xs text-muted-foreground">
@@ -1171,9 +1171,9 @@ function TrueCostsSection() {
                                 </div>
                             </div>
                             <Separator />
-                            <div className="flex justify-between items-center font-bold text-base">
+                            <div className="flex justify-between items-center font-bold text-lg">
                                 <span className="text-primary-foreground">Total Estimated Costs</span>
-                                <span className="text-primary-foreground">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                                <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
                             </div>
                         </div>
                     </div>
@@ -1353,7 +1353,7 @@ function TrueCostsSection() {
                     <CardHeader>
                         <CardTitle className="text-destructive flex items-center gap-2">
                             <ShieldAlert className="h-6 w-6" />
-                            Leopardfish Intel: Financial Red Flags
+                            Financial Red Flags
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
