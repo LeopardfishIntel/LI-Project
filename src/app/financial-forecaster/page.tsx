@@ -17,7 +17,6 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 
 
@@ -327,7 +326,7 @@ function TaxCalculatorSection() {
 
 
     return (
-        <div className="max-w-4xl mx-auto mt-8">
+        <div className="max-w-4xl mx-auto">
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Calculator className="w-6 h-6 text-primary" /> Salary Tax Calculator</CardTitle>
@@ -928,30 +927,12 @@ function TrueCostsSection() {
 
     lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
 
-    const MiniMenu = () => {
-      const menuItems = [
-          { label: 'Package', href: '#package-deals'},
-          { label: 'Benefits', href: '#benefits-and-bonuses'},
-          { label: 'Lifestyle', href: '#lifestyle-costs'},
-          { label: 'Safety', href: '#safety-and-travel'},
-          { label: 'Financials', href: '#financial-strategy'},
-          { label: 'Savings', href: '#savings-potential'},
-      ];
-  
-      return (
-          <div className="flex justify-center flex-wrap gap-2 mb-8 -mt-4">
-              {menuItems.map(item => (
-                  <Link href={item.href} key={item.href}
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-muted-foreground hover:bg-background hover:text-foreground shadow-sm">
-                          {item.label}
-                  </Link>
-              ))}
-          </div>
-      )
-    }
-
   return (
-    <div className="max-w-5xl mx-auto mt-8">
+    <div className="max-w-5xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center">True Costs Analysis</h2>
+        <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
+          A high salary doesn't always mean high savings. Our "True Costs" model analyzes contract perks, lifestyle realities, and financial strategy to reveal your true savings potential.
+        </p>
         <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
@@ -1011,8 +992,6 @@ function TrueCostsSection() {
             </Select>
           </div>
         </div>
-
-        <MiniMenu />
 
         {selectedSchool && (
             <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
@@ -1085,7 +1064,7 @@ function TrueCostsSection() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+            <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                 <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
                         <Landmark className="h-6 w-6" />
@@ -1101,7 +1080,7 @@ function TrueCostsSection() {
                     </div>
                 </CardHeader>
                 <CardContent className="flex-grow pt-0">
-                    <div id="package-deals" className="space-y-4 scroll-mt-24 pt-6">
+                    <div className="space-y-4 pt-6">
                         <FeatureDetail 
                             icon={<FileText className="w-5 h-5" />}
                             title="Tax Status"
@@ -1123,8 +1102,8 @@ function TrueCostsSection() {
                             score={contractPerksData.flightAllowance.score}
                         />
                     </div>
-                    <Separator className="my-4" />
-                    <div id="benefits-and-bonuses" className="space-y-4 scroll-mt-24">
+                    <Separator id="benefits-and-bonuses" className="my-4 scroll-mt-24" />
+                    <div className="space-y-4">
                         <FeatureDetail 
                             icon={<SchoolIcon className="w-5 h-5" />}
                             title="Dependent Tuition"
@@ -1188,8 +1167,8 @@ function TrueCostsSection() {
                             percentage={lifestyleData.socialLeisure.percentage}
                         />
                     </div>
-                    <Separator className="my-4" />
-                    <div id="safety-and-travel" className="space-y-4 scroll-mt-24">
+                    <Separator id="safety-and-travel" className="my-4 scroll-mt-24" />
+                    <div className="space-y-4">
                         <FeatureDetail 
                             icon={<ShieldAlert className="w-5 h-5" />}
                             title="Safety & Travel Advice"
@@ -1231,8 +1210,8 @@ function TrueCostsSection() {
                             score={homeObligationsData.score}
                         />
                     </div>
-                    <Separator className="my-4" />
-                    <div id="savings-potential" className="space-y-4 scroll-mt-24">
+                    <Separator id="savings-potential" className="my-4 scroll-mt-24" />
+                    <div className="space-y-4">
                         <FeatureDetail 
                             icon={<LineChart className="w-5 h-5" />}
                             title="True Savings Potential"
@@ -1278,24 +1257,50 @@ function TrueCostsSection() {
 
 
 export default function FinancialForecasterPage() {
+
+    const MiniMenu = () => {
+      const menuItems = [
+          { label: 'Tax Calculator', href: '#tax-calculator'},
+          { label: 'Package', href: '#package-deals'},
+          { label: 'Benefits', href: '#benefits-and-bonuses'},
+          { label: 'Lifestyle', href: '#lifestyle-costs'},
+          { label: 'Safety', href: '#safety-and-travel'},
+          { label: 'Financials', href: '#financial-strategy'},
+          { label: 'Savings', href: '#savings-potential'},
+      ];
+  
+      return (
+          <div className="flex justify-center flex-wrap gap-2 mb-12">
+              {menuItems.map(item => (
+                  <Link href={item.href} key={item.href}
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-muted-foreground hover:bg-background hover:text-foreground shadow-sm">
+                          {item.label}
+                  </Link>
+              ))}
+          </div>
+      )
+    }
+
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Financial Forecaster</h1>
             <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-                Evaluate your true financial picture. Calculate your take-home pay with the Salary Tax Calculator, and understand your day-to-day expenses with the True Costs model.
+                Evaluate your true financial picture. Calculate your take-home pay and understand your day-to-day expenses to reveal your genuine savings potential.
             </p>
-            <Tabs defaultValue="tax-calculator" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto">
-                    <TabsTrigger value="tax-calculator">Salary Tax Calculator</TabsTrigger>
-                    <TabsTrigger value="true-costs">True Costs Analysis</TabsTrigger>
-                </TabsList>
-                <TabsContent value="tax-calculator">
-                    <TaxCalculatorSection />
-                </TabsContent>
-                <TabsContent value="true-costs">
-                    <TrueCostsSection />
-                </TabsContent>
-            </Tabs>
+            
+            <MiniMenu />
+
+            <section id="tax-calculator" className="scroll-mt-20">
+              <TaxCalculatorSection />
+            </section>
+
+            <Separator className="my-16" />
+
+            <section id="true-costs-analysis" className="scroll-mt-20">
+               <TrueCostsSection />
+            </section>
         </div>
     )
 }
+
+    
