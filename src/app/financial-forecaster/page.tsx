@@ -1182,7 +1182,7 @@ function TrueCostsSection() {
                         <Separator className="mb-6" />
                         <div className="mb-6 text-center">
                           <p className="text-amber-400">
-                              Ensure your <span className="underline font-semibold">Family Status</span> is correct.
+                              Please ensure your Family Status is correct.
                           </p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
@@ -1199,7 +1199,7 @@ function TrueCostsSection() {
                                 </p>
                             </div>
                         </div>
-                         <div className="text-right pt-4">
+                         <div className="text-center pt-4">
                                 <p className="text-xs text-muted-foreground">
                                     For an accurate net salary, use the{' '}
                                     <Link href="#tax-calculator" className="text-sky-400 hover:underline">
