@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
-import { ProfileCTASection } from '@/components/profile-cta-section';
 
 export default function Home() {
   return (
@@ -35,7 +34,6 @@ export default function Home() {
       </section>
 
       <Roadmap />
-      <ProfileCTASection />
     </div>
   );
 }
