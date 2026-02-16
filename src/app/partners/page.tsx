@@ -20,7 +20,7 @@ export default function PartnersPage() {
           Partner with Leopardfish Intel
         </h1>
         <p className="text-muted-foreground text-center mt-4 mb-12">
-          We collaborate with schools, educational organizations, and service providers to support the international teaching community. If you're interested in showcasing your school or services, please get in touch.
+          Whether you’re a school looking to join our Verified Membership program or a service provider ready to support the international community, we want to hear from you.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
