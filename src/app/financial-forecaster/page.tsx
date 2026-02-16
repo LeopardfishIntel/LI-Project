@@ -1201,7 +1201,7 @@ function TrueCostsSection() {
             </>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                 <CardHeader>
                     <CardTitle className="text-xl">📄 Leopardfish Intel</CardTitle>
