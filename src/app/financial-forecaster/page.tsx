@@ -720,6 +720,7 @@ function TrueCostsSection() {
   const [currency, setCurrency] = useState('GBP');
   const [homeCountry, setHomeCountry] = useState('United Kingdom');
   const [offeredSalary, setOfferedSalary] = useState('');
+  const [otherBenefits, setOtherBenefits] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -745,6 +746,7 @@ function TrueCostsSection() {
 
   useEffect(() => {
     setOfferedSalary('');
+    setOtherBenefits('');
   }, [selectedSchoolId]);
 
   const familyStatusLabels: {[key: string]: string} = {
@@ -811,12 +813,16 @@ function TrueCostsSection() {
   let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
   const numericOfferedSalary = parseFloat(offeredSalary) || 0;
+  const numericOtherBenefits = parseFloat(otherBenefits) || 0;
 
   if (selectedSchool) {
     const monthlyExpenses = calculateTotal(selectedSchool);
     const annualSalary = numericOfferedSalary > 0 ? numericOfferedSalary : getAverageAnnualSalary(selectedSchool.intel.salary.value);
-    const monthlySalary = annualSalary / 12;
-    const monthlySavings = monthlySalary - monthlyExpenses;
+    
+    const totalAnnualIncome = annualSalary + numericOtherBenefits;
+    const monthlyIncome = totalAnnualIncome / 12;
+
+    const monthlySavings = monthlyIncome - monthlyExpenses;
     const annualSavings = monthlySavings * 12;
 
     const convertedAnnualSavings = convert(annualSavings);
@@ -824,14 +830,14 @@ function TrueCostsSection() {
 
     let taxInfo = '';
     if (!selectedSchool.intel.salary.isTaxFree) {
-        taxInfo = ` This is a pre-tax estimate. Your actual savings will be lower after income taxes, which vary by country.`;
+        taxInfo = ` This is a pre-tax estimate on your salary. Benefits are often non-taxable, but this varies. Your actual savings will be lower after income taxes.`;
     }
 
-    savingsDescription = `Based on an ${numericOfferedSalary > 0 ? 'offered' : 'average'} salary and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
+    savingsDescription = `Based on an ${numericOfferedSalary > 0 ? 'offered income' : 'average salary'} and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
 
-    if (monthlySavings > (monthlySalary * 0.3)) { // saving > 30% of salary
+    if (monthlySavings > (monthlyIncome * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
-    } else if (monthlySavings > (monthlySalary * 0.1)) { // saving > 10%
+    } else if (monthlySavings > (monthlyIncome * 0.1)) { // saving > 10%
         savingsScore = 'neutral';
     } else {
         savingsScore = 'bad';
@@ -1038,6 +1044,22 @@ function TrueCostsSection() {
                   <p className="text-xs text-muted-foreground mt-2">
                     Enter your specific offer to get a more accurate savings
                     projection below.
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="other-benefits">
+                    Other Benefits (e.g., housing allowance, annual bonus)
+                  </Label>
+                  <Input
+                    id="other-benefits"
+                    type="number"
+                    placeholder="e.g., 15000"
+                    value={otherBenefits}
+                    onChange={(e) => setOtherBenefits(e.target.value)}
+                    className="mt-1"
+                  />
+                   <p className="text-xs text-muted-foreground mt-2">
+                    Add any additional cash benefits to improve accuracy.
                   </p>
                 </div>
                 <div>
@@ -1353,5 +1375,3 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
-
-    
