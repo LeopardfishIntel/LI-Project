@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -46,15 +47,17 @@ export default function Roadmap() {
             const { imageUrl, imageHint } = getImage(step.imageId);
             return (
               <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-                <div className={cn("relative aspect-[4/3] md:aspect-auto md:h-full", index % 2 === 1 && "md:order-last")}>
-                    <Image 
-                      src={imageUrl}
-                      alt={step.desc}
-                      fill
-                      className="rounded-xl shadow-2xl object-cover w-full h-full"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={cn("text-[2.35rem] font-bold uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]", 'text-white')}>Step {parseInt(step.id)}</span>
+                <div className={cn("relative aspect-[4/3] md:aspect-auto md:h-full flex items-center", index % 2 === 1 && "md:order-last")}>
+                    <div className="relative w-full h-[90%]">
+                        <Image 
+                          src={imageUrl}
+                          alt={step.desc}
+                          fill
+                          className="rounded-xl shadow-2xl object-cover"
+                        />
+                        <div className={cn("absolute inset-0 flex items-center justify-center")}>
+                          <span className={cn("text-[2.35rem] font-bold uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]", 'text-white')}>Step {parseInt(step.id)}</span>
+                        </div>
                     </div>
                 </div>
                 <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
