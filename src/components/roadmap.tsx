@@ -45,21 +45,21 @@ export default function Roadmap() {
           {steps.map((step, index) => {
             const { imageUrl, imageHint } = getImage(step.imageId);
             return (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-stretch">
                 <div className={cn("relative", index % 2 === 1 && "md:order-last")}>
                     <Image 
                       src={imageUrl}
                       alt={step.desc}
                       width={600}
                       height={450}
-                      className="rounded-xl shadow-2xl object-cover w-full h-96"
+                      className="rounded-xl shadow-2xl object-cover w-full h-full"
                       data-ai-hint={imageHint}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-5xl font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
+                      <span className="text-8xl font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
                     </div>
                 </div>
-                <div className={cn("flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
+                <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
                   <h3 className="text-4xl font-bold mb-4">{step.title}</h3>
                   <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
                   <Link href={step.link} passHref>
