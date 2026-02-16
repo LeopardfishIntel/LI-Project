@@ -9,7 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const SchoolDataSchema = z.object({
   schoolName: z.string().describe('The name of the school.'),
