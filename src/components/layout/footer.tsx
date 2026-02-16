@@ -20,7 +20,7 @@ export default function Footer() {
                 <h4 className="font-semibold mb-4 uppercase tracking-wider">Quick Links</h4>
                 <nav className="flex flex-col gap-2">
                     <Link href="/discover" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Discover</Link>
-                    <Link href="/financial-forecaster" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Evaluate</Link>
+                    <Link href="/evaluate" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Evaluate</Link>
                     <Link href="/compare" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Decide</Link>
                      <Link href="/directory" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Directory</Link>
                      <Link href="/partners" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Partners</Link>
@@ -46,7 +46,7 @@ export default function Footer() {
         </div>
         
         <div className="text-center text-xs text-muted-foreground/80 border-t border-border/40 pt-6 mt-8">
-            <p className="mb-2">&copy; {new Date().getFullYear()} Leopardfish Intel. All rights reserved.</p>
+            <p className="mb-2">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
             <p><strong>Disclaimer:</strong> Leopardfish Intel is a platform for information and comparison purposes only. We do not act as a recruitment agency and are not affiliated with any school. All data is provided for guidance and should be verified with official sources. Your career decisions are your own.</p>
         </div>
       </div>
