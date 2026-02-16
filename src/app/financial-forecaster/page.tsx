@@ -930,10 +930,6 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center">True Costs Analysis</h2>
-        <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-          A high salary doesn't always mean high savings. Our "True Costs" model analyzes contract perks, lifestyle realities, and financial strategy to reveal your true savings potential.
-        </p>
         <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
