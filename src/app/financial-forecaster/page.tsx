@@ -511,7 +511,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad', percentage: "Not Standard" },
         dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral', percentage: "Up to 100%" },
         gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension scheme (like the Teachers' Pension Scheme).", score: 'neutral', percentage: "Pension Scheme" },
-        importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral', percentage: "+10%" },
+        importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral' },
         utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad', percentage: "+30%" },
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', percentage: "+20%" },
         socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad', percentage: "+40%" },
@@ -537,7 +537,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good', percentage: "Annual" },
         dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good', percentage: "Standard" },
-        importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral', percentage: "+30%" },
+        importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral' },
         utilities: { text: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. 'Chiller fees' (for AC) can be a major variable.", score: 'bad', percentage: "+20%" },
         transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral', percentage: "Baseline" },
         socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad', percentage: "+80%" },
@@ -563,7 +563,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.", score: 'neutral', percentage: "Varies" },
         dependentTuition: { text: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of education in Japan.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.", score: 'neutral', percentage: "Pension Scheme" },
-        importedGoods: { text: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.", score: 'bad', percentage: "+50%" },
+        importedGoods: { text: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.", score: 'bad' },
         utilities: { text: "Reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.", score: 'neutral', percentage: "-10%" },
         transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good', percentage: "-30%" },
         socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good', percentage: "-20%" },
@@ -589,7 +589,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "Not a standard benefit. Flights are typically paid for by the teacher.", score: 'bad', percentage: "Not Standard" },
         dependentTuition: { text: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.", score: 'good', percentage: "Discounted" },
         gratuity: { text: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.", score: 'neutral', percentage: "Pension Scheme" },
-        importedGoods: { text: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.", score: 'neutral', percentage: "+20%" },
+        importedGoods: { text: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.", score: 'neutral' },
         utilities: { text: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.", score: 'bad', percentage: "+60%" },
         transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral', percentage: "+50%" },
         socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad', percentage: "+100%" },
@@ -615,7 +615,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "An annual flight allowance is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "Annual" },
         dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
-        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral', percentage: "+40%" },
+        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral' },
         utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad', percentage: "+30%" },
         transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', percentage: "-20%" },
         socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', percentage: "+70%" },
@@ -641,7 +641,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good', percentage: "Annual" },
         dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral', percentage: "Varies" },
         gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good', percentage: "Standard" },
-        importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad', percentage: "+40%" },
+        importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad' },
         utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.", score: 'good', percentage: "-10%" },
         transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good', percentage: "-30%" },
         socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good', percentage: "-20%" },
@@ -667,7 +667,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "Not a standard benefit for schools in the Netherlands.", score: 'bad', percentage: "Not Standard" },
         dependentTuition: { text: "Most international schools offer a discount, but 100% free tuition is rare. This is a significant cost to factor in.", score: 'neutral', percentage: "Rarely 100%" },
         gratuity: { text: "There is no end-of-service gratuity. Schools contribute to a mandatory pension scheme.", score: 'neutral', percentage: "Pension Scheme" },
-        importedGoods: { text: "As part of the EU, there's a wide availability of goods, but general grocery costs are high.", score: 'neutral', percentage: "+15%" },
+        importedGoods: { text: "As part of the EU, there's a wide availability of goods, but general grocery costs are high.", score: 'neutral' },
         utilities: { text: "Energy prices are high in Europe. Expect significant heating costs in the winter.", score: 'bad', percentage: "+40%" },
         transportation: { text: "Cycling is king and very cheap. Public transport is efficient but can be expensive. Many residents do not own a car.", score: 'good', percentage: "-40%" },
         socialLeisure: { text: "Eating out and social activities are on par with other major Western European cities - relatively expensive.", score: 'bad', percentage: "+50%" },
@@ -717,7 +717,6 @@ function TrueCostsSection() {
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>('acs-cobham-international-school');
   const [familyStatus, setFamilyStatus] = useState('single');
   const [currency, setCurrency] = useState('GBP');
-  const [homeCountry, setHomeCountry] = useState('United Kingdom');
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
   const [utilitiesAllowance, setUtilitiesAllowance] = useState('');
@@ -939,13 +938,8 @@ function TrueCostsSection() {
   }
 
   const homeObligationsData = { ...data.homeObligations };
-  if (homeCountry === selectedSchool?.country) {
-    homeObligationsData.text = `As your target country is also your home country, you can manage financial commitments like mortgages or student loans directly from your local salary.`;
-    homeObligationsData.score = 'good';
-  } else {
-    homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments in ${homeCountry}.`;
-    homeObligationsData.score = 'neutral';
-  }
+  homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments back home.`;
+  homeObligationsData.score = 'neutral';
 
     const getSafetyScore = (rankString: string | undefined): FeatureScore => {
         if (!rankString) return 'neutral';
@@ -959,23 +953,7 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
-            <Select value={homeCountry} onValueChange={setHomeCountry}>
-              <SelectTrigger id="home-country-select">
-                <SelectValue placeholder="Select home country" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(countrySpecificData).map(country => (
-                  <SelectItem key={country} value={country}>{country}</SelectItem>
-                ))}
-                 <SelectItem value="USA">USA</SelectItem>
-                 <SelectItem value="Canada">Canada</SelectItem>
-                 <SelectItem value="Australia">Australia</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="country-select" className="text-base font-semibold block text-center mb-2">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
@@ -1051,68 +1029,69 @@ function TrueCostsSection() {
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         
-                        <div className="flex flex-col">
-                            <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
-                            <div className="flex-grow space-y-2 text-sm">
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                                        <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
-                                    </Label>
-                                    <Input
-                                        id="offered-salary"
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
-                                        value={offeredNetMonthlySalary}
-                                        onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
-                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                    />
+                        <div className="flex flex-col justify-between">
+                            <div className="space-y-2">
+                                <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
+                                            <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
+                                        </Label>
+                                        <Input
+                                            id="offered-salary"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
+                                            value={offeredNetMonthlySalary}
+                                            onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
+                                            <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
+                                        </Label>
+                                        <Input
+                                            id="other-benefits"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={otherMonthlyBenefits}
+                                            onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
+                                            <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
+                                        </Label>
+                                        <Input
+                                            id="utilities-allowance"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={utilitiesAllowance}
+                                            onChange={(e) => setUtilitiesAllowance(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
+                                            <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
+                                        </Label>
+                                        <Input
+                                            id="partner-income"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={partnerIncome}
+                                            onChange={(e) => setPartnerIncome(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                                        <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
-                                    </Label>
-                                    <Input
-                                        id="other-benefits"
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder="0"
-                                        value={otherMonthlyBenefits}
-                                        onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
-                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                    />
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
-                                        <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
-                                    </Label>
-                                    <Input
-                                        id="utilities-allowance"
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder="0"
-                                        value={utilitiesAllowance}
-                                        onChange={(e) => setUtilitiesAllowance(e.target.value)}
-                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                    />
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
-                                        <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
-                                    </Label>
-                                    <Input
-                                        id="partner-income"
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder="0"
-                                        value={partnerIncome}
-                                        onChange={(e) => setPartnerIncome(e.target.value)}
-                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                    />
-                                </div>
-                                <div className="flex-grow"></div>
                             </div>
-                             <div className="!mt-auto">
+                             <div>
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Monthly Package</span>
@@ -1121,53 +1100,55 @@ function TrueCostsSection() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col">
-                            <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
-                            <div className="space-y-1 text-sm text-muted-foreground flex-grow">
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-                                    <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
-                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
-                                        <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
-                                    </Label>
-                                    <Input
-                                        id="contingency-cost"
-                                        type="text"
-                                        inputMode="numeric"
-                                        placeholder="0"
-                                        value={contingency}
-                                        onChange={(e) => setContingency(e.target.value)}
-                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                    />
+                        <div className="flex flex-col justify-between">
+                             <div className="space-y-1">
+                                <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                                <div className="space-y-1 text-sm text-muted-foreground">
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
+                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
+                                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
+                                        </Label>
+                                        <Input
+                                            id="contingency-cost"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={contingency}
+                                            onChange={(e) => setContingency(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className="!mt-auto">
+                            <div>
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Estimated Costs</span>
@@ -1355,7 +1336,7 @@ function TrueCostsSection() {
                 </Card>
                 <Card id="red-flags" className="bg-destructive/10 border-destructive/50 scroll-mt-24">
                     <CardHeader>
-                        <CardTitle className="text-foreground flex items-center gap-2">
+                        <CardTitle className="text-white flex items-center gap-2">
                             <ShieldAlert className="h-6 w-6" />
                             Red Flags
                         </CardTitle>
