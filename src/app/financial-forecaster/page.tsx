@@ -1245,16 +1245,16 @@ export default function FinancialForecasterPage() {
             <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
                 Evaluate your true financial picture. Calculate your take-home pay with the Salary Tax Calculator, and understand your day-to-day expenses with the True Costs model.
             </p>
-            <Tabs defaultValue="true-costs" className="w-full">
+            <Tabs defaultValue="tax-calculator" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto">
-                    <TabsTrigger value="true-costs">True Costs Analysis</TabsTrigger>
                     <TabsTrigger value="tax-calculator">Salary Tax Calculator</TabsTrigger>
+                    <TabsTrigger value="true-costs">True Costs Analysis</TabsTrigger>
                 </TabsList>
-                <TabsContent value="true-costs">
-                    <TrueCostsSection />
-                </TabsContent>
                 <TabsContent value="tax-calculator">
                     <TaxCalculatorSection />
+                </TabsContent>
+                <TabsContent value="true-costs">
+                    <TrueCostsSection />
                 </TabsContent>
             </Tabs>
         </div>
