@@ -1023,9 +1023,9 @@ function TrueCostsSection() {
             <Card id="financial-snapshot" className="mb-8 bg-card/70 backdrop-blur-sm border-border scroll-mt-24">
                 <CardHeader className="flex-row items-center justify-between pb-4">
                     <div>
-                        <CardTitle className="flex items-center text-xl">
+                        <CardTitle className="flex items-center text-xl text-azure-400">
                             <LineChart className="w-5 h-5 mr-2 text-primary" />
-                            Financial Snapshot
+                            Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer for a more accurate forecast.
@@ -1049,7 +1049,7 @@ function TrueCostsSection() {
                         {/* Income & Benefits Column */}
                         <div className="space-y-4">
                             <h3 className="font-semibold text-lg text-green-400 border-b pb-2">Income &amp; Benefits (Monthly)</h3>
-                            <div className="space-y-2 text-sm">
+                            <div className="space-y-2 text-sm pb-2">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
                                         <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
@@ -1112,7 +1112,7 @@ function TrueCostsSection() {
                                 <span className="text-primary-foreground">Total Monthly Package</span>
                                 <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
                             </div>
-                            <div className="text-right pt-1">
+                            <div className="text-right pt-2">
                                 <p className="text-xs text-muted-foreground">
                                     For an accurate net salary, use the{' '}
                                     <Link href="#tax-calculator" className="text-sky-400 hover:underline">
