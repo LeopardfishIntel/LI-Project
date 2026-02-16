@@ -719,8 +719,8 @@ function TrueCostsSection() {
   const [familyStatus, setFamilyStatus] = useState('single');
   const [currency, setCurrency] = useState('GBP');
   const [homeCountry, setHomeCountry] = useState('United Kingdom');
-  const [offeredSalary, setOfferedSalary] = useState('');
-  const [otherBenefits, setOtherBenefits] = useState('');
+  const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
+  const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -745,9 +745,13 @@ function TrueCostsSection() {
   const selectedSchool = selectedSchoolId ? schools.find(s => s.id === selectedSchoolId) : null;
 
   useEffect(() => {
-    setOfferedSalary('');
-    setOtherBenefits('');
-  }, [selectedSchoolId]);
+    setOfferedNetMonthlySalary('');
+    if (selectedSchool && selectedSchool.intel.housing.provided) {
+        setOtherMonthlyBenefits(String(Math.round(selectedSchool.costOfLiving.apartment)));
+    } else {
+        setOtherMonthlyBenefits('');
+    }
+  }, [selectedSchoolId, selectedSchool]);
 
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
@@ -810,22 +814,23 @@ function TrueCostsSection() {
     return 0;
   };
 
-  const numericOfferedSalary = parseFloat(offeredSalary) || 0;
-  const numericOtherBenefits = parseFloat(otherBenefits) || 0;
+  const avgGrossAnnualSalary = selectedSchool ? getAverageAnnualSalary(selectedSchool.intel.salary.value) : 0;
+  // Assuming ~20% for taxes and deductions for a rough estimate
+  const estimatedNetMonthlySalary = (avgGrossAnnualSalary * 0.8) / 12;
+
+  const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
+  const numericOtherMonthlyBenefits = parseFloat(otherMonthlyBenefits) || 0;
+  
+  const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : estimatedNetMonthlySalary;
+
+  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits;
   
   let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
-  let totalPackage = 0;
 
   if (selectedSchool) {
     const monthlyExpenses = calculateTotal(selectedSchool);
-    const annualSalary = numericOfferedSalary > 0 ? numericOfferedSalary : getAverageAnnualSalary(selectedSchool.intel.salary.value);
-    
-    const housingValue = selectedSchool.intel.housing.provided ? selectedSchool.costOfLiving.apartment * 12 : 0;
-    totalPackage = annualSalary + numericOtherBenefits + housingValue;
-    
-    const totalAnnualIncome = annualSalary + numericOtherBenefits;
-    const monthlyIncome = totalAnnualIncome / 12;
+    const monthlyIncome = salaryToUse;
 
     const monthlySavings = monthlyIncome - monthlyExpenses;
     const annualSavings = monthlySavings * 12;
@@ -833,12 +838,7 @@ function TrueCostsSection() {
     const convertedAnnualSavings = convert(annualSavings);
     const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
 
-    let taxInfo = '';
-    if (!selectedSchool.intel.salary.isTaxFree) {
-        taxInfo = ` This is a pre-tax estimate on your salary. Benefits are often non-taxable, but this varies. Your actual savings will be lower after income taxes.`;
-    }
-
-    savingsDescription = `Based on an ${numericOfferedSalary > 0 ? 'offered income' : 'average salary'} and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
+    savingsDescription = `Based on an estimated net monthly income and your lifestyle costs, your projected annual savings are approximately ${formattedSavings}.`;
 
     if (monthlySavings > (monthlyIncome * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
@@ -1016,48 +1016,36 @@ function TrueCostsSection() {
                   <GraduationCap className="w-5 h-5 mr-2 text-primary" />
                   Income Estimator: {selectedSchool.name}
                 </CardTitle>
+                <CardDescription>
+                  The salary is an estimate. Enter your actual offered net salary to improve accuracy.
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
-                        <span className="flex items-center text-muted-foreground"><FileText className="w-4 h-4 mr-2" /> Advertised Salary Range</span>
-                        <span className="text-foreground font-semibold">
-                            {selectedSchool.intel.salary.value}
-                            {selectedSchool.intel.salary.isTaxFree && (
-                            <Badge
-                                variant="outline"
-                                className="ml-2 bg-green-500/20 text-green-400 border-green-500/30"
-                            >
-                                Tax Free
-                            </Badge>
-                            )}
-                        </span>
-                    </div>
-
-                    <div className="flex justify-between items-center">
                         <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                            <Pencil className="w-4 h-4 mr-2" /> Your Offered Gross Salary (Annual, USD)
+                            <Pencil className="w-4 h-4 mr-2" /> Your Offered Net Salary (Monthly, USD)
                         </Label>
                         <Input
                             id="offered-salary"
                             type="number"
-                            placeholder={`${getAverageAnnualSalary(selectedSchool.intel.salary.value)}`}
-                            value={offeredSalary}
-                            onChange={(e) => setOfferedSalary(e.target.value)}
+                            placeholder={`${Math.round(estimatedNetMonthlySalary)}`}
+                            value={offeredNetMonthlySalary}
+                            onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
                             className="mt-0 max-w-[150px] h-8 text-right bg-input/40"
                         />
                     </div>
                     
                     <div className="flex justify-between items-center">
                         <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                            <Award className="w-4 h-4 mr-2" /> Other Cash Benefits (Annual, USD)
+                            <Award className="w-4 h-4 mr-2" /> Other Cash Benefits (Monthly, USD)
                         </Label>
                         <Input
                             id="other-benefits"
                             type="number"
-                            placeholder="e.g., 15000"
-                            value={otherBenefits}
-                            onChange={(e) => setOtherBenefits(e.target.value)}
+                            placeholder="e.g., 500"
+                            value={otherMonthlyBenefits}
+                            onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
                             className="mt-0 max-w-[150px] h-8 text-right bg-input/40"
                         />
                     </div>
@@ -1065,67 +1053,23 @@ function TrueCostsSection() {
                 
                 <Separator />
                 
-                <div className="p-3 rounded-md bg-muted/50 text-sm">
-                  {selectedSchool.intel.housing.provided ? (
-                    <div className="flex items-start gap-3">
-                      <Home className="w-5 h-5 mt-0.5 text-green-400 flex-shrink-0" />
-                      <div>
-                        <p className="font-semibold text-foreground">
-                          Housing Provided ({selectedSchool.intel.housing.value})
-                        </p>
-                        <p className="text-muted-foreground mt-1">
-                          This adds an estimated annual value of{' '}
-                          <span className="font-bold text-foreground">
-                            {formatCurrency(
-                              convert(selectedSchool.costOfLiving.apartment * 12),
-                              currency
-                            )}
-                          </span>{' '}
-                          to your package.
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start gap-3">
-                      <Home className="w-5 h-5 mt-0.5 text-amber-400 flex-shrink-0" />
-                      <div>
-                        <p className="font-semibold text-foreground">
-                          Housing Allowance / Rent
-                        </p>
-                        <p className="text-muted-foreground mt-1">
-                          Estimated annual rent is{' '}
-                          <span className="font-bold text-foreground">
-                            {formatCurrency(
-                              convert(selectedSchool.costOfLiving.apartment * 12),
-                              currency
-                            )}
-                          </span>
-                          . Enter your allowance in 'Other Benefits' above to see how it compares.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-                
                 <div className="flex justify-between items-center text-lg font-bold">
-                    <span className="text-primary-foreground flex items-center"><LineChart className="w-5 h-5 mr-2" /> Est. Total Package Value</span>
+                    <span className="text-primary-foreground flex items-center"><LineChart className="w-5 h-5 mr-2" /> Est. Total Monthly Value</span>
                     <span className="text-primary">{
-                        formatCurrency(convert(totalPackage), currency)
+                        formatCurrency(convert(totalMonthlyPackage), currency)
                     }</span>
                 </div>
                 
                 <div className="text-center pt-2">
                   <p className="text-xs text-muted-foreground">
-                    For a detailed tax breakdown, use the{' '}
+                    Placeholder is an estimated net salary assuming a 20% tax rate. For an accurate calculation, use the{' '}
                     <Link
                       href="#tax-calculator"
                       className="text-sky-400 hover:underline"
                     >
                       full tax calculator
-                    </Link>{' '}
-                    at the bottom of the page.
+                    </Link>
+                    .
                   </p>
                 </div>
               </CardContent>
