@@ -1052,7 +1052,7 @@ function TrueCostsSection() {
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                                        <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Offered Net Salary
+                                        <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
                                     </Label>
                                     <Input
                                         id="offered-salary"
@@ -1066,7 +1066,7 @@ function TrueCostsSection() {
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                                        <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit (Est. Value)
+                                        <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
                                     </Label>
                                     <Input
                                         id="other-benefits"
