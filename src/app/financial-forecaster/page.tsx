@@ -1265,9 +1265,12 @@ export default function FinancialForecasterPage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Contract Decoder</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract decoder</h1>
+            <p className="text-muted-foreground text-center mt-4 mb-2 max-w-3xl mx-auto">
+                30% of teachers break their contracts because the financial reality was a total shock.
+            </p>
             <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-                Evaluate your true financial picture. Calculate your take-home pay and understand your day-to-day expenses to reveal your genuine disposable income.
+                Don't be one of the 30% use our Contract Decoder to hack through the recruitment fluff, calculate your actual take-home pay, and map out the cost of your daily grind to find your genuine disposable income. It’s the only way to fix your focus on your real financial position and see if you’ll actually grow a savings pot or just treading water. It is absolutely vital you review our own due diligence tests before you pack your life into a suitcase and set off on your new adventure.
             </p>
             
             <MiniMenu />
