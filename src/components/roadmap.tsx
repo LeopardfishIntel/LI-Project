@@ -23,8 +23,8 @@ export default function Roadmap() {
     },
     {
       id: '02',
-      title: 'Contract Decoder',
-      desc: "Get the full financial lowdown before you even apply. Our true cost modeller looks beyond the headline salary, calculating your actual take-home pay after local taxes and essential outgoings to reveal your genuine savings potential. Move forward with absolute confidence.",
+      title: 'Evaluate',
+      desc: "Don't be one of the 30% of teachers who break their contract over financial shocks. Our Contract Decoder helps you calculate your take-home pay and understand day-to-day expenses to reveal your genuine disposable income.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step'
     },
