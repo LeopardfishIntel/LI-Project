@@ -1180,12 +1180,11 @@ function TrueCostsSection() {
                     
                     <div className="pt-6">
                         <Separator className="mb-6" />
-                        <Alert className="mb-6 bg-amber-500/10 border-amber-500/50 text-amber-400 [&>svg]:text-amber-400">
-                            <ShieldAlert className="h-4 w-4" />
-                            <AlertDescription>
-                                Ensure your <span className="underline font-semibold">Family Status</span> is correct.
-                            </AlertDescription>
-                        </Alert>
+                        <div className="mb-6 text-center text-amber-400">
+                          <p>
+                              Ensure your <span className="underline font-semibold">Family Status</span> is correct.
+                          </p>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
