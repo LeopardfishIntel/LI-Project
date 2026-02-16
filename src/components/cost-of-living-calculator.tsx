@@ -111,7 +111,7 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
             <span>{formatCurrency(convert(costOfLiving.internet), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
-            <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-slate-400" /> Mobile</span>
+            <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
             <span>{formatCurrency(convert(costOfLiving.mobile * adults), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
@@ -146,5 +146,3 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
     </Card>
   );
 }
-
-    

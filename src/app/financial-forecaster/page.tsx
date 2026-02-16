@@ -1047,10 +1047,10 @@ function TrueCostsSection() {
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         
-                        <div className="flex flex-col">
-                            <div className="flex-grow">
-                                <h3 className="font-semibold text-lg text-green-400 border-b pb-2">Income &amp; Benefits (Monthly)</h3>
-                                <div className="space-y-2 text-sm mt-4">
+                        <div className="flex flex-col justify-between">
+                            <div>
+                                <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-4">Income &amp; Benefits (Monthly)</h3>
+                                <div className="space-y-2 text-sm">
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
                                             <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
@@ -1107,6 +1107,7 @@ function TrueCostsSection() {
                                             className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
                                         />
                                     </div>
+                                    <div className="pb-2"></div>
                                 </div>
                             </div>
                             <div>
@@ -1119,10 +1120,10 @@ function TrueCostsSection() {
                         </div>
 
                         
-                        <div className="flex flex-col">
-                           <div className="flex-grow">
-                                <h3 className="font-semibold text-lg text-red-400 border-b pb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
-                                <div className="space-y-1 text-sm text-muted-foreground mt-4">
+                        <div className="flex flex-col justify-between">
+                           <div>
+                                <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-4">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                                <div className="space-y-1 text-sm text-muted-foreground">
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
                                         <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
@@ -1136,7 +1137,7 @@ function TrueCostsSection() {
                                         <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-slate-400" /> Mobile</span>
+                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
                                         <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
@@ -1153,7 +1154,7 @@ function TrueCostsSection() {
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
-                                            <Milestone className="w-4 h-4 mr-2" /> Contingency Fund
+                                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
                                         </Label>
                                         <Input
                                             id="contingency-cost"
@@ -1216,7 +1217,7 @@ function TrueCostsSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
-                        <CardTitle>Leopardfish Intel</CardTitle>
+                        <CardTitle>Intel</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1267,7 +1268,7 @@ function TrueCostsSection() {
 
                 <Card id="true-lifestyle" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
-                        <CardTitle>True Lifestyle</CardTitle>
+                        <CardTitle>Lifestyle</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1323,7 +1324,7 @@ function TrueCostsSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
-                        <CardTitle>Financial Strategy</CardTitle>
+                        <CardTitle>Strategy</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
                                 {selectedCountry}
                                 {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1440,5 +1441,3 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
-
-    
