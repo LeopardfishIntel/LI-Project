@@ -59,6 +59,12 @@
       "description": "A path splitting into a crossroads in a forest, symbolizing the moment of decision.",
       "imageUrl": "https://images.unsplash.com/photo-1545641203-7d072a14e3b2?q=80&w=1080&auto=format&fit=crop",
       "imageHint": "crossroads path"
+    },
+    {
+      "id": "profile-cta-background",
+      "description": "A person planning their journey with a laptop, maps, and notes.",
+      "imageUrl": "https://images.unsplash.com/photo-1521295121783-8a321d551ac2?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "planning journey"
     }
   ]
 }
