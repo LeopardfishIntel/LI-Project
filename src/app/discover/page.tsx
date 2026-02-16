@@ -48,7 +48,7 @@ export default function FindYourNookPage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Nook</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Our AI-powered tool analyzes your profile to recommend the best regions and schools for your next career move.</p>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Let’s analyse your profile so we can recommend the best regions and schools for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
