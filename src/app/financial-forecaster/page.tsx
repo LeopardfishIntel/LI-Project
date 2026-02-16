@@ -1020,7 +1020,7 @@ function TrueCostsSection() {
         </div>
 
         {selectedSchool && (
-            <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
+            <Card id="financial-snapshot" className="mb-8 bg-card/70 backdrop-blur-sm border-border scroll-mt-24">
                 <CardHeader className="flex-row items-center justify-between pb-4">
                     <div>
                         <CardTitle className="flex items-center text-xl">
@@ -1239,7 +1239,7 @@ function TrueCostsSection() {
                                 score={contractPerksData.flightAllowance.score}
                             />
                         </div>
-                        <Separator id="benefits-and-bonuses" className="my-4 scroll-mt-24" />
+                        <Separator className="my-4" />
                         <div className="space-y-4">
                             <FeatureDetail 
                                 icon={<SchoolIcon className="w-5 h-5" />}
@@ -1257,7 +1257,7 @@ function TrueCostsSection() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                <Card id="true-lifestyle" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
                         <CardTitle>True Lifestyle</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
@@ -1269,7 +1269,7 @@ function TrueCostsSection() {
                         <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
                     </CardHeader>
                     <CardContent className="flex-grow pt-0">
-                        <div id="lifestyle-costs" className="space-y-4 scroll-mt-24">
+                        <div className="space-y-4">
                             <FeatureDetail 
                                 icon={<Globe className="w-5 h-5" />}
                                 title="Imported Goods"
@@ -1299,7 +1299,7 @@ function TrueCostsSection() {
                                 percentage={lifestyleData.socialLeisure.percentage}
                             />
                         </div>
-                        <Separator id="safety-and-travel" className="my-4 scroll-mt-24" />
+                        <Separator className="my-4" />
                         <div className="space-y-4">
                             <FeatureDetail 
                                 icon={<ShieldAlert className="w-5 h-5" />}
@@ -1313,7 +1313,7 @@ function TrueCostsSection() {
                 </Card>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
                         <CardTitle>Financial Strategy</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
@@ -1324,7 +1324,7 @@ function TrueCostsSection() {
                         </p>
                     </CardHeader>
                     <CardContent className="flex-grow pt-0">
-                        <div id="financial-strategy" className="space-y-4 scroll-mt-24">
+                        <div className="space-y-4">
                             <FeatureDetail 
                                 icon={<ArrowRightLeft className="w-5 h-5" />}
                                 title="Currency &amp; Fees"
@@ -1338,7 +1338,7 @@ function TrueCostsSection() {
                                 score={homeObligationsData.score}
                             />
                         </div>
-                        <Separator id="savings-potential" className="my-4 scroll-mt-24" />
+                        <Separator className="my-4" />
                         <div className="space-y-4">
                             <FeatureDetail 
                                 icon={<LineChart className="w-5 h-5" />}
@@ -1349,7 +1349,7 @@ function TrueCostsSection() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-destructive/10 border-destructive/50">
+                <Card id="red-flags" className="bg-destructive/10 border-destructive/50 scroll-mt-24">
                     <CardHeader>
                         <CardTitle className="text-destructive flex items-center gap-2">
                             <ShieldAlert className="h-6 w-6" />
@@ -1387,13 +1387,12 @@ export default function FinancialForecasterPage() {
 
     const MiniMenu = () => {
       const menuItems = [
-          { label: 'Package', href: '#package-deals'},
-          { label: 'Benefits', href: '#benefits-and-bonuses'},
-          { label: 'Lifestyle', href: '#lifestyle-costs'},
-          { label: 'Safety', href: '#safety-and-travel'},
-          { label: 'Financials', href: '#financial-strategy'},
-          { label: 'Savings', href: '#savings-potential'},
-          { label: 'Tax Calculator', href: '#tax-calculator'},
+          { label: 'Snapshot', href: '#financial-snapshot'},
+          { label: 'Intel', href: '#package-deals' },
+          { label: 'Lifestyle', href: '#true-lifestyle' },
+          { label: 'Strategy', href: '#financial-strategy-card' },
+          { label: 'Red Flags', href: '#red-flags' },
+          { label: 'Tax Calculator', href: '#tax-calculator' },
       ];
   
       return (
