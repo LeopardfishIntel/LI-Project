@@ -55,17 +55,12 @@ export default function Roadmap() {
                       className="rounded-xl shadow-2xl object-cover w-full h-auto"
                       data-ai-hint={imageHint}
                     />
-                    {step.id === '01' && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[1.75rem] font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
-                      </div>
-                    )}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[2.45rem] font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
+                    </div>
                 </div>
                 <div className={cn("flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
-                  {step.id !== '01' && (
-                    <span className="text-[1.75rem] font-bold text-accent uppercase tracking-widest">Step {parseInt(step.id)}</span>
-                  )}
-                  <h3 className={cn("text-4xl font-bold mb-4", step.id !== '01' ? 'mt-2' : '')}>{step.title}</h3>
+                  <h3 className="text-4xl font-bold mb-4">{step.title}</h3>
                   <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
                   <Link href={step.link} passHref>
                     <Button size="lg">
