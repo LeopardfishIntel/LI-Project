@@ -19,6 +19,7 @@ import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 
 // --- Tax Calculator Code ---
@@ -718,6 +719,7 @@ function TrueCostsSection() {
   const [familyStatus, setFamilyStatus] = useState('single');
   const [currency, setCurrency] = useState('GBP');
   const [homeCountry, setHomeCountry] = useState('United Kingdom');
+  const [offeredSalary, setOfferedSalary] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -740,6 +742,10 @@ function TrueCostsSection() {
 
   const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
   const selectedSchool = selectedSchoolId ? schools.find(s => s.id === selectedSchoolId) : null;
+
+  useEffect(() => {
+    setOfferedSalary('');
+  }, [selectedSchoolId]);
 
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
@@ -804,10 +810,11 @@ function TrueCostsSection() {
 
   let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
+  const numericOfferedSalary = parseFloat(offeredSalary) || 0;
 
   if (selectedSchool) {
     const monthlyExpenses = calculateTotal(selectedSchool);
-    const annualSalary = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    const annualSalary = numericOfferedSalary > 0 ? numericOfferedSalary : getAverageAnnualSalary(selectedSchool.intel.salary.value);
     const monthlySalary = annualSalary / 12;
     const monthlySavings = monthlySalary - monthlyExpenses;
     const annualSavings = monthlySavings * 12;
@@ -820,7 +827,7 @@ function TrueCostsSection() {
         taxInfo = ` This is a pre-tax estimate. Your actual savings will be lower after income taxes, which vary by country.`;
     }
 
-    savingsDescription = `Based on an average salary and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
+    savingsDescription = `Based on an ${numericOfferedSalary > 0 ? 'offered' : 'average'} salary and your estimated monthly costs, your projected annual savings are approximately ${formattedSavings}.${taxInfo}`;
 
     if (monthlySavings > (monthlySalary * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
@@ -991,6 +998,63 @@ function TrueCostsSection() {
         </div>
 
         {selectedSchool && (
+          <>
+            <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center text-xl">
+                  <GraduationCap className="w-5 h-5 mr-2 text-primary" />
+                  Income Estimator: {selectedSchool.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Advertised Salary Range</Label>
+                  <p className="text-lg font-semibold">
+                    {selectedSchool.intel.salary.value}
+                    {selectedSchool.intel.salary.isTaxFree && (
+                      <Badge
+                        variant="outline"
+                        className="ml-2 bg-green-500/20 text-green-400 border-green-500/30"
+                      >
+                        Tax Free
+                      </Badge>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="offered-salary">
+                    Your Offered Gross Salary (Annual)
+                  </Label>
+                  <Input
+                    id="offered-salary"
+                    type="number"
+                    placeholder={`e.g., ${getAverageAnnualSalary(
+                      selectedSchool.intel.salary.value
+                    )}`}
+                    value={offeredSalary}
+                    onChange={(e) => setOfferedSalary(e.target.value)}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Enter your specific offer to get a more accurate savings
+                    projection below.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    For a detailed tax breakdown, use the{' '}
+                    <Link
+                      href="#tax-calculator"
+                      className="text-sky-400 hover:underline"
+                    >
+                      full tax calculator
+                    </Link>{' '}
+                    at the bottom of the page.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader className="flex-row items-center justify-between">
                     <CardTitle className="flex items-center text-xl">
@@ -1058,6 +1122,7 @@ function TrueCostsSection() {
                     </div>
                 </CardContent>
             </Card>
+            </>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
