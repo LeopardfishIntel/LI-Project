@@ -56,7 +56,7 @@ export default function Roadmap() {
                       data-ai-hint={imageHint}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-8xl font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
+                      <span className="text-4xl font-bold text-white uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]">Step {parseInt(step.id)}</span>
                     </div>
                 </div>
                 <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
