@@ -45,18 +45,17 @@ export default function Roadmap() {
           {steps.map((step, index) => {
             const { imageUrl, imageHint } = getImage(step.imageId);
             return (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-stretch">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
                 <div className={cn("relative", index % 2 === 1 && "md:order-last")}>
                     <Image 
                       src={imageUrl}
                       alt={step.desc}
                       width={600}
                       height={450}
-                      className="rounded-xl shadow-2xl object-cover w-full h-full"
-                      data-ai-hint={imageHint}
+                      className="rounded-xl shadow-2xl object-cover w-full"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={cn("text-2xl font-bold uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]", step.id === '01' ? 'text-sky-400' : 'text-white')}>Step {parseInt(step.id)}</span>
+                      <span className={cn("text-xl font-bold uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]", 'text-white')}>Step {parseInt(step.id)}</span>
                     </div>
                 </div>
                 <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
