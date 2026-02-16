@@ -1028,7 +1028,7 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                           Estimate your monthly budget. Replace our mid range estimates with your net salary offer for a more accurate forecast.
+                           Estimate your monthly budget. Replace our mid range estimates with your net salary offer.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1395,7 +1395,7 @@ export default function FinancialForecasterPage() {
       ];
   
       return (
-          <div className="flex justify-center flex-wrap gap-2 mb-12">
+          <div className="flex justify-center flex-wrap gap-2 mb-8">
               {menuItems.map(item => (
                   <Link href={item.href} key={item.href}
                       className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
@@ -1409,10 +1409,7 @@ export default function FinancialForecasterPage() {
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract decoder</h1>
-            <p className="text-muted-foreground text-center mt-4 mb-2 max-w-3xl mx-auto">
-                30% of teachers break their contracts because the financial reality was a total shock.
-            </p>
-            <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
+            <p className="text-muted-foreground text-center mt-4 mb-6 max-w-3xl mx-auto">
                 Our Contract Decoder hacks through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.
             </p>
             
