@@ -1067,7 +1067,7 @@ function TrueCostsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
             <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                 <CardHeader>
-                    <CardTitle className="text-xl">Leopardfish Intel</CardTitle>
+                    <CardTitle className="text-xl">📄 Leopardfish Intel</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                         {selectedCountry}
                         {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1118,7 +1118,7 @@ function TrueCostsSection() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader>
-                    <CardTitle className="text-xl">True Lifestyle</CardTitle>
+                    <CardTitle className="text-xl">✈️ True Lifestyle</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                         {selectedCountry}
                         {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1173,7 +1173,7 @@ function TrueCostsSection() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader>
-                    <CardTitle className="text-xl">Financial Strategy</CardTitle>
+                    <CardTitle className="text-xl">💰 Financial Strategy</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1289,5 +1289,3 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
-
-    
