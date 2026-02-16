@@ -1049,7 +1049,7 @@ function TrueCostsSection() {
                         {/* Income & Benefits Column */}
                         <div className="space-y-4">
                             <h3 className="font-semibold text-lg text-green-400 border-b pb-2">Income &amp; Benefits (Monthly)</h3>
-                            <div className="space-y-2 text-sm pb-2">
+                            <div className="space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
                                         <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
@@ -1106,21 +1106,14 @@ function TrueCostsSection() {
                                         className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
                                     />
                                 </div>
+                                <div className="h-12" />
                             </div>
                             <Separator />
                             <div className="flex justify-between items-center font-bold text-lg">
                                 <span className="text-primary-foreground">Total Monthly Package</span>
                                 <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
                             </div>
-                            <div className="text-right pt-2">
-                                <p className="text-xs text-muted-foreground">
-                                    For an accurate net salary, use the{' '}
-                                    <Link href="#tax-calculator" className="text-sky-400 hover:underline">
-                                        tax calculator
-                                    </Link>
-                                    .
-                                </p>
-                            </div>
+                            
                         </div>
 
                         {/* Estimated Costs Column */}
@@ -1199,6 +1192,15 @@ function TrueCostsSection() {
                                 </p>
                             </div>
                         </div>
+                         <div className="text-right pt-4">
+                                <p className="text-xs text-muted-foreground">
+                                    For an accurate net salary, use the{' '}
+                                    <Link href="#tax-calculator" className="text-sky-400 hover:underline">
+                                        tax calculator
+                                    </Link>
+                                    .
+                                </p>
+                            </div>
                     </div>
                 </CardContent>
             </Card>
