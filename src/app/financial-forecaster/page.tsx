@@ -17,7 +17,8 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from '@/components/ui/separator';
 
 
 // --- Tax Calculator Code ---
@@ -927,6 +928,27 @@ function TrueCostsSection() {
 
     lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
 
+    const MiniMenu = () => {
+      const menuItems = [
+          { label: 'Package', href: '#package-deals'},
+          { label: 'Benefits', href: '#benefits-and-bonuses'},
+          { label: 'Lifestyle', href: '#lifestyle-costs'},
+          { label: 'Safety', href: '#safety-and-travel'},
+          { label: 'Financials', href: '#financial-strategy'},
+          { label: 'Savings', href: '#savings-potential'},
+      ];
+  
+      return (
+          <div className="flex justify-center flex-wrap gap-2 mb-8 -mt-4">
+              {menuItems.map(item => (
+                  <Link href={item.href} key={item.href}
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-muted-foreground hover:bg-background hover:text-foreground shadow-sm">
+                          {item.label}
+                  </Link>
+              ))}
+          </div>
+      )
+    }
 
   return (
     <div className="max-w-5xl mx-auto mt-8">
@@ -989,6 +1011,8 @@ function TrueCostsSection() {
             </Select>
           </div>
         </div>
+
+        <MiniMenu />
 
         {selectedSchool && (
             <Card className="mb-8 bg-card/70 backdrop-blur-sm border-border">
@@ -1076,39 +1100,44 @@ function TrueCostsSection() {
                         </p>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-4 flex-grow pt-0">
-                     <FeatureDetail 
-                        icon={<FileText className="w-5 h-5" />}
-                        title="Tax Status"
-                        description={<>
-                            {contractPerksData.taxStatus.text}
-                        </>}
-                        score={contractPerksData.taxStatus.score}
-                    />
-                     <FeatureDetail 
-                        icon={<Home className="w-5 h-5" />}
-                        title="Housing Arrangement"
-                        description={contractPerksData.housing.text}
-                        score={contractPerksData.housing.score}
-                    />
-                     <FeatureDetail 
-                        icon={<Plane className="w-5 h-5" />}
-                        title="Annual Flight Allowance"
-                        description={contractPerksData.flightAllowance.text}
-                        score={contractPerksData.flightAllowance.score}
-                    />
-                     <FeatureDetail 
-                        icon={<SchoolIcon className="w-5 h-5" />}
-                        title="Dependent Tuition"
-                        description={contractPerksData.dependentTuition.text}
-                        score={contractPerksData.dependentTuition.score}
-                    />
-                     <FeatureDetail 
-                        icon={<Award className="w-5 h-5" />}
-                        title="Gratuity / Bonus"
-                        description={contractPerksData.gratuity.text}
-                        score={contractPerksData.gratuity.score}
-                    />
+                <CardContent className="flex-grow pt-0">
+                    <div id="package-deals" className="space-y-4 scroll-mt-24 pt-6">
+                        <FeatureDetail 
+                            icon={<FileText className="w-5 h-5" />}
+                            title="Tax Status"
+                            description={<>
+                                {contractPerksData.taxStatus.text}
+                            </>}
+                            score={contractPerksData.taxStatus.score}
+                        />
+                        <FeatureDetail 
+                            icon={<Home className="w-5 h-5" />}
+                            title="Housing Arrangement"
+                            description={contractPerksData.housing.text}
+                            score={contractPerksData.housing.score}
+                        />
+                        <FeatureDetail 
+                            icon={<Plane className="w-5 h-5" />}
+                            title="Annual Flight Allowance"
+                            description={contractPerksData.flightAllowance.text}
+                            score={contractPerksData.flightAllowance.score}
+                        />
+                    </div>
+                    <Separator className="my-4" />
+                    <div id="benefits-and-bonuses" className="space-y-4 scroll-mt-24">
+                        <FeatureDetail 
+                            icon={<SchoolIcon className="w-5 h-5" />}
+                            title="Dependent Tuition"
+                            description={contractPerksData.dependentTuition.text}
+                            score={contractPerksData.dependentTuition.score}
+                        />
+                        <FeatureDetail 
+                            icon={<Award className="w-5 h-5" />}
+                            title="Gratuity / Bonus"
+                            description={contractPerksData.gratuity.text}
+                            score={contractPerksData.gratuity.score}
+                        />
+                    </div>
                 </CardContent>
             </Card>
 
@@ -1128,42 +1157,47 @@ function TrueCostsSection() {
                         <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-4 flex-grow pt-0">
-                     <FeatureDetail 
-                        icon={<Globe className="w-5 h-5" />}
-                        title="Imported Goods"
-                        description={lifestyleData.importedGoods.text}
-                        score={lifestyleData.importedGoods.score}
-                        percentage={lifestyleData.importedGoods.percentage}
-                    />
-                     <FeatureDetail 
-                        icon={<Thermometer className="w-5 h-5" />}
-                        title="Utilities (AC/Heat)"
-                        description={lifestyleData.utilities.text}
-                        score={lifestyleData.utilities.score}
-                        percentage={lifestyleData.utilities.percentage}
-                    />
-                     <FeatureDetail 
-                        icon={<Car className="w-5 h-5" />}
-                        title="Transportation"
-                        description={lifestyleData.transportation.text}
-                        score={lifestyleData.transportation.score}
-                        percentage={lifestyleData.transportation.percentage}
-                    />
-                     <FeatureDetail 
-                        icon={<Beer className="w-5 h-5" />}
-                        title="Social & Leisure"
-                        description={lifestyleData.socialLeisure.text}
-                        score={lifestyleData.socialLeisure.score}
-                        percentage={lifestyleData.socialLeisure.percentage}
-                    />
-                    <FeatureDetail 
-                        icon={<ShieldAlert className="w-5 h-5" />}
-                        title="Safety & Travel Advice"
-                        description={lifestyleData.safety.text}
-                        score={lifestyleData.safety.score}
-                        percentage={lifestyleData.safety.percentage}
-                    />
+                <CardContent className="flex-grow pt-0">
+                    <div id="lifestyle-costs" className="space-y-4 scroll-mt-24 pt-6">
+                        <FeatureDetail 
+                            icon={<Globe className="w-5 h-5" />}
+                            title="Imported Goods"
+                            description={lifestyleData.importedGoods.text}
+                            score={lifestyleData.importedGoods.score}
+                            percentage={lifestyleData.importedGoods.percentage}
+                        />
+                        <FeatureDetail 
+                            icon={<Thermometer className="w-5 h-5" />}
+                            title="Utilities (AC/Heat)"
+                            description={lifestyleData.utilities.text}
+                            score={lifestyleData.utilities.score}
+                            percentage={lifestyleData.utilities.percentage}
+                        />
+                        <FeatureDetail 
+                            icon={<Car className="w-5 h-5" />}
+                            title="Transportation"
+                            description={lifestyleData.transportation.text}
+                            score={lifestyleData.transportation.score}
+                            percentage={lifestyleData.transportation.percentage}
+                        />
+                        <FeatureDetail 
+                            icon={<Beer className="w-5 h-5" />}
+                            title="Social & Leisure"
+                            description={lifestyleData.socialLeisure.text}
+                            score={lifestyleData.socialLeisure.score}
+                            percentage={lifestyleData.socialLeisure.percentage}
+                        />
+                    </div>
+                    <Separator className="my-4" />
+                    <div id="safety-and-travel" className="space-y-4 scroll-mt-24">
+                        <FeatureDetail 
+                            icon={<ShieldAlert className="w-5 h-5" />}
+                            title="Safety & Travel Advice"
+                            description={lifestyleData.safety.text}
+                            score={lifestyleData.safety.score}
+                            percentage={lifestyleData.safety.percentage}
+                        />
+                    </div>
                 </CardContent>
             </Card>
 
@@ -1182,25 +1216,30 @@ function TrueCostsSection() {
                         </p>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-4 flex-grow pt-0">
-                     <FeatureDetail 
-                        icon={<ArrowRightLeft className="w-5 h-5" />}
-                        title="Currency & Fees"
-                        description={data.currency.text}
-                        score={data.currency.score}
-                    />
-                     <FeatureDetail 
-                        icon={<PiggyBank className="w-5 h-5" />}
-                        title="Home Obligations"
-                        description={homeObligationsData.text}
-                        score={homeObligationsData.score}
-                    />
-                     <FeatureDetail 
-                        icon={<LineChart className="w-5 h-5" />}
-                        title="True Savings Potential"
-                        description={savingsDescription}
-                        score={savingsScore}
-                    />
+                <CardContent className="flex-grow pt-0">
+                    <div id="financial-strategy" className="space-y-4 scroll-mt-24 pt-6">
+                        <FeatureDetail 
+                            icon={<ArrowRightLeft className="w-5 h-5" />}
+                            title="Currency & Fees"
+                            description={data.currency.text}
+                            score={data.currency.score}
+                        />
+                        <FeatureDetail 
+                            icon={<PiggyBank className="w-5 h-5" />}
+                            title="Home Obligations"
+                            description={homeObligationsData.text}
+                            score={homeObligationsData.score}
+                        />
+                    </div>
+                    <Separator className="my-4" />
+                    <div id="savings-potential" className="space-y-4 scroll-mt-24">
+                        <FeatureDetail 
+                            icon={<LineChart className="w-5 h-5" />}
+                            title="True Savings Potential"
+                            description={savingsDescription}
+                            score={savingsScore}
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </div>
