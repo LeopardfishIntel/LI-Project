@@ -1014,10 +1014,10 @@ function TrueCostsSection() {
                     <div>
                         <CardTitle className="flex items-center text-xl">
                             <LineChart className="w-5 h-5 mr-2 text-primary" />
-                            Financial Snapshot: <span className="ml-2 text-lg text-sky-400">{selectedSchool.name}</span>
+                            Financial Snapshot
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Estimate your monthly budget. Enter your offered net salary for a more accurate forecast.
+                           Estimate your monthly budget. Enter your offered net salary for a more accurate forecast.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1137,6 +1137,13 @@ function TrueCostsSection() {
                     
                     <div className="pt-6">
                         <Separator className="mb-6" />
+                        <Alert className="mb-6 bg-amber-500/10 border-amber-500/50 text-amber-400 [&>svg]:text-amber-400">
+                          <ShieldAlert className="h-4 w-4" />
+                          <AlertTitle>Important</AlertTitle>
+                          <AlertDescription>
+                            Ensure your <span className="underline font-semibold">Family Status</span> is correct to ensure accurate forecasts.
+                          </AlertDescription>
+                        </Alert>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
