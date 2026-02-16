@@ -28,36 +28,20 @@ export async function submitInquiry(
   let emailBody = '';
 
   if (inquiryType === 'school') {
-    emailSubject = 'Leopardfish Intel: School Profile Essentials';
+    emailSubject = 'Action Required: Complete your Leopardfish School Profile';
     emailBody = `Hello ${name},
 
-Thank you for your interest in our Verified School Membership. Please complete the following details to finalise your profile. Once finished, please return this information by replying to our initial email.
+Thanks for contacting Leopardfish Intel regarding your school’s membership.
 
-1. School Overview
-- Official School Name:
-- City & Country:
-- Website URL:
-- Curriculum Offered: (e.g., National Curriculum for England, IB, US, etc.)
-- Ages Taught: (e.g., 3–18)
+To proceed with your Verified School Membership, please follow the steps below to set up your online profile. This ensures we have the correct data to showcase your school to our community.
 
-2. Accreditation & Governance
-- Accrediting Bodies: (e.g., CIS, COBIS, BSME, FOBISIA, etc.)
-- Inspection Report Link: (Optional, but recommended for Verified status)
+Activate Account: You will shortly receive a separate invitation email. Follow the link to set up your login credentials.
 
-3. Recruitment & HR Contact
-- Lead Recruitment Contact Name:
-- Direct Email for Enquiries:
-- Current Vacancies Page Link:
+Complete Profile: Once logged in, navigate to the 'School Profile' tab. Please complete all mandatory fields, including curriculum details, benefits, and media uploads.
 
-4. Profile Content
-- School Summary (Max 150 words): A concise overview of your school’s ethos and what you offer prospective teachers.
-- Staff Benefits: (e.g., Housing allowance, medical insurance, annual flights, etc.)
+Verification: Once your profile is 100% complete, our team will review the details and apply your Verified status.
 
-5. Media Requirements
-- School Logo: Please attach a high-resolution version (PNG or SVG preferred).
-- Hero Image: Please attach one high-quality landscape photo of your campus or learning environment.
-
-Note: Verified status is subject to the review of the information provided above.
+Please aim to complete your profile within 3 working days to ensure there are no delays in your activation.
 
 Regards,
 
