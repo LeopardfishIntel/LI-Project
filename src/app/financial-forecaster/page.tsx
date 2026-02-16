@@ -1046,134 +1046,123 @@ function TrueCostsSection() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                        
-                        <div className="flex flex-col justify-between">
-                            <div>
-                                <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-4">Income &amp; Benefits (Monthly)</h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                                            <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
-                                        </Label>
-                                        <Input
-                                            id="offered-salary"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
-                                            value={offeredNetMonthlySalary}
-                                            onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                                            <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
-                                        </Label>
-                                        <Input
-                                            id="other-benefits"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={otherMonthlyBenefits}
-                                            onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
-                                            <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
-                                        </Label>
-                                        <Input
-                                            id="utilities-allowance"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={utilitiesAllowance}
-                                            onChange={(e) => setUtilitiesAllowance(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
-                                            <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
-                                        </Label>
-                                        <Input
-                                            id="partner-income"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={partnerIncome}
-                                            onChange={(e) => setPartnerIncome(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
-                                    <div className="pb-2"></div>
+                        <div className="flex flex-col">
+                            <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-4">Income &amp; Benefits (Monthly)</h3>
+                            <div className="space-y-2 text-sm flex-grow">
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
+                                        <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
+                                    </Label>
+                                    <Input
+                                        id="offered-salary"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
+                                        value={offeredNetMonthlySalary}
+                                        onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
+                                        <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
+                                    </Label>
+                                    <Input
+                                        id="other-benefits"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={otherMonthlyBenefits}
+                                        onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
+                                        <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
+                                    </Label>
+                                    <Input
+                                        id="utilities-allowance"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={utilitiesAllowance}
+                                        onChange={(e) => setUtilitiesAllowance(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
+                                        <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
+                                    </Label>
+                                    <Input
+                                        id="partner-income"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={partnerIncome}
+                                        onChange={(e) => setPartnerIncome(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
                                 </div>
                             </div>
-                            <div>
-                                <Separator className="my-4"/>
-                                <div className="flex justify-between items-center font-bold text-lg">
-                                    <span className="text-primary-foreground">Total Monthly Package</span>
-                                    <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
-                                </div>
+                            <Separator className="my-4"/>
+                            <div className="flex justify-between items-center font-bold text-lg">
+                                <span className="text-primary-foreground">Total Monthly Package</span>
+                                <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
                             </div>
                         </div>
 
-                        
-                        <div className="flex flex-col justify-between">
-                           <div>
-                                <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-4">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
-                                <div className="space-y-1 text-sm text-muted-foreground">
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
-                                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
-                                        </Label>
-                                        <Input
-                                            id="contingency-cost"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={contingency}
-                                            onChange={(e) => setContingency(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
+                        <div className="flex flex-col">
+                            <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-4">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                            <div className="space-y-1 text-sm text-muted-foreground flex-grow">
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
+                                    <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
+                                        <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
+                                    </Label>
+                                    <Input
+                                        id="contingency-cost"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={contingency}
+                                        onChange={(e) => setContingency(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
                                 </div>
                             </div>
-                             <div>
-                                <Separator className="my-4"/>
-                                <div className="flex justify-between items-center font-bold text-lg">
-                                    <span className="text-primary-foreground">Total Estimated Costs</span>
-                                    <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
-                                </div>
+                            <Separator className="my-4"/>
+                            <div className="flex justify-between items-center font-bold text-lg">
+                                <span className="text-primary-foreground">Total Estimated Costs</span>
+                                <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
                             </div>
                         </div>
                     </div>
@@ -1324,7 +1313,7 @@ function TrueCostsSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                     <CardHeader>
-                        <CardTitle>Strategy</CardTitle>
+                        <CardTitle>Financial</CardTitle>
                         <p className="text-sm text-muted-foreground capitalize pt-1">
                                 {selectedCountry}
                                 {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1399,7 +1388,7 @@ export default function FinancialForecasterPage() {
           { label: 'Snapshot', href: '#financial-snapshot'},
           { label: 'Intel', href: '#package-deals' },
           { label: 'Lifestyle', href: '#true-lifestyle' },
-          { label: 'Strategy', href: '#financial-strategy-card' },
+          { label: 'Financial', href: '#financial-strategy-card' },
           { label: 'Red Flags', href: '#red-flags' },
           { label: 'Tax Calculator', href: '#tax-calculator' },
       ];
