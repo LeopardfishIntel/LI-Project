@@ -1,9 +1,10 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -1065,22 +1066,17 @@ function TrueCostsSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
             <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
-                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <Landmark className="h-6 w-6" />
-                    </div>
-                    <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">📄 Leopardfish Intel</CardTitle>
-                        <p className="text-sm text-muted-foreground capitalize">
-                            {selectedCountry}
-                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
-                            {' | '}
-                            {familyStatusLabels[familyStatus]}
-                        </p>
-                    </div>
+                <CardHeader>
+                    <CardTitle className="text-xl">Leopardfish Intel</CardTitle>
+                    <p className="text-sm text-muted-foreground capitalize pt-1">
+                        {selectedCountry}
+                        {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                        {' | '}
+                        {familyStatusLabels[familyStatus]}
+                    </p>
                 </CardHeader>
                 <CardContent className="flex-grow pt-0">
-                    <div className="space-y-4 pt-6">
+                    <div className="space-y-4">
                         <FeatureDetail 
                             icon={<FileText className="w-5 h-5" />}
                             title="Tax Status"
@@ -1121,23 +1117,18 @@ function TrueCostsSection() {
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
-                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <Globe className="h-6 w-6" />
-                    </div>
-                    <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">✈️ True Lifestyle</CardTitle>
-                         <p className="text-sm text-muted-foreground capitalize">
-                            {selectedCountry}
-                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
-                            {' | '}
-                            {familyStatusLabels[familyStatus]}
-                        </p>
-                        <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
-                    </div>
+                <CardHeader>
+                    <CardTitle className="text-xl">True Lifestyle</CardTitle>
+                    <p className="text-sm text-muted-foreground capitalize pt-1">
+                        {selectedCountry}
+                        {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                        {' | '}
+                        {familyStatusLabels[familyStatus]}
+                    </p>
+                    <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
                 </CardHeader>
                 <CardContent className="flex-grow pt-0">
-                    <div id="lifestyle-costs" className="space-y-4 scroll-mt-24 pt-6">
+                    <div id="lifestyle-costs" className="space-y-4 scroll-mt-24">
                         <FeatureDetail 
                             icon={<Globe className="w-5 h-5" />}
                             title="Imported Goods"
@@ -1181,22 +1172,17 @@ function TrueCostsSection() {
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader className="flex-row items-start gap-4 space-y-0 pb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <LineChart className="h-6 w-6" />
-                    </div>
-                     <div>
-                        <CardTitle className="text-lg font-bold tracking-tight normal-case">💰 Financial Strategy</CardTitle>
-                         <p className="text-sm text-muted-foreground capitalize">
-                             {selectedCountry}
-                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
-                             {' | '}
-                             {familyStatusLabels[familyStatus]}
-                        </p>
-                    </div>
+                <CardHeader>
+                    <CardTitle className="text-xl">Financial Strategy</CardTitle>
+                    <p className="text-sm text-muted-foreground capitalize pt-1">
+                            {selectedCountry}
+                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                            {' | '}
+                            {familyStatusLabels[familyStatus]}
+                    </p>
                 </CardHeader>
                 <CardContent className="flex-grow pt-0">
-                    <div id="financial-strategy" className="space-y-4 scroll-mt-24 pt-6">
+                    <div id="financial-strategy" className="space-y-4 scroll-mt-24">
                         <FeatureDetail 
                             icon={<ArrowRightLeft className="w-5 h-5" />}
                             title="Currency & Fees"
@@ -1273,7 +1259,7 @@ export default function FinancialForecasterPage() {
           <div className="flex justify-center flex-wrap gap-2 mb-12">
               {menuItems.map(item => (
                   <Link href={item.href} key={item.href}
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-muted-foreground hover:bg-background hover:text-foreground shadow-sm">
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
                           {item.label}
                   </Link>
               ))}
