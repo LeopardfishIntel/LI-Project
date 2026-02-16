@@ -28,36 +28,43 @@ export async function submitInquiry(
   let emailBody = '';
 
   if (inquiryType === 'school') {
-    emailSubject = 'Action Required: Complete your Leopardfish School Profile';
+    emailSubject = 'Your Verified School Profile is Now Live 🐾';
     emailBody = `Hello ${name},
 
-Thanks for contacting Leopardfish Intel regarding your school’s membership.
+Your Leopardfish Intel Verified School Profile is now live.
 
-To proceed with your Verified School Membership, please follow the steps below to set up your online profile. This ensures we have the correct data to showcase your school to our community.
+Our team has completed the final review of your data and your school is now visible to our global teaching community. You can view your live profile here: [Link to Profile]
 
-Activate Account: You will shortly receive a separate invitation email. Follow the link to set up your login credentials.
+Next Steps:
 
-Complete Profile: Once logged in, navigate to the 'School Profile' tab. Please complete all mandatory fields, including curriculum details, benefits, and media uploads.
+Review: Please take a moment to ensure all links and information are correct.
 
-Verification: Once your profile is 100% complete, our team will review the details and apply your Verified status.
+Updates: You can update your profile, vacancy links, or media at any time via your [Dashboard Link].
 
-Please aim to complete your profile within 3 working days to ensure there are no delays in your activation.
+Verified Status: Your profile now carries the Leopardfish Verified badge, confirming your commitment to the international teaching community.
+
+Thank you for joining our network.
 
 Regards,
 
 The Leopardfish Intel Team`;
   } else {
-    emailSubject = 'Service Partnership Enquiry: Initial Review';
+    emailSubject = 'Your Service Provider Profile is Now Live';
     emailBody = `Hello ${name},
 
-Thanks for your interest in partnering with Leopardfish Intel.
+Your Service Provider Profile is now live on Leopardfish Intel.
 
-We have received your enquiry to showcase your services to our community. We are currently conducting an initial review to ensure your offering aligns with our members' needs.
+Your services are now visible to our network of international schools and educators. You can view your listing here: [Link to Profile]
 
-What happens next?
-If your enquiry is approved, you will receive an invitation to set up your Service Provider Profile. This will allow you to manage your listing, upload your logo, and provide details about your services directly on our platform.
+Next Steps:
 
-You should hear from us within 3 working days.
+Check Your Listing: Ensure your contact details and links are functioning correctly.
+
+Manage Content: To make changes to your description or branding, please log in to your [Account Dashboard].
+
+Enquiries: Any enquiries generated through your profile will be sent directly to the email address provided in your setup.
+
+We look forward to a successful partnership.
 
 Regards,
 
@@ -73,7 +80,7 @@ The Leopardfish Intel Team`;
   console.log('-----------------------------');
 
   return {
-    message: 'Your inquiry has been submitted successfully! We will get back to you shortly.',
+    message: 'Success! Your profile is now live. Please check your email for details.',
     error: null,
     success: true,
   };
