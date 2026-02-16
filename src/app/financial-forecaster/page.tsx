@@ -720,6 +720,7 @@ function TrueCostsSection() {
   const [homeCountry, setHomeCountry] = useState('United Kingdom');
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
+  const [utilitiesAllowance, setUtilitiesAllowance] = useState('');
   const [partnerIncome, setPartnerIncome] = useState('');
   const [contingency, setContingency] = useState('');
   const data = countrySpecificData[selectedCountry];
@@ -748,6 +749,7 @@ function TrueCostsSection() {
 
   useEffect(() => {
     setOfferedNetMonthlySalary('');
+    setUtilitiesAllowance('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
         setOtherMonthlyBenefits(String(Math.round(selectedSchool.costOfLiving.apartment)));
     } else {
@@ -822,17 +824,19 @@ function TrueCostsSection() {
 
   const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
   const numericOtherMonthlyBenefits = parseFloat(otherMonthlyBenefits) || 0;
+  const numericUtilitiesAllowance = parseFloat(utilitiesAllowance) || 0;
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
   const numericContingency = parseFloat(contingency) || 0;
 
   const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
   const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
+  const utilitiesAllowanceInUSD = numericUtilitiesAllowance / usdRate;
   const partnerIncomeInUSD = numericPartnerIncome / usdRate;
   const contingencyInUSD = numericContingency / usdRate;
 
   const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
 
-  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + partnerIncomeInUSD;
+  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD;
   const totalMonthlyCosts = (selectedSchool ? calculateTotal(selectedSchool) : 0) + contingencyInUSD;
   const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
@@ -1048,7 +1052,7 @@ function TrueCostsSection() {
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                                        <Pencil className="w-4 h-4 mr-2" /> Your Offered Net Salary
+                                        <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Offered Net Salary
                                     </Label>
                                     <Input
                                         id="offered-salary"
@@ -1062,7 +1066,7 @@ function TrueCostsSection() {
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                                        <Award className="w-4 h-4 mr-2" /> Housing Benefit (Est. Value)
+                                        <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit (Est. Value)
                                     </Label>
                                     <Input
                                         id="other-benefits"
@@ -1075,8 +1079,22 @@ function TrueCostsSection() {
                                     />
                                 </div>
                                 <div className="flex justify-between items-center">
+                                    <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
+                                        <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
+                                    </Label>
+                                    <Input
+                                        id="utilities-allowance"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={utilitiesAllowance}
+                                        onChange={(e) => setUtilitiesAllowance(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center">
                                     <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
-                                        <Users className="w-4 h-4 mr-2" /> Other / Partner Income
+                                        <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
                                     </Label>
                                     <Input
                                         id="partner-income"
