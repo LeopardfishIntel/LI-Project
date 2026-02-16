@@ -1072,6 +1072,15 @@ function TrueCostsSection() {
                                 <span className="text-primary-foreground">Total Monthly Package</span>
                                 <span className="text-primary-foreground">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
                             </div>
+                            <div className="text-right pt-1">
+                                <p className="text-xs text-muted-foreground">
+                                    For an accurate net salary, use the{' '}
+                                    <Link href="#tax-calculator" className="text-sky-400 hover:underline">
+                                        tax calculator
+                                    </Link>
+                                    .
+                                </p>
+                            </div>
                         </div>
 
                         {/* Estimated Costs Column */}
@@ -1126,15 +1135,6 @@ function TrueCostsSection() {
                                     {formatCurrency(convert(annualSavings), currency)}
                                 </p>
                             </div>
-                        </div>
-                        <div className="text-center pt-4">
-                            <p className="text-xs text-muted-foreground">
-                                Your salary is an estimate. For an accurate calculation, use the{' '}
-                                <Link href="#tax-calculator" className="text-sky-400 hover:underline">
-                                    full tax calculator
-                                </Link>
-                                .
-                            </p>
                         </div>
                     </div>
                 </CardContent>
