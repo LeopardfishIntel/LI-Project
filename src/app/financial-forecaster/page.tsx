@@ -1246,13 +1246,13 @@ export default function FinancialForecasterPage() {
 
     const MiniMenu = () => {
       const menuItems = [
-          { label: 'Tax Calculator', href: '#tax-calculator'},
           { label: 'Package', href: '#package-deals'},
           { label: 'Benefits', href: '#benefits-and-bonuses'},
           { label: 'Lifestyle', href: '#lifestyle-costs'},
           { label: 'Safety', href: '#safety-and-travel'},
           { label: 'Financials', href: '#financial-strategy'},
           { label: 'Savings', href: '#savings-potential'},
+          { label: 'Tax Calculator', href: '#tax-calculator'},
       ];
   
       return (
@@ -1276,15 +1276,16 @@ export default function FinancialForecasterPage() {
             
             <MiniMenu />
 
-            <section id="tax-calculator" className="scroll-mt-20">
-              <TaxCalculatorSection />
+            <section id="true-costs-analysis" className="scroll-mt-20">
+               <TrueCostsSection />
             </section>
 
             <Separator className="my-16" />
 
-            <section id="true-costs-analysis" className="scroll-mt-20">
-               <TrueCostsSection />
+            <section id="tax-calculator" className="scroll-mt-20">
+              <TaxCalculatorSection />
             </section>
+
         </div>
     )
 }
