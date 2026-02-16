@@ -1013,7 +1013,7 @@ function TrueCostsSection() {
                     <div>
                         <CardTitle className="flex items-center text-xl">
                             <LineChart className="w-5 h-5 mr-2 text-primary" />
-                            Financial Snapshot: {selectedSchool.name}
+                            Financial Snapshot: <span className="ml-2 text-lg text-sky-400">{selectedSchool.name}</span>
                         </CardTitle>
                         <CardDescription className="mt-1">
                             Estimate your monthly budget. Enter your offered net salary for a more accurate forecast.
@@ -1044,7 +1044,8 @@ function TrueCostsSection() {
                                     </Label>
                                     <Input
                                         id="offered-salary"
-                                        type="number"
+                                        type="text"
+                                        inputMode="numeric"
                                         placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
                                         value={offeredNetMonthlySalary}
                                         onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
@@ -1052,10 +1053,18 @@ function TrueCostsSection() {
                                     />
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <Label className="flex items-center text-muted-foreground">
+                                    <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
                                         <Award className="w-4 h-4 mr-2" /> Housing Benefit (Est. Value)
                                     </Label>
-                                    <span className="font-medium text-foreground">{formatCurrency(convert(numericOtherMonthlyBenefits), currency)}</span>
+                                    <Input
+                                        id="other-benefits"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={otherMonthlyBenefits}
+                                        onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
                                 </div>
                             </div>
                             <Separator />
