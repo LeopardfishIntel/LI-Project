@@ -878,7 +878,6 @@ function TrueCostsSection() {
           lifestyleData.transportation.score = 'bad';
           lifestyleData.transportation.text = `Transportation in ${location} can be costly. Whether using public transit or owning a car, this should be factored into your budget.`;
       } else if (costOfLiving.transport < 100) {
-          lifestyleData.transportation.score = 'good';
           lifestyleData.transportation.text = `Getting around ${location} is affordable, with efficient and cost-effective public transport options available.`;
       } else {
           lifestyleData.transportation.score = 'neutral';
@@ -1038,7 +1037,7 @@ function TrueCostsSection() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         {/* Income & Benefits Column */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-lg text-primary-foreground border-b pb-2">Income & Benefits (Monthly)</h3>
+                            <h3 className="font-semibold text-lg text-green-400 border-b pb-2">Income &amp; Benefits (Monthly)</h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
@@ -1101,7 +1100,7 @@ function TrueCostsSection() {
 
                         {/* Estimated Costs Column */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-lg text-primary-foreground border-b pb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                            <h3 className="font-semibold text-lg text-red-400 border-b pb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                             <div className="space-y-1 text-sm text-muted-foreground">
                                 <div className="flex justify-between items-center">
                                     <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
@@ -1120,7 +1119,7 @@ function TrueCostsSection() {
                                     <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining & Social</span>
+                                    <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
                                     <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
@@ -1245,7 +1244,7 @@ function TrueCostsSection() {
                         />
                         <FeatureDetail 
                             icon={<Beer className="w-5 h-5" />}
-                            title="Social & Leisure"
+                            title="Social &amp; Leisure"
                             description={lifestyleData.socialLeisure.text}
                             score={lifestyleData.socialLeisure.score}
                             percentage={lifestyleData.socialLeisure.percentage}
@@ -1255,7 +1254,7 @@ function TrueCostsSection() {
                     <div className="space-y-4">
                         <FeatureDetail 
                             icon={<ShieldAlert className="w-5 h-5" />}
-                            title="Safety & Travel Advice"
+                            title="Safety &amp; Travel Advice"
                             description={lifestyleData.safety.text}
                             score={lifestyleData.safety.score}
                             percentage={lifestyleData.safety.percentage}
@@ -1278,7 +1277,7 @@ function TrueCostsSection() {
                     <div id="financial-strategy" className="space-y-4 scroll-mt-24">
                         <FeatureDetail 
                             icon={<ArrowRightLeft className="w-5 h-5" />}
-                            title="Currency & Fees"
+                            title="Currency &amp; Fees"
                             description={data.currency.text}
                             score={data.currency.score}
                         />
@@ -1312,7 +1311,7 @@ function TrueCostsSection() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <h4 className="font-semibold text-foreground">🚩 Hidden Tax & Social Security Deductions</h4>
+                        <h4 className="font-semibold text-foreground">🚩 Hidden Tax &amp; Social Security Deductions</h4>
                         <p className="text-muted-foreground mt-1">
                             Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
                         </p>
