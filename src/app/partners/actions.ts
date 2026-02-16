@@ -28,12 +28,36 @@ export async function submitInquiry(
   let emailBody = '';
 
   if (inquiryType === 'school') {
-    emailSubject = 'School Partnership Inquiry: Next Steps';
+    emailSubject = 'Leopardfish Intel: School Profile Essentials';
     emailBody = `Hello ${name},
 
-Thank you for your interest in partnering with Leopardfish Intel.
+Thank you for your interest in our Verified School Membership. Please complete the following details to finalise your profile. Once finished, please return this information by replying to our initial email.
 
-We have received your inquiry and will be in touch shortly with the next steps.
+1. School Overview
+- Official School Name:
+- City & Country:
+- Website URL:
+- Curriculum Offered: (e.g., National Curriculum for England, IB, US, etc.)
+- Ages Taught: (e.g., 3–18)
+
+2. Accreditation & Governance
+- Accrediting Bodies: (e.g., CIS, COBIS, BSME, FOBISIA, etc.)
+- Inspection Report Link: (Optional, but recommended for Verified status)
+
+3. Recruitment & HR Contact
+- Lead Recruitment Contact Name:
+- Direct Email for Enquiries:
+- Current Vacancies Page Link:
+
+4. Profile Content
+- School Summary (Max 150 words): A concise overview of your school’s ethos and what you offer prospective teachers.
+- Staff Benefits: (e.g., Housing allowance, medical insurance, annual flights, etc.)
+
+5. Media Requirements
+- School Logo: Please attach a high-resolution version (PNG or SVG preferred).
+- Hero Image: Please attach one high-quality landscape photo of your campus or learning environment.
+
+Note: Verified status is subject to the review of the information provided above.
 
 Regards,
 
