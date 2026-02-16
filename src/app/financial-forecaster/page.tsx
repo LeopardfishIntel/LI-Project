@@ -959,7 +959,7 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
             <Select value={homeCountry} onValueChange={setHomeCountry}>
@@ -1028,7 +1028,11 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                           Estimate your monthly budget. Replace our mid range estimates with your net salary offer.
+                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer. For an accurate net salary, use the{' '}
+                            <Link href="#tax-calculator" className="text-sky-400 hover:underline">
+                                (tax calculator)
+                            </Link>
+                            .
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1046,7 +1050,8 @@ function TrueCostsSection() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                        <div className="flex flex-col space-y-2">
+                        
+                        <div className="flex flex-col">
                             <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
                             <div className="flex-grow space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
@@ -1105,8 +1110,9 @@ function TrueCostsSection() {
                                         className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
                                     />
                                 </div>
+                                <div className="flex-grow"></div>
                             </div>
-                            <div className="!mt-auto">
+                             <div className="!mt-auto">
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Monthly Package</span>
@@ -1115,7 +1121,7 @@ function TrueCostsSection() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col space-y-2">
+                        <div className="flex flex-col">
                             <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                             <div className="space-y-1 text-sm text-muted-foreground flex-grow">
                                 <div className="flex justify-between items-center">
@@ -1175,7 +1181,7 @@ function TrueCostsSection() {
                         <Separator className="mb-6" />
                         <div className="mb-6 text-center">
                           <p className="text-amber-400">
-                              Please ensure your Family Status is correct.
+                              Please ensure your Family Status is correct
                           </p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
@@ -1192,15 +1198,6 @@ function TrueCostsSection() {
                                 </p>
                             </div>
                         </div>
-                         <div className="text-center pt-4">
-                                <p className="text-xs text-muted-foreground">
-                                    For an accurate net salary, use the{' '}
-                                    <Link href="#tax-calculator" className="text-sky-400 hover:underline">
-                                        tax calculator
-                                    </Link>
-                                    .
-                                </p>
-                            </div>
                     </div>
                 </CardContent>
             </Card>
@@ -1360,7 +1357,7 @@ function TrueCostsSection() {
                     <CardHeader>
                         <CardTitle className="text-foreground flex items-center gap-2">
                             <ShieldAlert className="h-6 w-6" />
-                            Financial Red Flags
+                            Red Flags
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
