@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
@@ -401,7 +401,6 @@ function TaxCalculatorSection() {
                             {applySpecialRegime && (
                                  <Alert className="mt-2" variant="destructive">
                                     <Info className="h-4 w-4" />
-                                    <AlertTitle>Special Regime Active</AlertTitle>
                                     <AlertDescription>
                                         {taxData['Italy'].specialRegime.description} This significantly reduces income tax but is subject to specific eligibility criteria.
                                     </AlertDescription>
@@ -722,6 +721,7 @@ function TrueCostsSection() {
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
   const [partnerIncome, setPartnerIncome] = useState('');
+  const [contingency, setContingency] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const conversionRates: { [key: string]: number } = {
@@ -729,8 +729,9 @@ function TrueCostsSection() {
     GBP: 0.8,
     EUR: 0.92,
   };
+  const usdRate = conversionRates[currency];
 
-  const convert = (amount: number) => amount * conversionRates[currency];
+  const convert = (amount: number) => amount * usdRate;
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
@@ -822,11 +823,17 @@ function TrueCostsSection() {
   const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
   const numericOtherMonthlyBenefits = parseFloat(otherMonthlyBenefits) || 0;
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
+  const numericContingency = parseFloat(contingency) || 0;
 
-  const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : estimatedNetMonthlySalary;
+  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
+  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
+  const partnerIncomeInUSD = numericPartnerIncome / usdRate;
+  const contingencyInUSD = numericContingency / usdRate;
 
-  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits + numericPartnerIncome;
-  const totalMonthlyCosts = selectedSchool ? calculateTotal(selectedSchool) : 0;
+  const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
+
+  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + partnerIncomeInUSD;
+  const totalMonthlyCosts = (selectedSchool ? calculateTotal(selectedSchool) : 0) + contingencyInUSD;
   const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
 
@@ -835,7 +842,7 @@ function TrueCostsSection() {
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyIncome = salaryToUse;
+    const monthlyIncome = salaryToUseInUSD;
     const convertedAnnualSavings = convert(annualSavings);
     const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
 
@@ -1115,6 +1122,10 @@ function TrueCostsSection() {
                                     <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
+                                    <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-slate-400" /> Mobile</span>
+                                    <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
                                     <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
                                     <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
                                 </div>
@@ -1125,6 +1136,20 @@ function TrueCostsSection() {
                                 <div className="flex justify-between items-center">
                                     <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
                                     <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
+                                        <Milestone className="w-4 h-4 mr-2" /> Contingency Fund
+                                    </Label>
+                                    <Input
+                                        id="contingency-cost"
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        value={contingency}
+                                        onChange={(e) => setContingency(e.target.value)}
+                                        className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                    />
                                 </div>
                             </div>
                             <Separator />
@@ -1138,11 +1163,10 @@ function TrueCostsSection() {
                     <div className="pt-6">
                         <Separator className="mb-6" />
                         <Alert className="mb-6 bg-amber-500/10 border-amber-500/50 text-amber-400 [&>svg]:text-amber-400">
-                          <ShieldAlert className="h-4 w-4" />
-                          <AlertTitle>Important</AlertTitle>
-                          <AlertDescription>
-                            Ensure your <span className="underline font-semibold">Family Status</span> is correct to ensure accurate forecasts.
-                          </AlertDescription>
+                            <ShieldAlert className="h-4 w-4" />
+                            <AlertDescription>
+                                Ensure your <span className="underline font-semibold">Family Status</span> is correct.
+                            </AlertDescription>
                         </Alert>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
@@ -1166,7 +1190,7 @@ function TrueCostsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
                 <CardHeader>
-                    <CardTitle className="text-xl">Leopardfish Intel</CardTitle>
+                    <CardTitle>Leopardfish Intel</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                         {selectedCountry}
                         {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1217,7 +1241,7 @@ function TrueCostsSection() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader>
-                    <CardTitle className="text-xl">True Lifestyle</CardTitle>
+                    <CardTitle>True Lifestyle</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                         {selectedCountry}
                         {selectedSchool ? ` | ${selectedSchool.name}` : ''}
@@ -1272,7 +1296,7 @@ function TrueCostsSection() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
                 <CardHeader>
-                    <CardTitle className="text-xl">Financial Strategy</CardTitle>
+                    <CardTitle>Financial Strategy</CardTitle>
                     <p className="text-sm text-muted-foreground capitalize pt-1">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
