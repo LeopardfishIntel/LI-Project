@@ -1204,175 +1204,176 @@ function TrueCostsSection() {
             </Card>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
-                <CardHeader>
-                    <CardTitle>Leopardfish Intel</CardTitle>
-                    <p className="text-sm text-muted-foreground capitalize pt-1">
-                        {selectedCountry}
-                        {selectedSchool ? ` | ${selectedSchool.name}` : ''}
-                        {' | '}
-                        {familyStatusLabels[familyStatus]}
-                    </p>
-                </CardHeader>
-                <CardContent className="flex-grow pt-0">
-                    <div className="space-y-4">
-                        <FeatureDetail 
-                            icon={<FileText className="w-5 h-5" />}
-                            title="Tax Status"
-                            description={<>
-                                {contractPerksData.taxStatus.text}
-                            </>}
-                            score={contractPerksData.taxStatus.score}
-                        />
-                        <FeatureDetail 
-                            icon={<Home className="w-5 h-5" />}
-                            title="Housing Arrangement"
-                            description={contractPerksData.housing.text}
-                            score={contractPerksData.housing.score}
-                        />
-                        <FeatureDetail 
-                            icon={<Plane className="w-5 h-5" />}
-                            title="Annual Flight Allowance"
-                            description={contractPerksData.flightAllowance.text}
-                            score={contractPerksData.flightAllowance.score}
-                        />
-                    </div>
-                    <Separator id="benefits-and-bonuses" className="my-4 scroll-mt-24" />
-                    <div className="space-y-4">
-                        <FeatureDetail 
-                            icon={<SchoolIcon className="w-5 h-5" />}
-                            title="Dependent Tuition"
-                            description={contractPerksData.dependentTuition.text}
-                            score={contractPerksData.dependentTuition.score}
-                        />
-                        <FeatureDetail 
-                            icon={<Award className="w-5 h-5" />}
-                            title="Gratuity / Bonus"
-                            description={contractPerksData.gratuity.text}
-                            score={contractPerksData.gratuity.score}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader>
-                    <CardTitle>True Lifestyle</CardTitle>
-                    <p className="text-sm text-muted-foreground capitalize pt-1">
-                        {selectedCountry}
-                        {selectedSchool ? ` | ${selectedSchool.name}` : ''}
-                        {' | '}
-                        {familyStatusLabels[familyStatus]}
-                    </p>
-                    <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
-                </CardHeader>
-                <CardContent className="flex-grow pt-0">
-                    <div id="lifestyle-costs" className="space-y-4 scroll-mt-24">
-                        <FeatureDetail 
-                            icon={<Globe className="w-5 h-5" />}
-                            title="Imported Goods"
-                            description={lifestyleData.importedGoods.text}
-                            score={lifestyleData.importedGoods.score}
-                            percentage={lifestyleData.importedGoods.percentage}
-                        />
-                        <FeatureDetail 
-                            icon={<Thermometer className="w-5 h-5" />}
-                            title="Utilities (AC/Heat)"
-                            description={lifestyleData.utilities.text}
-                            score={lifestyleData.utilities.score}
-                            percentage={lifestyleData.utilities.percentage}
-                        />
-                        <FeatureDetail 
-                            icon={<Car className="w-5 h-5" />}
-                            title="Transportation"
-                            description={lifestyleData.transportation.text}
-                            score={lifestyleData.transportation.score}
-                            percentage={lifestyleData.transportation.percentage}
-                        />
-                        <FeatureDetail 
-                            icon={<Beer className="w-5 h-5" />}
-                            title="Social &amp; Leisure"
-                            description={lifestyleData.socialLeisure.text}
-                            score={lifestyleData.socialLeisure.score}
-                            percentage={lifestyleData.socialLeisure.percentage}
-                        />
-                    </div>
-                    <Separator id="safety-and-travel" className="my-4 scroll-mt-24" />
-                    <div className="space-y-4">
-                        <FeatureDetail 
-                            icon={<ShieldAlert className="w-5 h-5" />}
-                            title="Safety &amp; Travel Advice"
-                            description={lifestyleData.safety.text}
-                            score={lifestyleData.safety.score}
-                            percentage={lifestyleData.safety.percentage}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
-                <CardHeader>
-                    <CardTitle>Financial Strategy</CardTitle>
-                    <p className="text-sm text-muted-foreground capitalize pt-1">
+        <div className="mt-12 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
+                    <CardHeader>
+                        <CardTitle>Leopardfish Intel</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                             {' | '}
                             {familyStatusLabels[familyStatus]}
-                    </p>
-                </CardHeader>
-                <CardContent className="flex-grow pt-0">
-                    <div id="financial-strategy" className="space-y-4 scroll-mt-24">
-                        <FeatureDetail 
-                            icon={<ArrowRightLeft className="w-5 h-5" />}
-                            title="Currency &amp; Fees"
-                            description={data.currency.text}
-                            score={data.currency.score}
-                        />
-                        <FeatureDetail 
-                            icon={<PiggyBank className="w-5 h-5" />}
-                            title="Home Obligations"
-                            description={homeObligationsData.text}
-                            score={homeObligationsData.score}
-                        />
-                    </div>
-                    <Separator id="savings-potential" className="my-4 scroll-mt-24" />
-                    <div className="space-y-4">
-                        <FeatureDetail 
-                            icon={<LineChart className="w-5 h-5" />}
-                            title="True Savings Potential"
-                            description={savingsDescription}
-                            score={savingsScore}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
+                        </p>
+                    </CardHeader>
+                    <CardContent className="flex-grow pt-0">
+                        <div className="space-y-4">
+                            <FeatureDetail 
+                                icon={<FileText className="w-5 h-5" />}
+                                title="Tax Status"
+                                description={<>
+                                    {contractPerksData.taxStatus.text}
+                                </>}
+                                score={contractPerksData.taxStatus.score}
+                            />
+                            <FeatureDetail 
+                                icon={<Home className="w-5 h-5" />}
+                                title="Housing Arrangement"
+                                description={contractPerksData.housing.text}
+                                score={contractPerksData.housing.score}
+                            />
+                            <FeatureDetail 
+                                icon={<Plane className="w-5 h-5" />}
+                                title="Annual Flight Allowance"
+                                description={contractPerksData.flightAllowance.text}
+                                score={contractPerksData.flightAllowance.score}
+                            />
+                        </div>
+                        <Separator id="benefits-and-bonuses" className="my-4 scroll-mt-24" />
+                        <div className="space-y-4">
+                            <FeatureDetail 
+                                icon={<SchoolIcon className="w-5 h-5" />}
+                                title="Dependent Tuition"
+                                description={contractPerksData.dependentTuition.text}
+                                score={contractPerksData.dependentTuition.score}
+                            />
+                            <FeatureDetail 
+                                icon={<Award className="w-5 h-5" />}
+                                title="Gratuity / Bonus"
+                                description={contractPerksData.gratuity.text}
+                                score={contractPerksData.gratuity.score}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                    <CardHeader>
+                        <CardTitle>True Lifestyle</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1">
+                            {selectedCountry}
+                            {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                            {' | '}
+                            {familyStatusLabels[familyStatus]}
+                        </p>
+                        <p className="text-xs text-muted-foreground pt-1">Percentages are cost estimates vs. a UK/USA baseline.</p>
+                    </CardHeader>
+                    <CardContent className="flex-grow pt-0">
+                        <div id="lifestyle-costs" className="space-y-4 scroll-mt-24">
+                            <FeatureDetail 
+                                icon={<Globe className="w-5 h-5" />}
+                                title="Imported Goods"
+                                description={lifestyleData.importedGoods.text}
+                                score={lifestyleData.importedGoods.score}
+                                percentage={lifestyleData.importedGoods.percentage}
+                            />
+                            <FeatureDetail 
+                                icon={<Thermometer className="w-5 h-5" />}
+                                title="Utilities (AC/Heat)"
+                                description={lifestyleData.utilities.text}
+                                score={lifestyleData.utilities.score}
+                                percentage={lifestyleData.utilities.percentage}
+                            />
+                            <FeatureDetail 
+                                icon={<Car className="w-5 h-5" />}
+                                title="Transportation"
+                                description={lifestyleData.transportation.text}
+                                score={lifestyleData.transportation.score}
+                                percentage={lifestyleData.transportation.percentage}
+                            />
+                            <FeatureDetail 
+                                icon={<Beer className="w-5 h-5" />}
+                                title="Social &amp; Leisure"
+                                description={lifestyleData.socialLeisure.text}
+                                score={lifestyleData.socialLeisure.score}
+                                percentage={lifestyleData.socialLeisure.percentage}
+                            />
+                        </div>
+                        <Separator id="safety-and-travel" className="my-4 scroll-mt-24" />
+                        <div className="space-y-4">
+                            <FeatureDetail 
+                                icon={<ShieldAlert className="w-5 h-5" />}
+                                title="Safety &amp; Travel Advice"
+                                description={lifestyleData.safety.text}
+                                score={lifestyleData.safety.score}
+                                percentage={lifestyleData.safety.percentage}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card className="bg-card/70 backdrop-blur-sm border-border flex flex-col">
+                    <CardHeader>
+                        <CardTitle>Financial Strategy</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1">
+                                {selectedCountry}
+                                {selectedSchool ? ` | ${selectedSchool.name}` : ''}
+                                {' | '}
+                                {familyStatusLabels[familyStatus]}
+                        </p>
+                    </CardHeader>
+                    <CardContent className="flex-grow pt-0">
+                        <div id="financial-strategy" className="space-y-4 scroll-mt-24">
+                            <FeatureDetail 
+                                icon={<ArrowRightLeft className="w-5 h-5" />}
+                                title="Currency &amp; Fees"
+                                description={data.currency.text}
+                                score={data.currency.score}
+                            />
+                            <FeatureDetail 
+                                icon={<PiggyBank className="w-5 h-5" />}
+                                title="Home Obligations"
+                                description={homeObligationsData.text}
+                                score={homeObligationsData.score}
+                            />
+                        </div>
+                        <Separator id="savings-potential" className="my-4 scroll-mt-24" />
+                        <div className="space-y-4">
+                            <FeatureDetail 
+                                icon={<LineChart className="w-5 h-5" />}
+                                title="True Savings Potential"
+                                description={savingsDescription}
+                                score={savingsScore}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="bg-destructive/10 border-destructive/50">
+                    <CardHeader>
+                        <CardTitle className="text-destructive flex items-center gap-2">
+                            <ShieldAlert className="h-6 w-6" />
+                            Leopardfish Intel: Financial Red Flags
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <h4 className="font-semibold text-foreground">🚩 Hidden Tax &amp; Social Security Deductions</h4>
+                            <p className="text-muted-foreground mt-1">
+                                Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-foreground">🚩 Currency Fluctuations</h4>
+                            <p className="text-muted-foreground mt-1">
+                                Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
 
-        <div className="mt-12">
-            <Card className="bg-destructive/10 border-destructive/50">
-                <CardHeader>
-                    <CardTitle className="text-destructive flex items-center gap-2">
-                        <ShieldAlert className="h-6 w-6" />
-                        Leopardfish Intel: Financial Red Flags
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <h4 className="font-semibold text-foreground">🚩 Hidden Tax &amp; Social Security Deductions</h4>
-                        <p className="text-muted-foreground mt-1">
-                            Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
-                        </p>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-foreground">🚩 Currency Fluctuations</h4>
-                        <p className="text-muted-foreground mt-1">
-                            Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
         
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
           <p className="animate-pulse-slow">Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
