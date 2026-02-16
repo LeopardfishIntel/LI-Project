@@ -11,7 +11,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{backgroundImage: "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop')"}}
         >
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[85vh] py-20">
           <div className="flex-grow flex flex-col items-center justify-center">
