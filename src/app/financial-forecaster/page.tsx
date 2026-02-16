@@ -760,8 +760,8 @@ function TrueCostsSection() {
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
     couple: 'Couple',
-    family: 'Family (2+1)',
-    family2: 'Family (2+2)',
+    family: 'Family of 3',
+    family2: 'Family of 4',
   };
 
   let adults = 1;
@@ -1012,8 +1012,8 @@ function TrueCostsSection() {
               <SelectContent>
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="couple">Couple</SelectItem>
-                <SelectItem value="family">Family (2+1)</SelectItem>
-                <SelectItem value="family2">Family (2+2)</SelectItem>
+                <SelectItem value="family">Family of 3</SelectItem>
+                <SelectItem value="family2">Family of 4</SelectItem>
               </SelectContent>
             </Select>
           </div>
