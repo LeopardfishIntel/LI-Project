@@ -1017,7 +1017,7 @@ function TrueCostsSection() {
                             Financial Snapshot
                         </CardTitle>
                         <CardDescription className="mt-1">
-                           Estimate your monthly budget. Enter your offered net salary for a more accurate forecast.
+                           Estimate your monthly budget. Replace our mid range estimates with your net salary offer for a more accurate forecast.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
