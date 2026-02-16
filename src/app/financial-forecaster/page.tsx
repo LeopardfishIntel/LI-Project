@@ -910,7 +910,7 @@ function TrueCostsSection() {
   }
 
   const homeObligationsData = { ...data.homeObligations };
-  if (homeCountry === selectedCountry) {
+  if (homeCountry === selectedSchool?.country) {
     homeObligationsData.text = `As your target country is also your home country, you can manage financial commitments like mortgages or student loans directly from your local salary.`;
     homeObligationsData.score = 'good';
   } else {
@@ -1269,9 +1269,9 @@ export default function FinancialForecasterPage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Financial Forecaster</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Contract Decoder</h1>
             <p className="text-muted-foreground text-center mt-4 mb-8 max-w-3xl mx-auto">
-                Evaluate your true financial picture. Calculate your take-home pay and understand your day-to-day expenses to reveal your genuine savings potential.
+                Evaluate your true financial picture. Calculate your take-home pay and understand your day-to-day expenses to reveal your genuine disposable income.
             </p>
             
             <MiniMenu />

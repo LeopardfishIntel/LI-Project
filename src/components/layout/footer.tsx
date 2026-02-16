@@ -20,7 +20,7 @@ export default function Footer() {
                 <h4 className="font-semibold mb-4 uppercase tracking-wider">Quick Links</h4>
                 <nav className="flex flex-col gap-2">
                     <Link href="/discover" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Discover</Link>
-                    <Link href="/financial-forecaster" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Evaluate</Link>
+                    <Link href="/financial-forecaster" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Contract Decoder</Link>
                     <Link href="/compare" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Decide</Link>
                      <Link href="/directory" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Directory</Link>
                      <Link href="/partners" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Partners</Link>
