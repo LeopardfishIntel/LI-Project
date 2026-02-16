@@ -506,11 +506,11 @@ type CountryData = {
 
 const countrySpecificData: CountryData = {
     'United Kingdom': {
-        taxStatus: { text: "Salaries are subject to UK income tax (20-45%) and National Insurance contributions. Tax-free salaries are not a feature here.", score: 'bad' },
-        housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.", score: 'bad' },
-        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad' },
-        dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral' },
-        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension scheme (like the Teachers' Pension Scheme).", score: 'neutral' },
+        taxStatus: { text: "Salaries are subject to UK income tax (20-45%) and National Insurance contributions. Tax-free salaries are not a feature here.", score: 'bad', percentage: "20-45%" },
+        housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.", score: 'bad', percentage: "Self-funded" },
+        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad', percentage: "Not Standard" },
+        dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral', percentage: "Up to 100%" },
+        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension scheme (like the Teachers' Pension Scheme).", score: 'neutral', percentage: "Pension Scheme" },
         importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral', percentage: "+10%" },
         utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad', percentage: "+30%" },
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', percentage: "+20%" },
@@ -532,11 +532,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'UAE': {
-        taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good' },
-        housing: { text: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.", score: 'good' },
-        flightAllowance: { text: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good' },
-        dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good' },
-        gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good' },
+        taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good', percentage: "0%" },
+        housing: { text: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.", score: 'good', percentage: "Often 100%" },
+        flightAllowance: { text: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good', percentage: "Annual" },
+        dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good', percentage: "Standard" },
         importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral', percentage: "+30%" },
         utilities: { text: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. 'Chiller fees' (for AC) can be a major variable.", score: 'bad', percentage: "+20%" },
         transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral', percentage: "Baseline" },
@@ -558,11 +558,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'Japan': {
-        taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security. Taxes are significant but often lower than Western Europe.", score: 'neutral' },
-        housing: { text: "Varies. Some schools provide subsidized/free housing. In Tokyo, you'll likely get an allowance that may not cover the full rent, requiring a top-up.", score: 'neutral' },
-        flightAllowance: { text: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.", score: 'neutral' },
-        dependentTuition: { text: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of education in Japan.", score: 'good' },
-        gratuity: { text: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.", score: 'neutral' },
+        taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security. Taxes are significant but often lower than Western Europe.", score: 'neutral', percentage: "5-45%" },
+        housing: { text: "Varies. Some schools provide subsidized/free housing. In Tokyo, you'll likely get an allowance that may not cover the full rent, requiring a top-up.", score: 'neutral', percentage: "Varies" },
+        flightAllowance: { text: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.", score: 'neutral', percentage: "Varies" },
+        dependentTuition: { text: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of education in Japan.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.", score: 'neutral', percentage: "Pension Scheme" },
         importedGoods: { text: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.", score: 'bad', percentage: "+50%" },
         utilities: { text: "Reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.", score: 'neutral', percentage: "-10%" },
         transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good', percentage: "-30%" },
@@ -584,11 +584,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'Switzerland': {
-        taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high (up to 40% combined). However, salaries are also among the highest in the world.", score: 'neutral' },
-        housing: { text: "Housing is not provided and is extremely expensive, especially in cities like Zurich and Geneva. This is the largest expense for most teachers.", score: 'bad' },
-        flightAllowance: { text: "Not a standard benefit. Flights are typically paid for by the teacher.", score: 'bad' },
-        dependentTuition: { text: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.", score: 'good' },
-        gratuity: { text: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.", score: 'neutral' },
+        taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high (up to 40% combined). However, salaries are also among the highest in the world.", score: 'neutral', percentage: "Up to 40%" },
+        housing: { text: "Housing is not provided and is extremely expensive, especially in cities like Zurich and Geneva. This is the largest expense for most teachers.", score: 'bad', percentage: "Self-funded" },
+        flightAllowance: { text: "Not a standard benefit. Flights are typically paid for by the teacher.", score: 'bad', percentage: "Not Standard" },
+        dependentTuition: { text: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.", score: 'good', percentage: "Discounted" },
+        gratuity: { text: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.", score: 'neutral', percentage: "Pension Scheme" },
         importedGoods: { text: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.", score: 'neutral', percentage: "+20%" },
         utilities: { text: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.", score: 'bad', percentage: "+60%" },
         transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral', percentage: "+50%" },
@@ -610,11 +610,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'Singapore': {
-        taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good' },
-        housing: { text: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.", score: 'bad' },
-        flightAllowance: { text: "An annual flight allowance is common, often as a cash benefit, providing flexibility.", score: 'good' },
-        dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good' },
-        gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral' },
+        taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good', percentage: "0-22%" },
+        housing: { text: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.", score: 'bad', percentage: "Allowance" },
+        flightAllowance: { text: "An annual flight allowance is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "Annual" },
+        dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
         importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral', percentage: "+40%" },
         utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad', percentage: "+30%" },
         transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', percentage: "-20%" },
@@ -636,11 +636,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'South Korea': {
-        taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral' },
-        housing: { text: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.", score: 'good' },
-        flightAllowance: { text: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good' },
-        dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral' },
-        gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good' },
+        taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral', percentage: "6-45%" },
+        housing: { text: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.", score: 'good', percentage: "Often 100%" },
+        flightAllowance: { text: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good', percentage: "Annual" },
+        dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral', percentage: "Varies" },
+        gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good', percentage: "Standard" },
         importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad', percentage: "+40%" },
         utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.", score: 'good', percentage: "-10%" },
         transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good', percentage: "-30%" },
@@ -662,11 +662,11 @@ const countrySpecificData: CountryData = {
         },
     },
     'Netherlands': {
-        taxStatus: { text: "Salaries are subject to a high income tax rate (up to 49.5%) and social security contributions. The '30% ruling' for skilled migrants can provide a significant tax advantage.", score: 'neutral' },
-        housing: { text: "Housing is very expensive and in short supply in major cities like Amsterdam. Most schools offer an allowance, but it may not cover the full cost.", score: 'bad' },
-        flightAllowance: { text: "Not a standard benefit for schools in the Netherlands.", score: 'bad' },
-        dependentTuition: { text: "Most international schools offer a discount, but 100% free tuition is rare. This is a significant cost to factor in.", score: 'neutral' },
-        gratuity: { text: "There is no end-of-service gratuity. Schools contribute to a mandatory pension scheme.", score: 'neutral' },
+        taxStatus: { text: "Salaries are subject to a high income tax rate (up to 49.5%) and social security contributions. The '30% ruling' for skilled migrants can provide a significant tax advantage.", score: 'neutral', percentage: "Up to 49.5%" },
+        housing: { text: "Housing is very expensive and in short supply in major cities like Amsterdam. Most schools offer an allowance, but it may not cover the full cost.", score: 'bad', percentage: "Allowance" },
+        flightAllowance: { text: "Not a standard benefit for schools in the Netherlands.", score: 'bad', percentage: "Not Standard" },
+        dependentTuition: { text: "Most international schools offer a discount, but 100% free tuition is rare. This is a significant cost to factor in.", score: 'neutral', percentage: "Rarely 100%" },
+        gratuity: { text: "There is no end-of-service gratuity. Schools contribute to a mandatory pension scheme.", score: 'neutral', percentage: "Pension Scheme" },
         importedGoods: { text: "As part of the EU, there's a wide availability of goods, but general grocery costs are high.", score: 'neutral', percentage: "+15%" },
         utilities: { text: "Energy prices are high in Europe. Expect significant heating costs in the winter.", score: 'bad', percentage: "+40%" },
         transportation: { text: "Cycling is king and very cheap. Public transport is efficient but can be expensive. Many residents do not own a car.", score: 'good', percentage: "-40%" },
@@ -921,15 +921,15 @@ function TrueCostsSection() {
 
   if (selectedSchool) {
     if (selectedSchool.intel.salary.isTaxFree) {
-      contractPerksData.taxStatus = { text: 'This school offers a 100% tax-free salary, a major financial advantage.', score: 'good' };
+      contractPerksData.taxStatus = { text: 'This school offers a 100% tax-free salary, a major financial advantage.', score: 'good', percentage: '0%' };
     } else {
       contractPerksData.taxStatus = { ...data.taxStatus, text: `At this school, salaries are subject to ${selectedCountry}'s income tax. ${data.taxStatus.text}`};
     }
 
     if (selectedSchool.intel.housing.provided) {
-      contractPerksData.housing = { text: `This school provides housing (${selectedSchool.intel.housing.value}), removing a teacher's largest monthly expense.`, score: 'good' };
+      contractPerksData.housing = { text: `This school provides housing (${selectedSchool.intel.housing.value}), removing a teacher's largest monthly expense.`, score: 'good', percentage: '100%' };
     } else {
-      contractPerksData.housing = { text: `Housing is not provided by this school (${selectedSchool.intel.housing.value}). Rent will be a significant monthly cost.`, score: 'bad' };
+      contractPerksData.housing = { text: `Housing is not provided by this school (${selectedSchool.intel.housing.value}). Rent will be a significant monthly cost.`, score: 'bad', percentage: 'Self-funded' };
     }
 
     const note = "Note: This is a school-specific benefit. Verify contract details.";
@@ -959,7 +959,7 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="home-country-select" className="text-base font-semibold block text-center mb-2">Home Country</Label>
             <Select value={homeCountry} onValueChange={setHomeCountry}>
@@ -1046,9 +1046,9 @@ function TrueCostsSection() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                        <div className="flex flex-col">
-                            <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-4">Income &amp; Benefits (Monthly)</h3>
-                            <div className="space-y-2 text-sm flex-grow">
+                        <div className="flex flex-col space-y-2">
+                            <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
+                            <div className="flex-grow space-y-2 text-sm">
                                 <div className="flex justify-between items-center">
                                     <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
                                         <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
@@ -1106,16 +1106,17 @@ function TrueCostsSection() {
                                     />
                                 </div>
                             </div>
-                            <div className="flex-grow"></div>
-                            <Separator className="my-4"/>
-                            <div className="flex justify-between items-center font-bold text-lg">
-                                <span className="text-primary-foreground">Total Monthly Package</span>
-                                <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                            <div className="!mt-auto">
+                                <Separator className="my-4"/>
+                                <div className="flex justify-between items-center font-bold text-lg">
+                                    <span className="text-primary-foreground">Total Monthly Package</span>
+                                    <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex flex-col">
-                            <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-4">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                        <div className="flex flex-col space-y-2">
+                            <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                             <div className="space-y-1 text-sm text-muted-foreground flex-grow">
                                 <div className="flex justify-between items-center">
                                     <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
@@ -1160,10 +1161,12 @@ function TrueCostsSection() {
                                     />
                                 </div>
                             </div>
-                            <Separator className="my-4"/>
-                            <div className="flex justify-between items-center font-bold text-lg">
-                                <span className="text-primary-foreground">Total Estimated Costs</span>
-                                <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                            <div className="!mt-auto">
+                                <Separator className="my-4"/>
+                                <div className="flex justify-between items-center font-bold text-lg">
+                                    <span className="text-primary-foreground">Total Estimated Costs</span>
+                                    <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1224,18 +1227,21 @@ function TrueCostsSection() {
                                     {contractPerksData.taxStatus.text}
                                 </>}
                                 score={contractPerksData.taxStatus.score}
+                                percentage={contractPerksData.taxStatus.percentage}
                             />
                             <FeatureDetail 
                                 icon={<Home className="w-5 h-5" />}
                                 title="Housing Arrangement"
                                 description={contractPerksData.housing.text}
                                 score={contractPerksData.housing.score}
+                                percentage={contractPerksData.housing.percentage}
                             />
                             <FeatureDetail 
                                 icon={<Plane className="w-5 h-5" />}
                                 title="Annual Flight Allowance"
                                 description={contractPerksData.flightAllowance.text}
                                 score={contractPerksData.flightAllowance.score}
+                                percentage={contractPerksData.flightAllowance.percentage}
                             />
                         </div>
                         <Separator className="my-4" />
@@ -1245,12 +1251,14 @@ function TrueCostsSection() {
                                 title="Dependent Tuition"
                                 description={contractPerksData.dependentTuition.text}
                                 score={contractPerksData.dependentTuition.score}
+                                percentage={contractPerksData.dependentTuition.percentage}
                             />
                             <FeatureDetail 
                                 icon={<Award className="w-5 h-5" />}
                                 title="Gratuity / Bonus"
                                 description={contractPerksData.gratuity.text}
                                 score={contractPerksData.gratuity.score}
+                                percentage={contractPerksData.gratuity.percentage}
                             />
                         </div>
                     </CardContent>
@@ -1410,7 +1418,7 @@ export default function FinancialForecasterPage() {
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract decoder</h1>
             <p className="text-muted-foreground text-center mt-4 mb-6 max-w-3xl mx-auto">
-                Our Contract Decoder hacks through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.
+                Our Contract Decoder cuts through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.
             </p>
             
             <MiniMenu />
