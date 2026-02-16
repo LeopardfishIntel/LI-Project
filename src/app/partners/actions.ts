@@ -31,13 +31,9 @@ export async function submitInquiry(
     emailSubject = 'School Partnership Inquiry: Next Steps';
     emailBody = `Hello ${name},
 
-Thanks for contacting Leopardfish Intel regarding a potential partnership.
+Thank you for your interest in partnering with Leopardfish Intel.
 
-We have received your enquiry to join our Verified Membership program.
-
-Our team will now review the information you provided to ensure it aligns with our current member requirements. We aim to get back to you within 3 working days to discuss the next steps for your campus.
-
-In the meantime, if you have a media kit or further documentation, please feel free to reply directly to this email.
+We have received your inquiry and will be in touch shortly with the next steps.
 
 Regards,
 
