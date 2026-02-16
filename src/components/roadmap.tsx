@@ -31,7 +31,7 @@ export default function Roadmap() {
     {
       id: '03',
       title: 'Decide',
-      desc: "Weighing up multiple offers can be a challenge. Our side-by-side comparison tool breaks down the finer details of your potential contracts—from headline salary and housing allowances to class sizes and medical cover. You can even input your specific offer numbers to see the bottom line clearly. We lay out the data, so you can make your final call with total peace of mind",
+      desc: "Weighing up multiple offers can be a challenge. Our comparison tool breaks down the finer details of your potential contracts—from headline salary and housing allowances and more. We lay out the data, so you can make your final decision with total peace of mind",
       link: '/compare',
       imageId: 'decide-step'
     },
