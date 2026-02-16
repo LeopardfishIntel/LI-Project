@@ -52,7 +52,7 @@ export default function Roadmap() {
                       alt={step.desc}
                       width={600}
                       height={450}
-                      className="rounded-xl shadow-2xl object-cover w-full h-auto"
+                      className="rounded-xl shadow-2xl object-cover w-full h-96"
                       data-ai-hint={imageHint}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
