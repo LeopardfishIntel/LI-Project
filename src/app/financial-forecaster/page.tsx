@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -726,6 +727,15 @@ function TrueCostsSection() {
   const [contingency, setContingency] = useState('');
   const data = countrySpecificData[selectedCountry];
 
+  const searchParams = useSearchParams();
+  const [isTaxDialogOpen, setIsTaxDialogOpen] = useState(searchParams.get('open_tax_calculator') === 'true');
+
+  useEffect(() => {
+    if (searchParams.get('open_tax_calculator') === 'true') {
+        setIsTaxDialogOpen(true);
+    }
+  }, [searchParams]);
+
   const conversionRates: { [key: string]: number } = {
     USD: 1, // Base currency in mock data
     GBP: 0.8,
@@ -1012,7 +1022,9 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Please ensure your Family Status is correct.
+                             Use our <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}><DialogTrigger asChild><span className="text-sky-400 hover:underline cursor-pointer">Tax Calculator</span></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Worldwide Salary Tax Calculator</DialogTitle><CardDescription>
+                            Estimate your take-home pay in different countries. This tool calculates based on standard local resident tax rates.
+                        </CardDescription></DialogHeader><TaxCalculatorSection /></DialogContent></Dialog> and Family Status selector  to ensure best results.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1193,7 +1205,7 @@ function TrueCostsSection() {
                         <div className="mt-6 text-center">
                            <p className="text-muted-foreground text-sm">
                                 Use our{' '}
-                                <Dialog>
+                                <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}>
                                     <DialogTrigger asChild>
                                         <span className="text-sky-400 hover:underline cursor-pointer">Tax Calculator</span>
                                     </DialogTrigger>
@@ -1400,50 +1412,11 @@ function TrueCostsSection() {
 
 export default function FinancialForecasterPage() {
 
-    const MiniMenu = () => {
-      const menuItems = [
-          { label: 'Snapshot', href: '#financial-snapshot'},
-          { label: 'Intel', href: '#package-deals' },
-          { label: 'Lifestyle', href: '#true-lifestyle' },
-          { label: 'Financial', href: '#financial-strategy-card' },
-          { label: 'Red Flags', href: '#red-flags' },
-      ];
-  
-      return (
-          <div className="flex justify-center flex-wrap gap-2 my-4">
-              {menuItems.map(item => (
-                  <Link href={item.href} key={item.href}
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
-                          {item.label}
-                  </Link>
-              ))}
-               <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
-                        Tax Calculator
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>Worldwide Salary Tax Calculator</DialogTitle>
-                         <CardDescription>
-                            Estimate your take-home pay in different countries. This tool calculates based on standard local resident tax rates.
-                        </CardDescription>
-                    </DialogHeader>
-                    <TaxCalculatorSection />
-                </DialogContent>
-              </Dialog>
-          </div>
-      )
-    }
-
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract Decoder</h1>
             
-            <MiniMenu />
-
-            <section id="true-costs-analysis" className="scroll-mt-20">
+            <section id="true-costs-analysis" className="scroll-mt-20 pt-12">
                <TrueCostsSection />
             </section>
 

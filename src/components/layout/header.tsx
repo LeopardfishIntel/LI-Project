@@ -2,15 +2,38 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Menu, User } from "lucide-react";
+import { GraduationCap, Menu, User, ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
-  { href: "/financial-forecaster", label: "Evaluate" },
+  {
+    href: "/financial-forecaster",
+    label: "Evaluate",
+    isDropdown: true,
+    subLinks: [
+      { label: "Snapshot", href: "/financial-forecaster#financial-snapshot" },
+      { label: "Intel", href: "/financial-forecaster#package-deals" },
+      { label: "Lifestyle", href: "/financial-forecaster#true-lifestyle" },
+      { label: "Financial", href: "/financial-forecaster#financial-strategy-card" },
+      { label: "Red Flags", href: "/financial-forecaster#red-flags" },
+      { label: "Tax Calculator", href: "/financial-forecaster?open_tax_calculator=true" },
+    ],
+  },
   { href: "/compare", label: "Decide" },
   { href: "/directory", label: "Directory" },
   { href: "/forum", label: "Forums" },
@@ -19,9 +42,6 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-
-  // In a real application, you would use a hook like this to get the current user:
-  // const { user, isUserLoading } = useUser();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,19 +53,37 @@ export default function Header() {
               Leopardfish Intel
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navLinks.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "transition-colors hover:text-foreground/80",
-                  pathname === href ? "text-foreground" : "text-foreground/60"
-                )}
-              >
-                {label}
-              </Link>
-            ))}
+          <nav className="flex items-center space-x-1 text-sm font-medium">
+            {navLinks.map((link) =>
+              link.isDropdown && link.subLinks ? (
+                <DropdownMenu key={link.label}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className={cn("transition-colors hover:text-foreground/80 h-auto px-4 py-2", pathname.startsWith(link.href) ? "text-foreground" : "text-foreground/60")}>
+                      {link.label}
+                      <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    {link.subLinks.map((subLink) => (
+                      <DropdownMenuItem key={subLink.label} asChild>
+                        <Link href={subLink.href}>{subLink.label}</Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "transition-colors hover:text-foreground/80 px-4 py-2 rounded-md",
+                    pathname === link.href ? "text-foreground bg-accent/50" : "text-foreground/60"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
         </div>
         
@@ -70,18 +108,43 @@ export default function Header() {
             </Link>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
-                {navLinks.map(({ href, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={cn(
-                      "transition-colors hover:text-foreground/80",
-                      pathname === href ? "text-foreground" : "text-foreground/60"
-                    )}
-                  >
-                    {label}
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  link.isDropdown && link.subLinks ? (
+                    <Collapsible key={link.label}>
+                        <CollapsibleTrigger className={cn("font-medium flex items-center justify-between w-full [&[data-state=open]>svg]:rotate-180",
+                          "transition-colors hover:text-foreground/80",
+                          pathname.startsWith(link.href) ? "text-foreground" : "text-foreground/60"
+                        )}>
+                          {link.label}
+                          <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                      <CollapsibleContent className="pl-4 flex flex-col space-y-3 pt-2">
+                        {link.subLinks.map((subLink) => (
+                           <Link
+                            key={subLink.href}
+                            href={subLink.href}
+                             className={cn(
+                              "transition-colors hover:text-foreground/80 text-foreground/60"
+                            )}
+                          >
+                            {subLink.label}
+                          </Link>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "transition-colors hover:text-foreground/80",
+                        pathname === link.href ? "text-foreground" : "text-foreground/60"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                )}
               </div>
             </div>
           </SheetContent>
