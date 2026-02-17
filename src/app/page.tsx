@@ -23,7 +23,7 @@ export default function Home() {
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
             </h1>
             <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
-              Your international teaching journey, mapped.
+              Move with certainty, not just hope.
             </p>
             <Link href="/discover">
                 <Button size="lg" className="h-12 group hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-shadow">
