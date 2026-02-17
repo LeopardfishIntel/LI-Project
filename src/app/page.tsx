@@ -38,7 +38,7 @@ export default function Home() {
                 Move with certainty, not just hope. 
                 </p>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center pb-8">
                 <Link href="/discover">
                     <Button size="lg" className="h-12 group hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-shadow">
                         Start Your Journey
