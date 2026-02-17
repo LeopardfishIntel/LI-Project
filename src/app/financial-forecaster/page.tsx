@@ -744,6 +744,19 @@ function TrueCostsSection() {
     }
   }, [searchParams]);
 
+  const availableCountries = useMemo(() => {
+    if (!schools) return [];
+    const countriesInDb = [...new Set(schools.map(school => school.country))];
+    const supportedCountries = countriesInDb.filter(c => Object.keys(countrySpecificData).includes(c));
+    return supportedCountries.sort();
+  }, [schools]);
+
+  useEffect(() => {
+    if (availableCountries.length > 0 && !availableCountries.includes(selectedCountry)) {
+      setSelectedCountry(availableCountries[0]);
+    }
+  }, [availableCountries, selectedCountry]);
+
   const conversionRates: { [key: string]: number } = {
     USD: 1, // Base currency in mock data
     GBP: 0.8,
@@ -765,19 +778,22 @@ function TrueCostsSection() {
 
   useEffect(() => {
     if (schoolsInCountry.length > 0) {
-      const ukSchoolExists = schoolsInCountry.find(s => s.id === 'acs-cobham-international-school');
-      if (selectedCountry === 'United Kingdom' && ukSchoolExists) {
-        setSelectedSchoolId('acs-cobham-international-school');
-      } else {
-        setSelectedSchoolId(schoolsInCountry[0].id);
+      if (!selectedSchoolId || !schoolsInCountry.some(s => s.id === selectedSchoolId)) {
+        const ukSchoolExists = schoolsInCountry.find(s => s.id === 'acs-cobham-international-school');
+        if (selectedCountry === 'United Kingdom' && ukSchoolExists) {
+          setSelectedSchoolId('acs-cobham-international-school');
+        } else {
+          setSelectedSchoolId(schoolsInCountry[0].id);
+        }
       }
     } else {
       setSelectedSchoolId(null);
     }
-  }, [schoolsInCountry, selectedCountry]);
+  }, [schoolsInCountry, selectedCountry, selectedSchoolId]);
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
+    setSelectedSchoolId(null); // Reset school selection when country changes
   };
 
   useEffect(() => {
@@ -1007,7 +1023,7 @@ function TrueCostsSection() {
                 <SelectValue placeholder="Select a country" />
               </SelectTrigger>
               <SelectContent>
-                {Object.keys(countrySpecificData).map(country => (
+                {availableCountries.map(country => (
                   <SelectItem key={country} value={country}>{country}</SelectItem>
                 ))}
               </SelectContent>
@@ -1453,3 +1469,5 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
+
+    
