@@ -516,8 +516,8 @@ const countrySpecificData: CountryData = {
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', percentage: "+20%" },
         socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad', percentage: "+40%" },
         currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard, averaging 0.5-2% via banks or online services. For example, making 6 transfers a year of a significant portion of your savings could easily add up to over £100-£200 in annual fees.", score: 'neutral' },
-        homeObligations: { text: "This is your home base. The tool helps you budget your UK salary against your existing UK financial commitments like mortgages or loans.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings in GBP after all UK taxes and your specified lifestyle costs are deducted.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in United Kingdom needs to cover commitments back home.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'neutral' },
         safety: {
             text: (
                 <>
@@ -542,7 +542,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral', percentage: "Baseline" },
         socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad', percentage: "+80%" },
         currency: { text: "You're paid in UAE Dirhams (AED), pegged to the USD. This provides stability. Remittance fees are very low, often a small fixed fee. For example, 6 transfers a year would likely cost less than £50 in total, maximizing what you send home.", score: 'good' },
-        homeObligations: { text: "Your tax-free salary makes it easier to cover obligations back home. The tool lets you input these to see your true disposable income.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in UAE needs to cover commitments back home.", score: 'good' },
         savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' },
         safety: {
             text: (
@@ -568,7 +568,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good', percentage: "-30%" },
         socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good', percentage: "-20%" },
         currency: { text: "You are paid in Japanese Yen (JPY), a major but sometimes volatile currency. Standard bank remittance fees can be high; using a service like Wise is recommended to minimize costs (under 1%). With bank fees being higher, 6 transfers a year could cost several hundred dollars if not managed carefully.", score: 'neutral' },
-        homeObligations: { text: "Use the tool to see how your net JPY salary stacks up against your financial commitments in your home currency after conversion.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Japan needs to cover commitments back home.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' },
         safety: {
             text: (
@@ -594,7 +594,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral', percentage: "+50%" },
         socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad', percentage: "+100%" },
         currency: { text: "You're paid in Swiss Francs (CHF), a strong, stable currency. International bank transfers can be costly (1-3%). For 6 annual transfers, this could mean paying over £500 a year in fees on a high savings amount. Choosing a low-fee provider is crucial.", score: 'good' },
-        homeObligations: { text: "High salaries can help cover home country obligations, but the high cost of living in Switzerland reduces savings potential.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Switzerland needs to cover commitments back home.", score: 'neutral' },
         savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' },
         safety: {
              text: (
@@ -620,7 +620,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', percentage: "-20%" },
         socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', percentage: "+70%" },
         currency: { text: "Payment is in Singapore Dollars (SGD), a stable regional currency. Sending money overseas is efficient with competitive fees, especially through Singapore's fintech solutions. 6 annual transfers of your savings would likely cost well under £100 with the right service.", score: 'good' },
-        homeObligations: { text: "Your net salary after tax and high living costs needs to be carefully budgeted against any financial commitments in your home country.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Singapore needs to cover commitments back home.", score: 'neutral' },
         savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' },
         safety: {
              text: (
@@ -646,7 +646,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good', percentage: "-30%" },
         socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good', percentage: "-20%" },
         currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate. Strict regulations can make sending large sums of money out of the country more complex; plan remittances carefully. Fees can be moderate. Plan for 6 annual transfers of your savings to cost a couple of hundred pounds, and be aware of regulations on large transfers.", score: 'bad' },
-        homeObligations: { text: "With housing often provided, it can be easier to manage home country financial obligations from your Korean salary.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in South Korea needs to cover commitments back home.", score: 'good' },
         savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' },
         safety: {
             text: (
@@ -672,7 +672,7 @@ const countrySpecificData: CountryData = {
         transportation: { text: "Cycling is king and very cheap. Public transport is efficient but can be expensive. Many residents do not own a car.", score: 'good', percentage: "-40%" },
         socialLeisure: { text: "Eating out and social activities are on par with other major Western European cities - relatively expensive.", score: 'bad', percentage: "+50%" },
         currency: { text: "You are paid in Euros (€). As a major world currency, it's stable. Remittance fees are low within the SEPA zone but can be higher for sending money outside of it. Using a fintech service is recommended.", score: 'good' },
-        homeObligations: { text: "The high cost of living, particularly rent, can make it challenging to cover significant financial commitments back home.", score: 'bad' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Netherlands needs to cover commitments back home.", score: 'bad' },
         savings: { text: "Savings potential is generally considered low to moderate unless you secure a high salary and benefit from the 30% ruling.", score: 'bad' },
         safety: {
              text: (
@@ -938,8 +938,8 @@ function TrueCostsSection() {
   }
 
   const homeObligationsData = { ...data.homeObligations };
-  homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments back home.`;
-  homeObligationsData.score = 'neutral';
+    homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments back home.`;
+    homeObligationsData.score = 'neutral';
 
     const getSafetyScore = (rankString: string | undefined): FeatureScore => {
         if (!rankString) return 'neutral';
@@ -953,7 +953,7 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="country-select" className="text-base font-semibold block text-center mb-2">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
@@ -1006,8 +1006,7 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer.
-                            For an accurate net salary, use the{' '}
+                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer. For an accurate net salary, use the{' '}
                             <Link href="#tax-calculator" className="text-sky-400 hover:underline">
                                 tax calculator
                             </Link>.
@@ -1029,7 +1028,7 @@ function TrueCostsSection() {
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         
-                        <div className="flex flex-col justify-between">
+                        <div className="space-y-4">
                             <div className="space-y-2">
                                 <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
                                 <div className="space-y-2 text-sm">
@@ -1091,7 +1090,7 @@ function TrueCostsSection() {
                                     </div>
                                 </div>
                             </div>
-                             <div>
+                            <div className="space-y-4">
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Monthly Package</span>
@@ -1100,7 +1099,7 @@ function TrueCostsSection() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col justify-between">
+                        <div className="space-y-4">
                              <div className="space-y-1">
                                 <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                                 <div className="space-y-1 text-sm text-muted-foreground">
@@ -1148,7 +1147,7 @@ function TrueCostsSection() {
                                     </div>
                                 </div>
                             </div>
-                            <div>
+                            <div className="space-y-4">
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Estimated Costs</span>
@@ -1164,7 +1163,6 @@ function TrueCostsSection() {
                           <p className="text-amber-400">
                               Please ensure your Family Status is correct
                           </p>
-                           <p className="text-muted-foreground text-sm mt-1">For an accurate net salary, use the tax calculator.</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
@@ -1395,11 +1393,13 @@ export default function FinancialForecasterPage() {
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract decoder</h1>
-            <p className="text-muted-foreground text-center mt-4 mb-6 max-w-3xl mx-auto">
+            <p className="text-muted-foreground text-center mt-4 max-w-3xl mx-auto">
                 Our Contract Decoder cuts through the fluff, we calculate your actual take-home pay, and map out your genuine disposable income. Focus on your real financial position and see if you’ll actually grow a savings pot or just treading water.
             </p>
             
-            <MiniMenu />
+            <div className="my-8">
+              <MiniMenu />
+            </div>
 
             <section id="true-costs-analysis" className="scroll-mt-20">
                <TrueCostsSection />
