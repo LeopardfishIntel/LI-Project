@@ -39,10 +39,10 @@ export default function Roadmap() {
   ];
 
   return (
-    <section className="w-full py-8 md:py-12 bg-background">
+    <section className="w-full pt-16 md:pt-24 pb-8 md:pb-12 bg-background">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 normal-case">Teach Overseas: Know Before You Go</h2>
-        <div className="space-y-24">
+        <div className="space-y-12">
           {steps.map((step, index) => {
             const { imageUrl, imageHint } = getImage(step.imageId);
             return (

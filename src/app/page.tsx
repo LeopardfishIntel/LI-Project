@@ -34,8 +34,8 @@ export default function Home() {
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
                 </h1>
-                <p className="max-w-3xl mx-auto text-primary-foreground text-lg md:text-2xl mb-8 [text-shadow:0_2px_6px_rgba(0,0,0,0.7)]">
-                Move with certainty, not just hope.
+                <p className="max-w-3xl mx-auto text-lg md:text-2xl mb-8 [text-shadow:0_2px_6px_rgba(0,0,0,0.7)] text-2xl">
+                Move with certainty, not just hope. 
                 </p>
                 <Link href="/discover">
                     <Button size="lg" className="h-12 group hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-shadow">
