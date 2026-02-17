@@ -20,6 +20,7 @@ import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 
 // --- Tax Calculator Code ---
@@ -1372,7 +1373,6 @@ export default function FinancialForecasterPage() {
           { label: 'Lifestyle', href: '#true-lifestyle' },
           { label: 'Financial', href: '#financial-strategy-card' },
           { label: 'Red Flags', href: '#red-flags' },
-          { label: 'Tax Calculator', href: '#tax-calculator' },
       ];
   
       return (
@@ -1383,6 +1383,16 @@ export default function FinancialForecasterPage() {
                           {item.label}
                   </Link>
               ))}
+               <Dialog>
+                <DialogTrigger asChild>
+                    <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
+                        Tax Calculator
+                    </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <TaxCalculatorSection />
+                </DialogContent>
+              </Dialog>
           </div>
       )
     }
@@ -1395,10 +1405,6 @@ export default function FinancialForecasterPage() {
 
             <section id="true-costs-analysis" className="scroll-mt-20">
                <TrueCostsSection />
-            </section>
-
-            <section id="tax-calculator" className="mt-8 scroll-mt-20">
-              <TaxCalculatorSection />
             </section>
 
         </div>
