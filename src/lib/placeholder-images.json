@@ -62,9 +62,9 @@
     },
     {
       "id": "homepage-hero",
-      "description": "An exotic beach scene with a vibrant blue sky.",
-      "imageUrl": "https://images.unsplash.com/photo-1662364371071-744d3881bf8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxleG90aWMlMjBiZWFjaHxlbnwwfHx8fDE3NzEzMjkwNTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "exotic beach"
+      "description": "An exotic beach scene with sunglasses on the sand.",
+      "imageUrl": "https://images.unsplash.com/photo-1473466676339-6141af006f8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxiZWFjaCUyMHN1bmdsYXNzZXN8ZW58MHx8fHwxNzcxMzMwMDk4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "beach sunglasses"
     }
   ]
 }
