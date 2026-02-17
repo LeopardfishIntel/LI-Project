@@ -14,6 +14,7 @@ const navLinks = [
   { href: "/compare", label: "Decide" },
   { href: "/directory", label: "Directory" },
   { href: "/forum", label: "Forums" },
+  { href: "/enquiry", label: "Enquiry" },
 ];
 
 export default function Header() {
