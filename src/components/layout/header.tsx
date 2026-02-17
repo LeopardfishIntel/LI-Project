@@ -33,15 +33,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(45 12 12)">
-                    <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                    <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                    <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                    <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                </g>
-            </svg>
+          <Link href="/" className="mr-6 flex items-center">
             <span className="hidden font-bold sm:inline-block font-headline">
               Leopardfish Intel
             </span>
@@ -96,14 +88,6 @@ export default function Header() {
               href="/"
               className="flex items-center"
             >
-              <svg viewBox="0 0 24 24" className="h-6 w-6 mr-2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g transform="rotate(45 12 12)">
-                      <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                      <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                      <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                      <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                  </g>
-              </svg>
               <span className="font-bold font-headline">Leopardfish Intel</span>
             </Link>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
@@ -149,15 +133,8 @@ export default function Header() {
             </div>
           </SheetContent>
         </Sheet>
-        <Link href="/" className="flex items-center space-x-2 md:hidden">
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g transform="rotate(45 12 12)">
-                    <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                    <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                    <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                    <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                </g>
-            </svg>
+        <Link href="/" className="flex items-center md:hidden">
+          <span className="font-bold font-headline">Leopardfish Intel</span>
         </Link>
 
 
