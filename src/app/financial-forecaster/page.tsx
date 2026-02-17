@@ -11,17 +11,18 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users } from 'lucide-react';
+import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users, Loader2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
-import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 
 // --- Tax Calculator Code ---
@@ -715,8 +716,15 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: { icon: 
 );
 
 function TrueCostsSection() {
+  const firestore = useFirestore();
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
+  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
+
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
-  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>('acs-cobham-international-school');
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState('single');
   const [currency, setCurrency] = useState('GBP');
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
@@ -744,19 +752,33 @@ function TrueCostsSection() {
   const usdRate = conversionRates[currency];
 
   const convert = (amount: number) => amount * usdRate;
+  
+  const schoolsInCountry = useMemo(() => {
+    if (!schools) return [];
+    return schools.filter(school => school.country === selectedCountry);
+    }, [schools, selectedCountry]);
+
+  const selectedSchool = useMemo(() => {
+      if (!selectedSchoolId || !schools) return null;
+      return schools.find(s => s.id === selectedSchoolId);
+  }, [selectedSchoolId, schools]);
+
+  useEffect(() => {
+    if (schoolsInCountry.length > 0) {
+      const ukSchoolExists = schoolsInCountry.find(s => s.id === 'acs-cobham-international-school');
+      if (selectedCountry === 'United Kingdom' && ukSchoolExists) {
+        setSelectedSchoolId('acs-cobham-international-school');
+      } else {
+        setSelectedSchoolId(schoolsInCountry[0].id);
+      }
+    } else {
+      setSelectedSchoolId(null);
+    }
+  }, [schoolsInCountry, selectedCountry]);
 
   const handleCountryChange = (country: string) => {
     setSelectedCountry(country);
-    const firstSchoolInCountry = schools.find(s => s.country === country);
-    if (country === 'United Kingdom') {
-      setSelectedSchoolId('acs-cobham-international-school');
-    } else {
-      setSelectedSchoolId(firstSchoolInCountry?.id || null);
-    }
   };
-
-  const schoolsInCountry = schools.filter(school => school.country === selectedCountry);
-  const selectedSchool = selectedSchoolId ? schools.find(s => s.id === selectedSchoolId) : null;
 
   useEffect(() => {
     setOfferedNetMonthlySalary('');
@@ -790,7 +812,7 @@ function TrueCostsSection() {
     children = 2;
   }
 
-  const calculateTotal = (school: School | null) => {
+  const calculateTotal = (school: School | null | undefined) => {
     if (!school) return 0;
     const { costOfLiving, intel } = school;
     const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
@@ -966,6 +988,14 @@ function TrueCostsSection() {
     };
 
     lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
+    
+    if (isLoadingSchools) {
+        return (
+          <div className="flex justify-center items-center h-96">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        );
+    }
 
   return (
     <div className="max-w-5xl mx-auto">

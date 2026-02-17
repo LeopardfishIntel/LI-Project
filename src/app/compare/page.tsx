@@ -8,13 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { schools, teacherProfile } from '@/lib/mock-data';
+import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info } from 'lucide-react';
+import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
-import { useFirestore } from '@/firebase';
-import { doc, increment } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, increment, collection } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
@@ -100,36 +100,40 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
 
 
 export default function ComparePage() {
-    const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>(() => {
-        // Prioritize schools from preferred countries
-        const preferredSchools = schools
-            .filter(school => teacherProfile.preferredCountries.includes(school.country));
-
-        // Get other schools to fill up the slots
-        const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
-
-        // Combine and ensure no duplicates, then take the top 3
-        const initialSchoolIds = [...new Set([...preferredSchools, ...otherSchools].map(s => s.id))].slice(0, 3);
-        
-        // Fallback if we don't have 3 schools for some reason
-        if (initialSchoolIds.length < 3) {
-            return schools.slice(0, 3).map(s => s.id);
-        }
-
-        return initialSchoolIds;
-    });
+    const firestore = useFirestore();
+    const schoolsQuery = useMemoFirebase(
+        () => (firestore ? collection(firestore, 'schools') : null),
+        [firestore]
+    );
+    const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
+    
+    const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>([]);
     const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
     
-    const firestore = useFirestore();
-
     useEffect(() => {
         if (firestore) {
             const counterRef = doc(firestore, 'app_metrics', 'page_views');
             setDocumentNonBlocking(counterRef, { comparisons_made: increment(1) }, { merge: true });
         }
     }, [firestore]);
+    
+    useEffect(() => {
+        if (schools && schools.length > 0 && selectedSchoolIds.length === 0) {
+            const preferredSchools = schools
+                .filter(school => teacherProfile.preferredCountries.includes(school.country));
+            const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
+            const initialSchoolIds = [...new Set([...preferredSchools, ...otherSchools].map(s => s.id))].slice(0, 3);
+            
+            if (initialSchoolIds.length > 0) {
+                setSelectedSchoolIds(initialSchoolIds);
+            }
+        }
+    }, [schools, selectedSchoolIds.length]);
 
-    const selectedSchools = selectedSchoolIds.map(id => schools.find(s => s.id === id)!);
+    const selectedSchools = useMemo(() => {
+        if (!schools || selectedSchoolIds.length === 0) return [];
+        return selectedSchoolIds.map(id => schools.find(s => s.id === id)).filter(Boolean) as School[];
+    }, [selectedSchoolIds, schools]);
 
     const handleSelectSchool = (index: number, newSchoolId: string) => {
         const currentlySelectedIds = [...selectedSchoolIds];
@@ -173,6 +177,7 @@ export default function ComparePage() {
     };
     
     const compareThree = (metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] => {
+        if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
         const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
         
         if (values.every(v => v === values[0])) return ['neutral', 'neutral', 'neutral'];
@@ -226,7 +231,7 @@ export default function ComparePage() {
                             <SelectValue placeholder="Select a school" />
                         </SelectTrigger>
                         <SelectContent>
-                            {schools.map(s => (
+                            {schools?.map(s => (
                                 <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
                                     {s.name}
                                 </SelectItem>
@@ -300,6 +305,14 @@ export default function ComparePage() {
         );
     };
 
+    if (isLoadingSchools || !schools) {
+        return (
+          <div className="container mx-auto flex justify-center items-center h-screen">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        );
+    }
+
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">3. Compare Schools</h1>
@@ -325,5 +338,3 @@ export default function ComparePage() {
         </div>
     );
 }
-
-    

@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
 import { Building, Globe, Users, BarChart3 } from 'lucide-react';
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { schools } from '@/lib/mock-data';
+import { useFirestore, useDoc, useMemoFirebase, useCollection } from '@/firebase';
+import { doc, collection } from 'firebase/firestore';
+import type { School } from '@/lib/types';
 
 const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val: number) => string; }) => {
   const [count, setCount] = useState(0);
@@ -67,13 +68,18 @@ export function KeyFactsSection() {
       if (!firestore) return null;
       return doc(firestore, 'app_metrics', 'page_views');
   }, [firestore]);
+  
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
 
   const { data: metrics } = useDoc<{ comparisons_made: number }>(metricsRef);
+  const { data: schools } = useCollection<School>(schoolsQuery);
 
   const comparisonsMade = metrics?.comparisons_made || 0;
-
-  const schoolCount = schools.length;
-  const countryCount = new Set(schools.map(school => school.country)).size;
+  const schoolCount = schools?.length || 0;
+  const countryCount = schools ? new Set(schools.map(school => school.country)).size : 0;
   // There is only one teacher profile in the mock data.
   const teacherCount = 101;
 

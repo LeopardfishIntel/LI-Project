@@ -215,17 +215,3 @@ export const schools: School[] = [
     costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
   }
 ];
-
-export const spotlightSchools = schools.filter(school => school.spotlight);
-
-export const getSchoolById = (id: string) => schools.find(school => school.id === id);
-
-export const searchSchools = (query: string) => {
-  if (!query) return schools;
-  const lowerCaseQuery = query.toLowerCase();
-  return schools.filter(school => 
-    school.name.toLowerCase().includes(lowerCaseQuery) ||
-    school.location.toLowerCase().includes(lowerCaseQuery) ||
-    school.country.toLowerCase().includes(lowerCaseQuery)
-  );
-};

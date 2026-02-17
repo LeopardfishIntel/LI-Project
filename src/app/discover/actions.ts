@@ -1,7 +1,7 @@
+
 "use server";
 
 import { findYourNook, FindYourNookInput, FindYourNookOutput } from "@/ai/flows/find-your-niche-flow";
-import { schools } from "@/lib/mock-data";
 
 export type NookFinderState = {
   result: FindYourNookOutput | null;
@@ -29,6 +29,7 @@ export async function findNookAction(
   const preferences = formData.getAll("preferences").join(", ");
   const curriculums = formData.getAll("curriculum").join(", ");
   const experienceYears = formData.get("experience");
+  const availableSchoolsJson = formData.get("availableSchools") as string | "[]";
 
   const input: FindYourNookInput = {
     age: Number(formData.get("age")),
@@ -41,7 +42,7 @@ export async function findNookAction(
     preferences: preferences,
     preferredCurriculums: curriculums,
     goal: String(formData.get("goal")) as "saving" | "adventure" | "growth" | "balanced",
-    availableSchools: JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))),
+    availableSchools: availableSchoolsJson,
     familyStatus: String(formData.get("familyStatus")),
   };
 

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState } from "react";
@@ -14,6 +15,9 @@ import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import type { School } from '@/lib/types';
+import { collection } from 'firebase/firestore';
 
 const initialState: NookFinderState = {
   result: null,
@@ -44,6 +48,13 @@ export default function FindYourNookPage() {
   const [state, formAction] = useActionState(findNookAction, initialState);
   const [otherLicense, setOtherLicense] = useState(false);
 
+  const firestore = useFirestore();
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
+  const { data: schools } = useCollection<School>(schoolsQuery);
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
@@ -52,6 +63,11 @@ export default function FindYourNookPage() {
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
+            <input 
+                type="hidden" 
+                name="availableSchools" 
+                value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
+            />
             <CardHeader>
               <CardTitle>Your Teacher Profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
