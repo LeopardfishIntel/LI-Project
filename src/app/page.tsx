@@ -10,14 +10,15 @@ export default function Home() {
       <section className="relative w-full">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1473187983305-f81333c55b93?q=80&w=2070&auto=format&fit=crop"
             alt="Beautiful beach with blue sky"
             fill
             className="object-cover"
+            priority
           />
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-        <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[35.2vh] py-16">
+        <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[40vh] py-16">
           <div className="flex-grow flex flex-col items-center justify-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
