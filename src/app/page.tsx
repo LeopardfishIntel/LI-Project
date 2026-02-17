@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       <section
-        className="relative w-full h-[57.8vh] overflow-hidden"
+        className="relative w-full h-[69.36vh] overflow-hidden"
         aria-label={description}
       >
         <img
@@ -34,7 +34,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
                 </h1>
-                <p className="max-w-3xl mx-auto text-lg md:text-2xl mb-8 [text-shadow:0_2px_6px_rgba(0,0,0,0.7)] text-2xl">
+                <p className="max-w-3xl mx-auto text-2xl md:text-3xl mb-8 [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
                 Move with certainty, not just hope. 
                 </p>
                 <Link href="/discover">
@@ -46,8 +46,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 md:px-6 py-12">
-        <KeyFactsSection />
+      <section className="w-full py-8 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+            <KeyFactsSection />
+        </div>
       </section>
 
       <Roadmap />
