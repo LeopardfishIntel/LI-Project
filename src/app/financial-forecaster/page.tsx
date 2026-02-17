@@ -1091,7 +1091,7 @@ function TrueCostsSection() {
                         
                         <div className="space-y-4 flex flex-col justify-between">
                             <div className="space-y-2">
-                                <h3 className="font-semibold text-lg text-green-400 border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
+                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
@@ -1176,7 +1176,7 @@ function TrueCostsSection() {
 
                         <div className="space-y-4 flex flex-col justify-between">
                              <div className="space-y-1">
-                                <h3 className="font-semibold text-lg text-red-400 border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                                 <div className="space-y-1 text-sm text-muted-foreground">
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
