@@ -31,13 +31,12 @@ export default function Home() {
           data-ai-hint={imageHint}
           priority
         />
-        <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
             <div className="flex-grow flex flex-col items-center justify-center">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
                 </h1>
-                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
+                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-6 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
                 Move with certainty, not just hope.
                 </p>
                 <Link href="/discover">
