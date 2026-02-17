@@ -20,7 +20,7 @@ import { schools } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 
 // --- Tax Calculator Code ---
@@ -722,6 +722,7 @@ function TrueCostsSection() {
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
   const [utilitiesAllowance, setUtilitiesAllowance] = useState('');
   const [partnerIncome, setPartnerIncome] = useState('');
+  const [gratuityBonus, setGratuityBonus] = useState('');
   const [contingency, setContingency] = useState('');
   const data = countrySpecificData[selectedCountry];
 
@@ -750,6 +751,8 @@ function TrueCostsSection() {
   useEffect(() => {
     setOfferedNetMonthlySalary('');
     setUtilitiesAllowance('');
+    setPartnerIncome('');
+    setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
         setOtherMonthlyBenefits(String(Math.round(selectedSchool.costOfLiving.apartment)));
     } else {
@@ -827,16 +830,18 @@ function TrueCostsSection() {
   const numericUtilitiesAllowance = parseFloat(utilitiesAllowance) || 0;
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
   const numericContingency = parseFloat(contingency) || 0;
+  const numericGratuityBonus = parseFloat(gratuityBonus) || 0;
 
   const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
   const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
   const utilitiesAllowanceInUSD = numericUtilitiesAllowance / usdRate;
   const partnerIncomeInUSD = numericPartnerIncome / usdRate;
   const contingencyInUSD = numericContingency / usdRate;
+  const gratuityBonusInUSD = numericGratuityBonus / usdRate;
 
   const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
 
-  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD;
+  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
   const totalMonthlyCosts = (selectedSchool ? calculateTotal(selectedSchool) : 0) + contingencyInUSD;
   const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
@@ -1083,6 +1088,20 @@ function TrueCostsSection() {
                                             placeholder="0"
                                             value={partnerIncome}
                                             onChange={(e) => setPartnerIncome(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="gratuity-bonus" className="flex items-center text-muted-foreground">
+                                            <Award className="w-4 h-4 mr-2 text-yellow-500" /> Gratuity / Bonus
+                                        </Label>
+                                        <Input
+                                            id="gratuity-bonus"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={gratuityBonus}
+                                            onChange={(e) => setGratuityBonus(e.target.value)}
                                             className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
                                         />
                                     </div>
@@ -1385,11 +1404,17 @@ export default function FinancialForecasterPage() {
               ))}
                <Dialog>
                 <DialogTrigger asChild>
-                    <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
+                    <Button className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
                         Tax Calculator
-                    </button>
+                    </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Worldwide Salary Tax Calculator</DialogTitle>
+                         <CardDescription>
+                            Estimate your take-home pay in different countries. This tool calculates based on standard local resident tax rates.
+                        </CardDescription>
+                    </DialogHeader>
                     <TaxCalculatorSection />
                 </DialogContent>
               </Dialog>
