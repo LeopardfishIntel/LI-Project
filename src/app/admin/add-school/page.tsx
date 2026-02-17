@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -13,6 +14,7 @@ import {
 import { doc, collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
 import Link from 'next/link';
+import { getEnrichedSchoolData } from './actions';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -49,6 +51,7 @@ import {
   ShieldOff,
   ShieldAlert,
   ArrowLeft,
+  Sparkles,
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
@@ -58,6 +61,8 @@ const scoreSchema = z.enum(['good', 'neutral', 'bad']);
 
 const schoolSchema = z.object({
   name: z.string().min(3, 'Name is required'),
+  description: z.string().optional(),
+  websiteUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   location: z.string().min(2, 'Location is required'),
   country: z.string().min(2, 'Country is required'),
   imageUrl: z.string().url('Must be a valid URL'),
@@ -109,11 +114,14 @@ export default function AddSchoolPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
+  const [isEnriching, setIsEnriching] = useState(false);
 
   const form = useForm<z.infer<typeof schoolSchema>>({
     resolver: zodResolver(schoolSchema),
     defaultValues: {
         name: '',
+        description: '',
+        websiteUrl: '',
         location: '',
         country: '',
         imageUrl: '',
@@ -150,6 +158,37 @@ export default function AddSchoolPage() {
     },
   });
 
+  const schoolName = form.watch('name');
+  const schoolLocation = form.watch('location');
+  const schoolCountry = form.watch('country');
+  const canEnrich = schoolName && schoolLocation && schoolCountry;
+
+  const handleEnrich = async () => {
+    if (!canEnrich) return;
+    setIsEnriching(true);
+    const { data, error } = await getEnrichedSchoolData({
+        name: schoolName,
+        location: schoolLocation,
+        country: schoolCountry,
+    });
+    setIsEnriching(false);
+
+    if (error) {
+        toast({ variant: 'destructive', title: 'AI Enrichment Failed', description: error });
+    }
+
+    if (data) {
+        form.setValue('description', data.description, { shouldValidate: true });
+        form.setValue('websiteUrl', data.websiteUrl, { shouldValidate: true });
+        form.setValue('intel.curriculum', data.curriculum, { shouldValidate: true });
+        form.setValue('intel.accreditation', data.accreditation, { shouldValidate: true });
+        if (data.studentTeacherRatio) form.setValue('intel.studentTeacherRatio', data.studentTeacherRatio, { shouldValidate: true });
+        if (data.classSize) form.setValue('intel.classSize', data.classSize, { shouldValidate: true });
+        if (data.technologyEcosystem) form.setValue('intel.technologyEcosystem', data.technologyEcosystem, { shouldValidate: true });
+        toast({ title: 'AI Enrichment Complete', description: 'Form fields have been populated.' });
+    }
+  };
+
   const adminRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
     [firestore, user]
@@ -174,6 +213,7 @@ export default function AddSchoolPage() {
     const newSchool: School = {
       id: schoolId,
       ...values,
+      description: values.description || '',
     };
 
     setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
@@ -229,7 +269,13 @@ export default function AddSchoolPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Basic Information</CardTitle>
-                <CardDescription>Core details about the school.</CardDescription>
+                <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich the data.</CardDescription>
+                 <div className="pt-2">
+                    <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching}>
+                        {isEnriching ? <Loader2 className="mr-2 animate-spin" /> : <Sparkles className="mr-2" />}
+                        Enrich with AI
+                    </Button>
+                </div>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="name" render={({ field }) => (
@@ -250,6 +296,20 @@ export default function AddSchoolPage() {
                   <FormItem>
                     <FormLabel>Country</FormLabel>
                     <FormControl><Input placeholder="e.g., Japan" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                 <FormField control={form.control} name="description" render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Description</FormLabel>
+                    <FormControl><Textarea placeholder="A brief description of the school..." {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="websiteUrl" render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Website URL</FormLabel>
+                    <FormControl><Input placeholder="https://..." {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />

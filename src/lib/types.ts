@@ -16,6 +16,8 @@ export type TeacherProfile = {
 export type School = {
   id: string;
   name: string;
+  description: string;
+  websiteUrl?: string;
   location: string;
   country: string;
   imageUrl: string;
@@ -50,4 +52,3 @@ export type School = {
     uncoveredMedical: number;
   };
 };
-

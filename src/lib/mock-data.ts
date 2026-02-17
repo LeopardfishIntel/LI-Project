@@ -28,6 +28,8 @@ export const schools: School[] = [
   {
     id: 'tokyo-international-school',
     name: 'Tokyo International School',
+    description: 'A leading IB World School in Tokyo, fostering a challenging and supportive environment where students are empowered to be informed, compassionate, and global citizens.',
+    websiteUrl: 'https://www.tokyois.com',
     location: 'Tokyo',
     country: 'Japan',
     ...getImage('tokyo-international-school'),
@@ -54,6 +56,8 @@ export const schools: School[] = [
   {
     id: 'dubai-american-academy',
     name: 'Dubai American Academy',
+    description: 'An American curriculum school in Dubai offering a holistic education that balances academic excellence with personal growth and development.',
+    websiteUrl: 'https://www.gemsaa-dubai.com/',
     location: 'Dubai',
     country: 'UAE',
     ...getImage('dubai-american-academy'),
@@ -80,6 +84,8 @@ export const schools: School[] = [
   {
     id: 'zurich-international-school',
     name: 'Zurich International School',
+    description: 'A prestigious day school in Zurich offering a comprehensive curriculum for students aged 3 to 18, focusing on academic rigor and personal development in an international context.',
+    websiteUrl: 'https://www.zis.ch/',
     location: 'Zurich',
     country: 'Switzerland',
     ...getImage('zurich-international-school'),
@@ -106,6 +112,8 @@ export const schools: School[] = [
   {
     id: 'singapore-american-school',
     name: 'Singapore American School',
+    description: 'One of the world\'s largest single-campus international schools, offering an exemplary American educational experience with a global perspective.',
+    websiteUrl: 'https://www.sas.edu.sg/',
     location: 'Singapore',
     country: 'Singapore',
     ...getImage('singapore-american-school'),
@@ -130,6 +138,8 @@ export const schools: School[] = [
   {
     id: 'seoul-foreign-school',
     name: 'Seoul Foreign School',
+    description: 'With a history dating back to 1912, Seoul Foreign School offers a world-class international education within a caring Christian environment.',
+    websiteUrl: 'https://www.seoulforeign.org/',
     location: 'Seoul',
     country: 'South Korea',
     ...getImage('seoul-foreign-school'),
@@ -154,6 +164,8 @@ export const schools: School[] = [
   {
     id: 'acs-cobham-international-school',
     name: 'ACS Cobham International School',
+    description: 'Located in the Surrey countryside, ACS Cobham provides a leading international education to students aged 2 to 18, with both IB and AP pathways.',
+    websiteUrl: 'https://www.acs-schools.com/cobham',
     location: 'Cobham',
     country: 'United Kingdom',
     ...getImage('acs-cobham-international-school'),
@@ -179,6 +191,8 @@ export const schools: School[] = [
   {
     id: 'amsterdam-international-school',
     name: 'Amsterdam International School',
+    description: 'A diverse and inclusive school in Amsterdam offering the full IB continuum, committed to fostering a community of lifelong learners.',
+    websiteUrl: 'https://www.isa.nl/',
     location: 'Amsterdam',
     country: 'Netherlands',
     ...getImage('amsterdam-international-school'),

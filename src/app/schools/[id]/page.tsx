@@ -6,6 +6,7 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { School } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Star,
   MapPin,
@@ -24,6 +25,7 @@ import {
   Clock,
   Laptop,
   Loader2,
+  ExternalLink,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -201,16 +203,29 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
         <div className="absolute bottom-0 left-0 p-4 md:p-8 container mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-primary-foreground">
-            {school.name}
-          </h1>
-          <div className="flex items-center gap-4 mt-2 text-muted-foreground">
-            <div className="flex items-center text-lg">
-              <MapPin className="w-5 h-5 mr-2" />
-              <span>
-                {school.location}, {school.country}
-              </span>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-primary-foreground">
+                {school.name}
+              </h1>
+              <div className="flex items-center gap-4 mt-2 text-muted-foreground">
+                <div className="flex items-center text-lg">
+                  <MapPin className="w-5 h-5 mr-2" />
+                  <span>
+                    {school.location}, {school.country}
+                  </span>
+                </div>
+              </div>
             </div>
+            {school.websiteUrl && (
+              <div className="mt-4 md:mt-0">
+                <Button asChild variant="outline">
+                  <a href={school.websiteUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="mr-2 h-4 w-4" /> Visit Website
+                  </a>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -218,7 +233,17 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            {/* Intel Section */}
+            {school.description && (
+                <Card className="bg-card/70 backdrop-blur-sm border-border">
+                <CardHeader>
+                    <CardTitle>About {school.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">{school.description}</p>
+                </CardContent>
+                </Card>
+            )}
+            
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
                 <CardTitle>Core Intel</CardTitle>

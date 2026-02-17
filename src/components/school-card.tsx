@@ -58,6 +58,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <MapPin className="w-4 h-4 mr-1" />
           <span>{school.location}, {school.country}</span>
         </div>
+        <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{school.description}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="outline" className={cn(scoreColorClasses[school.intel.salary.score])}>
             Salary: {school.intel.salary.value}
