@@ -68,6 +68,7 @@ Instructions for your response:
 1.  **Analysis and Recommendation:** This should be for the 'reasoning' field in the 'bestFit' output.
     -   Start with a high-level summary comparing the schools. Focus on the main trade-offs for me (e.g., "School A offers you a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
     -   Then, based on my profile, explain why you are recommending one specific school as the best fit.
+    -   When mentioning my experience, please use descriptive British English (e.g., 'a teacher with considerable experience') rather than quoting the exact number of years.
     -   Conclude your reasoning with a clear reminder for me to verify all data and metrics directly with the schools, as packages and benefits can change.
 2.  **Individual Breakdowns:** For each school, provide a brief, objective summary for the 'schoolBreakdowns' output, derived directly from the data provided.
 `,

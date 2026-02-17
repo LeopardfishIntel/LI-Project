@@ -72,7 +72,7 @@ const findYourNookPrompt = ai.definePrompt({
   output: { schema: FindYourNookOutputSchema },
   prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. Consider their preferred regions and curriculums strongly when making recommendations. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to your 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
 
-Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with your qualifications, experience, age, specific preferences, primary goal, and familyStatus. Do not recommend your current location.
+Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with your qualifications, experience, age, specific preferences, primary goal, and familyStatus. Do not recommend your current location. When referring to my experience, please use descriptive British English (e.g., 'a teacher with considerable experience') rather than quoting the exact number of years.
 
 You can use your current salary as a benchmark for what might be an attractive offer, but do not make it the primary factor unless your goal is 'saving'.
 
