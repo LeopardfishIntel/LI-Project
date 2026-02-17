@@ -185,6 +185,19 @@ export default function AddSchoolPage() {
         if (data.studentTeacherRatio) form.setValue('intel.studentTeacherRatio', data.studentTeacherRatio, { shouldValidate: true });
         if (data.classSize) form.setValue('intel.classSize', data.classSize, { shouldValidate: true });
         if (data.technologyEcosystem) form.setValue('intel.technologyEcosystem', data.technologyEcosystem, { shouldValidate: true });
+
+        if (data.costOfLiving) {
+            form.setValue('costOfLiving.apartment', data.costOfLiving.apartment, { shouldValidate: true });
+            form.setValue('costOfLiving.food', data.costOfLiving.food, { shouldValidate: true });
+            form.setValue('costOfLiving.transport', data.costOfLiving.transport, { shouldValidate: true });
+            form.setValue('costOfLiving.utilities', data.costOfLiving.utilities, { shouldValidate: true });
+            form.setValue('costOfLiving.internet', data.costOfLiving.internet, { shouldValidate: true });
+            form.setValue('costOfLiving.mobile', data.costOfLiving.mobile, { shouldValidate: true });
+            form.setValue('costOfLiving.diningSocial', data.costOfLiving.diningSocial, { shouldValidate: true });
+            if (data.costOfLiving.vehicleInsuranceMaint) form.setValue('costOfLiving.vehicleInsuranceMaint', data.costOfLiving.vehicleInsuranceMaint, { shouldValidate: true });
+            if (data.costOfLiving.uncoveredMedical) form.setValue('costOfLiving.uncoveredMedical', data.costOfLiving.uncoveredMedical, { shouldValidate: true });
+        }
+        
         toast({ title: 'AI Enrichment Complete', description: 'Form fields have been populated.' });
     }
   };

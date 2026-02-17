@@ -15,7 +15,7 @@ const EnrichSchoolDataInputSchema = z.object({
   location: z.string().describe('The city where the school is located.'),
   country: z.string().describe('The country where the school is located.'),
 });
-export type EnrichSchoolDataInput = z.infer<typeof EnrichSchoolDataInputSchema>;
+type EnrichSchoolDataInput = z.infer<typeof EnrichSchoolDataInputSchema>;
 
 const EnrichSchoolDataOutputSchema = z.object({
     description: z.string().describe("A brief, engaging description of the school, suitable for a directory listing."),
@@ -25,6 +25,17 @@ const EnrichSchoolDataOutputSchema = z.object({
     studentTeacherRatio: z.string().describe("The student-to-teacher ratio, if available (e.g., '10:1').").optional(),
     classSize: z.coerce.number().describe("The average class size.").optional(),
     technologyEcosystem: z.string().describe("A brief summary of the school's technology integration (e.g., '1:1 iPads K-12', 'Google Workspace for Education').").optional(),
+    costOfLiving: z.object({
+        apartment: z.coerce.number().describe("Estimated monthly rent for a 1-2 bedroom apartment in the city center, in USD."),
+        food: z.coerce.number().describe("Estimated monthly grocery cost for a single person, in USD."),
+        transport: z.coerce.number().describe("Estimated monthly cost for public transport, in USD."),
+        utilities: z.coerce.number().describe("Estimated monthly cost for basic utilities (electricity, heating, cooling, water, garbage), in USD."),
+        internet: z.coerce.number().describe("Estimated monthly cost for internet service, in USD."),
+        mobile: z.coerce.number().describe("Estimated monthly cost for a mobile phone plan, in USD."),
+        diningSocial: z.coerce.number().describe("Estimated monthly cost for dining out and social activities for a single person, in USD."),
+        vehicleInsuranceMaint: z.coerce.number().describe("Estimated monthly cost for vehicle maintenance and insurance (if applicable), in USD.").optional(),
+        uncoveredMedical: z.coerce.number().describe("Estimated monthly cost for uncovered medical expenses (e.g., dental), in USD.").optional(),
+    }).describe("Estimated monthly cost of living data for the school's location, in USD."),
 });
 export type EnrichSchoolDataOutput = z.infer<typeof EnrichSchoolDataOutputSchema>;
 
@@ -38,12 +49,14 @@ const enrichSchoolDataPrompt = ai.definePrompt({
   name: 'enrichSchoolDataPrompt',
   input: {schema: EnrichSchoolDataInputSchema},
   output: {schema: EnrichSchoolDataOutputSchema},
-  prompt: `You are an expert education researcher. Your task is to find publicly available information for the following school and return it in the specified format.
+  prompt: `You are an expert education researcher. Your task is to find publicly available information for the following school and its location, and return it in the specified format.
 
 School Name: {{{name}}}
 Location: {{{location}}}, {{{country}}}
 
 Please research online and provide the following details. If a specific piece of information cannot be found, omit it from your response for optional fields.
+
+School Details:
 - A brief, engaging description of the school.
 - The official website URL.
 - The primary curriculum.
@@ -51,6 +64,17 @@ Please research online and provide the following details. If a specific piece of
 - Student-teacher ratio (if available).
 - Average class size (if available).
 - A summary of their technology ecosystem (if available).
+
+Cost of Living Details (Monthly estimates in USD for {{{location}}}):
+- Monthly rent for a 1-2 bedroom apartment.
+- Monthly grocery cost for a single person.
+- Monthly public transport pass cost.
+- Monthly cost for basic utilities (electricity, water, etc.).
+- Monthly internet cost.
+- Monthly mobile plan cost.
+- Monthly cost for dining out and social activities.
+- Monthly vehicle maintenance/insurance (if applicable).
+- Monthly uncovered medical expenses (e.g., dental).
 `,
 });
 
