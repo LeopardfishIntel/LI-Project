@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   useUser,
   useFirestore,
@@ -26,6 +27,7 @@ import {
   ShieldAlert,
   Download,
   Upload,
+  Table as TableIcon,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -392,6 +394,22 @@ export default function SeedDataPage() {
                  <p className="text-xs text-muted-foreground pt-2">
                   This will update or create schools based on the IDs in your JSON file. This action is non-destructive for other documents.
                 </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border">
+              <CardHeader>
+                <CardTitle>View Data Table</CardTitle>
+                <CardDescription>
+                  View all school data in a tabular format.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button asChild variant="outline">
+                  <Link href="/admin/data-table">
+                    <TableIcon className="mr-2" /> View Data Table
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
 
