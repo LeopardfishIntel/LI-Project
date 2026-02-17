@@ -243,11 +243,11 @@ service cloud.firestore {
     // =====================================================================
 
     /**
-     * @description Manages admin user roles. Readable and writable only by other admins.
+     * @description Manages admin user roles. Readable by owner or other admins. Writable only by admins.
      * @path /roles_admin/{userId}
-     * @allow (any) An existing admin granting or revoking another user's admin role.
-     * @deny (any) A non-admin attempting to read the admin list or grant themselves a role.
-     * @principle Secures the role-management system itself, preventing privilege escalation.
+     * @allow (get) The user themselves or any admin can read this role document.
+     * @deny (any) A non-admin attempting to grant roles.
+     * @principle Secures the role-management system itself, preventing privilege escalation, while allowing users to check their own status.
      */
     match /roles_admin/{userId} {
       allow get: if isOwner(userId) || isAdmin();

@@ -18,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Loader2, ShieldCheck, ShieldOff } from 'lucide-react';
+import { Loader2, ShieldCheck, ShieldOff, ShieldAlert } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
@@ -125,6 +125,13 @@ export default function SeedDataPage() {
                       To seed the database, you need to be an administrator. To
                       grant yourself admin rights, follow these steps:
                     </p>
+                    <Alert variant="destructive" className="text-left">
+                      <ShieldAlert className="h-4 w-4" />
+                      <AlertTitle>Important!</AlertTitle>
+                      <AlertDescription>
+                        The collection name must be exactly <code className="bg-primary/20 text-primary-foreground p-1 rounded">roles_admin</code>. A common mistake is to use <code className="bg-red-900 text-white p-1 rounded">admin_roles</code>.
+                      </AlertDescription>
+                    </Alert>
                     <ol className="list-decimal list-inside space-y-2">
                       <li>
                         Go to your{' '}
