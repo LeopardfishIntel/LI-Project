@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -287,7 +286,6 @@ export default function ComparePage() {
                                 value={school.intel.healthInsurance} 
                                 result={'neutral'} 
                                 icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
-                                link={{ href: "/forum/health-insurance", ariaLabel: "Learn more about health insurance tiers" }}
                             />
                         </div>
                          <div className="pt-4">

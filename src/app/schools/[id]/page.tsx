@@ -101,11 +101,6 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                                             <p className={cn("text-lg", item.score && scoreColorClasses[item.score])}>
                                                 {item.value.toString()}
                                             </p>
-                                            {item.key === 'healthInsurance' && (
-                                                <Link href="/forum/health-insurance" aria-label="Learn more about health insurance tiers">
-                                                    <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
-                                                </Link>
-                                            )}
                                         </div>
                                     </div>
                                 </li>
