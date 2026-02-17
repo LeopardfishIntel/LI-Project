@@ -99,7 +99,7 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full py-4 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
+    <div className="w-full py-2 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {stats.map((stat, index) => (
           <div key={index} className="flex flex-col items-center">

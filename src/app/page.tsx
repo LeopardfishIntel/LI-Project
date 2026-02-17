@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       <section
-        className="relative w-full h-[68vh] overflow-hidden"
+        className="relative w-full h-[57.8vh] overflow-hidden"
         aria-label={description}
       >
         <img
@@ -34,7 +34,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
                 </h1>
-                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-6 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
+                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-4 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
                 Move with certainty, not just hope.
                 </p>
                 <Link href="/discover">
@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+      <section className="container mx-auto px-4 md:px-6 py-8">
         <KeyFactsSection />
       </section>
 
