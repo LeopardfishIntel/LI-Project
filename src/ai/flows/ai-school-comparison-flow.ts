@@ -17,7 +17,7 @@ const SchoolDataSchema = z.object({
   coreSchoolData: z
     .string()
     .describe(
-      'Key data points about the school (salary, housing, savings, etc.) in a structured format.'
+      'Key data points about the school (salary, housing, savings, benefits, non-contact time, tech ecosystem, etc.) in a structured format.'
     ),
 });
 
@@ -58,9 +58,9 @@ const comparisonPrompt = ai.definePrompt({
   name: 'aiSchoolComparisonPrompt',
   input: {schema: AiSchoolComparisonInputSchema},
   output: {schema: AiSchoolComparisonOutputSchema},
-  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data. You must also recommend the best fit for you based on your profile.
+  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data. You must also recommend the best fit for me based on my profile.
 
-Your Profile:
+My Profile:
 {{{teacherProfile}}}
 
 Schools to Compare:
@@ -71,7 +71,7 @@ Schools to Compare:
 
 Instructions:
 1.  **Overall Summary:** Write a high-level summary that compares the schools. Focus on the main trade-offs (e.g., "School A offers a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
-2.  **Best Fit Recommendation:** Based on your provided profile, identify which school is the best fit and provide clear, actionable reasoning.
+2.  **Best Fit Recommendation:** Based on my provided profile, identify which school is the best fit and provide clear, actionable reasoning.
 3.  **Individual Breakdowns:** For each school, provide a brief summary. These should be directly derived from the data provided.
 `,
 });

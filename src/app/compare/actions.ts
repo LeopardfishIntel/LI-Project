@@ -16,6 +16,9 @@ export async function getSchoolComparisonInsights(schools: School[]) {
                 curriculum: school.intel.curriculum,
                 studentTeacherRatio: school.intel.studentTeacherRatio,
                 classSize: school.intel.classSize,
+                benefitsSummary: school.intel.benefitsSummary,
+                nonContactTime: school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : 'N/A',
+                technologyEcosystem: school.intel.technologyEcosystem,
             });
 
             return { schoolName: school.name, coreSchoolData };

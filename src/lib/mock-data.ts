@@ -44,7 +44,10 @@ export const schools: School[] = [
       accreditation: 'CIS, WASC',
       jobsPortal: 'TES, Search Associates',
       minQualifications: 'Teaching License + 2 Yrs Exp',
-      visaRestrictions: 'None'
+      visaRestrictions: 'None',
+      benefitsSummary: 'Comprehensive health, travel insurance, relocation allowance.',
+      nonContactTime: 20,
+      technologyEcosystem: '1:1 iPads, Google Workspace, ManageBac'
     },
     costOfLiving: { apartment: 2000, food: 500, transport: 150, utilities: 200, internet: 50, mobile: 40, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
   },
@@ -67,7 +70,10 @@ export const schools: School[] = [
       accreditation: 'NEASC',
       jobsPortal: 'School Website, GRC',
       minQualifications: 'US State License + 2 Yrs Exp',
-      visaRestrictions: 'Under 60'
+      visaRestrictions: 'Under 60',
+      benefitsSummary: 'Full medical, annual flights, professional development fund.',
+      nonContactTime: 15,
+      technologyEcosystem: '1:1 MacBooks (Gr 6-12), iPads (K-5), PowerSchool'
     },
     costOfLiving: { apartment: 2500, food: 600, transport: 200, utilities: 300, internet: 80, mobile: 70, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
   },
@@ -90,7 +96,10 @@ export const schools: School[] = [
       accreditation: 'CIS, NEASC',
       jobsPortal: 'School Website',
       minQualifications: 'EU/EFTA Passport, Teaching License',
-      visaRestrictions: 'Non-EU must be highly qualified'
+      visaRestrictions: 'Non-EU must be highly qualified',
+      benefitsSummary: 'Generous pension, subsidized transport, lunch vouchers.',
+      nonContactTime: 25,
+      technologyEcosystem: 'Bring Your Own Device (BYOD), Canvas, Veracross'
     },
     costOfLiving: { apartment: 3500, food: 1000, transport: 250, utilities: 250, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
   },
@@ -111,7 +120,10 @@ export const schools: School[] = [
       accreditation: 'WASC',
       jobsPortal: 'School Website, ISS',
       minQualifications: 'Teaching License + 3 Yrs Exp',
-      visaRestrictions: 'Strict criteria'
+      visaRestrictions: 'Strict criteria',
+      benefitsSummary: 'Full medical coverage, annual flights, relocation allowance.',
+      nonContactTime: 20,
+      technologyEcosystem: '1:1 MacBooks, Google Workspace, PowerSchool'
     },
     costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
   },
@@ -132,7 +144,10 @@ export const schools: School[] = [
       accreditation: 'WASC, CIS',
       jobsPortal: 'TES, School Website',
       minQualifications: 'Native English Speaker, License',
-      visaRestrictions: 'E-2 Visa requirements apply'
+      visaRestrictions: 'E-2 Visa requirements apply',
+      benefitsSummary: 'National health plan, severance pay, round-trip airfare.',
+      nonContactTime: 18,
+      technologyEcosystem: 'Google Workspace, Seesaw, limited 1:1 program'
     },
     costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
   },
@@ -154,7 +169,10 @@ export const schools: School[] = [
       accreditation: 'IBO, NEASC',
       jobsPortal: 'School Website, TES',
       minQualifications: 'QTS or equivalent',
-      visaRestrictions: 'Right to work in UK required'
+      visaRestrictions: 'Right to work in UK required',
+      benefitsSummary: 'Private medical, pension contribution, professional development allowance.',
+      nonContactTime: 20,
+      technologyEcosystem: 'Mixed environment (Windows/Mac), Veracross'
     },
     costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
   },
@@ -175,7 +193,10 @@ export const schools: School[] = [
       accreditation: 'CIS, NEASC',
       jobsPortal: 'School Website',
       minQualifications: 'EU/EFTA Passport preferred',
-      visaRestrictions: 'IND sponsorship required'
+      visaRestrictions: 'IND sponsorship required',
+      benefitsSummary: 'Pension scheme, travel allowance. 30% tax ruling eligibility is key.',
+      nonContactTime: 22,
+      technologyEcosystem: 'Google Workspace, limited BYOD policy'
     },
     costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
   }

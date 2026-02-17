@@ -34,6 +34,9 @@ export type School = {
     jobsPortal?: string;
     minQualifications?: string;
     visaRestrictions?: string;
+    benefitsSummary?: string;
+    nonContactTime?: number;
+    technologyEcosystem?: string;
   };
   costOfLiving: {
     apartment: number;
@@ -47,3 +50,4 @@ export type School = {
     uncoveredMedical: number;
   };
 };
+

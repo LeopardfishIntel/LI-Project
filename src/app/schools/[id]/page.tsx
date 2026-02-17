@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { getSchoolById } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info, Award, Briefcase, UserCheck, Ban } from 'lucide-react';
+import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info, Award, Briefcase, UserCheck, Ban, Gift, Clock, Laptop } from 'lucide-react';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,9 @@ const intelIcons = {
     jobsPortal: <Briefcase className="w-5 h-5 text-primary" />,
     minQualifications: <UserCheck className="w-5 h-5 text-green-400" />,
     visaRestrictions: <Ban className="w-5 h-5 text-red-400" />,
+    benefitsSummary: <Gift className="w-5 h-5 text-pink-400" />,
+    nonContactTime: <Clock className="w-5 h-5 text-indigo-400" />,
+    technologyEcosystem: <Laptop className="w-5 h-5 text-gray-400" />,
 };
 
 type IntelKey = keyof typeof intelIcons;
@@ -45,6 +48,9 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
     { key: 'salary', label: 'Salary', value: school.intel.salary.value, score: school.intel.salary.score },
     { key: 'housing', label: 'Housing', value: school.intel.housing.value },
     { key: 'savingsPotential', label: 'Savings Potential', value: school.intel.savingsPotential.value, score: school.intel.savingsPotential.score },
+    { key: 'benefitsSummary', label: 'Benefits Summary', value: school.intel.benefitsSummary },
+    { key: 'nonContactTime', label: 'Non-Contact Time', value: school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : undefined },
+    { key: 'technologyEcosystem', label: 'Tech Ecosystem', value: school.intel.technologyEcosystem },
     { key: 'curriculum', label: 'Curriculum', value: school.intel.curriculum },
     { key: 'accreditation', label: 'Accreditation', value: school.intel.accreditation },
     { key: 'studentTeacherRatio', label: 'Student-Teacher Ratio', value: school.intel.studentTeacherRatio },
