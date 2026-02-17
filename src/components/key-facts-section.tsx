@@ -100,16 +100,14 @@ export function KeyFactsSection() {
   
   return (
     <div className="w-full py-4 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          {stats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center">
-              {stat.icon}
-              <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        {stats.map((stat, index) => (
+          <div key={index} className="flex flex-col items-center">
+            {stat.icon}
+            <AnimatedCounter endValue={stat.endValue} format={stat.format} />
+            <p className="text-sm text-muted-foreground">{stat.label}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -8,9 +8,9 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
   return {
-    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/placeholder/2070/1380",
-    imageHint: image?.imageHint ?? "placeholder",
-    description: image?.description ?? "placeholder image"
+    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/great-blue-sky/2070/1380",
+    imageHint: image?.imageHint ?? "beach sky",
+    description: image?.description ?? "A beach scene with a great blue sky."
   };
 };
 
@@ -23,20 +23,18 @@ export default function Home() {
         className="relative w-full h-[80vh] overflow-hidden"
         aria-label={description}
       >
-        <Image
+        <img
           src={imageUrl}
           alt={description}
-          fill
-          className="object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
           data-ai-hint={imageHint}
-          priority
         />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
             <div className="flex-grow flex flex-col items-center justify-center">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
                 </h1>
-                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-6 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
+                <p className="max-w-3xl mx-auto text-primary-foreground md:text-xl mb-8 [text-shadow:0_1px_3px_rgba(0,0,0,0.4)]">
                 Move with certainty, not just hope.
                 </p>
                 <Link href="/discover">
@@ -44,11 +42,12 @@ export default function Home() {
                         Start Your Journey
                     </Button>
                 </Link>
-                <div className="mt-16">
-                    <KeyFactsSection />
-                </div>
             </div>
         </div>
+      </section>
+
+      <section className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+        <KeyFactsSection />
       </section>
 
       <Roadmap />
