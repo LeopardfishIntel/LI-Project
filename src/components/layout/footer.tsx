@@ -38,6 +38,7 @@ export default function Footer() {
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
                     <Link href="/enquiry" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Contact</Link>
+                    <Link href="/admin/seed-data" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Data Admin</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Terms of Service</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Privacy Policy</Link>
                 </nav>
