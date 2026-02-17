@@ -510,7 +510,7 @@ const countrySpecificData: CountryData = {
         housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.", score: 'bad', percentage: "0%" },
         flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad', percentage: "0%" },
         dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral', percentage: "Up to 100%" },
-        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension (like the Teachers' Pension).", score: 'neutral', percentage: "Pension" },
+        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension.", score: 'neutral', percentage: "Pension" },
         importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral' },
         utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad', percentage: "+30%" },
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', percentage: "+20%" },
@@ -534,7 +534,7 @@ const countrySpecificData: CountryData = {
     'UAE': {
         taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good', percentage: "0%" },
         housing: { text: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.", score: 'good', percentage: "100%" },
-        flightAllowance: { text: "An annual flight allowance is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good', percentage: "100%" },
+        flightAllowance: { text: "An annual flight is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good', percentage: "100%" },
         dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good', percentage: "Standard" },
         importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral' },
@@ -612,7 +612,7 @@ const countrySpecificData: CountryData = {
     'Singapore': {
         taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good', percentage: "0-22%" },
         housing: { text: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.", score: 'bad', percentage: "Allowance" },
-        flightAllowance: { text: "An annual flight allowance is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "100%" },
+        flightAllowance: { text: "An annual flight is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "100%" },
         dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
         importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral' },
@@ -638,7 +638,7 @@ const countrySpecificData: CountryData = {
     'South Korea': {
         taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral', percentage: "6-45%" },
         housing: { text: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.", score: 'good', percentage: "100%" },
-        flightAllowance: { text: "An annual flight allowance is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good', percentage: "100%" },
+        flightAllowance: { text: "An annual flight is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good', percentage: "100%" },
         dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral', percentage: "Varies" },
         gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good', percentage: "Standard" },
         importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad' },
@@ -953,7 +953,7 @@ function TrueCostsSection() {
 
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="country-select" className="text-base font-semibold block text-center mb-2">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
@@ -1006,11 +1006,7 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Estimate your monthly budget. Replace our mid range estimates with your net salary offer.
-                            For an accurate net salary, use the{' '}
-                            <Link href="#tax-calculator" className="text-sky-400 hover:underline">
-                                tax calculator
-                            </Link>.
+                            Please ensure your Family Status is correct
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1380,7 +1376,7 @@ export default function FinancialForecasterPage() {
       ];
   
       return (
-          <div className="flex justify-center flex-wrap gap-2 my-8">
+          <div className="flex justify-center flex-wrap gap-2 my-4">
               {menuItems.map(item => (
                   <Link href={item.href} key={item.href}
                       className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-muted text-sky-400 hover:bg-background hover:text-sky-300 shadow-sm">
@@ -1393,7 +1389,7 @@ export default function FinancialForecasterPage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract decoder</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract Decoder</h1>
             
             <MiniMenu />
 
@@ -1401,7 +1397,7 @@ export default function FinancialForecasterPage() {
                <TrueCostsSection />
             </section>
 
-            <section id="tax-calculator" className="scroll-mt-20">
+            <section id="tax-calculator" className="mt-8 scroll-mt-20">
               <TaxCalculatorSection />
             </section>
 
