@@ -47,7 +47,7 @@ export default function FindYourNookPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Find Your Nook</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find Your Nook</h1>
         <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
