@@ -1063,9 +1063,10 @@ function TrueCostsSection() {
             <Card id="financial-snapshot" className="mb-8 bg-card/70 backdrop-blur-sm border-border scroll-mt-24">
                 <CardHeader className="flex-row items-center justify-between pb-4">
                     <div>
-                        <CardTitle className="flex items-center text-xl">
-                            <LineChart className="w-5 h-5 mr-2 text-primary" />
-                            Financial Snapshot: {selectedSchool.name}
+                        <CardTitle className="flex flex-wrap items-baseline text-xl">
+                            <LineChart className="w-5 h-5 mr-2 text-primary shrink-0" />
+                            <span>Financial Snapshot:</span>
+                            <span className="ml-2 text-lg text-muted-foreground font-medium normal-case tracking-normal">{selectedSchool.name}</span>
                         </CardTitle>
                         <CardDescription className="mt-1">
                              Use our <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}><DialogTrigger asChild><span className="text-sky-400 hover:underline cursor-pointer">Tax Calculator</span></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Worldwide Salary Tax Calculator</DialogTitle><CardDescription>
