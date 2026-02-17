@@ -17,7 +17,7 @@ import { useFirestore } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 
-type ComparisonMetric = 'salary' | 'savings' | 'rating' | 'classSize' | 'monthlyCost' | 'yourSavings';
+type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
@@ -103,8 +103,7 @@ export default function ComparePage() {
     const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>(() => {
         // Prioritize schools from preferred countries
         const preferredSchools = schools
-            .filter(school => teacherProfile.preferredCountries.includes(school.country))
-            .sort((a, b) => b.rating - a.rating); // Sort by rating to show best first
+            .filter(school => teacherProfile.preferredCountries.includes(school.country));
 
         // Get other schools to fill up the slots
         const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
@@ -160,8 +159,6 @@ export default function ComparePage() {
                 if (school.intel.savingsPotential.value === 'High') return 2;
                 if (school.intel.savingsPotential.value === 'Moderate') return 1;
                 return 0;
-            case 'rating':
-                return school.rating;
             case 'classSize':
                 return school.intel.classSize;
             case 'monthlyCost':
@@ -193,7 +190,6 @@ export default function ComparePage() {
         });
     };
     
-    const ratingComp = compareThree('rating', true);
     const salaryComp = compareThree('salary', true);
     const savingsComp = compareThree('savings', true);
     const monthlyCostComp = compareThree('monthlyCost', false);
@@ -209,7 +205,6 @@ export default function ComparePage() {
         onNetSalaryChange: (value: string) => void;
     }) => {
         const comparisonResults = {
-            rating: ratingComp[index],
             salary: salaryComp[index],
             savings: savingsComp[index],
             monthlyCost: monthlyCostComp[index],
@@ -267,14 +262,6 @@ export default function ComparePage() {
                         </CardHeader>
                     </Link>
                     <CardContent className="p-4 md:p-6 pt-0 divide-y divide-border/50">
-                        <div>
-                             <MetricRow
-                                label="Overall Rating"
-                                value={`${school.rating.toFixed(1)}/5`}
-                                result={comparisonResults.rating}
-                                icon={<Star className="w-4 h-4 text-amber-400" />}
-                            />
-                        </div>
                         <div className="pt-4">
                              <MetricRow label="Salary Range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                              <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />

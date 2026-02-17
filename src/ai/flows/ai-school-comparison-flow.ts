@@ -1,7 +1,8 @@
+
 'use server';
 /**
  * @fileOverview This file provides an AI-powered flow to generate a comparative
- * analysis of multiple schools based on their data and teacher reviews.
+ * analysis of multiple schools based on their data.
  *
  * - aiSchoolComparison - A function that orchestrates the generation of the comparison.
  * - AiSchoolComparisonInput - The input type for the function.
@@ -17,11 +18,6 @@ const SchoolDataSchema = z.object({
     .string()
     .describe(
       'Key data points about the school (salary, housing, savings, etc.) in a structured format.'
-    ),
-  teacherReviews: z
-    .string()
-    .describe(
-      'A collection of anonymized teacher reviews for the school, concatenated into a single string.'
     ),
 });
 
@@ -46,8 +42,6 @@ const AiSchoolComparisonOutputSchema = z.object({
   schoolBreakdowns: z.array(z.object({
       schoolName: z.string().describe('The name of the school.'),
       summary: z.string().describe("A brief summary of the school's unique characteristics."),
-      pros: z.array(z.string()).describe('A list of common advantages of the school.'),
-      cons: z.array(z.string()).describe('A list of common disadvantages of the school.'),
   })),
 });
 export type AiSchoolComparisonOutput = z.infer<
@@ -64,7 +58,7 @@ const comparisonPrompt = ai.definePrompt({
   name: 'aiSchoolComparisonPrompt',
   input: {schema: AiSchoolComparisonInputSchema},
   output: {schema: AiSchoolComparisonOutputSchema},
-  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data and teacher reviews. You must also recommend the best fit for you based on your profile.
+  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data. You must also recommend the best fit for you based on your profile.
 
 Your Profile:
 {{{teacherProfile}}}
@@ -73,13 +67,12 @@ Schools to Compare:
 {{#each schools}}
 - School Name: {{{schoolName}}}
   Core Data: {{{coreSchoolData}}}
-  Reviews: {{{teacherReviews}}}
 {{/each}}
 
 Instructions:
 1.  **Overall Summary:** Write a high-level summary that compares the schools. Focus on the main trade-offs (e.g., "School A offers a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
 2.  **Best Fit Recommendation:** Based on your provided profile, identify which school is the best fit and provide clear, actionable reasoning.
-3.  **Individual Breakdowns:** For each school, provide a brief summary, a list of pros, and a list of cons. These should be directly derived from the data and reviews provided.
+3.  **Individual Breakdowns:** For each school, provide a brief summary. These should be directly derived from the data provided.
 `,
 });
 

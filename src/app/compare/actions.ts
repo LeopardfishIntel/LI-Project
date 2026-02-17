@@ -1,3 +1,4 @@
+
 "use server";
 
 import { aiSchoolComparison, AiSchoolComparisonInput } from '@/ai/flows/ai-school-comparison-flow';
@@ -16,20 +17,19 @@ export async function getSchoolComparisonInsights(schools: School[]) {
                 studentTeacherRatio: school.intel.studentTeacherRatio,
                 classSize: school.intel.classSize,
             });
-            const teacherReviews = school.reviews.map(r => `Review: ${r.text}`).join(' ');
 
-            return { schoolName: school.name, coreSchoolData, teacherReviews };
+            return { schoolName: school.name, coreSchoolData };
         });
 
         const teacherProfileSummary = `Family Status: ${teacherProfile.familyStatus}, Experience: ${teacherProfile.yearsOfExperience} years, Qualifications: ${teacherProfile.qualifications.join(', ')}, Prefers: ${[...teacherProfile.preferredRegions, ...teacherProfile.preferredCountries].join(', ')}.`;
 
         const input: AiSchoolComparisonInput = {
-            schools: schoolData.filter(s => s.teacherReviews), // Only include schools with reviews
+            schools: schoolData,
             teacherProfile: teacherProfileSummary
         };
 
         if (input.schools.length < 2) {
-             return { comparison: null, error: "Please select at least two schools with reviews to generate a comparison." };
+             return { comparison: null, error: "Please select at least two schools to generate a comparison." };
         }
 
         const comparison = await aiSchoolComparison(input);

@@ -74,11 +74,6 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                 <MapPin className="w-5 h-5 mr-2" />
                 <span>{school.location}, {school.country}</span>
             </div>
-            <div className="flex items-center gap-1 text-lg">
-                <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                <span className="font-bold text-primary-foreground">{school.rating.toFixed(1)}</span>
-                <span>({school.reviewsCount} reviews)</span>
-            </div>
           </div>
         </div>
       </section>
@@ -110,32 +105,6 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                                 </li>
                             ) : null)}
                         </ul>
-                    </CardContent>
-                </Card>
-
-                {/* Reviews Section */}
-                <Card className="bg-card/70 backdrop-blur-sm border-border">
-                    <CardHeader><CardTitle>Teacher Reviews</CardTitle></CardHeader>
-                    <CardContent className="space-y-6">
-                        {school.reviews.map(review => (
-                            <div key={review.id}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-semibold">{review.author}</p>
-                                        {review.isVerified && <VerifiedBadge />}
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">{review.timestamp}</p>
-                                </div>
-                                <div className="flex items-center gap-1 mb-2">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className={cn("w-4 h-4", i < review.rating ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50")}/>
-                                    ))}
-                                </div>
-                                <p className="text-muted-foreground">{review.text}</p>
-                                {school.reviews.indexOf(review) < school.reviews.length - 1 && <Separator className="mt-6" />}
-                            </div>
-                        ))}
-                         {school.reviews.length === 0 && <p className="text-muted-foreground text-center py-4">No reviews yet for this school.</p>}
                     </CardContent>
                 </Card>
             </div>

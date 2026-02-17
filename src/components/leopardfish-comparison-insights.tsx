@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { getSchoolComparisonInsights } from '@/app/compare/actions';
 import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, ServerCrash, ThumbsUp, ThumbsDown, GraduationCap, Trophy } from 'lucide-react';
+import { Loader2, Sparkles, ServerCrash, GraduationCap, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export function LeopardfishComparisonInsights({ schools }: { schools: School[] }) {
@@ -87,28 +88,6 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                         <AccordionTrigger className="text-lg font-semibold">{school.schoolName}</AccordionTrigger>
                                         <AccordionContent className="space-y-6 pt-4">
                                             <p className="text-muted-foreground">{school.summary}</p>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div>
-                                                    <h4 className="font-semibold flex items-center gap-2 mb-2"><ThumbsUp className="w-5 h-5 text-green-400" /> Pros</h4>
-                                                    {school.pros.length > 0 ? (
-                                                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                                                            {school.pros.map((pro, i) => <li key={i}>{pro}</li>)}
-                                                        </ul>
-                                                    ): (
-                                                        <p className="text-muted-foreground text-sm">No specific pros identified.</p>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-semibold flex items-center gap-2 mb-2"><ThumbsDown className="w-5 h-5 text-red-400" /> Cons</h4>
-                                                    {school.cons.length > 0 ? (
-                                                        <ul className="space-y-2 list-disc list-inside text-muted-foreground">
-                                                            {school.cons.map((con, i) => <li key={i}>{con}</li>)}
-                                                        </ul>
-                                                    ): (
-                                                        <p className="text-muted-foreground text-sm">No specific cons identified.</p>
-                                                    )}
-                                                </div>
-                                            </div>
                                         </AccordionContent>
                                     </AccordionItem>
                                 ))}

@@ -33,8 +33,6 @@ export const schools: School[] = [
     ...getImage('tokyo-international-school'),
     videoUrl: 'https://www.youtube.com/embed/GZ4d3HEn93c',
     spotlight: true,
-    rating: 4.8,
-    reviewsCount: 124,
     intel: {
       salary: { value: '$55k - $75k', score: 'good' },
       housing: { value: '2-bed Apt', provided: true },
@@ -48,10 +46,6 @@ export const schools: School[] = [
       minQualifications: 'Teaching License + 2 Yrs Exp',
       visaRestrictions: 'None'
     },
-    reviews: [
-      { id: 'r1', author: 'Jane D.', isVerified: true, timestamp: '2 weeks ago', rating: 5, text: 'Fantastic school with great resources and supportive admin. The students are wonderful.' },
-      { id: 'r2', author: 'John S.', isVerified: false, timestamp: '1 month ago', rating: 4, text: 'Good salary and benefits, but the workload can be intense at times.' },
-    ],
     costOfLiving: { apartment: 2000, food: 500, transport: 150, utilities: 200, internet: 50, mobile: 40, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
   },
   {
@@ -62,8 +56,6 @@ export const schools: School[] = [
     ...getImage('dubai-american-academy'),
     videoUrl: 'https://www.youtube.com/embed/U2f8_L-5L_w',
     spotlight: true,
-    rating: 4.5,
-    reviewsCount: 210,
     intel: {
       salary: { value: '$60k - $80k', score: 'good', isTaxFree: true },
       housing: { value: 'Allowance', provided: false },
@@ -77,10 +69,6 @@ export const schools: School[] = [
       minQualifications: 'US State License + 2 Yrs Exp',
       visaRestrictions: 'Under 60'
     },
-    reviews: [
-      { id: 'r3', author: 'Emily R.', isVerified: true, timestamp: '3 days ago', rating: 5, text: 'The facilities are state-of-the-art and the community is very welcoming. Savings potential is unbeatable.' },
-      { id: 'r4', author: 'Michael B.', isVerified: true, timestamp: '2 months ago', rating: 4, text: 'A fast-paced environment. Great for career growth but expect to work hard.' },
-    ],
     costOfLiving: { apartment: 2500, food: 600, transport: 200, utilities: 300, internet: 80, mobile: 70, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
   },
   {
@@ -91,8 +79,6 @@ export const schools: School[] = [
     ...getImage('zurich-international-school'),
     videoUrl: 'https://www.youtube.com/embed/j1wB-G73b7A',
     spotlight: true,
-    rating: 4.2,
-    reviewsCount: 88,
     intel: {
       salary: { value: '$80k - $100k', score: 'good' },
       housing: { value: 'Not Provided', provided: false },
@@ -106,10 +92,6 @@ export const schools: School[] = [
       minQualifications: 'EU/EFTA Passport, Teaching License',
       visaRestrictions: 'Non-EU must be highly qualified'
     },
-    reviews: [
-      { id: 'r5', author: 'Sarah K.', isVerified: true, timestamp: '1 week ago', rating: 4, text: 'High salary is offset by the high cost of living, but the quality of life is amazing. Beautiful country.' },
-      { id: 'r6', author: 'Tom H.', isVerified: false, timestamp: '3 months ago', rating: 3, text: 'Finding housing is a major challenge. The school is professional but can feel a bit formal.' },
-    ],
     costOfLiving: { apartment: 3500, food: 1000, transport: 250, utilities: 250, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
   },
   {
@@ -118,8 +100,6 @@ export const schools: School[] = [
     location: 'Singapore',
     country: 'Singapore',
     ...getImage('singapore-american-school'),
-    rating: 4.9,
-    reviewsCount: 150,
     intel: {
       salary: { value: '$70k - $90k', score: 'good' },
       housing: { value: 'Subsidised', provided: true },
@@ -133,7 +113,6 @@ export const schools: School[] = [
       minQualifications: 'Teaching License + 3 Yrs Exp',
       visaRestrictions: 'Strict criteria'
     },
-    reviews: [],
     costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
   },
   {
@@ -142,8 +121,6 @@ export const schools: School[] = [
     location: 'Seoul',
     country: 'South Korea',
     ...getImage('seoul-foreign-school'),
-    rating: 4.0,
-    reviewsCount: 95,
     intel: {
       salary: { value: '$45k - $65k', score: 'neutral' },
       housing: { value: 'Furnished Apt', provided: true },
@@ -157,7 +134,6 @@ export const schools: School[] = [
       minQualifications: 'Native English Speaker, License',
       visaRestrictions: 'E-2 Visa requirements apply'
     },
-    reviews: [],
     costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
   },
   {
@@ -167,8 +143,6 @@ export const schools: School[] = [
     country: 'United Kingdom',
     ...getImage('acs-cobham-international-school'),
     spotlight: false,
-    rating: 4.4,
-    reviewsCount: 85,
     intel: {
       salary: { value: '$60k - $85k', score: 'good' },
       housing: { value: 'Allowance', provided: false },
@@ -182,10 +156,6 @@ export const schools: School[] = [
       minQualifications: 'QTS or equivalent',
       visaRestrictions: 'Right to work in UK required'
     },
-    reviews: [
-      { id: 'r7', author: 'David L.', isVerified: true, timestamp: '1 month ago', rating: 5, text: 'Top-tier facilities and a strong academic program. The campus is beautiful, and it\'s a great place for families.' },
-      { id: 'r8', author: 'Maria G.', isVerified: true, timestamp: '4 months ago', rating: 4, text: 'A very US-style school, which has its pros and cons. The pay is good for the UK, but the cost of living in Surrey is very high.' },
-    ],
     costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
   },
   {
@@ -194,8 +164,6 @@ export const schools: School[] = [
     location: 'Amsterdam',
     country: 'Netherlands',
     ...getImage('amsterdam-international-school'),
-    rating: 4.3,
-    reviewsCount: 72,
     intel: {
       salary: { value: '$50k - $70k', score: 'neutral' },
       housing: { value: 'Allowance', provided: false },
@@ -209,7 +177,6 @@ export const schools: School[] = [
       minQualifications: 'EU/EFTA Passport preferred',
       visaRestrictions: 'IND sponsorship required'
     },
-    reviews: [],
     costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
   }
 ];

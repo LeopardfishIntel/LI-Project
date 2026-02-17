@@ -22,8 +22,6 @@ export type School = {
   imageHint: string;
   videoUrl?: string;
   spotlight?: boolean;
-  rating: number;
-  reviewsCount: number;
   intel: {
     salary: { value: string; score: 'good' | 'neutral' | 'bad'; isTaxFree?: boolean; };
     housing: { value: string; provided: boolean };
@@ -37,7 +35,6 @@ export type School = {
     minQualifications?: string;
     visaRestrictions?: string;
   };
-  reviews: Review[];
   costOfLiving: {
     apartment: number;
     food: number;
@@ -49,13 +46,4 @@ export type School = {
     vehicleInsuranceMaint: number;
     uncoveredMedical: number;
   };
-};
-
-export type Review = {
-  id: string;
-  author: string;
-  isVerified: boolean;
-  timestamp: string;
-  rating: number;
-  text: string;
 };
