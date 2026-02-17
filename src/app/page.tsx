@@ -15,6 +15,7 @@ export default function Home() {
             fill
             className="object-cover"
           />
+          <div className="absolute inset-0 bg-black/30" />
         </div>
         <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[35.2vh] py-16">
           <div className="flex-grow flex flex-col items-center justify-center">
