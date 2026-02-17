@@ -30,14 +30,9 @@ export type AiSchoolComparisonInput = z.infer<
 >;
 
 const AiSchoolComparisonOutputSchema = z.object({
-  overallSummary: z
-    .string()
-    .describe(
-      "A high-level summary comparing the key differences between the schools."
-    ),
   bestFit: z.object({
-      schoolName: z.string().describe("The name of the school that is the best fit for you."),
-      reasoning: z.string().describe("The reasoning for why this school is the best fit, based on your profile."),
+      schoolName: z.string().describe("The name of the school that is the best fit for the user."),
+      reasoning: z.string().describe("A combined analysis that first provides a high-level summary comparing the schools and their trade-offs, and then explains why the recommended school is the best fit for the user's profile. This should be addressed directly to the user and include a disclaimer to verify all information with the schools directly."),
   }),
   schoolBreakdowns: z.array(z.object({
       schoolName: z.string().describe('The name of the school.'),
@@ -58,7 +53,7 @@ const comparisonPrompt = ai.definePrompt({
   name: 'aiSchoolComparisonPrompt',
   input: {schema: AiSchoolComparisonInputSchema},
   output: {schema: AiSchoolComparisonOutputSchema},
-  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data. You must also recommend the best fit for me based on my profile.
+  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on my data and recommend the best fit for me. Address me, the user, directly in your response.
 
 My Profile:
 {{{teacherProfile}}}
@@ -69,10 +64,12 @@ Schools to Compare:
   Core Data: {{{coreSchoolData}}}
 {{/each}}
 
-Instructions:
-1.  **Overall Summary:** Write a high-level summary that compares the schools. Focus on the main trade-offs (e.g., "School A offers a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
-2.  **Best Fit Recommendation:** Based on my provided profile, identify which school is the best fit and provide clear, actionable reasoning.
-3.  **Individual Breakdowns:** For each school, provide a brief summary. These should be directly derived from the data provided.
+Instructions for your response:
+1.  **Analysis and Recommendation:** This should be for the 'reasoning' field in the 'bestFit' output.
+    -   Start with a high-level summary comparing the schools. Focus on the main trade-offs for me (e.g., "School A offers you a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
+    -   Then, based on my profile, explain why you are recommending one specific school as the best fit.
+    -   Conclude your reasoning with a clear reminder for me to verify all data and metrics directly with the schools, as packages and benefits can change.
+2.  **Individual Breakdowns:** For each school, provide a brief, objective summary for the 'schoolBreakdowns' output, derived directly from the data provided.
 `,
 });
 

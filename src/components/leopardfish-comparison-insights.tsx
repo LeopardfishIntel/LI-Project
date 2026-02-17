@@ -59,7 +59,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                 {result?.comparison && (
                     <div className="space-y-8 w-full text-left">
                         <div>
-                            <h3 className="font-bold text-xl flex items-center gap-2 mb-3"><Trophy className="w-6 h-6 text-amber-400" /> Best Fit Recommendation</h3>
+                            <h3 className="font-bold text-xl flex items-center gap-2 mb-3"><Trophy className="w-6 h-6 text-amber-400" /> Analysis &amp; Recommendation</h3>
                              <Card className="bg-primary/10 border-primary/40">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
@@ -75,31 +75,26 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-muted-foreground">{result.comparison.bestFit.reasoning}</p>
+                                    <p className="text-muted-foreground whitespace-pre-wrap">{result.comparison.bestFit.reasoning}</p>
                                 </CardContent>
                             </Card>
                         </div>
 
-                         <div>
-                            <h3 className="font-bold text-xl flex items-center gap-2 mb-3"><Sparkles className="w-6 h-6 text-amber-400" /> Overall Summary</h3>
-                            <blockquote className="text-muted-foreground italic border-l-2 border-primary pl-4 text-base">
-                                "{result.comparison.overallSummary}"
-                            </blockquote>
-                        </div>
-                        
-                        <div>
-                             <h3 className="font-bold text-xl flex items-center gap-2 mb-3">School Breakdowns</h3>
-                            <Accordion type="single" collapsible className="w-full" defaultValue={result.comparison.schoolBreakdowns[0]?.schoolName}>
-                                {result.comparison.schoolBreakdowns.map(school => (
-                                     <AccordionItem value={school.schoolName} key={school.schoolName}>
-                                        <AccordionTrigger className="text-lg font-semibold">{school.schoolName}</AccordionTrigger>
-                                        <AccordionContent className="space-y-6 pt-4">
-                                            <p className="text-muted-foreground">{school.summary}</p>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
-                        </div>
+                        {result.comparison.schoolBreakdowns && result.comparison.schoolBreakdowns.length > 0 && (
+                            <div>
+                                <h3 className="font-bold text-xl flex items-center gap-2 mb-3">School Breakdowns</h3>
+                                <Accordion type="single" collapsible className="w-full" defaultValue={result.comparison.schoolBreakdowns[0]?.schoolName}>
+                                    {result.comparison.schoolBreakdowns.map(school => (
+                                        <AccordionItem value={school.schoolName} key={school.schoolName}>
+                                            <AccordionTrigger className="text-lg font-semibold">{school.schoolName}</AccordionTrigger>
+                                            <AccordionContent className="space-y-6 pt-4">
+                                                <p className="text-muted-foreground">{school.summary}</p>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    ))}
+                                </Accordion>
+                            </div>
+                        )}
                         
                         <div className="text-center pt-4">
                             <Button variant="ghost" size="sm" onClick={handleFetchComparison} className="text-muted-foreground">
