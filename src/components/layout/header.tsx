@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, User, ChevronDown, Binoculars } from "lucide-react";
+import { Menu, User, ChevronDown, Binoculars, LogOut } from "lucide-react";
+import { useAuth, useUser } from "@/firebase";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,6 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Collapsible,
@@ -25,6 +28,57 @@ const navLinks = [
   { href: "/compare", label: "Decide" },
   { href: "/enquiry", label: "Enquiry" },
 ];
+
+function UserNav() {
+    const { user, isUserLoading } = useUser();
+    const auth = useAuth();
+
+    const handleLogout = () => {
+        auth.signOut();
+    };
+
+    if (isUserLoading) {
+        return <div className="h-10 w-10" />
+    }
+
+    if (!user) {
+        return (
+             <Link href="/login">
+                <Button variant="outline" size="icon" aria-label="Login or Sign Up">
+                    <User className="h-5 w-5" />
+                </Button>
+            </Link>
+        )
+    }
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                        <AvatarFallback>
+                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
+                        </AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                 <DropdownMenuItem asChild>
+                    <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                     <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
 
 export default function Header() {
   const pathname = usePathname();
@@ -142,11 +196,7 @@ export default function Header() {
 
 
         <div className="flex flex-1 items-center justify-end space-x-2">
-            <Link href="/login">
-                <Button variant="outline" size="icon" aria-label="Login or Sign Up">
-                    <User className="h-5 w-5" />
-                </Button>
-            </Link>
+            <UserNav />
         </div>
       </div>
     </header>
