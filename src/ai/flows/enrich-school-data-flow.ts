@@ -24,7 +24,7 @@ const EnrichSchoolDataOutputSchema = z.object({
     imageUrl: z.string().url().describe("A high-quality, publicly available image URL for the school, preferably from a source like Unsplash. The image should be representative of the school or its location."),
     imageHint: z.string().max(40).describe("A two-word hint describing the image (e.g., 'modern campus', 'city skyline') for AI-powered image replacement later."),
     videoUrl: z.string().url().describe("A YouTube embed URL of a promotional or informational video about the school. e.g. https://youtube.com/embed/VIDEO_ID").optional(),
-    curriculum: z.string().describe("The primary curriculum or curriculums offered (e.g., 'IB', 'AP', 'British')."),
+    curriculum: z.string().describe("The primary curriculum or curriculums offered. Should be a comma-separated list of values from: 'IB', 'AP', 'British', 'US', 'Other'."),
     accreditation: z.string().describe("Key accreditation bodies (e.g., 'CIS', 'WASC', 'NEASC')."),
     studentTeacherRatio: z.string().describe("The student-to-teacher ratio, if available (e.g., '10:1').").optional(),
     classSize: z.coerce.number().describe("The average class size.").optional(),
@@ -66,7 +66,7 @@ School Details:
 - A high-quality, publicly available image URL (e.g., from Unsplash, Pexels) that represents the school or its location.
 - A two-word hint describing the image (e.g., 'modern campus', 'city skyline').
 - A YouTube embed URL of a promotional video about the school (e.g., https://youtube.com/embed/VIDEO_ID).
-- The primary curriculum.
+- The primary curriculum (comma-separated list from 'IB', 'AP', 'British', 'US', 'Other').
 - Key accreditations.
 - Student-teacher ratio (if available).
 - Average class size (if available).

@@ -111,6 +111,8 @@ const schoolSchema = z.object({
   }),
 });
 
+const curriculumOptions = ["IB", "AP", "British", "US", "Other"];
+
 export default function AddSchoolPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -406,7 +408,47 @@ export default function AddSchoolPage() {
                 <Separator />
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <FormField control={form.control} name="intel.curriculum" render={({ field }) => (<FormItem><FormLabel>Curriculum</FormLabel><FormControl><Input placeholder="IB, US" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField
+                      control={form.control}
+                      name="intel.curriculum"
+                      render={({ field }) => (
+                        <FormItem className="md:col-span-2 lg:col-span-3">
+                          <FormLabel>Curriculum</FormLabel>
+                          <FormControl>
+                            <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
+                              {curriculumOptions.map((item) => {
+                                const selectedValues = field.value ? field.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+                                return (
+                                  <div key={item} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`curriculum-${item}`}
+                                      checked={selectedValues.includes(item)}
+                                      onCheckedChange={(checked) => {
+                                        const currentValues = field.value ? field.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+                                        let newValues;
+                                        if (checked) {
+                                            newValues = [...currentValues, item];
+                                        } else {
+                                            newValues = currentValues.filter(
+                                            (value) => value !== item
+                                            );
+                                        }
+                                        const sortedValues = curriculumOptions.filter(option => newValues.includes(option));
+                                        field.onChange(sortedValues.join(', '));
+                                      }}
+                                    />
+                                    <Label htmlFor={`curriculum-${item}`} className="font-normal">
+                                      {item}
+                                    </Label>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField control={form.control} name="intel.accreditation" render={({ field }) => (<FormItem><FormLabel>Accreditation</FormLabel><FormControl><Input placeholder="CIS, WASC" {...field} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (<FormItem><FormLabel>Student-Teacher Ratio</FormLabel><FormControl><Input placeholder="10:1" {...field} /></FormControl><FormMessage /></FormItem>)} />
                     <FormField control={form.control} name="intel.classSize" render={({ field }) => (<FormItem><FormLabel>Average Class Size</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
