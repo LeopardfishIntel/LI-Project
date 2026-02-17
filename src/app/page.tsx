@@ -1,17 +1,32 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+const getImage = (id: string) => {
+  const image = PlaceHolderImages.find(img => img.id === id);
+  return {
+    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/placeholder/1200/400",
+    imageHint: image?.imageHint ?? "placeholder"
+  };
+};
 
 export default function Home() {
+  const { imageUrl, imageHint } = getImage('homepage-hero');
+
   return (
     <>
-      <section 
-        className="relative w-full bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1491403980119-7d84a29a3da4?q=80&w=2070&auto=format&fit=crop')"
-        }}
-      >
+      <section className="relative w-full min-h-[40vh]">
+        <Image
+          src={imageUrl}
+          alt="Calm beach with blue sky"
+          fill
+          className="object-cover"
+          data-ai-hint={imageHint}
+          priority
+        />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[40vh] py-16">
           <div className="flex-grow flex flex-col items-center justify-center">

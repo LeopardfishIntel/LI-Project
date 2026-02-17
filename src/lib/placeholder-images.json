@@ -59,6 +59,12 @@
       "description": "A path splitting into a crossroads in a forest, symbolizing the moment of decision.",
       "imageUrl": "https://images.unsplash.com/photo-1545641203-7d072a14e3b2?q=80&w=1080&auto=format&fit=crop",
       "imageHint": "crossroads path"
+    },
+    {
+      "id": "homepage-hero",
+      "description": "A beautiful beach scene with a clear blue sky, representing a dream teaching destination.",
+      "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "beach landscape"
     }
   ]
 }
