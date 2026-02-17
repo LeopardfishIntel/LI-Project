@@ -12,7 +12,6 @@ export default function Home() {
           backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2070&auto=format&fit=crop')"
         }}
       >
-        <div className="absolute inset-0 bg-black/60" />
         <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center min-h-[48vh] py-16">
           <div className="flex-grow flex flex-col items-center justify-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
