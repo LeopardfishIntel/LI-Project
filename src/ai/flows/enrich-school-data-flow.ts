@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI flow to enrich school data using its name and location.
@@ -20,6 +21,9 @@ type EnrichSchoolDataInput = z.infer<typeof EnrichSchoolDataInputSchema>;
 const EnrichSchoolDataOutputSchema = z.object({
     description: z.string().describe("A brief, engaging description of the school, suitable for a directory listing."),
     websiteUrl: z.string().url().describe("The official website URL of the school."),
+    imageUrl: z.string().url().describe("A high-quality, publicly available image URL for the school, preferably from a source like Unsplash. The image should be representative of the school or its location."),
+    imageHint: z.string().max(40).describe("A two-word hint describing the image (e.g., 'modern campus', 'city skyline') for AI-powered image replacement later."),
+    videoUrl: z.string().url().describe("A YouTube embed URL of a promotional or informational video about the school. e.g. https://youtube.com/embed/VIDEO_ID").optional(),
     curriculum: z.string().describe("The primary curriculum or curriculums offered (e.g., 'IB', 'AP', 'British')."),
     accreditation: z.string().describe("Key accreditation bodies (e.g., 'CIS', 'WASC', 'NEASC')."),
     studentTeacherRatio: z.string().describe("The student-to-teacher ratio, if available (e.g., '10:1').").optional(),
@@ -59,6 +63,9 @@ Please research online and provide the following details. If a specific piece of
 School Details:
 - A brief, engaging description of the school.
 - The official website URL.
+- A high-quality, publicly available image URL (e.g., from Unsplash, Pexels) that represents the school or its location.
+- A two-word hint describing the image (e.g., 'modern campus', 'city skyline').
+- A YouTube embed URL of a promotional video about the school (e.g., https://youtube.com/embed/VIDEO_ID).
 - The primary curriculum.
 - Key accreditations.
 - Student-teacher ratio (if available).

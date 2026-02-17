@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -180,6 +181,9 @@ export default function AddSchoolPage() {
     if (data) {
         form.setValue('description', data.description, { shouldValidate: true });
         form.setValue('websiteUrl', data.websiteUrl, { shouldValidate: true });
+        form.setValue('imageUrl', data.imageUrl, { shouldValidate: true });
+        form.setValue('imageHint', data.imageHint, { shouldValidate: true });
+        if (data.videoUrl) form.setValue('videoUrl', data.videoUrl, { shouldValidate: true });
         form.setValue('intel.curriculum', data.curriculum, { shouldValidate: true });
         form.setValue('intel.accreditation', data.accreditation, { shouldValidate: true });
         if (data.studentTeacherRatio) form.setValue('intel.studentTeacherRatio', data.studentTeacherRatio, { shouldValidate: true });
