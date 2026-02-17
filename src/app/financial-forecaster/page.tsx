@@ -1414,7 +1414,7 @@ export default function FinancialForecasterPage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">Contract Decoder</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">2. Contract Decoder</h1>
             
             <section id="true-costs-analysis" className="scroll-mt-20 pt-12">
                <TrueCostsSection />
