@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Building, Globe, Users, BarChart3 } from 'lucide-react';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
+import { schools } from '@/lib/mock-data';
 
 const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val: number) => string; }) => {
   const [count, setCount] = useState(0);
@@ -71,24 +72,29 @@ export function KeyFactsSection() {
 
   const comparisonsMade = metrics?.comparisons_made || 0;
 
+  const schoolCount = schools.length;
+  const countryCount = new Set(schools.map(school => school.country)).size;
+  // There is only one teacher profile in the mock data.
+  const teacherCount = 1;
+
   const stats = [
     {
       icon: <Building className="w-5 h-5 text-primary" />,
-      endValue: 13000,
+      endValue: schoolCount,
       label: 'International Schools',
-      format: (val: number) => `${Math.floor(val/1000)}k+`,
+      format: (val: number) => val.toLocaleString(),
     },
     {
       icon: <Globe className="w-5 h-5 text-primary" />,
-      endValue: 195,
+      endValue: countryCount,
       label: 'Countries',
-      format: (val: number) => `${Math.floor(val)}`,
+      format: (val: number) => `${val}`,
     },
     {
       icon: <Users className="w-5 h-5 text-primary" />,
-      endValue: 500000,
+      endValue: teacherCount,
       label: 'Teachers Worldwide',
-      format: (val: number) => `${Math.floor(val/1000)}k+`,
+      format: (val: number) => val.toLocaleString(),
     },
     {
       icon: <BarChart3 className="w-5 h-5 text-primary" />,
