@@ -19,10 +19,15 @@ export default function Home() {
   return (
     <>
       <section
-        className="relative w-full h-[80vh] bg-cover bg-center"
-        style={{ backgroundImage: `url(${imageUrl})` }}
+        className="relative w-full h-[80vh] overflow-hidden"
         aria-label={description}
       >
+        <img
+          src={imageUrl}
+          alt={description}
+          className="absolute inset-0 w-full h-full object-cover"
+          data-ai-hint={imageHint}
+        />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
             <div className="flex-grow flex flex-col items-center justify-center">
