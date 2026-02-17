@@ -10,14 +10,14 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
-export const EnrichSchoolDataInputSchema = z.object({
+const EnrichSchoolDataInputSchema = z.object({
   name: z.string().describe('The name of the school.'),
   location: z.string().describe('The city where the school is located.'),
   country: z.string().describe('The country where the school is located.'),
 });
 export type EnrichSchoolDataInput = z.infer<typeof EnrichSchoolDataInputSchema>;
 
-export const EnrichSchoolDataOutputSchema = z.object({
+const EnrichSchoolDataOutputSchema = z.object({
     description: z.string().describe("A brief, engaging description of the school, suitable for a directory listing."),
     websiteUrl: z.string().url().describe("The official website URL of the school."),
     curriculum: z.string().describe("The primary curriculum or curriculums offered (e.g., 'IB', 'AP', 'British')."),
