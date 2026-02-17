@@ -20,18 +20,16 @@ export default function Home() {
   return (
     <>
       <section className="relative w-full h-[80vh]">
-        <div className="absolute inset-0">
-          <Image
-            src={imageUrl}
-            alt={description}
-            fill
-            className="object-cover"
-            data-ai-hint={imageHint}
-            priority
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-        <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
+        <Image
+          src={imageUrl}
+          alt={description}
+          fill
+          className="object-cover -z-10"
+          data-ai-hint={imageHint}
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30 -z-10" />
+        <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
           <div className="flex-grow flex flex-col items-center justify-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
               <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
