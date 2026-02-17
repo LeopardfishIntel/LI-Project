@@ -7,7 +7,7 @@ import { getSchoolComparisonInsights } from '@/app/compare/actions';
 import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, ServerCrash, GraduationCap, Trophy } from 'lucide-react';
+import { Loader2, Sparkles, ServerCrash, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export function LeopardfishComparisonInsights({ schools }: { schools: School[] }) {
@@ -63,7 +63,14 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                              <Card className="bg-primary/10 border-primary/40">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <GraduationCap className="w-6 h-6 text-primary"/>
+                                        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g transform="rotate(45 12 12)">
+                                                <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
+                                                <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
+                                                <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                                                <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                                            </g>
+                                        </svg>
                                         {result.comparison.bestFit.schoolName}
                                     </CardTitle>
                                 </CardHeader>

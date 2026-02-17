@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb, GraduationCap } from "lucide-react";
+import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -358,7 +358,14 @@ export default function FindYourNookPage() {
                     {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
                         <div className="mt-6 pt-4 border-t border-border/50">
                             <h4 className="font-semibold mb-3 text-base flex items-center gap-2">
-                                <GraduationCap className="h-5 w-5 text-primary" />
+                                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g transform="rotate(45 12 12)">
+                                        <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
+                                        <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
+                                        <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                                        <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                                    </g>
+                                </svg>
                                 School Suggestions
                             </h4>
                             <div className="space-y-3">

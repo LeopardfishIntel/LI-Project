@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { VerifiedBadge } from "@/components/verified-badge"
-import { MapPin, Users, Calendar, Briefcase, Linkedin, GraduationCap, Pencil } from "lucide-react"
+import { MapPin, Users, Calendar, Briefcase, Linkedin, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { teacherProfile } from "@/lib/mock-data"
 
@@ -44,7 +44,14 @@ export default function ProfilePage() {
                   </div>
                 </div>
                  <div className="flex items-start gap-4">
-                  <GraduationCap className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 mt-1 flex-shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(45 12 12)">
+                            <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
+                            <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
+                            <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                            <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                        </g>
+                    </svg>
                   <div>
                     <h3 className="font-semibold text-muted-foreground">Qualifications</h3>
                     <div className="flex flex-wrap gap-2 mt-2">
