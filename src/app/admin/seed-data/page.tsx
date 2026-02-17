@@ -21,6 +21,7 @@ import {
 import { Loader2, ShieldCheck, ShieldOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { firebaseConfig } from '@/firebase/config';
 
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
@@ -128,7 +129,7 @@ export default function SeedDataPage() {
                       <li>
                         Go to your{' '}
                         <a
-                          href={`https://console.firebase.google.com/project/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}/firestore/data`}
+                          href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/firestore/data`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sky-400 hover:underline"
