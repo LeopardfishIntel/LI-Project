@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -28,6 +27,7 @@ import {
   Download,
   Upload,
   Table as TableIcon,
+  Plus,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -53,7 +53,7 @@ export default function SeedDataPage() {
     isLoading: isAdminLoading,
     error: adminRoleError,
   } = useDoc(adminRoleRef);
-  const isAdmin = !!adminRole;
+  const isAdmin = !!adminRole && !adminRoleError;
 
   const handleSeedData = async () => {
     if (!firestore) {
@@ -240,8 +240,8 @@ export default function SeedDataPage() {
                     <p>
                       A permission error occurred while checking your admin status. This is almost always caused by Firestore Security Rules.
                     </p>
-                    <p className="mt-2">
-                      Please double-check that the `roles_admin` collection and your user ID document exist in the Firebase Console.
+                    <p className="mt-2 font-mono text-xs bg-black/30 p-2 rounded">
+                      Error: {adminRoleError.message}
                     </p>
                   </>
                 ) : (
@@ -334,6 +334,22 @@ export default function SeedDataPage() {
                 You are authorized to perform administrative actions.
               </AlertDescription>
             </Alert>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border">
+              <CardHeader>
+                <CardTitle>Add New School</CardTitle>
+                <CardDescription>
+                  Add a new school record to the database.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button asChild variant="outline">
+                  <Link href="/admin/add-school">
+                    <Plus className="mr-2" /> Add School
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
