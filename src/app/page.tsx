@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
@@ -19,22 +18,13 @@ export default function Home() {
 
   return (
     <>
-      <section className="grid items-center w-full h-[80vh]">
-        {/* Grid cell 1: Image and Overlay */}
-        <div className="col-start-1 row-start-1 relative w-full h-full">
-            <Image
-              src={imageUrl}
-              alt={description}
-              fill
-              className="object-cover"
-              data-ai-hint={imageHint}
-              priority
-            />
-            <div className="absolute inset-0 bg-black/30" />
-        </div>
-
-        {/* Grid cell 2: Content (on top) */}
-        <div className="col-start-1 row-start-1 relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
+      <section
+        className="relative w-full h-[80vh] bg-cover bg-center"
+        style={{ backgroundImage: `url(${imageUrl})` }}
+        aria-label={description}
+      >
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
             <div className="flex-grow flex flex-col items-center justify-center">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
                 <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
