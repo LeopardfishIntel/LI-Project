@@ -42,6 +42,11 @@ const nextConfig: NextConfig = {
         destination: '/financial-forecaster',
         permanent: true,
       },
+      {
+        source: '/evaluate',
+        destination: '/financial-forecaster',
+        permanent: true,
+      },
     ];
   },
 };
