@@ -1,4 +1,4 @@
-import { Linkedin, Facebook, Binoculars, DatabaseZap } from "lucide-react";
+import { Linkedin, Facebook, Binoculars } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -40,9 +40,6 @@ export default function Footer() {
                     <Link href="/enquiry" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Contact</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Terms of Service</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Privacy Policy</Link>
-                     <Link href="/admin/seed-data" className="text-sm hover:underline underline-offset-4 text-muted-foreground flex items-center gap-1">
-                        <DatabaseZap className="w-4 h-4" /> Data Admin
-                    </Link>
                 </nav>
             </div>
         </div>

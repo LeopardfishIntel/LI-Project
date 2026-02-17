@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, User, ChevronDown, Binoculars, LogOut } from "lucide-react";
-import { useAuth, useUser } from "@/firebase";
+import { Menu, User, ChevronDown, Binoculars, LogOut, DatabaseZap } from "lucide-react";
+import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { doc } from 'firebase/firestore';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { cn } from "@/lib/utils";
@@ -32,12 +33,21 @@ const navLinks = [
 function UserNav() {
     const { user, isUserLoading } = useUser();
     const auth = useAuth();
+    const firestore = useFirestore();
+
+    const adminRoleRef = useMemoFirebase(
+        () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
+        [firestore, user]
+    );
+    const { data: adminRole, isLoading: isAdminLoading } = useDoc(adminRoleRef);
+    const isAdmin = adminRole?.exists ? adminRole.exists() : false;
+
 
     const handleLogout = () => {
         auth.signOut();
     };
 
-    if (isUserLoading) {
+    if (isUserLoading || (user && isAdminLoading)) {
         return <div className="h-10 w-10" />
     }
 
@@ -70,6 +80,14 @@ function UserNav() {
                         <span>Profile</span>
                     </Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin/seed-data">
+                            <DatabaseZap className="mr-2 h-4 w-4" />
+                            <span>Data Admin</span>
+                        </Link>
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                      <LogOut className="mr-2 h-4 w-4" />
