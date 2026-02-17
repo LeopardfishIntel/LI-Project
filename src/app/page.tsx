@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
@@ -22,11 +23,13 @@ export default function Home() {
         className="relative w-full h-[80vh] overflow-hidden"
         aria-label={description}
       >
-        <img
+        <Image
           src={imageUrl}
           alt={description}
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
           data-ai-hint={imageHint}
+          priority
         />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
