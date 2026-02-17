@@ -62,9 +62,9 @@
     },
     {
       "id": "homepage-hero",
-      "description": "A view of the Muttrah Corniche in Muscat, Oman.",
-      "imageUrl": "https://images.unsplash.com/photo-1593456858348-7328d2a4a2e1?q=80&w=2070&auto=format&fit=crop",
-      "imageHint": "muscat oman"
+      "description": "A scenic view of a lake with mountains in the background, representing travel and adventure.",
+      "imageUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop",
+      "imageHint": "travel lake"
     }
   ]
 }
