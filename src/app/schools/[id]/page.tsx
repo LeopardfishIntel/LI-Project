@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { getSchoolById } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info, Award } from 'lucide-react';
+import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info, Award, Briefcase, UserCheck, Ban } from 'lucide-react';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -20,6 +20,9 @@ const intelIcons = {
     classSize: <Building className="w-5 h-5 text-sky-400" />,
     healthInsurance: <HeartPulse className="w-5 h-5 text-red-400" />,
     accreditation: <Award className="w-5 h-5 text-yellow-500" />,
+    jobsPortal: <Briefcase className="w-5 h-5 text-primary" />,
+    minQualifications: <UserCheck className="w-5 h-5 text-green-400" />,
+    visaRestrictions: <Ban className="w-5 h-5 text-red-400" />,
 };
 
 type IntelKey = keyof typeof intelIcons;
@@ -47,6 +50,9 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
     { key: 'studentTeacherRatio', label: 'Student-Teacher Ratio', value: school.intel.studentTeacherRatio },
     { key: 'classSize', label: 'Average Class Size', value: school.intel.classSize },
     { key: 'healthInsurance', label: 'Health Insurance', value: school.intel.healthInsurance },
+    { key: 'jobsPortal', label: 'Jobs Portal', value: school.intel.jobsPortal },
+    { key: 'minQualifications', label: 'Min. Qualifications', value: school.intel.minQualifications },
+    { key: 'visaRestrictions', label: 'Visa Restrictions', value: school.intel.visaRestrictions },
   ];
 
   return (
@@ -85,7 +91,7 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                     <CardHeader><CardTitle>Core Intel</CardTitle></CardHeader>
                     <CardContent>
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                            {schoolIntel.map(item => (
+                            {schoolIntel.map(item => item.value ? (
                                 <li key={item.key} className="flex items-start">
                                     <div className="mr-3 mt-1">{intelIcons[item.key as IntelKey]}</div>
                                     <div>
@@ -102,7 +108,7 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
                                         </div>
                                     </div>
                                 </li>
-                            ))}
+                            ) : null)}
                         </ul>
                     </CardContent>
                 </Card>
@@ -136,27 +142,6 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
             
             <div className="space-y-8">
                 <CostOfLivingCalculator school={school} />
-                <Card className="bg-card/70 backdrop-blur-sm border-border">
-                    <CardHeader><CardTitle>School Video</CardTitle></CardHeader>
-                    <CardContent>
-                        {school.videoUrl ? (
-                            <div className="aspect-video">
-                                <iframe
-                                    className="w-full h-full rounded-md"
-                                    src={school.videoUrl}
-                                    title={`School video for ${school.name}`}
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                ></iframe>
-                            </div>
-                        ) : (
-                            <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                                <p className="text-muted-foreground">Video coming soon</p>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
             </div>
         </div>
       </div>

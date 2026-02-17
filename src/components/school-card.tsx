@@ -1,12 +1,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, MapPin } from 'lucide-react';
+import { MapPin, Briefcase, UserCheck, Ban } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { School } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Separator } from './ui/separator';
 
 interface SchoolCardProps {
   school: School;
@@ -17,6 +18,17 @@ const scoreColorClasses = {
   neutral: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
   bad: 'bg-red-500/20 text-red-400 border-red-500/30',
 };
+
+const InfoRow = ({ icon, text }: { icon: React.ReactNode, text?: string }) => {
+    if (!text) return null;
+    return (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {icon}
+            <span>{text}</span>
+        </div>
+    );
+};
+
 
 export function SchoolCard({ school }: SchoolCardProps) {
   return (
@@ -31,10 +43,8 @@ export function SchoolCard({ school }: SchoolCardProps) {
             data-ai-hint={school.imageHint}
             className="w-full h-48 object-cover"
           />
-          <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/80 px-2 py-1 rounded-full text-sm">
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span className="font-bold">{school.rating.toFixed(1)}</span>
-            <span className="text-muted-foreground">({school.reviewsCount})</span>
+           <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/80 px-2 py-1 rounded-full text-sm font-bold">
+            {school.intel.accreditation}
           </div>
         </div>
       </CardHeader>
@@ -55,10 +65,16 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <Badge variant="outline" className={cn(scoreColorClasses[school.intel.savingsPotential.score])}>
             Savings: {school.intel.savingsPotential.value}
           </Badge>
-          <Badge variant="outline">{school.intel.accreditation}</Badge>
         </div>
+        <Separator className="my-4" />
+         <div className="space-y-2">
+            <InfoRow icon={<Briefcase className="w-4 h-4 text-primary" />} text={school.intel.jobsPortal} />
+            <InfoRow icon={<UserCheck className="w-4 h-4 text-green-400" />} text={school.intel.minQualifications} />
+            <InfoRow icon={<Ban className="w-4 h-4 text-red-400" />} text={school.intel.visaRestrictions} />
+        </div>
+
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <Link href={`/schools/${school.id}`} className="w-full">
           <Button className="w-full" variant="outline">
             View Profile

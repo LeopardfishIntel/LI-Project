@@ -44,6 +44,9 @@ export const schools: School[] = [
       classSize: 16,
       healthInsurance: 'Premium',
       accreditation: 'CIS, WASC',
+      jobsPortal: 'TES, Search Associates',
+      minQualifications: 'Teaching License + 2 Yrs Exp',
+      visaRestrictions: 'None'
     },
     reviews: [
       { id: 'r1', author: 'Jane D.', isVerified: true, timestamp: '2 weeks ago', rating: 5, text: 'Fantastic school with great resources and supportive admin. The students are wonderful.' },
@@ -70,6 +73,9 @@ export const schools: School[] = [
       classSize: 22,
       healthInsurance: 'Comp',
       accreditation: 'NEASC',
+      jobsPortal: 'School Website, GRC',
+      minQualifications: 'US State License + 2 Yrs Exp',
+      visaRestrictions: 'Under 60'
     },
     reviews: [
       { id: 'r3', author: 'Emily R.', isVerified: true, timestamp: '3 days ago', rating: 5, text: 'The facilities are state-of-the-art and the community is very welcoming. Savings potential is unbeatable.' },
@@ -96,6 +102,9 @@ export const schools: School[] = [
       classSize: 18,
       healthInsurance: 'Mandatory',
       accreditation: 'CIS, NEASC',
+      jobsPortal: 'School Website',
+      minQualifications: 'EU/EFTA Passport, Teaching License',
+      visaRestrictions: 'Non-EU must be highly qualified'
     },
     reviews: [
       { id: 'r5', author: 'Sarah K.', isVerified: true, timestamp: '1 week ago', rating: 4, text: 'High salary is offset by the high cost of living, but the quality of life is amazing. Beautiful country.' },
@@ -120,6 +129,9 @@ export const schools: School[] = [
       classSize: 20,
       healthInsurance: 'Premium',
       accreditation: 'WASC',
+      jobsPortal: 'School Website, ISS',
+      minQualifications: 'Teaching License + 3 Yrs Exp',
+      visaRestrictions: 'Strict criteria'
     },
     reviews: [],
     costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
@@ -141,6 +153,9 @@ export const schools: School[] = [
       classSize: 24,
       healthInsurance: 'National',
       accreditation: 'WASC, CIS',
+      jobsPortal: 'TES, School Website',
+      minQualifications: 'Native English Speaker, License',
+      visaRestrictions: 'E-2 Visa requirements apply'
     },
     reviews: [],
     costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
@@ -163,6 +178,9 @@ export const schools: School[] = [
       classSize: 20,
       healthInsurance: 'Private',
       accreditation: 'IBO, NEASC',
+      jobsPortal: 'School Website, TES',
+      minQualifications: 'QTS or equivalent',
+      visaRestrictions: 'Right to work in UK required'
     },
     reviews: [
       { id: 'r7', author: 'David L.', isVerified: true, timestamp: '1 month ago', rating: 5, text: 'Top-tier facilities and a strong academic program. The campus is beautiful, and it\'s a great place for families.' },
@@ -187,6 +205,9 @@ export const schools: School[] = [
       classSize: 18,
       healthInsurance: 'Private Required',
       accreditation: 'CIS, NEASC',
+      jobsPortal: 'School Website',
+      minQualifications: 'EU/EFTA Passport preferred',
+      visaRestrictions: 'IND sponsorship required'
     },
     reviews: [],
     costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },

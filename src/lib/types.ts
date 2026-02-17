@@ -33,6 +33,9 @@ export type School = {
     classSize: number;
     healthInsurance: string;
     accreditation: string;
+    jobsPortal?: string;
+    minQualifications?: string;
+    visaRestrictions?: string;
   };
   reviews: Review[];
   costOfLiving: {
