@@ -3,17 +3,26 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+const getImage = (id: string) => {
+  const image = PlaceHolderImages.find(img => img.id === id);
+  return {
+    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/placeholder/2070/1380",
+    imageHint: image?.imageHint ?? "placeholder",
+    description: image?.description ?? "placeholder image"
+  };
+};
 
 export default function Home() {
-  const imageUrl = "https://images.unsplash.com/photo-1495954484750-af469f2f9be5?q=80&w=2070&auto=format&fit=crop";
-  const imageHint = "sandy beach";
+  const { imageUrl, imageHint, description } = getImage('homepage-hero');
 
   return (
     <>
       <section className="relative w-full h-[80vh]">
         <Image
           src={imageUrl}
-          alt="Calm beach with blue sky"
+          alt={description}
           fill
           className="object-cover"
           data-ai-hint={imageHint}
