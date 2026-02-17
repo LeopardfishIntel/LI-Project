@@ -250,7 +250,7 @@ service cloud.firestore {
      * @principle Secures the role-management system itself, preventing privilege escalation.
      */
     match /roles_admin/{userId} {
-      allow get: if isAdmin();
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
       allow create: if isAdmin();
       allow update: if isAdmin() && resource != null;
@@ -273,5 +273,3 @@ service cloud.firestore {
     }
   }
 }
-
-    
