@@ -32,6 +32,7 @@ export type School = {
     studentTeacherRatio: string;
     classSize: number;
     healthInsurance: string;
+    accreditation: string;
   };
   reviews: Review[];
   costOfLiving: {

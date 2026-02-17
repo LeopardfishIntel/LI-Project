@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { getSchoolById } from '@/lib/mock-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info } from 'lucide-react';
+import { Star, MapPin, Building, DollarSign, Users, BookOpen, HeartPulse, Sparkles, Home, Info, Award } from 'lucide-react';
 import { VerifiedBadge } from '@/components/verified-badge';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -19,6 +19,7 @@ const intelIcons = {
     studentTeacherRatio: <Users className="w-5 h-5 text-rose-400" />,
     classSize: <Building className="w-5 h-5 text-sky-400" />,
     healthInsurance: <HeartPulse className="w-5 h-5 text-red-400" />,
+    accreditation: <Award className="w-5 h-5 text-yellow-500" />,
 };
 
 type IntelKey = keyof typeof intelIcons;
@@ -42,6 +43,7 @@ export default function SchoolProfilePage({ params }: { params: { id: string } }
     { key: 'housing', label: 'Housing', value: school.intel.housing.value },
     { key: 'savingsPotential', label: 'Savings Potential', value: school.intel.savingsPotential.value, score: school.intel.savingsPotential.score },
     { key: 'curriculum', label: 'Curriculum', value: school.intel.curriculum },
+    { key: 'accreditation', label: 'Accreditation', value: school.intel.accreditation },
     { key: 'studentTeacherRatio', label: 'Student-Teacher Ratio', value: school.intel.studentTeacherRatio },
     { key: 'classSize', label: 'Average Class Size', value: school.intel.classSize },
     { key: 'healthInsurance', label: 'Health Insurance', value: school.intel.healthInsurance },

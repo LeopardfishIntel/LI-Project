@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Star, MapPin } from 'lucide-react';
@@ -54,6 +55,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <Badge variant="outline" className={cn(scoreColorClasses[school.intel.savingsPotential.score])}>
             Savings: {school.intel.savingsPotential.value}
           </Badge>
+          <Badge variant="outline">{school.intel.accreditation}</Badge>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
