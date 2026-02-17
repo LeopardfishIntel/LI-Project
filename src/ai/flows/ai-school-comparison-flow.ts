@@ -27,7 +27,7 @@ const SchoolDataSchema = z.object({
 
 const AiSchoolComparisonInputSchema = z.object({
   schools: z.array(SchoolDataSchema).describe('An array of school data objects to be compared.'),
-  teacherProfile: z.string().describe('A summary of the teacher\'s profile and preferences to contextualize the recommendation. e.g., "A teacher with 10 years experience looking for high savings potential and good work-life balance."')
+  teacherProfile: z.string().describe('A summary of your profile and preferences to contextualize the recommendation. e.g., "A teacher with 10 years experience looking for high savings potential and good work-life balance."')
 });
 export type AiSchoolComparisonInput = z.infer<
   typeof AiSchoolComparisonInputSchema
@@ -40,8 +40,8 @@ const AiSchoolComparisonOutputSchema = z.object({
       "A high-level summary comparing the key differences between the schools."
     ),
   bestFit: z.object({
-      schoolName: z.string().describe("The name of the school that is the best fit for the teacher."),
-      reasoning: z.string().describe("The reasoning for why this school is the best fit, based on the teacher's profile."),
+      schoolName: z.string().describe("The name of the school that is the best fit for you."),
+      reasoning: z.string().describe("The reasoning for why this school is the best fit, based on your profile."),
   }),
   schoolBreakdowns: z.array(z.object({
       schoolName: z.string().describe('The name of the school.'),
@@ -64,9 +64,9 @@ const comparisonPrompt = ai.definePrompt({
   name: 'aiSchoolComparisonPrompt',
   input: {schema: AiSchoolComparisonInputSchema},
   output: {schema: AiSchoolComparisonOutputSchema},
-  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data and teacher reviews. You must also recommend the best fit for the teacher based on their profile.
+  prompt: `You are an expert education consultant. Your task is to provide a comparative analysis of the following schools based on the provided data and teacher reviews. You must also recommend the best fit for you based on your profile.
 
-Teacher Profile:
+Your Profile:
 {{{teacherProfile}}}
 
 Schools to Compare:
@@ -78,7 +78,7 @@ Schools to Compare:
 
 Instructions:
 1.  **Overall Summary:** Write a high-level summary that compares the schools. Focus on the main trade-offs (e.g., "School A offers a tax-free salary and high savings, but a more demanding work environment, while School B is in a culturally rich location with a better work-life balance but lower savings potential.").
-2.  **Best Fit Recommendation:** Based on the provided Teacher Profile, identify which school is the best fit and provide clear, actionable reasoning.
+2.  **Best Fit Recommendation:** Based on your provided profile, identify which school is the best fit and provide clear, actionable reasoning.
 3.  **Individual Breakdowns:** For each school, provide a brief summary, a list of pros, and a list of cons. These should be directly derived from the data and reviews provided.
 `,
 });
