@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 md:px-6 py-2">
+      <section className="container mx-auto px-4 md:px-6 py-12">
         <KeyFactsSection />
       </section>
 
