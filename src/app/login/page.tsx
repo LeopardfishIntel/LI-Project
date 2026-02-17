@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser, initiateEmailSignIn, initiateAnonymousSignIn } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { signInWithEmailAndPassword, signInAnonymously } from 'firebase/auth';
 
 export default function LoginPage() {
   const auth = useAuth();
@@ -35,7 +34,7 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router]);
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please enter email and password.');
@@ -43,27 +42,21 @@ export default function LoginPage() {
     }
     setLoading('email');
     setError(null);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Redirect is handled by useEffect
-    } catch (err: any) {
-      setError('Failed to sign in. Please check your credentials.');
-      console.error(err);
-      setLoading(false);
-    }
+    initiateEmailSignIn(auth, email, password, (err: any) => {
+        setError('Failed to sign in. Please check your credentials.');
+        console.error(err);
+        setLoading(false);
+    });
   };
 
-  const handleAnonymousLogin = async () => {
+  const handleAnonymousLogin = () => {
     setLoading('anonymous');
     setError(null);
-    try {
-      await signInAnonymously(auth);
-      // Redirect is handled by useEffect
-    } catch (err: any) {
-      setError('Failed to sign in anonymously.');
-      console.error(err);
-      setLoading(false);
-    }
+    initiateAnonymousSignIn(auth, (err: any) => {
+        setError('Failed to sign in anonymously.');
+        console.error(err);
+        setLoading(false);
+    });
   };
 
   if (isUserLoading || user) {
