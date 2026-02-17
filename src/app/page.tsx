@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
@@ -20,13 +19,12 @@ export default function Home() {
   return (
     <>
       <section className="relative w-full h-[80vh]">
-        <Image
-          src={imageUrl}
-          alt={description}
-          fill
-          className="object-cover"
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${imageUrl})` }}
           data-ai-hint={imageHint}
-          priority
+          aria-label={description}
+          role="img"
         />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative container mx-auto px-4 md:px-6 flex flex-col justify-center text-center h-full py-16">
