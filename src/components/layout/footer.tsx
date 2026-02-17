@@ -1,4 +1,4 @@
-import { Linkedin, Facebook } from "lucide-react";
+import { Linkedin, Facebook, Binoculars } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -8,14 +8,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-8">
             <div className="flex flex-col items-center md:items-start">
                 <div className="flex items-center mb-4">
-                    <svg viewBox="0 0 24 24" className="h-6 w-6 mr-2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="rotate(45 12 12)">
-                            <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                            <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                            <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                            <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                        </g>
-                    </svg>
+                    <Binoculars className="h-6 w-6 mr-2 text-primary" />
                     <span className="font-bold font-headline">Leopardfish Intel</span>
                 </div>
                 <p className="text-xs text-muted-foreground text-center md:text-left">
