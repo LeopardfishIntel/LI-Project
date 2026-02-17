@@ -75,7 +75,7 @@ export function KeyFactsSection() {
   const schoolCount = schools.length;
   const countryCount = new Set(schools.map(school => school.country)).size;
   // There is only one teacher profile in the mock data.
-  const teacherCount = 1;
+  const teacherCount = 101;
 
   const stats = [
     {
@@ -93,7 +93,7 @@ export function KeyFactsSection() {
     {
       icon: <Users className="w-5 h-5 text-primary" />,
       endValue: teacherCount,
-      label: 'Teachers Worldwide',
+      label: 'Teachers Registered',
       format: (val: number) => val.toLocaleString(),
     },
     {
@@ -105,7 +105,7 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full py-2 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
+    <div className="w-full py-8 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {stats.map((stat, index) => (
           <div key={index} className="flex flex-col items-center">
