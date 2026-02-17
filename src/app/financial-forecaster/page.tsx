@@ -1012,7 +1012,7 @@ function TrueCostsSection() {
                             Financial Snapshot: {selectedSchool.name}
                         </CardTitle>
                         <CardDescription className="mt-1">
-                            Use our Net Tax Calculator and Family Status selector to ensure best results.
+                            Please ensure your Family Status is correct.
                         </CardDescription>
                     </div>
                     <div className="w-[120px]">
@@ -1191,11 +1191,11 @@ function TrueCostsSection() {
                             </div>
                         </div>
                         <div className="mt-6 text-center">
-                           <p className="text-amber-400 text-sm">
+                           <p className="text-muted-foreground text-sm">
                                 Use our{' '}
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <span className="text-sky-400 hover:underline cursor-pointer">Net Tax Calculator</span>
+                                        <span className="text-sky-400 hover:underline cursor-pointer">Tax Calculator</span>
                                     </DialogTrigger>
                                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                                         <DialogHeader>
