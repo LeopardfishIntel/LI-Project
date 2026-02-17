@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, User, ChevronDown } from "lucide-react";
+import { Menu, User, ChevronDown, Binoculars } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center">
+          <Link href="/" className="mr-6 flex items-center gap-2">
+            <Binoculars className="h-6 w-6 text-primary" />
             <span className="hidden font-bold sm:inline-block font-headline">
               Leopardfish Intel
             </span>
@@ -86,8 +87,9 @@ export default function Header() {
           <SheetContent side="left" className="pr-0">
             <Link
               href="/"
-              className="flex items-center"
+              className="flex items-center gap-2"
             >
+              <Binoculars className="h-6 w-6 text-primary" />
               <span className="font-bold font-headline">Leopardfish Intel</span>
             </Link>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
@@ -133,8 +135,9 @@ export default function Header() {
             </div>
           </SheetContent>
         </Sheet>
-        <Link href="/" className="flex items-center md:hidden">
-          <span className="font-bold font-headline">Leopardfish Intel</span>
+        <Link href="/" className="flex items-center gap-2 md:hidden">
+            <Binoculars className="h-5 w-5 text-primary" />
+            <span className="font-bold font-headline">Leopardfish Intel</span>
         </Link>
 
 
