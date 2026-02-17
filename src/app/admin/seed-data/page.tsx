@@ -44,7 +44,7 @@ export default function SeedDataPage() {
     isLoading: isAdminLoading,
     error: adminRoleError,
   } = useDoc(adminRoleRef);
-  const isAdmin = adminRole?.exists ? adminRole.exists() : false;
+  const isAdmin = !!adminRole;
 
   const handleSeedData = async () => {
     if (!firestore) {
@@ -130,7 +130,7 @@ export default function SeedDataPage() {
                           A permission error occurred while checking your admin status. This is almost always caused by Firestore Security Rules.
                         </p>
                         <p className="mt-2">
-                          I have just applied a fix to the rules. Please try refreshing the page. If the problem persists, please double-check that the `roles_admin` collection and your user ID document exist in the Firebase Console.
+                          Please double-check that the `roles_admin` collection and your user ID document exist in the Firebase Console.
                         </p>
                       </>
                     ) : (
