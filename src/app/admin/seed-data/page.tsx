@@ -18,7 +18,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Loader2, ShieldCheck, ShieldOff, ShieldAlert } from 'lucide-react';
+import {
+  Loader2,
+  ShieldCheck,
+  ShieldOff,
+  ShieldAlert,
+  AlertCircle,
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
@@ -33,7 +39,11 @@ export default function SeedDataPage() {
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
     [firestore, user]
   );
-  const { data: adminRole, isLoading: isAdminLoading } = useDoc(adminRoleRef);
+  const {
+    data: adminRole,
+    isLoading: isAdminLoading,
+    error: adminRoleError,
+  } = useDoc(adminRoleRef);
   const isAdmin = adminRole?.exists ? adminRole.exists() : false;
 
   const handleSeedData = async () => {
@@ -95,8 +105,9 @@ export default function SeedDataPage() {
           </CardHeader>
           <CardContent>
             {isLoading && (
-              <div className="flex justify-center">
+              <div className="flex justify-center items-center gap-4">
                 <Loader2 className="h-8 w-8 animate-spin" />
+                <p>Checking admin status...</p>
               </div>
             )}
             {!isLoading && !user && (
@@ -116,6 +127,24 @@ export default function SeedDataPage() {
                     You do not have permission to perform this action.
                   </AlertDescription>
                 </Alert>
+
+                {adminRoleError && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Firestore Permission Error</AlertTitle>
+                    <AlertDescription>
+                      <p>
+                        The app was blocked from checking your admin status.
+                        This is usually caused by Firestore Security Rules.
+                      </p>
+                      <p className="mt-2">
+                        Please ensure the `roles_admin` collection exists and
+                        your rules allow you to read your own document within it.
+                      </p>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Card>
                   <CardHeader>
                     <CardTitle>How to become an Admin</CardTitle>
@@ -129,7 +158,15 @@ export default function SeedDataPage() {
                       <ShieldAlert className="h-4 w-4" />
                       <AlertTitle>Important!</AlertTitle>
                       <AlertDescription>
-                        The collection name must be exactly <code className="bg-primary/20 text-primary-foreground p-1 rounded">roles_admin</code>. A common mistake is to use <code className="bg-red-900 text-white p-1 rounded">admin_roles</code>.
+                        The collection name must be exactly{' '}
+                        <code className="bg-primary/20 text-primary-foreground p-1 rounded">
+                          roles_admin
+                        </code>
+                        . A common mistake is to use{' '}
+                        <code className="bg-red-900 text-white p-1 rounded">
+                          admin_roles
+                        </code>
+                        .
                       </AlertDescription>
                     </Alert>
                     <ol className="list-decimal list-inside space-y-2">
@@ -146,7 +183,8 @@ export default function SeedDataPage() {
                         .
                       </li>
                       <li>
-                        Click 'Start collection' and create a new collection named{' '}
+                        Click 'Start collection' and create a new collection
+                        named{' '}
                         <code className="bg-muted px-1 py-0.5 rounded">
                           roles_admin
                         </code>
@@ -163,8 +201,9 @@ export default function SeedDataPage() {
                         </code>
                       </li>
                       <li>
-                        You can add a field to the document, e.g., `isAdmin: true`,
-                        but the existence of the document is enough. Click 'Save'.
+                        You can add a field to the document, e.g., `isAdmin:
+                        true`, but the existence of the document is enough. Click
+                        'Save'.
                       </li>
                       <li>
                         Refresh this page. The button below should become
@@ -178,9 +217,14 @@ export default function SeedDataPage() {
 
             {!isLoading && user && isAdmin && (
               <div className="text-center space-y-4">
-                <Alert variant="default" className="bg-green-500/10 border-green-500/50 text-left">
+                <Alert
+                  variant="default"
+                  className="bg-green-500/10 border-green-500/50 text-left"
+                >
                   <ShieldCheck className="h-4 w-4" />
-                  <AlertTitle className="text-green-400">Admin Access Granted</AlertTitle>
+                  <AlertTitle className="text-green-400">
+                    Admin Access Granted
+                  </AlertTitle>
                   <AlertDescription>
                     You are authorized to perform administrative actions.
                   </AlertDescription>
@@ -195,7 +239,10 @@ export default function SeedDataPage() {
                   ) : null}
                   Seed School Data
                 </Button>
-                 <p className="text-xs text-muted-foreground pt-2">This will add all schools from the local mock data file to your live Firestore database.</p>
+                <p className="text-xs text-muted-foreground pt-2">
+                  This will add all schools from the local mock data file to
+                  your live Firestore database.
+                </p>
               </div>
             )}
           </CardContent>
