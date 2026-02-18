@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, User, ChevronDown, Binoculars, LogOut } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, User, ChevronDown, Binoculars, LogOut, Search } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -31,7 +31,6 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 
 
 const navLinks = [
@@ -39,6 +38,7 @@ const navLinks = [
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
   { href: "/directory", label: "Directory" },
+  { href: "/partners", label: "Partners" },
 ];
 
 function UserNav() {
@@ -110,6 +110,7 @@ export default function Header() {
 
   function onSubmit(data: z.infer<typeof searchSchema>) {
     router.push(`/search?q=${data.query}`);
+    form.reset();
   }
 
   return (
@@ -234,7 +235,10 @@ export default function Header() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Search schools..." {...field} className="h-9" />
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Search schools..." {...field} className="h-9 pl-9" />
+                          </div>
                         </FormControl>
                       </FormItem>
                     )}
