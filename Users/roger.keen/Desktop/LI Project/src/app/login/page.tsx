@@ -67,7 +67,7 @@ export default function LoginPage() {
     });
   };
 
-  if (isUserLoading || (!isUserLoading && user)) {
+  if (isUserLoading || user) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] py-12">
         <Loader2 className="h-8 w-8 animate-spin" />

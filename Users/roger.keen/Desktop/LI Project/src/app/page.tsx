@@ -4,8 +4,6 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -28,10 +26,9 @@ export default function Home() {
         <Image
           src={imageUrl}
           alt={description}
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
           data-ai-hint={imageHint}
-          width={2070}
-          height={1380}
           priority
         />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-between text-center h-full py-16">
