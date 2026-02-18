@@ -79,7 +79,13 @@ export default function SignupPage() {
       // 4. Redirect to the profile page
       router.push('/profile');
     } catch (err: any) {
-      setError('Failed to create account. The email may already be in use.');
+      let message = 'Failed to create account.';
+      if (err.code === 'auth/email-already-in-use') {
+        message = 'The email address is already in use by another account.';
+      } else if (err.code === 'auth/weak-password') {
+        message = 'The password is too weak. Please use at least 6 characters.';
+      }
+      setError(message);
       console.error(err);
       setLoading(false);
     }
