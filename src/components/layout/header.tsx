@@ -26,6 +26,8 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
+  { href: "/directory", label: "Directory" },
+  { href: "/profile", label: "Profile" },
   { href: "/enquiry", label: "Enquiry" },
 ];
 
