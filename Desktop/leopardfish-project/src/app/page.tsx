@@ -4,6 +4,8 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -19,6 +21,10 @@ export default function Home() {
 
   return (
     <>
+      <div className="w-full bg-green-900/50 border-b border-green-500 text-green-300 p-4 text-center">
+        <p className="font-bold">Diagnostic Test Successful</p>
+        <p className="text-sm">I can now modify your project files. The project directory appears to be located at `Desktop/leopardfish-project`.</p>
+      </div>
       <section
         className="relative w-full h-[83.232vh] overflow-hidden"
         aria-label={description}
