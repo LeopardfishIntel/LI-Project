@@ -46,37 +46,39 @@ import { Label } from '@/components/ui/label';
 
 function ProfileSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-        <Skeleton className="h-32 w-32 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-4 w-48" />
+    <div className="container mx-auto px-4 md:px-6 py-12">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
+          <Skeleton className="h-32 w-32 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
         </div>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-48" />
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-5/6" />
-              <Skeleton className="h-5 w-full" />
-            </CardContent>
-          </Card>
-        </div>
-        <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-40" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-5 w-full" />
-              <Skeleton className="h-5 w-5/6" />
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-5/6" />
+                <Skeleton className="h-5 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-5 w-full" />
+                <Skeleton className="h-5 w-5/6" />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
@@ -104,17 +106,14 @@ export default function ProfilePage() {
 
   const handleCreateProfile = () => {
     if (!firestore || !user || !profileRef) return;
+    const { memberSince, ...restOfMockProfile } = mockProfile;
     const newProfile = {
-      ...mockProfile,
+      ...restOfMockProfile,
       id: user.uid,
       fullName: user.displayName || 'New Teacher',
       memberSince: new Date(),
     };
-    // The mock profile has a Date object, need to convert to Firestore Timestamp for storage
-    const { memberSince, ...rest } = newProfile;
-    const dataToSave = { ...rest, memberSince: memberSince };
-
-    setDocumentNonBlocking(profileRef, dataToSave, { merge: true });
+    setDocumentNonBlocking(profileRef, newProfile, { merge: true });
   };
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
