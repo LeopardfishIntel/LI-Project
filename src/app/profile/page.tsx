@@ -1,15 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import {
   useUser,
   useDoc,
   useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
+  useAuth,
 } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { TeacherProfile } from '@/lib/types';
 import { teacherProfile as mockProfile } from '@/lib/mock-data';
+import { updateEmail } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +31,18 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 function ProfileSkeleton() {
   return (
@@ -69,7 +85,13 @@ function ProfileSkeleton() {
 
 export default function ProfilePage() {
   const { user, isUserLoading } = useUser();
+  const auth = useAuth();
   const firestore = useFirestore();
+  const { toast } = useToast();
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const profileRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'users', user.uid) : null),
@@ -93,6 +115,44 @@ export default function ProfilePage() {
     const dataToSave = { ...rest, memberSince: memberSince };
 
     setDocumentNonBlocking(profileRef!, dataToSave, { merge: true });
+  };
+
+  const handleUpdateEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !newEmail) return;
+
+    setIsUpdating(true);
+    try {
+      await updateEmail(user, newEmail);
+      toast({
+        title: 'Email Updated',
+        description:
+          'Your email has been updated. Please log in again with your new email.',
+      });
+      setIsEditDialogOpen(false);
+      setNewEmail('');
+      if (auth) {
+        auth.signOut();
+      }
+    } catch (error: any) {
+      let message = 'An unknown error occurred. Please try again.';
+      if (error.code === 'auth/requires-recent-login') {
+        message =
+          'This action is sensitive and requires recent authentication. Please log out and log back in, then try again.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        message = 'The new email address is already in use by another account.';
+      } else if (error.code === 'auth/invalid-email') {
+        message = 'The new email address is not valid.';
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Update Failed',
+        description: message,
+      });
+      console.error(error);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const isLoading = isUserLoading || isProfileLoading;
@@ -172,10 +232,60 @@ export default function ProfilePage() {
               })}
             </p>
           </div>
-          <Button variant="outline">
-            <Pencil className="mr-2 h-4 w-4" />
-            Edit Profile
-          </Button>
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit Profile
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Update Your Email</DialogTitle>
+                <DialogDescription>
+                  Enter your new email address. You will be logged out and need
+                  to sign in again.
+                </DialogDescription>
+              </DialogHeader>
+              <form
+                id="update-email-form"
+                onSubmit={handleUpdateEmail}
+                className="grid gap-4 py-4"
+              >
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="email" className="text-right">
+                    New Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={newEmail}
+                    onChange={e => setNewEmail(e.target.value)}
+                    className="col-span-3"
+                    placeholder="new.email@example.com"
+                    required
+                  />
+                </div>
+              </form>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  form="update-email-form"
+                  disabled={isUpdating}
+                >
+                  {isUpdating && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Update Email
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
