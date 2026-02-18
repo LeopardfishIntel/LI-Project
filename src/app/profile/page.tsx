@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { VerifiedBadge } from '@/components/verified-badge';
 import {
+  Mail,
   MapPin,
   Users,
   Calendar,
@@ -310,6 +311,15 @@ export default function ProfilePage() {
                 <CardTitle>Personal Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div className="break-all">
+                    <span className="font-semibold text-muted-foreground">
+                      Email:
+                    </span>{' '}
+                    {user.email}
+                  </div>
+                </div>
                 <div className="flex items-center gap-4">
                   <Users className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                   <p>
