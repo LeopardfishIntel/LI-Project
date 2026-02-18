@@ -94,7 +94,7 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const profileRef = useMemoFirebase(
-    () => (firestore && user ? doc(firestore, 'users', user.uid) : null),
+    () => (firestore && user ? doc(firestore, 'users', user.uid, 'teacherProfile', user.uid) : null),
     [firestore, user]
   );
   const { data: teacherProfile, isLoading: isProfileLoading } =
@@ -103,7 +103,7 @@ export default function ProfilePage() {
     );
 
   const handleCreateProfile = () => {
-    if (!firestore || !user) return;
+    if (!firestore || !user || !profileRef) return;
     const newProfile = {
       ...mockProfile,
       id: user.uid,
@@ -114,7 +114,7 @@ export default function ProfilePage() {
     const { memberSince, ...rest } = newProfile;
     const dataToSave = { ...rest, memberSince: memberSince };
 
-    setDocumentNonBlocking(profileRef!, dataToSave, { merge: true });
+    setDocumentNonBlocking(profileRef, dataToSave, { merge: true });
   };
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
@@ -123,6 +123,7 @@ export default function ProfilePage() {
 
     setIsUpdating(true);
     try {
+      if (!auth) throw new Error("Auth service not available");
       await updateEmail(user, newEmail);
       toast({
         title: 'Email Updated',
@@ -131,9 +132,7 @@ export default function ProfilePage() {
       });
       setIsEditDialogOpen(false);
       setNewEmail('');
-      if (auth) {
-        auth.signOut();
-      }
+      auth.signOut();
     } catch (error: any) {
       let message = 'An unknown error occurred. Please try again.';
       if (error.code === 'auth/requires-recent-login') {
@@ -196,7 +195,7 @@ export default function ProfilePage() {
   // Convert Firestore Timestamp to Date for display
   const displayProfile = {
     ...teacherProfile,
-    memberSince: teacherProfile.memberSince.toDate
+    memberSince: teacherProfile.memberSince?.toDate
       ? teacherProfile.memberSince.toDate()
       : new Date(),
   };

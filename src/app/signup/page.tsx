@@ -47,6 +47,9 @@ export default function SignupPage() {
     setError(null);
 
     try {
+      if (!auth) {
+        throw new Error("Authentication service is not available.");
+      }
       // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -61,7 +64,7 @@ export default function SignupPage() {
 
       // 3. Create their teacher profile document in Firestore
       if (firestore) {
-        const profileRef = doc(firestore, 'users', user.uid);
+        const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
         const { memberSince, ...restOfMockProfile } = mockProfile;
         const newProfile = {
           ...restOfMockProfile,
