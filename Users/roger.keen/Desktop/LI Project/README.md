@@ -1,0 +1,1 @@
+This is a test file to confirm that I can write to your "LI Project" folder. If you can see this text, we have successfully established the correct path.
