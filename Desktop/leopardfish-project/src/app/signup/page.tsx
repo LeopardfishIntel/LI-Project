@@ -61,7 +61,7 @@ export default function SignupPage() {
 
       // 3. Create their teacher profile document in Firestore
       if (firestore) {
-        const profileRef = doc(firestore, 'users', user.uid);
+        const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
         const { memberSince, ...restOfMockProfile } = mockProfile;
         const newProfile = {
           ...restOfMockProfile,
@@ -163,3 +163,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+    

@@ -94,7 +94,7 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const profileRef = useMemoFirebase(
-    () => (firestore && user ? doc(firestore, 'users', user.uid) : null),
+    () => (firestore && user ? doc(firestore, 'users', user.uid, 'teacherProfile', user.uid) : null),
     [firestore, user]
   );
   const { data: teacherProfile, isLoading: isProfileLoading } =
@@ -456,3 +456,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+    
