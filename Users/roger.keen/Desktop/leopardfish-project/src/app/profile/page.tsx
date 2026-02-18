@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -103,7 +104,7 @@ export default function ProfilePage() {
     );
 
   const handleCreateProfile = () => {
-    if (!firestore || !user) return;
+    if (!firestore || !user || !profileRef) return;
     const newProfile = {
       ...mockProfile,
       id: user.uid,
@@ -114,12 +115,12 @@ export default function ProfilePage() {
     const { memberSince, ...rest } = newProfile;
     const dataToSave = { ...rest, memberSince: memberSince };
 
-    setDocumentNonBlocking(profileRef!, dataToSave, { merge: true });
+    setDocumentNonBlocking(profileRef, dataToSave, { merge: true });
   };
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newEmail) return;
+    if (!user || !newEmail || !auth) return;
 
     setIsUpdating(true);
     try {
@@ -196,7 +197,7 @@ export default function ProfilePage() {
   // Convert Firestore Timestamp to Date for display
   const displayProfile = {
     ...teacherProfile,
-    memberSince: teacherProfile.memberSince.toDate
+    memberSince: teacherProfile.memberSince?.toDate
       ? teacherProfile.memberSince.toDate()
       : new Date(),
   };
