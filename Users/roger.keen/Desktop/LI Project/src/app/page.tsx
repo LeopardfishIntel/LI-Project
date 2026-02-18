@@ -4,6 +4,8 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -23,13 +25,11 @@ export default function Home() {
         className="relative w-full h-[83.232vh] overflow-hidden"
         aria-label={description}
       >
-        <Image
+        <img
           src={imageUrl}
           alt={description}
-          fill
-          className="object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
           data-ai-hint={imageHint}
-          priority
         />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-between text-center h-full py-16">
             <div className="flex flex-col items-center">
@@ -47,6 +47,18 @@ export default function Home() {
                     </Button>
                 </Link>
             </div>
+        </div>
+      </section>
+
+       <section className="bg-background py-12 md:py-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <Alert>
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>This is a Development Build</AlertTitle>
+            <AlertDescription>
+              You're currently viewing a preview of the Leopardfish Intel application. Some features are still in development.
+            </AlertDescription>
+          </Alert>
         </div>
       </section>
 
