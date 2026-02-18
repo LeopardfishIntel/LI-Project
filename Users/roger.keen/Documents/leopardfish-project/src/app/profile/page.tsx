@@ -94,7 +94,7 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const profileRef = useMemoFirebase(
-    () => (firestore && user ? doc(firestore, 'users', user.uid) : null),
+    () => (firestore && user ? doc(firestore, 'users', user.uid, 'teacherProfile', user.uid) : null),
     [firestore, user]
   );
   const { data: teacherProfile, isLoading: isProfileLoading } =
@@ -103,7 +103,7 @@ export default function ProfilePage() {
     );
 
   const handleCreateProfile = () => {
-    if (!firestore || !user) return;
+    if (!firestore || !user || !profileRef) return;
     const newProfile = {
       ...mockProfile,
       id: user.uid,
@@ -119,7 +119,7 @@ export default function ProfilePage() {
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newEmail) return;
+    if (!user || !newEmail || !auth) return;
 
     setIsUpdating(true);
     try {
@@ -196,7 +196,7 @@ export default function ProfilePage() {
   // Convert Firestore Timestamp to Date for display
   const displayProfile = {
     ...teacherProfile,
-    memberSince: teacherProfile.memberSince.toDate
+    memberSince: teacherProfile.memberSince?.toDate
       ? teacherProfile.memberSince.toDate()
       : new Date(),
   };

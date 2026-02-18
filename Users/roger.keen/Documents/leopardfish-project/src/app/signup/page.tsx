@@ -43,6 +43,10 @@ export default function SignupPage() {
       setError('Please fill out all required fields.');
       return;
     }
+    if (!auth) {
+      setError("Authentication service is not ready. Please try again in a moment.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -61,7 +65,7 @@ export default function SignupPage() {
 
       // 3. Create their teacher profile document in Firestore
       if (firestore) {
-        const profileRef = doc(firestore, 'users', user.uid);
+        const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
         const { memberSince, ...restOfMockProfile } = mockProfile;
         const newProfile = {
           ...restOfMockProfile,
