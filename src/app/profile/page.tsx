@@ -119,11 +119,10 @@ export default function ProfilePage() {
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newEmail) return;
+    if (!user || !newEmail || !auth) return;
 
     setIsUpdating(true);
     try {
-      if (!auth) throw new Error("Auth service not available");
       await updateEmail(user, newEmail);
       toast({
         title: 'Email Updated',
@@ -132,7 +131,9 @@ export default function ProfilePage() {
       });
       setIsEditDialogOpen(false);
       setNewEmail('');
-      auth.signOut();
+      if (auth) {
+        auth.signOut();
+      }
     } catch (error: any) {
       let message = 'An unknown error occurred. Please try again.';
       if (error.code === 'auth/requires-recent-login') {

@@ -43,13 +43,14 @@ export default function SignupPage() {
       setError('Please fill out all required fields.');
       return;
     }
+    if (!auth) {
+      setError("Authentication service is not ready. Please try again in a moment.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
     try {
-      if (!auth) {
-        throw new Error("Authentication service is not available.");
-      }
       // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
