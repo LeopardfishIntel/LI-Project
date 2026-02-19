@@ -22,7 +22,7 @@ export default function Footer() {
                     <Link href="/discover" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Discover</Link>
                     <Link href="/financial-forecaster" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Evaluate</Link>
                     <Link href="/compare" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Decide</Link>
-                    <Link href="/directory" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Directory</Link>
+                     <Link href="/partners" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Partners</Link>
                 </nav>
             </div>
 
@@ -37,7 +37,7 @@ export default function Footer() {
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
-                    <Link href="/partners" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Partners</Link>
+                    <Link href="/enquiry" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Contact</Link>
                     <Link href="/admin/seed-data" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Data Admin</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Terms of Service</Link>
                     <Link href="#" className="text-sm hover:underline underline-offset-4 text-muted-foreground">Privacy Policy</Link>
