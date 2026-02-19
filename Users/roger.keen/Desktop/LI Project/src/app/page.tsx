@@ -50,18 +50,6 @@ export default function Home() {
         </div>
       </section>
 
-       <section className="bg-background py-12 md:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <Alert>
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>This is a Development Build</AlertTitle>
-            <AlertDescription>
-              You're currently viewing a preview of the Leopardfish Intel application. Some features are still in development.
-            </AlertDescription>
-          </Alert>
-        </div>
-      </section>
-
       <section className="w-full py-8 bg-background">
         <div className="container mx-auto px-4 md:px-6">
             <KeyFactsSection />
