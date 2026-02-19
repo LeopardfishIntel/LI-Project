@@ -1,6 +1,9 @@
-
 {
   "hosting": {
-    "source": "."
+    "site": "studio-2840117705-12faa",
+    "source": ".",
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
   }
 }
