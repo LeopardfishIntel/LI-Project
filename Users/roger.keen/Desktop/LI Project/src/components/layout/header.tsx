@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -111,7 +112,7 @@ export default function Header() {
   });
 
   function onSubmit(data: z.infer<typeof searchSchema>) {
-    router.push(`/search?q=${data.query}`);
+    router.push(`/search?q=${encodeURIComponent(data.query)}`);
     form.reset();
   }
 
