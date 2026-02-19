@@ -63,14 +63,15 @@ export function useCollection<T = any>(
 
   useEffect(() => {
     if (!memoizedTargetRefOrQuery) {
-      setData(null);
       setIsLoading(false);
+      setData(null);
       setError(null);
       return;
     }
 
     setIsLoading(true);
     setError(null);
+    setData(null);
 
     // Directly use memoizedTargetRefOrQuery as it's assumed to be the final query
     const unsubscribe = onSnapshot(
@@ -109,6 +110,7 @@ export function useCollection<T = any>(
   }, [memoizedTargetRefOrQuery]); // Re-run if the target query/reference changes.
   
   if(memoizedTargetRefOrQuery && !(memoizedTargetRefOrQuery as any).__memo) {
+    console.error('useCollection query not memoized with useMemoFirebase:', memoizedTargetRefOrQuery);
     throw new Error('useCollection query must be memoized with useMemoFirebase. Please check the console for the query that is not memoized.');
   }
 

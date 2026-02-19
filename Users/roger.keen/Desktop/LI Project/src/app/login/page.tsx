@@ -36,12 +36,12 @@ export default function LoginPage() {
 
   const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please enter email and password.');
+    if (!auth) {
+      setError("Authentication service is not available. Please try again.");
       return;
     }
-    if (!auth) {
-      setError("Authentication service not available. Please try again.");
+    if (!email || !password) {
+      setError('Please enter email and password.');
       return;
     }
     setLoading('email');

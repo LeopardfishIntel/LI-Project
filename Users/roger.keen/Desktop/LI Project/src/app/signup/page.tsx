@@ -43,7 +43,7 @@ export default function SignupPage() {
       setError('Please fill out all required fields.');
       return;
     }
-    if (!auth) {
+    if (!auth || !firestore) {
       setError("Authentication service is not ready. Please try again in a moment.");
       return;
     }
@@ -64,17 +64,15 @@ export default function SignupPage() {
       await updateProfile(user, { displayName: fullName });
 
       // 3. Create their teacher profile document in Firestore
-      if (firestore) {
-        const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
-        const { memberSince, ...restOfMockProfile } = mockProfile;
-        const newProfile = {
-          ...restOfMockProfile,
-          id: user.uid,
-          fullName: fullName,
-          memberSince: new Date(), // Use current date for new members
-        };
-        setDocumentNonBlocking(profileRef, newProfile, { merge: true });
-      }
+      const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
+      const { memberSince, ...restOfMockProfile } = mockProfile;
+      const newProfile = {
+        ...restOfMockProfile,
+        id: user.uid,
+        fullName: fullName,
+        memberSince: new Date(), // Use current date for new members
+      };
+      setDocumentNonBlocking(profileRef, newProfile, { merge: true });
 
       // 4. Redirect to the profile page
       router.push('/profile');

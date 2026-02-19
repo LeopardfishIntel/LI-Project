@@ -47,8 +47,10 @@ function UserNav() {
     const router = useRouter();
 
     const handleLogout = () => {
-        auth?.signOut();
-        router.push('/');
+        if (auth) {
+            auth.signOut();
+            router.push('/');
+        }
     };
 
     if (isUserLoading) {
