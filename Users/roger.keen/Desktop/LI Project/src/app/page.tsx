@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -28,7 +29,7 @@ export default function Home() {
         <img
           src={imageUrl}
           alt={description}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-y-0 left-0 h-full w-[calc(100%+1.25rem)] max-w-none object-cover -translate-x-5"
           data-ai-hint={imageHint}
         />
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-between text-center h-full py-16">
