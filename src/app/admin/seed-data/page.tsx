@@ -20,6 +20,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Loader2,
   ShieldCheck,
   ShieldOff,
@@ -35,6 +42,23 @@ import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+const collectionOptions = [
+  'schools',
+  'users',
+  'roles_admin',
+  'roles_verifiedTeachers',
+  'forum_categories',
+  'forum_posts',
+  'app_metrics',
+  'locations_costOfLiving',
+];
+
+const addableCollectionOptions = [
+    { value: 'schools', label: 'School', href: '/admin/add-school' },
+    // Future addable types can be added here
+];
+
+
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -43,6 +67,11 @@ export default function SeedDataPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+
+  const [exportSelection, setExportSelection] = useState('schools');
+  const [importSelection, setImportSelection] = useState('schools');
+  const [addSelection, setAddSelection] = useState('schools');
+
 
   const adminRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
@@ -103,26 +132,26 @@ export default function SeedDataPage() {
     setIsExporting(true);
 
     try {
-      const schoolCollectionRef = collection(firestore, 'schools');
-      const snapshot = await getDocs(schoolCollectionRef);
-      const schoolData = snapshot.docs.map(doc => doc.data());
+      const collectionRef = collection(firestore, exportSelection);
+      const snapshot = await getDocs(collectionRef);
+      const data = snapshot.docs.map(doc => doc.data());
 
-      if (schoolData.length === 0) {
+      if (data.length === 0) {
         toast({
           variant: 'destructive',
           title: 'Export Failed',
-          description: 'The schools collection is empty. Seed data first.',
+          description: `The '${exportSelection}' collection is empty.`,
         });
         setIsExporting(false);
         return;
       }
 
-      const jsonString = JSON.stringify(schoolData, null, 2);
+      const jsonString = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'schools.json';
+      a.download = `${exportSelection}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -130,7 +159,7 @@ export default function SeedDataPage() {
 
       toast({
         title: 'Export Successful',
-        description: `Exported ${schoolData.length} schools to schools.json`,
+        description: `Exported ${data.length} documents from '${exportSelection}'.`,
       });
     } catch (error: any) {
       toast({
@@ -160,24 +189,24 @@ export default function SeedDataPage() {
         if (typeof event.target?.result !== 'string') {
             throw new Error("Failed to read file.");
         }
-        const schoolsToImport = JSON.parse(event.target.result);
+        const dataToImport = JSON.parse(event.target.result);
 
-        if (!Array.isArray(schoolsToImport) || schoolsToImport.some(s => !s.id)) {
-          throw new Error("Invalid JSON format. Must be an array of objects, each with an 'id'.");
+        if (!Array.isArray(dataToImport) || dataToImport.some(s => !s.id)) {
+          throw new Error("Invalid JSON format. Must be an array of objects, each with a unique 'id'.");
         }
 
-        const schoolCollectionRef = collection(firestore, 'schools');
+        const collectionRef = collection(firestore, importSelection);
         let successCount = 0;
 
-        for (const school of schoolsToImport) {
-          const schoolDocRef = doc(schoolCollectionRef, school.id);
-          setDocumentNonBlocking(schoolDocRef, school, { merge: true });
+        for (const item of dataToImport) {
+          const docRef = doc(collectionRef, item.id);
+          setDocumentNonBlocking(docRef, item, { merge: true });
           successCount++;
         }
 
         toast({
           title: 'Import Started',
-          description: `${successCount} schools are being updated in the database.`,
+          description: `${successCount} documents are being updated in the '${importSelection}' collection.`,
         });
       } catch (error: any) {
         toast({
@@ -202,6 +231,8 @@ export default function SeedDataPage() {
   };
 
   const isLoading = isUserLoading || isAdminLoading;
+
+  const selectedAddOption = addableCollectionOptions.find(opt => opt.value === addSelection);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -337,25 +368,42 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Add New School</CardTitle>
+                <CardTitle>Add New Document</CardTitle>
                 <CardDescription>
-                  Add a new school record to the database.
+                  Select a data type to add a new document to the database.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center">
-                <Button asChild variant="outline">
-                  <Link href="/admin/add-school">
-                    <Plus className="mr-2" /> Add School
-                  </Link>
-                </Button>
+              <CardContent className="flex flex-col items-center gap-4">
+                 <Select value={addSelection} onValueChange={setAddSelection}>
+                    <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="Select a document type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {addableCollectionOptions.map(option => (
+                             <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                {selectedAddOption ? (
+                    <Button asChild variant="outline">
+                        <Link href={selectedAddOption.href}>
+                            <Plus className="mr-2" /> Add {selectedAddOption.label}
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button variant="outline" disabled>
+                        <Plus className="mr-2" /> Select a type to add
+                    </Button>
+                )}
+                <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Seed Database</CardTitle>
+                <CardTitle>Seed Mock Data</CardTitle>
                 <CardDescription>
-                  Populate the 'schools' collection with the initial set of mock data. This is a good starting point for your app.
+                  Populate the 'schools' collection with a set of mock data.
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
@@ -370,37 +418,56 @@ export default function SeedDataPage() {
                   Seed School Data
                 </Button>
                  <p className="text-xs text-muted-foreground pt-4">
-                  This will add all schools from the local mock data file to
-                  your live Firestore database. Existing schools with the same ID will be overwritten.
+                  This will add/overwrite schools from the local mock data file.
                 </p>
               </CardContent>
             </Card>
 
              <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle>Export Data</CardTitle>
+                    <CardTitle>Export Collection</CardTitle>
                     <CardDescription>
-                    Download the current 'schools' collection as a single JSON file. You can edit this file locally.
+                    Select a collection and download its data as a single JSON file.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="flex flex-col items-center gap-4">
+                    <Select value={exportSelection} onValueChange={setExportSelection}>
+                        <SelectTrigger className="w-[280px]">
+                            <SelectValue placeholder="Select a collection" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {collectionOptions.map(col => (
+                                <SelectItem key={col} value={col}>{col}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     <Button onClick={handleExportData} disabled={isExporting} variant="outline">
-                    {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
-                    Export to JSON
+                        {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
+                        Export to JSON
                     </Button>
                 </CardContent>
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Import Data</CardTitle>
+                <CardTitle>Import Collection</CardTitle>
                 <CardDescription>
-                  Upload a `schools.json` file to update your database. The file must be an array of school objects, each with a unique 'id'.
+                  Select a collection and upload a JSON file to update your database. The file must be an array of objects, each with an 'id'.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor="json-upload">JSON File</Label>
+              <CardContent className="space-y-4 text-center">
+                 <Select value={importSelection} onValueChange={setImportSelection}>
+                    <SelectTrigger className="w-[280px] mx-auto">
+                        <SelectValue placeholder="Select a collection" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {collectionOptions.map(col => (
+                            <SelectItem key={col} value={col}>{col}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <div className="grid w-full max-w-sm items-center gap-1.5 mx-auto">
+                    <Label htmlFor="json-upload" className="sr-only">JSON File</Label>
                     <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} />
                 </div>
                 <Button onClick={handleImportData} disabled={isImporting || !importFile}>
@@ -408,7 +475,7 @@ export default function SeedDataPage() {
                   Import from JSON
                 </Button>
                  <p className="text-xs text-muted-foreground pt-2">
-                  This will update or create schools based on the IDs in your JSON file. This action is non-destructive for other documents.
+                  This will update or create documents based on the IDs in your file.
                 </p>
               </CardContent>
             </Card>
