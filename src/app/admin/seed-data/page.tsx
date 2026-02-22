@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -35,12 +36,17 @@ import {
   Upload,
   Table as TableIcon,
   Plus,
+  DatabaseZap,
+  FilePlus,
+  FileDown,
+  FileUp,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 const collectionOptions = [
   'schools',
@@ -75,10 +81,7 @@ export default function SeedDataPage() {
 
   const [exportSelection, setExportSelection] = useState('schools');
   const [importSelection, setImportSelection] = useState('schools');
-  const [addSelection, setAddSelection] = useState('schools');
-  const [viewSelection, setViewSelection] = useState('schools');
-
-
+  
   const adminRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
     [firestore, user]
@@ -238,9 +241,6 @@ export default function SeedDataPage() {
 
   const isLoading = isUserLoading || isAdminLoading;
 
-  const selectedAddOption = addableCollectionOptions.find(opt => opt.value === addSelection);
-  const selectedViewOption = viewableCollectionOptions.find(opt => opt.value === viewSelection);
-
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto space-y-12">
@@ -249,7 +249,7 @@ export default function SeedDataPage() {
             Data Administration
             </h1>
             <p className="text-muted-foreground text-center mt-4">
-            Use this page to manage your application's Firestore data.
+            Manage your application's Firestore data, including content and bulk operations.
             </p>
         </div>
 
@@ -294,7 +294,7 @@ export default function SeedDataPage() {
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 <p>
-                  To seed the database, you need to be an administrator. To
+                  To use these tools, you need to be an administrator. To
                   grant yourself admin rights, follow these steps:
                 </p>
                 <Alert variant="destructive" className="text-left">
@@ -304,10 +304,6 @@ export default function SeedDataPage() {
                     The collection name must be exactly{' '}
                     <code className="bg-primary/20 text-primary-foreground p-1 rounded">
                       roles_admin
-                    </code>
-                    . A common mistake is to use{' '}
-                    <code className="bg-red-900 text-white p-1 rounded">
-                      admin_roles
                     </code>
                     .
                   </AlertDescription>
@@ -344,12 +340,10 @@ export default function SeedDataPage() {
                     </code>
                   </li>
                   <li>
-                    You can add a field to the document, e.g., `isAdmin:
-                    true`, but the existence of the document is enough. Click
-                    'Save'.
+                    You can add a field, e.g., `isAdmin: true`, but the existence of the document is enough. Click 'Save'.
                   </li>
                   <li>
-                    Refresh this page. The admin tools below should become
+                    Refresh this page. The admin tools should become
                     available.
                   </li>
                 </ol>
@@ -372,151 +366,97 @@ export default function SeedDataPage() {
                 You are authorized to perform administrative actions.
               </AlertDescription>
             </Alert>
-
+            
             <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>Add New Document</CardTitle>
-                <CardDescription>
-                  Select a data type to add a new document to the database.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center gap-4">
-                 <Select value={addSelection} onValueChange={setAddSelection}>
-                    <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Select a document type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {addableCollectionOptions.map(option => (
-                             <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                {selectedAddOption ? (
-                    <Button asChild variant="outline">
-                        <Link href={selectedAddOption.href}>
-                            <Plus className="mr-2" /> Add {selectedAddOption.label}
-                        </Link>
-                    </Button>
-                ) : (
-                    <Button variant="outline" disabled>
-                        <Plus className="mr-2" /> Select a type to add
-                    </Button>
-                )}
-                <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>Seed Mock Data</CardTitle>
-                <CardDescription>
-                  Populate the 'schools' collection with a set of mock data.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <Button
-                  onClick={handleSeedData}
-                  disabled={isSeeding}
-                  size="lg"
-                >
-                  {isSeeding ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  ) : null}
-                  Seed School Data
-                </Button>
-                 <p className="text-xs text-muted-foreground pt-4">
-                  This will add/overwrite schools from the local mock data file.
-                </p>
-              </CardContent>
-            </Card>
-
-             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle>Export Collection</CardTitle>
+                    <CardTitle className="flex items-center gap-3"><FilePlus className="text-primary"/>Content Management</CardTitle>
                     <CardDescription>
-                    Select a collection and download its data as a single JSON file.
+                    Add new documents or view existing collection data.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center gap-4">
-                    <Select value={exportSelection} onValueChange={setExportSelection}>
-                        <SelectTrigger className="w-[280px]">
-                            <SelectValue placeholder="Select a collection" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {collectionOptions.map(col => (
-                                <SelectItem key={col} value={col}>{col}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Button onClick={handleExportData} disabled={isExporting} variant="outline">
-                        {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
-                        Export to JSON
-                    </Button>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
+                        <h3 className="font-semibold">Add New Document</h3>
+                        <Button asChild variant="outline">
+                            <Link href="/admin/add-school">
+                                <Plus className="mr-2" /> Add School
+                            </Link>
+                        </Button>
+                        <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
+                    </div>
+                     <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
+                        <h3 className="font-semibold">View Collection Data</h3>
+                         <Button asChild variant="outline">
+                           <Link href="/admin/data-table">
+                                <TableIcon className="mr-2" /> View Schools Table
+                            </Link>
+                        </Button>
+                        <p className="text-xs text-muted-foreground pt-2">More data viewers coming soon.</p>
+                    </div>
                 </CardContent>
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Import Collection</CardTitle>
+                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Bulk Data Operations</CardTitle>
                 <CardDescription>
-                  Select a collection and upload a JSON file to update your database. The file must be an array of objects, each with an 'id'.
+                  Seed, import, or export entire collections. Use with caution.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 text-center">
-                 <Select value={importSelection} onValueChange={setImportSelection}>
-                    <SelectTrigger className="w-[280px] mx-auto">
-                        <SelectValue placeholder="Select a collection" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {collectionOptions.map(col => (
-                            <SelectItem key={col} value={col}>{col}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                <div className="grid w-full max-w-sm items-center gap-1.5 mx-auto">
-                    <Label htmlFor="json-upload" className="sr-only">JSON File</Label>
-                    <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} />
+              <CardContent className="space-y-8">
+                <div className="p-4 rounded-lg bg-background/50">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2"><DatabaseZap className="text-amber-400" /> Seed Mock Data</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Populate the 'schools' collection with a set of mock data. This will add or overwrite existing documents.</p>
+                    <Button
+                        onClick={handleSeedData}
+                        disabled={isSeeding}
+                        >
+                        {isSeeding ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        Seed School Data
+                    </Button>
                 </div>
-                <Button onClick={handleImportData} disabled={isImporting || !importFile}>
-                  {isImporting ? <Loader2 className="animate-spin" /> : <Upload />}
-                  Import from JSON
-                </Button>
-                 <p className="text-xs text-muted-foreground pt-2">
-                  This will update or create documents based on the IDs in your file.
-                </p>
-              </CardContent>
-            </Card>
+                
+                <Separator />
 
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>View Collection Data</CardTitle>
-                <CardDescription>
-                  Select a collection to view its documents in a table.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center gap-4">
-                <Select value={viewSelection} onValueChange={setViewSelection}>
-                    <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Select a collection" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {viewableCollectionOptions.map(option => (
-                             <SelectItem key={option.value} value={option.value} disabled={option.disabled}>{option.label}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                {selectedViewOption && !selectedViewOption.disabled ? (
-                    <Button asChild variant="outline">
-                        <Link href={selectedViewOption.href}>
-                            <TableIcon className="mr-2" /> View {selectedViewOption.label} Table
-                        </Link>
-                    </Button>
-                ) : (
-                    <Button variant="outline" disabled>
-                        <TableIcon className="mr-2" /> View Table
-                    </Button>
-                )}
-                 <p className="text-xs text-muted-foreground pt-2">More data viewers coming soon.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                        <h3 className="font-semibold flex items-center gap-2"><FileDown className="text-green-400" /> Export Collection</h3>
+                         <Select value={exportSelection} onValueChange={setExportSelection}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a collection" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {collectionOptions.map(col => (
+                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Button onClick={handleExportData} disabled={isExporting} variant="outline" className="w-full">
+                            {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
+                            Export to JSON
+                        </Button>
+                    </div>
+                    <div className="space-y-4">
+                        <h3 className="font-semibold flex items-center gap-2"><FileUp className="text-blue-400" /> Import Collection</h3>
+                         <Select value={importSelection} onValueChange={setImportSelection}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a collection" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {collectionOptions.map(col => (
+                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                         <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} />
+                        <Button onClick={handleImportData} disabled={isImporting || !importFile} className="w-full">
+                          {isImporting ? <Loader2 className="animate-spin" /> : <Upload />}
+                          Import from JSON
+                        </Button>
+                    </div>
+                </div>
               </CardContent>
             </Card>
 
