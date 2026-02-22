@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import type { LocationCostOfLiving } from '@/lib/types';
 import { collection } from 'firebase/firestore';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -13,10 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 export default function CostOfLivingTablePage() {
   const firestore = useFirestore();
@@ -58,11 +56,13 @@ export default function CostOfLivingTablePage() {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Location</TableHead>
-                        <TableHead>Country</TableHead>
-                        <TableHead>Type</TableHead>
                         <TableHead>Rent (1BR)</TableHead>
-                        <TableHead>Meal Cost</TableHead>
-                        <TableHead>Last Updated</TableHead>
+                        <TableHead>Meal</TableHead>
+                        <TableHead>Transport</TableHead>
+                        <TableHead>Utilities</TableHead>
+                        <TableHead>Internet</TableHead>
+                        <TableHead>Groceries Idx</TableHead>
+                        <TableHead className="text-right">Last Updated</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -70,12 +70,15 @@ export default function CostOfLivingTablePage() {
                         <TableRow key={location.id}>
                             <TableCell className="font-medium">
                                 {location.locationName}
+                                <span className="block text-xs text-muted-foreground">{location.countryName}</span>
                             </TableCell>
-                            <TableCell>{location.countryName}</TableCell>
-                            <TableCell><Badge variant="secondary">{location.locationType}</Badge></TableCell>
-                            <TableCell>{location.monthlyRent1BR}</TableCell>
-                            <TableCell>{location.averageMealCost}</TableCell>
-                            <TableCell>{formatDate(location.lastUpdated)}</TableCell>
+                            <TableCell>{formatCurrency(location.monthlyRent1BR, location.currencyCode)}</TableCell>
+                            <TableCell>{formatCurrency(location.averageMealCost, location.currencyCode)}</TableCell>
+                            <TableCell>{formatCurrency(location.transportPassCost, location.currencyCode)}</TableCell>
+                            <TableCell>{formatCurrency(location.utilitiesMonthly, location.currencyCode)}</TableCell>
+                            <TableCell>{formatCurrency(location.internetMonthly, location.currencyCode)}</TableCell>
+                            <TableCell>{location.groceriesIndex?.toFixed(1)}</TableCell>
+                            <TableCell className="text-right">{formatDate(location.lastUpdated)}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
