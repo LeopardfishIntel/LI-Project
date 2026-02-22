@@ -67,10 +67,10 @@
     @apply border-border;
   }
   body {
-    background-color: pink !important;
     @apply text-foreground;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline uppercase;
   }
 }
+    
