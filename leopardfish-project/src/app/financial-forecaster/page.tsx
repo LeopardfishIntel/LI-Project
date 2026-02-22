@@ -808,7 +808,7 @@ function TrueCostsSection() {
     } else {
         setOtherMonthlyBenefits('');
     }
-  }, [selectedSchoolId, selectedSchool]);
+  }, [selectedSchool, selectedSchoolId]);
 
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
@@ -834,7 +834,7 @@ function TrueCostsSection() {
     if (!school) return 0;
     const { costOfLiving, intel } = school;
     const costOfLivingAny = costOfLiving as any;
-    
+
     const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
     const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
     const mobileCost = (costOfLiving.mobile || 0) * adults;
@@ -846,6 +846,7 @@ function TrueCostsSection() {
         const rent1BR = costOfLivingAny.monthlyRent1BR || costOfLivingAny.apartment || 0;
         const rent2BR = costOfLivingAny.monthlyRent2BR || rent1BR;
         const rent3BR = costOfLivingAny.monthlyRent3BR || rent2BR;
+
         if (familyStatus === 'single' || familyStatus === 'couple') {
             rentCost = rent1BR;
         } else if (familyStatus === 'family') { // Family of 3
@@ -1222,27 +1223,27 @@ function TrueCostsSection() {
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities || 0), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.utilities), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet || 0), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.internet), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving.mobile || 0) * adults), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.mobile * adults), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving.food || 0) * adults + (selectedSchool.costOfLiving.food || 0) * 0.5 * children), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving.diningSocial || 0) * adults), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.diningSocial * adults), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving.transport || 0) * adults + (selectedSchool.costOfLiving.transport || 0) * 0.3 * children), currency)}</span>
+                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
