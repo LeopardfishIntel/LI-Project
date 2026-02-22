@@ -20,7 +20,10 @@ export const getRentForFamily = (
   if (familyStatus === 'family') {
       return { rent: rent2BR, label: 'Monthly Rent (2BR)' };
   }
-  // single or couple
+  if (familyStatus === 'couple') {
+      return { rent: rent2BR, label: 'Monthly Rent (2BR)' };
+  }
+  // single
   return { rent: rent1BR, label: 'Monthly Rent (1BR)' };
 };
 
