@@ -30,7 +30,9 @@ const EnrichSchoolDataOutputSchema = z.object({
     classSize: z.coerce.number().describe("The average class size.").optional(),
     technologyEcosystem: z.string().describe("A brief summary of the school's technology integration (e.g., '1:1 iPads K-12', 'Google Workspace for Education').").optional(),
     costOfLiving: z.object({
-        apartment: z.coerce.number().describe("Estimated monthly rent for a 1-2 bedroom apartment in the city center, in USD."),
+        monthlyRent1BR: z.coerce.number().describe("Estimated monthly rent for a 1-bedroom apartment in the city center, in USD."),
+        monthlyRent2BR: z.coerce.number().describe("Estimated monthly rent for a 2-bedroom apartment in the city center, in USD."),
+        monthlyRent3BR: z.coerce.number().describe("Estimated monthly rent for a 3-bedroom apartment in the city center, in USD."),
         food: z.coerce.number().describe("Estimated monthly grocery cost for a single person, in USD."),
         transport: z.coerce.number().describe("Estimated monthly cost for public transport, in USD."),
         utilities: z.coerce.number().describe("Estimated monthly cost for basic utilities (electricity, heating, cooling, water, garbage), in USD."),
@@ -73,7 +75,9 @@ School Details:
 - A summary of their technology ecosystem (if available).
 
 Cost of Living Details (Monthly estimates in USD for {{{location}}}):
-- Monthly rent for a 1-2 bedroom apartment.
+- Monthly rent for a 1-bedroom apartment.
+- Monthly rent for a 2-bedroom apartment.
+- Monthly rent for a 3-bedroom apartment.
 - Monthly grocery cost for a single person.
 - Monthly public transport pass cost.
 - Monthly cost for basic utilities (electricity, water, etc.).
@@ -96,3 +100,5 @@ const enrichSchoolDataFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    

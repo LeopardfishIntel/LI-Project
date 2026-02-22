@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -802,7 +801,8 @@ function TrueCostsSection() {
     setPartnerIncome('');
     setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
-        setOtherMonthlyBenefits(String(Math.round(selectedSchool.costOfLiving.apartment)));
+        const rent1BR = (selectedSchool.costOfLiving as any).monthlyRent1BR || (selectedSchool.costOfLiving as any).apartment || 0;
+        setOtherMonthlyBenefits(String(Math.round(rent1BR)));
     } else {
         setOtherMonthlyBenefits('');
     }
@@ -831,23 +831,35 @@ function TrueCostsSection() {
   const calculateTotal = (school: School | null | undefined) => {
     if (!school) return 0;
     const { costOfLiving, intel } = school;
-    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
-    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const mobileCost = costOfLiving.mobile * adults;
-    const diningSocialCost = costOfLiving.diningSocial * adults;
-    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
+    const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
+    const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
+    const mobileCost = (costOfLiving.mobile || 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial || 0) * adults;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children;
 
-    const apartmentCost = intel.housing.provided ? 0 : costOfLiving.apartment;
+    let rentCost = 0;
+    if (!intel.housing.provided) {
+        const rent1BR = (costOfLiving as any).monthlyRent1BR || (costOfLiving as any).apartment || 0;
+        const rent2BR = (costOfLiving as any).monthlyRent2BR || rent1BR;
+        const rent3BR = (costOfLiving as any).monthlyRent3BR || rent2BR;
+        if (familyStatus === 'single' || familyStatus === 'couple') {
+            rentCost = rent1BR;
+        } else if (familyStatus === 'family') { // Family of 3
+            rentCost = rent2BR;
+        } else if (familyStatus === 'family2') { // Family of 4
+            rentCost = rent3BR;
+        }
+    }
 
     const total =
-      apartmentCost +
+      rentCost +
       foodCost +
       transportCost +
-      costOfLiving.utilities +
-      costOfLiving.internet +
+      (costOfLiving.utilities || 0) +
+      (costOfLiving.internet || 0) +
       mobileCost +
       diningSocialCost +
-      costOfLiving.vehicleInsuranceMaint +
+      (costOfLiving.vehicleInsuranceMaint || 0) +
       uncoveredMedicalCost;
       
     return total;
@@ -1012,6 +1024,26 @@ function TrueCostsSection() {
           </div>
         );
     }
+    
+  let rentToShow = 0;
+  let rentLabel = 'Monthly Rent';
+  if (selectedSchool && !selectedSchool.intel.housing.provided) {
+    const rent1BR = (selectedSchool.costOfLiving as any).monthlyRent1BR || (selectedSchool.costOfLiving as any).apartment || 0;
+    const rent2BR = (selectedSchool.costOfLiving as any).monthlyRent2BR || rent1BR;
+    const rent3BR = (selectedSchool.costOfLiving as any).monthlyRent3BR || rent2BR;
+
+    if (familyStatus === 'single' || familyStatus === 'couple') {
+      rentToShow = rent1BR;
+      rentLabel = 'Monthly Rent (1BR)';
+    } else if (familyStatus === 'family') { // Family of 3
+      rentToShow = rent2BR;
+      rentLabel = 'Monthly Rent (2BR)';
+    } else if (familyStatus === 'family2') { // Family of 4
+      rentToShow = rent3BR;
+      rentLabel = 'Monthly Rent (3BR)';
+    }
+  }
+
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -1180,8 +1212,8 @@ function TrueCostsSection() {
                                 <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
                                 <div className="space-y-1 text-sm text-muted-foreground">
                                     <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(selectedSchool.costOfLiving.apartment), currency)}</span>
+                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> {rentLabel}</span>
+                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(rentToShow), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
