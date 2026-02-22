@@ -64,12 +64,6 @@ const addableCollectionOptions = [
     // Future addable types can be added here
 ];
 
-const viewableCollectionOptions = [
-    { value: 'schools', label: 'Schools', href: '/admin/data-table', disabled: false },
-    { value: 'users', label: 'Users (coming soon)', href: '#', disabled: true },
-];
-
-
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -385,13 +379,19 @@ export default function SeedDataPage() {
                         <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
                     </div>
                      <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
-                        <h3 className="font-semibold">View Collection Data</h3>
-                         <Button asChild variant="outline">
-                           <Link href="/admin/data-table">
-                                <TableIcon className="mr-2" /> View Schools Table
-                            </Link>
-                        </Button>
-                        <p className="text-xs text-muted-foreground pt-2">More data viewers coming soon.</p>
+                        <h3 className="font-semibold">View Data Tables</h3>
+                         <div className='flex flex-col gap-2'>
+                            <Button asChild variant="outline">
+                            <Link href="/admin/data-table">
+                                    <TableIcon className="mr-2" /> View Schools
+                                </Link>
+                            </Button>
+                            <Button asChild variant="outline">
+                                <Link href="/admin/cost-of-living-table">
+                                    <TableIcon className="mr-2" /> View Cost of Living
+                                </Link>
+                            </Button>
+                         </div>
                     </div>
                 </CardContent>
             </Card>

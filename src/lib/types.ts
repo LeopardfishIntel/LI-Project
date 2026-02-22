@@ -52,3 +52,21 @@ export type School = {
     uncoveredMedical: number;
   };
 };
+
+export type LocationCostOfLiving = {
+  id: string;
+  locationName: string;
+  locationType: string;
+  countryName?: string;
+  currencyCode: string;
+  averageMealCost: number;
+  monthlyRent1BR: number;
+  transportPassCost: number;
+  utilitiesMonthly: number;
+  internetMonthly: number;
+  childcareMonthly?: number;
+  localPurchasingPowerIndex: number;
+  groceriesIndex: number;
+  restaurantPriceIndex: number;
+  lastUpdated: any; // Firestore timestamp
+};
