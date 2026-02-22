@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -22,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
+import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
 
 
 // --- Tax Calculator Code ---
@@ -724,7 +726,7 @@ function TrueCostsSection() {
 
   const [selectedCountry, setSelectedCountry] = useState('United Kingdom');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
-  const [familyStatus, setFamilyStatus] = useState('single');
+  const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
   const [currency, setCurrency] = useState('GBP');
   const [offeredNetMonthlySalary, setOfferedNetMonthlySalary] = useState('');
   const [otherMonthlyBenefits, setOtherMonthlyBenefits] = useState('');
@@ -801,7 +803,7 @@ function TrueCostsSection() {
     setPartnerIncome('');
     setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
-        const rent = selectedSchool.costOfLiving?.monthlyRent1BR ?? selectedSchool.costOfLiving?.apartment ?? 0;
+        const rent = selectedSchool.costOfLiving?.monthlyRent1BR ?? (selectedSchool.costOfLiving as any)?.apartment ?? 0;
         setOtherMonthlyBenefits(String(Math.round(rent)));
     } else {
         setOtherMonthlyBenefits('');
@@ -815,63 +817,69 @@ function TrueCostsSection() {
     family2: 'Family of 4',
   };
 
-  let adults = 1;
-  let children = 0;
-  if (familyStatus === 'couple') {
-    adults = 2;
-    children = 0;
-  } else if (familyStatus === 'family') {
-    adults = 2;
-    children = 1;
-  } else if (familyStatus === 'family2') {
-    adults = 2;
-    children = 2;
-  }
+  const {
+    rentCost,
+    foodCost,
+    transportCost,
+    utilitiesCost,
+    internetCost,
+    mobileCost,
+    diningSocialCost,
+    vehicleCost,
+    medicalCost,
+    totalMonthlyCosts,
+    rentLabel,
+  } = useMemo(() => {
+    const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent' };
+    if (!selectedSchool || !selectedSchool.costOfLiving) {
+      return defaultCosts;
+    }
 
-  const calculateTotalMonthlyCost = (school: School | null | undefined): number => {
-    if (!school || !school.costOfLiving) return 0;
+    const { costOfLiving, intel } = selectedSchool;
+
+    let adults = 1;
+    let children = 0;
+    if (familyStatus === 'couple') {
+      adults = 2;
+    } else if (familyStatus === 'family') {
+      adults = 2;
+      children = 1;
+    } else if (familyStatus === 'family2') {
+      adults = 2;
+      children = 2;
+    }
+
+    const { rent, label } = getRentForFamily(costOfLiving, familyStatus);
+    const rentCost = intel.housing.provided ? 0 : rent;
     
-    const { costOfLiving, intel } = school;
+    const foodCost = (costOfLiving.food ?? 0) * (adults + 0.5 * children);
+    const transportCost = (costOfLiving.transport ?? 0) * (adults + 0.3 * children);
+    const mobileCost = (costOfLiving.mobile ?? 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
+    const medicalCost = (costOfLiving.uncoveredMedical ?? 0) * (adults + 0.5 * children);
+    
+    const utilitiesMultiplier = 1 + (adults - 1) * 0.2 + children * 0.1;
+    const utilitiesCost = (costOfLiving.utilities ?? 0) * utilitiesMultiplier;
+    
+    const internetCost = costOfLiving.internet ?? 0;
+    const vehicleCost = costOfLiving.vehicleInsuranceMaint ?? 0;
+    
+    const total = rentCost + foodCost + transportCost + utilitiesCost + internetCost + mobileCost + diningSocialCost + vehicleCost + medicalCost;
 
-    const getCost = (field: keyof typeof costOfLiving, multiplier: number = 1) => {
-        const value = costOfLiving[field] as number | undefined;
-        return (value ?? 0) * multiplier;
-    }
-
-    const foodCost = getCost('food', adults + 0.5 * children);
-    const transportCost = getCost('transport', adults + 0.3 * children);
-    const mobileCost = getCost('mobile', adults);
-    const diningSocialCost = getCost('diningSocial', adults);
-    const uncoveredMedicalCost = getCost('uncoveredMedical', adults + 0.5 * children);
-
-    let rentCost = 0;
-    if (!intel.housing.provided) {
-        const rent3BR = costOfLiving.monthlyRent3BR ?? 0;
-        const rent2BR = costOfLiving.monthlyRent2BR ?? rent3BR;
-        const rent1BR = costOfLiving.monthlyRent1BR ?? costOfLiving.apartment ?? rent2BR;
-
-        if (familyStatus === 'single' || familyStatus === 'couple') {
-            rentCost = rent1BR;
-        } else if (familyStatus === 'family') {
-            rentCost = rent2BR || rent1BR;
-        } else if (familyStatus === 'family2') {
-            rentCost = rent3BR || rent2BR || rent1BR;
-        }
-    }
-
-    const total =
-      rentCost +
-      foodCost +
-      transportCost +
-      getCost('utilities') +
-      getCost('internet') +
-      mobileCost +
-      diningSocialCost +
-      getCost('vehicleInsuranceMaint') +
-      uncoveredMedicalCost;
-      
-    return total;
-  };
+    return {
+      rentCost,
+      foodCost,
+      transportCost,
+      utilitiesCost,
+      internetCost,
+      mobileCost,
+      diningSocialCost,
+      vehicleCost,
+      medicalCost,
+      totalMonthlyCosts: total,
+      rentLabel: label,
+    };
+  }, [selectedSchool, familyStatus]);
   
   const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -910,8 +918,8 @@ function TrueCostsSection() {
   const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
 
   const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
-  const totalMonthlyCosts = calculateTotalMonthlyCost(selectedSchool) + contingencyInUSD;
-  const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
+  const finalTotalMonthlyCosts = totalMonthlyCosts + contingencyInUSD;
+  const monthlySavings = totalMonthlyPackage - finalTotalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
 
   
@@ -1032,27 +1040,6 @@ function TrueCostsSection() {
           </div>
         );
     }
-    
-  let rentToShow = 0;
-  let rentLabel = 'Monthly Rent';
-  if (selectedSchool && !selectedSchool.intel.housing.provided) {
-    const { costOfLiving } = selectedSchool;
-    const rent3BR = costOfLiving?.monthlyRent3BR ?? 0;
-    const rent2BR = costOfLiving?.monthlyRent2BR ?? rent3BR;
-    const rent1BR = costOfLiving?.monthlyRent1BR ?? costOfLiving?.apartment ?? rent2BR;
-    
-    if (familyStatus === 'single' || familyStatus === 'couple') {
-      rentToShow = rent1BR;
-      rentLabel = 'Monthly Rent (1BR)';
-    } else if (familyStatus === 'family') {
-      rentToShow = rent2BR || rent1BR;
-      rentLabel = 'Monthly Rent (2BR)';
-    } else if (familyStatus === 'family2') {
-      rentToShow = rent3BR || rent2BR || rent1BR;
-      rentLabel = 'Monthly Rent (3BR)';
-    }
-  }
-
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -1086,7 +1073,7 @@ function TrueCostsSection() {
           </div>
           <div>
             <Label htmlFor="family-status-select" className="text-base font-semibold block text-center mb-2">Family Status</Label>
-            <Select value={familyStatus} onValueChange={setFamilyStatus}>
+            <Select value={familyStatus} onValueChange={(value) => setFamilyStatus(value as FamilyStatus)}>
               <SelectTrigger id="family-status-select">
                 <SelectValue placeholder="Select family status" />
               </SelectTrigger>
@@ -1222,31 +1209,35 @@ function TrueCostsSection() {
                                 <div className="space-y-1 text-sm text-muted-foreground">
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> {rentLabel}</span>
-                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(rentToShow), currency)}</span>
+                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(rentCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving?.utilities ?? 0), currency)}</span>
+                                        <span>{formatCurrency(convert(utilitiesCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                                        <span>{formatCurrency(convert(selectedSchool.costOfLiving?.internet ?? 0), currency)}</span>
+                                        <span>{formatCurrency(convert(internetCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving?.mobile ?? 0) * adults), currency)}</span>
+                                        <span>{formatCurrency(convert(mobileCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving?.food ?? 0) * adults + (selectedSchool.costOfLiving?.food ?? 0) * 0.5 * children), currency)}</span>
+                                        <span>{formatCurrency(convert(foodCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving?.diningSocial ?? 0) * adults), currency)}</span>
+                                        <span>{formatCurrency(convert(diningSocialCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
-                                        <span>{formatCurrency(convert((selectedSchool.costOfLiving?.transport ?? 0) * adults + (selectedSchool.costOfLiving?.transport ?? 0) * 0.3 * children), currency)}</span>
+                                        <span>{formatCurrency(convert(transportCost), currency)}</span>
+                                    </div>
+                                     <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Medical Gaps</span>
+                                        <span>{formatCurrency(convert(medicalCost), currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
@@ -1268,7 +1259,7 @@ function TrueCostsSection() {
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Estimated Costs</span>
-                                    <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                                    <span className="text-red-400">{formatCurrency(convert(finalTotalMonthlyCosts), currency)}</span>
                                 </div>
                             </div>
                         </div>
