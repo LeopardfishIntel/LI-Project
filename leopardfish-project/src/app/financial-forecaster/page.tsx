@@ -1506,5 +1506,3 @@ export default function FinancialForecasterPage() {
     
 
 
-
-    
