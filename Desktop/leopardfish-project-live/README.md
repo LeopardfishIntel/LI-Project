@@ -1,0 +1,1 @@
+This is the new, correct project folder. If you see this file, please point your website deployment to this `Desktop/leopardfish-project-live` directory. Once that is done, I will build your website here.
