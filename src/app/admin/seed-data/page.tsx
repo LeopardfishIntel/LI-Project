@@ -40,6 +40,7 @@ import {
   FilePlus,
   FileDown,
   FileUp,
+  RefreshCcw,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -398,12 +399,24 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Bulk Data Operations</CardTitle>
+                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Bulk & AI Data Operations</CardTitle>
                 <CardDescription>
-                  Seed, import, or export entire collections. Use with caution.
+                  Seed, import, export, or use AI to refresh entire collections. Use with caution.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
+                <div className="p-4 rounded-lg bg-background/50">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2"><RefreshCcw className="text-blue-400" /> AI-Powered Data Refresh</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Use AI to fetch the latest cost-of-living data for a specific location.</p>
+                     <Button asChild variant="outline">
+                        <Link href="/admin/update-col">
+                            <RefreshCcw className="mr-2" /> Update CoL Data
+                        </Link>
+                    </Button>
+                </div>
+                
+                <Separator />
+
                 <div className="p-4 rounded-lg bg-background/50">
                     <h3 className="font-semibold flex items-center gap-2 mb-2"><DatabaseZap className="text-amber-400" /> Seed Mock Data</h3>
                     <p className="text-sm text-muted-foreground mb-4">Populate the 'schools' collection with a set of mock data. This will add or overwrite existing documents.</p>
