@@ -64,11 +64,6 @@ const collectionOptions = [
   'locations_costOfLiving',
 ];
 
-const addableCollectionOptions = [
-    { value: 'schools', label: 'School', href: '/admin/add-school' },
-    // Future addable types can be added here
-];
-
 const bulkEnrichInitialState: BulkEnrichState = { message: null, error: null, summary: null };
 
 function BulkEnrichSubmitButton() {
@@ -83,7 +78,7 @@ function BulkEnrichSubmitButton() {
       ) : (
         <>
           <Sparkles className="mr-2 h-4 w-4" />
-          Enrich All Incomplete Schools
+          Enrich Incomplete Schools
         </>
       )}
     </Button>
@@ -127,30 +122,33 @@ export default function SeedDataPage() {
   } = useDoc(adminRoleRef);
   const isAdmin = !!adminRole && !adminRoleError;
 
-  const handleSeedData = async () => {
+  const handleSeedData = async (collectionName: 'schools' | 'locations_costOfLiving') => {
     if (!firestore) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not available.',
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not available.' });
       return;
     }
-    setIsSeeding(true);
-
-    const schoolCollectionRef = collection(firestore, 'schools');
+  
+    const isSchools = collectionName === 'schools';
+    const dataToSeed = isSchools ? mockSchools : mockCostOfLivingData;
+    const setter = isSchools ? setIsSeeding : setIsSeedingCoL;
+  
+    setter(true);
+  
+    const collectionRef = collection(firestore, collectionName);
     let successCount = 0;
-
+  
     try {
-      for (const school of mockSchools) {
-        const schoolDocRef = doc(schoolCollectionRef, school.id);
-        setDocumentNonBlocking(schoolDocRef, school, { merge: true });
+      for (const item of dataToSeed) {
+        const docId = 'id' in item ? item.id : item.locationName.toLowerCase().replace(/\s+/g, '-');
+        const docRef = doc(collectionRef, docId);
+        const dataToSave = { ...item, id: docId, lastUpdated: new Date() };
+        setDocumentNonBlocking(docRef, dataToSave, { merge: true });
         successCount++;
       }
-
+  
       toast({
         title: 'Seeding Started',
-        description: `${successCount} schools are being added to the database.`,
+        description: `${successCount} documents are being added to the '${collectionName}' collection.`,
       });
     } catch (error: any) {
       toast({
@@ -159,59 +157,13 @@ export default function SeedDataPage() {
         description: error.message,
       });
     } finally {
-      setIsSeeding(false);
-    }
-  };
-
-  const handleSeedCoLData = async () => {
-    if (!firestore) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not available.',
-      });
-      return;
-    }
-    setIsSeedingCoL(true);
-
-    const colCollectionRef = collection(firestore, 'locations_costOfLiving');
-    let successCount = 0;
-
-    try {
-      for (const loc of mockCostOfLivingData) {
-        const docId = loc.locationName.toLowerCase().replace(/\s+/g, '-');
-        const docRef = doc(colCollectionRef, docId);
-        const dataToSave = {
-          ...loc,
-          id: docId,
-          lastUpdated: new Date(),
-        };
-        setDocumentNonBlocking(docRef, dataToSave, { merge: true });
-        successCount++;
-      }
-
-      toast({
-        title: 'Seeding Started',
-        description: `${successCount} cost of living locations are being added to the database.`,
-      });
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'CoL Seeding Failed',
-        description: error.message,
-      });
-    } finally {
-      setIsSeedingCoL(false);
+      setter(false);
     }
   };
 
   const handleExportData = async () => {
     if (!firestore) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not available.',
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not available.' });
       return;
     }
     setIsExporting(true);
@@ -222,11 +174,7 @@ export default function SeedDataPage() {
       const data = snapshot.docs.map(doc => doc.data());
 
       if (data.length === 0) {
-        toast({
-          variant: 'destructive',
-          title: 'Export Failed',
-          description: `The '${exportSelection}' collection is empty.`,
-        });
+        toast({ variant: 'destructive', title: 'Export Failed', description: `The '${exportSelection}' collection is empty.` });
         setIsExporting(false);
         return;
       }
@@ -247,11 +195,7 @@ export default function SeedDataPage() {
         description: `Exported ${data.length} documents from '${exportSelection}'.`,
       });
     } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Export Failed',
-        description: error.message,
-      });
+      toast({ variant: 'destructive', title: 'Export Failed', description: error.message });
     } finally {
       setIsExporting(false);
     }
@@ -259,11 +203,7 @@ export default function SeedDataPage() {
 
   const handleImportData = () => {
     if (!firestore || !importFile) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Please select a file to import.',
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Please select a file to import.' });
       return;
     }
     setIsImporting(true);
@@ -294,22 +234,14 @@ export default function SeedDataPage() {
           description: `${successCount} documents are being updated in the '${importSelection}' collection.`,
         });
       } catch (error: any) {
-        toast({
-          variant: 'destructive',
-          title: 'Import Failed',
-          description: error.message,
-        });
+        toast({ variant: 'destructive', title: 'Import Failed', description: error.message });
       } finally {
         setIsImporting(false);
         setImportFile(null);
       }
     };
     reader.onerror = () => {
-        toast({
-            variant: 'destructive',
-            title: 'Import Failed',
-            description: "An error occurred while reading the file.",
-        });
+        toast({ variant: 'destructive', title: 'Import Failed', description: "An error occurred while reading the file." });
         setIsImporting(false);
     }
     reader.readAsText(importFile);
@@ -322,10 +254,10 @@ export default function SeedDataPage() {
       <div className="max-w-3xl mx-auto space-y-12">
         <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">
-            Data Administration
+            Data Hub
             </h1>
             <p className="text-muted-foreground text-center mt-4">
-            Manage your application's Firestore data, including content and bulk operations.
+            Manage content, and run bulk & AI data operations for your application.
             </p>
         </div>
 
@@ -442,7 +374,32 @@ export default function SeedDataPage() {
                 You are authorized to perform administrative actions.
               </AlertDescription>
             </Alert>
-            
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-3"><Sparkles className="text-primary"/>AI Data Tools</CardTitle>
+                    <CardDescription>Use AI to enrich and update your database with real-world information.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="p-4 rounded-lg bg-background/50 border">
+                        <h3 className="font-semibold flex items-center gap-2 mb-2"><RefreshCcw className="text-blue-400" /> Cost of Living Data</h3>
+                        <p className="text-sm text-muted-foreground mb-4">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address excessive or outdated rental estimates.</p>
+                        <Button asChild variant="outline">
+                            <Link href="/admin/update-col">
+                                <RefreshCcw className="mr-2" /> Update CoL Data
+                            </Link>
+                        </Button>
+                    </div>
+                    <div className="p-4 rounded-lg bg-background/50 border">
+                        <h3 className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="text-green-400" /> Bulk School Enrichment</h3>
+                        <p className="text-sm text-muted-foreground mb-4">Automatically find and fill in missing information (like descriptions, logos, and curriculum details) for all incomplete school records in your database.</p>
+                        <form action={enrichFormAction}>
+                          <BulkEnrichSubmitButton />
+                        </form>
+                    </div>
+                </CardContent>
+            </Card>
+
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-3"><FilePlus className="text-primary"/>Content Management</CardTitle>
@@ -450,85 +407,43 @@ export default function SeedDataPage() {
                     Add new documents or view existing collection data.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
-                        <h3 className="font-semibold">Add New Document</h3>
-                        <Button asChild variant="outline">
-                            <Link href="/admin/add-school">
-                                <Plus className="mr-2" /> Add School
-                            </Link>
-                        </Button>
-                        <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
-                    </div>
-                     <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
-                        <h3 className="font-semibold">View Data Tables</h3>
-                         <div className='flex flex-col gap-2'>
-                            <Button asChild variant="outline">
-                            <Link href="/admin/data-table">
-                                    <TableIcon className="mr-2" /> View Schools
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline">
-                                <Link href="/admin/cost-of-living-table">
-                                    <TableIcon className="mr-2" /> View Cost of Living
-                                </Link>
-                            </Button>
-                         </div>
-                    </div>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button asChild variant="outline">
+                        <Link href="/admin/add-school" className="w-full">
+                            <Plus className="mr-2" /> Add School
+                        </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                    <Link href="/admin/data-table" className="w-full">
+                            <TableIcon className="mr-2" /> View School Data
+                        </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                        <Link href="/admin/cost-of-living-table" className="w-full">
+                            <TableIcon className="mr-2" /> View CoL Data
+                        </Link>
+                    </Button>
                 </CardContent>
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Bulk & AI Data Operations</CardTitle>
+                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Database Operations</CardTitle>
                 <CardDescription>
-                  Seed, import, export, or use AI to refresh entire collections. Use with caution.
+                  Seed, import, or export entire collections.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
-                <div className="p-4 rounded-lg bg-background/50">
-                    <h3 className="font-semibold flex items-center gap-2 mb-2"><RefreshCcw className="text-blue-400" /> AI-Powered Data Refresh</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Use AI to fetch the latest cost-of-living data for a specific location.</p>
-                     <Button asChild variant="outline">
-                        <Link href="/admin/update-col">
-                            <RefreshCcw className="mr-2" /> Update CoL Data
-                        </Link>
-                    </Button>
-                </div>
-                
-                <Separator />
-                
-                <div className="p-4 rounded-lg bg-background/50">
-                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="text-green-400" /> Bulk AI School Enrichment</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Automatically find and fill in missing information for all incomplete school records in your database.</p>
-                    <form action={enrichFormAction}>
-                      <BulkEnrichSubmitButton />
-                    </form>
-                </div>
-
-                <Separator />
-
-                <div className="p-4 rounded-lg bg-background/50">
+                <div className="p-4 rounded-lg bg-background/50 border">
                     <h3 className="font-semibold flex items-center gap-2 mb-2"><DatabaseZap className="text-amber-400" /> Seed Mock Data</h3>
                     <p className="text-sm text-muted-foreground mb-4">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
-                    <div className="flex gap-4">
-                        <Button
-                            onClick={handleSeedData}
-                            disabled={isSeeding}
-                            >
-                            {isSeeding ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : null}
-                            Seed School Data
+                    <div className="flex flex-wrap gap-4">
+                        <Button onClick={() => handleSeedData('schools')} disabled={isSeeding}>
+                            {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Seed Schools
                         </Button>
-                        <Button
-                            onClick={handleSeedCoLData}
-                            disabled={isSeedingCoL}
-                            variant="outline"
-                            >
-                            {isSeedingCoL ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : null}
+                        <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} variant="outline">
+                            {isSeedingCoL ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Seed CoL Data
                         </Button>
                     </div>
