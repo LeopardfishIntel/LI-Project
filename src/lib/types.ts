@@ -41,7 +41,9 @@ export type School = {
     technologyEcosystem?: string;
   };
   costOfLiving: {
-    apartment: number;
+    monthlyRent1BR: number;
+    monthlyRent2BR: number;
+    monthlyRent3BR: number;
     food: number;
     transport: number;
     utilities: number;
@@ -61,6 +63,8 @@ export type LocationCostOfLiving = {
   currencyCode: string;
   averageMealCost: number;
   monthlyRent1BR: number;
+  monthlyRent2BR: number;
+  monthlyRent3BR: number;
   transportPassCost: number;
   utilitiesMonthly: number;
   internetMonthly: number;

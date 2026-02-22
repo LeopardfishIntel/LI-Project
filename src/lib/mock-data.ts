@@ -51,7 +51,7 @@ export const schools: School[] = [
       nonContactTime: 20,
       technologyEcosystem: '1:1 iPads, Google Workspace, ManageBac'
     },
-    costOfLiving: { apartment: 2000, food: 500, transport: 150, utilities: 200, internet: 50, mobile: 40, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
+    costOfLiving: { monthlyRent1BR: 2000, monthlyRent2BR: 2600, monthlyRent3BR: 3200, food: 500, transport: 150, utilities: 200, internet: 50, mobile: 40, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
   },
   {
     id: 'dubai-american-academy',
@@ -79,7 +79,7 @@ export const schools: School[] = [
       nonContactTime: 15,
       technologyEcosystem: '1:1 MacBooks (Gr 6-12), iPads (K-5), PowerSchool'
     },
-    costOfLiving: { apartment: 2500, food: 600, transport: 200, utilities: 300, internet: 80, mobile: 70, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
+    costOfLiving: { monthlyRent1BR: 2500, monthlyRent2BR: 3250, monthlyRent3BR: 4000, food: 600, transport: 200, utilities: 300, internet: 80, mobile: 70, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
   },
   {
     id: 'zurich-international-school',
@@ -107,7 +107,7 @@ export const schools: School[] = [
       nonContactTime: 25,
       technologyEcosystem: 'Bring Your Own Device (BYOD), Canvas, Veracross'
     },
-    costOfLiving: { apartment: 3500, food: 1000, transport: 250, utilities: 250, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
+    costOfLiving: { monthlyRent1BR: 3500, monthlyRent2BR: 4550, monthlyRent3BR: 5600, food: 1000, transport: 250, utilities: 250, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
   },
   {
     id: 'singapore-american-school',
@@ -133,7 +133,7 @@ export const schools: School[] = [
       nonContactTime: 20,
       technologyEcosystem: '1:1 MacBooks, Google Workspace, PowerSchool'
     },
-    costOfLiving: { apartment: 3000, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
+    costOfLiving: { monthlyRent1BR: 3000, monthlyRent2BR: 3900, monthlyRent3BR: 4800, food: 700, transport: 100, utilities: 200, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
   },
   {
     id: 'seoul-foreign-school',
@@ -159,7 +159,7 @@ export const schools: School[] = [
       nonContactTime: 18,
       technologyEcosystem: 'Google Workspace, Seesaw, limited 1:1 program'
     },
-    costOfLiving: { apartment: 1500, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
+    costOfLiving: { monthlyRent1BR: 1500, monthlyRent2BR: 1950, monthlyRent3BR: 2400, food: 600, transport: 100, utilities: 150, internet: 40, mobile: 30, diningSocial: 250, vehicleInsuranceMaint: 0, uncoveredMedical: 70 },
   },
   {
     id: 'acs-cobham-international-school',
@@ -186,7 +186,7 @@ export const schools: School[] = [
       nonContactTime: 20,
       technologyEcosystem: 'Mixed environment (Windows/Mac), Veracross'
     },
-    costOfLiving: { apartment: 2800, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
+    costOfLiving: { monthlyRent1BR: 2800, monthlyRent2BR: 3640, monthlyRent3BR: 4480, food: 800, transport: 300, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 150, uncoveredMedical: 150 },
   },
   {
     id: 'amsterdam-international-school',
@@ -212,6 +212,6 @@ export const schools: School[] = [
       nonContactTime: 22,
       technologyEcosystem: 'Google Workspace, limited BYOD policy'
     },
-    costOfLiving: { apartment: 2200, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
+    costOfLiving: { monthlyRent1BR: 2200, monthlyRent2BR: 2860, monthlyRent3BR: 3520, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
   }
 ];
