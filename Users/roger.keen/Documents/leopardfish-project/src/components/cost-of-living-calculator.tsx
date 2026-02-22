@@ -27,31 +27,34 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
   const convert = (amount: number) => amount * conversionRates[currency];
 
   const { costOfLiving } = school;
+  const costOfLivingAny = costOfLiving as any;
 
   const calculateTotal = () => {
-    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
-    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const mobileCost = costOfLiving.mobile * adults;
-    const diningSocialCost = costOfLiving.diningSocial * adults;
-    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
+    const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
+    const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
+    const mobileCost = (costOfLiving.mobile || 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial || 0) * adults;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children;
     
-    const apartmentCost = school.intel.housing.provided ? 0 : costOfLiving.apartment;
+    const rent1BR = costOfLivingAny.monthlyRent1BR || costOfLivingAny.apartment || 0;
+    const apartmentCost = school.intel.housing.provided ? 0 : rent1BR;
     
     const total =
       apartmentCost +
       foodCost +
       transportCost +
-      costOfLiving.utilities +
-      costOfLiving.internet +
+      (costOfLiving.utilities || 0) +
+      (costOfLiving.internet || 0) +
       mobileCost +
       diningSocialCost +
-      costOfLiving.vehicleInsuranceMaint +
+      (costOfLiving.vehicleInsuranceMaint || 0) +
       uncoveredMedicalCost;
       
     return total;
   };
 
   const totalCost = calculateTotal();
+  const rent1BR = costOfLivingAny.monthlyRent1BR || costOfLivingAny.apartment || 0;
 
   return (
     <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -99,32 +102,32 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
 
         <div className="space-y-2 text-sm text-muted-foreground mb-6">
           <div className="flex justify-between items-center">
-            <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1-2 Bed)</span>
-            <span>{school.intel.housing.provided ? 'Provided' : formatCurrency(convert(costOfLiving.apartment), currency)}</span>
+            <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> Monthly Rent (1BR)</span>
+            <span>{school.intel.housing.provided ? 'Provided' : formatCurrency(convert(rent1BR), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-green-400" /> Utilities (Water/Elec/Gas)</span>
-            <span>{formatCurrency(convert(costOfLiving.utilities), currency)}</span>
+            <span>{formatCurrency(convert(costOfLiving.utilities || 0), currency)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> High-Speed Internet</span>
-            <span>{formatCurrency(convert(costOfLiving.internet), currency)}</span>
+            <span>{formatCurrency(convert(costOfLiving.internet || 0), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-            <span>{formatCurrency(convert(costOfLiving.mobile * adults), currency)}</span>
+            <span>{formatCurrency(convert((costOfLiving.mobile || 0) * adults), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Monthly Groceries</span>
-            <span>{formatCurrency(convert(costOfLiving.food * adults + costOfLiving.food * 0.5 * children), currency)}</span>
+            <span>{formatCurrency(convert((costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children), currency)}</span>
           </div>
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining & Social</span>
-            <span>{formatCurrency(convert(costOfLiving.diningSocial * adults), currency)}</span>
+            <span>{formatCurrency(convert((costOfLiving.diningSocial || 0) * adults), currency)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Public Transport / Fuel</span>
-            <span>{formatCurrency(convert(costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children), currency)}</span>
+            <span>{formatCurrency(convert((costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children), currency)}</span>
           </div>
           {costOfLiving.vehicleInsuranceMaint > 0 && <div className="flex justify-between items-center">
               <span className="flex items-center"><Car className="w-4 h-4 mr-2 text-neutral-400" /> Vehicle Insurance/Maint.</span>
@@ -132,7 +135,7 @@ export function CostOfLivingCalculator({ school }: CostOfLivingCalculatorProps) 
           </div>}
            <div className="flex justify-between items-center">
             <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Medical Gaps (e.g. Dental)</span>
-            <span>{formatCurrency(convert(costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children), currency)}</span>
+            <span>{formatCurrency(convert((costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children), currency)}</span>
           </div>
         </div>
         
