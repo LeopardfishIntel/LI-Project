@@ -58,6 +58,11 @@ const addableCollectionOptions = [
     // Future addable types can be added here
 ];
 
+const viewableCollectionOptions = [
+    { value: 'schools', label: 'Schools', href: '/admin/data-table', disabled: false },
+    { value: 'users', label: 'Users (coming soon)', href: '#', disabled: true },
+];
+
 
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
@@ -71,6 +76,7 @@ export default function SeedDataPage() {
   const [exportSelection, setExportSelection] = useState('schools');
   const [importSelection, setImportSelection] = useState('schools');
   const [addSelection, setAddSelection] = useState('schools');
+  const [viewSelection, setViewSelection] = useState('schools');
 
 
   const adminRoleRef = useMemoFirebase(
@@ -233,6 +239,7 @@ export default function SeedDataPage() {
   const isLoading = isUserLoading || isAdminLoading;
 
   const selectedAddOption = addableCollectionOptions.find(opt => opt.value === addSelection);
+  const selectedViewOption = viewableCollectionOptions.find(opt => opt.value === viewSelection);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -482,17 +489,34 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>View Data Table</CardTitle>
+                <CardTitle>View Collection Data</CardTitle>
                 <CardDescription>
-                  View all school data in a tabular format.
+                  Select a collection to view its documents in a table.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center">
-                <Button asChild variant="outline">
-                  <Link href="/admin/data-table">
-                    <TableIcon className="mr-2" /> View Data Table
-                  </Link>
-                </Button>
+              <CardContent className="flex flex-col items-center gap-4">
+                <Select value={viewSelection} onValueChange={setViewSelection}>
+                    <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="Select a collection" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {viewableCollectionOptions.map(option => (
+                             <SelectItem key={option.value} value={option.value} disabled={option.disabled}>{option.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                {selectedViewOption && !selectedViewOption.disabled ? (
+                    <Button asChild variant="outline">
+                        <Link href={selectedViewOption.href}>
+                            <TableIcon className="mr-2" /> View {selectedViewOption.label} Table
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button variant="outline" disabled>
+                        <TableIcon className="mr-2" /> View Table
+                    </Button>
+                )}
+                 <p className="text-xs text-muted-foreground pt-2">More data viewers coming soon.</p>
               </CardContent>
             </Card>
 
