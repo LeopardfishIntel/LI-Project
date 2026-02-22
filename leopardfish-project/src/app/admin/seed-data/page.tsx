@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,6 +12,7 @@ import {
 } from '@/firebase';
 import { doc, collection, getDocs } from 'firebase/firestore';
 import { schools as mockSchools } from '@/lib/mock-data';
+import { mockCostOfLivingData } from '@/lib/mock-col-data';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -20,6 +22,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Loader2,
   ShieldCheck,
   ShieldOff,
@@ -28,22 +37,48 @@ import {
   Upload,
   Table as TableIcon,
   Plus,
+  DatabaseZap,
+  FilePlus,
+  FileDown,
+  FileUp,
+  RefreshCcw,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+
+const collectionOptions = [
+  'schools',
+  'users',
+  'roles_admin',
+  'roles_verifiedTeachers',
+  'forum_categories',
+  'forum_posts',
+  'app_metrics',
+  'locations_costOfLiving',
+];
+
+const addableCollectionOptions = [
+    { value: 'schools', label: 'School', href: '/admin/add-school' },
+    // Future addable types can be added here
+];
 
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
   const [isSeeding, setIsSeeding] = useState(false);
+  const [isSeedingCoL, setIsSeedingCoL] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
 
+  const [exportSelection, setExportSelection] = useState('schools');
+  const [importSelection, setImportSelection] = useState('schools');
+  
   const adminRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
     [firestore, user]
@@ -91,6 +126,48 @@ export default function SeedDataPage() {
     }
   };
 
+  const handleSeedCoLData = async () => {
+    if (!firestore) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Firestore is not available.',
+      });
+      return;
+    }
+    setIsSeedingCoL(true);
+
+    const colCollectionRef = collection(firestore, 'locations_costOfLiving');
+    let successCount = 0;
+
+    try {
+      for (const loc of mockCostOfLivingData) {
+        const docId = loc.locationName.toLowerCase().replace(/\s+/g, '-');
+        const docRef = doc(colCollectionRef, docId);
+        const dataToSave = {
+          ...loc,
+          id: docId,
+          lastUpdated: new Date(),
+        };
+        setDocumentNonBlocking(docRef, dataToSave, { merge: true });
+        successCount++;
+      }
+
+      toast({
+        title: 'Seeding Started',
+        description: `${successCount} cost of living locations are being added to the database.`,
+      });
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'CoL Seeding Failed',
+        description: error.message,
+      });
+    } finally {
+      setIsSeedingCoL(false);
+    }
+  };
+
   const handleExportData = async () => {
     if (!firestore) {
       toast({
@@ -103,26 +180,26 @@ export default function SeedDataPage() {
     setIsExporting(true);
 
     try {
-      const schoolCollectionRef = collection(firestore, 'schools');
-      const snapshot = await getDocs(schoolCollectionRef);
-      const schoolData = snapshot.docs.map(doc => doc.data());
+      const collectionRef = collection(firestore, exportSelection);
+      const snapshot = await getDocs(collectionRef);
+      const data = snapshot.docs.map(doc => doc.data());
 
-      if (schoolData.length === 0) {
+      if (data.length === 0) {
         toast({
           variant: 'destructive',
           title: 'Export Failed',
-          description: 'The schools collection is empty. Seed data first.',
+          description: `The '${exportSelection}' collection is empty.`,
         });
         setIsExporting(false);
         return;
       }
 
-      const jsonString = JSON.stringify(schoolData, null, 2);
+      const jsonString = JSON.stringify(data, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'schools.json';
+      a.download = `${exportSelection}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -130,7 +207,7 @@ export default function SeedDataPage() {
 
       toast({
         title: 'Export Successful',
-        description: `Exported ${schoolData.length} schools to schools.json`,
+        description: `Exported ${data.length} documents from '${exportSelection}'.`,
       });
     } catch (error: any) {
       toast({
@@ -160,24 +237,24 @@ export default function SeedDataPage() {
         if (typeof event.target?.result !== 'string') {
             throw new Error("Failed to read file.");
         }
-        const schoolsToImport = JSON.parse(event.target.result);
+        const dataToImport = JSON.parse(event.target.result);
 
-        if (!Array.isArray(schoolsToImport) || schoolsToImport.some(s => !s.id)) {
-          throw new Error("Invalid JSON format. Must be an array of objects, each with an 'id'.");
+        if (!Array.isArray(dataToImport) || dataToImport.some(s => !s.id)) {
+          throw new Error("Invalid JSON format. Must be an array of objects, each with a unique 'id'.");
         }
 
-        const schoolCollectionRef = collection(firestore, 'schools');
+        const collectionRef = collection(firestore, importSelection);
         let successCount = 0;
 
-        for (const school of schoolsToImport) {
-          const schoolDocRef = doc(schoolCollectionRef, school.id);
-          setDocumentNonBlocking(schoolDocRef, school, { merge: true });
+        for (const item of dataToImport) {
+          const docRef = doc(collectionRef, item.id);
+          setDocumentNonBlocking(docRef, item, { merge: true });
           successCount++;
         }
 
         toast({
           title: 'Import Started',
-          description: `${successCount} schools are being updated in the database.`,
+          description: `${successCount} documents are being updated in the '${importSelection}' collection.`,
         });
       } catch (error: any) {
         toast({
@@ -211,7 +288,7 @@ export default function SeedDataPage() {
             Data Administration
             </h1>
             <p className="text-muted-foreground text-center mt-4">
-            Use this page to manage your application's Firestore data.
+            Manage your application's Firestore data, including content and bulk operations.
             </p>
         </div>
 
@@ -256,7 +333,7 @@ export default function SeedDataPage() {
               </CardHeader>
               <CardContent className="space-y-4 text-sm">
                 <p>
-                  To seed the database, you need to be an administrator. To
+                  To use these tools, you need to be an administrator. To
                   grant yourself admin rights, follow these steps:
                 </p>
                 <Alert variant="destructive" className="text-left">
@@ -266,10 +343,6 @@ export default function SeedDataPage() {
                     The collection name must be exactly{' '}
                     <code className="bg-primary/20 text-primary-foreground p-1 rounded">
                       roles_admin
-                    </code>
-                    . A common mistake is to use{' '}
-                    <code className="bg-red-900 text-white p-1 rounded">
-                      admin_roles
                     </code>
                     .
                   </AlertDescription>
@@ -306,12 +379,10 @@ export default function SeedDataPage() {
                     </code>
                   </li>
                   <li>
-                    You can add a field to the document, e.g., `isAdmin:
-                    true`, but the existence of the document is enough. Click
-                    'Save'.
+                    You can add a field, e.g., `isAdmin: true`, but the existence of the document is enough. Click 'Save'.
                   </li>
                   <li>
-                    Refresh this page. The admin tools below should become
+                    Refresh this page. The admin tools should become
                     available.
                   </li>
                 </ol>
@@ -334,98 +405,127 @@ export default function SeedDataPage() {
                 You are authorized to perform administrative actions.
               </AlertDescription>
             </Alert>
-
+            
             <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>Add New School</CardTitle>
-                <CardDescription>
-                  Add a new school record to the database.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <Button asChild variant="outline">
-                  <Link href="/admin/add-school">
-                    <Plus className="mr-2" /> Add School
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>Seed Database</CardTitle>
-                <CardDescription>
-                  Populate the 'schools' collection with the initial set of mock data. This is a good starting point for your app.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <Button
-                  onClick={handleSeedData}
-                  disabled={isSeeding}
-                  size="lg"
-                >
-                  {isSeeding ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  ) : null}
-                  Seed School Data
-                </Button>
-                 <p className="text-xs text-muted-foreground pt-4">
-                  This will add all schools from the local mock data file to
-                  your live Firestore database. Existing schools with the same ID will be overwritten.
-                </p>
-              </CardContent>
-            </Card>
-
-             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle>Export Data</CardTitle>
+                    <CardTitle className="flex items-center gap-3"><FilePlus className="text-primary"/>Content Management</CardTitle>
                     <CardDescription>
-                    Download the current 'schools' collection as a single JSON file. You can edit this file locally.
+                    Add new documents or view existing collection data.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="text-center">
-                    <Button onClick={handleExportData} disabled={isExporting} variant="outline">
-                    {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
-                    Export to JSON
-                    </Button>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
+                        <h3 className="font-semibold">Add New Document</h3>
+                        <Button asChild variant="outline">
+                            <Link href="/admin/add-school">
+                                <Plus className="mr-2" /> Add School
+                            </Link>
+                        </Button>
+                        <p className="text-xs text-muted-foreground pt-2">More document types coming soon.</p>
+                    </div>
+                     <div className="flex flex-col items-center gap-4 text-center p-4 rounded-lg bg-background/50">
+                        <h3 className="font-semibold">View Data Tables</h3>
+                         <div className='flex flex-col gap-2'>
+                            <Button asChild variant="outline">
+                            <Link href="/admin/data-table">
+                                    <TableIcon className="mr-2" /> View Schools
+                                </Link>
+                            </Button>
+                            <Button asChild variant="outline">
+                                <Link href="/admin/cost-of-living-table">
+                                    <TableIcon className="mr-2" /> View Cost of Living
+                                </Link>
+                            </Button>
+                         </div>
+                    </div>
                 </CardContent>
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Import Data</CardTitle>
+                <CardTitle className="flex items-center gap-3"><DatabaseZap className="text-primary"/>Bulk & AI Data Operations</CardTitle>
                 <CardDescription>
-                  Upload a `schools.json` file to update your database. The file must be an array of school objects, each with a unique 'id'.
+                  Seed, import, export, or use AI to refresh entire collections. Use with caution.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor="json-upload">JSON File</Label>
-                    <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} />
+              <CardContent className="space-y-8">
+                <div className="p-4 rounded-lg bg-background/50">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2"><RefreshCcw className="text-blue-400" /> AI-Powered Data Refresh</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Use AI to fetch the latest cost-of-living data for a specific location.</p>
+                     <Button asChild variant="outline">
+                        <Link href="/admin/update-col">
+                            <RefreshCcw className="mr-2" /> Update CoL Data
+                        </Link>
+                    </Button>
                 </div>
-                <Button onClick={handleImportData} disabled={isImporting || !importFile}>
-                  {isImporting ? <Loader2 className="animate-spin" /> : <Upload />}
-                  Import from JSON
-                </Button>
-                 <p className="text-xs text-muted-foreground pt-2">
-                  This will update or create schools based on the IDs in your JSON file. This action is non-destructive for other documents.
-                </p>
-              </CardContent>
-            </Card>
+                
+                <Separator />
 
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
-              <CardHeader>
-                <CardTitle>View Data Table</CardTitle>
-                <CardDescription>
-                  View all school data in a tabular format.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <Button asChild variant="outline">
-                  <Link href="/admin/data-table">
-                    <TableIcon className="mr-2" /> View Data Table
-                  </Link>
-                </Button>
+                <div className="p-4 rounded-lg bg-background/50">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2"><DatabaseZap className="text-amber-400" /> Seed Mock Data</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
+                    <div className="flex gap-4">
+                        <Button
+                            onClick={handleSeedData}
+                            disabled={isSeeding}
+                            >
+                            {isSeeding ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : null}
+                            Seed School Data
+                        </Button>
+                        <Button
+                            onClick={handleSeedCoLData}
+                            disabled={isSeedingCoL}
+                            variant="outline"
+                            >
+                            {isSeedingCoL ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : null}
+                            Seed CoL Data
+                        </Button>
+                    </div>
+                </div>
+                
+                <Separator />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                        <h3 className="font-semibold flex items-center gap-2"><FileDown className="text-green-400" /> Export Collection</h3>
+                         <Select value={exportSelection} onValueChange={setExportSelection}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a collection" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {collectionOptions.map(col => (
+                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Button onClick={handleExportData} disabled={isExporting} variant="outline" className="w-full">
+                            {isExporting ? <Loader2 className="animate-spin" /> : <Download />}
+                            Export to JSON
+                        </Button>
+                    </div>
+                    <div className="space-y-4">
+                        <h3 className="font-semibold flex items-center gap-2"><FileUp className="text-blue-400" /> Import Collection</h3>
+                         <Select value={importSelection} onValueChange={setImportSelection}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a collection" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {collectionOptions.map(col => (
+                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                         <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} />
+                        <Button onClick={handleImportData} disabled={isImporting || !importFile} className="w-full">
+                          {isImporting ? <Loader2 className="animate-spin" /> : <Upload />}
+                          Import from JSON
+                        </Button>
+                    </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -435,3 +535,4 @@ export default function SeedDataPage() {
     </div>
   );
 }
+
