@@ -1,4 +1,5 @@
 
+
 export type TeacherProfile = {
   fullName: string;
   avatarUrl: string;
@@ -41,7 +42,6 @@ export type School = {
     technologyEcosystem?: string;
   };
   costOfLiving: {
-    apartment?: number; // For backward compatibility
     monthlyRent1BR?: number;
     monthlyRent2BR?: number;
     monthlyRent3BR?: number;
@@ -53,6 +53,7 @@ export type School = {
     diningSocial?: number;
     vehicleInsuranceMaint?: number;
     uncoveredMedical?: number;
+    apartment?: number; // For backward compatibility
   };
 };
 
@@ -62,16 +63,16 @@ export type LocationCostOfLiving = {
   locationType: string;
   countryName?: string;
   currencyCode: string;
-  averageMealCost?: number;
-  monthlyRent1BR?: number;
-  monthlyRent2BR?: number;
-  monthlyRent3BR?: number;
-  transportPassCost?: number;
-  utilitiesMonthly?: number;
-  internetMonthly?: number;
+  averageMealCost: number;
+  monthlyRent1BR: number;
+  monthlyRent2BR: number;
+  monthlyRent3BR: number;
+  transportPassCost: number;
+  utilitiesMonthly: number;
+  internetMonthly: number;
   childcareMonthly?: number;
-  localPurchasingPowerIndex?: number;
-  groceriesIndex?: number;
-  restaurantPriceIndex?: number;
+  localPurchasingPowerIndex: number;
+  groceriesIndex: number;
+  restaurantPriceIndex: number;
   lastUpdated: any; // Firestore timestamp
 };
