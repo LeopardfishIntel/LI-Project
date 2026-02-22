@@ -23,7 +23,7 @@ export default function Home() {
         className="relative w-full h-[83.232vh] overflow-hidden"
         aria-label={description}
       >
-        <img
+        <Image
           src={imageUrl}
           alt={description}
           className="absolute inset-0 w-full h-full object-cover"
