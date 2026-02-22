@@ -17,7 +17,7 @@ export const getRentForFamily = (
   switch (familyStatus) {
     case 'family2': // Family of 4+
       return { rent: rent3BR, label: 'Monthly Rent (3BR+)' };
-    case 'family': // Family of 3
+    case 'family': // Family 2+1
       return { rent: rent3BR, label: 'Monthly Rent (3BR)' };
     case 'couple':
       return { rent: rent2BR, label: 'Monthly Rent (2BR)' };

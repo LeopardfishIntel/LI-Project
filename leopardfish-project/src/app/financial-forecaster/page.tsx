@@ -486,6 +486,65 @@ function TaxCalculatorSection() {
 }
 
 
+// --- Cost Breakdown Component ---
+const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
+    <div className="flex justify-between items-center">
+        <span className="flex items-center">{icon} {label}</span>
+        <span>{formatCurrency(value, currency)}</span>
+    </div>
+);
+
+const CostBreakdownCard = ({ costs, currency, familyStatusLabel, onContingencyChange, contingencyValue }: {
+    costs: Record<string, number | string>;
+    currency: string;
+    familyStatusLabel: string;
+    onContingencyChange: (value: string) => void;
+    contingencyValue: string;
+}) => {
+
+    const finalTotalMonthlyCosts = (costs.totalMonthlyCosts as number) + (parseFloat(contingencyValue) / (conversionRatesToUSD[currency] || 1));
+
+    return (
+        <div className="space-y-4 flex flex-col justify-between">
+            <div className="space-y-1">
+                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabel})</h3>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                    <CostItem icon={<Home className="w-4 h-4 mr-2 text-sky-400" />} label={costs.rentLabel as string} value={costs.rentCost as number} currency={currency} />
+                    <CostItem icon={<Zap className="w-4 h-4 mr-2 text-yellow-400" />} label="Utilities" value={costs.utilitiesCost as number} currency={currency} />
+                    <CostItem icon={<Wifi className="w-4 h-4 mr-2 text-indigo-400" />} label="Internet" value={costs.internetCost as number} currency={currency} />
+                    <CostItem icon={<Smartphone className="w-4 h-4 mr-2 text-pink-400" />} label="Mobile" value={costs.mobileCost as number} currency={currency} />
+                    <CostItem icon={<Utensils className="w-4 h-4 mr-2 text-amber-400" />} label="Groceries" value={costs.foodCost as number} currency={currency} />
+                    <CostItem icon={<Coffee className="w-4 h-4 mr-2 text-yellow-600" />} label="Dining & Social" value={costs.diningSocialCost as number} currency={currency} />
+                    <CostItem icon={<TramFront className="w-4 h-4 mr-2 text-rose-400" />} label="Transport" value={costs.transportCost as number} currency={currency} />
+                    <CostItem icon={<Car className="w-4 h-4 mr-2 text-neutral-400" />} label="Vehicle" value={costs.vehicleCost as number} currency={currency} />
+                    <CostItem icon={<Stethoscope className="w-4 h-4 mr-2 text-red-400" />} label="Medical Gaps" value={costs.medicalCost as number} currency={currency} />
+                    <div className="flex justify-between items-center">
+                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
+                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
+                        </Label>
+                        <Input
+                            id="contingency-cost"
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="0"
+                            value={contingencyValue}
+                            onChange={(e) => onContingencyChange(e.target.value)}
+                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-4">
+                <Separator className="my-4"/>
+                <div className="flex justify-between items-center font-bold text-lg">
+                    <span className="text-primary-foreground">Total Estimated Costs</span>
+                    <span className="text-red-400">{formatCurrency(finalTotalMonthlyCosts, currency)}</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // --- True Costs Code ---
 type FeatureScore = 'good' | 'neutral' | 'bad';
 type Feature = { text: React.ReactNode; score: FeatureScore; percentage?: string };
@@ -763,9 +822,6 @@ function TrueCostsSection() {
     GBP: 0.8,
     EUR: 0.92,
   };
-  const usdRate = conversionRates[currency];
-
-  const convert = (amount: number) => amount * usdRate;
   
   const schoolsInCountry = useMemo(() => {
     if (!schools) return [];
@@ -803,33 +859,21 @@ function TrueCostsSection() {
     setPartnerIncome('');
     setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
-        const rent = selectedSchool.costOfLiving?.monthlyRent1BR ?? (selectedSchool.costOfLiving as any)?.apartment ?? 0;
+        const rent = getRentForFamily(selectedSchool.costOfLiving, familyStatus).rent;
         setOtherMonthlyBenefits(String(Math.round(rent)));
     } else {
         setOtherMonthlyBenefits('');
     }
-  }, [selectedSchool]);
+  }, [selectedSchool, familyStatus]);
 
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
     couple: 'Couple',
-    family: 'Family of 3',
+    family: 'Family 2+1',
     family2: 'Family of 4',
   };
 
-  const {
-    rentCost,
-    foodCost,
-    transportCost,
-    utilitiesCost,
-    internetCost,
-    mobileCost,
-    diningSocialCost,
-    vehicleCost,
-    medicalCost,
-    totalMonthlyCosts,
-    rentLabel,
-  } = useMemo(() => {
+  const calculatedCosts = useMemo(() => {
     const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent' };
     if (!selectedSchool || !selectedSchool.costOfLiving) {
       return defaultCosts;
@@ -866,20 +910,23 @@ function TrueCostsSection() {
     
     const total = rentCost + foodCost + transportCost + utilitiesCost + internetCost + mobileCost + diningSocialCost + vehicleCost + medicalCost;
 
+    const usdRate = conversionRates[currency];
+
     return {
-      rentCost,
-      foodCost,
-      transportCost,
-      utilitiesCost,
-      internetCost,
-      mobileCost,
-      diningSocialCost,
-      vehicleCost,
-      medicalCost,
-      totalMonthlyCosts: total,
+      rentCost: rentCost * usdRate,
+      foodCost: foodCost * usdRate,
+      transportCost: transportCost * usdRate,
+      utilitiesCost: utilitiesCost * usdRate,
+      internetCost: internetCost * usdRate,
+      mobileCost: mobileCost * usdRate,
+      diningSocialCost: diningSocialCost * usdRate,
+      vehicleCost: vehicleCost * usdRate,
+      medicalCost: medicalCost * usdRate,
+      totalMonthlyCosts: total * usdRate,
       rentLabel: label,
     };
-  }, [selectedSchool, familyStatus]);
+  }, [selectedSchool, familyStatus, currency]);
+
   
   const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -907,18 +954,18 @@ function TrueCostsSection() {
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
   const numericContingency = parseFloat(contingency) || 0;
   const numericGratuityBonus = parseFloat(gratuityBonus) || 0;
+  
+  const usdRate = conversionRates[currency];
 
-  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
-  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
-  const utilitiesAllowanceInUSD = numericUtilitiesAllowance / usdRate;
-  const partnerIncomeInUSD = numericPartnerIncome / usdRate;
-  const contingencyInUSD = numericContingency / usdRate;
-  const gratuityBonusInUSD = numericGratuityBonus / usdRate;
+  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : (estimatedNetMonthlySalary * usdRate);
+  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits;
+  const utilitiesAllowanceInUSD = numericUtilitiesAllowance;
+  const partnerIncomeInUSD = numericPartnerIncome;
+  const contingencyInUSD = numericContingency;
+  const gratuityBonusInUSD = numericGratuityBonus;
 
-  const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
-
-  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
-  const finalTotalMonthlyCosts = totalMonthlyCosts + contingencyInUSD;
+  const totalMonthlyPackage = offeredNetMonthlySalaryInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
+  const finalTotalMonthlyCosts = calculatedCosts.totalMonthlyCosts + contingencyInUSD;
   const monthlySavings = totalMonthlyPackage - finalTotalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
 
@@ -927,15 +974,14 @@ function TrueCostsSection() {
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyIncome = salaryToUseInUSD;
-    const convertedAnnualSavings = convert(annualSavings);
-    const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
+    const monthlyIncome = offeredNetMonthlySalaryInUSD > 0 ? (offeredNetMonthlySalaryInUSD / usdRate) : estimatedNetMonthlySalary;
+    const formattedSavings = formatCurrency(annualSavings, currency);
 
     savingsDescription = `Based on an estimated net monthly income and your lifestyle costs, your projected annual savings are approximately ${formattedSavings}.`;
 
-    if (monthlySavings > (monthlyIncome * 0.3)) { // saving > 30% of salary
+    if ((monthlySavings/usdRate) > (monthlyIncome * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
-    } else if (monthlySavings > (monthlyIncome * 0.1)) { // saving > 10%
+    } else if ((monthlySavings/usdRate) > (monthlyIncome * 0.1)) { // saving > 10%
         savingsScore = 'neutral';
     } else {
         savingsScore = 'bad';
@@ -1080,7 +1126,7 @@ function TrueCostsSection() {
               <SelectContent>
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="couple">Couple</SelectItem>
-                <SelectItem value="family">Family of 3</SelectItem>
+                <SelectItem value="family">Family 2+1</SelectItem>
                 <SelectItem value="family2">Family of 4</SelectItem>
               </SelectContent>
             </Select>
@@ -1130,7 +1176,7 @@ function TrueCostsSection() {
                                             id="offered-salary"
                                             type="text"
                                             inputMode="numeric"
-                                            placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
+                                            placeholder={`${Math.round(estimatedNetMonthlySalary * usdRate)}`}
                                             value={offeredNetMonthlySalary}
                                             onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
                                             className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
@@ -1198,71 +1244,19 @@ function TrueCostsSection() {
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Monthly Package</span>
-                                    <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                                    <span className="text-green-400">{formatCurrency(totalMonthlyPackage, currency)}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="space-y-4 flex flex-col justify-between">
-                             <div className="space-y-1">
-                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
-                                <div className="space-y-1 text-sm text-muted-foreground">
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> {rentLabel}</span>
-                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(rentCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
-                                        <span>{formatCurrency(convert(utilitiesCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
-                                        <span>{formatCurrency(convert(internetCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
-                                        <span>{formatCurrency(convert(mobileCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
-                                        <span>{formatCurrency(convert(foodCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
-                                        <span>{formatCurrency(convert(diningSocialCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
-                                        <span>{formatCurrency(convert(transportCost), currency)}</span>
-                                    </div>
-                                     <div className="flex justify-between items-center">
-                                        <span className="flex items-center"><Stethoscope className="w-4 h-4 mr-2 text-red-400" /> Medical Gaps</span>
-                                        <span>{formatCurrency(convert(medicalCost), currency)}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
-                                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
-                                        </Label>
-                                        <Input
-                                            id="contingency-cost"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={contingency}
-                                            onChange={(e) => setContingency(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <Separator className="my-4"/>
-                                <div className="flex justify-between items-center font-bold text-lg">
-                                    <span className="text-primary-foreground">Total Estimated Costs</span>
-                                    <span className="text-red-400">{formatCurrency(convert(finalTotalMonthlyCosts), currency)}</span>
-                                </div>
-                            </div>
-                        </div>
+                       <CostBreakdownCard 
+                            costs={calculatedCosts} 
+                            currency={currency} 
+                            familyStatusLabel={familyStatusLabels[familyStatus]}
+                            contingencyValue={contingency}
+                            onContingencyChange={setContingency}
+                        />
+
                     </div>
                     
                     <div className="pt-6">
@@ -1271,13 +1265,13 @@ function TrueCostsSection() {
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
                                 <p className={cn("text-3xl font-bold mt-1", monthlySavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(convert(monthlySavings), currency)}
+                                    {formatCurrency(monthlySavings, currency)}
                                 </p>
                             </div>
                              <div className={cn("p-4 rounded-lg", annualSavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED ANNUAL SAVINGS</h4>
                                 <p className={cn("text-3xl font-bold mt-1", annualSavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(convert(annualSavings), currency)}
+                                    {formatCurrency(annualSavings, currency)}
                                 </p>
                             </div>
                         </div>
@@ -1502,7 +1496,3 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
-
-    
-
-
