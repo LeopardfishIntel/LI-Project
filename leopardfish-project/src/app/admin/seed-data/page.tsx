@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import {
   useUser,
@@ -42,6 +43,7 @@ import {
   FileDown,
   FileUp,
   RefreshCcw,
+  Sparkles,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -49,6 +51,7 @@ import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { enrichAllSchoolsAction, type BulkEnrichState } from './actions';
 
 const collectionOptions = [
   'schools',
@@ -66,6 +69,27 @@ const addableCollectionOptions = [
     // Future addable types can be added here
 ];
 
+const bulkEnrichInitialState: BulkEnrichState = { message: null, error: null, summary: null };
+
+function BulkEnrichSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} variant="outline" className="w-full bg-green-500/10 hover:bg-green-500/20 text-green-400 border-green-500/50">
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Enriching All Schools...
+        </>
+      ) : (
+        <>
+          <Sparkles className="mr-2 h-4 w-4" />
+          Enrich All Incomplete Schools
+        </>
+      )}
+    </Button>
+  );
+}
+
 export default function SeedDataPage() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -79,6 +103,19 @@ export default function SeedDataPage() {
   const [exportSelection, setExportSelection] = useState('schools');
   const [importSelection, setImportSelection] = useState('schools');
   
+  const [enrichState, enrichFormAction] = useActionState(enrichAllSchoolsAction, bulkEnrichInitialState);
+
+  useEffect(() => {
+    if (enrichState.message) {
+      toast({
+        title: 'Bulk Enrichment Complete',
+        description: enrichState.message,
+        variant: enrichState.error ? 'destructive' : 'default',
+        duration: 10000,
+      });
+    }
+  }, [enrichState, toast]);
+
   const adminRoleRef = useMemoFirebase(
     () => (firestore && user ? doc(firestore, 'roles_admin', user.uid) : null),
     [firestore, user]
@@ -460,6 +497,16 @@ export default function SeedDataPage() {
                 </div>
                 
                 <Separator />
+                
+                <div className="p-4 rounded-lg bg-background/50">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Sparkles className="text-green-400" /> Bulk AI School Enrichment</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Automatically find and fill in missing information for all incomplete school records in your database.</p>
+                    <form action={enrichFormAction}>
+                      <BulkEnrichSubmitButton />
+                    </form>
+                </div>
+
+                <Separator />
 
                 <div className="p-4 rounded-lg bg-background/50">
                     <h3 className="font-semibold flex items-center gap-2 mb-2"><DatabaseZap className="text-amber-400" /> Seed Mock Data</h3>
@@ -535,4 +582,3 @@ export default function SeedDataPage() {
     </div>
   );
 }
-
