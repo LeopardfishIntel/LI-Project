@@ -123,7 +123,7 @@ export default function Header() {
           <Link href="/" className="mr-6 flex items-center gap-2">
             <Binoculars className="h-6 w-6 text-primary" />
             <span className="hidden font-bold sm:inline-block font-headline">
-              LI-PROJECT-TEST-SUCCESS
+              Leopardfish Intel
             </span>
           </Link>
           <nav className="flex items-center space-x-1 text-sm font-medium">
@@ -177,7 +177,7 @@ export default function Header() {
               className="flex items-center gap-2"
             >
               <Binoculars className="h-6 w-6 text-primary" />
-              <span className="font-bold font-headline">LI-PROJECT-TEST-SUCCESS</span>
+              <span className="font-bold font-headline">Leopardfish Intel</span>
             </Link>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
@@ -224,7 +224,7 @@ export default function Header() {
         </Sheet>
         <Link href="/" className="flex items-center gap-2 md:hidden">
             <Binoculars className="h-5 w-5 text-primary" />
-            <span className="font-bold font-headline">LI-PROJECT-TEST-SUCCESS</span>
+            <span className="font-bold font-headline">Leopardfish Intel</span>
         </Link>
 
 
