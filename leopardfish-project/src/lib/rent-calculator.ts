@@ -9,10 +9,8 @@ export const getRentForFamily = (
 ): { rent: number; label: string } => {
   if (!costOfLiving) return { rent: 0, label: 'Monthly Rent' };
 
-  // Ensure all values are numbers, defaulting to 0, and handle old `apartment` field.
+  // Ensure all values are numbers, defaulting to 0.
   const rent1BR = Number(costOfLiving.monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0);
-  
-  // Use a non-compounding multiplication factor for more realistic estimates when data is sparse.
   const rent2BR = Number(costOfLiving.monthlyRent2BR ?? rent1BR * 1.4);
   const rent3BR = Number(costOfLiving.monthlyRent3BR ?? rent1BR * 1.8);
 
@@ -20,7 +18,7 @@ export const getRentForFamily = (
     case 'family2': // Family of 4+
       return { rent: rent3BR, label: 'Monthly Rent (3BR+)' };
     case 'family': // Family of 3
-      return { rent: rent2BR, label: 'Monthly Rent (2-3BR)' };
+      return { rent: rent3BR, label: 'Monthly Rent (3BR)' };
     case 'couple':
       return { rent: rent2BR, label: 'Monthly Rent (2BR)' };
     case 'single':
