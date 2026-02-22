@@ -4,8 +4,6 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
