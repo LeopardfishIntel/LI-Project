@@ -9,22 +9,22 @@ export const getRentForFamily = (
 ): { rent: number; label: string } => {
   if (!costOfLiving) return { rent: 0, label: 'Monthly Rent' };
 
-  // Handle old data structure with `apartment` field for backward compatibility
-  const rent1BR = costOfLiving.monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0;
-  const rent2BR = costOfLiving.monthlyRent2BR ?? rent1BR;
-  const rent3BR = costOfLiving.monthlyRent3BR ?? rent2BR;
+  // Ensure all values are numbers, defaulting to 0 and providing fallbacks.
+  const rent1BR = Number(costOfLiving.monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0);
+  const rent2BR = Number(costOfLiving.monthlyRent2BR ?? rent1BR * 1.4);
+  const rent3BR = Number(costOfLiving.monthlyRent3BR ?? rent1BR * 1.8);
 
-  if (familyStatus === 'family2') {
-      return { rent: rent3BR, label: 'Monthly Rent (3BR)' };
-  }
-  if (familyStatus === 'family') {
+  switch (familyStatus) {
+    case 'family2': // Family of 4+
+      return { rent: rent3BR, label: 'Monthly Rent (3BR+)' };
+    case 'family': // Family of 3
       return { rent: rent2BR, label: 'Monthly Rent (2BR)' };
+    case 'couple':
+      return { rent: rent1BR, label: 'Monthly Rent (1BR)' };
+    case 'single':
+    default:
+      return { rent: rent1BR, label: 'Monthly Rent (1BR)' };
   }
-  if (familyStatus === 'couple') {
-      return { rent: rent2BR, label: 'Monthly Rent (2BR)' };
-  }
-  // single
-  return { rent: rent1BR, label: 'Monthly Rent (1BR)' };
 };
 
 export const getFamilyStatusFromCounts = (adults: number, children: number): FamilyStatus => {
