@@ -468,9 +468,8 @@ function TaxCalculatorSection() {
                                             {chartData.map((entry) => (
                                                 <Cell key={`cell-${entry.name}`} fill={entry.fill} className="stroke-background focus:outline-none" />
                                             ))}
-                                        </Pie>
-                                    </PieChart>
-                                </ChartContainer>
+                                        </PieChart>
+                                    </ChartContainer>
                             </CardContent>
                         </Card>
                     )}
@@ -831,6 +830,8 @@ function TrueCostsSection() {
   const calculateTotal = (school: School | null | undefined) => {
     if (!school) return 0;
     const { costOfLiving, intel } = school;
+    const costOfLivingAny = costOfLiving as any;
+    
     const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
     const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
     const mobileCost = (costOfLiving.mobile || 0) * adults;
@@ -839,9 +840,9 @@ function TrueCostsSection() {
 
     let rentCost = 0;
     if (!intel.housing.provided) {
-        const rent1BR = (costOfLiving as any).monthlyRent1BR || (costOfLiving as any).apartment || 0;
-        const rent2BR = (costOfLiving as any).monthlyRent2BR || rent1BR;
-        const rent3BR = (costOfLiving as any).monthlyRent3BR || rent2BR;
+        const rent1BR = costOfLivingAny.monthlyRent1BR || costOfLivingAny.apartment || 0;
+        const rent2BR = costOfLivingAny.monthlyRent2BR || rent1BR;
+        const rent3BR = costOfLivingAny.monthlyRent3BR || rent2BR;
         if (familyStatus === 'single' || familyStatus === 'couple') {
             rentCost = rent1BR;
         } else if (familyStatus === 'family') { // Family of 3
@@ -1028,9 +1029,10 @@ function TrueCostsSection() {
   let rentToShow = 0;
   let rentLabel = 'Monthly Rent';
   if (selectedSchool && !selectedSchool.intel.housing.provided) {
-    const rent1BR = (selectedSchool.costOfLiving as any).monthlyRent1BR || (selectedSchool.costOfLiving as any).apartment || 0;
-    const rent2BR = (selectedSchool.costOfLiving as any).monthlyRent2BR || rent1BR;
-    const rent3BR = (selectedSchool.costOfLiving as any).monthlyRent3BR || rent2BR;
+    const costOfLivingAny = selectedSchool.costOfLiving as any;
+    const rent1BR = costOfLivingAny.monthlyRent1BR || costOfLivingAny.apartment || 0;
+    const rent2BR = costOfLivingAny.monthlyRent2BR || rent1BR;
+    const rent3BR = costOfLivingAny.monthlyRent3BR || rent2BR;
 
     if (familyStatus === 'single' || familyStatus === 'couple') {
       rentToShow = rent1BR;
