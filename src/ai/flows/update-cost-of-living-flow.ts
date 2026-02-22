@@ -46,6 +46,8 @@ const updateCostOfLivingPrompt = ai.definePrompt({
 
 Location: {{{locationName}}}, {{{countryName}}}
 
+When researching, prioritize information from the following reputable websites: Numbeo.com, Expatistan.com. You may use other high-quality public sources if necessary.
+
 Please research online and provide the most recent estimates for the following data points, in USD.
 
 - Average Meal Cost (mid-range restaurant)
