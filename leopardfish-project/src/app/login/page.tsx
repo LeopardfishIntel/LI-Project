@@ -43,8 +43,11 @@ export default function LoginPage() {
     setLoading('email');
     setError(null);
     initiateEmailSignIn(auth, email, password, (err: any) => {
-        setError('Failed to sign in. Please check your credentials.');
-        console.error(err);
+        let message = 'An unexpected error occurred. Please try again.';
+        if (err.code === 'auth/invalid-credential') {
+            message = 'Incorrect email or password. Please check your details or sign up if you do not have an account.';
+        }
+        setError(message);
         setLoading(false);
     });
   };
@@ -54,7 +57,6 @@ export default function LoginPage() {
     setError(null);
     initiateAnonymousSignIn(auth, (err: any) => {
         setError('Failed to sign in anonymously.');
-        console.error(err);
         setLoading(false);
     });
   };
