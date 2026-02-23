@@ -43,7 +43,11 @@ export default function LoginPage() {
     setLoading('email');
     setError(null);
     initiateEmailSignIn(auth, email, password, (err: any) => {
-        setError('Failed to sign in. Please check your credentials.');
+        let message = 'An unexpected error occurred. Please try again.';
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+            message = 'Invalid credentials. Please check your email and password and try again.';
+        }
+        setError(message);
         console.error(err);
         setLoading(false);
     });
