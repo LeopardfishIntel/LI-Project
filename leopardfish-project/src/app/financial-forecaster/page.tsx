@@ -485,7 +485,6 @@ function TaxCalculatorSection() {
     );
 }
 
-
 // --- Cost Breakdown Component ---
 const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
     <div className="flex justify-between items-center">
@@ -495,7 +494,7 @@ const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, lab
 );
 
 const CostBreakdownCard = ({ costs, currency, familyStatusLabel, onContingencyChange, contingencyValue }: {
-    costs: Record<string, number | string>;
+    costs: Record<string, number | string | boolean>;
     currency: string;
     familyStatusLabel: string;
     onContingencyChange: (value: string) => void;
@@ -509,7 +508,15 @@ const CostBreakdownCard = ({ costs, currency, familyStatusLabel, onContingencyCh
             <div className="space-y-1">
                 <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabel})</h3>
                 <div className="space-y-1 text-sm text-muted-foreground">
-                    <CostItem icon={<Home className="w-4 h-4 mr-2 text-sky-400" />} label={costs.rentLabel as string} value={costs.rentCost as number} currency={currency} />
+                    <div className="flex justify-between items-center">
+                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> {costs.rentLabel as string}</span>
+                        <span>
+                            {costs.isHousingProvided
+                                ? <span className="font-semibold text-green-400">Provided ({formatCurrency(costs.rentValueIfProvided as number, currency)})</span>
+                                : formatCurrency(costs.rentCost as number, currency)
+                            }
+                        </span>
+                    </div>
                     <CostItem icon={<Zap className="w-4 h-4 mr-2 text-yellow-400" />} label="Utilities" value={costs.utilitiesCost as number} currency={currency} />
                     <CostItem icon={<Wifi className="w-4 h-4 mr-2 text-indigo-400" />} label="Internet" value={costs.internetCost as number} currency={currency} />
                     <CostItem icon={<Smartphone className="w-4 h-4 mr-2 text-pink-400" />} label="Mobile" value={costs.mobileCost as number} currency={currency} />
@@ -822,6 +829,9 @@ function TrueCostsSection() {
     GBP: 0.8,
     EUR: 0.92,
   };
+  const usdRate = conversionRates[currency];
+
+  const convert = useMemo(() => (amount: number) => amount * usdRate, [usdRate]);
   
   const schoolsInCountry = useMemo(() => {
     if (!schools) return [];
@@ -860,12 +870,12 @@ function TrueCostsSection() {
     setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
         const rent = getRentForFamily(selectedSchool.costOfLiving, familyStatus).rent;
-        setOtherMonthlyBenefits(String(Math.round(rent)));
+        setOtherMonthlyBenefits(String(Math.round(convert(rent))));
     } else {
         setOtherMonthlyBenefits('');
     }
-  }, [selectedSchool, familyStatus]);
-
+  }, [selectedSchool, familyStatus, convert]);
+  
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
     couple: 'Couple',
@@ -873,12 +883,36 @@ function TrueCostsSection() {
     family2: 'Family of 4',
   };
 
-  const calculatedCosts = useMemo(() => {
-    const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent' };
-    if (!selectedSchool || !selectedSchool.costOfLiving) {
-      return defaultCosts;
-    }
+  const calculateTotal = (school: School, familyStatus: FamilyStatus) => {
+    const { costOfLiving, intel } = school;
 
+    let adults = 1;
+    let children = 0;
+    if (familyStatus === 'couple') adults = 2;
+    else if (familyStatus === 'family') { adults = 2; children = 1; }
+    else if (familyStatus === 'family2') { adults = 2; children = 2; }
+    
+    const { rent } = getRentForFamily(costOfLiving, familyStatus);
+    const rentCost = intel.housing.provided ? 0 : rent;
+    
+    const foodCost = (costOfLiving.food ?? 0) * (adults + 0.5 * children);
+    const transportCost = (costOfLiving.transport ?? 0) * (adults + 0.3 * children);
+    const mobileCost = (costOfLiving.mobile ?? 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
+    const medicalCost = (costOfLiving.uncoveredMedical ?? 0) * (adults + 0.5 * children);
+    
+    const utilitiesMultiplier = 1 + (adults - 1) * 0.2 + children * 0.1;
+    const utilitiesCost = (costOfLiving.utilities ?? 0) * utilitiesMultiplier;
+    
+    const internetCost = costOfLiving.internet ?? 0;
+    const vehicleCost = costOfLiving.vehicleInsuranceMaint ?? 0;
+    
+    return rentCost + foodCost + transportCost + utilitiesCost + internetCost + mobileCost + diningSocialCost + vehicleCost + medicalCost;
+  };
+
+  const calculatedCosts = useMemo(() => {
+    if (!selectedSchool) return { totalMonthlyCosts: 0, rentLabel: 'Monthly Rent', rentCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, foodCost: 0, diningSocialCost: 0, transportCost: 0, vehicleCost: 0, medicalCost: 0 };
+    
     const { costOfLiving, intel } = selectedSchool;
 
     let adults = 1;
@@ -901,32 +935,29 @@ function TrueCostsSection() {
     const mobileCost = (costOfLiving.mobile ?? 0) * adults;
     const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
     const medicalCost = (costOfLiving.uncoveredMedical ?? 0) * (adults + 0.5 * children);
-    
     const utilitiesMultiplier = 1 + (adults - 1) * 0.2 + children * 0.1;
     const utilitiesCost = (costOfLiving.utilities ?? 0) * utilitiesMultiplier;
-    
     const internetCost = costOfLiving.internet ?? 0;
     const vehicleCost = costOfLiving.vehicleInsuranceMaint ?? 0;
     
     const total = rentCost + foodCost + transportCost + utilitiesCost + internetCost + mobileCost + diningSocialCost + vehicleCost + medicalCost;
 
-    const usdRate = conversionRates[currency];
-
     return {
-      rentCost: rentCost * usdRate,
-      foodCost: foodCost * usdRate,
-      transportCost: transportCost * usdRate,
-      utilitiesCost: utilitiesCost * usdRate,
-      internetCost: internetCost * usdRate,
-      mobileCost: mobileCost * usdRate,
-      diningSocialCost: diningSocialCost * usdRate,
-      vehicleCost: vehicleCost * usdRate,
-      medicalCost: medicalCost * usdRate,
-      totalMonthlyCosts: total * usdRate,
+      rentCost: convert(rentCost),
       rentLabel: label,
+      foodCost: convert(foodCost),
+      transportCost: convert(transportCost),
+      utilitiesCost: convert(utilitiesCost),
+      internetCost: convert(internetCost),
+      mobileCost: convert(mobileCost),
+      diningSocialCost: convert(diningSocialCost),
+      vehicleCost: convert(vehicleCost),
+      medicalCost: convert(medicalCost),
+      totalMonthlyCosts: convert(total),
+      isHousingProvided: intel.housing.provided,
+      rentValueIfProvided: convert(rent),
     };
-  }, [selectedSchool, familyStatus, currency]);
-
+  }, [selectedSchool, familyStatus, convert]);
   
   const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -954,18 +985,11 @@ function TrueCostsSection() {
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
   const numericContingency = parseFloat(contingency) || 0;
   const numericGratuityBonus = parseFloat(gratuityBonus) || 0;
-  
-  const usdRate = conversionRates[currency];
 
-  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : (estimatedNetMonthlySalary * usdRate);
-  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits;
-  const utilitiesAllowanceInUSD = numericUtilitiesAllowance;
-  const partnerIncomeInUSD = numericPartnerIncome;
-  const contingencyInUSD = numericContingency;
-  const gratuityBonusInUSD = numericGratuityBonus;
+  const salaryToUseInSelectedCurrency = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : convert(estimatedNetMonthlySalary);
 
-  const totalMonthlyPackage = offeredNetMonthlySalaryInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
-  const finalTotalMonthlyCosts = calculatedCosts.totalMonthlyCosts + contingencyInUSD;
+  const totalMonthlyPackage = salaryToUseInSelectedCurrency + numericOtherMonthlyBenefits + numericUtilitiesAllowance + numericPartnerIncome + numericGratuityBonus;
+  const finalTotalMonthlyCosts = calculatedCosts.totalMonthlyCosts + numericContingency;
   const monthlySavings = totalMonthlyPackage - finalTotalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
 
@@ -974,14 +998,14 @@ function TrueCostsSection() {
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyIncome = offeredNetMonthlySalaryInUSD > 0 ? (offeredNetMonthlySalaryInUSD / usdRate) : estimatedNetMonthlySalary;
+    const monthlyIncomeInSelectedCurrency = salaryToUseInSelectedCurrency;
     const formattedSavings = formatCurrency(annualSavings, currency);
 
     savingsDescription = `Based on an estimated net monthly income and your lifestyle costs, your projected annual savings are approximately ${formattedSavings}.`;
 
-    if ((monthlySavings/usdRate) > (monthlyIncome * 0.3)) { // saving > 30% of salary
+    if (monthlySavings > (monthlyIncomeInSelectedCurrency * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
-    } else if ((monthlySavings/usdRate) > (monthlyIncome * 0.1)) { // saving > 10%
+    } else if (monthlySavings > (monthlyIncomeInSelectedCurrency * 0.1)) { // saving > 10%
         savingsScore = 'neutral';
     } else {
         savingsScore = 'bad';
@@ -1176,7 +1200,7 @@ function TrueCostsSection() {
                                             id="offered-salary"
                                             type="text"
                                             inputMode="numeric"
-                                            placeholder={`${Math.round(estimatedNetMonthlySalary * usdRate)}`}
+                                            placeholder={`${Math.round(convert(estimatedNetMonthlySalary))}`}
                                             value={offeredNetMonthlySalary}
                                             onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
                                             className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
@@ -1496,3 +1520,8 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
+
+    
+
+
+
