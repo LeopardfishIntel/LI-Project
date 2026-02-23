@@ -10,7 +10,7 @@ import {
 } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { teacherProfile as mockProfile } from '@/lib/mock-data';
+import type { TeacherProfile } from '@/lib/types';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -66,12 +66,19 @@ export default function SignupPage() {
       // 3. Create their teacher profile document in Firestore
       if (firestore) {
         const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
-        const { memberSince, ...restOfMockProfile } = mockProfile;
-        const newProfile = {
-          ...restOfMockProfile,
+        const newProfile: Omit<TeacherProfile, 'memberSince'> & {memberSince: Date} = {
           id: user.uid,
           fullName: fullName,
-          memberSince: new Date(), // Use current date for new members
+          avatarUrl: '',
+          isVerifiedTeacher: false,
+          familyStatus: 'Single',
+          ageGroup: '',
+          memberSince: new Date(),
+          yearsOfExperience: 0,
+          qualifications: [],
+          linkedInProfileUrl: '',
+          preferredRegions: [],
+          preferredCountries: [],
         };
         setDocumentNonBlocking(profileRef, newProfile, { merge: true });
       }

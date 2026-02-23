@@ -1,6 +1,7 @@
 
 
 export type TeacherProfile = {
+  id: string;
   fullName: string;
   avatarUrl: string;
   isVerifiedTeacher: boolean;

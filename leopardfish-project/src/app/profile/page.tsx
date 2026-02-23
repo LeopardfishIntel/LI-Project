@@ -1,18 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import {
   useUser,
   useDoc,
   useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
-  useAuth,
 } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { TeacherProfile } from '@/lib/types';
-import { teacherProfile as mockProfile } from '@/lib/mock-data';
-import { updateEmail } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -41,8 +41,18 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 function ProfileSkeleton() {
   return (
@@ -83,14 +93,25 @@ function ProfileSkeleton() {
   );
 }
 
+const profileSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required.'),
+  avatarUrl: z.string().url("Must be a valid URL.").or(z.literal('')),
+  familyStatus: z.string(),
+  ageGroup: z.string(),
+  yearsOfExperience: z.coerce.number().min(0, "Years of experience must be positive."),
+  qualifications: z.string().describe("Comma-separated values"),
+  linkedInProfileUrl: z.string().url("Must be a valid URL.").or(z.literal('')),
+  preferredRegions: z.string().describe("Comma-separated values"),
+  preferredCountries: z.string().describe("Comma-separated values"),
+});
+
+
 export default function ProfilePage() {
   const { user, isUserLoading } = useUser();
-  const auth = useAuth();
   const firestore = useFirestore();
   const { toast } = useToast();
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [newEmail, setNewEmail] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
   const profileRef = useMemoFirebase(
@@ -101,59 +122,89 @@ export default function ProfilePage() {
     useDoc<Omit<TeacherProfile, 'memberSince'> & { memberSince: any }>(
       profileRef
     );
+    
+  const form = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+        fullName: '',
+        avatarUrl: '',
+        familyStatus: 'Single',
+        ageGroup: '25-34',
+        yearsOfExperience: 0,
+        qualifications: '',
+        linkedInProfileUrl: '',
+        preferredRegions: '',
+        preferredCountries: '',
+    },
+  });
+
+  useEffect(() => {
+    if (teacherProfile) {
+        form.reset({
+            fullName: teacherProfile.fullName || '',
+            avatarUrl: teacherProfile.avatarUrl || '',
+            familyStatus: teacherProfile.familyStatus || 'Single',
+            ageGroup: teacherProfile.ageGroup || '25-34',
+            yearsOfExperience: teacherProfile.yearsOfExperience || 0,
+            qualifications: (teacherProfile.qualifications || []).join(', '),
+            linkedInProfileUrl: teacherProfile.linkedInProfileUrl || '',
+            preferredRegions: (teacherProfile.preferredRegions || []).join(', '),
+            preferredCountries: (teacherProfile.preferredCountries || []).join(', '),
+        });
+    }
+  }, [teacherProfile, form]);
+
 
   const handleCreateProfile = () => {
     if (!firestore || !user || !profileRef) return;
-    const newProfile = {
-      ...mockProfile,
+    const newProfile: Omit<TeacherProfile, 'memberSince' | 'id'> & {memberSince: Date; id: string} = {
       id: user.uid,
       fullName: user.displayName || 'New Teacher',
+      avatarUrl: '',
+      isVerifiedTeacher: false,
+      familyStatus: 'Single',
+      ageGroup: '25-34',
       memberSince: new Date(),
+      yearsOfExperience: 0,
+      qualifications: [],
+      linkedInProfileUrl: '',
+      preferredRegions: [],
+      preferredCountries: [],
     };
-    // The mock profile has a Date object, need to convert to Firestore Timestamp for storage
-    const { memberSince, ...rest } = newProfile;
-    const dataToSave = { ...rest, memberSince: memberSince };
-
-    setDocumentNonBlocking(profileRef, dataToSave, { merge: true });
+    setDocumentNonBlocking(profileRef, newProfile, { merge: true });
   };
 
-  const handleUpdateEmail = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !newEmail || !auth) return;
+ const onSubmit = (values: z.infer<typeof profileSchema>) => {
+    if (!firestore || !user || !profileRef) return;
 
     setIsUpdating(true);
     try {
-      await updateEmail(user, newEmail);
-      toast({
-        title: 'Email Updated',
-        description:
-          'Your email has been updated. Please log in again with your new email.',
-      });
-      setIsEditDialogOpen(false);
-      setNewEmail('');
-      if (auth) {
-        auth.signOut();
-      }
-    } catch (error: any) {
-      let message = 'An unknown error occurred. Please try again.';
-      if (error.code === 'auth/requires-recent-login') {
-        message =
-          'This action is sensitive and requires recent authentication. Please log out and log back in, then try again.';
-      } else if (error.code === 'auth/email-already-in-use') {
-        message = 'The new email address is already in use by another account.';
-      } else if (error.code === 'auth/invalid-email') {
-        message = 'The new email address is not valid.';
-      }
-      toast({
-        variant: 'destructive',
-        title: 'Update Failed',
-        description: message,
-      });
-      console.error(error);
+        const updatedProfile = {
+            ...values,
+            qualifications: values.qualifications.split(',').map(s => s.trim()).filter(Boolean),
+            preferredRegions: values.preferredRegions.split(',').map(s => s.trim()).filter(Boolean),
+            preferredCountries: values.preferredCountries.split(',').map(s => s.trim()).filter(Boolean),
+        };
+        
+        setDocumentNonBlocking(profileRef, updatedProfile, { merge: true });
+
+        toast({
+            title: 'Profile Updated',
+            description: 'Your profile has been successfully updated.',
+        });
+        setIsEditDialogOpen(false);
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Update Failed',
+            description: 'There was a problem updating your profile.',
+        });
+        console.error(error);
     } finally {
-      setIsUpdating(false);
+        setIsUpdating(false);
     }
   };
+
 
   const isLoading = isUserLoading || isProfileLoading;
   if (isLoading) {
@@ -239,34 +290,56 @@ export default function ProfilePage() {
                 Edit Profile
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Update Your Email</DialogTitle>
+                <DialogTitle>Edit Your Profile</DialogTitle>
                 <DialogDescription>
-                  Enter your new email address. You will be logged out and need
-                  to sign in again.
+                  Make changes to your profile here. Click save when you're done.
                 </DialogDescription>
               </DialogHeader>
-              <form
-                id="update-email-form"
-                onSubmit={handleUpdateEmail}
-                className="grid gap-4 py-4"
-              >
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">
-                    New Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newEmail}
-                    onChange={e => setNewEmail(e.target.value)}
-                    className="col-span-3"
-                    placeholder="new.email@example.com"
-                    required
-                  />
-                </div>
-              </form>
+              <Form {...form}>
+                <form
+                  id="update-profile-form"
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto px-2"
+                >
+                    <FormField control={form.control} name="fullName" render={({ field }) => (
+                        <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="avatarUrl" render={({ field }) => (
+                        <FormItem><FormLabel>Avatar URL</FormLabel><FormControl><Input {...field} placeholder="https://..." /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="familyStatus" render={({ field }) => (
+                            <FormItem><FormLabel>Family Status</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select status..." /></SelectTrigger></FormControl>
+                                <SelectContent><SelectItem value="Single">Single</SelectItem><SelectItem value="Couple">Couple</SelectItem><SelectItem value="Family (2+1)">Family (2+1)</SelectItem><SelectItem value="Family (2+2)">Family (2+2)</SelectItem></SelectContent>
+                            </Select><FormMessage /></FormItem>
+                        )} />
+                         <FormField control={form.control} name="ageGroup" render={({ field }) => (
+                            <FormItem><FormLabel>Age Group</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select age group..." /></SelectTrigger></FormControl>
+                                <SelectContent><SelectItem value="20-34">20-34</SelectItem><SelectItem value="35-49">35-49</SelectItem><SelectItem value="50-64">50-64</SelectItem><SelectItem value="65+">65+</SelectItem></SelectContent>
+                            </Select><FormMessage /></FormItem>
+                        )} />
+                    </div>
+                    <FormField control={form.control} name="yearsOfExperience" render={({ field }) => (
+                        <FormItem><FormLabel>Years of Experience</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="linkedInProfileUrl" render={({ field }) => (
+                        <FormItem><FormLabel>LinkedIn Profile URL</FormLabel><FormControl><Input {...field} placeholder="https://linkedin.com/in/..." /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="qualifications" render={({ field }) => (
+                        <FormItem><FormLabel>Qualifications</FormLabel><FormControl><Textarea {...field} placeholder="PGCE, M.Ed, QTS..." /></FormControl><FormDescription>Comma-separated list of your qualifications.</FormDescription><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={form.control} name="preferredRegions" render={({ field }) => (
+                        <FormItem><FormLabel>Preferred Regions</FormLabel><FormControl><Textarea {...field} placeholder="Southeast Asia, Europe..." /></FormControl><FormDescription>Comma-separated list of regions.</FormDescription><FormMessage /></FormItem>
+                    )} />
+                     <FormField control={form.control} name="preferredCountries" render={({ field }) => (
+                        <FormItem><FormLabel>Preferred Countries</FormLabel><FormControl><Textarea {...field} placeholder="Thailand, Spain..." /></FormControl><FormDescription>Comma-separated list of countries.</FormDescription><FormMessage /></FormItem>
+                    )} />
+                </form>
+              </Form>
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="secondary">
@@ -275,13 +348,13 @@ export default function ProfilePage() {
                 </DialogClose>
                 <Button
                   type="submit"
-                  form="update-email-form"
+                  form="update-profile-form"
                   disabled={isUpdating}
                 >
                   {isUpdating && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Update Email
+                  Save Changes
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -367,9 +440,9 @@ export default function ProfilePage() {
                       href={displayProfile.linkedInProfileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sky-400 hover:underline text-lg"
+                      className="text-sky-400 hover:underline text-lg break-all"
                     >
-                      View Profile
+                      {displayProfile.linkedInProfileUrl ? 'View Profile' : 'Not Provided'}
                     </a>
                   </div>
                 </div>
