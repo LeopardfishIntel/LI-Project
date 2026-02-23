@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, User, ChevronDown, Binoculars, LogOut, Search } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, User, ChevronDown, Binoculars, LogOut } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -21,17 +21,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
@@ -44,11 +33,9 @@ const navLinks = [
 function UserNav() {
     const { user, isUserLoading } = useUser();
     const auth = useAuth();
-    const router = useRouter();
 
     const handleLogout = () => {
-        auth?.signOut();
-        router.push('/');
+        auth.signOut();
     };
 
     if (isUserLoading) {
@@ -94,24 +81,8 @@ function UserNav() {
     );
 }
 
-const searchSchema = z.object({
-  query: z.string().min(1),
-});
-
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
-  const form = useForm<z.infer<typeof searchSchema>>({
-    resolver: zodResolver(searchSchema),
-    defaultValues: {
-      query: "",
-    },
-  });
-
-  function onSubmit(data: z.infer<typeof searchSchema>) {
-    router.push(`/search?q=${data.query}`);
-    form.reset();
-  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -226,27 +197,6 @@ export default function Header() {
 
 
         <div className="flex flex-1 items-center justify-end space-x-2">
-            <div className="hidden md:block">
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-2">
-                  <FormField
-                    control={form.control}
-                    name="query"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search schools..." {...field} className="h-9 pl-9" />
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" size="sm">Search</Button>
-                </form>
-              </Form>
-            </div>
             <UserNav />
         </div>
       </div>
