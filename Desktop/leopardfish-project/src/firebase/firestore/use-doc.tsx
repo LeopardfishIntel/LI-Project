@@ -57,7 +57,7 @@ export function useDoc<T = any>(
 
     setIsLoading(true);
     setError(null);
-    // Optional: setData(null); // Clear previous data instantly
+    setData(null);
 
     const unsubscribe = onSnapshot(
       memoizedDocRef,
@@ -88,6 +88,11 @@ export function useDoc<T = any>(
 
     return () => unsubscribe();
   }, [memoizedDocRef]); // Re-run if the memoizedDocRef changes.
+
+  if(memoizedDocRef && !(memoizedDocRef as any).__memo) {
+    console.error('useDoc ref not memoized with useMemoFirebase:', memoizedDocRef);
+    throw new Error('useDoc ref must be memoized with useMemoFirebase. Please check the console for the ref that is not memoized.');
+  }
 
   return { data, isLoading, error };
 }
