@@ -36,6 +36,10 @@ export default function LoginPage() {
 
   const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!auth) {
+      setError("Authentication service is not available. Please try again.");
+      return;
+    }
     if (!email || !password) {
       setError('Please enter email and password.');
       return;
@@ -44,8 +48,8 @@ export default function LoginPage() {
     setError(null);
     initiateEmailSignIn(auth, email, password, (err: any) => {
         let message = 'An unexpected error occurred. Please try again.';
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-            message = 'Invalid credentials. Please check your email and password and try again.';
+        if (err.code === 'auth/invalid-credential') {
+            message = 'Incorrect email or password. Please check your details or sign up if you do not have an account.';
         }
         setError(message);
         console.error(err);
@@ -54,6 +58,10 @@ export default function LoginPage() {
   };
 
   const handleAnonymousLogin = () => {
+    if (!auth) {
+      setError("Authentication service not available. Please try again.");
+      return;
+    }
     setLoading('anonymous');
     setError(null);
     initiateAnonymousSignIn(auth, (err: any) => {
