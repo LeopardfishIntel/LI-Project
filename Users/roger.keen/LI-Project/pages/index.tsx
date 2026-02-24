@@ -35,10 +35,10 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-between text-center h-full py-16">
             <div className="flex flex-col items-center">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
-                <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
+                    This is the LI-Project Folder
                 </h1>
                 <p className="max-w-3xl mx-auto text-2xl md:text-3xl [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
-                Move with certainty, not just hope. 
+                If you can see this, we are live.
                 </p>
             </div>
             <div className="flex flex-col items-center pb-8">
