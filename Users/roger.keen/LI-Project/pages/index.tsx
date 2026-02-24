@@ -50,9 +50,11 @@ export default function Home() {
 
       <section className="w-full py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-            <p className="max-w-4xl mx-auto text-center text-primary-foreground md:text-xl mb-10">
-              We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight.
-            </p>
+            <div className="bg-card/50 p-8 rounded-lg mb-10">
+              <p className="max-w-4xl mx-auto text-center text-primary-foreground md:text-xl">
+                We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight.
+              </p>
+            </div>
             <KeyFactsSection />
         </div>
       </section>
