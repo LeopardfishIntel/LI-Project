@@ -48,8 +48,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full py-8 bg-background">
+      <section className="w-full py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
+            <p className="max-w-4xl mx-auto text-center text-muted-foreground md:text-lg mb-10">
+              We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight.
+            </p>
             <KeyFactsSection />
         </div>
       </section>
