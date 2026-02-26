@@ -9,7 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        azure: "#007FFF",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        primary: "#f97316", // Vermilion
+        azure: "#007FFF",   // Azure
       },
     },
   },

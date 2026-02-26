@@ -3,23 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 2, 6, 23;
-  --background-end-rgb: 0, 0, 0;
+  --background: #020617;
+  --foreground: #ffffff;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-.glass {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  color: var(--foreground);
+  background: var(--background);
+  overflow-x: hidden;
 }
