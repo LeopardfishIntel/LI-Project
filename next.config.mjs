@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // <-- makes it static
-  trailingSlash: true,
-  images: { unoptimized: true },
+  output: 'standalone',
 };
 
 export default nextConfig;
