@@ -1,179 +1,70 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Globe } from "lucide-react";
 
-const steps = [
-  {
-    title: "DISCOVER",
-    step: "STEP 1",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-    description:
-      "By aligning your specific expertise and personal profile with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
-    cta: "Discover",
-    href: "/discover",
-  },
-  {
-    title: "EVALUATE",
-    step: "STEP 2",
-    image: "https://images.unsplash.com/photo-1488459711615-de64ef5996f6",
-    description:
-      "Our Contract Decoder cuts through the fluff, calculate your actual take-home pay, and map your genuine disposable income. Focus on your real financial position, can you save or will you be treading water.",
-    cta: "Evaluate",
-    href: "/evaluate",
-  },
-  {
-    title: "DECIDE",
-    step: "STEP 3",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-    description:
-      "Weighing up multiple offers is a challenge. Our comparison tool breaks down the finer details of your potential contracts—from headline salary and housing allowances and more. We lay out the data, so you can make your final decision with total peace of mind.",
-    cta: "Decide",
-    href: "/compare",
-  },
-];
-
-const Index = () => {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-[#020617]">
-      {/* Hero - full viewport */}
-      <section className="relative h-screen w-full flex items-center justify-center">
-        <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
-          alt="Boat on alpine lake"
-          className="absolute inset-0 h-full w-full object-cover"
+    <main className="min-h-screen bg-[#020617]">
+      {/* 1. TOP MENU */}
+      <nav className="fixed top-0 z-50 w-full bg-[#020617]/90 backdrop-blur-md border-b border-white/10 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="text-xl font-black tracking-tighter uppercase">
+            LEOPARDFISH <span className="text-[#007FFF]">INTEL</span>
+          </div>
+          <div className="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest text-slate-400">
+            <Link href="/discover" className="hover:text-white transition-colors">Discover</Link>
+            <Link href="/evaluate" className="text-[#f97316]">Evaluate</Link>
+            <Link href="/compare" className="hover:text-white transition-colors">Decide</Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* 2. HERO */}
+      <section className="relative h-screen w-full flex items-center justify-center text-center">
+        <img 
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" 
+          className="absolute inset-0 w-full h-full object-cover -z-10 brightness-[0.5]"
+          alt="Beach"
         />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter">
-            <span className="text-white">Leopard</span>
-            <span className="text-[#f97316]">fish</span>
-            <span className="text-white"> Intel</span>
+        <div className="z-10 px-4">
+          <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter">
+            Leopard<span className="text-[#f97316]">fish</span> Intel
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-white/80">
-            Move with certainty, not just hope.
-          </p>
-          <Link
-            href="/discover"
-            className="mt-12 inline-block rounded bg-[#f97316] px-8 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition-colors shadow-lg"
-          >
+          <p className="mt-4 text-xl md:text-3xl font-medium text-slate-300">Move with certainty, not just hope.</p>
+          <Link href="/discover" className="mt-10 inline-block bg-[#f97316] px-10 py-4 rounded-lg font-bold uppercase tracking-widest shadow-2xl hover:scale-105 transition-all">
             Start Your Journey
           </Link>
         </div>
       </section>
 
-      {/* Steps heading */}
-      <section className="bg-[#020617] py-16">
-        <h2 className="text-center text-2xl md:text-3xl font-bold text-white uppercase tracking-widest">
-          Teach Overseas: Know Before You Go
-        </h2>
-      </section>
-
-      {/* Steps */}
-      <section className="bg-[#020617] pb-20">
-        <div className="max-w-7xl mx-auto px-6 space-y-24">
-          {steps.map((step, i) => {
-            const imageLeft = i % 2 === 0;
-            return (
-              <div
-                key={i}
-                className={`flex flex-col gap-12 md:flex-row md:items-center ${
-                  !imageLeft ? "md:flex-row-reverse" : ""
-                }`}
-              >
-                {/* Image */}
-                <div className="md:w-1/2">
-                  <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                    <img
-                      src={step.image}
-                      alt={step.title}
-                      className="w-full h-64 md:h-96 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <span className="text-5xl font-black italic text-white drop-shadow-2xl">
-                        {step.step}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Text */}
-                <div className="md:w-1/2">
-                  <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter mb-4">
-                    {step.title}
-                  </h3>
-                  <p className="text-lg leading-relaxed text-slate-400 max-w-md mb-8">
-                    {step.description}
-                  </p>
-                  <Link
-                    href={step.href}
-                    className="inline-block rounded-lg border border-[#f97316] bg-[#f97316] px-8 py-3 text-sm font-bold text-white hover:bg-[#ea580c] transition-colors uppercase tracking-widest"
-                  >
-                    {step.cta}
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-[#020617] py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid gap-12 md:grid-cols-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded bg-[#f97316]">
-                  <Globe className="h-5 w-5 text-white" />
-                </div>
-                <span className="font-bold text-lg text-white">
-                  Leopardfish Intel
-                </span>
-              </div>
-              <p className="mt-4 text-xs leading-relaxed text-slate-500 max-w-xs">
-                Your international teaching journey, mapped. Find your ideal destination, calculate
-                your real-world savings, and compare school offers side-by-side.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold text-white mb-6 uppercase tracking-widest">QUICK LINKS</h4>
-              <div className="space-y-3">
-                {[
-                    {label: "Discover", path: "/discover"}, 
-                    {label: "Evaluate", path: "/evaluate"}, 
-                    {label: "Decide", path: "/compare"}
-                ].map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.path}
-                    className="block text-xs text-slate-500 hover:text-[#007FFF] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold text-white mb-6 uppercase tracking-widest">CONNECT</h4>
-              <div className="space-y-3">
-                {["Contact", "Data Admin", "Terms of Service"].map((label) => (
-                  <span
-                    key={label}
-                    className="block text-xs text-slate-500"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-            </div>
+      {/* 3. ZIG-ZAG ROADMAP */}
+      <section className="py-24 max-w-6xl mx-auto px-6 space-y-24">
+        <h2 className="text-center text-3xl font-black uppercase tracking-[0.3em] text-slate-600 mb-20">Know Before You Go</h2>
+        
+        {/* Step 1 */}
+        <div className="flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b" className="w-full h-80 object-cover" />
+          </div>
+          <div className="md:w-1/2">
+            <span className="text-[#f97316] font-bold tracking-widest uppercase text-sm">Step 1</span>
+            <h3 className="text-4xl font-black text-white mt-2 mb-4">DISCOVER</h3>
+            <p className="text-slate-400 text-lg leading-relaxed">By aligning your profile with our data, we find the 'nook' where you belong.</p>
           </div>
         </div>
-      </footer>
-    </div>
-  );
-};
 
-export default Index;
+        {/* Step 2 */}
+        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+          <div className="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+            <img src="https://images.unsplash.com/photo-1488459711615-de64ef5996f6" className="w-full h-80 object-cover" />
+          </div>
+          <div className="md:w-1/2 text-right md:text-left">
+            <span className="text-[#007FFF] font-bold tracking-widest uppercase text-sm">Step 2</span>
+            <h3 className="text-4xl font-black text-white mt-2 mb-4">EVALUATE</h3>
+            <p className="text-slate-400 text-lg leading-relaxed">Our Contract Decoder hacks through the fluff to find your real take-home pay.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
