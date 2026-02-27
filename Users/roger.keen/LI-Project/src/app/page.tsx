@@ -59,7 +59,7 @@ export default function Home() {
       <section className="py-24 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8">
-                <h2 className="text-3xl md:text-5xl text-accent">Teach Overseas: Know Before You Go</h2>
+                <h2 className="text-xl md:text-2xl text-white">Teach Overseas: Know Before You Go</h2>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight.
                 </p>
