@@ -44,12 +44,16 @@ export default function Home() {
               Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4">evidence-led insight</span>.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm" asChild>
-                <Link href="/discover">Initialize Journey <ArrowRight className="ml-2 w-5 h-5" /></Link>
-              </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 font-bold text-lg rounded-sm border-white/20 hover:bg-white/10" asChild>
-                <Link href="/directory">Browse Dossiers</Link>
-              </Button>
+              <Link href="/discover">
+                <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm">
+                  Initialize Journey <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/directory">
+                <Button size="lg" variant="outline" className="h-14 px-8 font-bold text-lg rounded-sm border-white/20 hover:bg-white/10">
+                  Browse Dossiers
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -59,8 +63,8 @@ export default function Home() {
       <section className="py-24 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8">
-                <h2 className="text-xl md:text-2xl text-white">Teach Overseas: Know Before You Go</h2>
-                <p className="text-xl text-muted-foreground leading-relaxed">
+                <h2 className="text-sm sm:text-base font-bold text-white tracking-[0.2em] uppercase opacity-90">Teach Overseas: Know Before You Go</h2>
+                <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-medium">
                   We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight.
                 </p>
             </div>
@@ -123,9 +127,9 @@ function JourneyStep({ num, icon, title, description, href, label }: { num: stri
         <h3 className="text-2xl stamped-dossier">{title}</h3>
         <p className="text-muted-foreground leading-relaxed text-sm">{description}</p>
       </div>
-      <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start" asChild>
-        <Link href={href}>{label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
-      </Button>
+      <Link href={href} className="inline-flex items-center text-primary group-hover:translate-x-2 transition-transform self-start font-bold text-sm uppercase tracking-wider">
+        {label} <ArrowRight className="ml-2 w-4 h-4" />
+      </Link>
     </div>
   );
 }

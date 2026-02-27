@@ -108,8 +108,8 @@ export default function Header() {
             <SidebarTrigger />
             <Link href="/" className="hidden sm:flex items-center gap-2">
                 <Binoculars className="size-6 text-primary" />
-                <span className="font-bold font-headline text-lg tracking-tighter">
-                    LEOPARD<span className="text-accent italic">FISH INTEL</span>
+                <span className="font-bold font-headline text-lg tracking-tighter uppercase">
+                    <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
                 </span>
             </Link>
         </div>
