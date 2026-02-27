@@ -27,8 +27,7 @@ const navLinks = [
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
   { href: "/directory", label: "Directory" },
-  { href: "/profile", label: "Profile" },
-  { href: "/enquiry", label: "Enquiry" },
+  { href: "/partners", label: "Partners" },
 ];
 
 function UserNav() {
@@ -91,8 +90,8 @@ export default function Header() {
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center gap-2">
             <Binoculars className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block font-headline">
-              Leopardfish Intel
+            <span className="hidden font-bold sm:inline-block font-headline uppercase tracking-tighter">
+              Leopard<span className="text-accent italic">fish Intel</span>
             </span>
           </Link>
           <nav className="flex items-center space-x-1 text-sm font-medium">
@@ -118,8 +117,8 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "transition-colors hover:text-foreground/80 px-4 py-2 rounded-md",
-                    pathname === link.href ? "text-foreground bg-accent/50" : "text-foreground/60"
+                    "transition-colors hover:text-foreground/80 px-4 py-2 rounded-md uppercase text-xs font-black tracking-widest",
+                    pathname === link.href ? "text-foreground bg-accent/20" : "text-foreground/60"
                   )}
                 >
                   {link.label}
@@ -146,7 +145,7 @@ export default function Header() {
               className="flex items-center gap-2"
             >
               <Binoculars className="h-6 w-6 text-primary" />
-              <span className="font-bold font-headline">Leopardfish Intel</span>
+              <span className="font-bold font-headline uppercase tracking-tighter">Leopard<span className="text-accent italic">fish Intel</span></span>
             </Link>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
@@ -179,7 +178,7 @@ export default function Header() {
                       key={link.href}
                       href={link.href}
                       className={cn(
-                        "transition-colors hover:text-foreground/80",
+                        "transition-colors hover:text-foreground/80 uppercase text-xs font-black tracking-widest",
                         pathname === link.href ? "text-foreground" : "text-foreground/60"
                       )}
                     >
@@ -193,7 +192,7 @@ export default function Header() {
         </Sheet>
         <Link href="/" className="flex items-center gap-2 md:hidden">
             <Binoculars className="h-5 w-5 text-primary" />
-            <span className="font-bold font-headline">Leopardfish Intel</span>
+            <span className="font-bold font-headline uppercase tracking-tighter">Leopard<span className="text-accent italic">fish Intel</span></span>
         </Link>
 
 

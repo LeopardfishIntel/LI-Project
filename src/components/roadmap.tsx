@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -40,8 +39,10 @@ export default function Roadmap() {
 
   return (
     <section className="w-full pt-0 pb-8 md:pb-12 bg-background">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 normal-case">Teach Overseas: Know Before You Go</h2>
+      <div className="container mx-auto px-4 text-center">
+        <h2 className="text-3xl md:text-5xl font-bold mb-12 normal-case text-accent">
+          Teach Overseas: Know Before You Go
+        </h2>
         <div className="space-y-12">
           {steps.map((step, index) => {
             const { imageUrl, imageHint } = getImage(step.imageId);
@@ -61,10 +62,10 @@ export default function Roadmap() {
                     </div>
                 </div>
                 <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
-                  <h3 className="text-4xl font-bold mb-4">{step.title}</h3>
+                  <h3 className="text-4xl font-bold mb-4 stamped-dossier">{step.title}</h3>
                   <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
                   <Link href={step.link} passHref>
-                    <Button size="lg">
+                    <Button size="lg" className="rounded-sm font-bold">
                       {step.title}
                     </Button>
                   </Link>
