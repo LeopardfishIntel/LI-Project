@@ -1,4 +1,3 @@
-
 import type { School } from './types';
 
 // The family status string literals
