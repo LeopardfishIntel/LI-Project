@@ -91,7 +91,7 @@ export default function Home() {
               num="03"
               icon={<GitCompare className="w-8 h-8 text-primary" />}
               title="Decide"
-              description="The Comparison Matrix. Select up to 3 schools to view 'True Net' savings side-by-side with triggered AI candid opinions."
+              description="The Comparison Matrix. Select up to 3 school offers to view 'True Net' savings side-by-side."
               href="/compare"
               label="Final Verdict"
             />

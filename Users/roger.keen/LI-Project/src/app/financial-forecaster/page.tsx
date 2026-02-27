@@ -55,7 +55,7 @@ export default function ContractDecoderPage() {
     if (!decodedCosts || !selectedSchool) return 0;
     const monthlySalary = parseFloat(offeredSalary) || 0;
     return monthlySalary - decodedCosts.totalCosts - (parseFloat(contingency) || 0);
-  }, [decodedCosts, offeredSalary, contingency, selectedSchool]);
+  }, [decodedCosts, offeredSalary, contingency]);
 
   if (isLoadingSchools) {
     return (

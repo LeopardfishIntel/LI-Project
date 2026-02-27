@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    /* Design System: Tactical Ember */
-    --background: 222 47% 8%; /* Deep Void - #0f172a */
+    /* Tactical Ember Design System */
+    --background: 222 47% 8%; /* Deep Void - #0f172a base */
     --foreground: 210 40% 98%;
     --card: 217 33% 17%; /* Gunmetal - #1e293b */
     --card-foreground: 210 40% 98%;
@@ -54,3 +54,8 @@
     @apply uppercase tracking-widest font-black;
   }
 }
+
+/* Traffic Light Utility Classes */
+.text-success { color: hsl(160 84% 39%); }
+.text-warning { color: hsl(45 96% 56%); }
+.text-error { color: hsl(0 84% 60%); }
