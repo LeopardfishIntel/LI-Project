@@ -6,9 +6,9 @@ export type FamilyStatus = 'single' | 'couple' | 'family' | 'family2';
 /**
  * Calculates rent based on family status using Tactical Ember PRD multipliers.
  * Single: Base
- * Couple: 1.6x + 2BR
- * Family 2+1: 2.1x + 2BR
- * Family 2+2: 2.5x + 3BR
+ * Couple: (Base * 1.6) + 2BR Rent estimate
+ * Family 2+1: (Base * 2.1) + 2BR Rent estimate
+ * Family 2+2: (Base * 2.5) + 3BR Rent estimate
  */
 export const getRentForFamily = (
   costOfLiving: School['costOfLiving'], 
@@ -49,7 +49,7 @@ export const getFamilyScalingMultiplier = (status: FamilyStatus): number => {
 
 export const getFamilyStatusFromCounts = (adults: number, children: number): FamilyStatus => {
   if (adults >= 2 && children >= 2) return 'family2';
-  if (adults >= 2 && children >= 1) return 'family';
+  if (adults >= 2 && children === 1) return 'family';
   if (adults >= 2 && children === 0) return 'couple';
   return 'single';
 }

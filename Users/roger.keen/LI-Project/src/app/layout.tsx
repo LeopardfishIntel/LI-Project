@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={cn(
-          "min-h-screen bg-background font-body antialiased",
+          "min-h-screen bg-background antialiased",
           inter.variable,
           montserrat.variable
         )}>
