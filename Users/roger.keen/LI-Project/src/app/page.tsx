@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stage Introduction */}
+      {/* Stage Introduction - Refined per request */}
       <section className="py-24 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8">
