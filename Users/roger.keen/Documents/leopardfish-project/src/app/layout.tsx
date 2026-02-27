@@ -9,11 +9,11 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const montserrat = Montserrat({ subsets: ['latin'], weight: ['700'], variable: '--font-montserrat' })
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-montserrat' })
 
 export const metadata: Metadata = {
-  title: 'Leopardfish Intel',
-  description: 'Compare salaries, benefits, and living costs at international schools worldwide. Make informed decisions about your next teaching adventure.',
+  title: 'Leopardfish Intel | Professional Educator Due Diligence',
+  description: 'Military-grade precision intel for international educators. Move with certainty, not just hope.',
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={cn(
-          "min-h-screen bg-background font-body antialiased",
+          "min-h-screen bg-background antialiased",
           inter.variable,
           montserrat.variable
         )}>

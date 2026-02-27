@@ -1,61 +1,129 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
-import Roadmap from '@/components/roadmap';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { RedFlagRegistry } from '@/components/red-flag-registry';
+import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
   return {
-    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/great-blue-sky/2070/1380",
-    imageHint: image?.imageHint ?? "beach sky",
-    description: image?.description ?? "A beach scene with a great blue sky."
+    imageUrl: image?.imageUrl ?? "https://picsum.photos/seed/intel/1920/1080",
+    imageHint: image?.imageHint ?? "tactical campus",
+    description: image?.description ?? "Professional intelligence background."
   };
 };
 
 export default function Home() {
-  const { imageUrl, imageHint, description } = getImage('homepage-hero');
+  const heroImage = getImage('homepage-hero');
 
   return (
-    <>
-      <section
-        className="relative w-full h-[83.232vh] overflow-hidden"
-        aria-label={description}
-      >
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section: Tactical Intel */}
+      <section className="relative w-full h-[90vh] flex items-center overflow-hidden">
         <Image
-          src={imageUrl}
-          alt={description}
+          src={heroImage.imageUrl}
+          alt={heroImage.description}
           fill
-          className="absolute inset-0 w-full h-full object-cover"
-          data-ai-hint={imageHint}
+          priority
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.3]"
+          data-ai-hint={heroImage.imageHint}
         />
-        <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col justify-between text-center h-full py-16">
-            <div className="flex flex-col items-center">
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 normal-case [text-shadow:0_2px_4px_rgba(0,0,0,0.6)]">
-                <span className="text-accent">Leopard</span><span className="text-primary">fish Intel</span>
-                </h1>
-                <p className="max-w-3xl mx-auto text-2xl md:text-3xl [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
-                Move with certainty, not just hope. 
-                </p>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+        
+        <div className="relative z-10 container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl space-y-6">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-xs font-bold uppercase tracking-widest animate-pulse">
+              <ShieldCheck className="w-4 h-4" /> Professional Intelligence Grade
             </div>
-            <div className="flex flex-col items-center pb-8">
-                <Link href="/discover">
-                    <Button size="lg" className="h-12 group hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-shadow">
-                        Start Your Journey
-                    </Button>
-                </Link>
+            <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none">
+              LEOPARD<span className="text-accent italic">FISH INTEL</span>
+            </h1>
+            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
+              Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4">evidence-led insight</span>.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm" asChild>
+                <Link href="/discover">Initialize Journey <ArrowRight className="ml-2 w-5 h-5" /></Link>
+              </Button>
+              <Button size="lg" variant="outline" className="h-14 px-8 font-bold text-lg rounded-sm border-white/20 hover:bg-white/10" asChild>
+                <Link href="/directory">Browse Dossiers</Link>
+              </Button>
             </div>
+          </div>
         </div>
       </section>
 
-      <section className="w-full py-8 bg-background">
+      {/* The Insider Journey */}
+      <section className="py-24 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6">
-            <KeyFactsSection />
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl">The Insider Journey</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">Three stages designed to strip away the recruitment fluff and reveal the true impact of your next move.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <JourneyStep 
+              num="01"
+              icon={<Target className="w-8 h-8 text-primary" />}
+              title="Discover"
+              description="The Nook Finder matching engine. It doesn't just find jobs; it looks for places where your profile fits the local legal and cultural reality."
+              href="/discover"
+              label="Find Your Nook"
+            />
+            <JourneyStep 
+              num="02"
+              icon={<Calculator className="w-8 h-8 text-primary" />}
+              title="Evaluate"
+              description="The Contract Decoder. We calculate your actual take-home pay and map your genuine disposable income based on real index data."
+              href="/financial-forecaster"
+              label="Decode Offer"
+            />
+            <JourneyStep 
+              num="03"
+              icon={<GitCompare className="w-8 h-8 text-primary" />}
+              title="Decide"
+              description="The Comparison Matrix. Select up to 3 schools to view 'True Net' savings side-by-side with triggered AI candid opinions."
+              href="/compare"
+              label="Final Verdict"
+            />
+          </div>
         </div>
       </section>
 
-      <Roadmap />
-    </>
+      {/* Stats Counter Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <p className="text-lg md:text-xl leading-relaxed text-muted-foreground italic">
+              "We assist international educators in conducting proper due diligence. By reviewing the real-world impact of your contract and your future living environment, we help you replace uncertainty with evidence-led insight."
+            </p>
+          </div>
+          <KeyFactsSection />
+        </div>
+      </section>
+
+      {/* Red Flag Registry */}
+      <RedFlagRegistry />
+    </div>
+  );
+}
+
+function JourneyStep({ num, icon, title, description, href, label }: { num: string, icon: React.ReactNode, title: string, description: string, href: string, label: string }) {
+  return (
+    <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50">
+      <div className="space-y-4">
+        <div className="flex justify-between items-start">
+          <div className="p-3 bg-primary/10 rounded-sm">{icon}</div>
+          <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">{num}</span>
+        </div>
+        <h3 className="text-2xl">{title}</h3>
+        <p className="text-muted-foreground leading-relaxed">{description}</p>
+      </div>
+      <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform" asChild>
+        <Link href={href}>{label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
+      </Button>
+    </div>
   );
 }

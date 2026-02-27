@@ -1,64 +1,39 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
+    /* Design System: Tactical Ember */
+    --background: 222 47% 8%; /* Deep Void - #0f172a adjusted for depth */
     --foreground: 210 40% 98%;
-    --card: 215 28% 17%;
+    --card: 217 33% 17%; /* Gunmetal - #1e293b */
     --card-foreground: 210 40% 98%;
-    --popover: 215 28% 17%;
+    --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 85% 55%;
+    --primary: 25 95% 53%; /* Signal Orange - #f97316 */
     --primary-foreground: 210 40% 98%;
-    --secondary: 215 28% 17%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 215 28% 17%;
+    --muted: 215 16% 47%; /* Ash Grey */
     --muted-foreground: 215 16% 78%;
-    --accent: 16 100% 50%;
+    --accent: 199 90% 55%; /* Azure Blue */
     --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 60%; /* Rose Red */
     --destructive-foreground: 210 40% 98%;
     --border: 215 20% 25%;
     --input: 215 20% 25%;
-    --ring: 16 100% 50%;
-    --radius: 0.5rem;
+    --ring: 25 95% 53%;
+    --radius: 0.25rem; /* Sharp 4px geometry */
+
+    --success: 160 84% 39%; /* Emerald Green */
+    --warning: 45 96% 56%; /* Leopard Gold */
 
     --chart-1: 160 84% 39%;
-    --chart-2: 16 100% 50%;
+    --chart-2: 25 95% 53%;
     --chart-3: 215 14% 47%;
     --chart-4: 45 96% 56%;
-    --chart-5: 210 85% 60%;
-  }
-
-  .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 215 28% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 215 28% 17%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 85% 55%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 28% 17%;
-    --muted-foreground: 215 16% 78%;
-    --accent: 16 100% 50%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 20% 25%;
-    --input: 215 20% 25%;
-    --ring: 16 100% 50%;
-
-    --chart-1: 160 84% 39%;
-    --chart-2: 16 100% 50%;
-    --chart-3: 215 14% 47%;
-    --chart-4: 45 96% 56%;
-    --chart-5: 210 85% 60%;
+    --chart-5: 199 90% 55%;
   }
 }
 
@@ -67,10 +42,17 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline uppercase;
+    @apply font-headline uppercase tracking-wider font-bold;
+  }
+  .glass {
+    @apply bg-card/70 backdrop-blur-[10px] border border-white/10;
   }
 }
-    
+
+.stamped-dossier {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
