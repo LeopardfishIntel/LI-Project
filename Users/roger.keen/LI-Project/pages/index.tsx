@@ -1,4 +1,3 @@
-
 /**
  * Route Conflict Resolution:
  * This file is emptied to ensure Next.js uses the modern 'app' router
