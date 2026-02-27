@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section: Tactical Intel */}
-      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
+      <section className="relative w-full h-[80vh] flex items-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -32,10 +32,10 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
         
-        <div className="relative z-10 container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl space-y-6">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-xs font-bold uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-4 h-4" /> Professional Intelligence Grade
+        <div className="relative z-10 container mx-auto px-4 md:px-6 text-center lg:text-left">
+          <div className="max-w-4xl mx-auto lg:mx-0 space-y-6">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none">
               LEOPARD<span className="text-accent italic">FISH INTEL</span>
@@ -43,7 +43,7 @@ export default function Home() {
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4">evidence-led insight</span>.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link href="/discover">
                 <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm">
                   Initialize Journey <ArrowRight className="ml-2 w-5 h-5" />
@@ -59,14 +59,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Tagline Section */}
-      <section className="py-16 bg-background border-y border-white/5">
+      {/* Tactical Tagline: Consolidated & Refined */}
+      <section className="py-12 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <div className="max-w-4xl mx-auto">
-                <p className="text-sm sm:text-base font-bold text-white tracking-[0.2em] uppercase opacity-90">
-                  Teach Overseas: Know Before You Go
-                </p>
-            </div>
+            <p className="text-xs sm:text-sm font-bold text-white tracking-[0.3em] uppercase opacity-80">
+              Teach Overseas: Know Before You Go
+            </p>
         </div>
       </section>
 
@@ -117,7 +115,7 @@ export default function Home() {
 
 function JourneyStep({ num, icon, title, description, href, label }: { num: string, icon: React.ReactNode, title: string, description: string, href: string, label: string }) {
   return (
-    <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50">
+    <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
       <div className="space-y-4">
         <div className="flex justify-between items-start">
           <div className="p-3 bg-primary/10 rounded-sm">{icon}</div>
@@ -126,7 +124,7 @@ function JourneyStep({ num, icon, title, description, href, label }: { num: stri
         <h3 className="text-2xl stamped-dossier">{title}</h3>
         <p className="text-muted-foreground leading-relaxed text-sm">{description}</p>
       </div>
-      <Link href={href} className="inline-flex items-center text-primary group-hover:translate-x-2 transition-transform self-start font-bold text-sm uppercase tracking-wider">
+      <Link href={href} className="inline-flex items-center text-primary group-hover:translate-x-2 transition-transform self-start font-bold text-xs uppercase tracking-widest">
         {label} <ArrowRight className="ml-2 w-4 h-4" />
       </Link>
     </div>
