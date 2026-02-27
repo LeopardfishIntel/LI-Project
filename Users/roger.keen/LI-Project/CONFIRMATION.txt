@@ -1,1 +1,3 @@
-If you can see this file, I am in the correct project folder. We can finally fix the website.
+CONFIRMATION: You are in /Users/roger.keen/LI-Project.
+To go up one level in your terminal, type: cd ..
+To see where you are right now, type: pwd
