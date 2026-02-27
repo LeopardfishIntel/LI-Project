@@ -3,19 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+  --background: 222 47% 11%;
+  --foreground: 213 27% 84%;
+  --primary: 24 95% 53%; /* Your Vermilion */
+  --secondary: 210 100% 50%; /* Your Azure */
 }
 
 body {
   background-color: #020617;
   color: white;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-
-/* Ensure images don't overlap text */
-.relative { position: relative; }
-.z-10 { z-index: 10; }
-.-z-10 { z-index: -10; }
