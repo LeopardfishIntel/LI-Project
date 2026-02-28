@@ -9,7 +9,29 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Globe, Calculator, Info, Banknote, Medal, Plus } from 'lucide-react';
+import { 
+  Calculator, 
+  Award, 
+  Pencil, 
+  Users, 
+  Loader2, 
+  ShieldAlert, 
+  LineChart, 
+  Globe, 
+  GraduationCap, 
+  ExternalLink, 
+  ArrowRightLeft, 
+  Home, 
+  Utensils, 
+  TramFront, 
+  Zap, 
+  Smartphone, 
+  Wifi, 
+  Medal, 
+  Plus, 
+  Banknote, 
+  Info 
+} from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
@@ -208,53 +230,35 @@ const CONVERSION_RATES: Record<string, number> = {
   NZD: 1.66,
 };
 
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'China': 'CNY',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Vietnam': 'VND',
+  'USA': 'USD',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD'
+};
+
 const ORDERED_CURRENCIES = [
   'USD', 'GBP', 'EUR',
   ...Object.keys(CONVERSION_RATES)
     .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
     .sort()
 ];
-
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
 
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -282,6 +286,31 @@ const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.Re
       <span className={cn("font-bold text-white", isFree && "text-green-400")}>
         {isFree ? "COVERED" : formatCurrency(value, currency)}
       </span>
+    </div>
+);
+
+const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
+    icon: React.ReactNode, 
+    label: string, 
+    value: string, 
+    currency: string, 
+    onChange: (val: string) => void 
+}) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <div className="relative w-32">
+        <Input 
+          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
+          type="number"
+          value={value}
+          placeholder="0"
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
+      </div>
     </div>
 );
 
@@ -427,6 +456,17 @@ function ContractDecoderContent() {
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
 
+  useEffect(() => {
+    if (selectedSchool) {
+      const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
+      if (autoCurrency) {
+        setCurrency(autoCurrency);
+      }
+    }
+  }, [selectedSchool]);
+
+  const rate = CONVERSION_RATES[currency] || 1;
+
   const suggestedMonthlySalary = useMemo(() => {
     if (!selectedSchool) return 0;
     const avgAnnual = getAverageAnnualSalary(selectedSchool.intel.salary.value);
@@ -528,7 +568,7 @@ function ContractDecoderContent() {
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Responsibility Allowance (Monthly)</Label>
                 <div className="relative">
-                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
                     className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
                     type="number" 
@@ -542,7 +582,7 @@ function ContractDecoderContent() {
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Home-Country Obligations (Monthly)</Label>
                 <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
                     className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
                     type="number" 
