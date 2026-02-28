@@ -63,11 +63,13 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border; /* If this still causes an error, change 'border-border' to 'border-gray-800' */
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline uppercase;
   }
