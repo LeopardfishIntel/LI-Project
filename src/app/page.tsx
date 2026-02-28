@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -49,10 +49,10 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm rounded-sm" asChild>
-                <Link href="/discover">Initialize Journey <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Button size="lg" className="h-12 px-8 bg-slate-950 hover:bg-slate-900 text-white border border-white/20 font-bold text-sm rounded-sm" asChild>
+                <Link href="/discover">Start Journey</Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8 font-bold text-sm rounded-sm border-white/20 hover:bg-white/10" asChild>
+              <Button size="lg" className="h-12 px-8 bg-slate-950 hover:bg-slate-900 text-white border border-white/20 font-bold text-sm rounded-sm" asChild>
                 <Link href="/directory">Browse Dossiers</Link>
               </Button>
             </div>
@@ -83,42 +83,42 @@ export default function Home() {
             <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
                   <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">01</span>
                 </div>
                 <h3 className="text-xl stamped-dossier">Discover</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">The Nook Finder matching engine. We look for the intersection of your profile and local realities.</p>
               </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
-                <Link href="/discover">Find Your Nook <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
+                <Link href="/discover">Find Your Nook</Link>
               </Button>
             </div>
 
             <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
                   <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">02</span>
                 </div>
                 <h3 className="text-xl stamped-dossier">Evaluate</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income.</p>
               </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
-                <Link href="/financial-forecaster">Decode Offer <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
+                <Link href="/financial-forecaster">Decode Offer</Link>
               </Button>
             </div>
 
             <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
                   <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">03</span>
                 </div>
                 <h3 className="text-xl stamped-dossier">Decide</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side.</p>
               </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
-                <Link href="/compare">Final Verdict <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
+                <Link href="/compare">Final Verdict</Link>
               </Button>
             </div>
           </div>
