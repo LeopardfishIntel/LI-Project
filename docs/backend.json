@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "TeacherProfile": {
@@ -203,6 +202,25 @@
         "authorId": { "type": "string" }
       },
       "required": ["category", "original_content", "clean_text", "status", "timestamp"]
+    },
+    "VerifiedIntel": {
+      "title": "Verified Intelligence Dossier",
+      "type": "object",
+      "description": "Polished, verified intelligence promoted to the live database.",
+      "properties": {
+        "id": { "type": "string" },
+        "polished_text": { "type": "string" },
+        "location": { "type": "string" },
+        "organisation": { "type": "string" },
+        "intel_type": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "is_verified": { "type": "boolean", "default": true },
+        "original_report_id": { "type": "string" },
+        "attachmentUrl": { "type": "string", "format": "uri" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "authorId": { "type": "string" }
+      },
+      "required": ["polished_text", "location", "organisation", "intel_type", "is_verified"]
     }
   },
   "auth": {
@@ -241,6 +259,16 @@
             "$ref": "#/backend/entities/FieldReport"
           },
           "description": "Staging area for high-priority field intelligence dossiers before verification."
+        }
+      },
+      {
+        "path": "/verified_intel/{intelId}",
+        "definition": {
+          "entityName": "VerifiedIntel",
+          "schema": {
+            "$ref": "#/backend/entities/VerifiedIntel"
+          },
+          "description": "Verified, high-value intelligence dossiers published to the live platform."
         }
       }
     ]
