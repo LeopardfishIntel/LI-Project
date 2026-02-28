@@ -206,7 +206,7 @@ function ContractDecoderContent() {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment</Label>
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment (monthly)</Label>
                   <div className="flex gap-2">
                     <a 
                       href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
