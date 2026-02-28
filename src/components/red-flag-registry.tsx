@@ -38,9 +38,9 @@ export function RedFlagRegistry() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {flags.map((flag, i) => (
-            <Card key={i} className="bg-destructive/5 border-destructive/20 rounded-sm">
+            <Card key={i} className="bg-destructive/5 border-destructive/20 rounded-sm overflow-hidden">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2 text-white stamped-dossier">
+                <CardTitle className="text-base flex items-center gap-2 text-white stamped-dossier">
                   <span>🚩</span> {flag.title}
                 </CardTitle>
               </CardHeader>

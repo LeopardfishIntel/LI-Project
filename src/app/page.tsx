@@ -21,8 +21,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section: Tactical Intel */}
-      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
+      {/* Hero Section: Tactical Intel with Searchlight */}
+      <section className="relative w-full h-[80vh] flex items-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -31,27 +31,35 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-cover brightness-[0.25]"
           data-ai-hint={heroImage.imageHint}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
         
-        <div className="relative z-10 container mx-auto px-4 md:px-6 text-center lg:text-left">
-          <div className="max-w-4xl mx-auto lg:mx-0 space-y-6">
+        {/* Animated Searchlight Overlay */}
+        <div className="absolute inset-0 pointer-events-none z-10 animate-searchlight opacity-40" 
+             style={{ 
+               background: 'radial-gradient(circle 400px at center, transparent 0%, rgba(8, 12, 24, 0.95) 100%)', 
+               backgroundSize: '200% 200%' 
+             }}></div>
+        
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background z-20"></div>
+        
+        <div className="relative z-30 container mx-auto px-4 md:px-6 text-center lg:text-left">
+          <div className="max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Perspectives
             </div>
-            <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none normal-case">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-none normal-case">
+              <span className="text-primary">Leopard</span><span className="text-white italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
+            <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-tight">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link href="/discover">
-                <Button size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm">
-                  Initialize Journey <ArrowRight className="ml-2 w-5 h-5" />
+                <Button size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm rounded-sm">
+                  Initialize Journey <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
               <Link href="/directory">
-                <Button size="lg" variant="outline" className="h-14 px-8 font-bold text-lg rounded-sm border-white/20 hover:bg-white/10">
+                <Button size="lg" variant="outline" className="h-12 px-8 font-bold text-sm rounded-sm border-white/20 hover:bg-white/10">
                   Browse Dossiers
                 </Button>
               </Link>
