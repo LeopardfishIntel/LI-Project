@@ -21,6 +21,14 @@ const CONVERSION_RATES: Record<string, number> = {
   GBP: 0.78,
   EUR: 0.92,
   AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
+  SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
 };
 
 function ContractDecoderContent() {
@@ -101,6 +109,7 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -154,12 +163,20 @@ function ContractDecoderContent() {
                       <SelectItem value="GBP">GBP</SelectItem>
                       <SelectItem value="EUR">EUR</SelectItem>
                       <SelectItem value="AED">AED</SelectItem>
+                      <SelectItem value="QAR">QAR</SelectItem>
+                      <SelectItem value="SAR">SAR</SelectItem>
+                      <SelectItem value="SGD">SGD</SelectItem>
+                      <SelectItem value="CHF">CHF</SelectItem>
+                      <SelectItem value="JPY">JPY</SelectItem>
+                      <SelectItem value="THB">THB</SelectItem>
+                      <SelectItem value="CNY">CNY</SelectItem>
+                      <SelectItem value="KRW">KRW</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase">Home Country Cost (Monthly)</Label>
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Home-Country Obligations (monthly)</Label>
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -186,6 +203,7 @@ function ContractDecoderContent() {
           </Card>
         </div>
 
+        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -195,6 +213,7 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
+                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -219,6 +238,7 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
+                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -244,6 +264,7 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
+              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
