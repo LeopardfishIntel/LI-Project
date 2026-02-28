@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "TeacherProfile": {
@@ -192,12 +193,16 @@
       "properties": {
         "id": { "type": "string" },
         "category": { "type": "string" },
-        "content": { "type": "string" },
+        "original_content": { "type": "string" },
+        "clean_text": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "auto_rejected"] },
+        "safety_flags": { "type": "array", "items": { "type": "string" } },
+        "confidence_score": { "type": "number" },
         "attachmentUrl": { "type": "string", "format": "uri" },
         "timestamp": { "type": "string", "format": "date-time" },
         "authorId": { "type": "string" }
       },
-      "required": ["category", "content", "timestamp"]
+      "required": ["category", "original_content", "clean_text", "status", "timestamp"]
     }
   },
   "auth": {
@@ -229,13 +234,13 @@
         }
       },
       {
-        "path": "/field_reports/{reportId}",
+        "path": "/pending_intel/{reportId}",
         "definition": {
           "entityName": "FieldReport",
           "schema": {
             "$ref": "#/backend/entities/FieldReport"
           },
-          "description": "Stores high-priority field intelligence dossiers."
+          "description": "Staging area for high-priority field intelligence dossiers before verification."
         }
       }
     ]

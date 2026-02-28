@@ -1,10 +1,9 @@
+
 'use server';
 /**
- * @fileOverview A tactical intelligence transmission flow.
+ * @fileOverview A tactical intelligence transmission flow with automated security moderation.
  *
- * - transmitIntelligence - A function that handles secure archival and archival status streaming.
- * - TransmitIntelligenceInput - Input dossier including form data and file metadata.
- * - TransmitIntelligenceOutput - A success token upon database confirmation.
+ * - transmitIntelligence - Secure archival and archival status streaming.
  */
 
 import { ai } from '@/ai/genkit';
@@ -12,6 +11,7 @@ import { z } from 'zod';
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { moderateIntelligence } from './moderate-intelligence-flow';
 
 const TransmitIntelligenceInputSchema = z.object({
   category: z.string().describe('The dossier classification.'),
@@ -36,15 +36,14 @@ export const transmitIntelligenceFlow = ai.defineFlow(
     outputSchema: z.string().describe('Success Token'),
   },
   async (input) => {
-    // 1. Initialise Tactical Stream
-    // We simulate the Vertex AI SDK status streaming requested by yielding status
-    // Genkit flows yield chunks if we use generateStream, but for this specific 
-    // tactical wrapper, we return the final success token after internal async work.
-    
     const { firestore, storage } = await initializeFirebase();
     let attachmentUrl = '';
 
-    // 2. Storage Uplink (File Metadata)
+    // 1. Security Moderation Stage
+    console.log('Initiating Security Moderation...');
+    const moderation = await moderateIntelligence({ content: input.content });
+
+    // 2. Storage Uplink (if evidence provided)
     if (input.file && storage) {
       console.log('Archiving Intelligence Attachment...');
       const storagePath = `intelligence/${Date.now()}_${input.file.name}`;
@@ -57,13 +56,17 @@ export const transmitIntelligenceFlow = ai.defineFlow(
       attachmentUrl = await getDownloadURL(storageRef);
     }
 
-    // 3. Firestore Archival
+    // 3. Staging Area Archival (pending_intel)
     if (firestore) {
-      console.log('Finalising Dossier Submission...');
-      const reportsRef = collection(firestore, 'field_reports');
-      await addDoc(reportsRef, {
+      console.log('Finalising Dossier Submission to Staging...');
+      const stagingRef = collection(firestore, 'pending_intel');
+      await addDoc(stagingRef, {
         category: input.category,
-        content: input.content,
+        original_content: input.content,
+        clean_text: moderation.clean_text,
+        status: moderation.status,
+        safety_flags: moderation.safety_flags,
+        confidence_score: moderation.confidence_score,
         attachmentUrl,
         timestamp: serverTimestamp(),
         authorId: input.authorId || 'anonymous'
