@@ -20,7 +20,6 @@ import {
   Globe, 
   GraduationCap, 
   ExternalLink, 
-  ArrowRightLeft, 
   Home, 
   Utensils, 
   TramFront, 
@@ -30,7 +29,8 @@ import {
   Medal, 
   Plus, 
   Banknote, 
-  Info 
+  Info,
+  Printer
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -260,84 +260,6 @@ const ORDERED_CURRENCIES = [
     .sort()
 ];
 
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
-
-const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-sm py-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <span className={cn("font-bold text-white", isFree && "text-green-400")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
-      </span>
-    </div>
-);
-
-const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
-    icon: React.ReactNode, 
-    label: string, 
-    value: string, 
-    currency: string, 
-    onChange: (val: string) => void 
-}) => (
-    <div className="flex justify-between items-center text-sm py-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <div className="relative w-32">
-        <Input 
-          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
-          type="number"
-          value={value}
-          placeholder="0"
-          onChange={(e) => onChange(e.target.value)}
-        />
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
-      </div>
-    </div>
-);
-
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
     const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
@@ -476,6 +398,43 @@ function TaxCalculatorSection() {
     );
 }
 
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <span className={cn("font-bold text-white", isFree && "text-green-400")}>
+        {isFree ? "COVERED" : formatCurrency(value, currency)}
+      </span>
+    </div>
+);
+
+const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
+    icon: React.ReactNode, 
+    label: string, 
+    value: string, 
+    currency: string, 
+    onChange: (val: string) => void 
+}) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <div className="relative w-32">
+        <Input 
+          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
+          type="number"
+          value={value}
+          placeholder="0"
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
+      </div>
+    </div>
+);
+
 function ContractDecoderContent() {
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
@@ -526,7 +485,7 @@ function ContractDecoderContent() {
     const food = (Number(col.food) || 0) * multiplier;
     const transport = (Number(col.transport) || 0) * multiplier;
     const utilities = (Number(col.utilities) || 0) * multiplier;
-    const mobile = (Number(col.mobile) || 0) * (familyStatus === 'single' ? 1 : 2); 
+    const mobile = (Number(col.mobile) || 0) * multiplier; 
     
     const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + (Number(col.internet) || 0) + mobile;
 
@@ -812,8 +771,8 @@ function ContractDecoderContent() {
                 <div className="pt-6 border-t border-white/5">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     {['GBP', 'USD', 'EUR', 'AUD'].map((targetCcy) => {
-                      const savingsInUSD = savingsPotential / rate;
-                      const convertedVal = Math.round(savingsInUSD * (CONVERSION_RATES[targetCcy] || 1));
+                      const savingsInBase = savingsPotential / rate;
+                      const convertedVal = Math.round(savingsInBase * (CONVERSION_RATES[targetCcy] || 1));
                       return (
                         <div key={targetCcy} className="space-y-1">
                           <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p>
@@ -835,12 +794,18 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white normal-case">
           2. Contract Decoder
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm">
           Military-grade analysis of your potential contract. We strip away recruitment marketing to reveal the true financial reality of your move.
         </p>
+      </div>
+
+      <div className="flex justify-end mb-8 print:hidden">
+        <Button onClick={() => window.print()} variant="outline" size="sm" className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px]">
+          <Printer className="mr-2 size-3" /> Print Intel Report (PDF)
+        </Button>
       </div>
 
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
