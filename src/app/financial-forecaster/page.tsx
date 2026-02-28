@@ -508,12 +508,12 @@ function ContractDecoderContent() {
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
-                  {suggestedMonthlyLocal > 0 && !offeredSalary && (
+                  {suggestedMonthlyLocal > 0 && (
                     <button 
                       onClick={() => setOfferedSalary(String(Math.round(suggestedMonthlyLocal)))}
-                      className="text-[9px] font-bold text-accent hover:underline uppercase tracking-tighter animate-pulse"
+                      className="text-[9px] font-bold text-accent hover:underline uppercase tracking-tighter"
                     >
-                      Use Suggested: {Math.round(suggestedMonthlyLocal)}
+                      Use Suggested: {formatCurrency(Math.round(suggestedMonthlyLocal), currency)}
                     </button>
                   )}
                 </div>
@@ -808,10 +808,6 @@ function ContractDecoderContent() {
 
                   {savingsPotential !== 0 && (
                     <div className="pt-6 border-t border-white/5">
-                      <div className="flex items-center gap-2 mb-4">
-                        <ArrowRightLeft className="size-3 text-primary/70" />
-                        <h5 className="text-[10px] font-black text-primary/70 uppercase tracking-widest">Wealth Equivalents (Home Currencies)</h5>
-                      </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                         {['USD', 'GBP', 'EUR', 'AUD', 'CAD', 'ZAR'].filter(c => c !== currency).slice(0, 4).map((targetCcy) => {
                           const savingsInUSD = savingsPotential / rate;
