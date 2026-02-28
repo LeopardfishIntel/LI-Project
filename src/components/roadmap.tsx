@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ArrowRight } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -19,55 +20,52 @@ export default function Roadmap() {
       title: 'Discover',
       desc: "By aligning your specific expertise and personal profile with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
       link: '/discover',
-      imageId: 'discover-step'
+      imageId: 'discover-step',
+      label: 'Find Your Nook'
     },
     {
       id: '02',
       title: 'Evaluate',
-      desc: "Our Contract Decoder cuts through the fluff, calculate your actual take-home pay, and map your genuine disposable income. Focus on your real financial position, can you save or will you be treading water.",
+      desc: "Our Contract Decoder cuts through the fluff, calculate your actual take-home pay, and map your genuine disposable income. Focus on your real financial position.",
       link: '/financial-forecaster',
-      imageId: 'evaluate-step'
+      imageId: 'evaluate-step',
+      label: 'Decode Offer'
     },
     {
       id: '03',
       title: 'Decide',
-      desc: "Weighing up multiple offers can be a challenge. Our comparison tool breaks down the finer details of your potential contracts—from headline salary and housing allowances and more. We lay out the data, so you can make your final decision with total peace of mind",
+      desc: "Weighing up multiple offers can be a challenge. Our comparison tool breaks down the finer details of your potential contracts from salary to housing allowances.",
       link: '/compare',
-      imageId: 'decide-step'
+      imageId: 'decide-step',
+      label: 'Final Verdict'
     },
   ];
 
   return (
-    <section className="w-full pt-0 pb-8 md:pb-12 bg-background">
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-5xl font-bold mb-12 normal-case text-accent">
-          Teach Overseas: Know Before You Go
-        </h2>
-        <div className="space-y-12">
+    <section className="w-full py-24 bg-background/50">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="space-y-24">
           {steps.map((step, index) => {
             const { imageUrl, imageHint } = getImage(step.imageId);
             return (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
-                <div className={cn("relative aspect-[4/3] md:aspect-auto md:h-full flex items-center", index % 2 === 1 && "md:order-last")}>
-                    <div className="relative w-full h-[90%]">
-                        <Image 
-                          src={imageUrl}
-                          alt={step.desc}
-                          fill
-                          className="rounded-xl shadow-2xl object-cover"
-                        />
-                        <div className={cn("absolute inset-0 flex items-center justify-center")}>
-                          <span className={cn("text-[2.35rem] font-bold uppercase tracking-widest [text-shadow:0_2px_6px_rgba(0,0,0,0.9)]", 'text-white')}>Step {parseInt(step.id)}</span>
-                        </div>
+              <div key={step.id} className="grid md:grid-cols-2 gap-12 items-center">
+                <div className={cn("relative aspect-video rounded-sm overflow-hidden border border-white/10", index % 2 === 1 && "md:order-last")}>
+                    <Image 
+                      src={imageUrl}
+                      alt={step.desc}
+                      fill
+                      className="object-cover brightness-50"
+                      data-ai-hint={imageHint}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-6xl font-black text-white/10 uppercase tracking-widest">Step {step.id}</span>
                     </div>
                 </div>
-                <div className={cn("flex flex-col py-4", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
-                  <h3 className="text-4xl font-bold mb-4 stamped-dossier">{step.title}</h3>
-                  <p className="text-muted-foreground text-lg mb-6 max-w-md">{step.desc}</p>
-                  <Link href={step.link} passHref>
-                    <Button size="lg" className="rounded-sm font-bold">
-                      {step.title}
-                    </Button>
+                <div className={cn("flex flex-col space-y-6", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
+                  <h3 className="text-3xl font-bold tracking-widest uppercase">{step.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed max-w-md">{step.desc}</p>
+                  <Link href={step.link} className="inline-flex items-center text-primary hover:translate-x-2 transition-transform font-bold text-xs uppercase tracking-widest">
+                    {step.label} <ArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </div>
               </div>

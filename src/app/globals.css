@@ -35,9 +35,7 @@
     --chart-4: 45 96% 56%;
     --chart-5: 199 90% 55%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -47,6 +45,9 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline uppercase tracking-wider font-extrabold;
   }
+}
+
+@layer components {
   .glass {
     @apply bg-card/70 backdrop-blur-[10px] border border-white/10 shadow-xl;
   }
@@ -55,7 +56,8 @@
   }
 }
 
-/* Utilities for color states */
-.text-success { color: hsl(160 84% 39%); }
-.text-warning { color: hsl(45 96% 56%); }
-.text-error { color: hsl(0 84% 60%); }
+@layer utilities {
+  .text-success { color: hsl(160 84% 39%); }
+  .text-warning { color: hsl(45 96% 56%); }
+  .text-error { color: hsl(0 84% 60%); }
+}
