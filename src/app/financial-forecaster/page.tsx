@@ -1,9 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -30,6 +29,9 @@ const CONVERSION_RATES: Record<string, number> = {
   THB: 35,
   CNY: 7.2,
   KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
 };
 
 function ContractDecoderContent() {
@@ -112,6 +114,7 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -220,6 +223,7 @@ function ContractDecoderContent() {
           </Card>
         </div>
 
+        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -229,6 +233,7 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
+                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -253,6 +258,7 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
+                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -281,6 +287,7 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
+              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
