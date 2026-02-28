@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, User, ChevronDown, Binoculars, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, LogOut, Search, Binoculars } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,25 +16,28 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-const navLinks = [
-  { href: "/discover", label: "Discover" },
-  { href: "/financial-forecaster", label: "Evaluate" },
-  { href: "/compare", label: "Decide" },
-  { href: "/directory", label: "Directory" },
-  { href: "/partners", label: "Partners" },
-];
 
 function UserNav() {
     const { user, isUserLoading } = useUser();
     const auth = useAuth();
+    const router = useRouter();
 
     const handleLogout = () => {
-        auth.signOut();
+        if (auth) {
+            auth.signOut();
+            router.push('/');
+        }
     };
 
     if (isUserLoading) {
@@ -81,122 +83,58 @@ function UserNav() {
     );
 }
 
+const searchSchema = z.object({
+  query: z.string().min(1),
+});
+
 export default function Header() {
-  const pathname = usePathname();
+  const router = useRouter();
+  const form = useForm<z.infer<typeof searchSchema>>({
+    resolver: zodResolver(searchSchema),
+    defaultValues: {
+      query: "",
+    },
+  });
+
+  function onSubmit(data: z.infer<typeof searchSchema>) {
+    router.push(`/search?q=${encodeURIComponent(data.query)}`);
+    form.reset();
+  }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center gap-2">
-            <Binoculars className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block font-headline uppercase tracking-tighter">
-              Leopard<span className="text-accent italic">fish Intel</span>
-            </span>
-          </Link>
-          <nav className="flex items-center space-x-1 text-sm font-medium">
-            {navLinks.map((link) =>
-              (link as any).isDropdown && (link as any).subLinks ? (
-                <DropdownMenu key={link.label}>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className={cn("transition-colors hover:text-foreground/80 h-auto px-4 py-2", pathname.startsWith(link.href) ? "text-foreground" : "text-foreground/60")}>
-                      {link.label}
-                      <ChevronDown className="relative top-[1px] ml-1 h-4 w-4 transition duration-200" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    {(link as any).subLinks.map((subLink: any) => (
-                      <DropdownMenuItem key={subLink.label} asChild>
-                        <Link href={subLink.href}>{subLink.label}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "transition-colors hover:text-foreground/80 px-4 py-2 rounded-md uppercase text-xs font-black tracking-widest",
-                    pathname === link.href ? "text-foreground bg-accent/20" : "text-foreground/60"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
-          </nav>
-        </div>
-        
-        {/* Mobile Nav */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-            >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle Menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="pr-0">
-            <Link
-              href="/"
-              className="flex items-center gap-2"
-            >
-              <Binoculars className="h-6 w-6 text-primary" />
-              <span className="font-bold font-headline uppercase tracking-tighter">Leopard<span className="text-accent italic">fish Intel</span></span>
+    <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="flex items-center gap-4">
+            <SidebarTrigger />
+            <Link href="/" className="hidden sm:flex items-center gap-2">
+                <Binoculars className="size-6 text-primary" />
+                <span className="font-bold font-headline text-lg tracking-tighter uppercase">
+                    <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
+                </span>
             </Link>
-            <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-              <div className="flex flex-col space-y-3">
-                {navLinks.map((link) =>
-                  (link as any).isDropdown && (link as any).subLinks ? (
-                    <Collapsible key={link.label}>
-                        <CollapsibleTrigger className={cn("font-medium flex items-center justify-between w-full [&[data-state=open]>svg]:rotate-180",
-                          "transition-colors hover:text-foreground/80",
-                          pathname.startsWith(link.href) ? "text-foreground" : "text-foreground/60"
-                        )}>
-                          {link.label}
-                          <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-                        </CollapsibleTrigger>
-                      <CollapsibleContent className="pl-4 flex flex-col space-y-3 pt-2">
-                        {(link as any).subLinks.map((subLink: any) => (
-                           <Link
-                            key={subLink.href}
-                            href={subLink.href}
-                             className={cn(
-                              "transition-colors hover:text-foreground/80 text-foreground/60"
-                            )}
-                          >
-                            {subLink.label}
-                          </Link>
-                        ))}
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ) : (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={cn(
-                        "transition-colors hover:text-foreground/80 uppercase text-xs font-black tracking-widest",
-                        pathname === link.href ? "text-foreground" : "text-foreground/60"
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                )}
-              </div>
+        </div>
+
+        <div className="flex flex-1 items-center justify-end space-x-4">
+            <div className="hidden md:block flex-1 sm:flex-grow-0">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <FormField
+                    control={form.control}
+                    name="query"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10" />
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
             </div>
-          </SheetContent>
-        </Sheet>
-        <Link href="/" className="flex items-center gap-2 md:hidden">
-            <Binoculars className="h-5 w-5 text-primary" />
-            <span className="font-bold font-headline uppercase tracking-tighter">Leopard<span className="text-accent italic">fish Intel</span></span>
-        </Link>
-
-
-        <div className="flex flex-1 items-center justify-end space-x-2">
             <UserNav />
         </div>
       </div>
