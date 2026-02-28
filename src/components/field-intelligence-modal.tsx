@@ -22,12 +22,14 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { useUser } from '@/firebase';
+import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe } from 'lucide-react';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
 import { disambiguateSchool } from '@/ai/flows/disambiguate-school-flow';
 import { cn } from '@/lib/utils';
+import { collection } from 'firebase/firestore';
+import type { School } from '@/lib/types';
 
 export function FieldIntelligenceModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,17 +38,21 @@ export function FieldIntelligenceModal() {
   const [organisation, setOrganisation] = useState('');
   const [location, setLocation] = useState('');
   const [intel, setIntel] = useState('');
+  const [websiteUrl, setWebsiteUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState('');
   
   // Disambiguation states
   const [isValidating, setIsValidating] = useState(false);
+  const [validationStatus, setValidationStatus] = useState('');
   const [validationResult, setValidationResult] = useState<{
     is_ambiguous: boolean;
+    is_new_entity: boolean;
     suggestions: string[];
     message_to_user: string;
     canonical_name: string;
+    school_id?: string;
   } | null>(null);
 
   // Mission Impossible States
@@ -56,6 +62,14 @@ export function FieldIntelligenceModal() {
   
   const { user } = useUser();
   const { toast } = useToast();
+  const firestore = useFirestore();
+
+  // Master Registry Cross-Reference
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
+  const { data: schoolsRegistry } = useCollection<School>(schoolsQuery);
 
   useEffect(() => {
     const handleOpen = () => {
@@ -91,10 +105,12 @@ export function FieldIntelligenceModal() {
     setOrganisation('');
     setLocation('');
     setIntel('');
+    setWebsiteUrl('');
     setFile(null);
     setStatus('');
     setIsSubmitting(false);
     setValidationResult(null);
+    setValidationStatus('');
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -111,18 +127,45 @@ export function FieldIntelligenceModal() {
 
   const handleVerifySchool = async () => {
     if (!organisation || !location) return;
+    
     setIsValidating(true);
+    setValidationResult(null);
+    
+    // Mission Impossible Streaming Feedback
+    const statuses = [
+      'Accessing Global Education Registry...',
+      `Filtering signatures for ${organisation}...`,
+      'Cross-referencing Ministry of Education records...',
+    ];
+
+    let statusIdx = 0;
+    const interval = setInterval(() => {
+      if (statusIdx < statuses.length) {
+        setValidationStatus(statuses[statusIdx]);
+        statusIdx++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 600);
+
     try {
+      const registry = schoolsRegistry?.map(s => ({ id: s.id, name: s.name })) || [];
       const result = await disambiguateSchool({
         user_input_school: organisation,
         user_input_city: location,
+        verified_registry: registry,
       });
+      
+      clearInterval(interval);
       setValidationResult(result);
-      if (!result.is_ambiguous && result.canonical_name !== organisation) {
+      setValidationStatus(result.message_to_user);
+      
+      if (!result.is_ambiguous && !result.is_new_entity && result.canonical_name !== organisation) {
         setOrganisation(result.canonical_name);
       }
     } catch (error) {
       console.error('Validation Error:', error);
+      setValidationStatus('Registry uplink timed out.');
     } finally {
       setIsValidating(false);
     }
@@ -149,6 +192,11 @@ export function FieldIntelligenceModal() {
       return;
     }
 
+    if (validationResult?.is_new_entity && !websiteUrl) {
+      toast({ variant: 'destructive', title: 'URL Required', description: 'Please provide the school\'s official website URL for agent verification.' });
+      return;
+    }
+
     setIsSubmitting(true);
     setStatus('De-encrypting and Uploading...');
 
@@ -166,11 +214,12 @@ export function FieldIntelligenceModal() {
       const token = await transmitIntelligence({
         category,
         organisation,
+        location,
         content: intel,
         authorId: user?.uid,
         authorEmail: user?.email || undefined,
         file: filePayload
-      } as any); // Type cast due to location addition in logic later
+      } as any);
 
       if (token === 'Success') {
         setIsDestructing(true);
@@ -282,35 +331,53 @@ export function FieldIntelligenceModal() {
                   {isValidating && <Loader2 className="size-4 animate-spin self-center text-primary" />}
                 </div>
                 
-                {validationResult?.is_ambiguous && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded flex gap-2">
-                    <AlertCircle className="size-4 text-amber-500 shrink-0 mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">{validationResult.message_to_user}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {validationResult.suggestions.map((s, i) => (
-                          <Button 
-                            key={i} 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-6 text-[9px] py-0 px-2 border-amber-500/30 hover:bg-amber-500/20"
-                            onClick={() => {
-                              setOrganisation(s);
-                              setValidationResult(null);
-                            }}
-                          >
-                            {s}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
+                {validationStatus && (
+                  <div className={cn(
+                    "flex items-center gap-2 p-2 rounded text-[9px] font-bold uppercase tracking-widest border",
+                    isValidating ? "bg-primary/5 border-primary/20 text-primary" : 
+                    validationResult?.is_ambiguous || validationResult?.is_new_entity ? "bg-amber-500/10 border-amber-500/20 text-amber-500" :
+                    "bg-green-500/5 border-green-500/20 text-green-500"
+                  )}>
+                    {isValidating ? <Loader2 className="size-3 animate-spin" /> : 
+                     validationResult?.is_ambiguous || validationResult?.is_new_entity ? <AlertCircle className="size-3" /> : 
+                     <CheckCircle2 className="size-3" />}
+                    <span>{validationStatus}</span>
                   </div>
                 )}
 
-                {validationResult && !validationResult.is_ambiguous && (
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/5 border border-green-500/20 rounded">
-                    <CheckCircle2 className="size-3 text-green-500" />
-                    <span className="text-[9px] text-green-500 font-bold uppercase tracking-widest">Analyst Verified: {validationResult.canonical_name}</span>
+                {validationResult?.is_ambiguous && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {validationResult.suggestions.map((s, i) => (
+                      <Button 
+                        key={i} 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-6 text-[9px] py-0 px-2 border-amber-500/30 hover:bg-amber-500/20"
+                        onClick={() => {
+                          setOrganisation(s);
+                          setValidationResult(null);
+                          setValidationStatus(`Signature confirmed: ${s}`);
+                        }}
+                      >
+                        {s}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+
+                {validationResult?.is_new_entity && (
+                  <div className="space-y-2 pt-2 animate-in slide-in-from-top-2 duration-300">
+                    <Label htmlFor="websiteUrl" className="text-[10px] uppercase tracking-widest font-black text-amber-500/70">Official Website URL</Label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                      <Input 
+                        id="websiteUrl" 
+                        placeholder="https://www.schoolname.com" 
+                        className="pl-10 bg-slate-950/50 border-amber-500/20 focus:border-amber-500/50"
+                        value={websiteUrl}
+                        onChange={(e) => setWebsiteUrl(e.target.value)}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
