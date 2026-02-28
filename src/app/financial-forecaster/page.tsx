@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, Suspense } from 'react';
@@ -32,6 +31,7 @@ const CONVERSION_RATES: Record<string, number> = {
   HKD: 7.8,
   MYR: 4.7,
   VND: 25000,
+  CZK: 23.5,
 };
 
 // Tactical Order: Priority first, then alphabetical
