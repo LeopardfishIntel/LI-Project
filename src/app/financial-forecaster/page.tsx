@@ -39,7 +39,8 @@ import {
   Car,
   Beer,
   ShieldCheck,
-  Binoculars
+  Binoculars,
+  Milestone
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -107,7 +108,7 @@ const countrySpecificData: Record<string, any> = {
         dependentTuition: { text: "Staff children often get heavily discounted or free places in the private sector.", score: 'neutral', percentage: "Up to 100%" },
         gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension.", score: 'neutral', percentage: "Pension" },
         importedGoods: { text: "As a major economy, most goods are readily available.", score: 'neutral' },
-        utilities: { text: "AC in summer or heating in winter can lead to high utility bills.", score: 'bad', percentage: "+30%" },
+        utilities: { text: "Heating in winter can lead to high utility bills.", score: 'bad', percentage: "+30%" },
         transportation: { text: "Public transport is extensive but can be very expensive, especially train travel.", score: 'neutral', percentage: "+20%" },
         socialLeisure: { text: "The cost of a meal out is generally high compared to many teaching destinations.", score: 'bad', percentage: "+40%" },
         safety: { text: "Ranked 37th on the 2023 Global Peace Index. Day-to-day life is safe.", score: 'neutral', percentage: 'Rank 37' },
@@ -156,10 +157,28 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
 };
 
 const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const data = (taxData as any)[country];
+    // Simplified tax data for simulation purposes
+    const taxBrackets: Record<string, any> = {
+        "United Kingdom": {
+            socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
+            filingStatuses: {
+                single: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+                married: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+            },
+        },
+        "UAE": {
+            socialSecurity: { rate: 0 },
+            filingStatuses: {
+                single: { brackets: [{ upto: Infinity, rate: 0 }] },
+                married: { brackets: [{ upto: Infinity, rate: 0 }] },
+            },
+        }
+    };
+
+    const data = taxBrackets[country];
     if (!data || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: income };
     
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = data;
+    const { socialSecurity, filingStatuses } = data;
     const brackets = filingStatuses[filingStatus].brackets;
     
     let socialSecurityContrib = 0;
@@ -167,23 +186,17 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
     const ssCapped = socialSecurity.cap ? Math.min(ssIncome, socialSecurity.cap) : ssIncome;
     socialSecurityContrib = ssCapped * socialSecurity.rate;
 
-    let incomeForTax = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTax = income * specialRegime.taxablePercentage;
-    }
-
     let incomeTaxBeforeCredit = 0;
     let lastUpto = 0;
     for (const bracket of brackets) {
-        if (incomeForTax > lastUpto) {
-            const taxable = Math.min(incomeForTax, bracket.upto) - lastUpto;
+        if (income > lastUpto) {
+            const taxable = Math.min(income, bracket.upto) - lastUpto;
             incomeTaxBeforeCredit += taxable * bracket.rate;
             lastUpto = bracket.upto;
         } else break;
     }
     
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit);
     const totalTax = incomeTax + socialSecurityContrib;
 
     return { 
@@ -192,28 +205,9 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
         netIncome: income - totalTax, 
         totalTax, 
         effectiveRate: (totalTax / income) * 100, 
-        taxCredit, 
+        taxCredit: 0, 
         incomeTaxBeforeCredit 
     };
-};
-
-const taxData = {
-    "UAE": {
-        currency: "AED",
-        socialSecurity: { rate: 0 },
-        filingStatuses: {
-            single: { brackets: [{ upto: Infinity, rate: 0 }] },
-            married: { brackets: [{ upto: Infinity, rate: 0 }] },
-        },
-    },
-    "United Kingdom": {
-        currency: "GBP",
-        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
-        filingStatuses: {
-            single: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-        },
-    }
 };
 
 const FeatureDetail = ({ icon, title, description, score, percentage }: { 
@@ -305,7 +299,7 @@ function ContractDecoderContent() {
   const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
   const [homeCountryCommitment, setHomeCountryCommitment] = useState('');
   const [studentLoan, setStudentLoan] = useState('');
-  const [contingency] = useState('200');
+  const [contingency, setContingency] = useState('200');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -488,6 +482,20 @@ function ContractDecoderContent() {
                     />
                     </div>
                 </div>
+
+                <div className="space-y-2">
+                    <Label className="text-[10px] font-bold text-primary/70 uppercase">Contingency buffer (Monthly)</Label>
+                    <div className="relative">
+                    <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <Input 
+                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                        type="number" 
+                        placeholder="200" 
+                        value={contingency}
+                        onChange={(e) => setContingency(e.target.value)}
+                    />
+                    </div>
+                </div>
                 </CardContent>
             </Card>
             </div>
@@ -573,6 +581,7 @@ function ContractDecoderContent() {
                         <DecodedItem icon={<Zap className="size-3 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                         <DecodedItem icon={<Smartphone className="size-3 text-pink-400" />} label="Mobile phone" value={decodedCosts?.mobile || 0} currency={currency} />
                         <DecodedItem icon={<Wifi className="size-3 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                        <DecodedItem icon={<Milestone className="size-3 text-purple-400" />} label="Contingency buffer" value={decodedCosts?.contingencyVal || 0} currency={currency} />
                         <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center">
                         <span className="text-[10px] font-black uppercase tracking-widest text-white">Burn Rate</span>
                         <span className="text-xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
