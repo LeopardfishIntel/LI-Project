@@ -140,13 +140,13 @@ export function FieldIntelligenceModal() {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button 
-          className="fixed bottom-6 right-6 h-14 w-14 hover:w-56 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white z-50 p-0 transition-all duration-300 group overflow-hidden border-2 border-white/10 flex items-center justify-center"
-          aria-label="Transmit Field Intel"
+          className="fixed bottom-6 right-6 h-14 w-14 hover:w-44 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white z-50 p-0 transition-all duration-300 group overflow-hidden border-2 border-white/10 flex items-center justify-center"
+          aria-label="File Field Intel"
         >
           <div className="flex items-center justify-center">
-            <Binoculars className="size-6 shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+            <Binoculars className="size-8 shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             <span className="max-w-0 group-hover:max-w-xs group-hover:ml-3 opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden whitespace-nowrap font-black uppercase tracking-widest text-[10px]">
-              Transmit Field Intel
+              File Intel
             </span>
           </div>
         </Button>
