@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { User, LogOut, Search, Binoculars } from "lucide-react";
+import { User, LogOut, Search, Binoculars, Menu } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
@@ -53,7 +54,7 @@ function UserNav() {
     if (!user) {
         return (
              <Link href="/login">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="font-bold rounded-sm">
                     Login
                 </Button>
             </Link>
@@ -63,8 +64,8 @@ function UserNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                    <Avatar className="h-9 w-9">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
                         <AvatarFallback>
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
@@ -114,17 +115,18 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <Binoculars className="size-6 text-primary" />
-            <span className="font-bold font-headline text-lg tracking-tighter">
+            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </span>
           </Link>
+          
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-bold tracking-wide transition-colors rounded-sm",
+                  "px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -137,7 +139,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-            <div className="hidden lg:block">
+            <div className="hidden sm:block flex-1 sm:flex-grow-0">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <FormField
@@ -148,7 +150,7 @@ export default function Header() {
                         <FormControl>
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-64 bg-background/50 border-white/10" />
+                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm" />
                           </div>
                         </FormControl>
                       </FormItem>
@@ -157,6 +159,30 @@ export default function Header() {
                 </form>
               </Form>
             </div>
+            
+            <div className="md:hidden">
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <Menu className="size-5" />
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="bg-background border-r border-white/5">
+                        <div className="flex flex-col gap-4 mt-8">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="text-lg font-bold tracking-tighter hover:text-primary transition-colors"
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </SheetContent>
+                </Sheet>
+            </div>
+            
             <UserNav />
         </div>
       </div>
