@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section: Tactical Intel */}
-      <section className="relative w-full h-[80vh] flex items-center overflow-hidden">
+      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -41,7 +41,7 @@ export default function Home() {
               LEOPARD<span className="text-accent italic">FISH INTEL</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
-              Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4 text-white">evidence-led insight</span>.
+              Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link href="/discover">
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Tagline Section - Smaller, White, Tracked */}
+      {/* Tactical Tagline Section - Small, White, Tracked */}
       <section className="py-12 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
@@ -100,14 +100,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section - No Heading Above */}
+      {/* Stats Counter Section */}
       <section className="py-12 border-t border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );
