@@ -34,6 +34,14 @@ const CONVERSION_RATES: Record<string, number> = {
   VND: 25000,
 };
 
+// Tactical Order: Priority first, then alphabetical
+const ORDERED_CURRENCIES = [
+  'USD', 'GBP', 'EUR',
+  ...Object.keys(CONVERSION_RATES)
+    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
+    .sort()
+];
+
 function ContractDecoderContent() {
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
@@ -80,7 +88,7 @@ function ContractDecoderContent() {
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
     const manualStudentLoan = parseFloat(studentLoan) || 0;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost + manualStudentLoan;
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + (manualHomeCost * rate) + (manualStudentLoan * rate);
 
     return { 
       rent: rentFinal, 
@@ -93,8 +101,8 @@ function ContractDecoderContent() {
       mobile, 
       totalCosts,
       simCount: adults,
-      manualHomeCost,
-      manualStudentLoan
+      manualHomeCost: manualHomeCost * rate,
+      manualStudentLoan: manualStudentLoan * rate
     };
   }, [selectedSchool, familyStatus, homeCountryCost, studentLoan, rate]);
 
@@ -176,7 +184,7 @@ function ContractDecoderContent() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
-                      {Object.keys(CONVERSION_RATES).map(c => (
+                      {ORDERED_CURRENCIES.map(c => (
                         <SelectItem key={c} value={c}>{c}</SelectItem>
                       ))}
                     </SelectContent>
