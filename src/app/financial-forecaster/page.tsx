@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, Suspense } from 'react';
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink } from 'lucide-react';
+import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -32,6 +33,10 @@ const CONVERSION_RATES: Record<string, number> = {
   MYR: 4.7,
   VND: 25000,
   CZK: 23.5,
+  AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
 };
 
 // Tactical Order: Priority first (USD, GBP, EUR), then alphabetical
@@ -126,7 +131,7 @@ function ContractDecoderContent() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
-              <CardTitle className="text-lg stamped-dossier text-white">My Settings</CardTitle>
+              <CardTitle className="text-lg stamped-dossier text-white text-center">My Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -324,6 +329,31 @@ function ContractDecoderContent() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* NEW: Currency Conversion Section */}
+              {savingsPotential !== 0 && (
+                <Card className="glass border-white/5 bg-background/20 rounded-sm">
+                  <CardHeader className="py-3 px-4 border-b border-white/5">
+                    <CardTitle className="text-[10px] font-black text-primary/70 uppercase tracking-widest flex items-center gap-2">
+                      <ArrowRightLeft className="size-3" /> Wealth Equivalents (Home Currencies)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                      {['USD', 'GBP', 'EUR', 'AUD', 'CAD', 'ZAR'].filter(c => c !== currency).slice(0, 4).map((targetCcy) => {
+                        const savingsInUSD = savingsPotential / rate;
+                        const convertedVal = savingsInUSD * (CONVERSION_RATES[targetCcy] || 1);
+                        return (
+                          <div key={targetCcy} className="space-y-1">
+                            <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy} Value</p>
+                            <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
         </div>
