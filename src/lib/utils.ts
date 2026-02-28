@@ -7,15 +7,33 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Formats a number as currency and appends the ISO currency code.
- * Example: 1000, "USD" -> "$1,000 USD"
+ * Rule: Never show currency three letters in front of the number.
+ * Rule: Always add currency letters after the number.
  */
 export function formatCurrency(amount: number, currency = 'USD') {
-  const formatted = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
+  // Use decimal style to get the formatted number without automatic currency labels
+  const formattedNumber = new Intl.NumberFormat('en-US', {
+    style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
+
+  // Manual mapping of symbols to avoid ISO codes (like AED or CHF) appearing in front
+  const symbols: Record<string, string> = {
+    USD: '$',
+    GBP: '£',
+    EUR: '€',
+    JPY: '¥',
+    THB: '฿',
+    CNY: '¥',
+    HKD: 'HK$',
+    SGD: 'S$',
+    AUD: 'A$',
+    CAD: 'C$',
+  };
   
-  return `${formatted} ${currency}`;
+  const symbol = symbols[currency] || '';
+  
+  // Returns e.g., "$1,000 USD" or "3,670 AED"
+  return `${symbol}${formattedNumber} ${currency}`;
 }
