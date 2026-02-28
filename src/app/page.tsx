@@ -60,24 +60,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section - Placed directly below Hero */}
-      <section className="py-12 border-b border-white/5 bg-background">
+      {/* Stats Counter Section - Repositioned directly below Hero */}
+      <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Tactical Tagline Section */}
-      <section className="py-12 bg-background border-b border-white/5">
+      {/* Tactical Tagline Section - Sentence case and full width */}
+      <section className="py-6 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase opacity-80">
+            <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter opacity-90 leading-none">
               Teach Overseas: Know Before You Go
             </p>
         </div>
       </section>
 
-      {/* The Insider Journey Steps */}
-      <section className="py-24 bg-background border-b border-white/5">
+      {/* The Insider Journey Steps - Tightened Spacing */}
+      <section className="py-16 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
@@ -125,7 +125,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );

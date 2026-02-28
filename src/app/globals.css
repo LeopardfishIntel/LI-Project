@@ -11,13 +11,13 @@
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
-    --primary: 25 95% 53%; /* Signal Orange */
+    --primary: 25 95% 53%; /* Signal Orange - Core Primary */
     --primary-foreground: 210 40% 98%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 215 16% 47%;
     --muted-foreground: 215 16% 78%;
-    --accent: 199 90% 55%; /* Azure Blue */
+    --accent: 199 90% 55%; /* Azure Blue - Core Secondary/Accent */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
@@ -25,6 +25,12 @@
     --input: 215 20% 25%;
     --ring: 25 95% 53%;
     --radius: 0.25rem;
+
+    --chart-1: 160 84% 39%;
+    --chart-2: 25 95% 53%;
+    --chart-3: 215 14% 47%;
+    --chart-4: 45 96% 56%;
+    --chart-5: 199 90% 55%;
   }
 }
 
@@ -42,25 +48,19 @@
 
 @layer components {
   .glass {
-    @apply bg-card/70 backdrop-blur-[10px] border border-white/10 shadow-xl;
+    @apply bg-card/70 backdrop-blur-[10px] border border-white/10;
   }
   .stamped-dossier {
     @apply uppercase tracking-widest font-black;
   }
-  
-  /* Tactical Searchlight Animation */
-  .searchlight-overlay {
-    background: radial-gradient(circle 400px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(8, 12, 24, 0.95) 100%);
-    pointer-events: none;
-  }
 }
 
 @keyframes scanning {
-  0% { transform: translateX(-50%) translateY(-50%); left: 0%; top: 50%; }
-  25% { transform: translateX(-50%) translateY(-50%); left: 50%; top: 20%; }
-  50% { transform: translateX(-50%) translateY(-50%); left: 100%; top: 50%; }
-  75% { transform: translateX(-50%) translateY(-50%); left: 50%; top: 80%; }
-  100% { transform: translateX(-50%) translateY(-50%); left: 0%; top: 50%; }
+  0% { left: 0%; top: 50%; }
+  25% { left: 50%; top: 20%; }
+  50% { left: 100%; top: 50%; }
+  75% { left: 50%; top: 80%; }
+  100% { left: 0%; top: 50%; }
 }
 
 .animate-scan {

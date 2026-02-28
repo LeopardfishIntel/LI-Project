@@ -761,7 +761,7 @@ function TrueCostsSection() {
     GBP: 0.8,
     EUR: 0.92,
   };
-  const usdRate = conversionRates[currency];
+  const usdRate = conversionRates[currency] ?? 1;
 
   const convert = (amount: number) => amount * usdRate;
   
@@ -801,40 +801,32 @@ function TrueCostsSection() {
     setPartnerIncome('');
     setGratuityBonus('');
     if (selectedSchool && selectedSchool.intel.housing.provided) {
-        const rent = getRentForFamily(selectedSchool.costOfLiving, familyStatus).rent;
-        setOtherMonthlyBenefits(String(Math.round(rent)));
+        const { rent } = getRentForFamily(selectedSchool.costOfLiving, familyStatus);
+        setOtherMonthlyBenefits(String(Math.round(convert(rent))));
     } else {
         setOtherMonthlyBenefits('');
     }
-  }, [selectedSchool, familyStatus]);
+  }, [selectedSchool, familyStatus, usdRate]);
 
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
     couple: 'Couple',
-    family: 'Family of 3',
+    family: 'Family 2+1',
     family2: 'Family of 4',
   };
 
-  const calculatedCosts = useMemo(() => {
-    const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent' };
-    if (!selectedSchool || !selectedSchool.costOfLiving) {
-      return defaultCosts;
-    }
-
+  const calculatedCostsInUSD = useMemo(() => {
+    const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent', isHousingProvided: false, rentValueIfProvided: 0 };
+    if (!selectedSchool) return defaultCosts;
+    
     const { costOfLiving, intel } = selectedSchool;
 
     let adults = 1;
     let children = 0;
-    if (familyStatus === 'couple') {
-      adults = 2;
-    } else if (familyStatus === 'family') {
-      adults = 2;
-      children = 1;
-    } else if (familyStatus === 'family2') {
-      adults = 2;
-      children = 2;
-    }
-
+    if (familyStatus === 'couple') adults = 2;
+    else if (familyStatus === 'family') { adults = 2; children = 1; }
+    else if (familyStatus === 'family2') { adults = 2; children = 2; }
+    
     const { rent, label } = getRentForFamily(costOfLiving, familyStatus);
     const rentCost = intel.housing.provided ? 0 : rent;
     
@@ -864,9 +856,10 @@ function TrueCostsSection() {
       medicalCost,
       totalMonthlyCosts: total,
       rentLabel: label,
+      isHousingProvided: intel.housing.provided,
+      rentValueIfProvided: rent,
     };
   }, [selectedSchool, familyStatus]);
-
   
   const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -886,7 +879,7 @@ function TrueCostsSection() {
   };
 
   const avgGrossAnnualSalary = getAverageAnnualSalary(selectedSchool?.intel.salary.value);
-  const estimatedNetMonthlySalary = (avgGrossAnnualSalary * 0.8) / 12;
+  const estimatedNetMonthlySalaryUSD = (avgGrossAnnualSalary * 0.8) / 12;
 
   const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
   const numericOtherMonthlyBenefits = parseFloat(otherMonthlyBenefits) || 0;
@@ -895,18 +888,11 @@ function TrueCostsSection() {
   const numericContingency = parseFloat(contingency) || 0;
   const numericGratuityBonus = parseFloat(gratuityBonus) || 0;
 
-  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
-  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
-  const utilitiesAllowanceInUSD = numericUtilitiesAllowance / usdRate;
-  const partnerIncomeInUSD = numericPartnerIncome / usdRate;
-  const contingencyInUSD = numericContingency / usdRate;
-  const gratuityBonusInUSD = numericGratuityBonus / usdRate;
+  const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : convert(estimatedNetMonthlySalaryUSD);
 
-  const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalary;
-
-  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
-  const finalTotalMonthlyCosts = calculatedCosts.totalMonthlyCosts + contingencyInUSD;
-  const monthlySavings = totalMonthlyPackage - finalTotalMonthlyCosts;
+  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits + numericUtilitiesAllowance + numericPartnerIncome + numericGratuityBonus;
+  const totalMonthlyCosts = convert(calculatedCostsInUSD.totalMonthlyCosts) + numericContingency;
+  const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
 
   
@@ -914,15 +900,13 @@ function TrueCostsSection() {
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyIncome = salaryToUseInUSD;
-    const convertedAnnualSavings = convert(annualSavings);
-    const formattedSavings = formatCurrency(convertedAnnualSavings, currency);
+    const formattedSavings = formatCurrency(annualSavings, currency);
 
     savingsDescription = `Based on an estimated net monthly income and your lifestyle costs, your projected annual savings are approximately ${formattedSavings}.`;
 
-    if (monthlySavings > (monthlyIncome * 0.3)) { // saving > 30% of salary
+    if (monthlySavings > (totalMonthlyPackage * 0.3)) { // saving > 30% of salary
         savingsScore = 'good';
-    } else if (monthlySavings > (monthlyIncome * 0.1)) { // saving > 10%
+    } else if (monthlySavings > (totalMonthlyPackage * 0.1)) { // saving > 10%
         savingsScore = 'neutral';
     } else {
         savingsScore = 'bad';
@@ -1067,7 +1051,7 @@ function TrueCostsSection() {
               <SelectContent>
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="couple">Couple</SelectItem>
-                <SelectItem value="family">Family of 3</SelectItem>
+                <SelectItem value="family">Family 2+1</SelectItem>
                 <SelectItem value="family2">Family of 4</SelectItem>
               </SelectContent>
             </Select>
@@ -1185,7 +1169,7 @@ function TrueCostsSection() {
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Monthly Package</span>
-                                    <span className="text-green-400">{formatCurrency(convert(totalMonthlyPackage), currency)}</span>
+                                    <span className="text-green-400">{formatCurrency(totalMonthlyPackage, currency)}</span>
                                 </div>
                             </div>
                         </div>
@@ -1242,7 +1226,7 @@ function TrueCostsSection() {
                                 <Separator className="my-4"/>
                                 <div className="flex justify-between items-center font-bold text-lg">
                                     <span className="text-primary-foreground">Total Estimated Costs</span>
-                                    <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                                    <span className="text-red-400">{formatCurrency(totalMonthlyCosts, currency)}</span>
                                 </div>
                             </div>
                         </div>
@@ -1254,13 +1238,13 @@ function TrueCostsSection() {
                             <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
                                 <p className={cn("text-3xl font-bold mt-1", monthlySavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(convert(monthlySavings), currency)}
+                                    {formatCurrency(monthlySavings, currency)}
                                 </p>
                             </div>
                              <div className={cn("p-4 rounded-lg", annualSavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
                                 <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED ANNUAL SAVINGS</h4>
                                 <p className={cn("text-3xl font-bold mt-1", annualSavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(convert(annualSavings), currency)}
+                                    {formatCurrency(annualSavings, currency)}
                                 </p>
                             </div>
                         </div>
