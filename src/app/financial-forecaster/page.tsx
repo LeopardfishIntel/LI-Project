@@ -814,7 +814,7 @@ function ContractDecoderContent() {
                           const convertedVal = savingsInUSD * (CONVERSION_RATES[targetCcy] || 1);
                           return (
                             <div key={targetCcy} className="space-y-1">
-                              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy} Value</p>
+                              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p>
                               <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
                             </div>
                           )
