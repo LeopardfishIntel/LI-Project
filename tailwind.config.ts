@@ -79,10 +79,12 @@ const config: Config = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.7" },
         },
-        "searchlight": {
-          "0%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-          "100%": { backgroundPosition: "0% 50%" },
+        "scanning": {
+          "0%": { left: "0%", top: "50%" },
+          "25%": { left: "50%", top: "20%" },
+          "50%": { left: "100%", top: "50%" },
+          "75%": { left: "50%", top: "80%" },
+          "100%": { left: "0%", top: "50%" },
         },
       },
       animation: {
@@ -90,7 +92,7 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "glow": "glow 2s ease-in-out infinite",
         "pulse-slow": "pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "searchlight": "searchlight 8s ease-in-out infinite",
+        "scan": "scanning 15s linear infinite",
       },
     },
   },

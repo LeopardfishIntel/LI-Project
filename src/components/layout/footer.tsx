@@ -9,7 +9,7 @@ export default function Footer() {
             <div className="flex flex-col items-center md:items-start">
                 <div className="flex items-center mb-4">
                     <Binoculars className="h-6 w-6 mr-2 text-primary" />
-                    <span className="font-bold font-headline">Leopardfish Intel</span>
+                    <span className="font-bold font-headline"><span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span></span>
                 </div>
                 <p className="text-xs text-muted-foreground text-center md:text-left">
                     Your international teaching journey, mapped. Find your ideal destination, calculate your real-world savings, and compare school offers side-by-side.
