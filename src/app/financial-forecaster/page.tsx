@@ -134,6 +134,17 @@ function ContractDecoderContent() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* DUE DILIGENCE IN-LINE */}
+              <div className="bg-destructive/10 border border-destructive/20 p-2 rounded-sm mt-4">
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1">
+                    <ShieldAlert className="size-3" /> Due Diligence
+                  </span>
+                  Always verify if the salary quoted is 'Net' or 'Gross'. Social security can take up to 15%.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
                 <div className="grid grid-cols-3 gap-2">
@@ -195,17 +206,6 @@ function ContractDecoderContent() {
                   />
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-destructive/10 border-destructive/20 rounded-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2 text-destructive font-black uppercase">
-                <ShieldAlert className="w-4 h-4" /> Due Diligence
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">Always verify if the salary quoted is 'Net' or 'Gross'. Social security can take up to 15%.</p>
             </CardContent>
           </Card>
         </div>
