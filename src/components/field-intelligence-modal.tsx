@@ -249,7 +249,7 @@ export function FieldIntelligenceModal() {
         >
           <div className="flex items-center justify-center">
             <Binoculars className="size-8 shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-            <span className="max-w-0 group-hover:max-w-xs group-hover:ml-3 opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden whitespace-nowrap font-black uppercase tracking-widest text-[10px]">
+            <span className="max-w-0 group-hover:max-max-w-xs group-hover:ml-3 opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden whitespace-nowrap font-black uppercase tracking-widest text-[10px]">
               File Intel
             </span>
           </div>
@@ -263,7 +263,7 @@ export function FieldIntelligenceModal() {
           <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
             <Loader2 className="size-12 text-primary animate-spin" />
             <div className="space-y-2">
-              <DialogTitle className="text-xl font-black stamped-dossier text-primary animate-pulse">
+              <DialogTitle className="text-xl font-bold text-primary animate-pulse">
                 Scanning for Secure Uplink...
               </DialogTitle>
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
@@ -295,22 +295,17 @@ export function FieldIntelligenceModal() {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-primary flex items-center gap-2 stamped-dossier">
-                <ShieldAlert className="size-5" /> Field Intel Report
+              <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl">
+                <ShieldAlert className="size-5" /> Field report
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">
-                Transmission Mode: Secure & Encrypted
+              <DialogDescription className="text-muted-foreground text-[10px] leading-tight mt-2">
+                Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
-              <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm">
-                <p className="text-[9px] font-black uppercase text-destructive tracking-widest">Security Notice</p>
-                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.</p>
-              </div>
-
               <div className="space-y-2">
-                <Label htmlFor="location" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intel Location (City/Country)</Label>
+                <Label htmlFor="location" className="text-[10px] font-bold text-primary/70">Location (City/Country)</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -324,7 +319,7 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Target Organisation</Label>
+                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70">Organisation</Label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -379,7 +374,7 @@ export function FieldIntelligenceModal() {
 
                 {validationResult?.is_new_entity && (
                   <div className="space-y-2 pt-2 animate-in slide-in-from-top-2 duration-300">
-                    <Label htmlFor="websiteUrl" className="text-[10px] uppercase tracking-widest font-black text-amber-500/70">Official Website URL</Label>
+                    <Label htmlFor="websiteUrl" className="text-[10px] font-bold text-amber-500/70">Official Website URL</Label>
                     <div className="relative">
                       <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input 
@@ -395,7 +390,7 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="category" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Report Classification</Label>
+                <Label htmlFor="category" className="text-[10px] font-bold text-primary/70">Report classification</Label>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger id="category" className="bg-slate-950/50 border-white/10">
                     <SelectValue placeholder="Select high-priority category..." />
@@ -413,7 +408,7 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="intel" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intel Narrative</Label>
+                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70">Narrative</Label>
                 <Textarea 
                   id="intel" 
                   placeholder="Provide specific, evidence-led details regarding your experience..." 
@@ -424,7 +419,7 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] uppercase tracking-widest font-black text-primary/70">Evidence (Attachments)</Label>
+                <Label className="text-[10px] font-bold text-primary/70">Evidence (Attachments)</Label>
                 <div className="relative border-2 border-dashed border-white/5 rounded p-3 flex flex-col items-center justify-center bg-slate-950/20 hover:bg-slate-950/40 transition-colors cursor-pointer group">
                   <FileUp className={cn("size-6 mb-1 transition-colors", file ? "text-primary" : "text-muted-foreground")} />
                   <span className="text-[9px] text-muted-foreground uppercase tracking-widest text-center">
@@ -435,8 +430,8 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] uppercase tracking-widest font-black text-primary/70 flex items-center gap-2">
-                  <ShieldCheck className="size-3" /> Security Briefing & Protocol
+                <Label className="text-[10px] font-bold text-primary/70 flex items-center gap-2">
+                  <ShieldCheck className="size-3" /> Security briefing & protocol
                 </Label>
                 <div className="border border-white/10 rounded-sm bg-slate-950/40 overflow-hidden">
                   <ScrollArea className="h-40 p-3 text-[10px] leading-relaxed text-muted-foreground font-mono">
@@ -499,7 +494,7 @@ export function FieldIntelligenceModal() {
                 ) : (
                   <Lock className="size-4" />
                 )}
-                Initialize Transmission
+                Submit
               </Button>
             </DialogFooter>
           </>
