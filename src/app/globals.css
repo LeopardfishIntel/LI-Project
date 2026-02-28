@@ -63,6 +63,28 @@
   100% { left: 0%; top: 50%; }
 }
 
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes smoke-out {
+  0% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  100% { opacity: 0; filter: blur(20px); transform: scale(1.2); }
+}
+
 .animate-scan {
   animation: scanning 15s linear infinite;
+}
+
+.animate-glitch {
+  animation: glitch 0.2s linear infinite;
+}
+
+.animate-smoke {
+  animation: smoke-out 0.8s forwards ease-in;
 }
