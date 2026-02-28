@@ -9,17 +9,253 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Globe } from 'lucide-react';
+import { Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Globe, Calculator, Info, Banknote, Medal, Plus } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-/**
- * Tactical Utility: Extracts average annual salary from string range
- * e.g. "$60k - $80k" -> 70000
- */
+// --- Tax Calculator Logic ---
+type TaxBracket = { upto: number; rate: number };
+type FilingStatusBrackets = { brackets: TaxBracket[] };
+type SpecialRegime = {
+    name: string;
+    description: string;
+    taxablePercentage: number;
+};
+
+const taxData: { [key: string]: {
+    currency: string;
+    socialSecurity: { rate: number; floor?: number; cap?: number };
+    childTaxCredit?: number;
+    specialRegime?: SpecialRegime;
+    filingStatuses: {
+        single: FilingStatusBrackets;
+        married: FilingStatusBrackets;
+    };
+} } = {
+    "Italy": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.0919 },
+        childTaxCredit: 950,
+        specialRegime: {
+            name: "New Arrival Tax Discount",
+            description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime). Social security is still calculated on the full gross salary.",
+            taxablePercentage: 0.30
+        },
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+            married: { brackets: [
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+        },
+    },
+    "Japan": {
+        currency: "JPY",
+        socialSecurity: { rate: 0.145, cap: 8160000 },
+        childTaxCredit: 200000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 },
+                { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 },
+                { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 },
+                { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 },
+                { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "Netherlands": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.2765, cap: 38098 },
+        childTaxCredit: 800,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+            married: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+        },
+    },
+    "Singapore": {
+        currency: "SGD",
+        socialSecurity: { rate: 0.20, cap: 6000 * 12 },
+        childTaxCredit: 2000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
+                { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
+                { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
+            ]},
+            married: { brackets: [
+                { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
+                { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
+                { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
+            ]},
+        },
+    },
+    "South Korea": {
+        currency: "KRW",
+        socialSecurity: { rate: 0.09, cap: 70800000 },
+        childTaxCredit: 150000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "Switzerland": {
+        currency: "CHF",
+        socialSecurity: { rate: 0.064 },
+        childTaxCredit: 1200,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 },
+                { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 },
+            ]},
+            married: { brackets: [
+                { upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 },
+                { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 },
+            ]},
+        },
+    },
+    "UAE": {
+        currency: "AED",
+        socialSecurity: { rate: 0 },
+        childTaxCredit: 0,
+        filingStatuses: {
+            single: { brackets: [{ upto: Infinity, rate: 0 }] },
+            married: { brackets: [{ upto: Infinity, rate: 0 }] },
+        },
+    },
+    "United Kingdom": {
+        currency: "GBP",
+        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
+        childTaxCredit: 0,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "USA": {
+        currency: "USD",
+        socialSecurity: { rate: 0.0765, cap: 168600 },
+        childTaxCredit: 2000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
+                { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
+            ]},
+            married: { brackets: [
+                { upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 },
+                { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
+            ]},
+        },
+    },
+};
+
+const CONVERSION_RATES: Record<string, number> = {
+  USD: 1,
+  GBP: 0.78,
+  EUR: 0.92,
+  AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
+  SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
+  CZK: 23.5,
+  AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
+};
+
+const ORDERED_CURRENCIES = [
+  'USD', 'GBP', 'EUR',
+  ...Object.keys(CONVERSION_RATES)
+    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
+    .sort()
+];
+
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    const countryData = taxData[country];
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
+    if (socialSecurity.rate > 0) {
+        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
+    }
+
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastBracketUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
+            lastBracketUpto = bracket.upto;
+        } else {
+            break;
+        }
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+
+    const totalTax = incomeTax + socialSecurityContrib;
+    const netIncome = income - totalTax;
+    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
+
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
+};
+
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
     const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
@@ -37,14 +273,138 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
     return 0;
 };
 
-const DecodedItem = ({ label, value, currency, isFree }: { label: string, value: number, currency: string, isFree?: boolean }) => (
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
     <div className="flex justify-between items-center text-sm py-1">
-      <span className="text-muted-foreground font-medium">{label}</span>
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
       <span className={cn("font-bold text-white", isFree && "text-green-400")}>
         {isFree ? "COVERED" : formatCurrency(value, currency)}
       </span>
     </div>
 );
+
+function TaxCalculatorSection() {
+    const [salary, setSalary] = useState('60000');
+    const [country, setCountry] = useState('United Kingdom');
+    const [currency, setCurrency] = useState('GBP');
+    const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
+    const [dependents, setDependents] = useState('0');
+    const [applySpecialRegime, setApplySpecialRegime] = useState(false);
+    const [result, setResult] = useState<any>(null);
+    
+    const countriesWithCalculators = Object.keys(taxData).sort();
+    const currencies = ORDERED_CURRENCIES;
+
+    useEffect(() => {
+        if (taxData[country]) {
+            setCurrency(taxData[country].currency);
+        }
+        if (country !== 'Italy') {
+            setApplySpecialRegime(false);
+        }
+    }, [country]);
+
+    const handleCalculate = () => {
+        const income = parseFloat(salary);
+        const numDependents = parseInt(dependents) || 0;
+        const incomeInLocalCurrency = income * (CONVERSION_RATES[currency] || 1) / (CONVERSION_RATES[taxData[country].currency] || 1);
+        
+        if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
+            setResult(null);
+            return;
+        }
+        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime, numDependents);
+        setResult(calcResult);
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="salary">Gross Annual Salary</Label>
+                    <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className="bg-background/50 border-white/10 text-right" />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="currency">Salary Currency</Label>
+                    <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger id="currency" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="country">Tax Country</Label>
+                    <Select value={country} onValueChange={setCountry}>
+                        <SelectTrigger id="country" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-6 md:items-center">
+                <div className="space-y-2">
+                    <Label>Filing Status</Label>
+                    <RadioGroup name="filingStatus" value={filingStatus} onValueChange={(val: 'single' | 'married') => setFilingStatus(val)} className="flex pt-2 gap-6">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="single" id="single" />
+                        <Label htmlFor="single" className="font-normal">Single</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="married" id="married" />
+                        <Label htmlFor="married" className="font-normal">Married</Label>
+                      </div>
+                    </RadioGroup>
+                </div>
+                 <div className="space-y-2 w-full md:w-48">
+                    <Label htmlFor="dependents">Dependents</Label>
+                    <Select value={dependents} onValueChange={setDependents}>
+                        <SelectTrigger id="dependents" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            <SelectItem value="0">0</SelectItem>
+                            <SelectItem value="1">1</SelectItem>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="3">3</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold">Calculate Signal</Button>
+
+            {result && (
+                <Card className="glass border-white/10 p-6 space-y-4">
+                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                        <span className="text-muted-foreground">Original Gross Salary</span>
+                        <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-red-400">
+                        <span className="text-sm">Estimated Income Tax</span>
+                        <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-orange-400">
+                        <span className="text-sm">Social Contributions</span>
+                        <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
+                        <span>Net Take-Home (Annual)</span>
+                        <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
+                    </div>
+                </Card>
+            )}
+        </div>
+    );
+}
 
 function ContractDecoderContent() {
   const firestore = useFirestore();
@@ -58,6 +418,7 @@ function ContractDecoderContent() {
   const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
   const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
+  const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
   const [homeObligations, setHomeObligations] = useState('');
   const [contingency] = useState('200');
 
@@ -66,11 +427,9 @@ function ContractDecoderContent() {
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
 
-  // Projected Net Monthly Salary based on school's reported average
   const suggestedMonthlySalary = useMemo(() => {
     if (!selectedSchool) return 0;
     const avgAnnual = getAverageAnnualSalary(selectedSchool.intel.salary.value);
-    // Assume ~20% deduction for tax/social as a generic benchmark
     return Math.round((avgAnnual * 0.8) / 12);
   }, [selectedSchool]);
 
@@ -92,11 +451,12 @@ function ContractDecoderContent() {
     return { rent, rentLabel, food, transport, utilities, internet: Number(col.internet) || 0, mobile, totalCosts };
   }, [selectedSchool, familyStatus]);
 
-  // Financial engine uses user input OR suggested benchmark if input is empty
   const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlySalary;
+  const responsibilityAllowanceNum = parseFloat(responsibilityAllowance) || 0;
   const homeObligationsNum = parseFloat(homeObligations) || 0;
   const burnRate = (decodedCosts?.totalCosts || 0) + homeObligationsNum;
-  const savingsPotential = monthlySalaryToUse - burnRate - parseFloat(contingency);
+  const totalIncome = monthlySalaryToUse + responsibilityAllowanceNum;
+  const savingsPotential = totalIncome - burnRate - parseFloat(contingency);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -166,6 +526,20 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
+                <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Responsibility Allowance (Monthly)</Label>
+                <div className="relative">
+                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                    type="number" 
+                    placeholder="0" 
+                    value={responsibilityAllowance}
+                    onChange={(e) => setResponsibilityAllowance(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Home-Country Obligations (Monthly)</Label>
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -203,21 +577,63 @@ function ContractDecoderContent() {
               </CardHeader>
               <CardContent className="space-y-6 pt-4">
                 <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
-                    {!offeredSalary && selectedSchool && (
-                      <span className="text-[9px] font-bold text-primary/50 uppercase">Benchmark Applied</span>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <Banknote className="size-3 text-green-400" />
+                    <div className="flex flex-col">
+                      <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
+                      {!offeredSalary && selectedSchool && (
+                        <span className="text-[9px] font-bold text-primary/50 uppercase">Benchmark Applied</span>
+                      )}
+                    </div>
                   </div>
                   <span className={cn("font-bold text-lg", offeredSalary ? "text-green-400" : "text-green-400/50")}>
                     {formatCurrency(monthlySalaryToUse, currency)}
                   </span>
                 </div>
+
+                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                  <div className="flex items-center gap-2">
+                    <Medal className="size-3 text-amber-400" />
+                    <span className="text-sm text-muted-foreground font-medium">Responsibility Allowance</span>
+                  </div>
+                  <span className="font-bold text-white">
+                    {formatCurrency(responsibilityAllowanceNum, currency)}
+                  </span>
+                </div>
+
                 <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span>
+                  <div className="flex items-center gap-2">
+                    <Home className="size-3 text-sky-400" />
+                    <span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span>
+                  </div>
                   <span className="text-sm font-bold text-white">
                     {selectedSchool?.intel.housing.provided ? "School Provided" : "Teacher Pays"}
                   </span>
+                </div>
+
+                <div className="pt-4 mt-2 border-t border-white/5">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-accent/5 hover:bg-accent/10 border border-accent/20 transition-all group">
+                                <div className="flex items-center gap-2">
+                                    <Calculator className="size-3.5 text-accent group-hover:animate-pulse" />
+                                    <span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-accent">Global Tax Engine</span>
+                                </div>
+                                <Info className="size-3 text-muted-foreground group-hover:text-accent" />
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto glass border-white/10 shadow-2xl">
+                            <DialogHeader>
+                                <DialogTitle className="stamped-dossier text-white text-xl">Worldwide Salary Tax Calculator</DialogTitle>
+                                <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
+                                    Estimate regional tax signatures and mandatory deductions across major international teaching territories.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="mt-6 pt-6 border-t border-white/5">
+                                <TaxCalculatorSection />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
               </CardContent>
             </Card>
@@ -259,7 +675,7 @@ function ContractDecoderContent() {
               </div>
               
               <div className="flex-1 max-w-md text-sm text-muted-foreground leading-relaxed text-center md:text-left">
-                The gap between your income and your total costs, including a <strong>{formatCurrency(parseFloat(contingency), currency)}</strong> contingency buffer.
+                The gap between your total income and your total costs, including a <strong>{formatCurrency(parseFloat(contingency), currency)}</strong> contingency buffer.
               </div>
 
               <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild>
