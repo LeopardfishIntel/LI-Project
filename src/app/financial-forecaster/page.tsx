@@ -274,7 +274,7 @@ export default function EvaluatePage() {
           2. Contract Decoder
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
-          Move with certainty. We strip away recruitment marketing to show actual disposable income adjusted for your family size.
+          Move with certainty. We strip away recruitment marketing to show actual disposable income with family scaling and options to add your own bespoke contract offer details.
         </p>
       </div>
 
