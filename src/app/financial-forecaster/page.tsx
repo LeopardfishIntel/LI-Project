@@ -16,6 +16,10 @@ import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from 
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 
+/**
+ * Tactical Utility: Extracts average annual salary from string range
+ * e.g. "$60k - $80k" -> 70000
+ */
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
     const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
@@ -62,6 +66,14 @@ function ContractDecoderContent() {
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
 
+  // Projected Net Monthly Salary based on school's reported average
+  const suggestedMonthlySalary = useMemo(() => {
+    if (!selectedSchool) return 0;
+    const avgAnnual = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    // Assume ~20% deduction for tax/social as a generic benchmark
+    return Math.round((avgAnnual * 0.8) / 12);
+  }, [selectedSchool]);
+
   const decodedCosts = useMemo(() => {
     if (!selectedSchool) return null;
     const col = selectedSchool.costOfLiving || {};
@@ -73,17 +85,18 @@ function ContractDecoderContent() {
     const food = (Number(col.food) || 0) * multiplier;
     const transport = (Number(col.transport) || 0) * multiplier;
     const utilities = (Number(col.utilities) || 0) * multiplier;
-    const mobile = (Number(col.mobile) || 0) * (familyStatus === 'single' ? 1 : 2); // logic for 2 sims
+    const mobile = (Number(col.mobile) || 0) * (familyStatus === 'single' ? 1 : 2); 
     
     const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + (Number(col.internet) || 0) + mobile;
 
     return { rent, rentLabel, food, transport, utilities, internet: Number(col.internet) || 0, mobile, totalCosts };
   }, [selectedSchool, familyStatus]);
 
-  const monthlySalaryNum = offeredSalary ? parseFloat(offeredSalary) : (selectedSchool ? (getAverageAnnualSalary(selectedSchool.intel.salary.value) * 0.8 / 12) : 0);
+  // Financial engine uses user input OR suggested benchmark if input is empty
+  const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlySalary;
   const homeObligationsNum = parseFloat(homeObligations) || 0;
   const burnRate = (decodedCosts?.totalCosts || 0) + homeObligationsNum;
-  const savingsPotential = monthlySalaryNum - burnRate - parseFloat(contingency);
+  const savingsPotential = monthlySalaryToUse - burnRate - parseFloat(contingency);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -91,7 +104,7 @@ function ContractDecoderContent() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="bg-card/40 border-white/5 rounded-sm">
             <CardHeader>
-              <CardTitle className="text-sm stamped-dossier text-white">My Settings</CardTitle>
+              <CardTitle className="text-sm stamped-dossier text-white text-center">My Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -122,14 +135,19 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Net Monthly Salary Offer</Label>
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Net Monthly Salary Offer</Label>
+                  {suggestedMonthlySalary > 0 && !offeredSalary && (
+                    <span className="text-[9px] font-black text-accent uppercase animate-pulse">Suggested Benchmark</span>
+                  )}
+                </div>
                 <div className="grid grid-cols-4 gap-2">
                   <div className="col-span-3 relative">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
-                      className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                      className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
                       type="number" 
-                      placeholder="e.g. 5000" 
+                      placeholder={suggestedMonthlySalary > 0 ? `${suggestedMonthlySalary}` : "0"} 
                       value={offeredSalary}
                       onChange={(e) => setOfferedSalary(e.target.value)}
                     />
@@ -154,7 +172,7 @@ function ContractDecoderContent() {
                   <Input 
                     className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
                     type="number" 
-                    placeholder="e.g. 800" 
+                    placeholder="0" 
                     value={homeObligations}
                     onChange={(e) => setHomeObligations(e.target.value)}
                   />
@@ -185,9 +203,14 @@ function ContractDecoderContent() {
               </CardHeader>
               <CardContent className="space-y-6 pt-4">
                 <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
-                  <span className="font-bold text-green-400 text-lg">
-                    {formatCurrency(monthlySalaryNum, currency)}
+                  <div className="flex flex-col">
+                    <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
+                    {!offeredSalary && selectedSchool && (
+                      <span className="text-[9px] font-bold text-primary/50 uppercase">Benchmark Applied</span>
+                    )}
+                  </div>
+                  <span className={cn("font-bold text-lg", offeredSalary ? "text-green-400" : "text-green-400/50")}>
+                    {formatCurrency(monthlySalaryToUse, currency)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-2">
@@ -215,7 +238,7 @@ function ContractDecoderContent() {
                 <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
                 
                 <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center">
-                  <span className="text-xs font-black uppercase tracking-widest text-white">Burn Rate</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-white">Total Costs</span>
                   <span className="text-xl font-bold text-primary">{formatCurrency(burnRate, currency)}</span>
                 </div>
               </CardContent>
@@ -223,7 +246,7 @@ function ContractDecoderContent() {
           </div>
 
           {/* TRUE NET SAVINGS VERDICT */}
-          <Card className="border-destructive/40 bg-destructive/5 rounded-sm p-8 shadow-2xl shadow-black/40">
+          <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl shadow-black/40", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="space-y-1 text-center md:text-left">
                 <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4>
@@ -236,11 +259,11 @@ function ContractDecoderContent() {
               </div>
               
               <div className="flex-1 max-w-md text-sm text-muted-foreground leading-relaxed text-center md:text-left">
-                The gap between your income and your cost of living, including a <strong>${contingency}</strong> contingency buffer.
+                The gap between your income and your total costs, including a <strong>{formatCurrency(parseFloat(contingency), currency)}</strong> contingency buffer.
               </div>
 
               <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild>
-                <Link href="/compare">Compare Multiple Offers</Link>
+                <Link href="/compare">Compare Offers</Link>
               </Button>
             </div>
           </Card>
