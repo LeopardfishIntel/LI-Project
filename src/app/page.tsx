@@ -150,19 +150,3 @@ export default function Home() {
     </div>
   );
 }
-
-function FieldIntelligenceTrigger() {
-  return (
-    <Button 
-      size="lg" 
-      className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]"
-      onClick={() => {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('lfi:open-intel-modal'));
-        }
-      }}
-    >
-      <Binoculars className="mr-3 size-5" /> File Field Intel
-    </Button>
-  );
-}
