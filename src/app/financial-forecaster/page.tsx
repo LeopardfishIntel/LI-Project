@@ -338,6 +338,23 @@ const InteractiveCostItem = ({ icon, label, value, currency, onChange }: {
     </div>
 );
 
+const getAverageAnnualSalary = (salaryRange?: string): number => {
+    if (!salaryRange) return 0;
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
+    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+    if (!numbers) return 0;
+    
+    const scale = cleanedRange.includes('k') ? 1000 : 1;
+    
+    if (numbers.length >= 2) {
+      return ((numbers[0] + numbers[1]) / 2) * scale;
+    }
+    if (numbers.length === 1) {
+      return numbers[0] * scale;
+    }
+    return 0;
+};
+
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
@@ -473,6 +490,7 @@ function ContractDecoderContent() {
   const [offeredSalary, setOfferedSalary] = useState('');
   const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
   const [homeObligations, setHomeObligations] = useState('');
+  const [studentLoan, setStudentLoan] = useState('');
   const [contingency] = useState('200');
 
   const selectedSchool = useMemo(() => {
@@ -518,7 +536,8 @@ function ContractDecoderContent() {
   const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlySalary;
   const responsibilityAllowanceNum = parseFloat(responsibilityAllowance) || 0;
   const homeObligationsNum = parseFloat(homeObligations) || 0;
-  const burnRate = (decodedCosts?.totalCosts || 0) + homeObligationsNum;
+  const studentLoanNum = parseFloat(studentLoan) || 0;
+  const burnRate = (decodedCosts?.totalCosts || 0) + homeObligationsNum + studentLoanNum;
   const totalIncome = monthlySalaryToUse + responsibilityAllowanceNum;
   const savingsPotential = totalIncome - burnRate - parseFloat(contingency);
 
@@ -613,6 +632,40 @@ function ContractDecoderContent() {
                     placeholder="0" 
                     value={homeObligations}
                     onChange={(e) => setHomeObligations(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-tighter">Student Loan Repayment (Monthly)</Label>
+                  <div className="flex gap-2">
+                    <a 
+                      href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      UK <ExternalLink className="size-2" />
+                    </a>
+                    <a 
+                      href="https://studentaid.gov/manage-loans/repayment/plans" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      US <ExternalLink className="size-2" />
+                    </a>
+                  </div>
+                </div>
+                <div className="relative">
+                  <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                    type="number" 
+                    placeholder="0" 
+                    value={studentLoan}
+                    onChange={(e) => setStudentLoan(e.target.value)}
                   />
                 </div>
               </div>
@@ -718,6 +771,10 @@ function ContractDecoderContent() {
                 <DecodedItem label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                 <DecodedItem label="Mobile phone (2 sims)" value={decodedCosts?.mobile || 0} currency={currency} />
                 <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                
+                {studentLoanNum > 0 && (
+                  <DecodedItem icon={<GraduationCap className="size-3 text-emerald-400" />} label="Student Loan" value={studentLoanNum} currency={currency} />
+                )}
                 
                 <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center">
                   <span className="text-xs font-black uppercase tracking-widest text-white">Burn Rate</span>
