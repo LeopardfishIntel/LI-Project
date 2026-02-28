@@ -21,31 +21,34 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section: Tactical Intel with Searchlight */}
-      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
+      <section className="relative w-full h-[80vh] flex items-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.4]"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.3]"
           data-ai-hint={heroImage.imageHint}
         />
         
         {/* Animated Searchlight Overlay */}
-        <div className="absolute inset-0 pointer-events-none z-10 animate-searchlight opacity-60" 
-             style={{ background: 'radial-gradient(circle 400px at center, transparent 0%, rgba(8, 12, 24, 0.95) 100%)', backgroundSize: '200% 200%' }}></div>
+        <div className="absolute inset-0 pointer-events-none z-10 animate-searchlight opacity-40" 
+             style={{ 
+               background: 'radial-gradient(circle 400px at center, transparent 0%, rgba(8, 12, 24, 0.95) 100%)', 
+               backgroundSize: '200% 200%' 
+             }}></div>
         
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background z-20"></div>
         
         <div className="relative z-30 container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl space-y-6">
+          <div className="max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-4 h-4" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+              <span className="text-primary">Leopard</span><span className="text-white italic">fish Intel</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl leading-relaxed">
+            <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-relaxed">
               Move with certainty, not just hope. We provide <span className="text-white underline decoration-primary/50 underline-offset-4">evidence-led insight</span> for the international education sector.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -61,7 +64,7 @@ export default function Home() {
       </section>
 
       {/* Tactical Tagline Section */}
-      <section className="py-10 bg-background border-y border-white/5">
+      <section className="py-8 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase opacity-80">
               Teach Overseas: Know Before You Go

@@ -6,7 +6,7 @@ export function RedFlagRegistry() {
     {
       icon: <AlertTriangle className="w-6 h-6 text-destructive" />,
       title: "The November Trap",
-      desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have settled into their environment."
+      desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their environment."
     },
     {
       icon: <TrendingDown className="w-6 h-6 text-destructive" />,
