@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,12 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft, Milestone, Car, Stethoscope } from 'lucide-react';
+import { Calculator, Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Milestone, Globe, GraduationCap, ExternalLink, ArrowRightLeft, Home, Utensils, TramFront, Zap, Smartphone, Wifi } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
-import { Separator } from '@/components/ui/separator';
+import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
 import type { School } from '@/lib/types';
+import { Separator } from '@/components/ui/separator';
 
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
@@ -69,6 +69,23 @@ const ORDERED_CURRENCIES = [
     .sort()
 ];
 
+const getAverageAnnualSalary = (salaryRange?: string): number => {
+  if (!salaryRange) return 0;
+  const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
+  const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+  if (!numbers) return 0;
+  
+  const scale = cleanedRange.toLowerCase().includes('k') ? 1000 : 1;
+  
+  if (numbers.length >= 2) {
+    return ((numbers[0] + numbers[1]) / 2) * scale;
+  }
+  if (numbers.length === 1) {
+    return numbers[0] * scale;
+  }
+  return 0;
+};
+
 function ContractDecoderContent() {
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
@@ -101,31 +118,37 @@ function ContractDecoderContent() {
 
   const rate = CONVERSION_RATES[currency] || 1;
 
+  const suggestedMonthlyLocal = useMemo(() => {
+    if (!selectedSchool) return 0;
+    const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    // Estimate net by taking 80% (rough average for international taxes/social security)
+    const estNetMonthlyUSD = (avgAnnualUSD * 0.8) / 12;
+    return estNetMonthlyUSD * rate;
+  }, [selectedSchool, rate]);
+
   const decodedCosts = useMemo(() => {
     if (!selectedSchool) return null;
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
     
-    const adults = familyStatus === 'single' ? 1 : 2;
-    const children = familyStatus === 'family' ? 1 : familyStatus === 'family2' ? 2 : 0;
-    
-    const multiplier = familyStatus === 'single' ? 1 : familyStatus === 'couple' ? 1.6 : familyStatus === 'family' ? 2.1 : 2.5;
-
+    const multiplier = getFamilyScalingMultiplier(familyStatus);
     const { rent, label: rentLabel } = getRentForFamily(col, familyStatus);
 
-    const food = (Number(col.food) || 0) * (adults + 0.5 * children) * rate;
-    const transport = (Number(col.transport) || 0) * (adults + 0.3 * children) * rate;
+    const food = (Number(col.food) || 0) * multiplier * rate;
+    const transport = (Number(col.transport) || 0) * multiplier * rate;
     const utilities = (Number(col.utilities) || 0) * multiplier * rate;
-    const dining = (Number(col.diningSocial) || 0) * adults * rate;
     const internet = (Number(col.internet) || 0) * rate; 
     const mobile = (Number(col.mobile) || 0) * multiplier * rate; 
+    const medical = (Number(col.uncoveredMedical) || 0) * multiplier * rate;
+    const dining = (Number(col.diningSocial) || 0) * multiplier * rate;
+    
     const rentFinal = rent * rate;
     
-    const manualHomeCost = parseFloat(homeCountryCost) || 0;
-    const manualStudentLoan = parseFloat(studentLoan) || 0;
+    const manualHomeCost = (parseFloat(homeCountryCost) || 0) * rate;
+    const manualStudentLoan = (parseFloat(studentLoan) || 0) * rate;
     const contingencyVal = parseFloat(contingency) || 0;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + (manualHomeCost * rate) + (manualStudentLoan * rate) + contingencyVal;
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost + manualStudentLoan + contingencyVal;
 
     return { 
       rent: rentFinal, 
@@ -136,19 +159,21 @@ function ContractDecoderContent() {
       dining, 
       internet, 
       mobile, 
+      medical,
       totalCosts,
-      simCount: adults,
-      manualHomeCost: manualHomeCost * rate,
-      manualStudentLoan: manualStudentLoan * rate,
+      manualHomeCost,
+      manualStudentLoan,
       contingencyVal
     };
   }, [selectedSchool, familyStatus, homeCountryCost, studentLoan, rate, contingency]);
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
-    const monthlySalary = parseFloat(offeredSalary) || 0;
+    // Use user entry if provided, otherwise fallback to benchmark suggestion
+    const monthlySalary = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
+    if (isNaN(monthlySalary)) return 0;
     return monthlySalary - decodedCosts.totalCosts;
-  }, [decodedCosts, offeredSalary]);
+  }, [decodedCosts, offeredSalary, suggestedMonthlyLocal]);
 
   if (isLoadingSchools) {
     return (
@@ -160,6 +185,7 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -203,14 +229,24 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
+                  {suggestedMonthlyLocal > 0 && !offeredSalary && (
+                    <button 
+                      onClick={() => setOfferedSalary(String(Math.round(suggestedMonthlyLocal)))}
+                      className="text-[9px] font-bold text-accent hover:underline uppercase tracking-tighter animate-pulse"
+                    >
+                      Use Suggested: {Math.round(suggestedMonthlyLocal)}
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div className="col-span-2 relative">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
                       className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                       type="number" 
-                      placeholder="e.g. 5000" 
+                      placeholder={suggestedMonthlyLocal > 0 ? String(Math.round(suggestedMonthlyLocal)) : "e.g. 5000"} 
                       value={offeredSalary}
                       onChange={(e) => setOfferedSalary(e.target.value)}
                     />
@@ -228,6 +264,7 @@ function ContractDecoderContent() {
                   </Select>
                 </div>
               </div>
+              
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Home-Country Obligations (monthly)</Label>
                 <div className="relative">
@@ -280,6 +317,7 @@ function ContractDecoderContent() {
           </Card>
         </div>
 
+        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -289,6 +327,7 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
+                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -298,7 +337,12 @@ function ContractDecoderContent() {
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <span className="text-sm text-muted-foreground">Monthly Net Salary</span>
-                      <span className="font-bold text-green-400">{formatCurrency(parseFloat(offeredSalary) || 0, currency)}</span>
+                      <div className="text-right">
+                        <span className={cn("font-bold", offeredSalary ? "text-green-400" : "text-green-400/50")}>
+                          {formatCurrency(offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal, currency)}
+                        </span>
+                        {!offeredSalary && <p className="text-[9px] font-black text-primary/50 uppercase tracking-tighter">Projected Benchmark</p>}
+                      </div>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <span className="text-sm text-muted-foreground">Housing Arrangement</span>
@@ -313,6 +357,7 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
+                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -347,7 +392,7 @@ function ContractDecoderContent() {
                     />
                     <DecodedItem 
                       icon={<Smartphone className="size-3 text-pink-400" />}
-                      label={`Mobile phone (${decodedCosts?.simCount} sims)`} 
+                      label="Mobile phone" 
                       value={decodedCosts?.mobile || 0} 
                       currency={currency} 
                     />
@@ -357,6 +402,13 @@ function ContractDecoderContent() {
                       value={decodedCosts?.internet || 0} 
                       currency={currency} 
                     />
+                    <DecodedItem 
+                      icon={<Stethoscope className="size-3 text-red-400" />}
+                      label="Medical Gaps" 
+                      value={decodedCosts?.medical || 0} 
+                      currency={currency} 
+                    />
+                    
                     {decodedCosts?.manualHomeCost ? (
                       <DecodedItem 
                         icon={<Globe className="size-3 text-blue-400" />}
@@ -399,6 +451,7 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
+              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -409,10 +462,10 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
-                      This representing your potential to build wealth after basic survival costs and domestic obligations.
+                      This represents your potential to build wealth after survival costs, domestic obligations, and buffer.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
-                      <Link href="/compare">Final Verdict</Link>
+                      <Link href="/compare">Compare Dossiers</Link>
                     </Button>
                   </div>
                 </CardContent>
