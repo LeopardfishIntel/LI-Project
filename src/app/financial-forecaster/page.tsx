@@ -162,7 +162,7 @@ function ContractDecoderContent() {
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
                   Always verify if the salary quoted is 'Net' or 'Gross'.<br />
-                  Ensure this includes any Social Security, Pension, Health, Dental and Optical deductions.
+                  Check to ensure this includes all Social Security, pension, health, dental, and optical deductions.
                 </div>
               </div>
 
