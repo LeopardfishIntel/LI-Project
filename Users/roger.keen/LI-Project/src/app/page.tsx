@@ -38,7 +38,7 @@ export default function Home() {
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none">
-              LEOPARD<span className="text-accent italic">FISH INTEL</span>
+              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope.
@@ -82,7 +82,7 @@ export default function Home() {
             />
             <JourneyStep 
               num="02"
-              icon={<Calculator className="w-8 h-8 text-primary" />}
+              icon={<Target className="w-8 h-8 text-primary" />}
               title="Evaluate"
               description="The Contract Decoder. We calculate your actual take-home pay and map your genuine disposable income."
               href="/financial-forecaster"

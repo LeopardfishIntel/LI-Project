@@ -5,7 +5,7 @@ import { Inter, Montserrat } from 'next/font/google';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { Providers } from './providers';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -29,16 +29,14 @@ export default function RootLayout({
           montserrat.variable
         )}>
         <Providers>
-            <SidebarProvider>
-                <AppSidebar />
-                <SidebarInset className="bg-background">
-                    <div className="relative flex min-h-screen flex-col">
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
+            <AppSidebar />
+            <SidebarInset className="bg-background">
+                <div className="relative flex min-h-screen flex-col">
+                    <Header />
+                    <main className="flex-1">{children}</main>
+                    <Footer />
+                </div>
+            </SidebarInset>
         </Providers>
       </body>
     </html>

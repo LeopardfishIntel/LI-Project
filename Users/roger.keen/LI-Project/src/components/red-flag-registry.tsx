@@ -5,7 +5,7 @@ export function RedFlagRegistry() {
   const flags = [
     {
       icon: <AlertTriangle className="w-6 h-6 text-destructive" />,
-      title: "The October Trap",
+      title: "The November Trap",
       desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their environment."
     },
     {
