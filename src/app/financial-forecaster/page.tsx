@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -10,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Calculator, Home, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, Milestone } from 'lucide-react';
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -31,14 +31,6 @@ function ContractDecoderContent() {
   const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
   const [contingency, setContingency] = useState('200');
-  const [isTaxDialogOpen, setIsTaxDialogOpen] = useState(false);
-
-  // Handle URL signals for the tax calculator safely
-  useEffect(() => {
-    if (searchParams.get('open_tax_calculator') === 'true') {
-      setIsTaxDialogOpen(true);
-    }
-  }, [searchParams]);
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -215,7 +207,7 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
-                      This represents your potential to build wealth after basic survival costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency) || 0, currency)}</span> contingency buffer.
+                      This represents your potential to build wealth after basic survival costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency), currency)}</span> contingency buffer.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm" asChild>
                       <Link href="/compare">Compare Multiple Offers</Link>
