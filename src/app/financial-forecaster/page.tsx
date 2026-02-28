@@ -58,7 +58,7 @@ import {
 } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-// --- Supporting Logic & Data ---
+// --- Tactical Data & Logic ---
 
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
@@ -158,58 +158,53 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
 };
 
 const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    // Simplified tax logic for internal simulation
-    const taxBrackets: Record<string, any> = {
-        "United Kingdom": {
-            socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
-            filingStatuses: {
-                single: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-                married: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            },
-        },
-        "UAE": {
-            socialSecurity: { rate: 0 },
-            filingStatuses: {
-                single: { brackets: [{ upto: Infinity, rate: 0 }] },
-                married: { brackets: [{ upto: Infinity, rate: 0 }] },
-            },
-        }
-    };
-
-    const data = taxBrackets[country];
-    if (!data || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: income };
-    
-    const { socialSecurity, filingStatuses } = data;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const ssIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const ssCapped = socialSecurity.cap ? Math.min(ssIncome, socialSecurity.cap) : ssIncome;
-    socialSecurityContrib = ssCapped * (socialSecurity.rate || 0);
-
-    let incomeTaxBeforeCredit = 0;
-    let lastUpto = 0;
-    for (const bracket of brackets) {
-        if (income > lastUpto) {
-            const taxable = Math.min(income, bracket.upto) - lastUpto;
-            incomeTaxBeforeCredit += taxable * bracket.rate;
-            lastUpto = bracket.upto;
-        } else break;
-    }
-    
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit);
-    const totalTax = incomeTax + socialSecurityContrib;
-
-    return { 
-        incomeTax, 
-        socialSecurity: socialSecurityContrib, 
-        netIncome: income - totalTax, 
-        totalTax, 
-        effectiveRate: (totalTax / (income || 1)) * 100, 
-        taxCredit: 0, 
-        incomeTaxBeforeCredit 
+    // Basic tax simulation for display purposes
+    const incomeTax = country === 'UAE' ? 0 : income * 0.2;
+    return {
+        incomeTax,
+        socialSecurity: country === 'UAE' ? 0 : income * 0.05,
+        netIncome: country === 'UAE' ? income : income * 0.75,
     };
 };
+
+// --- Helper Components ---
+
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
+    <div className="flex justify-between items-center text-sm py-0.5">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
+        {isFree ? "COVERED" : formatCurrency(value, currency)}
+      </span>
+    </div>
+);
+
+const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
+    icon: React.ReactNode, 
+    label: string, 
+    value: string, 
+    currency: string, 
+    onChange: (val: string) => void 
+}) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <div className="relative w-32">
+        <Input 
+          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
+          type="number"
+          value={value}
+          placeholder="0"
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
+      </div>
+    </div>
+);
 
 const FeatureDetail = ({ icon, title, description, score, percentage }: { 
   icon: React.ReactNode, 
@@ -237,7 +232,7 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: {
   );
 };
 
-// --- Action Sections ---
+// --- Pop-up Sections ---
 
 function TaxCalculatorSection() {
     return (
@@ -311,8 +306,7 @@ function CurrencyConverterSection() {
                     </p>
                 </div>
                 <p className="text-[9px] text-muted-foreground uppercase pt-4 leading-tight opacity-60">
-                    Rates are indicative benchmark figures for strategic planning only. <br/>
-                    Verify live market spot rates before executing cross-border transfers.
+                    Indicative benchmark figures only. Verify live market spot rates before transfer.
                 </p>
             </Card>
         </div>
