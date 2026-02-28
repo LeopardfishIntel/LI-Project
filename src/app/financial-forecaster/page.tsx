@@ -9,11 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft } from 'lucide-react';
+import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft, Milestone } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
-import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 
 const CONVERSION_RATES: Record<string, number> = {
@@ -92,8 +91,9 @@ function ContractDecoderContent() {
     
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
     const manualStudentLoan = parseFloat(studentLoan) || 0;
+    const contingencyVal = parseFloat(contingency) || 0;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + (manualHomeCost * rate) + (manualStudentLoan * rate);
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + (manualHomeCost * rate) + (manualStudentLoan * rate) + contingencyVal;
 
     return { 
       rent: rentFinal, 
@@ -107,15 +107,16 @@ function ContractDecoderContent() {
       totalCosts,
       simCount: adults,
       manualHomeCost: manualHomeCost * rate,
-      manualStudentLoan: manualStudentLoan * rate
+      manualStudentLoan: manualStudentLoan * rate,
+      contingencyVal
     };
-  }, [selectedSchool, familyStatus, homeCountryCost, studentLoan, rate]);
+  }, [selectedSchool, familyStatus, homeCountryCost, studentLoan, rate, contingency]);
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
     const monthlySalary = parseFloat(offeredSalary) || 0;
-    return monthlySalary - decodedCosts.totalCosts - ((parseFloat(contingency) || 0) * rate);
-  }, [decodedCosts, offeredSalary, contingency, rate]);
+    return monthlySalary - decodedCosts.totalCosts;
+  }, [decodedCosts, offeredSalary]);
 
   if (isLoadingSchools) {
     return (
@@ -301,6 +302,23 @@ function ContractDecoderContent() {
                     {decodedCosts?.manualStudentLoan ? (
                       <DecodedItem label="Student loan" value={decodedCosts.manualStudentLoan} currency={currency} />
                     ) : null}
+                    
+                    {/* Integrated Contingency Fund Input */}
+                    <div className="flex justify-between items-center text-sm py-1">
+                      <div className="flex items-center gap-2">
+                        <Milestone className="size-3 text-purple-400" />
+                        <span className="text-muted-foreground font-medium">Contingency Fund</span>
+                      </div>
+                      <div className="relative w-24">
+                        <Input 
+                          className="h-7 text-right bg-background/30 border-white/5 pr-2 text-xs focus:ring-1 focus:ring-primary/50" 
+                          type="number"
+                          value={contingency}
+                          onChange={(e) => setContingency(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
                       <span className="text-sm uppercase tracking-tighter text-white">Burn Rate</span>
@@ -321,7 +339,7 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
-                      Representing wealth potential after basic costs and a <span className="text-white font-bold">{formatCurrency((parseFloat(contingency) || 0) * rate, currency)}</span> contingency buffer.
+                      This representing your potential to build wealth after basic survival costs and domestic obligations.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
                       <Link href="/compare">Final Verdict</Link>
@@ -330,7 +348,7 @@ function ContractDecoderContent() {
                 </CardContent>
               </Card>
 
-              {/* NEW: Currency Conversion Section */}
+              {/* Currency Conversion Section */}
               {savingsPotential !== 0 && (
                 <Card className="glass border-white/5 bg-background/20 rounded-sm">
                   <CardHeader className="py-3 px-4 border-b border-white/5">
