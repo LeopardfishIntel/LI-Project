@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -42,6 +42,8 @@ function ContractDecoderContent() {
     
     const adults = familyStatus === 'single' ? 1 : 2;
     const children = familyStatus === 'family' ? 1 : familyStatus === 'family2' ? 2 : 0;
+    
+    // Scale factor for shared living costs (Food, Transport, Utilities)
     const multiplier = familyStatus === 'single' ? 1 : familyStatus === 'couple' ? 1.6 : familyStatus === 'family' ? 2.1 : 2.5;
 
     const { rent, label: rentLabel } = getRentForFamily(col, familyStatus);
@@ -67,7 +69,7 @@ function ContractDecoderContent() {
       internet, 
       mobile, 
       totalCosts,
-      simCount: Math.round(adults * (familyStatus === 'single' ? 1 : 1.2)), // Simplified sim display logic
+      simCount: adults,
       manualHomeCost
     };
   }, [selectedSchool, familyStatus, homeCountryCost]);
@@ -211,7 +213,7 @@ function ContractDecoderContent() {
                     ) : null}
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
-                      <span className="text-sm uppercase tracking-tighter">Total Burn Rate</span>
+                      <span className="text-sm uppercase tracking-tighter">Burn Rate</span>
                       <span className="text-destructive">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                     </div>
                   </CardContent>
@@ -228,13 +230,11 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
-                      This represents your potential after basic costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency), currency)}</span> contingency buffer.
+                      Representing wealth potential after basic costs and a <span className="text-white font-bold">$200</span> contingency buffer.
                     </div>
-                    <Link href="/compare">
-                      <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs">
-                        Compare Multiple Offers
-                      </Button>
-                    </Link>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs" asChild>
+                      <Link href="/compare">Compare Multiple Offers</Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

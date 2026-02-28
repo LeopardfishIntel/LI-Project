@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/red-flag-registry';
+import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight, ShieldCheck, Binoculars } from 'lucide-react';
 import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
 
