@@ -505,7 +505,6 @@ function ContractDecoderContent() {
                   <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5">
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
-                  Always verify if the salary quoted is 'Net' or 'Gross'.<br />
                   Check to ensure this includes all Social Security, pension, health, dental, and optical deductions.
                 </div>
               </div>
@@ -805,7 +804,7 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
-                      This represents your potential to build wealth after survival costs, domestic obligations, and buffer.
+                      The gap between your income and your cost of living.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
                       <Link href="/compare">Compare Dossiers</Link>
