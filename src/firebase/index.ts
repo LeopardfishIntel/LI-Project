@@ -4,12 +4,14 @@ import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, enableIndexedDbPersistence, Firestore } from 'firebase/firestore';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 
 // Define a type for the services object
 type FirebaseServices = {
   firebaseApp: FirebaseApp;
   auth: Auth;
   firestore: Firestore;
+  storage: FirebaseStorage;
 };
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
@@ -41,6 +43,7 @@ export async function initializeFirebase(): Promise<FirebaseServices> {
 
 export async function getSdks(firebaseApp: FirebaseApp): Promise<FirebaseServices> {
   const firestore = getFirestore(firebaseApp);
+  const storage = getStorage(firebaseApp);
   
   // Enable offline persistence for Firestore.
   // This allows the app to work offline and reduces online reads.
@@ -59,7 +62,8 @@ export async function getSdks(firebaseApp: FirebaseApp): Promise<FirebaseService
   return {
     firebaseApp,
     auth: getAuth(firebaseApp),
-    firestore: firestore
+    firestore: firestore,
+    storage: storage
   };
 }
 

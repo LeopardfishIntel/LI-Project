@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -21,22 +20,36 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShieldAlert, Send, Loader2, FileUp, Sparkles } from 'lucide-react';
-import { analyseIntelStream } from '@/ai/flows/analyse-intel-flow';
-import { useFirestore, useUser, addDocumentNonBlocking } from '@/firebase';
-import { collection, serverTimestamp } from 'firebase/firestore';
+import { ShieldAlert, Send, Loader2, FileUp, CheckCircle2 } from 'lucide-react';
+import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
 
 export function FieldIntelligenceModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [category, setCategory] = useState<string>('');
   const [intel, setIntel] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [analysis, setAnalysis] = useState('');
+  const [status, setStatus] = useState('');
   
-  const { firestore } = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const readFileAsBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
   const handleTransmit = async () => {
     if (!category || !intel) {
@@ -45,45 +58,46 @@ export function FieldIntelligenceModal() {
     }
 
     setIsSubmitting(true);
-    setAnalysis('');
+    setStatus('De-encrypting and Uploading...');
 
     try {
-      // 1. Trigger Genkit Stream Analysis
-      const { stream } = await analyseIntelStream({ category, content: intel });
-      
-      let fullAnalysis = '';
-      for await (const chunk of stream) {
-        fullAnalysis += chunk.text;
-        setAnalysis(fullAnalysis);
+      let filePayload = undefined;
+      if (file) {
+        const base64 = await readFileAsBase64(file);
+        filePayload = {
+          base64,
+          name: file.name,
+          mimeType: file.type
+        };
       }
 
-      // 2. Submit to Firestore
-      if (firestore) {
-        const intelRef = collection(firestore, 'field_intel');
-        addDocumentNonBlocking(intelRef, {
-          category,
-          content: intel,
-          analysis: fullAnalysis,
-          timestamp: serverTimestamp(),
-          authorId: user?.uid || 'anonymous',
-        });
-      }
+      // 1. Trigger Tactical Transmission
+      const token = await transmitIntelligence({
+        category,
+        content: intel,
+        authorId: user?.uid,
+        file: filePayload
+      });
 
-      toast({ title: 'Intelligence Transmitted', description: 'Your report has been securely logged.' });
-      
-      // Delay closing to let the user read analysis
-      setTimeout(() => {
-        setIsOpen(false);
-        setCategory('');
-        setIntel('');
-        setAnalysis('');
-        setIsSubmitting(false);
-      }, 3000);
+      if (token === 'Success') {
+        setStatus('Transmission Confirmed.');
+        toast({ title: 'Intelligence Logged', description: 'Success Token Received.' });
+        
+        setTimeout(() => {
+          setIsOpen(false);
+          setCategory('');
+          setIntel('');
+          setFile(null);
+          setStatus('');
+          setIsSubmitting(false);
+        }, 2000);
+      }
 
     } catch (error) {
       console.error(error);
-      toast({ variant: 'destructive', title: 'Transmission Failed', description: 'Signal lost. Check uplink and retry.' });
+      toast({ variant: 'destructive', title: 'Transmission Failed', description: 'Uplink lost. Check system logs.' });
       setIsSubmitting(false);
+      setStatus('');
     }
   };
 
@@ -137,21 +151,19 @@ export function FieldIntelligenceModal() {
 
           <div className="space-y-2">
             <Label className="text-xs uppercase tracking-widest font-black text-primary/70">Attachments</Label>
-            <div className="border-2 border-dashed border-white/5 rounded-lg p-4 flex flex-col items-center justify-center bg-slate-950/20 hover:bg-slate-950/40 transition-colors cursor-pointer group">
-              <FileUp className="size-8 text-muted-foreground group-hover:text-primary mb-2 transition-colors" />
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Upload Dossier Evidence (JPEG/PDF)</span>
-              <input type="file" className="hidden" />
+            <div className="relative border-2 border-dashed border-white/5 rounded-lg p-4 flex flex-col items-center justify-center bg-slate-950/20 hover:bg-slate-950/40 transition-colors cursor-pointer group">
+              <FileUp className={cn("size-8 mb-2 transition-colors", file ? "text-primary" : "text-muted-foreground")} />
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
+                {file ? file.name : "Upload Dossier Evidence (JPEG/PDF)"}
+              </span>
+              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileChange} />
             </div>
           </div>
 
-          {analysis && (
-            <div className="p-4 rounded bg-primary/5 border border-primary/20 space-y-2">
-              <h4 className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-2">
-                <Sparkles className="size-3" /> AI Tactical Analysis
-              </h4>
-              <p className="text-xs leading-relaxed text-muted-foreground italic">
-                {analysis}
-              </p>
+          {status && (
+            <div className="flex items-center gap-2 p-3 rounded bg-primary/5 border border-primary/20">
+              <Loader2 className="size-3 animate-spin text-primary" />
+              <span className="text-[10px] font-black uppercase text-primary tracking-widest">{status}</span>
             </div>
           )}
         </div>
