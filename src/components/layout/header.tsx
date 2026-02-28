@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User, LogOut, Search, Binoculars } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,8 +25,14 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
+const navLinks = [
+  { href: "/discover", label: "Discover" },
+  { href: "/financial-forecaster", label: "Evaluate" },
+  { href: "/compare", label: "Decide" },
+  { href: "/directory", label: "Directory" },
+  { href: "/partners", label: "Partners" },
+];
 
 function UserNav() {
     const { user, isUserLoading } = useUser();
@@ -47,8 +53,8 @@ function UserNav() {
     if (!user) {
         return (
              <Link href="/login">
-                <Button variant="outline" size="icon" aria-label="Login or Sign Up">
-                    <User className="h-5 w-5" />
+                <Button variant="outline" size="sm">
+                    Login
                 </Button>
             </Link>
         )
@@ -57,8 +63,8 @@ function UserNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                    <Avatar className="h-9 w-9">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
                         <AvatarFallback>
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
@@ -88,6 +94,7 @@ const searchSchema = z.object({
 });
 
 export default function Header() {
+  const pathname = usePathname();
   const router = useRouter();
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
@@ -102,20 +109,35 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
-        <div className="flex items-center gap-4">
-            <SidebarTrigger />
-            <Link href="/" className="hidden sm:flex items-center gap-2">
-                <Binoculars className="size-6 text-primary" />
-                <span className="font-bold font-headline text-lg tracking-tighter uppercase">
-                    <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
-                </span>
-            </Link>
+    <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-2">
+            <Binoculars className="size-6 text-primary" />
+            <span className="font-bold font-headline text-lg tracking-tighter uppercase">
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+            </span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "px-4 py-2 text-sm font-bold tracking-wide transition-colors rounded-sm",
+                  pathname.startsWith(link.href) 
+                    ? "text-primary bg-primary/5" 
+                    : "text-muted-foreground hover:text-white hover:bg-white/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-end space-x-4">
-            <div className="hidden md:block flex-1 sm:flex-grow-0">
+        <div className="flex items-center gap-4">
+            <div className="hidden lg:block">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <FormField
@@ -126,7 +148,7 @@ export default function Header() {
                         <FormControl>
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10" />
+                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-64 bg-background/50 border-white/10" />
                           </div>
                         </FormControl>
                       </FormItem>
