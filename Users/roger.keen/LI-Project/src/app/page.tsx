@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section: Tactical Intel */}
-      <section className="relative w-full h-[80vh] flex items-center overflow-hidden">
+      <section className="relative w-full h-[85vh] flex items-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Tagline Section - Small, White, Tracked */}
+      {/* Tactical Tagline - White, Small, Tracked */}
       <section className="py-12 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
@@ -107,7 +107,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );
