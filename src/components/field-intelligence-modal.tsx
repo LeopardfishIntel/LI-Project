@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -299,15 +298,15 @@ export function FieldIntelligenceModal() {
               <DialogTitle className="text-primary flex items-center gap-2 stamped-dossier">
                 <ShieldAlert className="size-5" /> Field Intel Report
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground text-xs font-medium">
-                Submit <strong>anonymous</strong> intel regarding contract discrepancies, school conduct, substandard housing, or recruitment agency transparency.
+              <DialogDescription className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">
+                Transmission Mode: Secure & Encrypted
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm">
-                <p className="text-[9px] font-black uppercase text-destructive tracking-widest">Security Advisory</p>
-                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Note: All intel is analysed and checked for transformation into actionable intelligence.</p>
+                <p className="text-[9px] font-black uppercase text-destructive tracking-widest">Security Notice</p>
+                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.</p>
               </div>
 
               <div className="space-y-2">
