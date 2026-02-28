@@ -45,6 +45,19 @@ export function FieldIntelligenceModal() {
   const { user } = useUser();
   const { toast } = useToast();
 
+  // Listen for global open requests from other components (like the homepage row)
+  useEffect(() => {
+    const handleOpen = () => {
+      setIsOpen(true);
+      setIsScanning(true);
+      setTimeout(() => {
+        setIsScanning(false);
+      }, 1500);
+    };
+    window.addEventListener('lfi:open-intel-modal', handleOpen);
+    return () => window.removeEventListener('lfi:open-intel-modal', handleOpen);
+  }, []);
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isDestructing && countdown > 0) {

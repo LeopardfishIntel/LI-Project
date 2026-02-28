@@ -4,7 +4,8 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Binoculars } from 'lucide-react';
+import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -60,14 +61,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section - Repositioned directly below Hero */}
+      {/* Stats Counter Section */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Tactical Tagline Section - Sentence case and full width */}
+      {/* Tactical Tagline Section */}
       <section className="py-6 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter opacity-90 leading-none">
@@ -76,7 +77,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The Insider Journey Steps - Tightened Spacing */}
+      {/* The Insider Journey Steps */}
       <section className="py-16 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-3 gap-8">
@@ -125,7 +126,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Field Intelligence Uplink Section */}
+      <section className="py-16 bg-primary/5 border-b border-white/5">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="glass p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 rounded-sm">
+            <div className="max-w-2xl space-y-4 text-center md:text-left">
+              <h3 className="text-2xl md:text-3xl stamped-dossier text-primary flex items-center justify-center md:justify-start gap-3">
+                <Binoculars className="size-8" /> Field Intelligence Uplink
+              </h3>
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                Contribute to the collective safety of the international educator network. Help our analysts identify institutional risks by transmitting on-the-ground reports on contract discrepancies, conduct, or housing issues. All transmissions are strictly <span className="text-white font-bold underline decoration-primary underline-offset-4">anonymous</span> and processed through our secure, encrypted channel.
+              </p>
+            </div>
+            <div className="shrink-0">
+              <FieldIntelligenceTrigger />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
+  );
+}
+
+function FieldIntelligenceTrigger() {
+  return (
+    <Button 
+      size="lg" 
+      className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]"
+      onClick={() => {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('lfi:open-intel-modal'));
+        }
+      }}
+    >
+      <Binoculars className="mr-3 size-5" /> File Field Intel
+    </Button>
   );
 }
