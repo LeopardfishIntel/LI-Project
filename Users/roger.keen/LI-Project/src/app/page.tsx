@@ -41,7 +41,7 @@ export default function Home() {
               LEOPARD<span className="text-accent italic">FISH INTEL</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
-              Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4 text-sm sm:text-base">evidence-led insight</span>.
+              Move with certainty, not just hope. We replace recruitment marketing with <span className="text-white underline decoration-primary underline-offset-4">evidence-led insight</span>.
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link href="/discover">
@@ -59,10 +59,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Tagline Section */}
+      {/* Tactical Tagline Section - consolidated and whitened */}
       <section className="py-12 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-xs sm:text-sm font-bold text-white tracking-[0.3em] uppercase opacity-90">
+            <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase opacity-100">
               Teach Overseas: Know Before You Go
             </p>
         </div>
