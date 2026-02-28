@@ -24,6 +24,7 @@ import { ShieldAlert, Send, Loader2, FileUp, CheckCircle2 } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
+import { cn } from '@/lib/utils';
 
 export function FieldIntelligenceModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,7 +106,7 @@ export function FieldIntelligenceModal() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="fixed bottom-6 right-6 size-14 rounded-full shadow-glow animate-pulse bg-primary hover:bg-primary/90 text-white z-50 p-0"
+          className="fixed bottom-6 right-6 size-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white z-50 p-0"
           aria-label="Submit Field Intel"
         >
           <ShieldAlert className="size-6" />
@@ -153,7 +154,7 @@ export function FieldIntelligenceModal() {
             <Label className="text-xs uppercase tracking-widest font-black text-primary/70">Attachments</Label>
             <div className="relative border-2 border-dashed border-white/5 rounded-lg p-4 flex flex-col items-center justify-center bg-slate-950/20 hover:bg-slate-950/40 transition-colors cursor-pointer group">
               <FileUp className={cn("size-8 mb-2 transition-colors", file ? "text-primary" : "text-muted-foreground")} />
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest text-center">
                 {file ? file.name : "Upload Dossier Evidence (JPEG/PDF)"}
               </span>
               <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileChange} />
