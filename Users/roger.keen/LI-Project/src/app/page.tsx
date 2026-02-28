@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Target, GitCompare } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
