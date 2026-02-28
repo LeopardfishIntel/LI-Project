@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft, Milestone } from 'lucide-react';
+import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink, ArrowRightLeft, Milestone, Car, Stethoscope } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -62,7 +62,6 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   'New Zealand': 'NZD'
 };
 
-// Tactical Order: Priority first (USD, GBP, EUR), then alphabetical
 const ORDERED_CURRENCIES = [
   'USD', 'GBP', 'EUR',
   ...Object.keys(CONVERSION_RATES)
@@ -91,7 +90,6 @@ function ContractDecoderContent() {
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
 
-  // Automated Currency Sync Stage
   useEffect(() => {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
@@ -162,7 +160,6 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -211,12 +208,13 @@ function ContractDecoderContent() {
                   <div className="col-span-2 relative">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
-                      className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
+                      className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                       type="number" 
                       placeholder="e.g. 5000" 
                       value={offeredSalary}
                       onChange={(e) => setOfferedSalary(e.target.value)}
                     />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
                   </div>
                   <Select value={currency} disabled>
                     <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-10 opacity-100">
@@ -235,12 +233,13 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
                     placeholder="e.g. 800" 
                     value={homeCountryCost}
                     onChange={(e) => setHomeCountryCost(e.target.value)}
                   />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
                 </div>
               </div>
               <div className="space-y-2">
@@ -268,19 +267,19 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
                     placeholder="e.g. 150" 
                     value={studentLoan}
                     onChange={(e) => setStudentLoan(e.target.value)}
                   />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -290,7 +289,6 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -315,7 +313,6 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
-                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
@@ -323,32 +320,73 @@ function ContractDecoderContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <DecodedItem label={decodedCosts?.rentLabel || 'Rent'} value={selectedSchool.intel.housing.provided ? 0 : decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
-                    <DecodedItem label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
-                    <DecodedItem label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
-                    <DecodedItem label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
-                    <DecodedItem label={`Mobile phone (${decodedCosts?.simCount} sims)`} value={decodedCosts?.mobile || 0} currency={currency} />
-                    <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                    <DecodedItem 
+                      icon={<Home className="size-3 text-sky-400" />}
+                      label={decodedCosts?.rentLabel || 'Rent'} 
+                      value={selectedSchool.intel.housing.provided ? 0 : decodedCosts?.rent || 0} 
+                      currency={currency} 
+                      isFree={selectedSchool.intel.housing.provided} 
+                    />
+                    <DecodedItem 
+                      icon={<Utensils className="size-3 text-amber-400" />}
+                      label="Groceries (Scaled)" 
+                      value={decodedCosts?.food || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<TramFront className="size-3 text-rose-400" />}
+                      label="Transport (Scaled)" 
+                      value={decodedCosts?.transport || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Zap className="size-3 text-yellow-400" />}
+                      label="Utilities (Scaled)" 
+                      value={decodedCosts?.utilities || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Smartphone className="size-3 text-pink-400" />}
+                      label={`Mobile phone (${decodedCosts?.simCount} sims)`} 
+                      value={decodedCosts?.mobile || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Wifi className="size-3 text-indigo-400" />}
+                      label="Home internet (Fixed)" 
+                      value={decodedCosts?.internet || 0} 
+                      currency={currency} 
+                    />
                     {decodedCosts?.manualHomeCost ? (
-                      <DecodedItem label="Home commitments" value={decodedCosts.manualHomeCost} currency={currency} />
+                      <DecodedItem 
+                        icon={<Globe className="size-3 text-blue-400" />}
+                        label="Home commitments" 
+                        value={decodedCosts.manualHomeCost} 
+                        currency={currency} 
+                      />
                     ) : null}
                     {decodedCosts?.manualStudentLoan ? (
-                      <DecodedItem label="Student loan" value={decodedCosts.manualStudentLoan} currency={currency} />
+                      <DecodedItem 
+                        icon={<GraduationCap className="size-3 text-emerald-400" />}
+                        label="Student loan" 
+                        value={decodedCosts.manualStudentLoan} 
+                        currency={currency} 
+                      />
                     ) : null}
                     
-                    {/* Integrated Contingency Fund Input */}
                     <div className="flex justify-between items-center text-sm py-1">
                       <div className="flex items-center gap-2">
                         <Milestone className="size-3 text-purple-400" />
                         <span className="text-muted-foreground font-medium">Contingency Fund</span>
                       </div>
-                      <div className="relative w-24">
+                      <div className="relative w-32">
                         <Input 
-                          className="h-7 text-right bg-background/30 border-white/5 pr-2 text-xs focus:ring-1 focus:ring-primary/50" 
+                          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
                           type="number"
                           value={contingency}
                           onChange={(e) => setContingency(e.target.value)}
                         />
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
                       </div>
                     </div>
 
@@ -361,7 +399,6 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
-              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -381,7 +418,6 @@ function ContractDecoderContent() {
                 </CardContent>
               </Card>
 
-              {/* Currency Conversion Section */}
               {savingsPotential !== 0 && (
                 <Card className="glass border-white/5 bg-background/20 rounded-sm">
                   <CardHeader className="py-3 px-4 border-b border-white/5">
@@ -412,10 +448,13 @@ function ContractDecoderContent() {
   );
 }
 
-function DecodedItem({ label, value, currency, isFree }: { label: string, value: number, currency: string, isFree?: boolean }) {
+function DecodedItem({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) {
   return (
-    <div className="flex justify-between items-center text-sm">
-      <span className="text-muted-foreground font-medium">{label}</span>
+    <div className="flex justify-between items-center text-sm py-0.5">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
       <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
         {isFree ? "COVERED" : formatCurrency(value, currency)}
       </span>
