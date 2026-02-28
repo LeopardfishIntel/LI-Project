@@ -1,6 +1,10 @@
 import { ShieldAlert, AlertTriangle, TrendingDown, BookOpen, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+/**
+ * RedFlagRegistry Component
+ * Displays critical due diligence alerts for international educators.
+ */
 export function RedFlagRegistry() {
   const flags = [
     {
