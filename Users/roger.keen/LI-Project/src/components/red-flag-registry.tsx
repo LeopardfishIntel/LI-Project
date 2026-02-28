@@ -6,22 +6,22 @@ export function RedFlagRegistry() {
     {
       icon: <AlertTriangle className="w-6 h-6 text-destructive" />,
       title: "The October Trap",
-      desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their new environment."
+      desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their environment."
     },
     {
       icon: <TrendingDown className="w-6 h-6 text-destructive" />,
       title: "Currency Fluctuation",
-      desc: "Identifying regions where salaries are paid in local currency without a USD/GBP peg or protection clause, risking major savings loss."
+      desc: "Identifying regions where salaries are paid in local currency without protection, risking major savings loss."
     },
     {
       icon: <BookOpen className="w-6 h-6 text-destructive" />,
       title: "The Handbook Clause",
-      desc: "Warning that signing a contract often legally binds you to a 'School Handbook' which can unilaterally change your duties or hours."
+      desc: "Warning that signing a contract legally binds you to handbooks that can unilaterally change your duties."
     },
     {
       icon: <Wallet className="w-6 h-6 text-destructive" />,
-      title: "Hidden Tax/Social Security",
-      desc: "Breaking down the 'net' vs 'gross' discrepancy in regions where social security contributions are omitted from the initial marketing offer."
+      title: "Hidden Deductions",
+      desc: "Breaking down the 'net' vs 'gross' discrepancy in regions where social security is omitted from offers."
     }
   ];
 
@@ -32,7 +32,7 @@ export function RedFlagRegistry() {
           <ShieldAlert className="w-10 h-10 text-destructive" />
           <div>
             <h2 className="text-3xl md:text-4xl text-white">Red Flag Registry</h2>
-            <p className="text-muted-foreground uppercase text-xs font-bold tracking-tighter">Critical Due Diligence</p>
+            <p className="text-muted-foreground uppercase text-[10px] font-black tracking-widest">Critical Due Diligence</p>
           </div>
         </div>
 
