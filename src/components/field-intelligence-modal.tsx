@@ -23,7 +23,8 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe, ShieldCheck, Lock } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
@@ -195,7 +196,7 @@ export function FieldIntelligenceModal() {
     }
 
     if (!consent) {
-      toast({ variant: 'destructive', title: 'Consent Required', description: 'You must consent to data archival to transmit intel.' });
+      toast({ variant: 'destructive', title: 'Consent Required', description: 'You must acknowledge the Security Briefing to transmit intel.' });
       return;
     }
 
@@ -256,7 +257,7 @@ export function FieldIntelligenceModal() {
         </Button>
       </DialogTrigger>
       <DialogContent className={cn(
-        "sm:max-w-[500px] glass bg-background/95 border-primary/30 text-foreground transition-all duration-500",
+        "sm:max-w-[550px] glass bg-background/95 border-primary/30 text-foreground transition-all duration-500",
         isSmoked && "animate-smoke"
       )}>
         {isScanning ? (
@@ -306,7 +307,7 @@ export function FieldIntelligenceModal() {
             <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm">
                 <p className="text-[9px] font-black uppercase text-destructive tracking-widest">Security Advisory</p>
-                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Note: All intel is analysed and checked for transformation into actionable intelligence. Inappropriate or malicious data will be purged.</p>
+                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Note: All intel is analysed and checked for transformation into actionable intelligence.</p>
               </div>
 
               <div className="space-y-2">
@@ -434,10 +435,49 @@ export function FieldIntelligenceModal() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label className="text-[10px] uppercase tracking-widest font-black text-primary/70 flex items-center gap-2">
+                  <ShieldCheck className="size-3" /> Security Briefing & Protocol
+                </Label>
+                <div className="border border-white/10 rounded-sm bg-slate-950/40 overflow-hidden">
+                  <ScrollArea className="h-40 p-3 text-[10px] leading-relaxed text-muted-foreground font-mono">
+                    <div className="space-y-4">
+                      <section>
+                        <h4 className="text-white font-bold uppercase mb-1 underline decoration-primary">1. Submission Guidelines</h4>
+                        <p className="text-white/80 font-bold mb-2">Protocol for Field Intel (L.F.I. Reporting)</p>
+                        <ul className="list-disc list-inside space-y-1 pl-1">
+                          <li><strong>Accuracy Over Emotion</strong>: Stick to verifiable facts regarding contracts, housing, and management. Specific data points (e.g., "Salary delayed by 10 days in Oct/Nov") are prioritized.</li>
+                          <li><strong>The "GEMS" Specificity Rule</strong>: When reporting on large groups, you must identify the specific branch. Ambiguous reports will be returned for clarification.</li>
+                          <li><strong>Redaction Mandatory</strong>: Before uploading any "Evidence" (contracts, emails, handbooks), you must black out your name, passport number, and bank details.</li>
+                          <li><strong>No Defamation</strong>: Avoid naming specific individual colleagues or mid-level staff. Focus on Institutional Conduct.</li>
+                          <li><strong>Verification Status</strong>: Reports accompanied by a redacted contract or benefit summary will receive a "Verified Intel" badge.</li>
+                        </ul>
+                      </section>
+                      <section>
+                        <h4 className="text-white font-bold uppercase mb-1 underline decoration-primary">2. Privacy Disclaimer</h4>
+                        <p className="text-white/80 font-bold mb-2">Data Security & Identity Protection Notice</p>
+                        <ul className="list-disc list-inside space-y-1 pl-1">
+                          <li><strong>Identity Masking</strong>: By default, all transmissions are stripped of metadata. System usernames are never linked to public reports.</li>
+                          <li><strong>Zero-Trace Storage</strong>: We do not sell, lease, or trade teacher data to any external bodies. Information is used solely to alert the community.</li>
+                          <li><strong>Encrypted Uplink</strong>: All file uploads are stored in an isolated, encrypted bucket accessible only to L.F.I. Command analysts.</li>
+                          <li><strong>Right to Extraction</strong>: You maintain ownership of your intel. You may request a "Signal Wipe" (deletion) at any time.</li>
+                          <li><strong>Metadata Scrubbing</strong>: Our system automatically attempts to scrub EXIF data from uploaded images to prevent identification.</li>
+                        </ul>
+                      </section>
+                    </div>
+                  </ScrollArea>
+                </div>
+              </div>
+
               <div className="flex items-start space-x-2 pt-2">
-                <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} className="mt-1 border-white/20 data-[state=checked]:bg-primary" />
-                <Label htmlFor="consent" className="text-[10px] text-muted-foreground leading-tight cursor-pointer">
-                  I consent to the secure archival of this intel in Leopardfish Intel databases for the purpose of analysis and transformation into actionable intelligence.
+                <Checkbox 
+                  id="consent" 
+                  checked={consent} 
+                  onCheckedChange={(checked) => setConsent(!!checked)} 
+                  className="mt-1 border-white/20 data-[state=checked]:bg-primary" 
+                />
+                <Label htmlFor="consent" className="text-[10px] text-white font-bold uppercase tracking-tighter leading-tight cursor-pointer">
+                  I have redacted all PII and acknowledge the Security Briefing.
                 </Label>
               </div>
 
@@ -449,18 +489,18 @@ export function FieldIntelligenceModal() {
               )}
             </div>
 
-            <DialogFooter>
+            <DialogFooter className="border-t border-white/5 pt-4">
               <Button 
                 onClick={handleTransmit} 
                 disabled={isSubmitting || validationResult?.is_ambiguous || !consent}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6 disabled:opacity-50"
+                className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6 disabled:opacity-50 flex items-center justify-center gap-3"
               >
                 {isSubmitting ? (
-                  <Loader2 className="size-4 animate-spin mr-2" />
+                  <Loader2 className="size-4 animate-spin" />
                 ) : (
-                  <Send className="size-4 mr-2" />
+                  <Lock className="size-4" />
                 )}
-                Transmit Intel
+                Initialize Transmission
               </Button>
             </DialogFooter>
           </>

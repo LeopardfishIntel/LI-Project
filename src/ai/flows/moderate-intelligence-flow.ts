@@ -36,9 +36,11 @@ const prompt = ai.definePrompt({
 
 Instructions:
 1. **Check for Malice**: Identify any hate speech, malicious professional defamation, or nonsensical gibberish. Factual reports of poor school conditions are permitted, but baseless personal attacks are flagged.
-2. **PII Detection**: Scan for real names of individuals, private phone numbers, or passport/ID details. Redact them strictly using [REDACTED].
-3. **Classification**: Assign a 'confidence_score' from 0-100 based on how detailed, evidence-led, and professional the report is.
-4. **Final Verdict**: Set status to 'auto_rejected' only if the content is pure gibberish, malicious hate speech, or dangerous. Otherwise, set to 'pending' for staging.
+2. **PII Detection**: Scan for real names of individuals, private phone numbers, or email addresses. 
+3. **Redaction Protocol**: If minor PII is found, redact it using [REDACTED]. 
+4. **Auto-Rejection**: If the report contains significant unredacted PII (like a clear phone number or email address), set status to 'auto_rejected' and flag as 'PII_VIOLATION'.
+5. **Classification**: Assign a 'confidence_score' from 0-100 based on how detailed, evidence-led, and professional the report is.
+6. **Final Verdict**: Set status to 'auto_rejected' if the content is pure gibberish, malicious hate speech, or contains dangerous PII violations. Otherwise, set to 'pending' for staging.
 
 Submission Payload:
 {{{content}}}`,
