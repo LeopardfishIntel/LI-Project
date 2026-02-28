@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -89,10 +88,10 @@ export default function Home() {
                   <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">01</span>
                 </div>
                 <h3 className="text-xl stamped-dossier">Discover</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">The Nook Finder matching engine. We look for the intersection of your profile and local realities.</p>
+                <p className="text-muted-foreground leading-relaxed text-sm">The Fit Finder matching engine. We look for the intersection of your profile and local realities.</p>
               </div>
               <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
-                <Link href="/discover">Find Your Nook</Link>
+                <Link href="/discover">Find Your Fit</Link>
               </Button>
             </div>
 

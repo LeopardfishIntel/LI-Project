@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useState } from "react";
-import { findNookAction, NookFinderState } from "./actions";
+import { findFitAction, FitFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import type { School } from '@/lib/types';
 import { collection } from 'firebase/firestore';
 
-const initialState: NookFinderState = {
+const initialState: FitFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -36,15 +36,15 @@ function SubmitButton() {
       ) : (
         <>
           <Wand2 className="mr-2 h-4 w-4" />
-          Find My Nook
+          Find My Fit
         </>
       )}
     </Button>
   );
 }
 
-export default function FindYourNookPage() {
-  const [state, formAction] = useActionState(findNookAction, initialState);
+export default function FindYourFitPage() {
+  const [state, formAction] = useActionState(findFitAction, initialState);
   const [otherLicence, setOtherLicence] = useState(false);
 
   const firestore = useFirestore();
@@ -57,7 +57,7 @@ export default function FindYourNookPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find Your Nook</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find Your Fit</h1>
         <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analysing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -358,7 +358,7 @@ export default function FindYourNookPage() {
 
         {state.result && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Nooks</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Fits</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">

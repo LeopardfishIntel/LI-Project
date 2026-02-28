@@ -18,10 +18,10 @@ export function Roadmap() {
       id: '01',
       title: 'Discover',
       icon: <Target className="w-8 h-8 text-primary" />,
-      desc: "By aligning your specific expertise and personal profile with our insider data, we identify the 'nook' where you won't just fit the brief—you'll belong to the community.",
+      desc: "By aligning your specific expertise and personal profile with our insider data, we identify the 'fit' where you won't just meet the brief—you'll belong to the community.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find Your Nook'
+      label: 'Find Your Fit'
     },
     {
       id: '02',

@@ -2,15 +2,15 @@
 /**
  * @fileOverview An AI agent that recommends suitable regions and countries for teachers based on their profile and preferences.
  *
- * - findYourNook - A function that handles the teacher profile matching process.
- * - FindYourNookInput - The input type for the findYourNook function.
- * - FindYourNookOutput - The return type for the findYourNook function.
+ * - findYourFit - A function that handles the teacher profile matching process.
+ * - FindYourFitInput - The input type for the findYourFit function.
+ * - FindYourFitOutput - The return type for the findYourFit function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-const FindYourNookInputSchema = z.object({
+const FindYourFitInputSchema = z.object({
   age: z.number().describe("Your age."),
   qualifications: z
     .string()
@@ -36,9 +36,9 @@ const FindYourNookInputSchema = z.object({
   availableSchools: z.string().describe("A JSON string representing an array of available schools. Each school object has properties like id, name, country, and curriculum."),
   familyStatus: z.string().describe("Your family status (e.g., 'single', 'couple', 'family with children'). This is crucial for considering housing and dependent benefits."),
 });
-export type FindYourNookInput = z.infer<typeof FindYourNookInputSchema>;
+export type FindYourFitInput = z.infer<typeof FindYourFitInputSchema>;
 
-const FindYourNookOutputSchema = z.object({
+const FindYourFitOutputSchema = z.object({
   recommendations: z.array(
     z.object({
       name: z
@@ -57,18 +57,18 @@ const FindYourNookOutputSchema = z.object({
     })
   ),
 });
-export type FindYourNookOutput = z.infer<typeof FindYourNookOutputSchema>;
+export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 
-export async function findYourNook(
-  input: FindYourNookInput
-): Promise<FindYourNookOutput> {
-  return findYourNookFlow(input);
+export async function findYourFit(
+  input: FindYourFitInput
+): Promise<FindYourFitOutput> {
+  return findYourFitFlow(input);
 }
 
-const findYourNookPrompt = ai.definePrompt({
-  name: 'findYourNookPrompt',
-  input: { schema: FindYourNookInputSchema },
-  output: { schema: FindYourNookOutputSchema },
+const findYourFitPrompt = ai.definePrompt({
+  name: 'findYourFitPrompt',
+  input: { schema: FindYourFitInputSchema },
+  output: { schema: FindYourFitOutputSchema },
   prompt: `You are an expert career adviser specialising in international teaching opportunities. Your task is to analyse a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. Consider their preferred regions and curriculums strongly when making recommendations. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to your 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with your qualifications, experience, age, specific preferences, primary goal, and familyStatus. Do not recommend your current location. When referring to my experience, please use descriptive British English (e.g., 'a teacher with considerable experience') rather than quoting the exact number of years.
@@ -94,14 +94,14 @@ Available Schools (JSON format):
 {{{availableSchools}}}`,
 });
 
-const findYourNookFlow = ai.defineFlow(
+const findYourFitFlow = ai.defineFlow(
   {
-    name: 'findYourNookFlow',
-    inputSchema: FindYourNookInputSchema,
-    outputSchema: FindYourNookOutputSchema,
+    name: 'findYourFitFlow',
+    inputSchema: FindYourFitInputSchema,
+    outputSchema: FindYourFitOutputSchema,
   },
   async (input) => {
-    const { output } = await findYourNookPrompt(input);
+    const { output } = await findYourFitPrompt(input);
     return output!;
   }
 );

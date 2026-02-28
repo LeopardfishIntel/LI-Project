@@ -1,22 +1,21 @@
-
 "use server";
 
-import { findYourNook, FindYourNookInput, FindYourNookOutput } from "@/ai/flows/find-your-niche-flow";
+import { findYourFit, FindYourFitInput, FindYourFitOutput } from "@/ai/flows/find-your-niche-flow";
 
-export type NookFinderState = {
-  result: FindYourNookOutput | null;
+export type FitFinderState = {
+  result: FindYourFitOutput | null;
   error: string | null;
   pending: boolean;
 };
 
-export async function findNookAction(
-  prevState: NookFinderState,
+export async function findFitAction(
+  prevState: FitFinderState,
   formData: FormData
-): Promise<NookFinderState> {
+): Promise<FitFinderState> {
   
   const qualifications = formData.getAll("qualifications_cb");
-  const licenses = formData.getAll("teaching_license_cb");
-  const otherLicenseText = formData.get("teaching_license_other") as string | null;
+  const licenses = formData.getAll("teaching_licence_cb");
+  const otherLicenseText = formData.get("teaching_licence_other") as string | null;
 
   const combinedLicenses = [...licenses];
   if (otherLicenseText) {
@@ -31,7 +30,7 @@ export async function findNookAction(
   const experienceYears = formData.get("experience");
   const availableSchoolsJson = formData.get("availableSchools") as string | "[]";
 
-  const input: FindYourNookInput = {
+  const input: FindYourFitInput = {
     age: Number(formData.get("age")),
     qualifications: allQualifications,
     currentLocation: String(formData.get("currentLocation")),
@@ -63,7 +62,7 @@ export async function findNookAction(
   }
 
   try {
-    const result = await findYourNook(input);
+    const result = await findYourFit(input);
     return { result, error: null, pending: false };
   } catch (e: any) {
     console.error(e);
