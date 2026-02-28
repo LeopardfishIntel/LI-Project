@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Tagline - White, Small, Tracked */}
+      {/* Tactical Tagline Section - Small, White, Tracked */}
       <section className="py-12 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
