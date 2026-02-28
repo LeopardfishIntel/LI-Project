@@ -46,7 +46,7 @@ export default function Home() {
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Perspectives
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span>fish Intel</span>
+              <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-tight">
               Move with certainty, not just hope. We provide <span className="text-white underline decoration-primary/50 underline-offset-4">evidence-led insight</span> for the international education sector.

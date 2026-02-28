@@ -11,13 +11,13 @@
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
-    --primary: 25 95% 53%; /* Signal Orange */
+    --primary: 25 95% 53%; /* Signal Orange - Core Primary */
     --primary-foreground: 210 40% 98%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 215 16% 47%;
     --muted-foreground: 215 16% 78%;
-    --accent: 199 90% 55%; /* Azure Blue */
+    --accent: 199 90% 55%; /* Azure Blue - Core Secondary/Accent */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
