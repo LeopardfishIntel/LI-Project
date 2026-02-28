@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Home, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, Milestone, Globe } from 'lucide-react';
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -27,7 +25,7 @@ function ContractDecoderContent() {
 
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
-  const [currency, setCurrency] = useState('USD');
+  const [currency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
   const [contingency, setContingency] = useState('200');
   const [homeCountryCost, setHomeCountryCost] = useState('');
@@ -39,10 +37,8 @@ function ContractDecoderContent() {
 
   const decodedCosts = useMemo(() => {
     if (!selectedSchool) return null;
-    const { costOfLiving, intel } = selectedSchool;
-    
-    // Safety check for missing CoL data
-    const col = costOfLiving || {};
+    const col = selectedSchool.costOfLiving || {};
+    const { intel } = selectedSchool;
     
     const adults = familyStatus === 'single' ? 1 : 2;
     const children = familyStatus === 'family' ? 1 : familyStatus === 'family2' ? 2 : 0;
@@ -54,8 +50,8 @@ function ContractDecoderContent() {
     const transport = (Number(col.transport) || 0) * (adults + 0.3 * children);
     const utilities = (Number(col.utilities) || 0) * multiplier;
     const dining = (Number(col.diningSocial) || 0) * adults;
-    const internet = Number(col.internet) || 0; // Fixed cost
-    const mobile = (Number(col.mobile) || 0) * multiplier; // Scaled cost
+    const internet = Number(col.internet) || 0; 
+    const mobile = (Number(col.mobile) || 0) * multiplier; 
     
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
     
@@ -71,7 +67,7 @@ function ContractDecoderContent() {
       internet, 
       mobile, 
       totalCosts,
-      simCount: adults,
+      simCount: Math.round(adults * (familyStatus === 'single' ? 1 : 1.2)), // Simplified sim display logic
       manualHomeCost
     };
   }, [selectedSchool, familyStatus, homeCountryCost]);
@@ -92,7 +88,6 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -118,9 +113,9 @@ function ContractDecoderContent() {
                   </SelectTrigger>
                   <SelectContent className="glass">
                     <SelectItem value="single">Single</SelectItem>
-                    <SelectItem value="couple">Couple (Scaling 1.6x)</SelectItem>
-                    <SelectItem value="family">Family 2+1 (Scaling 2.1x)</SelectItem>
-                    <SelectItem value="family2">Family 2+2 (Scaling 2.5x)</SelectItem>
+                    <SelectItem value="couple">Couple</SelectItem>
+                    <SelectItem value="family">Family 2+1</SelectItem>
+                    <SelectItem value="family2">Family 2+2</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -149,7 +144,6 @@ function ContractDecoderContent() {
                     onChange={(e) => setHomeCountryCost(e.target.value)}
                   />
                 </div>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Ongoing debts, mortgages, or storage.</p>
               </div>
             </CardContent>
           </Card>
@@ -161,12 +155,11 @@ function ContractDecoderContent() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">Always verify if the salary quoted is 'Net' (take-home) or 'Gross'. In many regions, social security can take up to 15% of the headline figure.</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Always verify if the salary quoted is 'Net' or 'Gross'. Social security can take up to 15%.</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -176,7 +169,6 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -201,7 +193,6 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
-                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -227,7 +218,6 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
-              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -238,7 +228,7 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
-                      This represents your potential to build wealth after basic survival costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency), currency)}</span> contingency buffer.
+                      This represents your potential after basic costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency), currency)}</span> contingency buffer.
                     </div>
                     <Link href="/compare">
                       <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs">

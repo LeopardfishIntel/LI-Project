@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe, ShieldCheck, Lock } from 'lucide-react';
+import { ShieldAlert, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe, ShieldCheck, Lock } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
@@ -57,7 +57,7 @@ export function FieldIntelligenceModal() {
     school_id?: string;
   } | null>(null);
 
-  // Mission Impossible States
+  // Success/Destruct States
   const [isDestructing, setIsDestructing] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [isSmoked, setIsSmoked] = useState(false);
@@ -66,7 +66,6 @@ export function FieldIntelligenceModal() {
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  // Master Registry Cross-Reference
   const schoolsQuery = useMemoFirebase(
     () => (firestore ? collection(firestore, 'schools') : null),
     [firestore]
@@ -77,9 +76,7 @@ export function FieldIntelligenceModal() {
     const handleOpen = () => {
       setIsOpen(true);
       setIsScanning(true);
-      setTimeout(() => {
-        setIsScanning(false);
-      }, 1500);
+      setTimeout(() => setIsScanning(false), 1500);
     };
     window.addEventListener('lfi:open-intel-modal', handleOpen);
     return () => window.removeEventListener('lfi:open-intel-modal', handleOpen);
@@ -116,40 +113,9 @@ export function FieldIntelligenceModal() {
     setValidationStatus('');
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (open) {
-      setIsOpen(true);
-      setIsScanning(true);
-      setTimeout(() => {
-        setIsScanning(false);
-      }, 1500);
-    } else {
-      setIsOpen(false);
-    }
-  };
-
   const handleVerifySchool = async () => {
     if (!organisation || !location) return;
-    
     setIsValidating(true);
-    setValidationResult(null);
-    
-    const statuses = [
-      'Accessing Global Education Registry...',
-      `Filtering signatures for ${organisation}...`,
-      'Cross-referencing Ministry of Education records...',
-    ];
-
-    let statusIdx = 0;
-    const interval = setInterval(() => {
-      if (statusIdx < statuses.length) {
-        setValidationStatus(statuses[statusIdx]);
-        statusIdx++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 600);
-
     try {
       const registry = schoolsRegistry?.map(s => ({ id: s.id, name: s.name })) || [];
       const result = await disambiguateSchool({
@@ -157,104 +123,46 @@ export function FieldIntelligenceModal() {
         user_input_city: location,
         verified_registry: registry,
       });
-      
-      clearInterval(interval);
       setValidationResult(result);
       setValidationStatus(result.message_to_user);
-      
       if (!result.is_ambiguous && !result.is_new_entity && result.canonical_name !== organisation) {
         setOrganisation(result.canonical_name);
       }
     } catch (error) {
       console.error('Validation Error:', error);
-      setValidationStatus('Registry uplink timed out.');
     } finally {
       setIsValidating(false);
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const readFileAsBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
   const handleTransmit = async () => {
     if (!category || !organisation || !location || !intel) {
-      toast({ variant: 'destructive', title: 'Input Required', description: 'Organisation, Location, Category, and Content are mandatory for transmission.' });
+      toast({ variant: 'destructive', title: 'Input Required', description: 'Mandatory fields missing.' });
       return;
     }
-
-    if (!consent) {
-      toast({ variant: 'destructive', title: 'Consent Required', description: 'You must acknowledge the Security Briefing to transmit intel.' });
-      return;
-    }
-
-    if (validationResult?.is_new_entity && !websiteUrl) {
-      toast({ variant: 'destructive', title: 'URL Required', description: 'Please provide the school\'s official website URL for agent verification.' });
-      return;
-    }
+    if (!consent) return;
 
     setIsSubmitting(true);
-    setStatus('De-encrypting and Uploading...');
+    setStatus('Transmitting...');
 
     try {
-      let filePayload = undefined;
-      if (file) {
-        const base64 = await readFileAsBase64(file);
-        filePayload = {
-          base64,
-          name: file.name,
-          mimeType: file.type
-        };
-      }
-
-      const token = await transmitIntelligence({
+      await transmitIntelligence({
         category,
         organisation,
         location,
         content: intel,
         authorId: user?.uid,
         authorEmail: user?.email || undefined,
-        file: filePayload
       } as any);
-
-      if (token === 'Success') {
-        setIsDestructing(true);
-      }
-
+      setIsDestructing(true);
     } catch (error) {
       console.error(error);
-      toast({ variant: 'destructive', title: 'Transmission Failed', description: 'Uplink lost. Check system logs.' });
       setIsSubmitting(false);
-      setStatus('');
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button 
-          className="fixed bottom-6 right-6 h-14 w-14 hover:w-44 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white z-50 p-0 transition-all duration-300 group overflow-hidden border-2 border-white/10 flex items-center justify-center"
-          aria-label="File Field Intel"
-        >
-          <div className="flex items-center justify-center">
-            <Binoculars className="size-8 shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-            <span className="max-w-0 group-hover:max-max-w-xs group-hover:ml-3 opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden whitespace-nowrap font-black uppercase tracking-widest text-[10px]">
-              File Intel
-            </span>
-          </div>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className={cn(
         "sm:max-w-[550px] glass bg-background/95 border-primary/30 text-foreground transition-all duration-500",
         isSmoked && "animate-smoke"
@@ -262,238 +170,83 @@ export function FieldIntelligenceModal() {
         {isScanning ? (
           <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
             <Loader2 className="size-12 text-primary animate-spin" />
-            <div className="space-y-2">
-              <DialogTitle className="text-xl font-bold text-primary animate-pulse">
-                Scanning for Secure Uplink...
-              </DialogTitle>
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-                Establishing Encrypted Tunnel
-              </p>
-            </div>
+            <DialogTitle className="text-xl font-bold text-primary">Establishing Secure Uplink...</DialogTitle>
           </div>
         ) : isDestructing ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
-            <DialogTitle className="text-2xl font-black stamped-dossier text-primary animate-glitch">
-              TRANSMISSION COMPLETE
-            </DialogTitle>
-            <div className="space-y-2">
-              <p className="text-muted-foreground text-sm font-mono tracking-tighter">
-                SECURE ARCHIVAL VERIFIED.
-              </p>
-              <p className="text-white font-black text-xl animate-glitch">
-                THIS CONFIRMATION WILL SELF-DESTRUCT IN {countdown}...
-              </p>
-            </div>
-            <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary transition-all duration-1000 ease-linear" 
-                style={{ width: `${(countdown / 5) * 100}%` }}
-              />
-            </div>
+            <DialogTitle className="text-2xl font-black stamped-dossier text-primary">TRANSMISSION COMPLETE</DialogTitle>
+            <p className="text-white font-black text-xl">SELF-DESTRUCT IN {countdown}...</p>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl">
-                <ShieldAlert className="size-5" /> Field report
+              <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
+                Field report
               </DialogTitle>
-              <DialogDescription className="text-muted-foreground text-[10px] leading-tight mt-2">
-                Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
+              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed">
+                <strong>Security notice:</strong> Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
-              <div className="space-y-2">
-                <Label htmlFor="location" className="text-[10px] font-bold text-primary/70">Location (City/Country)</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                  <Input 
-                    id="location" 
-                    placeholder="e.g., Dubai, UAE" 
-                    className="pl-10 bg-slate-950/50 border-white/10 focus:border-primary/50"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                  />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase">Location</Label>
+                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10" value={location} onChange={(e) => setLocation(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 uppercase">Classification</Label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="bg-slate-950/50 border-white/10">
+                      <SelectValue placeholder="Category..." />
+                    </SelectTrigger>
+                    <SelectContent className="glass">
+                      <SelectItem value="Contract">Contract</SelectItem>
+                      <SelectItem value="Salary">Salary</SelectItem>
+                      <SelectItem value="Housing">Housing</SelectItem>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70">Organisation</Label>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      id="organisation" 
-                      placeholder="School or Agency Name..." 
-                      className={cn(
-                        "pl-10 bg-slate-950/50 border-white/10 focus:border-primary/50",
-                        validationResult?.is_ambiguous && "border-amber-500/50"
-                      )}
-                      value={organisation}
-                      onChange={(e) => setOrganisation(e.target.value)}
-                      onBlur={handleVerifySchool}
-                    />
-                  </div>
-                  {isValidating && <Loader2 className="size-4 animate-spin self-center text-primary" />}
-                </div>
-                
-                {validationStatus && (
-                  <div className={cn(
-                    "flex items-center gap-2 p-2 rounded text-[9px] font-bold uppercase tracking-widest border",
-                    isValidating ? "bg-primary/5 border-primary/20 text-primary" : 
-                    validationResult?.is_ambiguous || validationResult?.is_new_entity ? "bg-amber-500/10 border-amber-500/20 text-amber-500" :
-                    "bg-green-500/5 border-green-500/20 text-green-500"
-                  )}>
-                    {isValidating ? <Loader2 className="size-3 animate-spin" /> : 
-                     validationResult?.is_ambiguous || validationResult?.is_new_entity ? <AlertCircle className="size-3" /> : 
-                     <CheckCircle2 className="size-3" />}
-                    <span>{validationStatus}</span>
-                  </div>
-                )}
-
-                {validationResult?.is_ambiguous && (
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {validationResult.suggestions.map((s, i) => (
-                      <Button 
-                        key={i} 
-                        variant="outline" 
-                        size="sm" 
-                        className="h-6 text-[9px] py-0 px-2 border-amber-500/30 hover:bg-amber-500/20"
-                        onClick={() => {
-                          setOrganisation(s);
-                          setValidationResult(null);
-                          setValidationStatus(`Signature confirmed: ${s}`);
-                        }}
-                      >
-                        {s}
-                      </Button>
-                    ))}
-                  </div>
-                )}
-
-                {validationResult?.is_new_entity && (
-                  <div className="space-y-2 pt-2 animate-in slide-in-from-top-2 duration-300">
-                    <Label htmlFor="websiteUrl" className="text-[10px] font-bold text-amber-500/70">Official Website URL</Label>
-                    <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                      <Input 
-                        id="websiteUrl" 
-                        placeholder="https://www.schoolname.com" 
-                        className="pl-10 bg-slate-950/50 border-amber-500/20 focus:border-amber-500/50"
-                        value={websiteUrl}
-                        onChange={(e) => setWebsiteUrl(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
+                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 uppercase">Organisation</Label>
+                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
+                {validationStatus && <p className="text-[9px] font-bold uppercase tracking-widest text-amber-500">{validationStatus}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="category" className="text-[10px] font-bold text-primary/70">Report classification</Label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger id="category" className="bg-slate-950/50 border-white/10">
-                    <SelectValue placeholder="Select high-priority category..." />
-                  </SelectTrigger>
-                  <SelectContent className="glass">
-                    <SelectItem value="Contract Red Flag">Contract Red Flag</SelectItem>
-                    <SelectItem value="Salary Discrepancy">Salary Discrepancy</SelectItem>
-                    <SelectItem value="Living Cost Alert">Living Cost Alert</SelectItem>
-                    <SelectItem value="Admin Conduct">Admin Conduct</SelectItem>
-                    <SelectItem value="Housing Standards">Housing Standards</SelectItem>
-                    <SelectItem value="Recruitment Transparency">Recruitment Transparency</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase">Narrative</Label>
+                <Textarea id="intel" placeholder="Transmitting payload..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70">Narrative</Label>
-                <Textarea 
-                  id="intel" 
-                  placeholder="Provide specific, evidence-led details regarding your experience..." 
-                  className="min-h-[100px] bg-slate-950/50 border-white/10 focus:border-primary/50 text-sm"
-                  value={intel}
-                  onChange={(e) => setIntel(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70">Evidence (Attachments)</Label>
-                <div className="relative border-2 border-dashed border-white/5 rounded p-3 flex flex-col items-center justify-center bg-slate-950/20 hover:bg-slate-950/40 transition-colors cursor-pointer group">
-                  <FileUp className={cn("size-6 mb-1 transition-colors", file ? "text-primary" : "text-muted-foreground")} />
-                  <span className="text-[9px] text-muted-foreground uppercase tracking-widest text-center">
-                    {file ? file.name : "Upload Dossier Evidence (JPEG/PDF)"}
-                  </span>
-                  <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleFileChange} />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 flex items-center gap-2">
-                  <ShieldCheck className="size-3" /> Security briefing & protocol
+                <Label className="text-[10px] font-bold text-primary/70 uppercase flex items-center gap-2">
+                  <ShieldCheck className="size-3" /> Security briefing
                 </Label>
-                <div className="border border-white/10 rounded-sm bg-slate-950/40 overflow-hidden">
-                  <ScrollArea className="h-40 p-3 text-[10px] leading-relaxed text-muted-foreground font-mono">
-                    <div className="space-y-4">
-                      <section>
-                        <h4 className="text-white font-bold uppercase mb-1 underline decoration-primary">1. Submission Guidelines</h4>
-                        <p className="text-white/80 font-bold mb-2">Protocol for Field Intel (L.F.I. Reporting)</p>
-                        <ul className="list-disc list-inside space-y-1 pl-1">
-                          <li><strong>Accuracy Over Emotion</strong>: Stick to verifiable facts regarding contracts, housing, and management. Specific data points (e.g., "Salary delayed by 10 days in Oct/Nov") are prioritized.</li>
-                          <li><strong>The "GEMS" Specificity Rule</strong>: When reporting on large groups, you must identify the specific branch. Ambiguous reports will be returned for clarification.</li>
-                          <li><strong>Redaction Mandatory</strong>: Before uploading any "Evidence" (contracts, emails, handbooks), you must black out your name, passport number, and bank details.</li>
-                          <li><strong>No Defamation</strong>: Avoid naming specific individual colleagues or mid-level staff. Focus on Institutional Conduct.</li>
-                          <li><strong>Verification Status</strong>: Reports accompanied by a redacted contract or benefit summary will receive a "Verified Intel" badge.</li>
-                        </ul>
-                      </section>
-                      <section>
-                        <h4 className="text-white font-bold uppercase mb-1 underline decoration-primary">2. Privacy Disclaimer</h4>
-                        <p className="text-white/80 font-bold mb-2">Data Security & Identity Protection Notice</p>
-                        <ul className="list-disc list-inside space-y-1 pl-1">
-                          <li><strong>Identity Masking</strong>: By default, all transmissions are stripped of metadata. System usernames are never linked to public reports.</li>
-                          <li><strong>Zero-Trace Storage</strong>: We do not sell, lease, or trade teacher data to any external bodies. Information is used solely to alert the community.</li>
-                          <li><strong>Encrypted Uplink</strong>: All file uploads are stored in an isolated, encrypted bucket accessible only to L.F.I. Command analysts.</li>
-                          <li><strong>Right to Extraction</strong>: You maintain ownership of your intel. You may request a "Signal Wipe" (deletion) at any time.</li>
-                          <li><strong>Metadata Scrubbing</strong>: Our system automatically attempts to scrub EXIF data from uploaded images to prevent identification.</li>
-                        </ul>
-                      </section>
-                    </div>
-                  </ScrollArea>
-                </div>
+                <ScrollArea className="h-32 p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
+                  <p className="text-white font-bold mb-2">Protocol for Field Intel (L.F.I. Reporting)</p>
+                  <p>1. Accuracy Over Emotion: Stick to verifiable facts.</p>
+                  <p>2. Redaction Mandatory: Black out all PII in attachments.</p>
+                  <p>3. Institutional Conduct focus: Avoid personal naming.</p>
+                  <p className="mt-4 text-white font-bold mb-2">Privacy Disclaimer</p>
+                  <p>Identity Masking is default. We do not trade teacher data. All transmissions are scrubbed of identifying metadata.</p>
+                </ScrollArea>
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
-                <Checkbox 
-                  id="consent" 
-                  checked={consent} 
-                  onCheckedChange={(checked) => setConsent(!!checked)} 
-                  className="mt-1 border-white/20 data-[state=checked]:bg-primary" 
-                />
-                <Label htmlFor="consent" className="text-[10px] text-white font-bold uppercase tracking-tighter leading-tight cursor-pointer">
+                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1" />
+                <Label htmlFor="consent" className="text-[10px] text-white font-bold uppercase tracking-tighter cursor-pointer">
                   I have redacted all PII and acknowledge the Security Briefing.
                 </Label>
               </div>
-
-              {status && (
-                <div className="flex items-center gap-2 p-2 rounded bg-primary/5 border border-primary/20">
-                  <Loader2 className="size-3 animate-spin text-primary" />
-                  <span className="text-[9px] font-black uppercase text-primary tracking-widest">{status}</span>
-                </div>
-              )}
             </div>
 
             <DialogFooter className="border-t border-white/5 pt-4">
-              <Button 
-                onClick={handleTransmit} 
-                disabled={isSubmitting || validationResult?.is_ambiguous || !consent}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6 disabled:opacity-50 flex items-center justify-center gap-3"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Lock className="size-4" />
-                )}
+              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6">
+                {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
                 Submit
               </Button>
             </DialogFooter>

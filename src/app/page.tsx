@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ShieldCheck, ArrowRight, Binoculars } from 'lucide-react';
+import { RedFlagRegistry } from '@/red-flag-registry';
+import { ArrowRight, ShieldCheck, Binoculars } from 'lucide-react';
 import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
 
 const getImage = (id: string) => {
@@ -135,7 +135,7 @@ export default function Home() {
                 <Binoculars className="size-8" /> Field Intel Uplink
               </h3>
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-                Contribute to the collective safety of the international educator network. Help our analysts identify institutional risks by transmitting on-the-ground reports on contract discrepancies, conduct, or housing issues. All transmissions are strictly <span className="text-white font-bold underline decoration-primary underline-offset-4">anonymous</span> and processed through our secure, encrypted channel.
+                Contribute to the collective safety of the international educator network. Help our analysts identify institutional risks by transmitting on-the-ground reports. All transmissions are strictly <span className="text-white font-bold underline decoration-primary underline-offset-4">anonymous</span>.
               </p>
             </div>
             <div className="shrink-0">
