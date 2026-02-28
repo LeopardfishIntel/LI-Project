@@ -138,6 +138,84 @@ const countrySpecificData: Record<string, any> = {
     }
 };
 
+const getAverageAnnualSalary = (salaryRange?: string): number => {
+    if (!salaryRange) return 0;
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
+    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+    if (!numbers) return 0;
+    
+    const scale = cleanedRange.includes('k') ? 1000 : 1;
+    
+    if (numbers.length >= 2) {
+      return ((numbers[0] + numbers[1]) / 2) * scale;
+    }
+    if (numbers.length === 1) {
+      return numbers[0] * scale;
+    }
+    return 0;
+};
+
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    const data = (taxData as any)[country];
+    if (!data || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: income };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = data;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const ssIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const ssCapped = socialSecurity.cap ? Math.min(ssIncome, socialSecurity.cap) : ssIncome;
+    socialSecurityContrib = ssCapped * socialSecurity.rate;
+
+    let incomeForTax = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTax = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTax > lastUpto) {
+            const taxable = Math.min(incomeForTax, bracket.upto) - lastUpto;
+            incomeTaxBeforeCredit += taxable * bracket.rate;
+            lastUpto = bracket.upto;
+        } else break;
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+    const totalTax = incomeTax + socialSecurityContrib;
+
+    return { 
+        incomeTax, 
+        socialSecurity: socialSecurityContrib, 
+        netIncome: income - totalTax, 
+        totalTax, 
+        effectiveRate: (totalTax / income) * 100, 
+        taxCredit, 
+        incomeTaxBeforeCredit 
+    };
+};
+
+const taxData = {
+    "UAE": {
+        currency: "AED",
+        socialSecurity: { rate: 0 },
+        filingStatuses: {
+            single: { brackets: [{ upto: Infinity, rate: 0 }] },
+            married: { brackets: [{ upto: Infinity, rate: 0 }] },
+        },
+    },
+    "United Kingdom": {
+        currency: "GBP",
+        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
+        filingStatuses: {
+            single: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+            married: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+        },
+    }
+};
+
 const FeatureDetail = ({ icon, title, description, score, percentage }: { 
   icon: React.ReactNode, 
   title: string, 
@@ -298,15 +376,7 @@ function ContractDecoderContent() {
 
   const countryIntel = useMemo(() => {
     if (!selectedSchool) return null;
-    const data = countrySpecificData[selectedSchool.country] || countrySpecificData['United Kingdom'];
-    
-    // Inject school-specific context if needed
-    const customized = { ...data };
-    if (selectedSchool.name.includes('ACS Cobham')) {
-        customized.utilities = { ...data.utilities, text: `AC in summer or heating in winter can lead to high utility bills in Cobham.` };
-    }
-    
-    return customized;
+    return countrySpecificData[selectedSchool.country] || countrySpecificData['United Kingdom'];
   }, [selectedSchool]);
 
   return (
