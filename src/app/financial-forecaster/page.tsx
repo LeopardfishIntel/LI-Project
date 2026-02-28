@@ -102,6 +102,14 @@ function ContractDecoderContent() {
     return monthlySalary - decodedCosts.totalCosts - ((parseFloat(contingency) || 0) * rate);
   }, [decodedCosts, offeredSalary, contingency, rate]);
 
+  if (isLoadingSchools) {
+    return (
+      <div className="flex justify-center items-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
@@ -137,13 +145,14 @@ function ContractDecoderContent() {
               </div>
 
               {/* DUE DILIGENCE IN-LINE */}
-              <div className="bg-destructive/10 border border-destructive/20 p-2 rounded-sm mt-4">
-                <p className="text-[10px] text-muted-foreground leading-tight">
-                  <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1">
+              <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
+                <div className="text-[10px] text-muted-foreground leading-relaxed">
+                  <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5">
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
-                  Always verify if the salary quoted is 'Net' or 'Gross'. Ensure this includes Social security /Health Insurance deductions. Is Dentist and Optician included?
-                </p>
+                  Always verify if the salary quoted is 'Net' or 'Gross'.<br />
+                  Ensure this includes Social security /Health Insurance deductions. Is Dentist and Optician included?
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -152,7 +161,7 @@ function ContractDecoderContent() {
                   <div className="col-span-2 relative">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
-                      className="pl-10 bg-background/50 border-white/10 rounded-sm" 
+                      className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
                       type="number" 
                       placeholder="e.g. 5000" 
                       value={offeredSalary}
@@ -160,7 +169,7 @@ function ContractDecoderContent() {
                     />
                   </div>
                   <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -176,7 +185,7 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
+                    className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
                     placeholder="e.g. 800" 
                     value={homeCountryCost}
@@ -199,7 +208,7 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
+                    className="pl-10 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
                     placeholder="e.g. 150" 
                     value={studentLoan}
@@ -222,7 +231,7 @@ function ContractDecoderContent() {
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
+                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
                       <Award className="text-primary w-5 h-5" /> Income & Benefits
                     </CardTitle>
                   </CardHeader>
@@ -246,7 +255,7 @@ function ContractDecoderContent() {
 
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
+                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
                       <Users className="text-destructive w-5 h-5" /> Estimated Costs
                     </CardTitle>
                   </CardHeader>
@@ -281,10 +290,10 @@ function ContractDecoderContent() {
                         {formatCurrency(savingsPotential, currency)}<span className="text-lg">/mo</span>
                       </p>
                     </div>
-                    <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
+                    <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
                       Representing wealth potential after basic costs and a <span className="text-white font-bold">{formatCurrency((parseFloat(contingency) || 0) * rate, currency)}</span> contingency buffer.
                     </div>
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs" asChild>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs shadow-lg shadow-primary/20" asChild>
                       <Link href="/compare">Compare Multiple Offers</Link>
                     </Button>
                   </div>
@@ -300,8 +309,8 @@ function ContractDecoderContent() {
 function DecodedItem({ label, value, currency, isFree }: { label: string, value: number, currency: string, isFree?: boolean }) {
   return (
     <div className="flex justify-between items-center text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className={cn("font-medium", isFree ? "text-green-400" : "")}>
+      <span className="text-muted-foreground font-medium">{label}</span>
+      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
         {isFree ? "COVERED" : formatCurrency(value, currency)}
       </span>
     </div>
