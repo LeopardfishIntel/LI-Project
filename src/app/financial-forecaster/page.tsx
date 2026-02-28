@@ -180,6 +180,47 @@ const ORDERED_CURRENCIES = [
     .sort()
 ];
 
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    const countryData = taxData[country];
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
+    if (socialSecurity.rate > 0) {
+        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
+    }
+
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastBracketUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
+            lastBracketUpto = bracket.upto;
+        } else {
+            break;
+        }
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+
+    const totalTax = incomeTax + socialSecurityContrib;
+    const netIncome = income - totalTax;
+    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
+
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
+};
+
 const getAverageAnnualSalary = (salaryRange?: string): number => {
   if (!salaryRange) return 0;
   const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
@@ -236,7 +277,7 @@ function TaxCalculatorSection() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="salary">Gross Annual Salary</Label>
-                    <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className="bg-background/50 border-white/10" />
+                    <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className="bg-background/50 border-white/10 text-right" />
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="currency">Salary Currency</Label>
@@ -319,10 +360,15 @@ function TaxCalculatorSection() {
 }
 
 // --- Cost Breakdown Component ---
-const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
-    <div className="flex justify-between items-center">
-        <span className="flex items-center text-sm text-muted-foreground">{icon} {label}</span>
-        <span className="text-sm font-bold text-white">{formatCurrency(value, currency)}</span>
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
+    <div className="flex justify-between items-center text-sm py-0.5">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
+        {isFree ? "COVERED" : formatCurrency(value, currency)}
+      </span>
     </div>
 );
 
@@ -475,7 +521,7 @@ function ContractDecoderContent() {
                   <div className="col-span-2 relative">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
-                      className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
+                      className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
                       type="number" 
                       placeholder={suggestedMonthlyLocal > 0 ? String(Math.round(suggestedMonthlyLocal)) : "e.g. 5000"} 
                       value={offeredSalary}
@@ -501,7 +547,7 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
                     type="number" 
                     placeholder="0" 
                     value={responsibilityAllowance}
@@ -516,7 +562,7 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
                     type="number" 
                     placeholder="0" 
                     value={homeCountryCost}
@@ -550,7 +596,7 @@ function ContractDecoderContent() {
                 <div className="relative">
                   <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
                     type="number" 
                     placeholder="0" 
                     value={studentLoan}
@@ -786,20 +832,6 @@ function ContractDecoderContent() {
           )}
         </div>
       </div>
-  );
-}
-
-function DecodedItem({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) {
-  return (
-    <div className="flex justify-between items-center text-sm py-0.5">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
-      </span>
-    </div>
   );
 }
 
