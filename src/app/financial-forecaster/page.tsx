@@ -119,6 +119,15 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
     return 0;
 };
 
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    // Basic tax simulation for display in Dialog
+    const rate = country === 'UAE' ? 0 : 0.2;
+    const incomeTax = income * rate;
+    const socialSecurity = income * 0.05;
+    const netIncome = income - incomeTax - socialSecurity;
+    return { incomeTax, socialSecurity, netIncome };
+};
+
 // --- Components ---
 
 function TaxCalculatorSection() {
@@ -189,6 +198,7 @@ function ContractDecoderContent() {
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
 
+  // Auto-select currency based on school location
   useEffect(() => {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
@@ -314,8 +324,8 @@ function ContractDecoderContent() {
                       onChange={(e) => setOfferedSalary(e.target.value)}
                     />
                   </div>
-                  <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger className="bg-background/50 border-white/10 h-10 rounded-sm">
+                  <Select value={currency} disabled>
+                    <SelectTrigger className="bg-background/50 border-white/10 h-10 rounded-sm opacity-100">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
