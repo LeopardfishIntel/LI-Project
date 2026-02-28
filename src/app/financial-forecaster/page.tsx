@@ -3,6 +3,7 @@
 
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -16,11 +17,8 @@ import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from 
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { PieChart, Pie, Cell } from 'recharts';
-import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 // --- Tax Calculator Logic ---
 type TaxBracket = { upto: number; rate: number };
@@ -199,53 +197,6 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
   return 0;
 };
 
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
-
-const taxChartConfig = {
-  netPay: { label: "Net Pay", color: "hsl(var(--chart-1))" },
-  incomeTax: { label: "Income Tax", color: "hsl(var(--chart-2))" },
-  socialContributions: { label: "Social Contributions", color: "hsl(var(--chart-4))" },
-} satisfies ChartConfig;
-
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
@@ -366,6 +317,14 @@ function TaxCalculatorSection() {
         </div>
     );
 }
+
+// --- Cost Breakdown Component ---
+const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
+    <div className="flex justify-between items-center">
+        <span className="flex items-center text-sm text-muted-foreground">{icon} {label}</span>
+        <span className="text-sm font-bold text-white">{formatCurrency(value, currency)}</span>
+    </div>
+);
 
 function ContractDecoderContent() {
   const firestore = useFirestore();
@@ -544,7 +503,7 @@ function ContractDecoderContent() {
                   <Input 
                     className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
-                    placeholder="e.g. 300" 
+                    placeholder="0" 
                     value={responsibilityAllowance}
                     onChange={(e) => setResponsibilityAllowance(e.target.value)}
                   />
@@ -559,7 +518,7 @@ function ContractDecoderContent() {
                   <Input 
                     className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
-                    placeholder="e.g. 800" 
+                    placeholder="0" 
                     value={homeCountryCost}
                     onChange={(e) => setHomeCountryCost(e.target.value)}
                   />
@@ -593,7 +552,7 @@ function ContractDecoderContent() {
                   <Input 
                     className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
                     type="number" 
-                    placeholder="e.g. 150" 
+                    placeholder="0" 
                     value={studentLoan}
                     onChange={(e) => setStudentLoan(e.target.value)}
                   />
@@ -662,7 +621,6 @@ function ContractDecoderContent() {
                       </div>
                     )}
 
-                    {/* Tax Calculator Link at bottom of list */}
                     <div className="pt-4 mt-2 border-t border-white/5">
                         <Dialog>
                             <DialogTrigger asChild>
@@ -786,7 +744,7 @@ function ContractDecoderContent() {
 
               {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 space-y-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left">
                       <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">True Net Savings</h4>
@@ -801,32 +759,29 @@ function ContractDecoderContent() {
                       <Link href="/compare">Compare Offers</Link>
                     </Button>
                   </div>
+
+                  {savingsPotential !== 0 && (
+                    <div className="pt-6 border-t border-white/5">
+                      <div className="flex items-center gap-2 mb-4">
+                        <ArrowRightLeft className="size-3 text-primary/70" />
+                        <h5 className="text-[10px] font-black text-primary/70 uppercase tracking-widest">Wealth Equivalents (Home Currencies)</h5>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                        {['USD', 'GBP', 'EUR', 'AUD', 'CAD', 'ZAR'].filter(c => c !== currency).slice(0, 4).map((targetCcy) => {
+                          const savingsInUSD = savingsPotential / rate;
+                          const convertedVal = savingsInUSD * (CONVERSION_RATES[targetCcy] || 1);
+                          return (
+                            <div key={targetCcy} className="space-y-1">
+                              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy} Value</p>
+                              <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-
-              {savingsPotential !== 0 && (
-                <Card className="glass border-white/5 bg-background/20 rounded-sm">
-                  <CardHeader className="py-3 px-4 border-b border-white/5">
-                    <CardTitle className="text-[10px] font-black text-primary/70 uppercase tracking-widest flex items-center gap-2">
-                      <ArrowRightLeft className="size-3" /> Wealth Equivalents (Home Currencies)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                      {['USD', 'GBP', 'EUR', 'AUD', 'CAD', 'ZAR'].filter(c => c !== currency).slice(0, 4).map((targetCcy) => {
-                        const savingsInUSD = savingsPotential / rate;
-                        const convertedVal = savingsInUSD * (CONVERSION_RATES[targetCcy] || 1);
-                        return (
-                          <div key={targetCcy} className="space-y-1">
-                            <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy} Value</p>
-                            <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
             </>
           )}
         </div>
