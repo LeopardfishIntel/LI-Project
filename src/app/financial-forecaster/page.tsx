@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Home, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, Milestone } from 'lucide-react';
+import { Calculator, Home, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, Milestone, Globe } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -31,6 +31,7 @@ function ContractDecoderContent() {
   const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
   const [contingency, setContingency] = useState('200');
+  const [homeCountryCost, setHomeCountryCost] = useState('');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -53,15 +54,28 @@ function ContractDecoderContent() {
     const food = (Number(col.food) || 0) * (adults + 0.5 * children);
     const transport = (Number(col.transport) || 0) * (adults + 0.3 * children);
     const utilities = (Number(col.utilities) || 0) * multiplier;
-    const medical = (Number(col.uncoveredMedical) || 0) * (adults + 0.5 * children);
     const dining = (Number(col.diningSocial) || 0) * adults;
-    const internet = Number(col.internet) || 0;
-    const mobile = (Number(col.mobile) || 0) * adults;
+    const internet = Number(col.internet) || 0; // Fixed cost, not linked to scalar
+    const mobile = (Number(col.mobile) || 0) * multiplier; // Scaled cost
     
-    const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + medical + dining + internet + mobile;
+    const manualHomeCost = parseFloat(homeCountryCost) || 0;
+    
+    const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + dining + internet + mobile + manualHomeCost;
 
-    return { rent, rentLabel, food, transport, utilities, medical, dining, internet, mobile, totalCosts };
-  }, [selectedSchool, familyStatus]);
+    return { 
+      rent, 
+      rentLabel, 
+      food, 
+      transport, 
+      utilities, 
+      dining, 
+      internet, 
+      mobile, 
+      totalCosts,
+      simCount: adults,
+      manualHomeCost
+    };
+  }, [selectedSchool, familyStatus, homeCountryCost]);
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
@@ -123,6 +137,20 @@ function ContractDecoderContent() {
                     onChange={(e) => setOfferedSalary(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Home Country Cost (Monthly)</Label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 bg-background/50" 
+                    type="number" 
+                    placeholder="e.g. 800" 
+                    value={homeCountryCost}
+                    onChange={(e) => setHomeCountryCost(e.target.value)}
+                  />
+                </div>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Ongoing debts, mortgages, or storage.</p>
               </div>
             </CardContent>
           </Card>
@@ -186,7 +214,11 @@ function ContractDecoderContent() {
                     <DecodedItem label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
                     <DecodedItem label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
                     <DecodedItem label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
-                    <DecodedItem label="Medical Gaps" value={decodedCosts?.medical || 0} currency={currency} />
+                    <DecodedItem label={`Mobile phone (Scaled) (${decodedCosts?.simCount} sims)`} value={decodedCosts?.mobile || 0} currency={currency} />
+                    <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                    {decodedCosts?.manualHomeCost ? (
+                      <DecodedItem label="Home country obligations" value={decodedCosts.manualHomeCost} currency={currency} />
+                    ) : null}
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
                       <span className="text-sm uppercase tracking-tighter">Total Burn Rate</span>
