@@ -56,7 +56,6 @@ import {
   DialogTitle, 
   DialogDescription 
 } from '@/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // --- Tactical Data & Logic ---
 
@@ -155,16 +154,6 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
       return numbers[0] * scale;
     }
     return 0;
-};
-
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    // Basic tax simulation for display purposes
-    const incomeTax = country === 'UAE' ? 0 : income * 0.2;
-    return {
-        incomeTax,
-        socialSecurity: country === 'UAE' ? 0 : income * 0.05,
-        netIncome: country === 'UAE' ? income : income * 0.75,
-    };
 };
 
 // --- Helper Components ---
@@ -328,6 +317,7 @@ function ContractDecoderContent() {
   const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
   const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
+  const [partnerSalary, setPartnerSalary] = useState('');
   const [homeCountryCommitment, setHomeCountryCommitment] = useState('');
   const [studentLoan, setStudentLoan] = useState('');
   const [contingency, setContingency] = useState('200');
@@ -396,7 +386,8 @@ function ContractDecoderContent() {
 
   const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
   const responsibilityAllowanceNum = parseFloat(responsibilityAllowance) || 0;
-  const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum;
+  const partnerSalaryNum = parseFloat(partnerSalary) || 0;
+  const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
   const savingsPotential = totalIncome - (decodedCosts?.totalCosts || 0);
 
   const countryIntel = useMemo(() => {
@@ -481,7 +472,7 @@ function ContractDecoderContent() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibility Allowance (Monthly)</Label>
+                    <Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibilities Allowance (Monthly)</Label>
                     <div className="relative">
                     <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
@@ -490,6 +481,20 @@ function ContractDecoderContent() {
                         placeholder="0" 
                         value={responsibilityAllowance}
                         onChange={(e) => setResponsibilityAllowance(e.target.value)}
+                    />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label className="text-[10px] font-bold text-primary/70 uppercase">Partner Monthly Salary</Label>
+                    <div className="relative">
+                    <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <Input 
+                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
+                        type="number" 
+                        placeholder="0" 
+                        value={partnerSalary}
+                        onChange={(e) => setPartnerSalary(e.target.value)}
                     />
                     </div>
                 </div>
@@ -570,6 +575,13 @@ function ContractDecoderContent() {
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-white/5">
                         <div className="flex items-center gap-2">
+                            <Plus className="size-3 text-sky-400" />
+                            <span className="text-sm text-muted-foreground font-medium">Partner Monthly Salary</span>
+                        </div>
+                        <span className="font-bold text-white">{formatCurrency(partnerSalaryNum, currency)}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-white/5">
+                        <div className="flex items-center gap-2">
                             <Home className="size-3 text-sky-400" />
                             <span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span>
                         </div>
@@ -597,7 +609,7 @@ function ContractDecoderContent() {
 
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-primary/5 hover:bg-primary/10 border border-primary/20 transition-all group">
+                                    <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-primary/5 hover:bg-primary/10 border-primary/20 transition-all group">
                                         <div className="flex items-center gap-2">
                                             <ArrowRightLeft className="size-3.5 text-primary group-hover:animate-pulse" />
                                             <span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-primary">Currency Converter</span>
