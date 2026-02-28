@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Milestone, Globe, GraduationCap, ExternalLink, ArrowRightLeft, Home, Utensils, TramFront, Zap, Smartphone, Wifi } from 'lucide-react';
+import { Calculator, Award, Pencil, Users, Loader2, ShieldAlert, LineChart, Milestone, Globe, GraduationCap, ExternalLink, ArrowRightLeft, Home, Utensils, TramFront, Zap, Smartphone, Wifi, Stethoscope, Medal, Plus, Banknote } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
@@ -98,6 +98,7 @@ function ContractDecoderContent() {
   const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
   const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
+  const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
   const [contingency, setContingency] = useState('200');
   const [homeCountryCost, setHomeCountryCost] = useState('');
   const [studentLoan, setStudentLoan] = useState('');
@@ -121,7 +122,6 @@ function ContractDecoderContent() {
   const suggestedMonthlyLocal = useMemo(() => {
     if (!selectedSchool) return 0;
     const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel.salary.value);
-    // Estimate net by taking 80% (rough average for international taxes/social security)
     const estNetMonthlyUSD = (avgAnnualUSD * 0.8) / 12;
     return estNetMonthlyUSD * rate;
   }, [selectedSchool, rate]);
@@ -146,7 +146,7 @@ function ContractDecoderContent() {
     
     const manualHomeCost = (parseFloat(homeCountryCost) || 0) * rate;
     const manualStudentLoan = (parseFloat(studentLoan) || 0) * rate;
-    const contingencyVal = parseFloat(contingency) || 0;
+    const contingencyVal = (parseFloat(contingency) || 0) * rate;
     
     const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost + manualStudentLoan + contingencyVal;
 
@@ -169,11 +169,11 @@ function ContractDecoderContent() {
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
-    // Use user entry if provided, otherwise fallback to benchmark suggestion
     const monthlySalary = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
+    const allowance = parseFloat(responsibilityAllowance) || 0;
     if (isNaN(monthlySalary)) return 0;
-    return monthlySalary - decodedCosts.totalCosts;
-  }, [decodedCosts, offeredSalary, suggestedMonthlyLocal]);
+    return (monthlySalary + allowance) - decodedCosts.totalCosts;
+  }, [decodedCosts, offeredSalary, suggestedMonthlyLocal, responsibilityAllowance]);
 
   if (isLoadingSchools) {
     return (
@@ -264,6 +264,21 @@ function ContractDecoderContent() {
                   </Select>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibilities Allowance (monthly)</Label>
+                <div className="relative">
+                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10" 
+                    type="number" 
+                    placeholder="e.g. 300" 
+                    value={responsibilityAllowance}
+                    onChange={(e) => setResponsibilityAllowance(e.target.value)}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
+                </div>
+              </div>
               
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Home-Country Obligations (monthly)</Label>
@@ -336,7 +351,10 @@ function ContractDecoderContent() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                      <span className="text-sm text-muted-foreground">Monthly Net Salary</span>
+                      <div className="flex items-center gap-2">
+                        <Banknote className="size-3 text-green-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
+                      </div>
                       <div className="text-right">
                         <span className={cn("font-bold", offeredSalary ? "text-green-400" : "text-green-400/50")}>
                           {formatCurrency(offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal, currency)}
@@ -344,13 +362,30 @@ function ContractDecoderContent() {
                         {!offeredSalary && <p className="text-[9px] font-black text-primary/50 uppercase tracking-tighter">Projected Benchmark</p>}
                       </div>
                     </div>
+                    
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                      <span className="text-sm text-muted-foreground">Housing Arrangement</span>
+                      <div className="flex items-center gap-2">
+                        <Medal className="size-3 text-amber-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Responsibility Allowance</span>
+                      </div>
+                      <span className="font-bold text-white">
+                        {formatCurrency(parseFloat(responsibilityAllowance) || 0, currency)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2">
+                        <Home className="size-3 text-sky-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span>
+                      </div>
                       <span className="text-sm font-semibold text-white">{selectedSchool.intel.housing.provided ? "100% Provided" : "Teacher Pays"}</span>
                     </div>
                     {selectedSchool.intel.housing.provided && (
                       <div className="flex justify-between items-center py-2 border-b border-white/5 text-green-400">
-                        <span className="text-sm">Housing Value Added</span>
+                        <div className="flex items-center gap-2">
+                          <Plus className="size-3" />
+                          <span className="text-sm font-medium">Housing Value Added</span>
+                        </div>
                         <span className="text-sm font-bold">+{formatCurrency(decodedCosts?.rent || 0, currency)}</span>
                       </div>
                     )}
