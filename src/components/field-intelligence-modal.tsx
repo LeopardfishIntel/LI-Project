@@ -208,7 +208,7 @@ export function FieldIntelligenceModal() {
                 <ShieldAlert className="size-5" /> Field Intelligence Report
               </DialogTitle>
               <DialogDescription className="text-muted-foreground text-xs font-medium">
-                Submit anonymous intelligence regarding contract discrepancies or school conduct.
+                Submit <strong>anonymous</strong> intelligence regarding contract discrepancies, institutional conduct, substandard housing, or recruitment agency transparency.
               </DialogDescription>
             </DialogHeader>
             
@@ -247,7 +247,7 @@ export function FieldIntelligenceModal() {
                 <Label htmlFor="intel" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intel Narrative</Label>
                 <Textarea 
                   id="intel" 
-                  placeholder="Provide specific, evidence-led details..." 
+                  placeholder="Provide specific, evidence-led details regarding your experience..." 
                   className="min-h-[100px] bg-slate-950/50 border-white/10 focus:border-primary/50 text-sm"
                   value={intel}
                   onChange={(e) => setIntel(e.target.value)}
