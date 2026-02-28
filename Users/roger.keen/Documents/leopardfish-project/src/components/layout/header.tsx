@@ -116,7 +116,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-2">
             <Binoculars className="size-6 text-primary" />
             <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+              <span className="text-primary">Leopard</span><span>fish Intel</span>
             </span>
           </Link>
           

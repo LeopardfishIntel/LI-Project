@@ -27,7 +27,7 @@ export default function Home() {
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.3]"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.25]"
           data-ai-hint={heroImage.imageHint}
         />
         
@@ -40,18 +40,18 @@ export default function Home() {
         
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background z-20"></div>
         
-        <div className="relative z-30 container mx-auto px-4 md:px-6">
+        <div className="relative z-30 container mx-auto px-4 md:px-6 text-center lg:text-left">
           <div className="max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-4 h-4" /> Intelligence Grade Perspectives
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Perspectives
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+              <span className="text-primary">Leopard</span><span>fish Intel</span>
             </h1>
-            <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-relaxed">
+            <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-tight">
               Move with certainty, not just hope. We provide <span className="text-white underline decoration-primary/50 underline-offset-4">evidence-led insight</span> for the international education sector.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Button size="lg" className="h-12 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-sm rounded-sm" asChild>
                 <Link href="/discover">Initialize Journey <ArrowRight className="ml-2 w-4 h-4" /></Link>
               </Button>
@@ -63,8 +63,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Counter Section - Placed directly below Hero */}
+      <section className="py-12 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <KeyFactsSection />
+        </div>
+      </section>
+
       {/* Tactical Tagline Section */}
-      <section className="py-8 bg-background border-y border-white/5">
+      <section className="py-12 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase opacity-80">
               Teach Overseas: Know Before You Go
@@ -118,13 +125,6 @@ export default function Home() {
               </Button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Counter Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 md:px-6">
-          <KeyFactsSection />
         </div>
       </section>
 
