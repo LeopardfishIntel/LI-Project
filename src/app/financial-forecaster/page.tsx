@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert } from 'lucide-react';
+import { Home, Utensils, TramFront, Zap, Wifi, Smartphone, Globe, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, GraduationCap, ExternalLink } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -45,6 +45,7 @@ function ContractDecoderContent() {
   const [offeredSalary, setOfferedSalary] = useState('');
   const [contingency, setContingency] = useState('200');
   const [homeCountryCost, setHomeCountryCost] = useState('');
+  const [studentLoan, setStudentLoan] = useState('');
 
   const rate = CONVERSION_RATES[currency] || 1;
 
@@ -65,7 +66,6 @@ function ContractDecoderContent() {
 
     const { rent, label: rentLabel } = getRentForFamily(col, familyStatus);
 
-    // All costs in dossier are stored in USD. Convert to selected currency.
     const food = (Number(col.food) || 0) * (adults + 0.5 * children) * rate;
     const transport = (Number(col.transport) || 0) * (adults + 0.3 * children) * rate;
     const utilities = (Number(col.utilities) || 0) * multiplier * rate;
@@ -75,8 +75,9 @@ function ContractDecoderContent() {
     const rentFinal = rent * rate;
     
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
+    const manualStudentLoan = parseFloat(studentLoan) || 0;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost;
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost + manualStudentLoan;
 
     return { 
       rent: rentFinal, 
@@ -89,9 +90,10 @@ function ContractDecoderContent() {
       mobile, 
       totalCosts,
       simCount: adults,
-      manualHomeCost
+      manualHomeCost,
+      manualStudentLoan
     };
-  }, [selectedSchool, familyStatus, homeCountryCost, rate]);
+  }, [selectedSchool, familyStatus, homeCountryCost, studentLoan, rate]);
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
@@ -99,17 +101,8 @@ function ContractDecoderContent() {
     return monthlySalary - decodedCosts.totalCosts - ((parseFloat(contingency) || 0) * rate);
   }, [decodedCosts, offeredSalary, contingency, rate]);
 
-  if (isLoadingSchools) {
-    return (
-      <div className="flex justify-center items-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Input Panel */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
@@ -159,18 +152,9 @@ function ContractDecoderContent() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="GBP">GBP</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="AED">AED</SelectItem>
-                      <SelectItem value="QAR">QAR</SelectItem>
-                      <SelectItem value="SAR">SAR</SelectItem>
-                      <SelectItem value="SGD">SGD</SelectItem>
-                      <SelectItem value="CHF">CHF</SelectItem>
-                      <SelectItem value="JPY">JPY</SelectItem>
-                      <SelectItem value="THB">THB</SelectItem>
-                      <SelectItem value="CNY">CNY</SelectItem>
-                      <SelectItem value="KRW">KRW</SelectItem>
+                      {Object.keys(CONVERSION_RATES).map(c => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -185,6 +169,29 @@ function ContractDecoderContent() {
                     placeholder="e.g. 800" 
                     value={homeCountryCost}
                     onChange={(e) => setHomeCountryCost(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment</Label>
+                  <a 
+                    href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                  >
+                    Gov. Uk <ExternalLink className="size-2" />
+                  </a>
+                </div>
+                <div className="relative">
+                  <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
+                    type="number" 
+                    placeholder="e.g. 150" 
+                    value={studentLoan}
+                    onChange={(e) => setStudentLoan(e.target.value)}
                   />
                 </div>
               </div>
@@ -203,7 +210,6 @@ function ContractDecoderContent() {
           </Card>
         </div>
 
-        {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
             <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
@@ -213,7 +219,6 @@ function ContractDecoderContent() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Benefits Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -238,7 +243,6 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
 
-                {/* Costs Pane */}
                 <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
@@ -255,6 +259,9 @@ function ContractDecoderContent() {
                     {decodedCosts?.manualHomeCost ? (
                       <DecodedItem label="Home commitments" value={decodedCosts.manualHomeCost} currency={currency} />
                     ) : null}
+                    {decodedCosts?.manualStudentLoan ? (
+                      <DecodedItem label="Student loan" value={decodedCosts.manualStudentLoan} currency={currency} />
+                    ) : null}
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
                       <span className="text-sm uppercase tracking-tighter">Burn Rate</span>
@@ -264,7 +271,6 @@ function ContractDecoderContent() {
                 </Card>
               </div>
 
-              {/* Verdict Section */}
               <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
