@@ -159,9 +159,9 @@ export function FieldIntelligenceModal() {
           <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
             <Loader2 className="size-12 text-primary animate-spin" />
             <div className="space-y-2">
-              <h2 className="text-xl font-black stamped-dossier text-primary animate-pulse">
+              <DialogTitle className="text-xl font-black stamped-dossier text-primary animate-pulse">
                 Scanning for Secure Uplink...
-              </h2>
+              </DialogTitle>
               <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
                 Establishing Encrypted Tunnel
               </p>
@@ -170,9 +170,9 @@ export function FieldIntelligenceModal() {
         ) : isDestructing ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
-            <h2 className="text-2xl font-black stamped-dossier text-primary animate-glitch">
+            <DialogTitle className="text-2xl font-black stamped-dossier text-primary animate-glitch">
               TRANSMISSION COMPLETE
-            </h2>
+            </DialogTitle>
             <div className="space-y-2">
               <p className="text-muted-foreground text-sm font-mono tracking-tighter">
                 SECURE ARCHIVAL VERIFIED.
