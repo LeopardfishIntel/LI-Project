@@ -1,5 +1,6 @@
 
 export type TeacherProfile = {
+  id: string;
   fullName: string;
   avatarUrl: string;
   isVerifiedTeacher: boolean;
@@ -41,17 +42,18 @@ export type School = {
     technologyEcosystem?: string;
   };
   costOfLiving: {
-    monthlyRent1BR: number;
-    monthlyRent2BR: number;
-    monthlyRent3BR: number;
-    food: number;
-    transport: number;
-    utilities: number;
-    internet: number;
-    mobile: number;
-    diningSocial: number;
-    vehicleInsuranceMaint: number;
-    uncoveredMedical: number;
+    monthlyRent1BR?: number;
+    monthlyRent2BR?: number;
+    monthlyRent3BR?: number;
+    food?: number;
+    transport?: number;
+    utilities?: number;
+    internet?: number;
+    mobile?: number;
+    diningSocial?: number;
+    vehicleInsuranceMaint?: number;
+    uncoveredMedical?: number;
+    apartment?: number; // For backward compatibility
   };
 };
 
@@ -73,4 +75,20 @@ export type LocationCostOfLiving = {
   groceriesIndex: number;
   restaurantPriceIndex: number;
   lastUpdated: any; // Firestore timestamp
+};
+
+export type FieldReport = {
+  id?: string;
+  category: string;
+  organisation: string;
+  location: string;
+  original_content: string;
+  clean_text: string;
+  status: 'pending' | 'auto_rejected';
+  safety_flags: string[];
+  confidence_score: number;
+  attachmentUrl?: string;
+  timestamp: any;
+  authorId: string;
+  authorEmail: string;
 };

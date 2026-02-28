@@ -16,6 +16,7 @@ import { moderateIntelligence } from './moderate-intelligence-flow';
 const TransmitIntelligenceInputSchema = z.object({
   category: z.string().describe('The dossier classification.'),
   organisation: z.string().describe('The targeted school or agency.'),
+  location: z.string().describe('The city or country of the intelligence.'),
   content: z.string().describe('The narrative payload.'),
   authorId: z.string().optional().describe('The UID of the transmitting agent.'),
   authorEmail: z.string().optional().describe('The email of the transmitting agent.'),
@@ -66,6 +67,7 @@ export const transmitIntelligenceFlow = ai.defineFlow(
       const reportDoc = await addDoc(stagingRef, {
         category: input.category,
         organisation: input.organisation,
+        location: input.location,
         original_content: input.content,
         clean_text: moderation.clean_text,
         status: moderation.status,

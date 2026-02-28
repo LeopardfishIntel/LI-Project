@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -21,10 +22,11 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars } from 'lucide-react';
+import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
+import { disambiguateSchool } from '@/ai/flows/disambiguate-school-flow';
 import { cn } from '@/lib/utils';
 
 export function FieldIntelligenceModal() {
@@ -32,11 +34,21 @@ export function FieldIntelligenceModal() {
   const [isScanning, setIsScanning] = useState(false);
   const [category, setCategory] = useState<string>('');
   const [organisation, setOrganisation] = useState('');
+  const [location, setLocation] = useState('');
   const [intel, setIntel] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState('');
   
+  // Disambiguation states
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationResult, setValidationResult] = useState<{
+    is_ambiguous: boolean;
+    suggestions: string[];
+    message_to_user: string;
+    canonical_name: string;
+  } | null>(null);
+
   // Mission Impossible States
   const [isDestructing, setIsDestructing] = useState(false);
   const [countdown, setCountdown] = useState(5);
@@ -45,7 +57,6 @@ export function FieldIntelligenceModal() {
   const { user } = useUser();
   const { toast } = useToast();
 
-  // Listen for global open requests from other components (like the homepage row)
   useEffect(() => {
     const handleOpen = () => {
       setIsOpen(true);
@@ -66,20 +77,25 @@ export function FieldIntelligenceModal() {
       setIsSmoked(true);
       setTimeout(() => {
         setIsOpen(false);
-        // Reset state after transition
         setIsDestructing(false);
         setIsSmoked(false);
         setCountdown(5);
-        setCategory('');
-        setOrganisation('');
-        setIntel('');
-        setFile(null);
-        setStatus('');
-        setIsSubmitting(false);
+        resetForm();
       }, 800);
     }
     return () => clearTimeout(timer);
   }, [isDestructing, countdown]);
+
+  const resetForm = () => {
+    setCategory('');
+    setOrganisation('');
+    setLocation('');
+    setIntel('');
+    setFile(null);
+    setStatus('');
+    setIsSubmitting(false);
+    setValidationResult(null);
+  };
 
   const handleOpenChange = (open: boolean) => {
     if (open) {
@@ -90,6 +106,25 @@ export function FieldIntelligenceModal() {
       }, 1500);
     } else {
       setIsOpen(false);
+    }
+  };
+
+  const handleVerifySchool = async () => {
+    if (!organisation || !location) return;
+    setIsValidating(true);
+    try {
+      const result = await disambiguateSchool({
+        user_input_school: organisation,
+        user_input_city: location,
+      });
+      setValidationResult(result);
+      if (!result.is_ambiguous && result.canonical_name !== organisation) {
+        setOrganisation(result.canonical_name);
+      }
+    } catch (error) {
+      console.error('Validation Error:', error);
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -109,8 +144,8 @@ export function FieldIntelligenceModal() {
   };
 
   const handleTransmit = async () => {
-    if (!category || !organisation || !intel) {
-      toast({ variant: 'destructive', title: 'Input Required', description: 'Organisation, Category, and Content are mandatory for transmission.' });
+    if (!category || !organisation || !location || !intel) {
+      toast({ variant: 'destructive', title: 'Input Required', description: 'Organisation, Location, Category, and Content are mandatory for transmission.' });
       return;
     }
 
@@ -135,7 +170,7 @@ export function FieldIntelligenceModal() {
         authorId: user?.uid,
         authorEmail: user?.email || undefined,
         file: filePayload
-      });
+      } as any); // Type cast due to location addition in logic later
 
       if (token === 'Success') {
         setIsDestructing(true);
@@ -208,23 +243,76 @@ export function FieldIntelligenceModal() {
                 <ShieldAlert className="size-5" /> Field Intelligence Report
               </DialogTitle>
               <DialogDescription className="text-muted-foreground text-xs font-medium">
-                Submit <strong>anonymous</strong> intelligence regarding contract discrepancies, institutional conduct, substandard housing, or recruitment agency transparency.
+                Submit <strong>anonymous</strong> intelligence regarding contract discrepancies, school conduct, substandard housing, or recruitment agency transparency.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4 py-4">
+            <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Target Organisation</Label>
+                <Label htmlFor="location" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intelligence Location (City/Country)</Label>
                 <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
-                    id="organisation" 
-                    placeholder="School or Agency Name..." 
+                    id="location" 
+                    placeholder="e.g., Dubai, UAE" 
                     className="pl-10 bg-slate-950/50 border-white/10 focus:border-primary/50"
-                    value={organisation}
-                    onChange={(e) => setOrganisation(e.target.value)}
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="organisation" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Target Organisation</Label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <Input 
+                      id="organisation" 
+                      placeholder="School or Agency Name..." 
+                      className={cn(
+                        "pl-10 bg-slate-950/50 border-white/10 focus:border-primary/50",
+                        validationResult?.is_ambiguous && "border-amber-500/50"
+                      )}
+                      value={organisation}
+                      onChange={(e) => setOrganisation(e.target.value)}
+                      onBlur={handleVerifySchool}
+                    />
+                  </div>
+                  {isValidating && <Loader2 className="size-4 animate-spin self-center text-primary" />}
+                </div>
+                
+                {validationResult?.is_ambiguous && (
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded flex gap-2">
+                    <AlertCircle className="size-4 text-amber-500 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">{validationResult.message_to_user}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {validationResult.suggestions.map((s, i) => (
+                          <Button 
+                            key={i} 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-6 text-[9px] py-0 px-2 border-amber-500/30 hover:bg-amber-500/20"
+                            onClick={() => {
+                              setOrganisation(s);
+                              setValidationResult(null);
+                            }}
+                          >
+                            {s}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {validationResult && !validationResult.is_ambiguous && (
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/5 border border-green-500/20 rounded">
+                    <CheckCircle2 className="size-3 text-green-500" />
+                    <span className="text-[9px] text-green-500 font-bold uppercase tracking-widest">Analyst Verified: {validationResult.canonical_name}</span>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -238,6 +326,8 @@ export function FieldIntelligenceModal() {
                     <SelectItem value="Salary Discrepancy">Salary Discrepancy</SelectItem>
                     <SelectItem value="Living Cost Alert">Living Cost Alert</SelectItem>
                     <SelectItem value="Admin Conduct">Admin Conduct</SelectItem>
+                    <SelectItem value="Housing Standards">Housing Standards</SelectItem>
+                    <SelectItem value="Recruitment Transparency">Recruitment Transparency</SelectItem>
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
@@ -276,7 +366,7 @@ export function FieldIntelligenceModal() {
             <DialogFooter>
               <Button 
                 onClick={handleTransmit} 
-                disabled={isSubmitting}
+                disabled={isSubmitting || validationResult?.is_ambiguous}
                 className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6"
               >
                 {isSubmitting ? (

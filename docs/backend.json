@@ -194,6 +194,7 @@
         "id": { "type": "string" },
         "category": { "type": "string" },
         "organisation": { "type": "string" },
+        "location": { "type": "string" },
         "original_content": { "type": "string" },
         "clean_text": { "type": "string" },
         "status": { "type": "string", "enum": ["pending", "auto_rejected"] },
@@ -204,7 +205,7 @@
         "authorId": { "type": "string" },
         "authorEmail": { "type": "string", "format": "email" }
       },
-      "required": ["category", "organisation", "original_content", "clean_text", "status", "timestamp"]
+      "required": ["category", "organisation", "location", "original_content", "clean_text", "status", "timestamp"]
     },
     "VerifiedIntel": {
       "title": "Verified Intelligence Dossier",
