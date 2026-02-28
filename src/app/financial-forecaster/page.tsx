@@ -162,7 +162,7 @@ function ContractDecoderContent() {
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
                   Always verify if the salary quoted is 'Net' or 'Gross'.<br />
-                  Ensure this includes Social security /Health Insurance deductions. Is Dentist and Optician included?
+                  Ensure this includes any Social Security, Pension, Health, Dental and Optical deductions.
                 </div>
               </div>
 
@@ -318,8 +318,8 @@ function ContractDecoderContent() {
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
                       Representing wealth potential after basic costs and a <span className="text-white font-bold">{formatCurrency((parseFloat(contingency) || 0) * rate, currency)}</span> contingency buffer.
                     </div>
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs shadow-lg shadow-primary/20" asChild>
-                      <Link href="/compare">Compare Multiple Offers</Link>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
+                      <Link href="/compare">Final Verdict</Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -349,8 +349,8 @@ export default function EvaluatePage() {
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case text-white">
           2. Contract Decoder
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
-          Move with certainty. We strip away recruitment marketing to show actual disposable income with family scaling and options to add your own bespoke contract offer details.
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm">
+          Move with certainty. We strip away recruitment marketing to show actual disposable income with family scaling and bespoke obligations.
         </p>
       </div>
 
