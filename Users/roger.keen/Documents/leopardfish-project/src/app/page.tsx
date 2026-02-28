@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -43,10 +43,10 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6">
           <div className="max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-4 h-4" /> Intelligence Grade Protocol
+              <ShieldCheck className="w-4 h-4" /> Intelligence Grade Perspectives
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span className="text-white italic">fish Intel</span>
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
             <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg leading-relaxed">
               Move with certainty, not just hope. We provide <span className="text-white underline decoration-primary/50 underline-offset-4">evidence-led insight</span> for the international education sector.
@@ -72,34 +72,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* The Insider Journey */}
+      {/* The Insider Journey Steps */}
       <section className="py-24 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-3 gap-8">
-            <JourneyStep 
-              num="01"
-              icon={<Target className="w-8 h-8 text-primary" />}
-              title="Discover"
-              description="The Nook Finder matching engine. We look for the intersection of your profile and local visa/salary realities."
-              href="/discover"
-              label="Find Your Nook"
-            />
-            <JourneyStep 
-              num="02"
-              icon={<Calculator className="w-8 h-8 text-primary" />}
-              title="Evaluate"
-              description="The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income."
-              href="/financial-forecaster"
-              label="Decode Offer"
-            />
-            <JourneyStep 
-              num="03"
-              icon={<GitCompare className="w-8 h-8 text-primary" />}
-              title="Decide"
-              description="The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side."
-              href="/compare"
-              label="Final Verdict"
-            />
+            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">01</span>
+                </div>
+                <h3 className="text-xl stamped-dossier">Discover</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">The Nook Finder matching engine. We look for the intersection of your profile and local visa/salary realities.</p>
+              </div>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
+                <Link href="/discover">Find Your Nook <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+            </div>
+
+            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">02</span>
+                </div>
+                <h3 className="text-xl stamped-dossier">Evaluate</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income.</p>
+              </div>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
+                <Link href="/financial-forecaster">Decode Offer <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+            </div>
+
+            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="p-3 bg-primary/10 rounded-sm"><ArrowRight className="w-8 h-8 text-primary" /></div>
+                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">03</span>
+                </div>
+                <h3 className="text-xl stamped-dossier">Decide</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side.</p>
+              </div>
+              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
+                <Link href="/compare">Final Verdict <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -113,24 +130,6 @@ export default function Home() {
 
       {/* Red Flag Registry */}
       <RedFlagRegistry />
-    </div>
-  );
-}
-
-function JourneyStep({ num, icon, title, description, href, label }: { num: string, icon: React.ReactNode, title: string, description: string, href: string, label: string }) {
-  return (
-    <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
-      <div className="space-y-4">
-        <div className="flex justify-between items-start">
-          <div className="p-3 bg-primary/10 rounded-sm">{icon}</div>
-          <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">{num}</span>
-        </div>
-        <h3 className="text-xl stamped-dossier">{title}</h3>
-        <p className="text-muted-foreground leading-relaxed text-sm">{description}</p>
-      </div>
-      <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto" asChild>
-        <Link href={href}>{label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
-      </Button>
     </div>
   );
 }
