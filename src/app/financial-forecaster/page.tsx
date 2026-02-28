@@ -280,15 +280,6 @@ function TaxCalculatorSection() {
         setResult(calcResult);
     };
 
-    const chartData = useMemo(() => {
-        if (!result) return [];
-        return [
-            { name: 'netPay', value: result.netIncome, fill: 'var(--color-netPay)' },
-            { name: 'incomeTax', value: result.incomeTax, fill: 'var(--color-incomeTax)' },
-            { name: 'socialContributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
-        ].filter(d => d.value > 0);
-    }, [result]);
-
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -786,7 +777,7 @@ function ContractDecoderContent() {
 
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
-                      <span className="text-sm uppercase tracking-tighter text-white">Burn Rate</span>
+                      <span className="text-sm uppercase tracking-tighter text-white">Total Costs</span>
                       <span className="text-destructive">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                     </div>
                   </CardContent>
@@ -799,7 +790,7 @@ function ContractDecoderContent() {
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left">
                       <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">True Net Savings</h4>
-                      <p className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                      <p className={cn("text-5xl font-black", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                         {formatCurrency(savingsPotential, currency)}<span className="text-lg">/mo</span>
                       </p>
                     </div>
@@ -807,7 +798,7 @@ function ContractDecoderContent() {
                       The gap between your income and your cost of living.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
-                      <Link href="/compare">Compare Dossiers</Link>
+                      <Link href="/compare">Compare Offers</Link>
                     </Button>
                   </div>
                 </CardContent>
