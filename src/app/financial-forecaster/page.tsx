@@ -271,8 +271,8 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-12 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">
-          2. <span className="text-primary">Contract Decoder</span>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case text-white">
+          2. Contract Decoder
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
           Move with certainty. We strip away recruitment marketing to show actual disposable income adjusted for your family size.
