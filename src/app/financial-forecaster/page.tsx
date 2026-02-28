@@ -260,23 +260,6 @@ const ORDERED_CURRENCIES = [
     .sort()
 ];
 
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
-    return 0;
-};
-
 const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
     const countryData = taxData[country];
     if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
@@ -706,9 +689,11 @@ function ContractDecoderContent() {
                         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto glass border-white/10 shadow-2xl">
                             <DialogHeader>
                                 <DialogTitle className="stamped-dossier text-white text-xl">Worldwide Salary Tax Calculator</DialogTitle>
-                                <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
-                                    Estimate regional tax signatures and mandatory deductions across major international teaching territories.
-                                </DialogDescription>
+                                <DialogHeader>
+                                    <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
+                                        Estimate regional tax signatures and mandatory deductions across major international teaching territories.
+                                    </DialogDescription>
+                                </DialogHeader>
                             </DialogHeader>
                             <div className="mt-6 pt-6 border-t border-white/5">
                                 <TaxCalculatorSection />
@@ -735,7 +720,7 @@ function ContractDecoderContent() {
                 <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
                 
                 <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center">
-                  <span className="text-xs font-black uppercase tracking-widest text-white">Total Costs</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-white">Burn Rate</span>
                   <span className="text-xl font-bold text-primary">{formatCurrency(burnRate, currency)}</span>
                 </div>
               </CardContent>
@@ -769,7 +754,7 @@ function ContractDecoderContent() {
               {savingsPotential !== 0 && (
                 <div className="pt-6 border-t border-white/5">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                    {['USD', 'GBP', 'EUR', 'AUD'].map((targetCcy) => {
+                    {['GBP', 'USD', 'EUR', 'AUD'].map((targetCcy) => {
                       const savingsInUSD = savingsPotential / rate;
                       const convertedVal = Math.round(savingsInUSD * (CONVERSION_RATES[targetCcy] || 1));
                       return (
