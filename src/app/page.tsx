@@ -38,7 +38,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter leading-none normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">

@@ -114,7 +114,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <Binoculars className="size-6 text-primary" />
-            <span className="font-bold font-headline text-lg tracking-tighter uppercase">
+            <span className="font-bold font-headline text-lg tracking-tighter">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </span>
           </Link>
