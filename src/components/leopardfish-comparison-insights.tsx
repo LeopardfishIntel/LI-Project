@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -43,7 +42,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                 {loading && (
                     <div className="flex items-center justify-center flex-grow py-8 min-h-[200px]">
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
-                        <p className="ml-4 text-muted-foreground text-lg">Analyzing schools...</p>
+                        <p className="ml-4 text-muted-foreground text-lg">Analysing schools...</p>
                     </div>
                 )}
                 {result?.error && (

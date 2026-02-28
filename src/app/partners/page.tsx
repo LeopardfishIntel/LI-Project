@@ -61,7 +61,7 @@ export default function PartnersPage() {
           Partner with Leopardfish Intel
         </h1>
         <p className="text-muted-foreground text-center mt-4 mb-12">
-          Whether you’re a school looking to join our Verified Membership program or a service provider ready to support the international community, we want to hear from you.
+          Whether you’re a school looking to join our Verified Membership programme or a service provider ready to support the international community, we want to hear from you.
         </p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -112,10 +112,10 @@ export default function PartnersPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="organization">School / Organization Name</Label>
+                <Label htmlFor="organisation">School / Organisation Name</Label>
                 <Input
-                  id="organization"
-                  name="organization"
+                  id="organisation"
+                  name="organisation"
                   placeholder="e.g., The International School of Excellence"
                   required
                 />

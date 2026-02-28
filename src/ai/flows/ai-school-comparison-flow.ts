@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview This file provides an AI-powered flow to generate a comparative
@@ -23,7 +22,7 @@ const SchoolDataSchema = z.object({
 
 const AiSchoolComparisonInputSchema = z.object({
   schools: z.array(SchoolDataSchema).describe('An array of school data objects to be compared.'),
-  teacherProfile: z.string().describe('A summary of your profile and preferences to contextualize the recommendation. e.g., "A teacher with 10 years experience looking for high savings potential and good work-life balance."')
+  teacherProfile: z.string().describe('A summary of your profile and preferences to contextualise the recommendation. e.g., "A teacher with 10 years experience looking for high savings potential and good work-life balance."')
 });
 export type AiSchoolComparisonInput = z.infer<
   typeof AiSchoolComparisonInputSchema

@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -479,69 +477,12 @@ function TaxCalculatorSection() {
                 </>
             )}
              <p className="text-xs text-muted-foreground text-center mt-4 animate-pulse-slow">
-                Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax rates, and any child tax credits are simplified estimates. Expatriate tax laws can be complex; always consult a professional financial advisor.
+                Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax rates, and any child tax credits are simplified estimates. Expatriate tax laws can be complex; always consult a professional financial adviser.
             </p>
         </div>
     );
 }
 
-// --- Cost Breakdown Component ---
-const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
-    <div className="flex justify-between items-center">
-        <span className="flex items-center">{icon} {label}</span>
-        <span>{formatCurrency(value, currency)}</span>
-    </div>
-);
-
-const CostBreakdownCard = ({ costs, currency, familyStatusLabel, onContingencyChange, contingencyValue }: {
-    costs: Record<string, number | string>;
-    currency: string;
-    familyStatusLabel: string;
-    onContingencyChange: (value: string) => void;
-    contingencyValue: string;
-}) => {
-    const convert = (amount: number) => amount * conversionRatesToUSD[currency];
-
-    return (
-        <div className="space-y-4 flex flex-col justify-between">
-            <div className="space-y-1">
-                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabel})</h3>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                    <CostItem icon={<Home className="w-4 h-4 mr-2 text-sky-400" />} label={costs.rentLabel as string} value={convert(costs.rentCost as number)} currency={currency} />
-                    <CostItem icon={<Zap className="w-4 h-4 mr-2 text-yellow-400" />} label="Utilities" value={convert(costs.utilitiesCost as number)} currency={currency} />
-                    <CostItem icon={<Wifi className="w-4 h-4 mr-2 text-indigo-400" />} label="Internet" value={convert(costs.internetCost as number)} currency={currency} />
-                    <CostItem icon={<Smartphone className="w-4 h-4 mr-2 text-pink-400" />} label="Mobile" value={convert(costs.mobileCost as number)} currency={currency} />
-                    <CostItem icon={<Utensils className="w-4 h-4 mr-2 text-amber-400" />} label="Groceries" value={convert(costs.foodCost as number)} currency={currency} />
-                    <CostItem icon={<Coffee className="w-4 h-4 mr-2 text-yellow-600" />} label="Dining & Social" value={convert(costs.diningSocialCost as number)} currency={currency} />
-                    <CostItem icon={<TramFront className="w-4 h-4 mr-2 text-rose-400" />} label="Transport" value={convert(costs.transportCost as number)} currency={currency} />
-                    <CostItem icon={<Car className="w-4 h-4 mr-2 text-neutral-400" />} label="Vehicle" value={convert(costs.vehicleCost as number)} currency={currency} />
-                    <CostItem icon={<Stethoscope className="w-4 h-4 mr-2 text-red-400" />} label="Medical Gaps" value={convert(costs.medicalCost as number)} currency={currency} />
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
-                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
-                        </Label>
-                        <Input
-                            id="contingency-cost"
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="0"
-                            value={contingencyValue}
-                            onChange={(e) => onContingencyChange(e.target.value)}
-                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className="space-y-4">
-                <Separator className="my-4"/>
-                <div className="flex justify-between items-center font-bold text-lg">
-                    <span className="text-primary-foreground">Total Estimated Costs</span>
-                    <span className="text-red-400">{formatCurrency(convert(costs.totalMonthlyCosts as number), currency)}</span>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 // --- True Costs Code ---
 type FeatureScore = 'good' | 'neutral' | 'bad';
@@ -676,7 +617,7 @@ const countrySpecificData: CountryData = {
         flightAllowance: { text: "An annual flight is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "100%" },
         dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good', percentage: "Often 100%" },
         gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
-        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral' },
+        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centres is famously delicious and affordable.", score: 'neutral' },
         utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad', percentage: "+30%" },
         transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', percentage: "-20%" },
         socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', percentage: "+70%" },
@@ -1249,14 +1190,62 @@ function TrueCostsSection() {
                             </div>
                         </div>
 
-                        <CostBreakdownCard 
-                            costs={{ ...calculatedCosts, totalMonthlyCosts: finalTotalMonthlyCosts }} 
-                            currency={currency} 
-                            familyStatusLabel={familyStatusLabels[familyStatus]}
-                            contingencyValue={contingency}
-                            onContingencyChange={setContingency}
-                        />
-
+                        <div className="space-y-4 flex flex-col justify-between">
+                             <div className="space-y-1">
+                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                                <div className="space-y-1 text-sm text-muted-foreground">
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400" /> {calculatedCosts.rentLabel}</span>
+                                        <span>{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(convert(calculatedCosts.rentCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.utilitiesCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400" /> Internet</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.internetCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400" /> Mobile</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.mobileCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400" /> Groceries</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.foodCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600" /> Dining &amp; Social</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.diningSocialCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400" /> Transport</span>
+                                        <span>{formatCurrency(convert(calculatedCosts.transportCost), currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground">
+                                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
+                                        </Label>
+                                        <Input
+                                            id="contingency-cost"
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder="0"
+                                            value={contingency}
+                                            onChange={(e) => setContingency(e.target.value)}
+                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <Separator className="my-4"/>
+                                <div className="flex justify-between items-center font-bold text-lg">
+                                    <span className="text-primary-foreground">Total Estimated Costs</span>
+                                    <span className="text-red-400">{formatCurrency(convert(totalMonthlyCosts), currency)}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div className="pt-6">
@@ -1496,7 +1485,3 @@ export default function FinancialForecasterPage() {
         </div>
     )
 }
-
-    
-
-

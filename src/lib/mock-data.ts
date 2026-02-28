@@ -1,4 +1,3 @@
-
 import type { School, TeacherProfile } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -45,7 +44,7 @@ export const schools: School[] = [
       healthInsurance: 'Premium',
       accreditation: 'CIS, WASC',
       jobsPortal: 'TES, Search Associates',
-      minQualifications: 'Teaching License + 2 Yrs Exp',
+      minQualifications: 'Teaching Licence + 2 Yrs Exp',
       visaRestrictions: 'None',
       benefitsSummary: 'Comprehensive health, travel insurance, relocation allowance.',
       nonContactTime: 20,
@@ -73,7 +72,7 @@ export const schools: School[] = [
       healthInsurance: 'Comp',
       accreditation: 'NEASC',
       jobsPortal: 'School Website, GRC',
-      minQualifications: 'US State License + 2 Yrs Exp',
+      minQualifications: 'US State Licence + 2 Yrs Exp',
       visaRestrictions: 'Under 60',
       benefitsSummary: 'Full medical, annual flights, professional development fund.',
       nonContactTime: 15,
@@ -101,7 +100,7 @@ export const schools: School[] = [
       healthInsurance: 'Mandatory',
       accreditation: 'CIS, NEASC',
       jobsPortal: 'School Website',
-      minQualifications: 'EU/EFTA Passport, Teaching License',
+      minQualifications: 'EU/EFTA Passport, Teaching Licence',
       visaRestrictions: 'Non-EU must be highly qualified',
       benefitsSummary: 'Generous pension, subsidized transport, lunch vouchers.',
       nonContactTime: 25,
@@ -127,7 +126,7 @@ export const schools: School[] = [
       healthInsurance: 'Premium',
       accreditation: 'WASC',
       jobsPortal: 'School Website, ISS',
-      minQualifications: 'Teaching License + 3 Yrs Exp',
+      minQualifications: 'Teaching Licence + 3 Yrs Exp',
       visaRestrictions: 'Strict criteria',
       benefitsSummary: 'Full medical coverage, annual flights, relocation allowance.',
       nonContactTime: 20,
@@ -153,7 +152,7 @@ export const schools: School[] = [
       healthInsurance: 'National',
       accreditation: 'WASC, CIS',
       jobsPortal: 'TES, School Website',
-      minQualifications: 'Native English Speaker, License',
+      minQualifications: 'Native English Speaker, Licence',
       visaRestrictions: 'E-2 Visa requirements apply',
       benefitsSummary: 'National health plan, severance pay, round-trip airfare.',
       nonContactTime: 18,

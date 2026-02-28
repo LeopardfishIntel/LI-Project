@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -99,7 +98,9 @@ const schoolSchema = z.object({
   }),
 
   costOfLiving: z.object({
-    apartment: z.coerce.number().min(0),
+    monthlyRent1BR: z.coerce.number().min(0),
+    monthlyRent2BR: z.coerce.number().min(0),
+    monthlyRent3BR: z.coerce.number().min(0),
     food: z.coerce.number().min(0),
     transport: z.coerce.number().min(0),
     utilities: z.coerce.number().min(0),
@@ -148,7 +149,9 @@ export default function AddSchoolPage() {
             technologyEcosystem: '',
         },
         costOfLiving: {
-            apartment: 0,
+            monthlyRent1BR: 0,
+            monthlyRent2BR: 0,
+            monthlyRent3BR: 0,
             food: 0,
             transport: 0,
             utilities: 0,
@@ -193,7 +196,9 @@ export default function AddSchoolPage() {
         if (data.technologyEcosystem) form.setValue('intel.technologyEcosystem', data.technologyEcosystem, { shouldValidate: true });
 
         if (data.costOfLiving) {
-            form.setValue('costOfLiving.apartment', data.costOfLiving.apartment, { shouldValidate: true });
+            form.setValue('costOfLiving.monthlyRent1BR', data.costOfLiving.monthlyRent1BR, { shouldValidate: true });
+            form.setValue('costOfLiving.monthlyRent2BR', data.costOfLiving.monthlyRent2BR, { shouldValidate: true });
+            form.setValue('costOfLiving.monthlyRent3BR', data.costOfLiving.monthlyRent3BR, { shouldValidate: true });
             form.setValue('costOfLiving.food', data.costOfLiving.food, { shouldValidate: true });
             form.setValue('costOfLiving.transport', data.costOfLiving.transport, { shouldValidate: true });
             form.setValue('costOfLiving.utilities', data.costOfLiving.utilities, { shouldValidate: true });
@@ -458,7 +463,7 @@ export default function AddSchoolPage() {
                  <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching Licence + 2 Yrs Exp" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</FormLabel><FormControl><Input placeholder="Under 60" {...field} /></FormControl><FormMessage /></FormItem>)} />
 
               </CardContent>
@@ -470,7 +475,9 @@ export default function AddSchoolPage() {
                  <CardDescription>Monthly cost estimates for the school's location.</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <FormField control={form.control} name="costOfLiving.apartment" render={({ field }) => (<FormItem><FormLabel>Apartment Rent</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (<FormItem><FormLabel>Rent (1BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (<FormItem><FormLabel>Rent (3BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />

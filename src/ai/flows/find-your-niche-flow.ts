@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview An AI agent that recommends suitable regions and countries for teachers based on their profile and preferences.
@@ -70,13 +69,13 @@ const findYourNookPrompt = ai.definePrompt({
   name: 'findYourNookPrompt',
   input: { schema: FindYourNookInputSchema },
   output: { schema: FindYourNookOutputSchema },
-  prompt: `You are an expert career advisor specializing in international teaching opportunities. Your task is to analyze a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. Consider their preferred regions and curriculums strongly when making recommendations. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to your 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
+  prompt: `You are an expert career adviser specialising in international teaching opportunities. Your task is to analyse a teacher's profile and preferences, then recommend suitable regions or countries for them to teach in. Consider their preferred regions and curriculums strongly when making recommendations. A key reason teachers seek new roles is career stagnation (78% of movers); pay close attention to your 'growth' goal and suggest locations or specific schools with strong professional development or leadership pathways.
 
 Provide clear, concise recommendations along with detailed reasoning for each, explaining how the location aligns with your qualifications, experience, age, specific preferences, primary goal, and familyStatus. Do not recommend your current location. When referring to my experience, please use descriptive British English (e.g., 'a teacher with considerable experience') rather than quoting the exact number of years.
 
 You can use your current salary as a benchmark for what might be an attractive offer, but do not make it the primary factor unless your goal is 'saving'.
 
-After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on your subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching License might be a good fit for a school with a US curriculum. Your reasoning for recommending a school should be brief and mention this connection.
+After recommending a region/country, you MUST look at the list of available schools and recommend specific schools from that list that are located in the recommended region/country. Base your school recommendations on your subject and qualifications, connecting them to the school's curriculum. For example, a teacher with a US State Teaching Licence might be a good fit for a school with a US curriculum. Your reasoning for recommending a school should be brief and mention this connection.
 
 Your Profile:
 - Age: {{{age}}}

@@ -41,7 +41,7 @@ export function LeopardFishInsights({ school }: { school: School }) {
                 {loading && (
                     <div className="flex items-center justify-center flex-grow py-8 min-h-[200px]">
                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                        <p className="ml-4 text-muted-foreground">Analyzing reviews...</p>
+                        <p className="ml-4 text-muted-foreground">Analysing reviews...</p>
                     </div>
                 )}
                 {result?.error && (
