@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -11,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Info, Landmark, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users, Loader2 } from 'lucide-react';
+import { Calculator, Info, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users, Loader2, Printer, Plus, Banknote, Medal } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -47,20 +46,20 @@ const taxData: { [key: string]: {
 } } = {
     "Italy": {
         currency: "EUR",
-        socialSecurity: { rate: 0.0919 }, // Employee INPS contribution
-        childTaxCredit: 950, // Simplified annual credit per child
+        socialSecurity: { rate: 0.0919 },
+        childTaxCredit: 950,
         specialRegime: {
             name: "New Arrival Tax Discount",
             description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime). Social security is still calculated on the full gross salary.",
             taxablePercentage: 0.30
         },
         filingStatuses: {
-            single: { brackets: [ // IRPEF 2024 (simplified)
+            single: { brackets: [
                 { upto: 28000, rate: 0.23 },
                 { upto: 50000, rate: 0.35 },
                 { upto: Infinity, rate: 0.43 },
             ]},
-            married: { brackets: [ // Italy has individual taxation
+            married: { brackets: [
                 { upto: 28000, rate: 0.23 },
                 { upto: 50000, rate: 0.35 },
                 { upto: Infinity, rate: 0.43 },
@@ -69,15 +68,15 @@ const taxData: { [key: string]: {
     },
     "Japan": {
         currency: "JPY",
-        socialSecurity: { rate: 0.145, cap: 8160000 }, // Simplified Pension + Health
-        childTaxCredit: 200000, // Simplified annual credit
-        filingStatuses: { // Simplified, actual system is more complex
+        socialSecurity: { rate: 0.145, cap: 8160000 },
+        childTaxCredit: 200000,
+        filingStatuses: {
             single: { brackets: [
                 { upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 },
                 { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 },
                 { upto: Infinity, rate: 0.45 },
             ]},
-            married: { brackets: [ // Simplified by increasing lower brackets
+            married: { brackets: [
                 { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 },
                 { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 },
                 { upto: Infinity, rate: 0.45 },
@@ -86,9 +85,9 @@ const taxData: { [key: string]: {
     },
     "Netherlands": {
         currency: "EUR",
-        socialSecurity: { rate: 0.2765, cap: 38098 }, // Volksverzekeringen
-        childTaxCredit: 800, // Simplified
-        filingStatuses: { // Individual taxation
+        socialSecurity: { rate: 0.2765, cap: 38098 },
+        childTaxCredit: 800,
+        filingStatuses: {
             single: { brackets: [
                 { upto: 38098, rate: 0.0932 },
                 { upto: 75518, rate: 0.3697 },
@@ -103,15 +102,15 @@ const taxData: { [key: string]: {
     },
     "Singapore": {
         currency: "SGD",
-        socialSecurity: { rate: 0.20, cap: 6000 * 12 }, // Employee CPF contribution
-        childTaxCredit: 2000, // Simplified
+        socialSecurity: { rate: 0.20, cap: 6000 * 12 },
+        childTaxCredit: 2000,
         filingStatuses: {
             single: { brackets: [
                 { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
                 { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
                 { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
             ]},
-            married: { brackets: [ // Same individual taxation
+            married: { brackets: [
                 { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
                 { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
                 { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
@@ -120,9 +119,9 @@ const taxData: { [key: string]: {
     },
     "South Korea": {
         currency: "KRW",
-        socialSecurity: { rate: 0.09, cap: 70800000 }, // Pension + Health + Employment
-        childTaxCredit: 150000, // Simplified
-        filingStatuses: { // Individual taxation
+        socialSecurity: { rate: 0.09, cap: 70800000 },
+        childTaxCredit: 150000,
+        filingStatuses: {
             single: { brackets: [
                 { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
                 { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
@@ -137,14 +136,14 @@ const taxData: { [key: string]: {
     },
     "Switzerland": {
         currency: "CHF",
-        socialSecurity: { rate: 0.064 }, // Simplified AHV/DI/EO/ALV
-        childTaxCredit: 1200, // Simplified
+        socialSecurity: { rate: 0.064 },
+        childTaxCredit: 1200,
         filingStatuses: {
-            single: { brackets: [ // Simplified combined cantonal/federal for Zurich
+            single: { brackets: [
                 { upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 },
                 { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 },
             ]},
-            married: { brackets: [ // Simplified married brackets
+            married: { brackets: [
                 { upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 },
                 { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 },
             ]},
@@ -161,9 +160,9 @@ const taxData: { [key: string]: {
     },
     "United Kingdom": {
         currency: "GBP",
-        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 }, // Simplified NI Class 1
-        childTaxCredit: 0, // Child benefit is a payment, too complex to model as a credit
-        filingStatuses: { // UK tax is individual, so brackets are the same
+        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
+        childTaxCredit: 0,
+        filingStatuses: {
             single: { brackets: [
                 { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
                 { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
@@ -176,8 +175,8 @@ const taxData: { [key: string]: {
     },
     "USA": {
         currency: "USD",
-        socialSecurity: { rate: 0.0765, cap: 168600 }, // Social Security (6.2%) + Medicare (1.45%)
-        childTaxCredit: 2000, // Federal Child Tax Credit
+        socialSecurity: { rate: 0.0765, cap: 168600 },
+        childTaxCredit: 2000,
         filingStatuses: {
             single: { brackets: [
                 { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
@@ -241,6 +240,15 @@ const chartConfig = {
   incomeTax: { label: "Income Tax", color: "hsl(var(--chart-2))" },
   socialContributions: { label: "Social Contributions", color: "hsl(var(--chart-4))" },
 } satisfies ChartConfig;
+
+const getSafetyScore = (rankString: string | undefined): FeatureScore => {
+    if (!rankString) return 'neutral';
+    const rank = parseInt(rankString.replace('Rank ', ''));
+    if (isNaN(rank)) return 'neutral';
+    if (rank <= 20) return 'good';
+    if (rank <= 60) return 'neutral';
+    return 'bad';
+};
 
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
@@ -485,72 +493,6 @@ function TaxCalculatorSection() {
     );
 }
 
-// --- Cost Breakdown Component ---
-const CostItem = ({ icon, label, value, currency }: { icon: React.ReactNode, label: string, value: number, currency: string }) => (
-    <div className="flex justify-between items-center">
-        <span className="flex items-center text-sm text-muted-foreground">{icon} {label}</span>
-        <span className="text-sm">{formatCurrency(value, currency)}</span>
-    </div>
-);
-
-const CostBreakdownCard = ({ costs, currency, familyStatusLabel, onContingencyChange, contingencyValue }: {
-    costs: Record<string, number | string | boolean>;
-    currency: string;
-    familyStatusLabel: string;
-    onContingencyChange: (value: string) => void;
-    contingencyValue: string;
-}) => {
-    const contingencyNumber = parseFloat(contingencyValue) || 0;
-    const finalTotalMonthlyCosts = (costs.totalMonthlyCosts as number) + contingencyNumber;
-
-    return (
-        <div className="space-y-4 flex flex-col justify-between">
-            <div className="space-y-1">
-                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Estimated Costs ({familyStatusLabel})</h3>
-                <div className="space-y-1">
-                    <div className="flex justify-between items-center">
-                        <span className="flex items-center text-sm text-muted-foreground"><Home className="w-4 h-4 mr-2 text-sky-400" /> {costs.rentLabel as string}</span>
-                        <span className="text-sm">
-                            {costs.isHousingProvided
-                                ? <span className="font-semibold text-green-400">Provided ({formatCurrency(costs.rentValueIfProvided as number, currency)})</span>
-                                : formatCurrency(costs.rentCost as number, currency)
-                            }
-                        </span>
-                    </div>
-                    <CostItem icon={<Zap className="w-4 h-4 mr-2 text-yellow-400" />} label="Utilities" value={costs.utilitiesCost as number} currency={currency} />
-                    <CostItem icon={<Wifi className="w-4 h-4 mr-2 text-indigo-400" />} label="Internet" value={costs.internetCost as number} currency={currency} />
-                    <CostItem icon={<Smartphone className="w-4 h-4 mr-2 text-pink-400" />} label="Mobile" value={costs.mobileCost as number} currency={currency} />
-                    <CostItem icon={<Utensils className="w-4 h-4 mr-2 text-amber-400" />} label="Groceries" value={costs.foodCost as number} currency={currency} />
-                    <CostItem icon={<Coffee className="w-4 h-4 mr-2 text-yellow-600" />} label="Dining & Social" value={costs.diningSocialCost as number} currency={currency} />
-                    <CostItem icon={<TramFront className="w-4 h-4 mr-2 text-rose-400" />} label="Transport" value={costs.transportCost as number} currency={currency} />
-                    <CostItem icon={<Car className="w-4 h-4 mr-2 text-neutral-400" />} label="Vehicle" value={costs.vehicleCost as number} currency={currency} />
-                    <CostItem icon={<Stethoscope className="w-4 h-4 mr-2 text-red-400" />} label="Medical Gaps" value={costs.medicalCost as number} currency={currency} />
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground text-sm">
-                            <Milestone className="w-4 h-4 mr-2 text-purple-400" /> Contingency Fund
-                        </Label>
-                        <Input
-                            id="contingency-cost"
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="0"
-                            value={contingencyValue}
-                            onChange={(e) => onContingencyChange(e.target.value)}
-                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className="space-y-4">
-                <Separator className="my-4"/>
-                <div className="flex justify-between items-center font-bold text-lg">
-                    <span className="text-primary-foreground">Total Estimated Costs</span>
-                    <span className="text-red-400">{formatCurrency(finalTotalMonthlyCosts, currency)}</span>
-                </div>
-            </div>
-        </div>
-    );
-}
 
 // --- True Costs Code ---
 type FeatureScore = 'good' | 'neutral' | 'bad';
@@ -800,6 +742,7 @@ function TrueCostsSection() {
   const [partnerIncome, setPartnerIncome] = useState('');
   const [gratuityBonus, setGratuityBonus] = useState('');
   const [contingency, setContingency] = useState('');
+  const [homeCountryCommitment, setHomeCountryCommitment] = useState('');
   const data = countrySpecificData[selectedCountry];
 
   const searchParams = useSearchParams();
@@ -831,7 +774,7 @@ function TrueCostsSection() {
   };
   const usdRate = conversionRates[currency] ?? 1;
 
-  const convert = useMemo(() => (amount: number) => amount * usdRate, [usdRate]);
+  const convert = (amount: number) => amount * usdRate;
   
   const schoolsInCountry = useMemo(() => {
     if (!schools) return [];
@@ -874,8 +817,8 @@ function TrueCostsSection() {
     } else {
         setOtherMonthlyBenefits('');
     }
-  }, [selectedSchool, familyStatus, convert]);
-  
+  }, [selectedSchoolId, selectedSchool, familyStatus, currency]);
+
   const familyStatusLabels: {[key: string]: string} = {
     single: 'Single',
     couple: 'Couple',
@@ -883,51 +826,44 @@ function TrueCostsSection() {
     family2: 'Family of 4',
   };
 
-  const calculatedCostsInUSD = useMemo(() => {
-    const defaultCosts = { rentCost: 0, foodCost: 0, transportCost: 0, utilitiesCost: 0, internetCost: 0, mobileCost: 0, diningSocialCost: 0, vehicleCost: 0, medicalCost: 0, totalMonthlyCosts: 0, rentLabel: 'Monthly Rent', isHousingProvided: false, rentValueIfProvided: 0 };
-    if (!selectedSchool) return defaultCosts;
-    
-    const { costOfLiving, intel } = selectedSchool;
+  let adults = 1;
+  let children = 0;
+  if (familyStatus === 'couple') {
+    adults = 2;
+    children = 0;
+  } else if (familyStatus === 'family') {
+    adults = 2;
+    children = 1;
+  } else if (familyStatus === 'family2') {
+    adults = 2;
+    children = 2;
+  }
 
-    let adults = 1;
-    let children = 0;
-    if (familyStatus === 'couple') adults = 2;
-    else if (familyStatus === 'family') { adults = 2; children = 1; }
-    else if (familyStatus === 'family2') { adults = 2; children = 2; }
-    
-    const { rent, label } = getRentForFamily(costOfLiving, familyStatus);
-    const rentCost = intel.housing.provided ? 0 : rent;
-    
-    const foodCost = (costOfLiving.food ?? 0) * (adults + 0.5 * children);
-    const transportCost = (costOfLiving.transport ?? 0) * (adults + 0.3 * children);
+  const calculateTotal = (school: School | null | undefined) => {
+    if (!school) return 0;
+    const { costOfLiving, intel } = school;
+    const foodCost = (costOfLiving.food ?? 0) * adults + (costOfLiving.food ?? 0) * 0.5 * children;
+    const transportCost = (costOfLiving.transport ?? 0) * adults + (costOfLiving.transport ?? 0) * 0.3 * children;
     const mobileCost = (costOfLiving.mobile ?? 0) * adults;
     const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
-    const medicalCost = (costOfLiving.uncoveredMedical ?? 0) * (adults + 0.5 * children);
-    
-    const utilitiesMultiplier = 1 + (adults - 1) * 0.2 + children * 0.1;
-    const utilitiesCost = (costOfLiving.utilities ?? 0) * utilitiesMultiplier;
-    
-    const internetCost = costOfLiving.internet ?? 0;
-    const vehicleCost = costOfLiving.vehicleInsuranceMaint ?? 0;
-    
-    const total = rentCost + foodCost + transportCost + utilitiesCost + internetCost + mobileCost + diningSocialCost + vehicleCost + medicalCost;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical ?? 0) * adults + (costOfLiving.uncoveredMedical ?? 0) * 0.5 * children;
 
-    return {
-      rentCost,
-      foodCost,
-      transportCost,
-      utilitiesCost,
-      internetCost,
-      mobileCost,
-      diningSocialCost,
-      vehicleCost,
-      medicalCost,
-      totalMonthlyCosts: total,
-      rentLabel: label,
-      isHousingProvided: intel.housing.provided,
-      rentValueIfProvided: rent,
-    };
-  }, [selectedSchool, familyStatus]);
+    const { rent } = getRentForFamily(costOfLiving, familyStatus);
+    const apartmentCost = intel.housing.provided ? 0 : rent;
+
+    const total =
+      apartmentCost +
+      foodCost +
+      transportCost +
+      (costOfLiving.utilities ?? 0) +
+      (costOfLiving.internet ?? 0) +
+      mobileCost +
+      diningSocialCost +
+      (costOfLiving.vehicleInsuranceMaint ?? 0) +
+      uncoveredMedicalCost;
+      
+    return total;
+  };
   
   const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
@@ -946,7 +882,7 @@ function TrueCostsSection() {
     return 0;
   };
 
-  const avgGrossAnnualSalary = getAverageAnnualSalary(selectedSchool?.intel.salary.value);
+  const avgGrossAnnualSalary = selectedSchool ? getAverageAnnualSalary(selectedSchool.intel.salary.value) : 0;
   const estimatedNetMonthlySalaryUSD = (avgGrossAnnualSalary * 0.8) / 12;
 
   const numericNetMonthlySalary = parseFloat(offeredNetMonthlySalary) || 0;
@@ -955,20 +891,30 @@ function TrueCostsSection() {
   const numericPartnerIncome = parseFloat(partnerIncome) || 0;
   const numericContingency = parseFloat(contingency) || 0;
   const numericGratuityBonus = parseFloat(gratuityBonus) || 0;
+  const numericHomeCommitment = parseFloat(homeCountryCommitment) || 0;
 
-  const salaryToUse = numericNetMonthlySalary > 0 ? numericNetMonthlySalary : convert(estimatedNetMonthlySalaryUSD);
+  const offeredNetMonthlySalaryInUSD = numericNetMonthlySalary > 0 ? numericNetMonthlySalary / usdRate : 0;
+  const otherMonthlyBenefitsInUSD = numericOtherMonthlyBenefits / usdRate;
+  const utilitiesAllowanceInUSD = numericUtilitiesAllowance / usdRate;
+  const partnerIncomeInUSD = numericPartnerIncome / usdRate;
+  const contingencyInUSD = numericContingency / usdRate;
+  const gratuityBonusInUSD = numericGratuityBonus / usdRate;
+  const homeCommitmentInUSD = numericHomeCommitment / usdRate;
 
-  const totalMonthlyPackage = salaryToUse + numericOtherMonthlyBenefits + numericUtilitiesAllowance + numericPartnerIncome + numericGratuityBonus;
-  const finalTotalMonthlyCosts = convert(calculatedCostsInUSD.totalMonthlyCosts) + numericContingency;
-  const monthlySavings = totalMonthlyPackage - finalTotalMonthlyCosts;
+  const salaryToUseInUSD = offeredNetMonthlySalaryInUSD > 0 ? offeredNetMonthlySalaryInUSD : estimatedNetMonthlySalaryUSD;
+
+  const totalMonthlyPackage = salaryToUseInUSD + otherMonthlyBenefitsInUSD + utilitiesAllowanceInUSD + partnerIncomeInUSD + gratuityBonusInUSD;
+  const totalMonthlyCosts = (selectedSchool ? calculateTotal(selectedSchool) : 0) + contingencyInUSD + homeCommitmentInUSD;
+  const monthlySavings = totalMonthlyPackage - totalMonthlyCosts;
   const annualSavings = monthlySavings * 12;
+
   
   let savingsDescription: React.ReactNode = data.savings.text;
   let savingsScore: FeatureScore = data.savings.score;
 
   if (selectedSchool) {
-    const monthlyIncome = convert(salaryToUseInUSD);
-    const formattedSavings = formatCurrency(annualSavings, currency);
+    const monthlyIncome = salaryToUseInUSD;
+    const formattedSavings = formatCurrency(annualSavings * usdRate, currency);
 
     savingsDescription = `Based on an estimated net monthly income and your lifestyle costs, your projected annual savings are approximately ${formattedSavings}.`;
 
@@ -1062,14 +1008,6 @@ function TrueCostsSection() {
     homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments back home.`;
     homeObligationsData.score = 'neutral';
 
-    const getSafetyScore = (rankString: string | undefined): FeatureScore => {
-        if (!rankString) return 'neutral';
-        const rank = parseInt(rankString.replace('Rank ', ''));
-        if (rank <= 20) return 'good';
-        if (rank <= 60) return 'neutral';
-        return 'bad';
-    };
-
     lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
     
     if (isLoadingSchools) {
@@ -1079,10 +1017,10 @@ function TrueCostsSection() {
           </div>
         );
     }
-    
+
   return (
     <div className="max-w-5xl mx-auto">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 print:hidden">
           <div>
             <Label htmlFor="country-select" className="text-base font-semibold block text-center mb-2">Target Country</Label>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
@@ -1112,7 +1050,7 @@ function TrueCostsSection() {
           </div>
           <div>
             <Label htmlFor="family-status-select" className="text-base font-semibold block text-center mb-2">Family Status</Label>
-            <Select value={familyStatus} onValueChange={(value) => setFamilyStatus(value as FamilyStatus)}>
+            <Select value={familyStatus} onValueChange={(v) => setFamilyStatus(v as FamilyStatus)}>
               <SelectTrigger id="family-status-select">
                 <SelectValue placeholder="Select family status" />
               </SelectTrigger>
@@ -1126,32 +1064,42 @@ function TrueCostsSection() {
           </div>
         </div>
 
+        <div className="flex justify-end mb-4 print:hidden">
+            <Button onClick={() => window.print()} variant="outline" size="sm" className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px]">
+                <Printer className="mr-2 h-3 w-3" />
+                Print Intel Report (PDF)
+            </Button>
+        </div>
+
         {selectedSchool && (
-            <Card id="financial-snapshot" className="mb-8 bg-card/70 backdrop-blur-sm border-border scroll-mt-24">
+            <Card id="financial-snapshot" className="mb-8 bg-card/70 backdrop-blur-sm border-border scroll-mt-24 print:bg-white print:text-black print:shadow-none print:border-black/10">
                 <CardHeader className="flex-row items-center justify-between pb-4">
                     <div>
-                        <CardTitle className="flex flex-wrap items-baseline text-xl">
-                            <LineChart className="w-5 h-5 mr-2 text-primary shrink-0" />
+                        <CardTitle className="flex flex-wrap items-baseline text-xl print:text-black">
+                            <LineChart className="w-5 h-5 mr-2 text-primary shrink-0 print:hidden" />
                             <span>Financial Snapshot:</span>
-                            <span className="ml-2 text-lg text-muted-foreground font-medium normal-case tracking-normal">{selectedSchool.name}</span>
+                            <span className="ml-2 text-lg text-muted-foreground font-medium normal-case tracking-normal print:text-black">{selectedSchool.name}</span>
                         </CardTitle>
-                        <CardDescription className="mt-1">
-                             Use our <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}><DialogTrigger asChild><span className="text-sky-400 hover:underline cursor-pointer">Tax Calculator</span></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Worldwide Salary Tax Calculator</DialogTitle><CardDescription>
+                        <CardDescription className="mt-1 print:text-gray-600">
+                             Use our <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}><DialogTrigger asChild><span className="text-sky-400 hover:underline cursor-pointer print:hidden">Tax Calculator</span></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Worldwide Salary Tax Calculator</DialogTitle><CardDescription>
                             Estimate your take-home pay in different countries. This tool calculates based on standard local resident tax rates.
-                        </CardDescription></DialogHeader><TaxCalculatorSection /></DialogContent></Dialog> and Family Status selector  to ensure best results.
+                        </CardDescription></DialogHeader><TaxCalculatorSection /></DialogContent></Dialog> and Family Status selector to ensure best results.
                         </CardDescription>
                     </div>
-                    <div className="w-[120px]">
+                    <div className="w-[120px] print:hidden">
                         <Select value={currency} onValueChange={setCurrency}>
                             <SelectTrigger id="currency-select-page">
                                 <SelectValue placeholder="Currency" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="GBP">GBP (£)</SelectItem>
-                                <SelectItem value="USD">USD ($)</SelectItem>
-                                <SelectItem value="EUR">EUR (€)</SelectItem>
+                                <SelectItem value="GBP">GBP (GBP)</SelectItem>
+                                <SelectItem value="USD">USD (USD)</SelectItem>
+                                <SelectItem value="EUR">EUR (EUR)</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                    <div className="hidden print:block font-bold text-lg uppercase tracking-widest">
+                        {currency} REPORT
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -1159,116 +1107,199 @@ function TrueCostsSection() {
                         
                         <div className="space-y-4 flex flex-col justify-between">
                             <div className="space-y-2">
-                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2">Income &amp; Benefits (Monthly)</h3>
+                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2 print:text-black print:border-black">Income &amp; Benefits (Monthly)</h3>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground">
-                                            <Pencil className="w-4 h-4 mr-2 text-green-400" /> Your Net Monthly Salary
+                                        <Label htmlFor="offered-salary" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Pencil className="w-4 h-4 mr-2 text-green-400 print:hidden" /> Your Net Monthly Salary
                                         </Label>
-                                        <Input
-                                            id="offered-salary"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder={`${Math.round(convert(estimatedNetMonthlySalaryUSD))}`}
-                                            value={offeredNetMonthlySalary}
-                                            onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="offered-salary"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder={`${Math.round(convert(estimatedNetMonthlySalaryUSD))}`}
+                                                value={offeredNetMonthlySalary}
+                                                onChange={(e) => setOfferedNetMonthlySalary(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground">
-                                            <Award className="w-4 h-4 mr-2 text-blue-400" /> Housing Benefit Est.
+                                        <Label htmlFor="other-benefits" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Award className="w-4 h-4 mr-2 text-blue-400 print:hidden" /> Housing Benefit Est.
                                         </Label>
-                                        <Input
-                                            id="other-benefits"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={otherMonthlyBenefits}
-                                            onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="other-benefits"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={otherMonthlyBenefits}
+                                                onChange={(e) => setOtherMonthlyBenefits(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground">
-                                            <Zap className="w-4 h-4 mr-2 text-yellow-400" /> Utilities Allowance
+                                        <Label htmlFor="utilities-allowance" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Zap className="w-4 h-4 mr-2 text-yellow-400 print:hidden" /> Utilities Allowance
                                         </Label>
-                                        <Input
-                                            id="utilities-allowance"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={utilitiesAllowance}
-                                            onChange={(e) => setUtilitiesAllowance(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="utilities-allowance"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={utilitiesAllowance}
+                                                onChange={(e) => setUtilitiesAllowance(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="partner-income" className="flex items-center text-muted-foreground">
-                                            <Users className="w-4 h-4 mr-2 text-purple-400" /> Other / Partner Income
+                                        <Label htmlFor="partner-income" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Users className="w-4 h-4 mr-2 text-purple-400 print:hidden" /> Other / Partner Income
                                         </Label>
-                                        <Input
-                                            id="partner-income"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={partnerIncome}
-                                            onChange={(e) => setPartnerIncome(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="partner-income"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={partnerIncome}
+                                                onChange={(e) => setPartnerIncome(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="gratuity-bonus" className="flex items-center text-muted-foreground">
-                                            <Award className="w-4 h-4 mr-2 text-yellow-500" /> Gratuity / Bonus
+                                        <Label htmlFor="gratuity-bonus" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Award className="w-4 h-4 mr-2 text-yellow-500 print:hidden" /> Gratuity / Bonus
                                         </Label>
-                                        <Input
-                                            id="gratuity-bonus"
-                                            type="text"
-                                            inputMode="numeric"
-                                            placeholder="0"
-                                            value={gratuityBonus}
-                                            onChange={(e) => setGratuityBonus(e.target.value)}
-                                            className="mt-0 max-w-[120px] h-8 text-right bg-input/40"
-                                        />
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="gratuity-bonus"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={gratuityBonus}
+                                                onChange={(e) => setGratuityBonus(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="space-y-4">
-                                <Separator className="my-4"/>
-                                <div className="flex justify-between items-center font-bold text-lg">
-                                    <span className="text-primary-foreground">Total Monthly Package</span>
-                                    <span className="text-green-400">{formatCurrency(totalMonthlyPackage, currency)}</span>
+                                <Separator className="my-4 print:border-black"/>
+                                <div className="flex justify-between items-center font-bold text-lg print:text-black">
+                                    <span className="text-primary-foreground print:text-black">Total Monthly Package</span>
+                                    <span className="text-green-400 print:text-green-700">{formatCurrency(totalMonthlyPackage * usdRate, currency)}</span>
                                 </div>
                             </div>
                         </div>
 
-                       <CostBreakdownCard 
-                            costs={calculatedCostsInUSD} 
-                            currency={currency} 
-                            familyStatusLabel={familyStatusLabels[familyStatus]}
-                            contingencyValue={contingency}
-                            onContingencyChange={setContingency}
-                        />
-
+                        <div className="space-y-4 flex flex-col justify-between">
+                             <div className="space-y-1">
+                                <h3 className="font-semibold text-lg text-foreground border-b pb-2 mb-2 print:text-black print:border-black">Estimated Costs ({familyStatusLabels[familyStatus]})</h3>
+                                <div className="space-y-1 text-sm text-muted-foreground print:text-gray-600">
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Home className="w-4 h-4 mr-2 text-sky-400 print:hidden" /> Monthly Rent ({familyStatus === 'single' ? '1BR' : '2BR+'})</span>
+                                        <span className="print:font-bold print:text-black">{selectedSchool.intel.housing.provided ? "Provided" : formatCurrency(getRentForFamily(selectedSchool.costOfLiving, familyStatus).rent * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400 print:hidden" /> Utilities</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.utilities ?? 0) * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400 print:hidden" /> Internet</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.internet ?? 0) * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400 print:hidden" /> Mobile</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.mobile ?? 0) * adults * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400 print:hidden" /> Groceries</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency(((selectedSchool.costOfLiving.food ?? 0) * adults + (selectedSchool.costOfLiving.food ?? 0) * 0.5 * children) * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600 print:hidden" /> Dining &amp; Social</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.diningSocial ?? 0) * adults * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400 print:hidden" /> Transport</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency(((selectedSchool.costOfLiving.transport ?? 0) * adults + (selectedSchool.costOfLiving.transport ?? 0) * 0.3 * children) * usdRate, currency)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="home-commitment" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Globe className="w-4 h-4 mr-2 text-sky-400 print:hidden" /> Home Country Commitment
+                                        </Label>
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="home-commitment"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={homeCountryCommitment}
+                                                onChange={(e) => setHomeCountryCommitment(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="contingency-cost" className="flex items-center text-muted-foreground print:text-gray-600">
+                                            <Milestone className="w-4 h-4 mr-2 text-purple-400 print:hidden" /> Contingency Fund
+                                        </Label>
+                                        <div className="relative w-[120px]">
+                                            <Input
+                                                id="contingency-cost"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="0"
+                                                value={contingency}
+                                                onChange={(e) => setContingency(e.target.value)}
+                                                className="mt-0 max-w-[120px] h-8 text-right bg-input/40 print:bg-transparent print:border-none print:text-black print:p-0 print:font-bold"
+                                            />
+                                            <span className="hidden print:inline-block ml-1 text-[8px] font-bold text-gray-400">{currency}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <Separator className="my-4 print:border-black"/>
+                                <div className="flex justify-between items-center font-bold text-lg print:text-black">
+                                    <span className="text-primary-foreground print:text-black">Total Estimated Costs</span>
+                                    <span className="text-red-400 print:text-red-700">{formatCurrency(totalMonthlyCosts * usdRate, currency)}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div className="pt-6">
-                        <Separator className="mb-6" />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-                            <div className={cn("p-4 rounded-lg", monthlySavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
-                                <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED MONTHLY SAVINGS</h4>
-                                <p className={cn("text-3xl font-bold mt-1", monthlySavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(monthlySavings, currency)}
+                        <Separator className="mb-6 print:border-black" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center print:grid-cols-2">
+                            <div className={cn("p-4 rounded-lg print:border print:border-gray-200", monthlySavings >= 0 ? "bg-green-500/10 print:bg-green-50" : "bg-red-500/10 print:bg-red-50")}>
+                                <h4 className="text-sm font-semibold text-muted-foreground print:text-gray-600 uppercase tracking-widest">PROJECTED MONTHLY SAVINGS</h4>
+                                <p className={cn("text-3xl font-bold mt-1", monthlySavings >= 0 ? "text-green-400 print:text-green-700" : "text-red-400 print:text-red-700")}>
+                                    {formatCurrency(monthlySavings * usdRate, currency)}
                                 </p>
                             </div>
-                             <div className={cn("p-4 rounded-lg", annualSavings >= 0 ? "bg-green-500/10" : "bg-red-500/10")}>
-                                <h4 className="text-sm font-semibold text-muted-foreground">PROJECTED ANNUAL SAVINGS</h4>
-                                <p className={cn("text-3xl font-bold mt-1", annualSavings >= 0 ? "text-green-400" : "text-red-400")}>
-                                    {formatCurrency(annualSavings, currency)}
+                             <div className={cn("p-4 rounded-lg print:border print:border-gray-200", annualSavings >= 0 ? "bg-green-500/10 print:bg-green-50" : "bg-red-500/10 print:bg-red-50")}>
+                                <h4 className="text-sm font-semibold text-muted-foreground print:text-gray-600 uppercase tracking-widest">PROJECTED ANNUAL SAVINGS</h4>
+                                <p className={cn("text-3xl font-bold mt-1", annualSavings >= 0 ? "text-green-400 print:text-green-700" : "text-red-400 print:text-red-700")}>
+                                    {formatCurrency(annualSavings * usdRate, currency)}
                                 </p>
                             </div>
                         </div>
-                        <div className="mt-6 text-center">
+                        <div className="mt-6 text-center print:hidden">
                            <p className="text-muted-foreground text-sm">
                                 Use our{' '}
                                 <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}>
@@ -1294,11 +1325,11 @@ function TrueCostsSection() {
         )}
 
         <div className="mt-12 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 print:grid-cols-2">
+                <Card id="package-deals" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24 print:bg-white print:text-black print:shadow-none print:border-black/10">
                     <CardHeader>
-                        <CardTitle>Intel</CardTitle>
-                        <p className="text-sm text-muted-foreground capitalize pt-1">
+                        <CardTitle className="print:text-black">Intel</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1 print:text-gray-600">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                             {' | '}
@@ -1308,7 +1339,7 @@ function TrueCostsSection() {
                     <CardContent className="flex-grow pt-0">
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<FileText className="w-5 h-5" />}
+                                icon={<FileText className="w-5 h-5 print:hidden" />}
                                 title="Tax Status"
                                 description={<>
                                     {contractPerksData.taxStatus.text}
@@ -1317,31 +1348,31 @@ function TrueCostsSection() {
                                 percentage={contractPerksData.taxStatus.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Home className="w-5 h-5" />}
+                                icon={<Home className="w-5 h-5 print:hidden" />}
                                 title="Housing Arrangement"
                                 description={contractPerksData.housing.text}
                                 score={contractPerksData.housing.score}
                                 percentage={contractPerksData.housing.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Plane className="w-5 h-5" />}
+                                icon={<Plane className="w-5 h-5 print:hidden" />}
                                 title="Annual Flight"
                                 description={contractPerksData.flightAllowance.text}
                                 score={contractPerksData.flightAllowance.score}
                                 percentage={contractPerksData.flightAllowance.percentage}
                             />
                         </div>
-                        <Separator className="my-4" />
+                        <Separator className="my-4 print:border-black" />
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<SchoolIcon className="w-5 h-5" />}
+                                icon={<SchoolIcon className="w-5 h-5 print:hidden" />}
                                 title="Dependent Tuition"
                                 description={contractPerksData.dependentTuition.text}
                                 score={contractPerksData.dependentTuition.score}
                                 percentage={contractPerksData.dependentTuition.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Award className="w-5 h-5" />}
+                                icon={<Award className="w-5 h-5 print:hidden" />}
                                 title="Gratuity"
                                 description={contractPerksData.gratuity.text}
                                 score={contractPerksData.gratuity.score}
@@ -1351,10 +1382,10 @@ function TrueCostsSection() {
                     </CardContent>
                 </Card>
 
-                <Card id="true-lifestyle" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
+                <Card id="true-lifestyle" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24 print:bg-white print:text-black print:shadow-none print:border-black/10">
                     <CardHeader>
-                        <CardTitle>Lifestyle</CardTitle>
-                        <p className="text-sm text-muted-foreground capitalize pt-1">
+                        <CardTitle className="print:text-black">Lifestyle</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1 print:text-gray-600">
                             {selectedCountry}
                             {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                             {' | '}
@@ -1364,38 +1395,38 @@ function TrueCostsSection() {
                     <CardContent className="flex-grow pt-0">
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<Globe className="w-5 h-5" />}
+                                icon={<Globe className="w-5 h-5 print:hidden" />}
                                 title="Imported Goods"
                                 description={lifestyleData.importedGoods.text}
                                 score={lifestyleData.importedGoods.score}
                                 percentage={lifestyleData.importedGoods.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Thermometer className="w-5 h-5" />}
+                                icon={<Thermometer className="w-5 h-5 print:hidden" />}
                                 title="Utilities (AC/Heat)"
                                 description={lifestyleData.utilities.text}
                                 score={lifestyleData.utilities.score}
                                 percentage={lifestyleData.utilities.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Car className="w-5 h-5" />}
+                                icon={<Car className="w-5 h-5 print:hidden" />}
                                 title="Transportation"
                                 description={lifestyleData.transportation.text}
                                 score={lifestyleData.transportation.score}
                                 percentage={lifestyleData.transportation.percentage}
                             />
                             <FeatureDetail 
-                                icon={<Beer className="w-5 h-5" />}
+                                icon={<Beer className="w-5 h-5 print:hidden" />}
                                 title="Social &amp; Leisure"
                                 description={lifestyleData.socialLeisure.text}
                                 score={lifestyleData.socialLeisure.score}
                                 percentage={lifestyleData.socialLeisure.percentage}
                             />
                         </div>
-                        <Separator className="my-4" />
+                        <Separator className="my-4 print:border-black" />
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<ShieldAlert className="w-5 h-5" />}
+                                icon={<ShieldAlert className="w-5 h-5 print:hidden" />}
                                 title="Safety &amp; Travel Advice"
                                 description={lifestyleData.safety.text}
                                 score={lifestyleData.safety.score}
@@ -1405,11 +1436,11 @@ function TrueCostsSection() {
                     </CardContent>
                 </Card>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 print:grid-cols-2">
+                <Card id="financial-strategy-card" className="bg-card/70 backdrop-blur-sm border-border flex flex-col scroll-mt-24 print:bg-white print:text-black print:shadow-none print:border-black/10">
                     <CardHeader>
-                        <CardTitle>Financial</CardTitle>
-                        <p className="text-sm text-muted-foreground capitalize pt-1">
+                        <CardTitle className="print:text-black">Financial</CardTitle>
+                        <p className="text-sm text-muted-foreground capitalize pt-1 print:text-gray-600">
                                 {selectedCountry}
                                 {selectedSchool ? ` | ${selectedSchool.name}` : ''}
                                 {' | '}
@@ -1419,22 +1450,22 @@ function TrueCostsSection() {
                     <CardContent className="flex-grow pt-0">
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<ArrowRightLeft className="w-5 h-5" />}
+                                icon={<ArrowRightLeft className="w-5 h-5 print:hidden" />}
                                 title="Currency &amp; Fees"
                                 description={data.currency.text}
                                 score={data.currency.score}
                             />
                             <FeatureDetail 
-                                icon={<PiggyBank className="w-5 h-5" />}
+                                icon={<PiggyBank className="w-5 h-5 print:hidden" />}
                                 title="Home Obligations"
                                 description={homeObligationsData.text}
                                 score={homeObligationsData.score}
                             />
                         </div>
-                        <Separator className="my-4" />
+                        <Separator className="my-4 print:border-black" />
                         <div className="space-y-4">
                             <FeatureDetail 
-                                icon={<LineChart className="w-5 h-5" />}
+                                icon={<LineChart className="w-5 h-5 print:hidden" />}
                                 title="True Savings Potential"
                                 description={savingsDescription}
                                 score={savingsScore}
@@ -1442,23 +1473,23 @@ function TrueCostsSection() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card id="red-flags" className="bg-destructive/10 border-destructive/50 scroll-mt-24">
+                <Card id="red-flags" className="bg-destructive/10 border-destructive/50 scroll-mt-24 print:bg-red-50 print:text-black print:shadow-none print:border-red-200">
                     <CardHeader>
-                        <CardTitle className="text-white flex items-center gap-2">
-                            <ShieldAlert className="h-6 w-6" />
+                        <CardTitle className="text-white flex items-center gap-2 print:text-red-700">
+                            <ShieldAlert className="h-6 w-6 print:hidden" />
                             Red Flags
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <h4 className="font-semibold text-destructive">🚩 Hidden Tax &amp; Social Security Deductions</h4>
-                            <p className="text-muted-foreground mt-1">
+                            <h4 className="font-semibold text-destructive print:text-red-700">🚩 Hidden Tax &amp; Social Security Deductions</h4>
+                            <p className="text-muted-foreground mt-1 text-sm print:text-gray-700">
                                 Approximately 30% of teachers report being surprised by "hidden" deductions from their gross salary. These can include local income taxes, social security contributions, or even utility fees for school housing. Always ask for a net salary projection or a full breakdown of all potential deductions before signing.
                             </p>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-destructive">🚩 Currency Fluctuations</h4>
-                            <p className="text-muted-foreground mt-1">
+                            <h4 className="font-semibold text-destructive print:text-red-700">🚩 Currency Fluctuations</h4>
+                            <p className="text-muted-foreground mt-1 text-sm print:text-gray-700">
                                 Fewer than 10% of international school contracts include a "currency protection clause." This leaves you vulnerable if the local currency devalues against your home currency, which can significantly impact your savings and ability to meet financial obligations back home. This has been a major issue in countries like Egypt, Turkey, and Argentina recently.
                             </p>
                         </div>
@@ -1468,7 +1499,7 @@ function TrueCostsSection() {
         </div>
 
         
-        <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground print:text-gray-400 print:border-gray-200">
           <p className="animate-pulse-slow">Disclaimer: The figures provided are estimates for illustrative purposes only and do not constitute financial advice. Actual costs and savings may vary based on individual lifestyle, spending habits, and market conditions.</p>
         </div>
     </div>
@@ -1479,18 +1510,13 @@ function TrueCostsSection() {
 export default function FinancialForecasterPage() {
 
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">2. Contract Decoder</h1>
+        <div className="container mx-auto px-4 md:px-6 py-12 print:py-0 print:px-0">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case print:hidden">2. Contract Decoder</h1>
             
-            <section id="true-costs-analysis" className="scroll-mt-20 pt-12">
+            <section id="true-costs-analysis" className="scroll-mt-20 pt-12 print:pt-0">
                <TrueCostsSection />
             </section>
 
         </div>
     )
 }
-
-    
-
-
-
