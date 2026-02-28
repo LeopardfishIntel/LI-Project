@@ -1,8 +1,9 @@
 
 "use client";
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -141,7 +142,7 @@ function ContractDecoderContent() {
                   <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1">
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
-                  Always verify if the salary quoted is 'Net' or 'Gross'. Social security can take up to 15%.
+                  Always verify if the salary quoted is 'Net' or 'Gross'. Ensure this includes Social security deductions.
                 </p>
               </div>
 
