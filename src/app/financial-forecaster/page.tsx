@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -14,6 +14,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
 import { Separator } from '@/components/ui/separator';
+import type { School } from '@/lib/types';
 
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
@@ -36,6 +37,29 @@ const CONVERSION_RATES: Record<string, number> = {
   CAD: 1.36,
   ZAR: 18.4,
   NZD: 1.66,
+};
+
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'China': 'CNY',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Vietnam': 'VND',
+  'USA': 'USD',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD'
 };
 
 // Tactical Order: Priority first (USD, GBP, EUR), then alphabetical
@@ -62,12 +86,22 @@ function ContractDecoderContent() {
   const [homeCountryCost, setHomeCountryCost] = useState('');
   const [studentLoan, setStudentLoan] = useState('');
 
-  const rate = CONVERSION_RATES[currency] || 1;
-
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
       return schools.find(s => s.id === selectedSchoolId);
   }, [selectedSchoolId, schools]);
+
+  // Automated Currency Sync Stage
+  useEffect(() => {
+    if (selectedSchool) {
+      const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
+      if (autoCurrency) {
+        setCurrency(autoCurrency);
+      }
+    }
+  }, [selectedSchool]);
+
+  const rate = CONVERSION_RATES[currency] || 1;
 
   const decodedCosts = useMemo(() => {
     if (!selectedSchool) return null;
@@ -161,7 +195,6 @@ function ContractDecoderContent() {
                 </Select>
               </div>
 
-              {/* DUE DILIGENCE IN-LINE */}
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
                 <div className="text-[10px] text-muted-foreground leading-relaxed">
                   <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5">
@@ -185,8 +218,8 @@ function ContractDecoderContent() {
                       onChange={(e) => setOfferedSalary(e.target.value)}
                     />
                   </div>
-                  <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-10">
+                  <Select value={currency} disabled>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-10 opacity-100">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -215,7 +248,7 @@ function ContractDecoderContent() {
                   <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment (monthly)</Label>
                   <div className="flex gap-2">
                     <a 
-                      href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
+                      href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
