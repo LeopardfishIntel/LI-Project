@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Editorial verification flow for Leopardfish Intel.
@@ -9,13 +10,13 @@ import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
 const VerifyIntelligenceInputSchema = z.object({
-  content: z.string().describe('The clean intelligence text from the staging area.'),
+  content: z.string().describe('The clean intel text from the staging area.'),
   category: z.string().describe('The user-selected category.'),
 });
 export type VerifyIntelligenceInput = z.infer<typeof VerifyIntelligenceInputSchema>;
 
 const VerifyIntelligenceOutputSchema = z.object({
-  polished_text: z.string().describe('The final, grammatically correct intelligence narrative.'),
+  polished_text: z.string().describe('The final, grammatically correct intel narrative.'),
   location: z.string().describe('The specific city or country mentioned.'),
   organisation: z.string().describe('The school or recruitment entity mentioned.'),
   intel_type: z.string().describe('Classification (e.g., Housing, Salary, Conduct).'),
@@ -28,7 +29,7 @@ export async function verifyIntelligence(input: VerifyIntelligenceInput): Promis
 }
 
 const editorPrompt = ai.definePrompt({
-  name: 'verifyIntelligencePrompt',
+  name: 'verifyIntelPrompt',
   input: { schema: VerifyIntelligenceInputSchema },
   output: { schema: VerifyIntelligenceOutputSchema },
   prompt: `You are the Lead Editor for Leopardfish Intel. I have approved this pending report for final verification and publication.
@@ -48,7 +49,7 @@ Content: {{{content}}}`,
 
 export const verifyIntelligenceFlow = ai.defineFlow(
   {
-    name: 'verifyIntelligenceFlow',
+    name: 'verifyIntelFlow',
     inputSchema: VerifyIntelligenceInputSchema,
     outputSchema: VerifyIntelligenceOutputSchema,
   },

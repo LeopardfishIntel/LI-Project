@@ -12,13 +12,13 @@ import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
 const ModerateIntelligenceInputSchema = z.object({
-  content: z.string().describe('The raw intelligence narrative.'),
+  content: z.string().describe('The raw intel narrative.'),
 });
 export type ModerateIntelligenceInput = z.infer<typeof ModerateIntelligenceInputSchema>;
 
 const ModerateIntelligenceOutputSchema = z.object({
   status: z.enum(['pending', 'auto_rejected']).describe('The moderation status.'),
-  clean_text: z.string().describe('The redacted and cleaned intelligence narrative.'),
+  clean_text: z.string().describe('The redacted and cleaned intel narrative.'),
   safety_flags: z.array(z.string()).describe('List of safety concerns identified (e.g., Defamation, PII, Gibberish).'),
   confidence_score: z.number().min(0).max(100).describe('Confidence score from 0-100 based on detail and professionalism.'),
 });
@@ -29,10 +29,10 @@ export async function moderateIntelligence(input: ModerateIntelligenceInput): Pr
 }
 
 const prompt = ai.definePrompt({
-  name: 'moderateIntelligencePrompt',
+  name: 'moderateIntelPrompt',
   input: { schema: ModerateIntelligenceInputSchema },
   output: { schema: ModerateIntelligenceOutputSchema },
-  prompt: `You are a security moderator for Leopardfish Intel. Analyze the following user submission for professional educator intelligence.
+  prompt: `You are a security moderator for Leopardfish Intel. Analyse the following user submission for professional educator intel.
 
 Instructions:
 1. **Check for Malice**: Identify any hate speech, malicious professional defamation, or nonsensical gibberish. Factual reports of poor school conditions are permitted, but baseless personal attacks are flagged.
@@ -46,7 +46,7 @@ Submission Payload:
 
 export const moderateIntelligenceFlow = ai.defineFlow(
   {
-    name: 'moderateIntelligenceFlow',
+    name: 'moderateIntelFlow',
     inputSchema: ModerateIntelligenceInputSchema,
     outputSchema: ModerateIntelligenceOutputSchema,
   },

@@ -109,87 +109,17 @@
           "description": "The official website URL of the school.",
           "format": "uri"
         },
-        "videoUrls": {
-          "type": "array",
-          "description": "A list of URLs to promotional or informational videos about the school.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "averageSalaryMin": {
-          "type": "number",
-          "description": "The estimated minimum average annual salary for teachers at the school."
-        },
-        "averageSalaryMax": {
-          "type": "number",
-          "description": "The estimated maximum average annual salary for teachers at the school."
-        },
-        "averageHousingCost": {
-          "type": "number",
-          "description": "The estimated average monthly housing cost in the school's vicinity."
-        },
-        "savingsPotentialMin": {
-          "type": "number",
-          "description": "The estimated minimum monthly savings potential for teachers."
-        },
-        "savingsPotentialMax": {
-          "type": "number",
-          "description": "The estimated maximum monthly savings potential for teachers."
-        },
-        "teacherStudentRatio": {
-          "type": "number",
-          "description": "The ratio of teachers to students at the school."
-        },
-        "classSizeAverage": {
-          "type": "number",
-          "description": "The average class size at the school."
-        },
-        "curriculum": {
-          "type": "string",
-          "description": "The primary curriculum followed by the school (e.g., 'IB', 'British National Curriculum', 'American Common Core')."
-        },
-        "accreditation": {
-          "type": "string",
-          "description": "The accreditation status or bodies for the school (e.g., 'CIS', 'WASC')."
-        },
-        "schoolType": {
-          "type": "string",
-          "description": "The type of school (e.g., 'International', 'Public', 'Private')."
-        },
-        "isSpotlight": {
-          "type": "boolean",
-          "description": "Indicates if the school is featured as a 'School Spotlight' on the homepage."
-        },
-        "overallRating": {
-          "type": "number",
-          "description": "The average overall rating for the school, typically derived from teacher reviews."
-        }
+        "avSalaryMin": { "type": "number" },
+        "avSalaryMax": { "type": "number" },
+        "avHousingCost": { "type": "number" },
+        "overallRating": { "type": "number" }
       },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "country",
-        "city",
-        "websiteUrl",
-        "averageSalaryMin",
-        "averageSalaryMax",
-        "averageHousingCost",
-        "savingsPotentialMin",
-        "savingsPotentialMax",
-        "teacherStudentRatio",
-        "classSizeAverage",
-        "curriculum",
-        "accreditation",
-        "schoolType",
-        "isSpotlight",
-        "overallRating"
-      ]
+      "required": ["id", "name", "description", "country", "city"]
     },
     "FieldReport": {
-      "title": "Field Intelligence Report",
+      "title": "Field Intel Report",
       "type": "object",
-      "description": "User-submitted intelligence regarding school conditions or contract discrepancies.",
+      "description": "User-submitted intel regarding school conditions or contract discrepancies.",
       "properties": {
         "id": { "type": "string" },
         "category": { "type": "string" },
@@ -208,9 +138,9 @@
       "required": ["category", "organisation", "location", "original_content", "clean_text", "status", "timestamp"]
     },
     "VerifiedIntel": {
-      "title": "Verified Intelligence Dossier",
+      "title": "Verified Intel Dossier",
       "type": "object",
-      "description": "Polished, verified intelligence promoted to the live database.",
+      "description": "Polished, verified intel promoted to the live database.",
       "properties": {
         "id": { "type": "string" },
         "polished_text": { "type": "string" },
@@ -280,7 +210,7 @@
           "schema": {
             "$ref": "#/backend/entities/FieldReport"
           },
-          "description": "Staging area for high-priority field intelligence dossiers before verification."
+          "description": "Staging area for high-priority field intel dossiers before verification."
         }
       },
       {
@@ -290,7 +220,7 @@
           "schema": {
             "$ref": "#/backend/entities/VerifiedIntel"
           },
-          "description": "Verified, high-value intelligence dossiers published to the live platform."
+          "description": "Verified, high-value intel dossiers published to the live platform."
         }
       },
       {

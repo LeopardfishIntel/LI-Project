@@ -22,6 +22,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
@@ -39,6 +40,7 @@ export function FieldIntelligenceModal() {
   const [location, setLocation] = useState('');
   const [intel, setIntel] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
+  const [consent, setConsent] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState('');
@@ -106,6 +108,7 @@ export function FieldIntelligenceModal() {
     setLocation('');
     setIntel('');
     setWebsiteUrl('');
+    setConsent(false);
     setFile(null);
     setStatus('');
     setIsSubmitting(false);
@@ -131,7 +134,6 @@ export function FieldIntelligenceModal() {
     setIsValidating(true);
     setValidationResult(null);
     
-    // Mission Impossible Streaming Feedback
     const statuses = [
       'Accessing Global Education Registry...',
       `Filtering signatures for ${organisation}...`,
@@ -189,6 +191,11 @@ export function FieldIntelligenceModal() {
   const handleTransmit = async () => {
     if (!category || !organisation || !location || !intel) {
       toast({ variant: 'destructive', title: 'Input Required', description: 'Organisation, Location, Category, and Content are mandatory for transmission.' });
+      return;
+    }
+
+    if (!consent) {
+      toast({ variant: 'destructive', title: 'Consent Required', description: 'You must consent to data archival to transmit intel.' });
       return;
     }
 
@@ -289,16 +296,21 @@ export function FieldIntelligenceModal() {
           <>
             <DialogHeader>
               <DialogTitle className="text-primary flex items-center gap-2 stamped-dossier">
-                <ShieldAlert className="size-5" /> Field Intelligence Report
+                <ShieldAlert className="size-5" /> Field Intel Report
               </DialogTitle>
               <DialogDescription className="text-muted-foreground text-xs font-medium">
-                Submit <strong>anonymous</strong> intelligence regarding contract discrepancies, school conduct, substandard housing, or recruitment agency transparency.
+                Submit <strong>anonymous</strong> intel regarding contract discrepancies, school conduct, substandard housing, or recruitment agency transparency.
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
+              <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm">
+                <p className="text-[9px] font-black uppercase text-destructive tracking-widest">Security Advisory</p>
+                <p className="text-[10px] text-muted-foreground leading-tight mt-1">Note: All intel is analysed and checked for transformation into actionable intelligence. Inappropriate or malicious data will be purged.</p>
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="location" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intelligence Location (City/Country)</Label>
+                <Label htmlFor="location" className="text-[10px] uppercase tracking-widest font-black text-primary/70">Intel Location (City/Country)</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -422,6 +434,13 @@ export function FieldIntelligenceModal() {
                 </div>
               </div>
 
+              <div className="flex items-start space-x-2 pt-2">
+                <Checkbox id="consent" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} className="mt-1 border-white/20 data-[state=checked]:bg-primary" />
+                <Label htmlFor="consent" className="text-[10px] text-muted-foreground leading-tight cursor-pointer">
+                  I consent to the secure archival of this intel in Leopardfish Intel databases for the purpose of analysis and transformation into actionable intelligence.
+                </Label>
+              </div>
+
               {status && (
                 <div className="flex items-center gap-2 p-2 rounded bg-primary/5 border border-primary/20">
                   <Loader2 className="size-3 animate-spin text-primary" />
@@ -433,8 +452,8 @@ export function FieldIntelligenceModal() {
             <DialogFooter>
               <Button 
                 onClick={handleTransmit} 
-                disabled={isSubmitting || validationResult?.is_ambiguous}
-                className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6"
+                disabled={isSubmitting || validationResult?.is_ambiguous || !consent}
+                className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <Loader2 className="size-4 animate-spin mr-2" />

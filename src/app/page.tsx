@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -41,7 +42,7 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Perspectives
+              <ShieldCheck className="w-3.5 h-3.5" /> Intel Grade Perspectives
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
@@ -126,13 +127,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Field Intelligence Uplink Section */}
+      {/* Field Intel Uplink Section */}
       <section className="py-16 bg-primary/5 border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="glass p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 rounded-sm">
             <div className="max-w-2xl space-y-4 text-center md:text-left">
               <h3 className="text-2xl md:text-3xl stamped-dossier text-primary flex items-center justify-center md:justify-start gap-3">
-                <Binoculars className="size-8" /> Field Intelligence Uplink
+                <Binoculars className="size-8" /> Field Intel Uplink
               </h3>
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
                 Contribute to the collective safety of the international educator network. Help our analysts identify institutional risks by transmitting on-the-ground reports on contract discrepancies, conduct, or housing issues. All transmissions are strictly <span className="text-white font-bold underline decoration-primary underline-offset-4">anonymous</span> and processed through our secure, encrypted channel.

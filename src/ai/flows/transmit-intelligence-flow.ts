@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview A tactical intelligence transmission flow with automated security moderation and agent notification.
+ * @fileOverview A tactical intel transmission flow with automated security moderation and agent notification.
  *
  * - transmitIntelligence - Secure archival and receipt signal queuing.
  */
@@ -16,7 +16,7 @@ import { moderateIntelligence } from './moderate-intelligence-flow';
 const TransmitIntelligenceInputSchema = z.object({
   category: z.string().describe('The dossier classification.'),
   organisation: z.string().describe('The targeted school or agency.'),
-  location: z.string().describe('The city or country of the intelligence.'),
+  location: z.string().describe('The city or country of the intel.'),
   content: z.string().describe('The narrative payload.'),
   authorId: z.string().optional().describe('The UID of the transmitting agent.'),
   authorEmail: z.string().optional().describe('The email of the transmitting agent.'),
@@ -34,7 +34,7 @@ export async function transmitIntelligence(input: TransmitIntelligenceInput) {
 
 export const transmitIntelligenceFlow = ai.defineFlow(
   {
-    name: 'transmitIntelligenceFlow',
+    name: 'transmitIntelFlow',
     inputSchema: TransmitIntelligenceInputSchema,
     outputSchema: z.string().describe('Success Token'),
   },
@@ -48,8 +48,8 @@ export const transmitIntelligenceFlow = ai.defineFlow(
 
     // 2. Storage Uplink (if evidence provided)
     if (input.file && storage) {
-      console.log('Archiving Intelligence Attachment...');
-      const storagePath = `intelligence/${Date.now()}_${input.file.name}`;
+      console.log('Archiving Intel Attachment...');
+      const storagePath = `intel/${Date.now()}_${input.file.name}`;
       const storageRef = ref(storage, storagePath);
       
       await uploadString(storageRef, input.file.base64, 'data_url', {
