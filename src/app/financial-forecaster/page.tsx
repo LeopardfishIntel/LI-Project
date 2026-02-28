@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -37,7 +38,8 @@ import {
   Thermometer,
   Car,
   Beer,
-  ShieldCheck
+  ShieldCheck,
+  Binoculars
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -160,17 +162,6 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: {
         </div>
     </div>
   );
-};
-
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    if (numbers.length >= 2) return ((numbers[0] + numbers[1]) / 2) * scale;
-    if (numbers.length === 1) return numbers[0] * scale;
-    return 0;
 };
 
 // --- Components ---
@@ -645,7 +636,7 @@ function ContractDecoderContent() {
                         />
                         <Separator className="bg-white/5" />
                         <FeatureDetail 
-                            icon={<ShieldAlert className="size-5" />} 
+                            icon={<ShieldCheck className="size-5" />} 
                             title="Safety & Travel Advice" 
                             description={countryIntel.safety.text} 
                             score={countryIntel.safety.score} 
