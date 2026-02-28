@@ -142,7 +142,7 @@ function ContractDecoderContent() {
                   <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1">
                     <ShieldAlert className="size-3" /> Due Diligence
                   </span>
-                  Always verify if the salary quoted is 'Net' or 'Gross'. Ensure this includes Social security deductions.
+                  Always verify if the salary quoted is 'Net' or 'Gross'. Ensure this includes Social security /Health Insurance deductions. Is Dentist and Optician included?
                 </p>
               </div>
 
