@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Calculator, Info, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users, Loader2, Printer } from 'lucide-react';
+import { Calculator, Info, Home, Plane, School as SchoolIcon, Award, Thermometer, Car, Beer, ArrowRightLeft, PiggyBank, LineChart, FileText, DollarSign, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, Globe, ExternalLink, ShieldAlert, Milestone, GraduationCap, Pencil, Users, Loader2, Printer, Plus, Banknote, Medal } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -25,7 +25,7 @@ import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
 
 
-// --- Tax Calculator Code ---
+// --- Tax Calculator Logic ---
 type TaxBracket = { upto: number; rate: number };
 type FilingStatusBrackets = { brackets: TaxBracket[] };
 type SpecialRegime = {
@@ -192,54 +192,77 @@ const taxData: { [key: string]: {
     },
 };
 
-const conversionRatesToUSD: { [key: string]: number } = { "GBP": 1.25, "EUR": 1.08, "AED": 0.27, "JPY": 0.0064, "CHF": 1.10, "SGD": 0.74, "KRW": 0.00073, "USD": 1 };
-
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
+const CONVERSION_RATES: Record<string, number> = {
+  USD: 1,
+  GBP: 0.78,
+  EUR: 0.92,
+  AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
+  SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
+  CZK: 23.5,
+  AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
 };
 
-const chartConfig = {
-  netPay: { label: "Net Pay", color: "hsl(var(--chart-1))" },
-  incomeTax: { label: "Income Tax", color: "hsl(var(--chart-2))" },
-  socialContributions: { label: "Social Contributions", color: "hsl(var(--chart-4))" },
-} satisfies ChartConfig;
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'China': 'CNY',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Vietnam': 'VND',
+  'USA': 'USD',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD'
+};
+
+const ORDERED_CURRENCIES = [
+  'USD', 'GBP', 'EUR',
+  ...Object.keys(CONVERSION_RATES)
+    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
+    .sort()
+];
+
+type FeatureScore = 'good' | 'neutral' | 'bad';
+
+const getAverageAnnualSalary = (salaryRange?: string): number => {
+    if (!salaryRange) return 0;
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
+    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+    if (!numbers) return 0;
+    
+    const scale = cleanedRange.includes('k') ? 1000 : 1;
+    
+    if (numbers.length >= 2) {
+      return ((numbers[0] + numbers[1]) / 2) * scale;
+    }
+    if (numbers.length === 1) {
+      return numbers[0] * scale;
+    }
+    return 0;
+};
 
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
@@ -248,10 +271,10 @@ function TaxCalculatorSection() {
     const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
     const [dependents, setDependents] = useState('0');
     const [applySpecialRegime, setApplySpecialRegime] = useState(false);
-    const [result, setResult] = useState<{ incomeTax: number, socialSecurity: number, netIncome: number, totalTax: number, effectiveRate: number, taxCredit: number, incomeTaxBeforeCredit: number } | null>(null);
+    const [result, setResult] = useState<any>(null);
     
     const countriesWithCalculators = Object.keys(taxData).sort();
-    const currencies = Object.keys(conversionRatesToUSD).sort();
+    const currencies = ORDERED_CURRENCIES;
 
     useEffect(() => {
         if (taxData[country]) {
@@ -265,7 +288,7 @@ function TaxCalculatorSection() {
     const handleCalculate = () => {
         const income = parseFloat(salary);
         const numDependents = parseInt(dependents) || 0;
-        const incomeInLocalCurrency = income * (conversionRatesToUSD[currency] || 1) / (conversionRatesToUSD[taxData[country].currency] || 1);
+        const incomeInLocalCurrency = income * (CONVERSION_RATES[currency] || 1) / (CONVERSION_RATES[taxData[country].currency] || 1);
         
         if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
             setResult(null);
@@ -275,218 +298,561 @@ function TaxCalculatorSection() {
         setResult(calcResult);
     };
 
-    const chartData = useMemo(() => {
-        if (!result) return [];
-        return [
-            { name: 'netPay', value: result.netIncome, fill: 'var(--color-netPay)' },
-            { name: 'incomeTax', value: result.incomeTax, fill: 'var(--color-incomeTax)' },
-            { name: 'socialContributions', value: result.socialSecurity, fill: 'var(--color-socialContributions)' },
-        ].filter(d => d.value > 0);
-    }, [result]);
-    
-    const CustomLegend = () => {
-      if (!result) return null;
-        
-      const chartItems = [
-        { name: 'netPay', value: result.netIncome },
-        { name: 'incomeTax', value: result.incomeTax },
-        { name: 'socialContributions', value: result.socialSecurity },
-      ];
-      const localCurrency = taxData[country].currency;
-
-      return (
-        <div className="space-y-2 text-sm">
-          <h3 className="font-semibold">Breakdown</h3>
-          {chartItems.map(item => {
-              const config = chartConfig[item.name as keyof typeof chartConfig];
-              if (item.value < 0) return null;
-              
-              return (
-                <div key={item.name}>
-                  <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: config.color }}></span>
-                          <span>{config.label}</span>
-                      </div>
-                      <span className="font-mono font-medium">{formatCurrency(item.value, localCurrency)}</span>
-                  </div>
-                  {item.name === 'incomeTax' && result.taxCredit > 0 && (
-                      <div className="pl-5 mt-1 text-xs space-y-1 text-muted-foreground border-l ml-1.5 pl-4 border-dashed">
-                          <div className="flex justify-between">
-                              <span>Gross Tax</span>
-                              <span>{formatCurrency(result.incomeTaxBeforeCredit, localCurrency)}</span>
-                          </div>
-                          <div className="flex justify-between text-blue-400">
-                              <span>Credits</span>
-                              <span>-{formatCurrency(result.taxCredit, localCurrency)}</span>
-                          </div>
-                      </div>
-                  )}
-                </div>
-              )
-          })}
-        </div>
-      );
-    };
-
-
     return (
-        <div className="max-w-4xl mx-auto">
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Calculator className="w-6 h-6 text-primary" /> Salary Tax Calculator</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="salary">Gross Annual Salary</Label>
-                            <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} placeholder="e.g., 60000" />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="currency">Salary Currency</Label>
-                            <Select value={currency} onValueChange={setCurrency}>
-                                <SelectTrigger id="currency">
-                                    <SelectValue placeholder="Select currency" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="country">Tax Country</Label>
-                            <Select value={country} onValueChange={setCountry}>
-                                <SelectTrigger id="country">
-                                    <SelectValue placeholder="Select country" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-6 md:items-center">
-                        <div className="space-y-2">
-                            <Label>Filing Status</Label>
-                            <RadioGroup name="filingStatus" value={filingStatus} onValueChange={(val: 'single' | 'married') => setFilingStatus(val)} className="flex pt-2 gap-6">
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="single" id="single" />
-                                <Label htmlFor="single" className="font-normal">Single</Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="married" id="married" />
-                                <Label htmlFor="married" className="font-normal">Married</Label>
-                              </div>
-                            </RadioGroup>
-                        </div>
-                         <div className="space-y-2 w-full md:w-48">
-                            <Label htmlFor="dependents">Number of Dependents</Label>
-                            <Select value={dependents} onValueChange={setDependents}>
-                                <SelectTrigger id="dependents">
-                                    <SelectValue placeholder="Select dependents" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="0">0</SelectItem>
-                                    <SelectItem value="1">1</SelectItem>
-                                    <SelectItem value="2">2</SelectItem>
-                                    <SelectItem value="3">3</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="salary">Gross Annual Salary</Label>
+                    <Input id="salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className="bg-background/50 border-white/10 text-right" />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="currency">Salary Currency</Label>
+                    <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger id="currency" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="country">Tax Country</Label>
+                    <Select value={country} onValueChange={setCountry}>
+                        <SelectTrigger id="country" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-6 md:items-center">
+                <div className="space-y-2">
+                    <Label>Filing Status</Label>
+                    <RadioGroup name="filingStatus" value={filingStatus} onValueChange={(val: 'single' | 'married') => setFilingStatus(val)} className="flex pt-2 gap-6">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="single" id="single" />
+                        <Label htmlFor="single" className="font-normal">Single</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="married" id="married" />
+                        <Label htmlFor="married" className="font-normal">Married</Label>
+                      </div>
+                    </RadioGroup>
+                </div>
+                 <div className="space-y-2 w-full md:w-48">
+                    <Label htmlFor="dependents">Dependents</Label>
+                    <Select value={dependents} onValueChange={setDependents}>
+                        <SelectTrigger id="dependents" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            <SelectItem value="0">0</SelectItem>
+                            <SelectItem value="1">1</SelectItem>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="3">3</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
 
-                    {country === 'Italy' && taxData['Italy'].specialRegime && (
-                        <div className="space-y-2 pt-2">
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="special-regime" checked={applySpecialRegime} onCheckedChange={(checked) => setApplySpecialRegime(!!checked)} />
-                                <Label htmlFor="special-regime" className="font-normal">{taxData['Italy'].specialRegime.name}</Label>
-                            </div>
-                            {applySpecialRegime && (
-                                 <Alert className="mt-2" variant="destructive">
-                                    <Info className="h-4 w-4" />
-                                    <AlertDescription>
-                                        {taxData['Italy'].specialRegime.description} This significantly reduces income tax but is subject to specific eligibility criteria.
-                                    </AlertDescription>
-                                </Alert>
-                            )}
-                        </div>
-                    )}
-
-                    <Button onClick={handleCalculate} className="w-full">Calculate</Button>
-                </CardContent>
-            </Card>
+            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold">Calculate Signal</Button>
 
             {result && (
-                <>
-                    <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
-                        <CardHeader>
-                            <CardTitle>Estimated Annual Results in {taxData[country].currency}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 text-lg">
-                            <div className="flex justify-between items-center text-sm border-b pb-2">
-                                <span className="text-muted-foreground">Original Gross Salary</span>
-                                <span className="font-bold">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground">Gross Salary in {taxData[country].currency}</span>
-                                <span className="font-bold">{formatCurrency(parseFloat(salary) * (conversionRatesToUSD[currency] || 1) / (conversionRatesToUSD[taxData[country].currency] || 1), taxData[country].currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-red-400">
-                                <span >Estimated Income Tax</span>
-                                <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-orange-400">
-                                <span >Social Contributions</span>
-                                <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
-                            </div>
-                            {result.taxCredit > 0 && (
-                                <div className="flex justify-between items-center text-blue-400 text-base">
-                                    <span >Tax Credits (Dependents)</span>
-                                    <span className="font-bold">+{formatCurrency(result.taxCredit, taxData[country].currency)}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between items-center text-green-400 font-bold border-t pt-4 mt-2">
-                                <span >Net Take-Home Pay (Annual)</span>
-                                <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm pt-2 border-t mt-2">
-                                <span className="text-muted-foreground">Effective Tax Rate (incl. social)</span>
-                                <span className="font-bold">{result.effectiveRate.toFixed(2)}%</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {chartData.length > 0 && (
-                        <Card className="mt-8 bg-card/70 backdrop-blur-sm border-border">
-                            <CardHeader>
-                                <CardTitle>Salary Breakdown</CardTitle>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                <CustomLegend />
-                                <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
-                                    <PieChart>
-                                        <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} strokeWidth={5} labelLine={false} label={false}>
-                                            {chartData.map((entry) => (
-                                                <Cell key={`cell-${entry.name}`} fill={entry.fill} className="stroke-background focus:outline-none" />
-                                            ))}
-                                        </Pie>
-                                    </PieChart>
-                                </ChartContainer>
-                            </CardContent>
-                        </Card>
-                    )}
-                </>
+                <Card className="glass border-white/10 p-6 space-y-4">
+                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                        <span className="text-muted-foreground">Original Gross Salary</span>
+                        <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-red-400">
+                        <span className="text-sm">Estimated Income Tax</span>
+                        <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-orange-400">
+                        <span className="text-sm">Social Contributions</span>
+                        <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
+                        <span>Net Take-Home (Annual)</span>
+                        <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
+                    </div>
+                </Card>
             )}
-             <p className="text-xs text-muted-foreground text-center mt-4 animate-pulse-slow">
-                Disclaimer: This is a simplified model for illustrative purposes only and does not constitute financial advice. It calculates based on standard local resident tax rates, and any child tax credits are simplified estimates. Expatriate tax laws can be complex; always consult a professional financial advisor.
-            </p>
         </div>
     );
 }
 
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
+    <div className="flex justify-between items-center text-sm py-0.5">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
+        {isFree ? "COVERED" : formatCurrency(value, currency)}
+      </span>
+    </div>
+);
 
-// --- True Costs Code ---
-type FeatureScore = 'good' | 'neutral' | 'bad';
+const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
+    icon: React.ReactNode, 
+    label: string, 
+    value: string, 
+    currency: string, 
+    onChange: (val: string) => void 
+}) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <div className="relative w-32">
+        <Input 
+          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
+          type="number"
+          value={value}
+          placeholder="0"
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
+      </div>
+    </div>
+);
+
+function ContractDecoderContent() {
+  const firestore = useFirestore();
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
+  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
+
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
+  const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
+  const [currency, setCurrency] = useState('USD');
+  const [offeredSalary, setOfferedSalary] = useState('');
+  const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
+  const [contingency, setContingency] = useState('200');
+  const [homeCountryCommitment, setHomeCountryCommitment] = useState('');
+  const [studentLoan, setStudentLoan] = useState('');
+
+  const selectedSchool = useMemo(() => {
+      if (!selectedSchoolId || !schools) return null;
+      return schools.find(s => s.id === selectedSchoolId);
+  }, [selectedSchoolId, schools]);
+
+  useEffect(() => {
+    if (selectedSchool) {
+      const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
+      if (autoCurrency) {
+        setCurrency(autoCurrency);
+      }
+    }
+  }, [selectedSchool]);
+
+  const rate = CONVERSION_RATES[currency] || 1;
+
+  const suggestedMonthlyLocal = useMemo(() => {
+    if (!selectedSchool) return 0;
+    const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    const estNetMonthlyUSD = (avgAnnualUSD * 0.8) / 12;
+    return estNetMonthlyUSD * rate;
+  }, [selectedSchool, rate]);
+
+  const decodedCosts = useMemo(() => {
+    if (!selectedSchool) return null;
+    const col = selectedSchool.costOfLiving || {};
+    const { intel } = selectedSchool;
+    
+    const multiplier = (familyStatus === 'couple' ? 1.6 : familyStatus === 'family' ? 2.1 : familyStatus === 'family2' ? 2.5 : 1.0);
+    const { rent, label: rentLabel } = getRentForFamily(col, familyStatus);
+
+    const food = (Number(col.food) || 0) * multiplier * rate;
+    const transport = (Number(col.transport) || 0) * multiplier * rate;
+    const utilities = (Number(col.utilities) || 0) * multiplier * rate;
+    const internet = (Number(col.internet) || 0) * rate; 
+    const mobile = (Number(col.mobile) || 0) * multiplier * rate; 
+    const dining = (Number(col.diningSocial) || 0) * multiplier * rate;
+    
+    const rentFinal = rent * rate;
+    
+    const manualHomeCommitment = (parseFloat(homeCountryCommitment) || 0) * rate;
+    const manualStudentLoan = (parseFloat(studentLoan) || 0) * rate;
+    const contingencyVal = (parseFloat(contingency) || 0) * rate;
+    
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCommitment + manualStudentLoan + contingencyVal;
+
+    return { 
+      rent: rentFinal, 
+      rentLabel, 
+      food, 
+      transport, 
+      utilities, 
+      dining, 
+      internet, 
+      mobile, 
+      totalCosts,
+      manualHomeCommitment,
+      manualStudentLoan,
+      contingencyVal
+    };
+  }, [selectedSchool, familyStatus, homeCountryCommitment, studentLoan, rate, contingency]);
+
+  const savingsPotential = useMemo(() => {
+    if (!decodedCosts || !selectedSchool) return 0;
+    const monthlySalary = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
+    const allowance = parseFloat(responsibilityAllowance) || 0;
+    if (isNaN(monthlySalary)) return 0;
+    return (monthlySalary + allowance) - decodedCosts.totalCosts;
+  }, [decodedCosts, offeredSalary, suggestedMonthlyLocal, responsibilityAllowance]);
+
+  const [isTaxDialogOpen, setIsTaxDialogOpen] = useState(false);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Input Panel */}
+        <div className="lg:col-span-1 space-y-6">
+          <Card className="glass border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg stamped-dossier text-white text-center">My Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
+                <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                    <SelectValue placeholder="Search schools..." />
+                  </SelectTrigger>
+                  <SelectContent className="glass">
+                    {schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Family Scaling</Label>
+                <Select value={familyStatus} onValueChange={(v) => setFamilyStatus(v as FamilyStatus)}>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="glass">
+                    <SelectItem value="single">Single</SelectItem>
+                    <SelectItem value="couple">Couple</SelectItem>
+                    <SelectItem value="family">Family 2+1</SelectItem>
+                    <SelectItem value="family2">Family 2+2</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
+                <div className="text-[10px] text-muted-foreground leading-relaxed">
+                  <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5">
+                    <ShieldAlert className="size-3" /> Due Diligence
+                  </span>
+                  Check to ensure this includes all Social Security, pension, health, dental, and optical deductions.
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
+                  {suggestedMonthlyLocal > 0 && (
+                    <button 
+                      onClick={() => setOfferedSalary(String(Math.round(suggestedMonthlyLocal)))}
+                      className="text-[9px] font-bold text-accent hover:underline uppercase tracking-tighter"
+                    >
+                      Use Suggested: {formatCurrency(Math.round(suggestedMonthlyLocal), currency)}
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="col-span-2 relative">
+                    <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                      className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
+                      type="number" 
+                      placeholder={suggestedMonthlyLocal > 0 ? String(Math.round(suggestedMonthlyLocal)) : "0"} 
+                      value={offeredSalary}
+                      onChange={(e) => setOfferedSalary(e.target.value)}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
+                  </div>
+                  <Select value={currency} disabled>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-10 opacity-100">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="glass">
+                      {ORDERED_CURRENCIES.map(c => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibilities Allowance (monthly)</Label>
+                <div className="relative">
+                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
+                    type="number" 
+                    placeholder="0" 
+                    value={responsibilityAllowance}
+                    onChange={(e) => setResponsibilityAllowance(e.target.value)}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment (monthly)</Label>
+                  <div className="flex gap-2">
+                    <a 
+                      href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      Gov. Uk <ExternalLink className="size-2" />
+                    </a>
+                    <a 
+                      href="https://studentaid.gov/manage-loans/repayment/plans" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      US Aid <ExternalLink className="size-2" />
+                    </a>
+                  </div>
+                </div>
+                <div className="relative">
+                  <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className="pl-10 pr-12 bg-background/50 border-white/10 rounded-sm h-10 text-right" 
+                    type="number" 
+                    placeholder="0" 
+                    value={studentLoan}
+                    onChange={(e) => setStudentLoan(e.target.value)}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground uppercase">{currency}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Decoder View */}
+        <div className="lg:col-span-2 space-y-6">
+          {!selectedSchool ? (
+            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
+              <LineChart className="w-12 h-12 mb-4 opacity-20" />
+              <p className="stamped-dossier text-sm">Select a school dossier to initialise the decoder.</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Benefits Pane */}
+                <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
+                      <Award className="text-primary w-5 h-5" /> Income & Benefits
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2">
+                        <Banknote className="size-3 text-green-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Monthly Net Salary</span>
+                      </div>
+                      <div className="text-right">
+                        <span className={cn("font-bold", offeredSalary ? "text-green-400" : "text-green-400/50")}>
+                          {formatCurrency((offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal), currency)}
+                        </span>
+                        {!offeredSalary && <p className="text-[9px] font-black text-primary/50 uppercase tracking-tighter">Projected Benchmark</p>}
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2">
+                        <Medal className="size-3 text-amber-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Responsibility Allowance</span>
+                      </div>
+                      <span className="font-bold text-white">
+                        {formatCurrency(parseFloat(responsibilityAllowance) || 0, currency)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <div className="flex items-center gap-2">
+                        <Home className="size-3 text-sky-400" />
+                        <span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span>
+                      </div>
+                      <span className="text-sm font-semibold text-white">{selectedSchool.intel.housing.provided ? "100% Provided" : "Teacher Pays"}</span>
+                    </div>
+                    {selectedSchool.intel.housing.provided && (
+                      <div className="flex justify-between items-center py-2 border-b border-white/5 text-green-400">
+                        <div className="flex items-center gap-2">
+                          <Plus className="size-3" />
+                          <span className="text-sm font-medium">Housing Value Added</span>
+                        </div>
+                        <span className="text-sm font-bold">+{formatCurrency(decodedCosts?.rent || 0, currency)}</span>
+                      </div>
+                    )}
+
+                    <div className="pt-4 mt-2 border-t border-white/5">
+                        <Dialog open={isTaxDialogOpen} onOpenChange={setIsTaxDialogOpen}>
+                            <DialogTrigger asChild>
+                                <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-accent/5 hover:bg-accent/10 border border-accent/20 transition-all group">
+                                    <div className="flex items-center gap-2">
+                                        <Calculator className="size-3.5 text-accent group-hover:animate-pulse" />
+                                        <span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-accent">Global Tax Engine</span>
+                                    </div>
+                                    <Info className="size-3 text-muted-foreground group-hover:text-accent" />
+                                </button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto glass border-white/10 shadow-2xl">
+                                <DialogHeader>
+                                    <DialogTitle className="stamped-dossier text-white text-xl">Worldwide Salary Tax Calculator</DialogTitle>
+                                    <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
+                                        Estimate regional tax signatures and mandatory deductions across major international teaching territories.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="mt-6 pt-6 border-t border-white/5">
+                                    <TaxCalculatorSection />
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Costs Pane */}
+                <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
+                      <Users className="text-destructive w-5 h-5" /> Estimated Costs
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <DecodedItem 
+                      icon={<Home className="size-3 text-sky-400" />}
+                      label={decodedCosts?.rentLabel || 'Rent'} 
+                      value={selectedSchool.intel.housing.provided ? 0 : decodedCosts?.rent || 0} 
+                      currency={currency} 
+                      isFree={selectedSchool.intel.housing.provided} 
+                    />
+                    <DecodedItem 
+                      icon={<Utensils className="size-3 text-amber-400" />}
+                      label="Groceries (Scaled)" 
+                      value={decodedCosts?.food || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<TramFront className="size-3 text-rose-400" />}
+                      label="Transport (Scaled)" 
+                      value={decodedCosts?.transport || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Zap className="size-3 text-yellow-400" />}
+                      label="Utilities (Scaled)" 
+                      value={decodedCosts?.utilities || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Smartphone className="size-3 text-pink-400" />}
+                      label="Mobile phone" 
+                      value={decodedCosts?.mobile || 0} 
+                      currency={currency} 
+                    />
+                    <DecodedItem 
+                      icon={<Wifi className="size-3 text-indigo-400" />}
+                      label="Home internet (Fixed)" 
+                      value={decodedCosts?.internet || 0} 
+                      currency={currency} 
+                    />
+                    
+                    <InteractiveCostItem 
+                      icon={<Globe className="size-3 text-blue-400" />}
+                      label="Home Country Commitment" 
+                      value={homeCountryCommitment} 
+                      currency={currency} 
+                      onChange={setHomeCountryCommitment}
+                    />
+
+                    {decodedCosts?.manualStudentLoan ? (
+                      <DecodedItem 
+                        icon={<GraduationCap className="size-3 text-emerald-400" />}
+                        label="Student loan" 
+                        value={decodedCosts.manualStudentLoan} 
+                        currency={currency} 
+                      />
+                    ) : null}
+                    
+                    <InteractiveCostItem 
+                      icon={<Milestone className="size-3 text-purple-400" />}
+                      label="Contingency Fund" 
+                      value={contingency} 
+                      currency={currency} 
+                      onChange={setContingency}
+                    />
+
+                    <Separator className="my-2 bg-white/5" />
+                    <div className="flex justify-between items-center font-bold">
+                      <span className="text-sm uppercase tracking-tighter text-white">Total Costs</span>
+                      <span className="text-destructive">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Verdict Section */}
+              <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
+                <CardContent className="pt-6 space-y-6">
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="text-center md:text-left">
+                      <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">True Net Savings</h4>
+                      <p className={cn("text-5xl font-black", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                        {formatCurrency(savingsPotential, currency)}<span className="text-lg">/mo</span>
+                      </p>
+                    </div>
+                    <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed font-medium">
+                      The gap between your income and your cost of living.
+                    </div>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]" asChild>
+                      <Link href="/compare">Compare Offers</Link>
+                    </Button>
+                  </div>
+
+                  {savingsPotential !== 0 && (
+                    <div className="pt-6 border-t border-white/5">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                        {['USD', 'GBP', 'EUR', 'AUD', 'CAD', 'ZAR'].filter(c => c !== currency).slice(0, 4).map((targetCcy) => {
+                          const savingsInUSD = savingsPotential / rate;
+                          const convertedVal = savingsInUSD * (CONVERSION_RATES[targetCcy] || 1);
+                          return (
+                            <div key={targetCcy} className="space-y-1">
+                              <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p>
+                              <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </div>
+      </div>
+  );
+}
+
 type Feature = { text: React.ReactNode; score: FeatureScore; percentage?: string };
 
 type CountryData = {
@@ -509,25 +875,23 @@ type CountryData = {
 
 const countrySpecificData: CountryData = {
     'United Kingdom': {
-        taxStatus: { text: "Salaries are subject to UK income tax (20-45%) and National Insurance contributions. Tax-free salaries are not a feature here.", score: 'bad', percentage: "20-45%" },
-        housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent, which varies massively between cities like London and smaller towns.", score: 'bad', percentage: "0%" },
-        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK. This is typically reserved for international posts abroad.", score: 'bad', percentage: "0%" },
-        dependentTuition: { text: "In the private sector (where most international schools are), staff children often get heavily discounted or free places, but this is a key point to negotiate.", score: 'neutral', percentage: "Up to 100%" },
+        taxStatus: { text: "Salaries are subject to UK income tax (20-45%) and National Insurance contributions.", score: 'bad', percentage: "20-45%" },
+        housing: { text: "Housing is almost never provided. You'll receive a salary and be expected to cover your own rent.", score: 'bad', percentage: "0%" },
+        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK.", score: 'bad', percentage: "0%" },
+        dependentTuition: { text: "Staff children often get heavily discounted or free places in the private sector.", score: 'neutral', percentage: "Up to 100%" },
         gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "As a major economy, most goods are readily available. You won't face a significant 'expat premium' on groceries, but costs are generally high.", score: 'neutral' },
-        utilities: { text: "Heating is a significant winter expense. Council tax (a local property tax) is another major monthly bill not found in many other countries.", score: 'bad', percentage: "+30%" },
-        transportation: { text: "Public transport is extensive but can be very expensive, especially train travel. Many people outside of major cities rely on a car.", score: 'neutral', percentage: "+20%" },
-        socialLeisure: { text: "The cost of a pint of beer or a meal out varies by city but is generally high compared to many teaching destinations. Gym memberships are common.", score: 'bad', percentage: "+40%" },
-        currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations. Remittance fees for sending money abroad are standard, averaging 0.5-2% via banks or online services. For example, making 6 transfers a year of a significant portion of your savings could easily add up to over £100-£200 in annual fees.", score: 'neutral' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in United Kingdom needs to cover commitments back home.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'neutral' },
+        importedGoods: { text: "As a major economy, most goods are readily available.", score: 'neutral' },
+        utilities: { text: "Heating is a significant winter expense. Council tax is another major monthly bill.", score: 'bad', percentage: "+30%" },
+        transportation: { text: "Public transport is extensive but can be very expensive, especially train travel.", score: 'neutral', percentage: "+20%" },
+        socialLeisure: { text: "The cost of a meal out is generally high compared to many teaching destinations.", score: 'bad', percentage: "+40%" },
+        currency: { text: "You're paid in GBP (£). If you have debts in another currency, you're exposed to exchange rate fluctuations.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings in your home currency.", score: 'neutral' },
         safety: {
             text: (
                 <>
-                    Ranked 37th on the 2023 Global Peace Index. UK/US travel advisories note a "substantial" terrorism threat, but day-to-day life is generally safe. Exercise standard precautions for petty crime.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/united-kingdom" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-kingdom-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 37th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'neutral',
@@ -535,25 +899,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'UAE': {
-        taxStatus: { text: "Salaries are 100% tax-free (0% income tax). This is the single biggest financial advantage of working in the UAE.", score: 'good', percentage: "0%" },
-        housing: { text: "Most schools provide either free, furnished accommodation (often on a shared campus) or a housing allowance. Check if the allowance covers a good quality apartment in a desirable area.", score: 'good', percentage: "100%" },
-        flightAllowance: { text: "An annual flight is standard. It's often a cash sum, which offers flexibility. Check if it covers dependents.", score: 'good', percentage: "100%" },
-        dependentTuition: { text: "Crucial. Top-tier schools usually provide 1-2 free child places. Less established schools may offer partial discounts. A lack of this benefit can wipe out your savings.", score: 'good', percentage: "Often 100%" },
-        gratuity: { text: "An end-of-service gratuity is legally required, typically 21 days' basic salary for each of the first five years of service, and 30 days for each year after.", score: 'good', percentage: "Standard" },
-        importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium. Eating and buying local is cheaper.", score: 'neutral' },
-        utilities: { text: "AC is non-negotiable for 6-8 months of the year and will be your largest utility bill. 'Chiller fees' (for AC) can be a major variable.", score: 'bad', percentage: "+20%" },
-        transportation: { text: "A car is almost essential outside of Dubai's metro line. Factor in costs for car leasing/purchase, petrol (which is relatively cheap), and road tolls (Salik).", score: 'neutral', percentage: "Baseline" },
-        socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive. Alcohol is heavily taxed, making it a luxury item.", score: 'bad', percentage: "+80%" },
-        currency: { text: "You're paid in UAE Dirhams (AED), pegged to the USD. This provides stability. Remittance fees are very low, often a small fixed fee. For example, 6 transfers a year would likely cost less than £50 in total, maximizing what you send home.", score: 'good' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in UAE needs to cover commitments back home.", score: 'good' },
-        savings: { text: "Calculates your projected annual savings in your home currency, showcasing the power of a tax-free salary and benefits package.", score: 'good' },
+        taxStatus: { text: "Salaries are 100% tax-free (0% income tax).", score: 'good', percentage: "0%" },
+        housing: { text: "Most schools provide either free, furnished accommodation or a housing allowance.", score: 'good', percentage: "100%" },
+        flightAllowance: { text: "An annual flight is standard. It's often a cash sum, which offers flexibility.", score: 'good', percentage: "100%" },
+        dependentTuition: { text: "Top-tier schools usually provide 1-2 free child places.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "An end-of-service gratuity is legally required.", score: 'good', percentage: "Standard" },
+        importedGoods: { text: "Supermarkets are full of imported Western brands, but they come at a premium.", score: 'neutral' },
+        utilities: { text: "AC is non-negotiable for 6-8 months of the year.", score: 'bad', percentage: "+20%" },
+        transportation: { text: "A car is almost essential outside of Dubai's metro line.", score: 'neutral', percentage: "Baseline" },
+        socialLeisure: { text: "The 'brunch' culture is a major social outlet but can be very expensive.", score: 'bad', percentage: "+80%" },
+        currency: { text: "You're paid in UAE Dirhams (AED), pegged to the USD. This provides stability.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'good' },
+        savings: { text: "Calculates your projected annual savings in your home currency.", score: 'good' },
         safety: {
             text: (
                  <>
-                    Ranked 75th on the 2023 Global Peace Index. Crime rates are very low, but US advisories highlight the risk of regional conflict. Adherence to local laws is essential.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/uae" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/united-arab-emirates-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 75th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'neutral',
@@ -561,25 +923,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'Japan': {
-        taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security. Taxes are significant but often lower than Western Europe.", score: 'neutral', percentage: "5-45%" },
-        housing: { text: "Varies. Some schools provide subsidized/free housing. In Tokyo, you'll likely get an allowance that may not cover the full rent, requiring a top-up.", score: 'neutral', percentage: "Varies" },
-        flightAllowance: { text: "An annual flight home is not always standard but is offered by many top international schools. It might be a reimbursed ticket rather than cash.", score: 'neutral', percentage: "Varies" },
-        dependentTuition: { text: "Most reputable international schools will offer free or heavily discounted tuition for dependents. This is a critical benefit due to the high cost of education in Japan.", score: 'good', percentage: "Often 100%" },
-        gratuity: { text: "There is no 'gratuity' system. Schools contribute to the Japanese pension system. Some schools might offer a contract completion bonus, but it's not standard.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "Finding specific Western brands can be difficult and expensive outside of specialty import stores in major cities. You'll adapt to excellent local alternatives.", score: 'bad' },
-        utilities: { text: "Reasonable, but heating in winter and AC in the humid summer can cause bills to spike. Housing is often less insulated than in colder climates.", score: 'neutral', percentage: "-10%" },
-        transportation: { text: "World-class public transport is the norm in cities. A monthly pass (Teiki) is cost-effective. Owning a car in a major city is prohibitively expensive and unnecessary.", score: 'good', percentage: "-30%" },
-        socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around restaurants and izakayas. Western-style bars, gyms, and social events can be more expensive.", score: 'good', percentage: "-20%" },
-        currency: { text: "You are paid in Japanese Yen (JPY), a major but sometimes volatile currency. Standard bank remittance fees can be high; using a service like Wise is recommended to minimize costs (under 1%). With bank fees being higher, 6 transfers a year could cost several hundred dollars if not managed carefully.", score: 'neutral' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Japan needs to cover commitments back home.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings, converting from JPY to your home currency to give a clear picture of your wealth-building potential.", score: 'neutral' },
+        taxStatus: { text: "Your salary is subject to Japanese income tax (5-45%), inhabitant tax, and social security.", score: 'neutral', percentage: "5-45%" },
+        housing: { text: "Some schools provide subsidized/free housing or an allowance.", score: 'neutral', percentage: "Varies" },
+        flightAllowance: { text: "An annual flight home is offered by many top international schools.", score: 'neutral', percentage: "Varies" },
+        dependentTuition: { text: "Most reputable international schools will offer free or discounted tuition.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "Schools contribute to the Japanese pension system.", score: 'neutral', percentage: "Pension" },
+        importedGoods: { text: "Finding specific Western brands can be difficult and expensive.", score: 'bad' },
+        utilities: { text: "Heating in winter and AC in the humid summer can cause bills to spike.", score: 'neutral', percentage: "-10%" },
+        transportation: { text: "World-class public transport is the norm in cities.", score: 'good', percentage: "-30%" },
+        socialLeisure: { text: "Eating out can be very affordable. Social life often revolves around izakayas.", score: 'good', percentage: "-20%" },
+        currency: { text: "You are paid in Japanese Yen (JPY), a major but sometimes volatile currency.", score: 'neutral' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings, converting from JPY.", score: 'neutral' },
         safety: {
             text: (
                 <>
-                    Ranked 9th on the 2023 Global Peace Index. Japan has very low crime rates and is one of the safest countries in the world. UK and US advisories recommend normal precautions.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/japan" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/japan-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 9th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'good',
@@ -587,25 +947,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'Switzerland': {
-        taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes, which can be high (up to 40% combined). However, salaries are also among the highest in the world.", score: 'neutral', percentage: "Up to 40%" },
-        housing: { text: "Housing is not provided and is extremely expensive, especially in cities like Zurich and Geneva. This is the largest expense for most teachers.", score: 'bad', percentage: "0%" },
+        taxStatus: { text: "Salaries are subject to federal, cantonal, and municipal taxes (up to 40% combined).", score: 'neutral', percentage: "Up to 40%" },
+        housing: { text: "Housing is not provided and is extremely expensive.", score: 'bad', percentage: "0%" },
         flightAllowance: { text: "Not a standard benefit. Flights are typically paid for by the teacher.", score: 'bad', percentage: "0%" },
-        dependentTuition: { text: "Most international schools offer significant discounts for staff children, which is a major benefit given the high cost of tuition.", score: 'good', percentage: "Discounted" },
-        gratuity: { text: "There is no end-of-service gratuity. Instead, Switzerland has a mandatory three-pillar pension system to which both employer and employee contribute.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "Switzerland is not in the EU, so imported goods can be more expensive. However, quality local products are abundant.", score: 'neutral' },
-        utilities: { text: "Heating costs during the long, cold winters are a significant expense. Electricity and other utilities are also costly.", score: 'bad', percentage: "+60%" },
-        transportation: { text: "Public transportation is incredibly efficient and widely used, but it is expensive. Many people in cities do not own cars.", score: 'neutral', percentage: "+50%" },
-        socialLeisure: { text: "The cost of living is very high. Eating out, drinks, and leisure activities are among the most expensive in the world. Outdoor activities like hiking are popular and free.", score: 'bad', percentage: "+100%" },
-        currency: { text: "You're paid in Swiss Francs (CHF), a strong, stable currency. International bank transfers can be costly (1-3%). For 6 annual transfers, this could mean paying over £500 a year in fees on a high savings amount. Choosing a low-fee provider is crucial.", score: 'good' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Switzerland needs to cover commitments back home.", score: 'neutral' },
-        savings: { text: "Calculates your projected annual savings in your home currency, taking into account high salaries but also very high living costs.", score: 'neutral' },
+        dependentTuition: { text: "Most international schools offer significant discounts for staff children.", score: 'good', percentage: "Discounted" },
+        gratuity: { text: "Switzerland has a mandatory three-pillar pension system.", score: 'neutral', percentage: "Pension" },
+        importedGoods: { text: "Quality local products are abundant.", score: 'neutral' },
+        utilities: { text: "Heating costs during the long, cold winters are a significant expense.", score: 'bad', percentage: "+60%" },
+        transportation: { text: "Public transportation is incredibly efficient but expensive.", score: 'neutral', percentage: "+50%" },
+        socialLeisure: { text: "Eating out and leisure activities are among the most expensive in the world.", score: 'bad', percentage: "+100%" },
+        currency: { text: "You're paid in Swiss Francs (CHF), a strong, stable currency.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'neutral' },
+        savings: { text: "Calculates your projected annual savings in your home currency.", score: 'neutral' },
         safety: {
              text: (
                 <>
-                    Ranked 10th on the 2023 Global Peace Index. Crime rates are very low. Be aware of petty crimes in tourist areas. Both UK and US advisories recommend normal precautions.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/switzerland" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/switzerland-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 10th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'good',
@@ -613,25 +971,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'Singapore': {
-        taxStatus: { text: "Income tax is progressive and relatively low (0-22%) compared to many Western countries. It is not tax-free, but the effective tax rate is often competitive.", score: 'good', percentage: "0-22%" },
-        housing: { text: "Housing is extremely expensive. Most schools provide a housing allowance, but it is unlikely to cover the full cost of a family-sized condominium in a central location.", score: 'bad', percentage: "Allowance" },
-        flightAllowance: { text: "An annual flight is common, often as a cash benefit, providing flexibility.", score: 'good', percentage: "100%" },
-        dependentTuition: { text: "A crucial benefit. Top schools offer free or heavily subsidized places for dependents, which is a massive financial saving.", score: 'good', percentage: "Often 100%" },
-        gratuity: { text: "There is no mandatory end-of-service gratuity. Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
-        importedGoods: { text: "A major trade hub, so a wide variety of imported goods is available, but they are expensive. Local food in hawker centers is famously delicious and affordable.", score: 'neutral' },
-        utilities: { text: "High due to the need for constant air conditioning. Electricity costs are a significant part of the monthly budget.", score: 'bad', percentage: "+30%" },
-        transportation: { text: "World-class, efficient, and affordable public transport (MRT and buses) makes owning a car unnecessary and prohibitively expensive.", score: 'good', percentage: "-20%" },
-        socialLeisure: { text: "Singapore has a vibrant social scene with many high-end restaurants and bars, which are expensive. Gym memberships are comparable to other major world cities.", score: 'bad', percentage: "+70%" },
-        currency: { text: "Payment is in Singapore Dollars (SGD), a stable regional currency. Sending money overseas is efficient with competitive fees, especially through Singapore's fintech solutions. 6 annual transfers of your savings would likely cost well under £100 with the right service.", score: 'good' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Singapore needs to cover commitments back home.", score: 'neutral' },
-        savings: { text: "Savings potential is high due to high salaries, but it is heavily dependent on lifestyle choices, especially regarding housing and dining out.", score: 'good' },
+        taxStatus: { text: "Income tax is progressive and relatively low (0-22%).", score: 'good', percentage: "0-22%" },
+        housing: { text: "Housing is extremely expensive. Most schools provide an allowance.", score: 'bad', percentage: "Allowance" },
+        flightAllowance: { text: "An annual flight is common, often as a cash benefit.", score: 'good', percentage: "100%" },
+        dependentTuition: { text: "Top schools offer free or heavily subsidized places.", score: 'good', percentage: "Often 100%" },
+        gratuity: { text: "Some schools may offer a contract completion or renewal bonus.", score: 'neutral', percentage: "Bonus-based" },
+        importedGoods: { text: "A wide variety of imported goods is available, but they are expensive.", score: 'neutral' },
+        utilities: { text: "High due to the need for constant air conditioning.", score: 'bad', percentage: "+30%" },
+        transportation: { text: "World-class, efficient, and affordable public transport.", score: 'good', percentage: "-20%" },
+        socialLeisure: { text: "Singapore has a vibrant social scene, which is expensive.", score: 'bad', percentage: "+70%" },
+        currency: { text: "Payment is in Singapore Dollars (SGD), a stable regional currency.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'neutral' },
+        savings: { text: "Savings potential is high due to high salaries.", score: 'good' },
         safety: {
              text: (
                 <>
-                    Ranked 6th on the 2023 Global Peace Index. Strict laws result in extremely low crime rates, making Singapore one of the safest countries globally. Both UK and US advisories recommend normal precautions.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/singapore" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/singapore-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 6th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'good',
@@ -639,25 +995,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'South Korea': {
-        taxStatus: { text: "Income is subject to South Korean income tax (6-45%). Rates are progressive. Your school will handle deductions.", score: 'neutral', percentage: "6-45%" },
-        housing: { text: "Most schools provide furnished housing for teachers, which is a significant benefit as it removes a major expense and the hassle of finding a place.", score: 'good', percentage: "100%" },
-        flightAllowance: { text: "An annual flight is standard in many contracts, often as a reimbursed flight or a fixed amount.", score: 'good', percentage: "100%" },
-        dependentTuition: { text: "Discounts on tuition for dependents are common but may not always be 100%. This is an important point to clarify in the contract.", score: 'neutral', percentage: "Varies" },
-        gratuity: { text: "By law, employers must pay a severance pay ('toegig-geum') equivalent to at least one month's salary for every year of service upon contract completion.", score: 'good', percentage: "Standard" },
-        importedGoods: { text: "Western groceries and goods are available in larger cities like Seoul but are expensive. A local diet is much more economical.", score: 'bad' },
-        utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs. Some school-provided housing may include some utilities.", score: 'good', percentage: "-10%" },
-        transportation: { text: "Excellent, affordable, and efficient public transport systems in major cities like Seoul make cars unnecessary.", score: 'good', percentage: "-30%" },
-        socialLeisure: { text: "Social life is vibrant and can be very affordable. Local restaurants, soju, and beer are cheap. Western-style bars and restaurants are more expensive.", score: 'good', percentage: "-20%" },
-        currency: { text: "You are paid in South Korean Won (KRW). The currency can fluctuate. Strict regulations can make sending large sums of money out of the country more complex; plan remittances carefully. Fees can be moderate. Plan for 6 annual transfers of your savings to cost a couple of hundred pounds, and be aware of regulations on large transfers.", score: 'bad' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in South Korea needs to cover commitments back home.", score: 'good' },
-        savings: { text: "Moderate savings potential. The low cost of daily living and provided housing helps, but salaries are not as high as in some other regions.", score: 'neutral' },
+        taxStatus: { text: "Income is subject to South Korean income tax (6-45%).", score: 'neutral', percentage: "6-45%" },
+        housing: { text: "Most schools provide furnished housing for teachers.", score: 'good', percentage: "100%" },
+        flightAllowance: { text: "An annual flight is standard in many contracts.", score: 'good', percentage: "100%" },
+        dependentTuition: { text: "Discounts on tuition for dependents are common.", score: 'neutral', percentage: "Varies" },
+        gratuity: { text: "Employers must pay severance pay equivalent to at least one month's salary.", score: 'good', percentage: "Standard" },
+        importedGoods: { text: "Western groceries and goods are available but expensive.", score: 'bad' },
+        utilities: { text: "Reasonably priced, though heating in the cold winters can increase costs.", score: 'good', percentage: "-10%" },
+        transportation: { text: "Excellent, affordable, and efficient public transport.", score: 'good', percentage: "-30%" },
+        socialLeisure: { text: "Social life is vibrant and can be very affordable.", score: 'good', percentage: "-20%" },
+        currency: { text: "You are paid in South Korean Won (KRW).", score: 'bad' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'good' },
+        savings: { text: "Moderate savings potential.", score: 'neutral' },
         safety: {
             text: (
                 <>
-                    Ranked 43rd on the 2023 Global Peace Index. Daily life is very safe with low crime rates. The political situation with North Korea is a long-standing issue but rarely affects residents.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/south-korea" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/republic-of-korea-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 43rd on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'neutral',
@@ -665,25 +1019,23 @@ const countrySpecificData: CountryData = {
         },
     },
     'Netherlands': {
-        taxStatus: { text: "Salaries are subject to a high income tax rate (up to 49.5%) and social security contributions. The '30% ruling' for skilled migrants can provide a significant tax advantage.", score: 'neutral', percentage: "Up to 49.5%" },
-        housing: { text: "Housing is very expensive and in short supply in major cities like Amsterdam. Most schools offer an allowance, but it may not cover the full cost.", score: 'bad', percentage: "Allowance" },
+        taxStatus: { text: "Salaries are subject to a high income tax rate (up to 49.5%).", score: 'neutral', percentage: "Up to 49.5%" },
+        housing: { text: "Housing is very expensive and in short supply in major cities.", score: 'bad', percentage: "Allowance" },
         flightAllowance: { text: "Not a standard benefit for schools in the Netherlands.", score: 'bad', percentage: "0%" },
-        dependentTuition: { text: "Most international schools offer a discount, but 100% free tuition is rare. This is a significant cost to factor in.", score: 'neutral', percentage: "Rarely 100%" },
-        gratuity: { text: "There is no end-of-service gratuity. Schools contribute to a mandatory pension.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "As part of the EU, there's a wide availability of goods, but general grocery costs are high.", score: 'neutral' },
-        utilities: { text: "Energy prices are high in Europe. Expect significant heating costs in the winter.", score: 'bad', percentage: "+40%" },
-        transportation: { text: "Cycling is king and very cheap. Public transport is efficient but can be expensive. Many residents do not own a car.", score: 'good', percentage: "-40%" },
-        socialLeisure: { text: "Eating out and social activities are on par with other major Western European cities - relatively expensive.", score: 'bad', percentage: "+50%" },
-        currency: { text: "You are paid in Euros (€). As a major world currency, it's stable. Remittance fees are low within the SEPA zone but can be higher for sending money outside of it. Using a fintech service is recommended.", score: 'good' },
-        homeObligations: { text: "Working abroad requires managing finances across two countries. Your net salary in Netherlands needs to cover commitments back home.", score: 'bad' },
-        savings: { text: "Savings potential is generally considered low to moderate unless you secure a high salary and benefit from the 30% ruling.", score: 'bad' },
+        dependentTuition: { text: "Most international schools offer a discount, but 100% free is rare.", score: 'neutral', percentage: "Rarely 100%" },
+        gratuity: { text: "Schools contribute to a mandatory pension.", score: 'neutral', percentage: "Pension" },
+        importedGoods: { text: "General grocery costs are high.", score: 'neutral' },
+        utilities: { text: "Energy prices are high in Europe.", score: 'bad', percentage: "+40%" },
+        transportation: { text: "Cycling is king and very cheap.", score: 'good', percentage: "-40%" },
+        socialLeisure: { text: "Eating out and social activities are relatively expensive.", score: 'bad', percentage: "+50%" },
+        currency: { text: "You are paid in Euros (€). It's stable.", score: 'good' },
+        homeObligations: { text: "Working abroad requires managing finances across two countries.", score: 'bad' },
+        savings: { text: "Savings potential is generally considered low to moderate.", score: 'bad' },
         safety: {
              text: (
                 <>
-                    Ranked 16th on the 2023 Global Peace Index. Crime rates are low, but petty crime like bike theft and pickpocketing is common in major cities. UK and US advisories mention a terrorism threat.{' '}
-                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link> / {' '}
-                    <Link href="https://www.gov.uk/foreign-travel-advice/netherlands" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">UK.GOV</Link> / {' '}
-                    <Link href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">US Travel</Link>
+                    Ranked 16th on the 2023 Global Peace Index.{' '}
+                    <Link href="https://en.wikipedia.org/wiki/Global_Peace_Index" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">GPI Rank</Link>
                 </>
             ),
             score: 'good',
@@ -691,29 +1043,6 @@ const countrySpecificData: CountryData = {
         }
     },
 };
-
-const scoreColorClasses = {
-  good: 'text-green-400',
-  neutral: 'text-amber-400',
-  bad: 'text-red-400',
-};
-
-const FeatureDetail = ({ icon, title, description, score, percentage }: { icon: React.ReactNode, title: string, description: React.ReactNode, score: FeatureScore, percentage?: string }) => (
-    <div className="flex items-start gap-4">
-        <div className="mt-1 text-primary">{icon}</div>
-        <div className="w-full">
-            <div className="flex justify-between items-baseline">
-                <h4 className={cn("font-semibold tracking-tight", scoreColorClasses[score])}>{title}</h4>
-                {percentage && <span className={cn("font-bold text-sm", 
-                    score.includes('good') ? 'text-green-400' :
-                    score.includes('bad') ? 'text-red-400' :
-                    'text-amber-400'
-                )}>{percentage}</span>}
-            </div>
-            <p className="text-sm text-muted-foreground">{description}</p>
-        </div>
-    </div>
-);
 
 function TrueCostsSection() {
   const firestore = useFirestore();
@@ -856,23 +1185,6 @@ function TrueCostsSection() {
     return total;
   };
   
-  const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
-    return 0;
-  };
-
   const avgGrossAnnualSalary = selectedSchool ? getAverageAnnualSalary(selectedSchool.intel.salary.value) : 0;
   const estimatedNetMonthlySalaryUSD = (avgGrossAnnualSalary * 0.8) / 12;
 
@@ -993,6 +1305,15 @@ function TrueCostsSection() {
   const homeObligationsData = { ...data.homeObligations };
     homeObligationsData.text = `Working abroad requires managing finances across two countries. Your net salary in ${selectedCountry} needs to cover commitments back home.`;
     homeObligationsData.score = 'neutral';
+
+    const getSafetyScore = (rankString: string | undefined): FeatureScore => {
+        if (!rankString) return 'neutral';
+        const rank = parseInt(rankString.replace('Rank ', ''));
+        if (isNaN(rank)) return 'neutral';
+        if (rank <= 20) return 'good';
+        if (rank <= 60) return 'neutral';
+        return 'bad';
+    };
 
     lifestyleData.safety.score = getSafetyScore(lifestyleData.safety.percentage);
     
@@ -1201,27 +1522,27 @@ function TrueCostsSection() {
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Zap className="w-4 h-4 mr-2 text-yellow-400 print:hidden" /> Utilities</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency(selectedSchool.costOfLiving.utilities * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.utilities ?? 0) * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Wifi className="w-4 h-4 mr-2 text-indigo-400 print:hidden" /> Internet</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency(selectedSchool.costOfLiving.internet * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.internet ?? 0) * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Smartphone className="w-4 h-4 mr-2 text-pink-400 print:hidden" /> Mobile</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency(selectedSchool.costOfLiving.mobile * adults * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.mobile ?? 0) * adults * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Utensils className="w-4 h-4 mr-2 text-amber-400 print:hidden" /> Groceries</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.food * adults + selectedSchool.costOfLiving.food * 0.5 * children) * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency(((selectedSchool.costOfLiving.food ?? 0) * adults + (selectedSchool.costOfLiving.food ?? 0) * 0.5 * children) * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><Coffee className="w-4 h-4 mr-2 text-yellow-600 print:hidden" /> Dining &amp; Social</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency(selectedSchool.costOfLiving.diningSocial * adults * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.diningSocial ?? 0) * adults * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="flex items-center"><TramFront className="w-4 h-4 mr-2 text-rose-400 print:hidden" /> Transport</span>
-                                        <span className="print:font-bold print:text-black">{formatCurrency((selectedSchool.costOfLiving.transport * adults + selectedSchool.costOfLiving.transport * 0.3 * children) * usdRate, currency)}</span>
+                                        <span className="print:font-bold print:text-black">{formatCurrency(((selectedSchool.costOfLiving.transport ?? 0) * adults + (selectedSchool.costOfLiving.transport ?? 0) * 0.3 * children) * usdRate, currency)}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="home-commitment" className="flex items-center text-muted-foreground print:text-gray-600">
