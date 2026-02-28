@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Calculator, Home, Utensils, TramFront, Zap, Wifi, Smartphone, Coffee, Stethoscope, LineChart, Award, Pencil, Users, Loader2, ShieldAlert, Milestone, Globe } from 'lucide-react';
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -97,7 +97,6 @@ function ContractDecoderContent() {
           <Card className="glass border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg stamped-dossier">Decoder Settings</CardTitle>
-              <CardDescription className="text-[10px] uppercase tracking-widest">Initialise Mission Parameters</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -243,7 +242,7 @@ function ContractDecoderContent() {
                     </div>
                     <Link href="/compare">
                       <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs">
-                        Compare Offers
+                        Compare Multiple Offers
                       </Button>
                     </Link>
                   </div>
