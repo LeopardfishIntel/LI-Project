@@ -19,7 +19,6 @@ import { Separator } from '@/components/ui/separator';
 
 function ContractDecoderContent() {
   const firestore = useFirestore();
-  const searchParams = useSearchParams();
   const schoolsQuery = useMemoFirebase(
     () => (firestore ? collection(firestore, 'schools') : null),
     [firestore]
@@ -55,7 +54,7 @@ function ContractDecoderContent() {
     const transport = (Number(col.transport) || 0) * (adults + 0.3 * children);
     const utilities = (Number(col.utilities) || 0) * multiplier;
     const dining = (Number(col.diningSocial) || 0) * adults;
-    const internet = Number(col.internet) || 0; // Fixed cost, not linked to scalar
+    const internet = Number(col.internet) || 0; // Fixed cost
     const mobile = (Number(col.mobile) || 0) * multiplier; // Scaled cost
     
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
@@ -98,12 +97,13 @@ function ContractDecoderContent() {
           <Card className="glass border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg stamped-dossier">Decoder Settings</CardTitle>
+              <CardDescription className="text-[10px] uppercase tracking-widest">Initialise Mission Parameters</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Select School Dossier</Label>
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                  <SelectTrigger className="bg-background/50">
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                     <SelectValue placeholder="Search schools..." />
                   </SelectTrigger>
                   <SelectContent className="glass">
@@ -112,9 +112,9 @@ function ContractDecoderContent() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Family Scaling</Label>
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Family Scaling</Label>
                 <Select value={familyStatus} onValueChange={(v) => setFamilyStatus(v as FamilyStatus)}>
-                  <SelectTrigger className="bg-background/50">
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="glass">
@@ -126,11 +126,11 @@ function ContractDecoderContent() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Net Monthly Salary Offer ({currency})</Label>
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer ({currency})</Label>
                 <div className="relative">
                   <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50" 
+                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
                     type="number" 
                     placeholder="e.g. 5000" 
                     value={offeredSalary}
@@ -139,11 +139,11 @@ function ContractDecoderContent() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Home Country Cost (Monthly)</Label>
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Home Country Cost (Monthly)</Label>
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
-                    className="pl-10 bg-background/50" 
+                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
                     type="number" 
                     placeholder="e.g. 800" 
                     value={homeCountryCost}
@@ -157,8 +157,8 @@ function ContractDecoderContent() {
 
           <Card className="bg-destructive/10 border-destructive/20 rounded-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2 text-destructive font-black">
-                <ShieldAlert className="w-4 h-4" /> DUE DILIGENCE REMINDER
+              <CardTitle className="text-sm flex items-center gap-2 text-destructive font-black uppercase">
+                <ShieldAlert className="w-4 h-4" /> Due Diligence
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -170,15 +170,15 @@ function ContractDecoderContent() {
         {/* Decoder View */}
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
-            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-lg py-24 text-muted-foreground bg-card/20">
+            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20">
               <LineChart className="w-12 h-12 mb-4 opacity-20" />
-              <p className="stamped-dossier">Select a school dossier to initialize the decoder.</p>
+              <p className="stamped-dossier text-sm">Select a school dossier to initialise the decoder.</p>
             </div>
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Benefits Pane */}
-                <Card className="glass">
+                <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
                       <Award className="text-primary w-5 h-5" /> Income & Benefits
@@ -203,7 +203,7 @@ function ContractDecoderContent() {
                 </Card>
 
                 {/* Costs Pane */}
-                <Card className="glass">
+                <Card className="glass rounded-sm border-white/10">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier">
                       <Users className="text-destructive w-5 h-5" /> Estimated Costs
@@ -214,10 +214,10 @@ function ContractDecoderContent() {
                     <DecodedItem label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
                     <DecodedItem label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
                     <DecodedItem label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
-                    <DecodedItem label={`Mobile phone (Scaled) (${decodedCosts?.simCount} sims)`} value={decodedCosts?.mobile || 0} currency={currency} />
+                    <DecodedItem label={`Mobile phone (${decodedCosts?.simCount} sims)`} value={decodedCosts?.mobile || 0} currency={currency} />
                     <DecodedItem label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
                     {decodedCosts?.manualHomeCost ? (
-                      <DecodedItem label="Home country obligations" value={decodedCosts.manualHomeCost} currency={currency} />
+                      <DecodedItem label="Home commitments" value={decodedCosts.manualHomeCost} currency={currency} />
                     ) : null}
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
@@ -229,21 +229,23 @@ function ContractDecoderContent() {
               </div>
 
               {/* Verdict Section */}
-              <Card className={cn("glass border-2", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
+              <Card className={cn("glass border-2 rounded-sm", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left">
-                      <h4 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">True Net Savings</h4>
-                      <p className={cn("text-5xl font-black", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                      <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">True Net Savings</h4>
+                      <p className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                         {formatCurrency(savingsPotential, currency)}<span className="text-lg">/mo</span>
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
                       This represents your potential to build wealth after basic survival costs and a <span className="text-white font-bold">{formatCurrency(parseFloat(contingency), currency)}</span> contingency buffer.
                     </div>
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm" asChild>
-                      <Link href="/compare">Compare Multiple Offers</Link>
-                    </Button>
+                    <Link href="/compare">
+                      <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs">
+                        Compare Offers
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -272,8 +274,8 @@ export default function EvaluatePage() {
         <h1 className="text-4xl md:text-6xl mb-4 tracking-tighter uppercase font-black">
           Stage 2: <span className="text-primary">Contract Decoder</span>
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          We strip away recruitment marketing to show actual disposable income adjusted for your family size.
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
+          Move with certainty. We strip away recruitment marketing to show actual disposable income adjusted for your family size.
         </p>
       </div>
 
