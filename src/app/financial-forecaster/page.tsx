@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,13 @@ import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 
+const CONVERSION_RATES: Record<string, number> = {
+  USD: 1,
+  GBP: 0.78,
+  EUR: 0.92,
+  AED: 3.67,
+};
+
 function ContractDecoderContent() {
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
@@ -25,10 +33,12 @@ function ContractDecoderContent() {
 
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState<FamilyStatus>('single');
-  const [currency] = useState('USD');
+  const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
   const [contingency, setContingency] = useState('200');
   const [homeCountryCost, setHomeCountryCost] = useState('');
+
+  const rate = CONVERSION_RATES[currency] || 1;
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -43,24 +53,25 @@ function ContractDecoderContent() {
     const adults = familyStatus === 'single' ? 1 : 2;
     const children = familyStatus === 'family' ? 1 : familyStatus === 'family2' ? 2 : 0;
     
-    // Scale factor for shared living costs (Food, Transport, Utilities)
     const multiplier = familyStatus === 'single' ? 1 : familyStatus === 'couple' ? 1.6 : familyStatus === 'family' ? 2.1 : 2.5;
 
     const { rent, label: rentLabel } = getRentForFamily(col, familyStatus);
 
-    const food = (Number(col.food) || 0) * (adults + 0.5 * children);
-    const transport = (Number(col.transport) || 0) * (adults + 0.3 * children);
-    const utilities = (Number(col.utilities) || 0) * multiplier;
-    const dining = (Number(col.diningSocial) || 0) * adults;
-    const internet = Number(col.internet) || 0; 
-    const mobile = (Number(col.mobile) || 0) * multiplier; 
+    // All costs in dossier are stored in USD. Convert to selected currency.
+    const food = (Number(col.food) || 0) * (adults + 0.5 * children) * rate;
+    const transport = (Number(col.transport) || 0) * (adults + 0.3 * children) * rate;
+    const utilities = (Number(col.utilities) || 0) * multiplier * rate;
+    const dining = (Number(col.diningSocial) || 0) * adults * rate;
+    const internet = (Number(col.internet) || 0) * rate; 
+    const mobile = (Number(col.mobile) || 0) * multiplier * rate; 
+    const rentFinal = rent * rate;
     
     const manualHomeCost = parseFloat(homeCountryCost) || 0;
     
-    const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + dining + internet + mobile + manualHomeCost;
+    const totalCosts = (intel.housing.provided ? 0 : rentFinal) + food + transport + utilities + dining + internet + mobile + manualHomeCost;
 
     return { 
-      rent, 
+      rent: rentFinal, 
       rentLabel, 
       food, 
       transport, 
@@ -72,13 +83,13 @@ function ContractDecoderContent() {
       simCount: adults,
       manualHomeCost
     };
-  }, [selectedSchool, familyStatus, homeCountryCost]);
+  }, [selectedSchool, familyStatus, homeCountryCost, rate]);
 
   const savingsPotential = useMemo(() => {
     if (!decodedCosts || !selectedSchool) return 0;
     const monthlySalary = parseFloat(offeredSalary) || 0;
-    return monthlySalary - decodedCosts.totalCosts - (parseFloat(contingency) || 0);
-  }, [decodedCosts, offeredSalary, contingency]);
+    return monthlySalary - decodedCosts.totalCosts - ((parseFloat(contingency) || 0) * rate);
+  }, [decodedCosts, offeredSalary, contingency, rate]);
 
   if (isLoadingSchools) {
     return (
@@ -93,7 +104,7 @@ function ContractDecoderContent() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
-              <CardTitle className="text-lg stamped-dossier">Decoder Settings</CardTitle>
+              <CardTitle className="text-lg stamped-dossier">My Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -122,16 +133,29 @@ function ContractDecoderContent() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer ({currency})</Label>
-                <div className="relative">
-                  <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input 
-                    className="pl-10 bg-background/50 border-white/10 rounded-sm" 
-                    type="number" 
-                    placeholder="e.g. 5000" 
-                    value={offeredSalary}
-                    onChange={(e) => setOfferedSalary(e.target.value)}
-                  />
+                <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="col-span-2 relative">
+                    <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                      className="pl-10 bg-background/50 border-white/10 rounded-sm" 
+                      type="number" 
+                      placeholder="e.g. 5000" 
+                      value={offeredSalary}
+                      onChange={(e) => setOfferedSalary(e.target.value)}
+                    />
+                  </div>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="glass">
+                      <SelectItem value="USD">USD</SelectItem>
+                      <SelectItem value="GBP">GBP</SelectItem>
+                      <SelectItem value="EUR">EUR</SelectItem>
+                      <SelectItem value="AED">AED</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="space-y-2">
@@ -230,7 +254,7 @@ function ContractDecoderContent() {
                       </p>
                     </div>
                     <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed">
-                      Representing wealth potential after basic costs and a <span className="text-white font-bold">$200</span> contingency buffer.
+                      Representing wealth potential after basic costs and a <span className="text-white font-bold">{formatCurrency((parseFloat(contingency) || 0) * rate, currency)}</span> contingency buffer.
                     </div>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-8 h-12 rounded-sm uppercase tracking-widest text-xs" asChild>
                       <Link href="/compare">Compare Multiple Offers</Link>
