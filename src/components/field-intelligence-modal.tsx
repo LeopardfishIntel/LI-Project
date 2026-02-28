@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -22,7 +21,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Megaphone } from 'lucide-react';
+import { ShieldAlert, Send, Loader2, FileUp, Zap, Building2, Binoculars } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
@@ -30,6 +29,7 @@ import { cn } from '@/lib/utils';
 
 export function FieldIntelligenceModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [category, setCategory] = useState<string>('');
   const [organisation, setOrganisation] = useState('');
   const [intel, setIntel] = useState('');
@@ -67,6 +67,18 @@ export function FieldIntelligenceModal() {
     }
     return () => clearTimeout(timer);
   }, [isDestructing, countdown]);
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setIsOpen(true);
+      setIsScanning(true);
+      setTimeout(() => {
+        setIsScanning(false);
+      }, 1500);
+    } else {
+      setIsOpen(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -125,16 +137,16 @@ export function FieldIntelligenceModal() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button 
-          className="fixed bottom-6 right-6 h-14 w-14 hover:w-48 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white z-50 p-0 transition-all duration-300 group overflow-hidden border-2 border-white/10 flex items-center justify-center"
+          className="fixed bottom-6 right-6 h-14 w-14 hover:w-56 rounded-full shadow-2xl bg-primary hover:bg-primary/90 text-white z-50 p-0 transition-all duration-300 group overflow-hidden border-2 border-white/10 flex items-center justify-center"
           aria-label="Transmit Field Intel"
         >
           <div className="flex items-center justify-center">
-            <Megaphone className="size-6 shrink-0" />
+            <Binoculars className="size-6 shrink-0 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             <span className="max-w-0 group-hover:max-w-xs group-hover:ml-3 opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden whitespace-nowrap font-black uppercase tracking-widest text-[10px]">
-              Transmit Intel
+              Transmit Field Intel
             </span>
           </div>
         </Button>
@@ -143,7 +155,19 @@ export function FieldIntelligenceModal() {
         "sm:max-w-[500px] glass bg-background/95 border-primary/30 text-foreground transition-all duration-500",
         isSmoked && "animate-smoke"
       )}>
-        {isDestructing ? (
+        {isScanning ? (
+          <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
+            <Loader2 className="size-12 text-primary animate-spin" />
+            <div className="space-y-2">
+              <h2 className="text-xl font-black stamped-dossier text-primary animate-pulse">
+                Scanning for Secure Uplink...
+              </h2>
+              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                Establishing Encrypted Tunnel
+              </p>
+            </div>
+          </div>
+        ) : isDestructing ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
             <h2 className="text-2xl font-black stamped-dossier text-primary animate-glitch">
