@@ -40,7 +40,8 @@ import {
   Beer,
   ShieldCheck,
   Binoculars,
-  Milestone
+  Milestone,
+  ArrowRightLeft
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -157,7 +158,7 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
 };
 
 const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    // Simplified tax data for simulation purposes
+    // Simplified tax logic for internal simulation
     const taxBrackets: Record<string, any> = {
         "United Kingdom": {
             socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
@@ -184,7 +185,7 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
     let socialSecurityContrib = 0;
     const ssIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
     const ssCapped = socialSecurity.cap ? Math.min(ssIncome, socialSecurity.cap) : ssIncome;
-    socialSecurityContrib = ssCapped * socialSecurity.rate;
+    socialSecurityContrib = ssCapped * (socialSecurity.rate || 0);
 
     let incomeTaxBeforeCredit = 0;
     let lastUpto = 0;
@@ -204,7 +205,7 @@ const calculateTax = (income: number, country: string, filingStatus: 'single' | 
         socialSecurity: socialSecurityContrib, 
         netIncome: income - totalTax, 
         totalTax, 
-        effectiveRate: (totalTax / income) * 100, 
+        effectiveRate: (totalTax / (income || 1)) * 100, 
         taxCredit: 0, 
         incomeTaxBeforeCredit 
     };
@@ -236,7 +237,7 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: {
   );
 };
 
-// --- Components ---
+// --- Action Sections ---
 
 function TaxCalculatorSection() {
     return (
@@ -247,42 +248,78 @@ function TaxCalculatorSection() {
     );
 }
 
-const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-sm py-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <span className={cn("font-bold text-white", isFree && "text-green-400")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
-      </span>
-    </div>
-);
+function CurrencyConverterSection() {
+    const [amount, setAmount] = useState('1000');
+    const [fromCurrency, setFromCurrency] = useState('GBP');
+    const [toCurrency, setToCurrency] = useState('USD');
+    
+    const currencies = ORDERED_CURRENCIES;
+    
+    const result = useMemo(() => {
+        const amt = parseFloat(amount);
+        if (isNaN(amt)) return 0;
+        const fromRate = CONVERSION_RATES[fromCurrency] || 1;
+        const toRate = CONVERSION_RATES[toCurrency] || 1;
+        return (amt / fromRate) * toRate;
+    }, [amount, fromCurrency, toCurrency]);
 
-const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
-    icon: React.ReactNode, 
-    label: string, 
-    value: string, 
-    currency: string, 
-    onChange: (val: string) => void 
-}) => (
-    <div className="flex justify-between items-center text-sm py-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <div className="relative w-32">
-        <Input 
-          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50 rounded-sm" 
-          type="number"
-          value={value}
-          placeholder="0"
-          onChange={(e) => onChange(e.target.value)}
-        />
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
-      </div>
-    </div>
-);
+    return (
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="conv-amount" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Amount to Convert</Label>
+                    <Input 
+                        id="conv-amount" 
+                        type="number" 
+                        value={amount} 
+                        onChange={e => setAmount(e.target.value)} 
+                        className="bg-background/50 border-white/10 text-right font-bold text-lg h-12 rounded-sm" 
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">From</Label>
+                        <Select value={fromCurrency} onValueChange={setFromCurrency}>
+                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="glass">
+                                {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">To</Label>
+                        <Select value={toCurrency} onValueChange={setToCurrency}>
+                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="glass">
+                                {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+            </div>
+
+            <Card className="glass border-primary/20 p-8 text-center space-y-2 shadow-2xl rounded-sm">
+                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Estimated Tactical Exchange</h4>
+                <div className="flex flex-col items-center justify-center">
+                    <p className="text-muted-foreground text-sm line-through opacity-50 mb-1">{formatCurrency(parseFloat(amount) || 0, fromCurrency)}</p>
+                    <p className="text-4xl font-black text-white tracking-tighter">
+                        {formatCurrency(result, toCurrency)}
+                    </p>
+                </div>
+                <p className="text-[9px] text-muted-foreground uppercase pt-4 leading-tight opacity-60">
+                    Rates are indicative benchmark figures for strategic planning only. <br/>
+                    Verify live market spot rates before executing cross-border transfers.
+                </p>
+            </Card>
+        </div>
+    );
+}
+
+// --- Main Workspace ---
 
 function ContractDecoderContent() {
   const firestore = useFirestore();
@@ -454,7 +491,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
                         type="number" 
                         placeholder="0" 
                         value={responsibilityAllowance}
@@ -474,7 +511,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
                         type="number" 
                         placeholder="0" 
                         value={studentLoan}
@@ -488,7 +525,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right" 
+                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
                         type="number" 
                         placeholder="200" 
                         value={contingency}
@@ -544,7 +581,7 @@ function ContractDecoderContent() {
                         </div>
                         <span className="text-sm font-bold text-white">{selectedSchool.intel.housing.provided ? "School Provided" : "Teacher Pays"}</span>
                         </div>
-                        <div className="pt-4 mt-2 border-t border-white/5">
+                        <div className="pt-4 mt-2 border-t border-white/5 space-y-2">
                             <Dialog>
                                 <DialogTrigger asChild>
                                     <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-accent/5 hover:bg-accent/10 border border-accent/20 transition-all group">
@@ -561,6 +598,25 @@ function ContractDecoderContent() {
                                         <DialogDescription className="text-muted-foreground text-xs leading-relaxed">Estimate regional tax signatures and mandatory deductions across major international teaching territories.</DialogDescription>
                                     </DialogHeader>
                                     <div className="mt-6 pt-6 border-t border-white/5"><TaxCalculatorSection /></div>
+                                </DialogContent>
+                            </Dialog>
+
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-primary/5 hover:bg-primary/10 border border-primary/20 transition-all group">
+                                        <div className="flex items-center gap-2">
+                                            <ArrowRightLeft className="size-3.5 text-primary group-hover:animate-pulse" />
+                                            <span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-primary">Currency Converter</span>
+                                        </div>
+                                        <Info className="size-3 text-muted-foreground group-hover:text-primary" />
+                                    </button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-md glass border-white/10 shadow-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle className="stamped-dossier text-white text-xl">Tactical Currency Converter</DialogTitle>
+                                        <DialogDescription className="text-muted-foreground text-xs leading-relaxed">Perform quick-action exchange simulations using benchmark global rates.</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="mt-6 pt-6 border-t border-white/5"><CurrencyConverterSection /></div>
                                 </DialogContent>
                             </Dialog>
                         </div>
@@ -731,8 +787,8 @@ function ContractDecoderContent() {
 
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="mb-16 text-center">
+    <div className="container mx-auto px-4 md:px-6 py-12 print:py-0 print:px-0">
+      <div className="mb-16 text-center print:hidden">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">
           2. Contract Decoder
         </h1>
