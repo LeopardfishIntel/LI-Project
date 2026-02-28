@@ -34,7 +34,7 @@ const CONVERSION_RATES: Record<string, number> = {
   CZK: 23.5,
 };
 
-// Tactical Order: Priority first, then alphabetical
+// Tactical Order: Priority first (USD, GBP, EUR), then alphabetical
 const ORDERED_CURRENCIES = [
   'USD', 'GBP', 'EUR',
   ...Object.keys(CONVERSION_RATES)
@@ -126,7 +126,7 @@ function ContractDecoderContent() {
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
             <CardHeader>
-              <CardTitle className="text-lg stamped-dossier">My Settings</CardTitle>
+              <CardTitle className="text-lg stamped-dossier text-white">My Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -207,14 +207,24 @@ function ContractDecoderContent() {
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment</Label>
-                  <a 
-                    href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
-                  >
-                    Gov. Uk <ExternalLink className="size-2" />
-                  </a>
+                  <div className="flex gap-2">
+                    <a 
+                      href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans#:~:text=How%20we%20calculate%20your%20repayment,you%20your%20monthly%20repayment%20amount." 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      Gov. Uk <ExternalLink className="size-2" />
+                    </a>
+                    <a 
+                      href="https://studentaid.gov/manage-loans/repayment/plans" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold"
+                    >
+                      US Aid <ExternalLink className="size-2" />
+                    </a>
+                  </div>
                 </div>
                 <div className="relative">
                   <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -242,7 +252,7 @@ function ContractDecoderContent() {
             <>
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Benefits Pane */}
-                <Card className="glass rounded-sm border-white/10">
+                <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
                       <Award className="text-primary w-5 h-5" /> Income & Benefits
@@ -255,7 +265,7 @@ function ContractDecoderContent() {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <span className="text-sm text-muted-foreground">Housing Arrangement</span>
-                      <span className="text-sm font-semibold">{selectedSchool.intel.housing.provided ? "100% Provided" : "Teacher Pays"}</span>
+                      <span className="text-sm font-semibold text-white">{selectedSchool.intel.housing.provided ? "100% Provided" : "Teacher Pays"}</span>
                     </div>
                     {selectedSchool.intel.housing.provided && (
                       <div className="flex justify-between items-center py-2 border-b border-white/5 text-green-400">
@@ -267,7 +277,7 @@ function ContractDecoderContent() {
                 </Card>
 
                 {/* Costs Pane */}
-                <Card className="glass rounded-sm border-white/10">
+                <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2 stamped-dossier text-white">
                       <Users className="text-destructive w-5 h-5" /> Estimated Costs
@@ -288,7 +298,7 @@ function ContractDecoderContent() {
                     ) : null}
                     <Separator className="my-2 bg-white/5" />
                     <div className="flex justify-between items-center font-bold">
-                      <span className="text-sm uppercase tracking-tighter">Burn Rate</span>
+                      <span className="text-sm uppercase tracking-tighter text-white">Burn Rate</span>
                       <span className="text-destructive">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                     </div>
                   </CardContent>
