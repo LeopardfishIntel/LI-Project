@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "TeacherProfile": {
@@ -192,6 +193,7 @@
       "properties": {
         "id": { "type": "string" },
         "category": { "type": "string" },
+        "organisation": { "type": "string" },
         "original_content": { "type": "string" },
         "clean_text": { "type": "string" },
         "status": { "type": "string", "enum": ["pending", "auto_rejected"] },
@@ -199,9 +201,10 @@
         "confidence_score": { "type": "number" },
         "attachmentUrl": { "type": "string", "format": "uri" },
         "timestamp": { "type": "string", "format": "date-time" },
-        "authorId": { "type": "string" }
+        "authorId": { "type": "string" },
+        "authorEmail": { "type": "string", "format": "email" }
       },
-      "required": ["category", "original_content", "clean_text", "status", "timestamp"]
+      "required": ["category", "organisation", "original_content", "clean_text", "status", "timestamp"]
     },
     "VerifiedIntel": {
       "title": "Verified Intelligence Dossier",
@@ -218,9 +221,27 @@
         "original_report_id": { "type": "string" },
         "attachmentUrl": { "type": "string", "format": "uri" },
         "timestamp": { "type": "string", "format": "date-time" },
-        "authorId": { "type": "string" }
+        "authorId": { "type": "string" },
+        "authorEmail": { "type": "string", "format": "email" }
       },
       "required": ["polished_text", "location", "organisation", "intel_type", "is_verified"]
+    },
+    "MailTrigger": {
+      "title": "Email Trigger",
+      "type": "object",
+      "description": "Used by the Firebase Trigger Email extension to send automated platform signals.",
+      "properties": {
+        "to": { "type": "string", "format": "email" },
+        "message": {
+          "type": "object",
+          "properties": {
+            "subject": { "type": "string" },
+            "text": { "type": "string" },
+            "html": { "type": "string" }
+          }
+        }
+      },
+      "required": ["to", "message"]
     }
   },
   "auth": {
@@ -269,6 +290,16 @@
             "$ref": "#/backend/entities/VerifiedIntel"
           },
           "description": "Verified, high-value intelligence dossiers published to the live platform."
+        }
+      },
+      {
+        "path": "/mail/{mailId}",
+        "definition": {
+          "entityName": "MailTrigger",
+          "schema": {
+            "$ref": "#/backend/entities/MailTrigger"
+          },
+          "description": "Collection monitored by the Trigger Email extension for automated agency signals."
         }
       }
     ]
