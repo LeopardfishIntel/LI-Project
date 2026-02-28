@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -275,6 +275,47 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
       return numbers[0] * scale;
     }
     return 0;
+};
+
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    const countryData = taxData[country];
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
+    if (socialSecurity.rate > 0) {
+        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
+    }
+
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastBracketUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
+            lastBracketUpto = bracket.upto;
+        } else {
+            break;
+        }
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+
+    const totalTax = incomeTax + socialSecurityContrib;
+    const netIncome = income - totalTax;
+    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
+
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
 };
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
@@ -703,24 +744,44 @@ function ContractDecoderContent() {
 
           {/* TRUE NET SAVINGS VERDICT */}
           <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl shadow-black/40", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="space-y-1 text-center md:text-left">
-                <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4>
-                <div className="flex items-baseline gap-1">
-                  <span className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
-                    {savingsPotential < 0 ? '-' : ''}{formatCurrency(Math.abs(savingsPotential), currency)}
-                  </span>
-                  <span className="text-lg font-bold text-muted-foreground/50">/mo</span>
+            <div className="space-y-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="space-y-1 text-center md:text-left">
+                  <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4>
+                  <div className="flex items-baseline gap-1">
+                    <span className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                      {savingsPotential < 0 ? '-' : ''}{formatCurrency(Math.abs(savingsPotential), currency)}
+                    </span>
+                    <span className="text-lg font-bold text-muted-foreground/50">/mo</span>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex-1 max-w-md text-sm text-muted-foreground leading-relaxed text-center md:text-left">
-                The gap between your total income and your total costs, including a <strong>{formatCurrency(parseFloat(contingency), currency)}</strong> contingency buffer.
+                
+                <div className="flex-1 max-w-md text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">
+                  The gap between your income and your cost of living.
+                </div>
+
+                <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild>
+                  <Link href="/compare">Compare Offers</Link>
+                </Button>
               </div>
 
-              <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild>
-                <Link href="/compare">Compare Offers</Link>
-              </Button>
+              {/* Wealth Equivalents Row */}
+              {savingsPotential !== 0 && (
+                <div className="pt-6 border-t border-white/5">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    {['USD', 'GBP', 'EUR', 'AUD'].map((targetCcy) => {
+                      const savingsInUSD = savingsPotential / rate;
+                      const convertedVal = Math.round(savingsInUSD * (CONVERSION_RATES[targetCcy] || 1));
+                      return (
+                        <div key={targetCcy} className="space-y-1">
+                          <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p>
+                          <p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         </div>
@@ -732,7 +793,7 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white uppercase">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">
           2. Contract Decoder
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm">
