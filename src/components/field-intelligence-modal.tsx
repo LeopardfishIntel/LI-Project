@@ -21,7 +21,7 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ShieldAlert, Loader2, Zap, Binoculars, ShieldCheck, Lock } from 'lucide-react';
+import { ShieldAlert, Loader2, Zap, Binoculars, Lock } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
@@ -166,18 +166,20 @@ export function FieldIntelligenceModal() {
               <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
                 Field Report
               </DialogTitle>
-              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-3">
-                <div>
-                  <strong className="block mb-1 text-white uppercase tracking-tighter">Security & Anonymity Notice</strong>
-                  Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
-                </div>
-                
-                <div>
-                  <strong className="block mb-1 text-white uppercase tracking-tighter">Operational Protocols</strong>
-                  <ul className="mt-1 space-y-2">
-                    <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
-                    <li><span className="font-bold text-primary">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
-                  </ul>
+              <DialogDescription asChild>
+                <div className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-3">
+                  <div>
+                    <strong className="block mb-1 text-white uppercase tracking-tighter">Security & Anonymity Notice</strong>
+                    Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
+                  </div>
+                  
+                  <div>
+                    <strong className="block mb-1 text-white uppercase tracking-tighter">Operational Protocols</strong>
+                    <ul className="mt-1 space-y-2">
+                      <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
+                      <li><span className="font-bold text-primary">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
+                    </ul>
+                  </div>
                 </div>
               </DialogDescription>
             </DialogHeader>
