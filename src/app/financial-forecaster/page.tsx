@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -44,16 +43,6 @@ import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogTrigger, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from '@/components/ui/dialog';
-import { UkLoanCalculatorModal } from '@/components/uk-loan-calculator-modal';
-import { UsLoanCalculatorModal } from '@/components/us-loan-calculator-modal';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -151,9 +140,6 @@ function ContractDecoderContent() {
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
   const [verdictError, setVerdictError] = useState<string | null>(null);
-  
-  const [isUkLoanModalOpen, setIsUkLoanModalOpen] = useState(false);
-  const [isUsLoanModalOpen, setIsUsLoanModalOpen] = useState(false);
   const [dateStamp, setDateStamp] = useState('');
 
   const selectedSchool = useMemo(() => {
@@ -322,18 +308,8 @@ function ContractDecoderContent() {
                 <div className="flex justify-between items-end">
                   <Label className="text-sm font-bold text-muted-foreground">Student loan repayment ({currency})</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
-                    <button 
-                      onClick={() => setIsUkLoanModalOpen(true)} 
-                      className="hover:text-white transition-colors"
-                    >
-                      UK Calculator
-                    </button>
-                    <button 
-                      onClick={() => setIsUsLoanModalOpen(true)} 
-                      className="hover:text-white transition-colors"
-                    >
-                      US Calculator
-                    </button>
+                    <button className="hover:text-white transition-colors">UK Calculator</button>
+                    <button className="hover:text-white transition-colors">US Calculator</button>
                   </div>
                 </div>
                 <div className="relative">
@@ -522,21 +498,6 @@ function ContractDecoderContent() {
             </>
           )}
         </div>
-        <UkLoanCalculatorModal 
-          isOpen={isUkLoanModalOpen} 
-          onOpenChange={setIsUkLoanModalOpen} 
-          onConfirm={(amount) => setStudentLoan(amount)}
-          selectedCountry={selectedSchool?.country} 
-          localCurrency={currency}
-          exchangeRate={rate / CONVERSION_RATES['GBP']}
-        />
-        <UsLoanCalculatorModal 
-          isOpen={isUsLoanModalOpen} 
-          onOpenChange={setIsUsLoanModalOpen} 
-          localCurrency={currency}
-          exchangeRate={rate}
-          onConfirm={(amount) => setStudentLoan(amount)}
-        />
       </div>
   );
 }
