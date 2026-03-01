@@ -19,9 +19,6 @@ import { setDocumentNonBlocking } from '@/firebase';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
-type ComparisonResult = 'best' | 'worst' | 'neutral';
-
 const calculateMonthlyCost = (school: School): number => {
     const { costOfLiving, intel } = school;
     
@@ -66,11 +63,12 @@ const calculateMonthlyCost = (school: School): number => {
       mobileCost +
       diningSocialCost +
       (costOfLiving.vehicleInsuranceMaint || 0) +
-      uncoveredMedicalCost;
+      uncoveredMedicalCost
+    );
 };
 
 const HealthInsuranceHelp = () => (
-    <div className="space-y-3">
+    <div className="space-y-3 p-1">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
         <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
             <Table>
@@ -189,7 +187,7 @@ export default function ComparePage() {
     }, [selectedSchoolIds, schools]);
 
     const handleNetSalaryChange = (index: number, value: string) => {
-        const cleanedValue = value.replace(/\D/g, ''); // Ensure only digits
+        const cleanedValue = value.replace(/\D/g, '');
         const newSalaries = [...netSalaries];
         newSalaries[index] = cleanedValue;
         setNetSalaries(newSalaries);
