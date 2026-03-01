@@ -16,7 +16,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
@@ -74,13 +74,6 @@ const HealthInsuranceHelp = () => (
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
         <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
             <Table>
-                <TableHeader className="bg-white/5">
-                    <TableRow className="hover:bg-transparent border-b-white/10">
-                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Tier</TableHead>
-                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">One word</TableHead>
-                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Best for...</TableHead>
-                    </TableRow>
-                </TableHeader>
                 <TableBody>
                     <TableRow className="hover:bg-transparent border-b-white/5">
                         <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Basic</TableCell>
@@ -100,6 +93,9 @@ const HealthInsuranceHelp = () => (
                 </TableBody>
             </Table>
         </div>
+        <p className="text-[10px] text-muted-foreground leading-tight italic px-1">
+            Always check with your school for full details of the health provision before signing the contract.
+        </p>
     </div>
 );
 
