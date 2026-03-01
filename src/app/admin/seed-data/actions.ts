@@ -22,29 +22,32 @@ export type BulkEnrichState = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 
-export async function seedStudentLoanThresholds() {
-  const thresholds = [
-    { id: 'plan1', base_threshold: 22015, pli_indices: { "Japan": 0.9, "UAE": 1.1, "Switzerland": 1.6, "Singapore": 1.1, "Thailand": 0.6 } },
-    { id: 'plan2', base_threshold: 27295, pli_indices: { "Japan": 0.9, "UAE": 1.1, "Switzerland": 1.6, "Singapore": 1.1, "Thailand": 0.6 } },
-    { id: 'plan4', base_threshold: 31395, pli_indices: { "Japan": 0.9, "UAE": 1.1, "Switzerland": 1.6, "Singapore": 1.1, "Thailand": 0.6 } },
-    { id: 'plan5', base_threshold: 25000, pli_indices: { "Japan": 0.9, "UAE": 1.1, "Switzerland": 1.6, "Singapore": 1.1, "Thailand": 0.6 } },
-    { id: 'pgl', base_threshold: 21000, pli_indices: { "Japan": 0.9, "UAE": 1.1, "Switzerland": 1.6, "Singapore": 1.1, "Thailand": 0.6 } },
-  ];
+export async function seedStudentLoanConfig() {
+  const loanConfig = {
+    "UK_Config_2026": {
+      "Plan_1": { "base_threshold": 26000, "rate": 0.09 },
+      "Plan_2": { "base_threshold": 29385, "rate": 0.09 },
+      "Plan_4": { "base_threshold": 32500, "rate": 0.09 },
+      "Plan_5": { "base_threshold": 25000, "rate": 0.09 },
+      "PGL": { "base_threshold": 21000, "rate": 0.06 }
+    },
+    "Country_Bands_2026": {
+      "UAE": { "pli": 1.2, "band": "Band E", "currency": "AED", "exch_rate": 4.65 },
+      "USA": { "pli": 1.2, "band": "Band E", "currency": "USD", "exch_rate": 1.26 },
+      "Spain": { "pli": 0.8, "band": "Band B", "currency": "EUR", "exch_rate": 1.18 },
+      "Thailand": { "pli": 0.6, "band": "Band A", "currency": "THB", "exch_rate": 45.10 },
+      "China": { "pli": 0.8, "band": "Band B", "currency": "CNY", "exch_rate": 9.15 },
+      "Qatar": { "pli": 1.2, "band": "Band E", "currency": "QAR", "exch_rate": 4.60 },
+      "Japan": { "pli": 1.0, "band": "Band C", "currency": "JPY", "exch_rate": 190.50 }
+    },
+    "US_Config_2026": {
+      "FEIE_Limit": 126000,
+      "RAP_Threshold_Single": 34800,
+      "Dependent_Credit": 600
+    }
+  };
 
-  const rates = [
-    { id: 'AED', rate_to_gbp: 0.21, rate_to_usd: 0.27 },
-    { id: 'JPY', rate_to_gbp: 0.0053, rate_to_usd: 0.0067 },
-    { id: 'EUR', rate_to_gbp: 0.85, rate_to_usd: 1.08 },
-    { id: 'CHF', rate_to_gbp: 0.88, rate_to_usd: 1.13 },
-    { id: 'THB', rate_to_gbp: 0.022, rate_to_usd: 0.028 },
-  ];
-
-  for (const t of thresholds) {
-    await setDoc(doc(firestore, 'thresholds_2026', t.id), t);
-  }
-  for (const r of rates) {
-    await setDoc(doc(firestore, 'exchange_rates_2026', r.id), r);
-  }
+  await setDoc(doc(firestore, 'config', 'student_loans_2026'), loanConfig);
 }
 
 export async function enrichAllSchoolsAction(

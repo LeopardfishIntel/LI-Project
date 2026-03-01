@@ -186,31 +186,15 @@
         "overallRating"
       ]
     },
-    "StudentLoanThreshold": {
-      "title": "Student Loan Threshold",
+    "GlobalConfig": {
+      "title": "Global Configuration",
       "type": "object",
-      "description": "Stores 2026/27 repayment thresholds and PLI data.",
+      "description": "Stores application-wide configuration data like loan thresholds.",
       "properties": {
-        "id": { "type": "string", "description": "e.g., 'plan1', 'plan2', 'pgl'" },
-        "base_threshold": { "type": "number", "description": "Annual GBP threshold." },
-        "pli_indices": {
-          "type": "object",
-          "additionalProperties": { "type": "number" },
-          "description": "Mapping of country to Price Level Index."
-        }
-      },
-      "required": ["id", "base_threshold"]
-    },
-    "ExchangeRate": {
-      "title": "Exchange Rate",
-      "type": "object",
-      "description": "HMRC or Market benchmark rates.",
-      "properties": {
-        "id": { "type": "string", "description": "Currency code e.g., 'AED', 'JPY'" },
-        "rate_to_gbp": { "type": "number" },
-        "rate_to_usd": { "type": "number" }
-      },
-      "required": ["id"]
+        "UK_Config_2026": { "type": "object" },
+        "Country_Bands_2026": { "type": "object" },
+        "US_Config_2026": { "type": "object" }
+      }
     }
   },
   "auth": {
@@ -240,22 +224,13 @@
         }
       },
       {
-        "path": "/thresholds_2026/{id}",
+        "path": "/config/{configId}",
         "definition": {
-          "entityName": "StudentLoanThreshold",
+          "entityName": "GlobalConfig",
           "schema": {
-            "$ref": "#/backend/entities/StudentLoanThreshold"
+            "$ref": "#/backend/entities/GlobalConfig"
           },
-          "description": "2026/27 UK and US Loan Threshold configurations."
-        }
-      },
-      {
-        "path": "/exchange_rates_2026/{id}",
-        "definition": {
-          "entityName": "ExchangeRate",
-          "schema": {
-            "$ref": "#/backend/entities/ExchangeRate"
-          }
+          "description": "Operational parameters for calculator simulations."
         }
       }
     ]

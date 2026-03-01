@@ -11,10 +11,9 @@ import { doc, getDoc } from 'firebase/firestore';
 export type CalculationInput = {
   loanType: 'UK' | 'US';
   salaryLocal: number;
-  currency: string;
+  countryName: string;
   ukPlan?: string;
-  country?: string;
-  usFeie?: boolean;
+  isFeieEnabled?: boolean;
 };
 
 export type CalculationOutput = {
@@ -22,59 +21,75 @@ export type CalculationOutput = {
   monthlyRepaymentHome: number;
   homeCurrency: string;
   message: string;
+  error?: string;
 };
 
 export async function calculateRepayment(input: CalculationInput): Promise<CalculationOutput> {
-  const { firestore } = await initializeFirebase();
-  if (!firestore) throw new Error('System Offline: Datastore unreachable.');
+  try {
+    const { firestore } = await initializeFirebase();
+    if (!firestore) throw new Error('System Offline: Datastore unreachable.');
 
-  if (input.loanType === 'UK') {
-    // 1. Fetch 2026 Threshold & PLI
-    const thresholdDoc = await getDoc(doc(firestore, 'thresholds_2026', input.ukPlan?.toLowerCase() || 'plan1'));
-    if (!thresholdDoc.exists()) throw new Error('Signature Error: Unknown Plan Protocol.');
+    const configSnap = await getDoc(doc(firestore, 'config', 'student_loans_2026'));
+    if (!configSnap.exists()) throw new Error('Protocol Error: 2026 thresholds not found.');
     
-    const { base_threshold, pli_indices } = thresholdDoc.data();
-    const pli = pli_indices[input.country || 'Japan'] || 1.0;
+    const config = configSnap.data();
 
-    // 2. Fetch Exchange Rate (HMRC 2026 Benchmark)
-    const rateDoc = await getDoc(doc(firestore, 'exchange_rates_2026', input.currency));
-    const rate = rateDoc.exists() ? rateDoc.data().rate_to_gbp : 1.0;
+    if (input.loanType === 'UK') {
+      const planKey = (input.ukPlan || 'Plan_1').replace(' ', '_');
+      const plan = config.UK_Config_2026[planKey];
+      const country = config.Country_Bands_2026[input.countryName];
 
-    // 3. Apply UK Formula: ((Local Salary * Rate) - (UK_Base_Threshold * PLI)) * 0.09 / 12
-    const gbpSalary = input.salaryLocal * rate;
-    const gbpThreshold = base_threshold * pli;
-    const annualRepaymentGBP = Math.max(0, (gbpSalary - gbpThreshold) * 0.09);
-    const monthlyRepaymentGBP = annualRepaymentGBP / 12;
-    const monthlyRepaymentLocal = monthlyRepaymentGBP / rate;
+      if (!plan || !country) {
+        throw new Error(`Incomplete Intel: Thresholds for ${input.countryName} or ${input.ukPlan} are unavailable.`);
+      }
 
-    return {
-      monthlyRepaymentLocal,
-      monthlyRepaymentHome: monthlyRepaymentGBP,
-      homeCurrency: 'GBP',
-      message: `Calculated using 2026/27 UK ${input.ukPlan} overseas protocol.`
-    };
-  } else {
-    // US Protocol
-    const homeCurrency = 'USD';
-    if (input.usFeie && input.salaryLocal < 126000) {
+      // Formula: ((Local Salary / Exch_Rate) - (Plan_Base * PLI)) * Rate / 12
+      const gbpSalary = input.salaryLocal / country.exch_rate;
+      const scaledThreshold = plan.base_threshold * country.pli;
+      const annualRepaymentGBP = Math.max(0, (gbpSalary - scaledThreshold) * plan.rate);
+      const monthlyRepaymentGBP = annualRepaymentGBP / 12;
+      const monthlyRepaymentLocal = monthlyRepaymentGBP * country.exch_rate;
+
       return {
-        monthlyRepaymentLocal: 0,
-        monthlyRepaymentHome: 0,
+        monthlyRepaymentLocal,
+        monthlyRepaymentHome: monthlyRepaymentGBP,
+        homeCurrency: 'GBP',
+        message: `Calculated using 2026/27 UK ${input.ukPlan} (${country.band}) protocol.`
+      };
+    } else {
+      // US Protocol
+      const usConfig = config.US_Config_2026;
+      const homeCurrency = 'USD';
+
+      if (input.isFeieEnabled && input.salaryLocal < usConfig.FEIE_Limit) {
+        return {
+          monthlyRepaymentLocal: 0,
+          monthlyRepaymentHome: 0,
+          homeCurrency,
+          message: 'FEIE Protocol Active: Repayment set to 0 USD while income remains below 2026 threshold.'
+        };
+      }
+
+      // RAP/SAVE 2026 formula simulation
+      const discretionaryThreshold = usConfig.RAP_Threshold_Single;
+      const monthlyDiscretionary = Math.max(0, (input.salaryLocal - discretionaryThreshold) / 12);
+      const monthlyRepayment = monthlyDiscretionary * 0.10; // 10% rate simulation
+
+      return {
+        monthlyRepaymentLocal: monthlyRepayment,
+        monthlyRepaymentHome: monthlyRepayment,
         homeCurrency,
-        message: 'FEIE Protection active: Repayment is $0 while income is below 2026 threshold.'
+        message: 'Estimated using 2026 RAP/SAVE discretionary income algorithm.'
       };
     }
-
-    // Simplified SAVE/RAP 2026: 10% of discretionary income (est)
-    const discretionaryThreshold = 35000; // Simplified 2026 poverty scaling
-    const monthlyDiscretionary = Math.max(0, (input.salaryLocal - discretionaryThreshold) / 12);
-    const monthlyRepayment = monthlyDiscretionary * 0.10;
-
+  } catch (error: any) {
+    console.error('Calculation failure:', error);
     return {
-      monthlyRepaymentLocal: monthlyRepayment,
-      monthlyRepaymentHome: monthlyRepayment,
-      homeCurrency,
-      message: 'Estimated using 2026 RAP/SAVE discretionary income formula.'
+      monthlyRepaymentLocal: 0,
+      monthlyRepaymentHome: 0,
+      homeCurrency: input.loanType === 'UK' ? 'GBP' : 'USD',
+      message: 'System Error',
+      error: error.message
     };
   }
 }
