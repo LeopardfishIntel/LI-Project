@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -296,7 +297,10 @@ export default function ComparePage() {
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
-                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold"
+                        className={cn(
+                            "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
+                            !netSalary && "animate-glow border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
+                        )}
                     />
                 </div>
 
