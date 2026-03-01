@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -455,6 +454,16 @@ function ContractDecoderContent() {
                             <h3 className="text-base text-primary flex items-center gap-2 font-bold">
                                 <Sparkles className="size-4" /> Leopardfish Intel evaluation
                             </h3>
+                            {verdict && (
+                                <div className={cn(
+                                    "px-3 py-1 rounded-sm border font-black text-sm transition-all",
+                                    verdict.overallScore >= 7 ? "bg-green-500/10 border-green-500/30 text-green-400" :
+                                    verdict.overallScore >= 4 ? "bg-amber-500/10 border-amber-500/30 text-amber-400" :
+                                    "bg-destructive/10 border-destructive/30 text-destructive"
+                                )}>
+                                    Score: {verdict.overallScore.toFixed(1)}/10.0
+                                </div>
+                            )}
                             {dateStamp && (
                                 <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
                                     Date stamp: {dateStamp}
