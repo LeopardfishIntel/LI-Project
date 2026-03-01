@@ -39,7 +39,7 @@ export default function Footer() {
                         <Facebook className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                 </div>
-                <nav className="flex flex-col gap-3 items-center md:items-end">
+                <nav className="flex flex-col gap-2 items-center md:items-end">
                     <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Contact</Link>
                     <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Data Admin</Link>
                     <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms of Service</Link>

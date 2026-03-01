@@ -53,7 +53,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section */}
+      {/* Hero Section: Tactical Intel with Searchlight */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -90,8 +90,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter */}
-      <section className="py-12 border-b border-white/5">
+      {/* Stats Counter Section */}
+      <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
@@ -137,7 +137,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tactical Uplink */}
+      {/* Field Intel Uplink Section */}
       <section className="py-24 bg-primary/5 border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="glass p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 rounded-sm">
