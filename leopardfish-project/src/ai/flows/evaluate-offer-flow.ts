@@ -1,9 +1,9 @@
 
 'use server';
 /**
- * @fileOverview An AI-powered flow to generate a tactical analysis of a specific contract offer.
+ * @fileOverview An AI-powered flow to generate a tactical SWOT analysis of a specific contract offer.
  *
- * - evaluateOffer - A function that handles the deep-dive analysis of an offer.
+ * - evaluateOffer - A function that handles the deep-dive SWOT analysis of an offer.
  * - EvaluateOfferInput - The input type for the evaluateOffer function.
  * - EvaluateOfferOutput - The return type for the evaluateOffer function.
  */
@@ -22,10 +22,10 @@ const EvaluateOfferInputSchema = z.object({
 export type EvaluateOfferInput = z.infer<typeof EvaluateOfferInputSchema>;
 
 const EvaluateOfferOutputSchema = z.object({
-  savingsAnalysis: z.string().describe('Analysis of the savings capacity and wealth-building potential.'),
-  marketComparison: z.string().describe('A brief comparison to other schools and typical packages in that area.'),
-  cityFit: z.string().describe('Insights on why this city might be a good fit for the user.'),
-  warnings: z.string().describe('Notable warnings, US/UK travel advice, or institutional red flags.'),
+  strengths: z.string().describe('Core advantages of this offer, focusing on savings and benefits.'),
+  weaknesses: z.string().describe('Potential downsides or areas where the offer is less competitive.'),
+  opportunities: z.string().describe('Strategic growth or lifestyle opportunities presented by this move.'),
+  threats: z.string().describe('Critical warnings, US/UK travel advice, or institutional red flags.'),
 });
 export type EvaluateOfferOutput = z.infer<typeof EvaluateOfferOutputSchema>;
 
@@ -37,7 +37,7 @@ const evaluateOfferPrompt = ai.definePrompt({
   name: 'evaluateOfferPrompt',
   input: {schema: EvaluateOfferInputSchema},
   output: {schema: EvaluateOfferOutputSchema},
-  prompt: `You are a high-level recruitment intelligence analyst for Leopardfish Intel. Your task is to provide a tactical verdict on a potential teaching contract.
+  prompt: `You are a high-level recruitment intelligence analyst for Leopardfish Intel. Your task is to provide a tactical SWOT analysis on a potential teaching contract.
 
 Input Dossier:
 - School: {{{schoolName}}}
@@ -46,10 +46,10 @@ Input Dossier:
 - Family Status: {{{familyStatus}}}
 
 Instructions:
-1. **Savings Capacity Analysis**: Evaluate if the projected savings are strong, moderate, or weak for this specific region and family status. Mention wealth-building potential over a 2-year cycle.
-2. **Market Comparison (Intelligence)**: Briefly compare this offer to typical "Tier 1" and "Tier 2" packages in {{{location}}}. Is this school a market leader or a baseline provider?
-3. **Lifestyle & Strategic Fit**: Comment on why {{{location}}} is a desirable target for an educator. Mention one or two local highlights (climate, culture, or travel links).
-4. **Tactical Warnings & Advisories**: Check for any obvious warnings. This MUST include a summary of current US (State Dept) or UK (FCDO) travel advice if applicable, and any known institutional "Red Flags" for schools in {{{country}}} (e.g., visa delays, housing inconsistencies).
+1. **Strengths**: Analyse the financial and institutional "wins". Is the savings capacity strong for this family status? Is the school a known market leader?
+2. **Weaknesses**: Identify where the offer might be "treading water". Are there high local costs that eat into the package? Is the savings capacity weak compared to regional Tier 1 benchmarks?
+3. **Opportunities**: Comment on the strategic move. Does this city offer exceptional travel links or career growth pathways? Is there a lifestyle "bonus" (e.g., climate, culture)?
+4. **Threats**: This is critical intelligence. You MUST check for and report on prevailing regional risks. Include current UK (FCDO) or US (State Dept) travel advice if applicable. Mention institutional red flags (e.g., currency volatility in {{{country}}}, visa complexity, or reported institutional delays).
 
 Tone: Professional, direct, and authoritative. Use British English.
 `,

@@ -32,7 +32,11 @@ import {
   Info,
   Milestone,
   Sparkles,
-  ServerCrash
+  ServerCrash,
+  TrendingUp,
+  TrendingDown,
+  Compass,
+  AlertTriangle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -52,95 +56,6 @@ import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
-
-const taxData: { [key: string]: any } = {
-    "Italy": {
-        currency: "EUR",
-        socialSecurity: { rate: 0.0919 },
-        childTaxCredit: 950,
-        specialRegime: {
-            name: "New Arrival Tax Discount",
-            description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime).",
-            taxablePercentage: 0.30
-        },
-        filingStatuses: {
-            single: { brackets: [{ upto: 28000, rate: 0.23 }, { upto: 50000, rate: 0.35 }, { upto: Infinity, rate: 0.43 }]},
-            married: { brackets: [{ upto: 28000, rate: 0.23 }, { upto: 50000, rate: 0.35 }, { upto: Infinity, rate: 0.43 }]},
-        },
-    },
-    "Japan": {
-        currency: "JPY",
-        socialSecurity: { rate: 0.145, cap: 8160000 },
-        childTaxCredit: 200000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 }, { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [ { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 }, { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-        },
-    },
-    "Netherlands": {
-        currency: "EUR",
-        socialSecurity: { rate: 0.2765, cap: 38098 },
-        childTaxCredit: 800,
-        filingStatuses: {
-            single: { brackets: [{ upto: 38098, rate: 0.0932 }, { upto: 75518, rate: 0.3697 }, { upto: Infinity, rate: 0.4950 }]},
-            married: { brackets: [{ upto: 38098, rate: 0.0932 }, { upto: 75518, rate: 0.3697 }, { upto: Infinity, rate: 0.4950 }]},
-        },
-    },
-    "Singapore": {
-        currency: "SGD",
-        socialSecurity: { rate: 0.20, cap: 6000 * 12 },
-        childTaxCredit: 2000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 }, { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 }, { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 }]},
-            married: { brackets: [{ upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 }, { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 }, { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 }]},
-        },
-    },
-    "South Korea": {
-        currency: "KRW",
-        socialSecurity: { rate: 0.09, cap: 70800000 },
-        childTaxCredit: 150000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 }, { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 }, { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [{ upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 }, { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 }, { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 }]},
-        },
-    },
-    "Switzerland": {
-        currency: "CHF",
-        socialSecurity: { rate: 0.064 },
-        childTaxCredit: 1200,
-        filingStatuses: {
-            single: { brackets: [{ upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 }, { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 }]},
-            married: { brackets: [{ upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 }, { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 }]},
-        },
-    },
-    "UAE": {
-        currency: "AED",
-        socialSecurity: { rate: 0 },
-        childTaxCredit: 0,
-        filingStatuses: {
-            single: { brackets: [{ upto: Infinity, rate: 0 }] },
-            married: { brackets: [{ upto: Infinity, rate: 0 }] },
-        },
-    },
-    "United Kingdom": {
-        currency: "GBP",
-        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
-        childTaxCredit: 0,
-        filingStatuses: {
-            single: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-            married: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-        },
-    },
-    "USA": {
-        currency: "USD",
-        socialSecurity: { rate: 0.0765, cap: 168600 },
-        childTaxCredit: 2000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 }, { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 }, { upto: Infinity, rate: 0.37 }]},
-            married: { brackets: [{ upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 }, { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 }, { upto: Infinity, rate: 0.37 }]},
-        },
-    },
-};
 
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
@@ -182,152 +97,6 @@ const ORDERED_CURRENCIES = [
     .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
     .sort()
 ];
-
-function calculateTax(income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
-
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
-    return 0;
-};
-
-function TaxCalculatorSection() {
-    const [salary, setSalary] = useState('60000');
-    const [country, setCountry] = useState('United Kingdom');
-    const [currency, setCurrency] = useState('GBP');
-    const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
-    const [dependents, setDependents] = useState('0');
-    const [applySpecialRegime, setApplySpecialRegime] = useState(false);
-    const [result, setResult] = useState<any>(null);
-    
-    const countriesWithCalculators = Object.keys(taxData).sort();
-    const currencies = ORDERED_CURRENCIES;
-
-    useEffect(() => {
-        if (taxData[country]) {
-            setCurrency(taxData[country].currency);
-        }
-        if (country !== 'Italy') {
-            setApplySpecialRegime(false);
-        }
-    }, [country]);
-
-    const handleCalculate = () => {
-        const income = parseFloat(salary);
-        const numDependents = parseInt(dependents) || 0;
-        const incomeInLocalCurrency = income * (CONVERSION_RATES[currency] || 1) / (CONVERSION_RATES[taxData[country].currency] || 1);
-        if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
-            setResult(null);
-            return;
-        }
-        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime, numDependents);
-        setResult(calcResult);
-    };
-
-    return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="tax-salary" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Gross Annual Salary</Label>
-                    <Input id="tax-salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className={cn("bg-background/50 border-white/10 text-right font-bold text-white", noSpinners)} />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="tax-currency" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Salary Currency</Label>
-                    <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger id="tax-currency" className="bg-background/50 border-white/10 text-white">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="glass">
-                            {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="tax-country" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Tax Country</Label>
-                    <Select value={country} onValueChange={setCountry}>
-                        <SelectTrigger id="tax-country" className="bg-background/50 border-white/10 text-white">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="glass">
-                            {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
-            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest">Calculate Tactical Signature</Button>
-            {result && (
-                <Card className="glass border-white/10 p-6 space-y-4 shadow-2xl">
-                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                        <span className="text-muted-foreground">Original Gross Salary</span>
-                        <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-red-400">
-                        <span className="text-xs font-bold uppercase tracking-tighter">Estimated Income Tax</span>
-                        <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-orange-400">
-                        <span className="text-xs font-bold uppercase tracking-tighter">Social Contributions</span>
-                        <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
-                        <span className="uppercase tracking-widest text-xs">Net Take-Home (Annual)</span>
-                        <span className="text-xl">{formatCurrency(result.netIncome, taxData[country].currency)}</span>
-                    </div>
-                </Card>
-            )}
-        </div>
-    );
-}
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
     <div className="flex justify-between items-center text-sm py-0.5">
@@ -397,7 +166,7 @@ function ContractDecoderContent() {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
       if (autoCurrency) setCurrency(autoCurrency);
-      setVerdict(null); // Reset verdict when school changes
+      setVerdict(null); 
     }
   }, [selectedSchool]);
 
@@ -513,9 +282,6 @@ function ContractDecoderContent() {
                     <div className="flex justify-between items-center py-2 border-b border-white/5"><div className="flex items-center gap-2"><Medal className="size-3 text-amber-400" /><span className="text-sm text-muted-foreground font-medium">Responsibility Allowance</span></div><span className="font-bold text-white">{formatCurrency(responsibilityAllowanceNum, currency)}</span></div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5"><div className="flex items-center gap-2"><Plus className="size-3 text-sky-400" /><span className="text-sm text-muted-foreground font-medium">Partner Monthly Salary</span></div><span className="font-bold text-white">{formatCurrency(partnerSalaryNum, currency)}</span></div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5"><div className="flex items-center gap-2"><Home className="size-3 text-sky-400" /><span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span></div><span className="text-sm font-bold text-white">{selectedSchool.intel.housing.provided ? "School Provided" : "Teacher Pays"}</span></div>
-                    <div className="pt-4 mt-2 border-t border-white/5 space-y-2">
-                        <Dialog><DialogTrigger asChild><button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-accent/5 hover:bg-accent/10 border border-accent/20 transition-all group"><div className="flex items-center gap-2"><Calculator className="size-3.5 text-accent group-hover:animate-pulse" /><span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-accent">Global Tax Engine</span></div><Info className="size-3 text-muted-foreground group-hover:text-accent" /></button></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto glass border-white/10 shadow-2xl"><DialogHeader><DialogTitle className="stamped-dossier text-white text-xl">Worldwide Salary Tax Calculator</DialogTitle><DialogDescription className="text-muted-foreground text-xs leading-relaxed">Estimate regional tax signatures and mandatory deductions across major international teaching territories.</DialogDescription></DialogHeader><div className="mt-6 pt-6 border-t border-white/5"><TaxCalculatorSection /></div></DialogContent></Dialog>
-                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass rounded-sm border-white/10 shadow-lg shadow-black/20">
@@ -545,7 +311,7 @@ function ContractDecoderContent() {
                                 <span className="text-lg font-bold text-muted-foreground/50">/mo</span>
                             </div>
                         </div>
-                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your total household income and your estimated cost of living.</div>
                         <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild><Link href="/compare">Compare Offers</Link></Button>
                     </div>
                     
@@ -562,11 +328,11 @@ function ContractDecoderContent() {
 
                     <Separator className="bg-white/5" />
 
-                    {/* Tactical Verdict Module */}
+                    {/* Tactical SWOT Verdict Module */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm stamped-dossier text-primary flex items-center gap-2">
-                                <Sparkles className="size-4" /> Tactical Verdict
+                                <Sparkles className="size-4" /> Tactical SWOT Verdict
                             </h3>
                             {!verdict && (
                                 <Button 
@@ -577,7 +343,7 @@ function ContractDecoderContent() {
                                     className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
                                 >
                                     {isVerdictLoading ? <Loader2 className="size-3 animate-spin mr-2" /> : <Sparkles className="size-3 mr-2" />}
-                                    Generate Intelligence Report
+                                    Run SWOT Protocol
                                 </Button>
                             )}
                         </div>
@@ -593,22 +359,30 @@ function ContractDecoderContent() {
                         )}
 
                         {verdict && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 pt-2">
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Savings Capacity Analysis</h4>
-                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.savingsAnalysis}</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <div className="glass p-4 rounded-sm border-l-4 border-l-green-500/50 space-y-2">
+                                    <h4 className="text-[10px] font-black text-green-400 uppercase tracking-widest flex items-center gap-2">
+                                        <TrendingUp className="size-3" /> Strengths
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.strengths}</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Market Comparison (Intelligence)</h4>
-                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.marketComparison}</p>
+                                <div className="glass p-4 rounded-sm border-l-4 border-l-amber-500/50 space-y-2">
+                                    <h4 className="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                                        <TrendingDown className="size-3" /> Weaknesses
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.weaknesses}</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Lifestyle & Strategic Fit</h4>
-                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.cityFit}</p>
+                                <div className="glass p-4 rounded-sm border-l-4 border-l-accent/50 space-y-2">
+                                    <h4 className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center gap-2">
+                                        <Compass className="size-3" /> Opportunities
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.opportunities}</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-[10px] font-black text-destructive uppercase tracking-widest border-l-2 border-destructive pl-3">Tactical Warnings & Advisories</h4>
-                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.warnings}</p>
+                                <div className="glass p-4 rounded-sm border-l-4 border-l-destructive/50 space-y-2">
+                                    <h4 className="text-[10px] font-black text-destructive uppercase tracking-widest flex items-center gap-2">
+                                        <AlertTriangle className="size-3" /> Threats
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.threats}</p>
                                 </div>
                             </div>
                         )}
@@ -624,7 +398,7 @@ function ContractDecoderContent() {
 
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 print:py-0 print:px-0">
+    <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center print:hidden">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract Decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed">LeopardfishIntel analysis of your potential contract.<br />We strip away recruitment facade to reveal the true financial reality of your move.</p>
