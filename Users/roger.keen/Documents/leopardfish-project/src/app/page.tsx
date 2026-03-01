@@ -27,7 +27,7 @@ export default function Home() {
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.25]"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
           data-ai-hint={heroImage.imageHint}
         />
         
