@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -195,7 +194,7 @@ function ContractDecoderContent() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-4 space-y-6">
           <Card className="glass border-primary/20 bg-background/40">
-            <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm font-bold text-primary/70">My evaluation</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label className="text-sm font-bold text-muted-foreground">Select school</Label>
@@ -260,7 +259,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Partner monthly salary</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Other income</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -358,7 +357,7 @@ function ContractDecoderContent() {
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Plus className="size-4 text-sky-400" />
-                        <span className="text-base text-muted-foreground font-medium">Partner monthly salary</span>
+                        <span className="text-base text-muted-foreground font-medium">Other income</span>
                       </div>
                       <span className="font-bold text-white text-base">{formatCurrency(partnerSalaryNum, currency)}</span>
                     </div>
