@@ -311,19 +311,13 @@ function ContractDecoderContent() {
                       onClick={() => setIsUkLoanModalOpen(true)} 
                       className="hover:text-white transition-colors"
                     >
-                      uk
+                      UK Calculator
                     </button>
                     <button 
                       onClick={() => setIsUsLoanModalOpen(true)} 
                       className="hover:text-white transition-colors"
                     >
-                      us
-                    </button>
-                    <button 
-                      onClick={() => window.open('/calculators/student-loan', 'LFICalc', 'width=400,height=650')} 
-                      className="text-primary hover:text-white flex items-center gap-1"
-                    >
-                      Calculator <Calculator className="size-2" />
+                      US Calculator
                     </button>
                   </div>
                 </div>
@@ -434,7 +428,7 @@ function ContractDecoderContent() {
                                 <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
                             </div>
                         </div>
-                        <div className="flex-1 max-w-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                        <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
                         <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                     </div>
 
