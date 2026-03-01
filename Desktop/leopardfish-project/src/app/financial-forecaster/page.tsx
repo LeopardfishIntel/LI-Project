@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -41,14 +42,6 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogTrigger, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from '@/components/ui/dialog';
 import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
 
@@ -59,17 +52,6 @@ const CONVERSION_RATES: Record<string, number> = {
   GBP: 0.78,
   EUR: 0.92,
   AED: 3.67,
-};
-
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  'Japan': 'JPY',
-  'UAE': 'AED',
-  'Switzerland': 'CHF',
-  'Singapore': 'SGD',
-  'South Korea': 'KRW',
-  'United Kingdom': 'GBP',
-  'Netherlands': 'EUR',
-  'USA': 'USD',
 };
 
 function ContractDecoderContent() {
@@ -101,9 +83,8 @@ function ContractDecoderContent() {
     if (!selectedSchool) return null;
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
-    // Simplified scaling for prototype
     const multiplier = familyStatus === 'single' ? 1 : 1.6;
-    const rent = (col.apartment || 0) * rate;
+    const rent = ((col as any).monthlyRent1BR || (col as any).apartment || 0) * rate;
     const food = (col.food || 0) * multiplier * rate;
     const transport = (col.transport || 0) * multiplier * rate;
     const utilities = (col.utilities || 0) * rate;

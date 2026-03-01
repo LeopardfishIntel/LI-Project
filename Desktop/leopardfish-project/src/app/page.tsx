@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -51,7 +52,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section: Tactical Intel with Searchlight */}
+      {/* Hero Section */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -88,7 +89,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -135,7 +135,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );

@@ -4,8 +4,8 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Binoculars } from 'lucide-react';
-import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
+import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -19,8 +19,38 @@ const getImage = (id: string) => {
 export default function Home() {
   const heroImage = getImage('homepage-hero');
 
+  const steps = [
+    {
+      id: '01',
+      title: 'Discover',
+      icon: <Target className="w-8 h-8 text-primary" />,
+      desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      link: '/discover',
+      imageId: 'discover-step',
+      label: 'Find Your Fit'
+    },
+    {
+      id: '02',
+      title: 'Evaluate',
+      icon: <Calculator className="w-8 h-8 text-primary" />,
+      desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      link: '/financial-forecaster',
+      imageId: 'evaluate-step',
+      label: 'Decode Offer'
+    },
+    {
+      id: '03',
+      title: 'Decide',
+      icon: <GitCompare className="w-8 h-8 text-primary" />,
+      desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      link: '/compare',
+      imageId: 'decide-step',
+      label: 'Final Verdict'
+    },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section: Tactical Intel with Searchlight */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden bg-background">
         <Image
@@ -62,90 +92,52 @@ export default function Home() {
       </section>
 
       {/* Stats Counter Section */}
-      <section className="py-8 border-b border-white/5 bg-background">
+      <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Tactical Tagline Section */}
-      <section className="py-6 bg-background border-b border-white/5">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter opacity-90 leading-none">
-              Teach Overseas: Know Before You Go
-            </p>
-        </div>
-      </section>
-
-      {/* The Insider Journey Steps */}
-      <section className="py-16 bg-background border-b border-white/5">
+      {/* Zig-Zag Insider Journey */}
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
-                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">01</span>
+          <div className="space-y-32">
+            {steps.map((step, index) => (
+              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
+                <div className={cn(
+                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl bg-card/20",
+                  index % 2 === 1 && "md:order-last"
+                )}>
+                  <Image 
+                    src={getImage(step.imageId).imageUrl}
+                    alt={step.title}
+                    fill
+                    className="object-cover opacity-40 group-hover:scale-105 transition-transform duration-700"
+                    data-ai-hint={getImage(step.imageId).imageHint}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+                  <div className={cn(
+                    "absolute bottom-4 stamped-dossier text-primary text-6xl opacity-10 font-black",
+                    index % 2 === 1 ? "right-4" : "left-4"
+                  )}>{step.id}</div>
                 </div>
-                <h3 className="text-xl stamped-dossier">Discover</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">The Fit Finder matching engine. We look for the intersection of your profile and local realities.</p>
-              </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
-                <Link href="/discover">Find Your Fit</Link>
-              </Button>
-            </div>
-
-            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
-                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">02</span>
+                <div className={cn(
+                  "space-y-6 flex flex-col",
+                  index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
+                )}>
+                  <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
+                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter">{step.title}</h3>
+                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm" asChild>
+                    <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                  </Button>
                 </div>
-                <h3 className="text-xl stamped-dossier">Evaluate</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income.</p>
               </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
-                <Link href="/financial-forecaster">Decode Offer</Link>
-              </Button>
-            </div>
-
-            <div className="glass p-8 space-y-6 flex flex-col justify-between group transition-all hover:border-primary/50 rounded-sm">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="p-3 bg-primary/10 rounded-sm"><ShieldCheck className="w-8 h-8 text-primary" /></div>
-                  <span className="text-4xl font-black text-white/5 group-hover:text-primary/20 transition-colors">03</span>
-                </div>
-                <h3 className="text-xl stamped-dossier">Decide</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side.</p>
-              </div>
-              <Button variant="link" className="p-0 text-primary group-hover:translate-x-2 transition-transform self-start h-auto font-bold text-xs uppercase tracking-widest" asChild>
-                <Link href="/compare">Final Verdict</Link>
-              </Button>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Field Intel Uplink Section */}
-      <section className="py-16 bg-primary/5 border-b border-white/5">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="glass p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 rounded-sm">
-            <div className="max-w-2xl space-y-4 text-center md:text-left">
-              <h3 className="text-2xl md:text-3xl stamped-dossier text-primary flex items-center justify-center md:justify-start gap-3">
-                <Binoculars className="size-8" /> Field Intel Uplink
-              </h3>
-              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-                Contribute to the collective safety of the international educator network. Help our analysts identify institutional risks by transmitting on-the-ground reports. All transmissions are strictly <span className="text-white font-bold underline decoration-primary underline-offset-4">anonymous</span>.
-              </p>
-            </div>
-            <div className="shrink-0">
-              <FieldIntelligenceTrigger />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );
