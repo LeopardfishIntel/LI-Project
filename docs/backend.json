@@ -109,70 +109,108 @@
           "description": "The official website URL of the school.",
           "format": "uri"
         },
-        "avSalaryMin": { "type": "number" },
-        "avSalaryMax": { "type": "number" },
-        "avHousingCost": { "type": "number" },
-        "overallRating": { "type": "number" }
-      },
-      "required": ["id", "name", "description", "country", "city"]
-    },
-    "FieldReport": {
-      "title": "Field Intel Report",
-      "type": "object",
-      "description": "User-submitted intel regarding school conditions or contract discrepancies.",
-      "properties": {
-        "id": { "type": "string" },
-        "category": { "type": "string" },
-        "organisation": { "type": "string" },
-        "location": { "type": "string" },
-        "original_content": { "type": "string" },
-        "clean_text": { "type": "string" },
-        "status": { "type": "string", "enum": ["pending", "auto_rejected"] },
-        "safety_flags": { "type": "array", "items": { "type": "string" } },
-        "confidence_score": { "type": "number" },
-        "attachmentUrl": { "type": "string", "format": "uri" },
-        "timestamp": { "type": "string", "format": "date-time" },
-        "authorId": { "type": "string" },
-        "authorEmail": { "type": "string", "format": "email" }
-      },
-      "required": ["category", "organisation", "location", "original_content", "clean_text", "status", "timestamp"]
-    },
-    "VerifiedIntel": {
-      "title": "Verified Intel Dossier",
-      "type": "object",
-      "description": "Polished, verified intel promoted to the live database.",
-      "properties": {
-        "id": { "type": "string" },
-        "polished_text": { "type": "string" },
-        "location": { "type": "string" },
-        "organisation": { "type": "string" },
-        "intel_type": { "type": "string" },
-        "tags": { "type": "array", "items": { "type": "string" } },
-        "is_verified": { "type": "boolean", "default": true },
-        "original_report_id": { "type": "string" },
-        "attachmentUrl": { "type": "string", "format": "uri" },
-        "timestamp": { "type": "string", "format": "date-time" },
-        "authorId": { "type": "string" },
-        "authorEmail": { "type": "string", "format": "email" }
-      },
-      "required": ["polished_text", "location", "organisation", "intel_type", "is_verified"]
-    },
-    "MailTrigger": {
-      "title": "Email Trigger",
-      "type": "object",
-      "description": "Used by the Firebase Trigger Email extension to send automated platform signals.",
-      "properties": {
-        "to": { "type": "string", "format": "email" },
-        "message": {
-          "type": "object",
-          "properties": {
-            "subject": { "type": "string" },
-            "text": { "type": "string" },
-            "html": { "type": "string" }
+        "videoUrls": {
+          "type": "array",
+          "description": "A list of URLs to promotional or informational videos about the school.",
+          "items": {
+            "type": "string"
           }
+        },
+        "averageSalaryMin": {
+          "type": "number",
+          "description": "The estimated minimum average annual salary for teachers at the school."
+        },
+        "averageSalaryMax": {
+          "type": "number",
+          "description": "The estimated maximum average annual salary for teachers at the school."
+        },
+        "averageHousingCost": {
+          "type": "number",
+          "description": "The estimated average monthly housing cost in the school's vicinity."
+        },
+        "savingsPotentialMin": {
+          "type": "number",
+          "description": "The estimated minimum monthly savings potential for teachers."
+        },
+        "savingsPotentialMax": {
+          "type": "number",
+          "description": "The estimated maximum monthly savings potential for teachers."
+        },
+        "teacherStudentRatio": {
+          "type": "number",
+          "description": "The ratio of teachers to students at the school."
+        },
+        "classSizeAverage": {
+          "type": "number",
+          "description": "The average class size at the school."
+        },
+        "curriculum": {
+          "type": "string",
+          "description": "The primary curriculum followed by the school (e.g., 'IB', 'British National Curriculum', 'American Common Core')."
+        },
+        "accreditation": {
+          "type": "string",
+          "description": "The accreditation status or bodies for the school (e.g., 'CIS', 'WASC')."
+        },
+        "schoolType": {
+          "type": "string",
+          "description": "The type of school (e.g., 'International', 'Public', 'Private')."
+        },
+        "isSpotlight": {
+          "type": "boolean",
+          "description": "Indicates if the school is featured as a 'School Spotlight' on the homepage."
+        },
+        "overallRating": {
+          "type": "number",
+          "description": "The average overall rating for the school, typically derived from teacher reviews."
         }
       },
-      "required": ["to", "message"]
+      "required": [
+        "id",
+        "name",
+        "description",
+        "country",
+        "city",
+        "websiteUrl",
+        "averageSalaryMin",
+        "averageSalaryMax",
+        "averageHousingCost",
+        "savingsPotentialMin",
+        "savingsPotentialMax",
+        "teacherStudentRatio",
+        "classSizeAverage",
+        "curriculum",
+        "accreditation",
+        "schoolType",
+        "isSpotlight",
+        "overallRating"
+      ]
+    },
+    "StudentLoanThreshold": {
+      "title": "Student Loan Threshold",
+      "type": "object",
+      "description": "Stores 2026/27 repayment thresholds and PLI data.",
+      "properties": {
+        "id": { "type": "string", "description": "e.g., 'plan1', 'plan2', 'pgl'" },
+        "base_threshold": { "type": "number", "description": "Annual GBP threshold." },
+        "pli_indices": {
+          "type": "object",
+          "additionalProperties": { "type": "number" },
+          "description": "Mapping of country to Price Level Index."
+        }
+      },
+      "required": ["id", "base_threshold"]
+    },
+    "ExchangeRate": {
+      "title": "Exchange Rate",
+      "type": "object",
+      "description": "HMRC or Market benchmark rates.",
+      "properties": {
+        "id": { "type": "string", "description": "Currency code e.g., 'AED', 'JPY'" },
+        "rate_to_gbp": { "type": "number" },
+        "rate_to_usd": { "type": "number" }
+      },
+      "required": ["id"]
     }
   },
   "auth": {
@@ -189,8 +227,7 @@
           "entityName": "TeacherProfile",
           "schema": {
             "$ref": "#/backend/entities/TeacherProfile"
-          },
-          "description": "Stores the private profile data for a specific teacher."
+          }
         }
       },
       {
@@ -199,38 +236,26 @@
           "entityName": "School",
           "schema": {
             "$ref": "#/backend/entities/School"
-          },
-          "description": "Stores publicly accessible data for individual schools."
+          }
         }
       },
       {
-        "path": "/pending_intel/{reportId}",
+        "path": "/thresholds_2026/{id}",
         "definition": {
-          "entityName": "FieldReport",
+          "entityName": "StudentLoanThreshold",
           "schema": {
-            "$ref": "#/backend/entities/FieldReport"
+            "$ref": "#/backend/entities/StudentLoanThreshold"
           },
-          "description": "Staging area for high-priority field intel dossiers before verification."
+          "description": "2026/27 UK and US Loan Threshold configurations."
         }
       },
       {
-        "path": "/verified_intel/{intelId}",
+        "path": "/exchange_rates_2026/{id}",
         "definition": {
-          "entityName": "VerifiedIntel",
+          "entityName": "ExchangeRate",
           "schema": {
-            "$ref": "#/backend/entities/VerifiedIntel"
-          },
-          "description": "Verified, high-value intel dossiers published to the live platform."
-        }
-      },
-      {
-        "path": "/mail/{mailId}",
-        "definition": {
-          "entityName": "MailTrigger",
-          "schema": {
-            "$ref": "#/backend/entities/MailTrigger"
-          },
-          "description": "Collection monitored by the Trigger Email extension for automated agency signals."
+            "$ref": "#/backend/entities/ExchangeRate"
+          }
         }
       }
     ]
