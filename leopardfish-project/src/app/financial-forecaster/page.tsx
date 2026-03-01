@@ -30,7 +30,9 @@ import {
   Plus, 
   Banknote, 
   Info,
-  Milestone
+  Milestone,
+  Sparkles,
+  ServerCrash
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -46,6 +48,8 @@ import {
   DialogDescription 
 } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { getOfferTacticalVerdict } from './actions';
+import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -300,7 +304,7 @@ function TaxCalculatorSection() {
                     </Select>
                 </div>
             </div>
-            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest">Calculate Tactical Signature</Button>
+            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest">Calculate Tactical Signature</Button>
             {result && (
                 <Card className="glass border-white/10 p-6 space-y-4 shadow-2xl">
                     <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
@@ -380,6 +384,10 @@ function ContractDecoderContent() {
   const [studentLoan, setStudentLoan] = useState('');
   const [contingency, setContingency] = useState('200');
 
+  const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
+  const [isVerdictLoading, setIsVerdictLoading] = useState(false);
+  const [verdictError, setVerdictError] = useState<string | null>(null);
+
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
       return schools.find(s => s.id === selectedSchoolId);
@@ -389,6 +397,7 @@ function ContractDecoderContent() {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
       if (autoCurrency) setCurrency(autoCurrency);
+      setVerdict(null); // Reset verdict when school changes
     }
   }, [selectedSchool]);
 
@@ -427,11 +436,28 @@ function ContractDecoderContent() {
   const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
   const savingsPotential = totalIncome - (decodedCosts?.totalCosts || 0);
 
+  const handleGenerateVerdict = async () => {
+    if (!selectedSchool) return;
+    setIsVerdictLoading(true);
+    setVerdictError(null);
+    const result = await getOfferTacticalVerdict({
+        schoolName: selectedSchool.name,
+        location: selectedSchool.location,
+        country: selectedSchool.country,
+        monthlySavings: Math.round(savingsPotential),
+        currency: currency,
+        familyStatus: familyStatus
+    });
+    if (result.error) setVerdictError(result.error);
+    if (result.data) setVerdict(result.data);
+    setIsVerdictLoading(false);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
-            <CardHeader><CardTitle className="text-[10px] stamped-dossier text-white text-center">My Settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">My Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
@@ -465,8 +491,6 @@ function ContractDecoderContent() {
                   <div className="flex gap-2 items-center">
                     <a href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans" target="_blank" rel="noopener noreferrer" className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold">UK <ExternalLink className="size-2" /></a>
                     <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener noreferrer" className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold">US <ExternalLink className="size-2" /></a>
-                    <Separator orientation="vertical" className="h-3 bg-white/20 mx-1" />
-                    <button onClick={() => window.open('/calculators/student-loan', 'StudentLoanCalc', 'width=400,height=650')} className="text-[9px] text-primary hover:underline flex items-center gap-1 font-bold">Calculator <Calculator className="size-2" /></button>
                   </div>
                 </div>
                 <div className="relative"><GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="0" value={studentLoan} onChange={(e) => setStudentLoan(e.target.value)} /></div>
@@ -510,13 +534,86 @@ function ContractDecoderContent() {
                   </CardContent>
                 </Card>
               </div>
+              
               <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl shadow-black/40", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
-                <div className="space-y-8"><div className="flex flex-col md:flex-row items-center justify-between gap-8"><div className="space-y-1 text-center md:text-left"><h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4><div className="flex items-baseline gap-1"><span className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>{formatCurrency(savingsPotential, currency)}</span><span className="text-lg font-bold text-muted-foreground/50">/mo</span></div></div><div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div><Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild><Link href="/compare">Compare Offers</Link></Button></div>
-                {savingsPotential !== 0 && (
-                    <div className="pt-6 border-t border-white/5"><div className="grid grid-cols-2 sm:grid-cols-4 gap-6">{['GBP', 'USD', 'EUR', 'AUD'].map((targetCcy) => {
-                        const convertedVal = (savingsPotential / rate) * (CONVERSION_RATES[targetCcy] || 1);
-                        return (<div key={targetCcy} className="space-y-1"><p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p><p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p></div>)})}</div></div>
-                )}</div>
+                <div className="space-y-8">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="space-y-1 text-center md:text-left">
+                            <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4>
+                            <div className="flex items-baseline gap-1">
+                                <span className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>{formatCurrency(savingsPotential, currency)}</span>
+                                <span className="text-lg font-bold text-muted-foreground/50">/mo</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                        <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild><Link href="/compare">Compare Offers</Link></Button>
+                    </div>
+                    
+                    {savingsPotential !== 0 && (
+                        <div className="pt-6 border-t border-white/5">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                                {['GBP', 'USD', 'EUR', 'AUD'].map((targetCcy) => {
+                                    const convertedVal = (savingsPotential / rate) * (CONVERSION_RATES[targetCcy] || 1);
+                                    return (<div key={targetCcy} className="space-y-1"><p className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">{targetCcy}</p><p className="text-base font-bold text-white">{formatCurrency(convertedVal, targetCcy)}</p></div>)
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    <Separator className="bg-white/5" />
+
+                    {/* Tactical Verdict Module */}
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm stamped-dossier text-primary flex items-center gap-2">
+                                <Sparkles className="size-4" /> Tactical Verdict
+                            </h3>
+                            {!verdict && (
+                                <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    disabled={isVerdictLoading}
+                                    onClick={handleGenerateVerdict}
+                                    className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
+                                >
+                                    {isVerdictLoading ? <Loader2 className="size-3 animate-spin mr-2" /> : <Sparkles className="size-3 mr-2" />}
+                                    Generate Intelligence Report
+                                </Button>
+                            )}
+                        </div>
+
+                        {verdictError && (
+                            <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
+                                <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-black text-destructive uppercase">Uplink Failure</p>
+                                    <p className="text-xs text-muted-foreground">{verdictError}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {verdict && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 pt-2">
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Savings Capacity Analysis</h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.savingsAnalysis}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Market Comparison (Intelligence)</h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.marketComparison}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black text-white uppercase tracking-widest border-l-2 border-primary pl-3">Lifestyle & Strategic Fit</h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.cityFit}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-black text-destructive uppercase tracking-widest border-l-2 border-destructive pl-3">Tactical Warnings & Advisories</h4>
+                                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.warnings}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
               </Card>
             </>
           )}
