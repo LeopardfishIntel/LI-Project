@@ -194,7 +194,7 @@ function ContractDecoderContent() {
             <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Select school dossier</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Select school</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                   <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
