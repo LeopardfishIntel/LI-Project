@@ -165,19 +165,11 @@ export function FieldIntelligenceModal() {
                 Field report
               </DialogTitle>
               <DialogDescription asChild>
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-sm text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
-                  <div>
-                    <strong className="block mb-1 text-white tracking-widest text-xs font-bold">Security & anonymity notice</strong>
-                    Your anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
-                  </div>
-                  
-                  <div>
-                    <strong className="block mb-1 text-white tracking-widest text-xs font-bold">Operational protocols</strong>
-                    <ul className="mt-1 space-y-2">
-                      <li><span className="font-bold text-white">Accuracy over emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
-                      <li><span className="font-bold text-white">Redaction mandate:</span> Never share personally identifiable information. You are required to redact sensitive data in all attachments and text before submission.</li>
-                    </ul>
-                  </div>
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-sm text-primary-foreground/90 font-medium leading-relaxed text-left space-y-2">
+                  <strong className="block text-white text-base font-bold">Submission protocol</strong>
+                  <p>
+                    Your anonymity is our priority. All data is stripped of identifying information immediately upon receipt. Reports must contain only verifiable facts—no opinions or personal grievances. You are asked to remove all names and private details from your text and files before sending.
+                  </p>
                 </div>
               </DialogDescription>
             </DialogHeader>
