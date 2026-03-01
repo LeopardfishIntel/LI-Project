@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -23,7 +23,6 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
-      icon: <Target className="w-8 h-8 text-primary" />,
       desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
@@ -32,7 +31,6 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      icon: <Calculator className="w-8 h-8 text-primary" />,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -41,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: <GitCompare className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -68,7 +65,7 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1.5 rounded text-primary text-xs font-bold tracking-widest animate-pulse">
-              <ShieldCheck className="w-4 h-4" /> Intelligence Grade Protocol
+              <ShieldCheck className="w-4 h-4" /> Intelligence grade protocol
             </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
@@ -78,29 +75,38 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg text-base" asChild>
-                <Link href="/discover">Start Journey</Link>
+                <Link href="/discover">Start journey</Link>
               </Button>
               <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg text-base" asChild>
-                <Link href="/compare">Compare Offers</Link>
+                <Link href="/compare">Compare offers</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Counter Row - No top gap */}
-      <section className="pt-0 pb-12 border-b border-white/5 bg-background">
+      {/* Counter Row */}
+      <section className="pt-0 pb-8 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
+      {/* Tagline Section */}
+      <section className="pb-12 bg-background border-b border-white/5">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+            <p className="text-xs sm:text-sm font-black text-white tracking-[0.4em]">
+              Teach overseas: know before you go
+            </p>
+        </div>
+      </section>
+
       {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-32">
+          <div className="space-y-12">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
                 <div className={cn(
                   "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -119,10 +125,9 @@ export default function Home() {
                   )}>{step.id}</div>
                 </div>
                 <div className={cn(
-                  "space-y-6 flex flex-col",
+                  "space-y-4 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
                   <h3 className="text-3xl md:text-5xl text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
