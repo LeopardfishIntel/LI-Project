@@ -172,6 +172,11 @@ function SchoolComparisonColumn({
         return parsedSalary - calculateMonthlyCost(school, familyStatus);
     }, [netSalary, school, familyStatus]);
 
+    const totalIncomeValue = useMemo(() => {
+        const parsedSalary = parseFloat(netSalary) || 0;
+        return parsedSalary > 0 ? parsedSalary : null;
+    }, [netSalary]);
+
     const familyLabel = {
         single: 'Single',
         couple: 'Couple',
@@ -245,16 +250,16 @@ function SchoolComparisonColumn({
                     </CardHeader>
                 </Link>
                 <CardContent className="p-4 md:p-6 pt-0 flex-grow">
-                    <div className="space-y-0">
+                    <div className="space-y-0 border-b border-white/5 mb-6">
                          <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
-                         <MetricRow
-                                label="True net savings"
-                                value={trueNetSavings !== null ? trueNetSavings : null}
-                                result={comparisonResults.yourSavings}
-                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
-                                icon={<PiggyBank className="w-4 h-4 text-green-500" />}
-                            />
+                         <MetricRow 
+                            label="Total income" 
+                            value={totalIncomeValue} 
+                            result={'neutral'} 
+                            format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'} 
+                            icon={<DollarSign className="w-4 h-4 text-sky-400" />} 
+                        />
                          <MetricRow
                             label={`Est. costs (${familyLabel})`}
                             value={calculateMonthlyCost(school, familyStatus)}
@@ -262,6 +267,13 @@ function SchoolComparisonColumn({
                             format={(v) => formatCurrency(v, 'USD')}
                             icon={<DollarSign className="w-4 h-4 text-red-400" />}
                         />
+                         <MetricRow
+                                label="True net savings"
+                                value={trueNetSavings}
+                                result={comparisonResults.yourSavings}
+                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
+                                icon={<PiggyBank className="w-4 h-4 text-green-500" />}
+                            />
                          <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                          <MetricRow 
                             label="Health insurance" 
@@ -271,7 +283,7 @@ function SchoolComparisonColumn({
                             helpContent={<HealthInsuranceHelp />}
                         />
                     </div>
-                     <div className="pt-6">
+                     <div className="pt-0">
                          <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
                          <MetricRow label="Average class size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
                          <MetricRow label="Student-teacher ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
