@@ -87,7 +87,7 @@ const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number =
     const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * multiplier;
     
     const apartmentCost = intel.housing.provided ? 0 : rent;
-    const contingencyBuffer = 200; // Standard Leopardfish Intel safety margin
+    const contingencyBuffer = 200;
 
     return (
       apartmentCost +
@@ -227,6 +227,14 @@ function SchoolComparisonColumn({
         return parsedSalaryLocal - costsLocal;
     }, [netSalary, costsLocal]);
 
+    const trueNetSavingsUSD = useMemo(() => {
+        return trueNetSavingsLocal !== null ? trueNetSavingsLocal / rate : null;
+    }, [trueNetSavingsLocal, rate]);
+
+    const trueNetSavingsGBP = useMemo(() => {
+        return trueNetSavingsUSD !== null ? trueNetSavingsUSD * CONVERSION_RATES['GBP'] : null;
+    }, [trueNetSavingsUSD]);
+
     const totalIncomeLocal = useMemo(() => {
         const parsedSalaryLocal = parseFloat(netSalary) || 0;
         return parsedSalaryLocal > 0 ? parsedSalaryLocal : null;
@@ -329,6 +337,20 @@ function SchoolComparisonColumn({
                                 format={(v) => v !== null ? formatCurrency(v, currency) : '—'}
                                 icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                             />
+                         <MetricRow
+                                label="or"
+                                value={trueNetSavingsUSD}
+                                result={'neutral'}
+                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
+                                icon={<div className="w-4" />}
+                            />
+                         <MetricRow
+                                label="or"
+                                value={trueNetSavingsGBP}
+                                result={'neutral'}
+                                format={(v) => v !== null ? formatCurrency(v, 'GBP') : '—'}
+                                icon={<div className="w-4" />}
+                            />
                          <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                          <MetricRow 
                             label="Health insurance" 
@@ -407,7 +429,6 @@ export default function ComparePage() {
     };
 
     const handleFamilyStatusChange = (index: number, status: FamilyStatus) => {
-        // Synchronise household profile across all tactical dossiers
         setFamilyStatuses([status, status, status]);
     };
     
