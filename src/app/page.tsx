@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -24,28 +25,28 @@ export default function Home() {
       id: '01',
       title: 'Discover',
       icon: <Target className="w-8 h-8 text-primary" />,
-      desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find Your Fit'
+      label: 'Find your fit'
     },
     {
       id: '02',
       title: 'Evaluate',
       icon: <Calculator className="w-8 h-8 text-primary" />,
-      desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Decode Offer'
+      label: 'Decode offer'
     },
     {
       id: '03',
       title: 'Decide',
       icon: <GitCompare className="w-8 h-8 text-primary" />,
-      desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Final Verdict'
+      label: 'Final verdict'
     },
   ];
 
@@ -58,30 +59,30 @@ export default function Home() {
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
           data-ai-hint={heroImage.imageHint}
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-bold tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
+            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
-                <Link href="/discover">Initialize Journey</Link>
+                <Link href="/discover">Start Journey</Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
-                <Link href="/directory">Browse dossiers</Link>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+                <Link href="/compare">Compare Offers</Link>
               </Button>
             </div>
           </div>
@@ -108,12 +109,12 @@ export default function Home() {
                     src={getImage(step.imageId).imageUrl}
                     alt={step.title}
                     fill
-                    className="object-cover opacity-40 group-hover:scale-105 transition-transform duration-700"
+                    className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
                     data-ai-hint={getImage(step.imageId).imageHint}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
                   <div className={cn(
-                    "absolute bottom-4 stamped-dossier text-primary text-6xl opacity-10 font-black",
+                    "absolute bottom-4 text-primary text-6xl opacity-10 font-black",
                     index % 2 === 1 ? "right-4" : "left-4"
                   )}>{step.id}</div>
                 </div>
@@ -122,9 +123,9 @@ export default function Home() {
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
-                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter">{step.title}</h3>
+                  <h3 className="text-3xl md:text-5xl text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black tracking-widest text-xs h-12 px-8 rounded-sm" asChild>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
                 </div>
