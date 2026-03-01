@@ -1,6 +1,4 @@
 
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -54,7 +52,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section: Tactical Intel with Searchlight */}
+      {/* Hero Section */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -91,13 +89,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
-      <section className="py-12 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
-          <KeyFactsSection />
-        </div>
-      </section>
-
       {/* Zig-Zag Insider Journey */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
@@ -117,7 +108,7 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
                   <div className={cn(
-                    "absolute bottom-4 stamped-dossier text-primary text-6xl opacity-10",
+                    "absolute bottom-4 stamped-dossier text-primary text-6xl opacity-10 font-black",
                     index % 2 === 1 ? "right-4" : "left-4"
                   )}>{step.id}</div>
                 </div>
@@ -138,7 +129,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Red Flag Registry */}
       <RedFlagRegistry />
     </div>
   );

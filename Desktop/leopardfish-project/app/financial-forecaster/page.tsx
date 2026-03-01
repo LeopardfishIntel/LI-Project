@@ -54,6 +54,17 @@ const CONVERSION_RATES: Record<string, number> = {
   AED: 3.67,
 };
 
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'USA': 'USD',
+};
+
 function ContractDecoderContent() {
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
