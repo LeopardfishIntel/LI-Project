@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -43,14 +44,6 @@ import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogTrigger, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from '@/components/ui/dialog';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -86,13 +79,13 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
 };
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-sm py-1.5 border-b border-white/5 last:border-0">
+    <div className="flex justify-between items-center text-base py-2 border-b border-white/5 last:border-0">
       <div className="flex items-center gap-3">
         {icon}
         <span className="text-muted-foreground font-medium">{label}</span>
       </div>
       <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
+        {isFree ? "Covered" : formatCurrency(value, currency)}
       </span>
     </div>
 );
@@ -189,10 +182,10 @@ function ContractDecoderContent() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-4 space-y-6">
           <Card className="glass border-primary/20 bg-background/40">
-            <CardHeader><CardTitle className="text-xs font-black stamped-dossier text-primary/70">Operational settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Select school dossier</Label>
+                <Label className="text-xs font-bold text-muted-foreground">Select school dossier</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                   <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
@@ -200,7 +193,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Family scaling</Label>
+                <Label className="text-xs font-bold text-muted-foreground">Family scaling</Label>
                 <Select value={familyStatus} onValueChange={setFamilyStatus}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                   <SelectContent className="glass">
@@ -213,16 +206,16 @@ function ContractDecoderContent() {
               </div>
 
               <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
-                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium">
-                  <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due diligence</span>
-                  Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.
+                <div className="text-xs text-primary-foreground/90 leading-relaxed font-medium">
+                  <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 text-xs"><ShieldAlert className="size-3.5" /> Due diligence</span>
+                  Important! Enter net not gross pay. Check if the deduction total accounts for social security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Net monthly salary offer</Label>
-                  {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[9px] font-black text-accent uppercase tracking-tighter animate-pulse">Suggested benchmark</span>}
+                  <Label className="text-xs font-bold text-muted-foreground">Net monthly salary offer</Label>
+                  {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
                 </div>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
@@ -235,12 +228,12 @@ function ContractDecoderContent() {
                       onChange={(e) => setOfferedSalary(e.target.value)} 
                     />
                   </div>
-                  <div className="w-24 px-3 flex items-center justify-center bg-background/50 border border-white/10 rounded-sm font-bold text-xs">{currency}</div>
+                  <div className="w-24 px-3 flex items-center justify-center bg-background/50 border border-white/10 rounded-sm font-bold text-sm">{currency}</div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Responsibilities allowance (monthly)</Label>
+                <Label className="text-xs font-bold text-muted-foreground">Responsibilities allowance (monthly)</Label>
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -254,7 +247,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Partner monthly salary</Label>
+                <Label className="text-xs font-bold text-muted-foreground">Partner monthly salary</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -269,17 +262,26 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Student loan repayment (monthly)</Label>
-                  <div className="flex gap-2 text-[9px] font-black text-accent uppercase tracking-tighter">
-                    <Dialog>
-                      <DialogTrigger asChild><span className="hover:text-white cursor-pointer transition-colors">UK</span></DialogTrigger>
-                      <DialogContent className="glass border-white/10"><DialogHeader><DialogTitle>UK Loan Registry</DialogTitle><DialogDescription className="text-xs">Accessing 2026/27 overseas repayment thresholds. Direct connection to SLC protocol.</DialogDescription></DialogHeader><div className="py-4 text-xs space-y-2 text-muted-foreground"><p>Repayment thresholds vary based on your country's Price Level Index (PLI).</p><Button className="w-full bg-primary/20 text-primary border border-primary/30" asChild><Link href="/calculators/student-loan" target="_blank">Open calculator portal</Link></Button></div></DialogContent>
-                    </Dialog>
-                    <Dialog>
-                      <DialogTrigger asChild><span className="hover:text-white cursor-pointer transition-colors">US</span></DialogTrigger>
-                      <DialogContent className="glass border-white/10"><DialogHeader><DialogTitle>US Dept of Education Protocol</DialogTitle><DialogDescription className="text-xs">Analyzing FEIE exclusions and SAVE/RAP discretionary algorithmic logic.</DialogDescription></DialogHeader><div className="py-4 text-xs space-y-2 text-muted-foreground"><p>For most US teachers abroad, the FEIE exclusion can reduce monthly payments to 0 USD if income is below 126,000 USD.</p></div></DialogContent>
-                    </Dialog>
-                    <Link href="/calculators/student-loan" target="_blank" className="text-primary hover:text-white flex items-center gap-1">Calculator <Calculator className="size-2" /></Link>
+                  <Label className="text-xs font-bold text-muted-foreground">Student loan repayment (monthly)</Label>
+                  <div className="flex gap-3 text-[11px] font-bold text-accent">
+                    <button 
+                      onClick={() => window.open('https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans', 'UKGov', 'width=1000,height=800')} 
+                      className="hover:text-white transition-colors"
+                    >
+                      UK
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://studentaid.gov/manage-loans/repayment/plans', 'USGov', 'width=1000,height=800')} 
+                      className="hover:text-white transition-colors"
+                    >
+                      US
+                    </button>
+                    <button 
+                      onClick={() => window.open('/calculators/student-loan', 'LFICalc', 'width=400,height=650')} 
+                      className="text-primary hover:text-white flex items-center gap-1"
+                    >
+                      Calculator <Calculator className="size-2" />
+                    </button>
                   </div>
                 </div>
                 <div className="relative">
@@ -295,7 +297,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Contingency buffer (monthly)</Label>
+                <Label className="text-xs font-bold text-muted-foreground">Contingency buffer (monthly)</Label>
                 <div className="relative">
                   <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -315,63 +317,63 @@ function ContractDecoderContent() {
           {!selectedSchool ? (
             <div className="h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm text-muted-foreground bg-card/20">
               <LineChart className="w-16 h-16 mb-4 opacity-10" />
-              <p className="stamped-dossier text-sm text-white/30 tracking-[0.2em]">Initialise school dossier to begin decoding</p>
+              <p className="text-base text-white/30 font-medium">Initialise school dossier to begin decoding</p>
             </div>
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-8">
                 <Card className="glass border-white/5 bg-background/40">
-                  <CardHeader className="pb-4"><CardTitle className="text-[10px] font-black stamped-dossier text-primary flex items-center gap-2"><Award className="size-4" /> Income & Benefits</CardTitle></CardHeader>
+                  <CardHeader className="pb-4"><CardTitle className="text-xs font-bold text-primary flex items-center gap-2"><Award className="size-4" /> Income & benefits</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Banknote className="size-4 text-green-400" />
-                        <span className="text-sm text-muted-foreground font-medium">Monthly net salary</span>
+                        <span className="text-base text-muted-foreground font-medium">Monthly net salary</span>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-lg text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
-                        {!offeredSalary && <p className="text-[8px] font-bold text-accent uppercase tracking-tighter">Benchmark applied</p>}
+                        <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
+                        {!offeredSalary && <p className="text-[10px] font-bold text-accent">Benchmark applied</p>}
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Medal className="size-4 text-amber-400" />
-                        <span className="text-sm text-muted-foreground font-medium">Responsibility allowance</span>
+                        <span className="text-base text-muted-foreground font-medium">Responsibility allowance</span>
                       </div>
-                      <span className="font-bold text-white">{formatCurrency(responsibilityAllowanceNum, currency)}</span>
+                      <span className="font-bold text-white text-base">{formatCurrency(responsibilityAllowanceNum, currency)}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Plus className="size-4 text-sky-400" />
-                        <span className="text-sm text-muted-foreground font-medium">Partner monthly salary</span>
+                        <span className="text-base text-muted-foreground font-medium">Partner monthly salary</span>
                       </div>
-                      <span className="font-bold text-white">{formatCurrency(partnerSalaryNum, currency)}</span>
+                      <span className="font-bold text-white text-base">{formatCurrency(partnerSalaryNum, currency)}</span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <div className="flex items-center gap-3">
                         <Home className="size-4 text-sky-400" />
-                        <span className="text-sm text-muted-foreground font-medium">Housing arrangement</span>
+                        <span className="text-base text-muted-foreground font-medium">Housing arrangement</span>
                       </div>
-                      <span className="font-bold text-white">{selectedSchool.intel.housing.provided ? "School provided" : "Teacher pays"}</span>
+                      <span className="font-bold text-white text-base">{selectedSchool.intel.housing.provided ? "School provided" : "Teacher pays"}</span>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="glass border-white/5 bg-background/40">
-                  <CardHeader className="pb-4"><CardTitle className="text-[10px] font-black stamped-dossier text-primary flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
+                  <CardHeader className="pb-4"><CardTitle className="text-xs font-bold text-primary flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
                   <CardContent className="space-y-1">
-                    <DecodedItem icon={<Home className="size-3.5 text-sky-400" />} label="Monthly rent (1BR)" value={decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
-                    <DecodedItem icon={<Utensils className="size-3.5 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
-                    <DecodedItem icon={<TramFront className="size-3.5 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
-                    <DecodedItem icon={<Zap className="size-3.5 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
-                    <DecodedItem icon={<Smartphone className="size-3.5 text-pink-400" />} label="Mobile phone" value={decodedCosts?.mobile || 0} currency={currency} />
-                    <DecodedItem icon={<Wifi className="size-3.5 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
-                    <DecodedItem icon={<Globe className="size-3.5 text-blue-400" />} label="Home commitments" value={decodedCosts?.manualHome || 0} currency={currency} />
-                    <DecodedItem icon={<GraduationCap className="size-3.5 text-emerald-400" />} label="Student loans" value={decodedCosts?.manualLoan || 0} currency={currency} />
+                    <DecodedItem icon={<Home className="size-4 text-sky-400" />} label="Monthly rent (1BR)" value={decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
+                    <DecodedItem icon={<Utensils className="size-4 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
+                    <DecodedItem icon={<TramFront className="size-4 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
+                    <DecodedItem icon={<Zap className="size-4 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
+                    <DecodedItem icon={<Smartphone className="size-4 text-pink-400" />} label="Mobile phone" value={decodedCosts?.mobile || 0} currency={currency} />
+                    <DecodedItem icon={<Wifi className="size-4 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                    <DecodedItem icon={<Globe className="size-4 text-blue-400" />} label="Home commitments" value={decodedCosts?.manualHome || 0} currency={currency} />
+                    <DecodedItem icon={<GraduationCap className="size-4 text-emerald-400" />} label="Student loans" value={decodedCosts?.manualLoan || 0} currency={currency} />
                     
                     <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10">
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Burn rate</span>
-                      <span className="text-2xl font-black text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
+                      <span className="text-[11px] font-bold text-white">Burn rate</span>
+                      <span className="text-3xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -381,16 +383,16 @@ function ContractDecoderContent() {
                 <div className="space-y-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="space-y-1 text-center md:text-left">
-                            <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True net savings</h4>
+                            <h4 className="text-xs font-bold text-muted-foreground">True net savings</h4>
                             <div className="flex items-baseline gap-1">
-                                <span className={cn("text-6xl font-black tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                                <span className={cn("text-6xl font-bold tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                                   {formatCurrency(savingsPotential, currency)}
                                 </span>
-                                <span className="text-xl font-bold text-muted-foreground/50">/mo</span>
+                                <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
                             </div>
                         </div>
-                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95" asChild><Link href="/compare">Compare offers</Link></Button>
+                        <div className="flex-1 max-w-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                        <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
@@ -398,8 +400,8 @@ function ContractDecoderContent() {
                             const conv = (savingsPotential / rate) * (CONVERSION_RATES[ccy] || 1);
                             return (
                                 <div key={ccy} className="space-y-1">
-                                    <p className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-widest">{ccy}</p>
-                                    <p className="text-lg font-bold text-white/90">{formatCurrency(conv, ccy)}</p>
+                                    <p className="text-[11px] font-bold text-muted-foreground/60 uppercase">{ccy}</p>
+                                    <p className="text-xl font-bold text-white/90">{formatCurrency(conv, ccy)}</p>
                                 </div>
                             )
                         })}
@@ -407,23 +409,23 @@ function ContractDecoderContent() {
 
                     <div className="pt-8 border-t border-white/5 space-y-6">
                         <div className="flex items-center gap-3">
-                            <h3 className="text-sm stamped-dossier text-primary flex items-center gap-2">
+                            <h3 className="text-base text-primary flex items-center gap-2 font-bold">
                                 <Sparkles className="size-4" /> Tactical SWOT verdict
                             </h3>
                             {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
                         </div>
 
                         {verdict ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3" />} color="green" />
-                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3" />} color="amber" />
-                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3" />} color="accent" />
-                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3" />} color="destructive" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
+                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
                             </div>
                         ) : (
                             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
                                 <Loader2 className="size-8 animate-spin text-primary" />
-                                <p className="text-[10px] font-black uppercase tracking-widest">Uplinking to tactical engine...</p>
+                                <p className="text-xs font-bold">Uplinking to tactical engine...</p>
                             </div>
                         )}
                     </div>
@@ -444,11 +446,11 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
         destructive: "border-l-destructive/50 text-destructive"
     };
     return (
-        <div className={cn("glass p-5 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
-            <h4 className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+        <div className={cn("glass p-6 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
+            <h4 className="text-xs font-bold flex items-center gap-2">
                 {icon} {type}
             </h4>
-            <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{content}</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">{content}</p>
         </div>
     );
 };
@@ -457,8 +459,8 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-4 text-white">2. Contract decoder</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Field-grade financial intelligence for your next move.</p>
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">2. Contract decoder</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed tracking-widest opacity-60">Field-grade financial intelligence for your next move.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
     </div>
