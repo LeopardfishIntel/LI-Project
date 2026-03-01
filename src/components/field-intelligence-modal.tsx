@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -233,7 +232,7 @@ export function FieldIntelligenceModal() {
             <DialogFooter className="border-t border-white/5 pt-4">
               <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6">
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
-                Transmit Intelligence
+                Transmit Intel
               </Button>
             </DialogFooter>
           </>
