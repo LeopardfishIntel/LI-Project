@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -149,6 +150,7 @@ function ContractDecoderContent() {
 
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
+  const [verdictError, setVerdictError] = useState<string | null>(null);
   
   const [isUkLoanModalOpen, setIsUkLoanModalOpen] = useState(false);
   const [isUsLoanModalOpen, setIsUsLoanModalOpen] = useState(false);
@@ -164,11 +166,11 @@ function ContractDecoderContent() {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
       if (autoCurrency) setCurrency(autoCurrency);
       setVerdict(null); 
+      setVerdictError(null);
     }
   }, [selectedSchool]);
 
   useEffect(() => {
-    // Set date stamp on client only to avoid hydration mismatch
     setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
   }, []);
 
@@ -206,10 +208,13 @@ function ContractDecoderContent() {
   const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
   const savingsPotential = totalIncome - (decodedCosts?.totalCosts || 0);
 
-  useEffect(() => {
-    const triggerSWOT = async () => {
-      if (!selectedSchool || totalIncome <= 0) return;
-      setIsVerdictLoading(true);
+  const handleGenerateVerdict = async () => {
+    if (!selectedSchool || totalIncome <= 0) return;
+    setIsVerdictLoading(true);
+    setVerdictError(null);
+    setVerdict(null);
+
+    try {
       const result = await getOfferTacticalVerdict({
           schoolName: selectedSchool.name,
           location: selectedSchool.location,
@@ -218,13 +223,18 @@ function ContractDecoderContent() {
           currency: currency,
           familyStatus: familyStatus
       });
-      if (result.data) setVerdict(result.data);
+      
+      if (result.error) {
+        setVerdictError(result.error);
+      } else if (result.data) {
+        setVerdict(result.data);
+      }
+    } catch (e: any) {
+      setVerdictError(e.message || "Engine timeout. Please re-run protocol.");
+    } finally {
       setIsVerdictLoading(false);
-    };
-
-    const timeout = setTimeout(triggerSWOT, 1500);
-    return () => clearTimeout(timeout);
-  }, [selectedSchoolId, offeredSalary, familyStatus, responsibilityAllowance, partnerSalary, savingsPotential, currency, selectedSchool, totalIncome]);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -469,8 +479,29 @@ function ContractDecoderContent() {
                                     Date stamp: {dateStamp}
                                 </span>
                             )}
+                            {!verdict && !isVerdictLoading && (
+                                <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    onClick={handleGenerateVerdict}
+                                    className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
+                                >
+                                    <Sparkles className="size-3 mr-2" />
+                                    Run SWOT protocol
+                                </Button>
+                            )}
                             {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
                         </div>
+
+                        {verdictError && (
+                            <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
+                                <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-destructive">Uplink failure</p>
+                                    <p className="text-xs text-muted-foreground">{verdictError}</p>
+                                </div>
+                            </div>
+                        )}
 
                         {verdict ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -479,12 +510,12 @@ function ContractDecoderContent() {
                                 <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
                                 <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
                             </div>
-                        ) : (
+                        ) : isVerdictLoading ? (
                             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
                                 <Loader2 className="size-8 animate-spin text-primary" />
                                 <p className="text-sm font-bold">Uplinking to tactical engine...</p>
                             </div>
-                        )}
+                        ) : null}
                     </div>
                 </div>
               </Card>
