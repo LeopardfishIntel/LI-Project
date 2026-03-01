@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -57,7 +56,172 @@ import {
   DialogDescription 
 } from '@/components/ui/dialog';
 
-// --- Tactical Data & Logic ---
+// --- Tax Calculator Logic ---
+type TaxBracket = { upto: number; rate: number };
+type FilingStatusBrackets = { brackets: TaxBracket[] };
+type SpecialRegime = {
+    name: string;
+    description: string;
+    taxablePercentage: number;
+};
+
+const taxData: { [key: string]: {
+    currency: string;
+    socialSecurity: { rate: number; floor?: number; cap?: number };
+    childTaxCredit?: number;
+    specialRegime?: SpecialRegime;
+    filingStatuses: {
+        single: FilingStatusBrackets;
+        married: FilingStatusBrackets;
+    };
+} } = {
+    "Italy": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.0919 },
+        childTaxCredit: 950,
+        specialRegime: {
+            name: "New Arrival Tax Discount",
+            description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime). Social security is still calculated on the full gross salary.",
+            taxablePercentage: 0.30
+        },
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+            married: { brackets: [
+                { upto: 28000, rate: 0.23 },
+                { upto: 50000, rate: 0.35 },
+                { upto: Infinity, rate: 0.43 },
+            ]},
+        },
+    },
+    "Japan": {
+        currency: "JPY",
+        socialSecurity: { rate: 0.145, cap: 8160000 },
+        childTaxCredit: 200000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 },
+                { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 },
+                { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 },
+                { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 },
+                { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "Netherlands": {
+        currency: "EUR",
+        socialSecurity: { rate: 0.2765, cap: 38098 },
+        childTaxCredit: 800,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+            married: { brackets: [
+                { upto: 38098, rate: 0.0932 },
+                { upto: 75518, rate: 0.3697 },
+                { upto: Infinity, rate: 0.4950 },
+            ]},
+        },
+    },
+    "Singapore": {
+        currency: "SGD",
+        socialSecurity: { rate: 0.20, cap: 6000 * 12 },
+        childTaxCredit: 2000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
+                { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
+                { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
+            ]},
+            married: { brackets: [
+                { upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 },
+                { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 },
+                { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 },
+            ]},
+        },
+    },
+    "South Korea": {
+        currency: "KRW",
+        socialSecurity: { rate: 0.09, cap: 70800000 },
+        childTaxCredit: 150000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 },
+                { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 },
+                { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "Switzerland": {
+        currency: "CHF",
+        socialSecurity: { rate: 0.064 },
+        childTaxCredit: 1200,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 },
+                { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 },
+            ]},
+            married: { brackets: [
+                { upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 },
+                { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 },
+            ]},
+        },
+    },
+    "UAE": {
+        currency: "AED",
+        socialSecurity: { rate: 0 },
+        childTaxCredit: 0,
+        filingStatuses: {
+            single: { brackets: [{ upto: Infinity, rate: 0 }] },
+            married: { brackets: [{ upto: Infinity, rate: 0 }] },
+        },
+    },
+    "United Kingdom": {
+        currency: "GBP",
+        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
+        childTaxCredit: 0,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+            married: { brackets: [
+                { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 },
+                { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 },
+            ]},
+        },
+    },
+    "USA": {
+        currency: "USD",
+        socialSecurity: { rate: 0.0765, cap: 168600 },
+        childTaxCredit: 2000,
+        filingStatuses: {
+            single: { brackets: [
+                { upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 },
+                { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
+            ]},
+            married: { brackets: [
+                { upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 },
+                { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 },
+                { upto: Infinity, rate: 0.37 },
+            ]},
+        },
+    },
+};
 
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
@@ -154,6 +318,47 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
       return numbers[0] * scale;
     }
     return 0;
+};
+
+const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
+    const countryData = taxData[country];
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
+    if (socialSecurity.rate > 0) {
+        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
+    }
+
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastBracketUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
+            lastBracketUpto = bracket.upto;
+        } else {
+            break;
+        }
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+
+    const totalTax = incomeTax + socialSecurityContrib;
+    const netIncome = income - totalTax;
+    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
+
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
 };
 
 // --- Helper Components ---
@@ -436,7 +641,7 @@ function ContractDecoderContent() {
                     <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5">
                         <ShieldAlert className="size-3" /> Due Diligence
                     </span>
-                    Check to ensure this includes all Social Security, pension, health, dental, and optical deductions.
+                    Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.
                     </div>
                 </div>
 
