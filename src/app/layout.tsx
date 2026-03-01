@@ -7,6 +7,7 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { Providers } from './providers';
 import { FieldIntelligenceModal } from '@/components/field-intelligence-modal';
+import { FloatingIntelButton } from '@/components/floating-intel-button';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-montserrat' })
@@ -36,6 +37,7 @@ export default function RootLayout({
                 </main>
                 <Footer />
                 <FieldIntelligenceModal />
+                <FloatingIntelButton />
             </div>
         </Providers>
       </body>
