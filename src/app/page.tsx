@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -48,25 +48,22 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section - Compact & High Visibility */}
+      <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
           data-ai-hint={heroImage.imageHint}
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1.5 rounded text-primary text-xs font-bold tracking-widest animate-pulse">
-              <ShieldCheck className="w-4 h-4" /> Intelligence grade protocol
-            </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
