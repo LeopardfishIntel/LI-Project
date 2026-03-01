@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -221,7 +220,7 @@ export default function StudentLoanCalculator() {
         <div className="pt-4 pb-8">
           <Button asChild variant="outline" className="w-full h-14 border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm group">
             <Link href="/discover" target="_blank">
-              <span>Moving country? Find your next nook</span>
+              <span>Moving country? Find your next fit</span>
               <ArrowRight className="ml-2 size-3 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>

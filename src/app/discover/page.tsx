@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useState } from "react";
-import { findNookAction, NookFinderState } from "./actions";
+import { findFitAction, FitFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import type { School } from '@/lib/types';
 import { collection } from 'firebase/firestore';
 
-const initialState: NookFinderState = {
+const initialState: FitFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -36,15 +36,15 @@ function SubmitButton() {
       ) : (
         <>
           <Wand2 className="mr-2 h-4 w-4" />
-          Find my nook
+          Find my fit
         </>
       )}
     </Button>
   );
 }
 
-export default function FindYourNookPage() {
-  const [state, formAction] = useActionState(findNookAction, initialState);
+export default function FindYourFitPage() {
+  const [state, formAction] = useActionState(findFitAction, initialState);
   const [otherLicense, setOtherLicense] = useState(false);
 
   const firestore = useFirestore();
@@ -57,7 +57,7 @@ export default function FindYourNookPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find your nook</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find your fit</h1>
         <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -148,23 +148,23 @@ export default function FindYourNookPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Teaching license</Label>
+                <Label>Teaching licence</Label>
                  <div className="space-y-2 pt-2">
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_qts" name="teaching_license_cb" value="QTS or iQTS" />
+                            <Checkbox id="l_qts" name="teaching_licence_cb" value="QTS or iQTS" />
                             <Label htmlFor="l_qts" className="font-normal">QTS or iQTS</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_us" name="teaching_license_cb" value="US State Teaching License" />
-                            <Label htmlFor="l_us" className="font-normal">US State Teaching License</Label>
+                            <Checkbox id="l_us" name="teaching_licence_cb" value="US State Teaching Licence" />
+                            <Label htmlFor="l_us" className="font-normal">US State Teaching Licence</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_sace" name="teaching_license_cb" value="SACE / OCT / VIT" />
+                            <Checkbox id="l_sace" name="teaching_licence_cb" value="SACE / OCT / VIT" />
                             <Label htmlFor="l_sace" className="font-normal">SACE / OCT / VIT</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
+                            <Checkbox id="l_ect" name="teaching_licence_cb" value="ECT Status" />
                             <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -175,8 +175,8 @@ export default function FindYourNookPage() {
                 </div>
                  {otherLicense && (
                     <div className="space-y-2 pl-2 pt-2">
-                        <Label htmlFor="teaching_license_other" className="text-xs text-muted-foreground">Please specify your license</Label>
-                        <Input id="teaching_license_other" name="teaching_license_other" placeholder="e.g., Special Education Certificate" />
+                        <Label htmlFor="teaching_licence_other" className="text-xs text-muted-foreground">Please specify your licence</Label>
+                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" />
                     </div>
                 )}
               </div>
@@ -358,7 +358,7 @@ export default function FindYourNookPage() {
 
         {state.result && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your recommended nooks</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Your recommended fits</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
