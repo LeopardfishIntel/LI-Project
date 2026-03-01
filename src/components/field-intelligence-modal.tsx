@@ -168,8 +168,8 @@ export function FieldIntelligenceModal() {
               <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
                 Field Report
               </DialogTitle>
-              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed">
-                <strong>Security notice:</strong> Your Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
+              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left">
+                <strong>Security notice:</strong> Your Anonymity is our first priority.<br /> All intel is analysed and checked by our team for transformation into actionable intelligence.
               </DialogDescription>
             </DialogHeader>
             
