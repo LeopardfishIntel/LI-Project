@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -127,7 +126,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm uppercase tracking-tighter",
+                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm tracking-tight",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
