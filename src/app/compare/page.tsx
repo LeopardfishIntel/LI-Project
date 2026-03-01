@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -137,19 +136,6 @@ export default function ComparePage() {
         return selectedSchoolIds.map(id => schools.find(s => s.id === id)).filter(Boolean) as School[];
     }, [selectedSchoolIds, schools]);
 
-    const handleSelectSchool = (index: number, newSchoolId: string) => {
-        const currentlySelectedIds = [...selectedSchoolIds];
-        const alreadySelectedIndex = currentlySelectedIds.indexOf(newSchoolId);
-
-        if (alreadySelectedIndex > -1) {
-            const schoolIdToSwap = currentlySelectedIds[index];
-            currentlySelectedIds[alreadySelectedIndex] = schoolIdToSwap;
-        }
-        
-        currentlySelectedIds[index] = newSchoolId;
-        setSelectedSchoolIds(currentlySelectedIds);
-    };
-
     const handleNetSalaryChange = (index: number, value: string) => {
         const newSalaries = [...netSalaries];
         newSalaries[index] = value;
@@ -232,7 +218,7 @@ export default function ComparePage() {
         }, [netSalary, school]);
 
         return (
-            <div className="flex flex-col gap-4 items-center">
+            <div className="flex flex-col gap-4 items-center h-full">
                 <div className="w-full max-w-sm">
                      <Select value={school.id} onValueChange={onSelect}>
                         <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
@@ -262,7 +248,7 @@ export default function ComparePage() {
                     />
                 </div>
 
-                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm">
+                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full">
                     <Link href={`/schools/${school.id}`} className="block">
                         <div className="relative aspect-video">
                             <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
@@ -275,7 +261,7 @@ export default function ComparePage() {
                             </div>
                         </CardHeader>
                     </Link>
-                    <CardContent className="p-4 md:p-6 pt-0">
+                    <CardContent className="p-4 md:p-6 pt-0 flex-grow">
                         <div className="space-y-0">
                              <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                              <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
@@ -325,13 +311,21 @@ export default function ComparePage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">3. Compare schools</h1>
             <p className="text-muted-foreground mb-12 text-center">Select up to three schools for a side-by-side comparison of key data.</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-12">
                 {selectedSchools.map((school, index) => (
                      <SchoolComparisonColumn 
                         key={school.id} 
                         school={school} 
                         index={index}
-                        onSelect={(id) => handleSelectSchool(index, id)} 
+                        onSelect={(id) => {
+                            const currentlySelectedIds = [...selectedSchoolIds];
+                            const alreadySelectedIndex = currentlySelectedIds.indexOf(id);
+                            if (alreadySelectedIndex > -1) {
+                                currentlySelectedIds[alreadySelectedIndex] = currentlySelectedIds[index];
+                            }
+                            currentlySelectedIds[index] = id;
+                            setSelectedSchoolIds(currentlySelectedIds);
+                        }} 
                         selectedIds={selectedSchoolIds}
                         netSalary={netSalaries[index]}
                         onNetSalaryChange={(value) => handleNetSalaryChange(index, value)}

@@ -1,14 +1,14 @@
 'use client';
 
+import * as React from 'react';
 import Image from 'next/image';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import type { School } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Star,
   MapPin,
   Building,
   DollarSign,
@@ -24,7 +24,6 @@ import {
   Gift,
   Clock,
   Laptop,
-  Loader2,
   ExternalLink,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
@@ -105,11 +104,12 @@ function SchoolProfileSkeleton() {
   );
 }
 
-export default function SchoolProfilePage({ params }: { params: { id: string } }) {
+export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
   const firestore = useFirestore();
   const schoolRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'schools', params.id) : null),
-    [firestore, params.id]
+    () => (firestore ? doc(firestore, 'schools', id) : null),
+    [firestore, id]
   );
   const { data: school, isLoading } = useDoc<School>(schoolRef);
 
