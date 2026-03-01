@@ -6,7 +6,6 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger,
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog';
@@ -22,7 +21,6 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { ShieldAlert, Loader2, Zap, Binoculars, ShieldCheck, Lock } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
@@ -211,14 +209,13 @@ export function FieldIntelligenceModal() {
                 <Label className="text-[10px] font-bold text-primary/70 uppercase flex items-center gap-2">
                   <ShieldCheck className="size-3" /> Security briefing
                 </Label>
-                <ScrollArea className="h-32 p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
-                  <p className="text-white font-bold mb-2">Protocol for Field Intel (L.F.I. Reporting)</p>
+                <div className="p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
+                  <p className="text-white font-bold mb-2">Protocols</p>
                   <p>1. Accuracy Over Emotion: Stick to verifiable facts.</p>
-                  <p>2. Redaction Mandatory: Black out all PII in attachments.</p>
-                  <p>3. Institutional Conduct Focus: Avoid personal naming.</p>
+                  <p>2. Redaction Mandatory: Never share Personally Identifiable Information., redact where appropriate and avoid personal naming.</p>
                   <p className="mt-4 text-white font-bold mb-2">Privacy Disclaimer</p>
-                  <p>Identity Masking is default. We do not trade teacher data. All transmissions are scrubbed of identifying metadata.</p>
-                </ScrollArea>
+                  <p>We do not trade teacher data. All transmissions are scrubbed of identifying metadata on submission.</p>
+                </div>
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
