@@ -5,8 +5,9 @@
  * @fileOverview Secure logic for Student Loan Repayment simulations (2026/27 Specs).
  */
 
-import { initializeFirebase } from '@/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, doc, getDoc } from 'firebase/firestore/lite';
+import { firebaseConfig } from '@/firebase/config';
 
 export type CalculationInput = {
   loanType: 'UK' | 'US';
@@ -24,11 +25,12 @@ export type CalculationOutput = {
   error?: string;
 };
 
+// Server-side initialization
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+
 export async function calculateRepayment(input: CalculationInput): Promise<CalculationOutput> {
   try {
-    const { firestore } = await initializeFirebase();
-    if (!firestore) throw new Error('System Offline: Datastore unreachable.');
-
     const configSnap = await getDoc(doc(firestore, 'config', 'student_loans_2026'));
     if (!configSnap.exists()) throw new Error('Protocol Error: 2026 thresholds not found.');
     

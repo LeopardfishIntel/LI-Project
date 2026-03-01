@@ -1,8 +1,9 @@
 
 'use server';
 
-import { initializeFirebase } from '@/firebase';
-import { doc, getDoc, collection, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, doc, getDoc, collection, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore/lite';
+import { firebaseConfig } from '@/firebase/config';
 import { verifyIntelligence } from '@/ai/flows/verify-intelligence-flow';
 
 export type PromotionResult = {
@@ -11,15 +12,16 @@ export type PromotionResult = {
   intelId?: string;
 };
 
+// Server-side initialization
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+
 /**
  * Promotes a report from staging (pending_intel) to live (verified_intel).
  * This involves Genkit-powered editorial polishing, database archival, and agent notification.
  */
 export async function promoteIntelToLive(pendingReportId: string): Promise<PromotionResult> {
   try {
-    const { firestore } = await initializeFirebase();
-    if (!firestore) throw new Error('Firestore not initialised.');
-
     // 1. Fetch from Staging
     const pendingRef = doc(firestore, 'pending_intel', pendingReportId);
     const pendingSnap = await getDoc(pendingRef);

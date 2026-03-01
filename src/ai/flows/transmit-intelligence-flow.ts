@@ -8,8 +8,9 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { initializeFirebase } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
+import { firebaseConfig } from '@/firebase/config';
 import { moderateIntelligence } from './moderate-intelligence-flow';
 
 const TransmitIntelligenceInputSchema = z.object({
@@ -26,6 +27,10 @@ export async function transmitIntelligence(input: TransmitIntelligenceInput) {
   return transmitIntelligenceFlow(input);
 }
 
+// Server-side initialization
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+
 export const transmitIntelligenceFlow = ai.defineFlow(
   {
     name: 'transmitIntelFlow',
@@ -33,32 +38,28 @@ export const transmitIntelligenceFlow = ai.defineFlow(
     outputSchema: z.string().describe('Success Token'),
   },
   async (input) => {
-    const { firestore } = await initializeFirebase();
-
     // 1. Security Moderation Stage (AI Filter & Bias Check)
     console.log('Initiating AI Security & Editorial Filter...');
     const moderation = await moderateIntelligence({ content: input.content });
 
     // 2. Staging Area Archival (pending_intel)
-    if (firestore) {
-      console.log('Archiving Dossier to Staging Area for Human Review...');
-      const stagingRef = collection(firestore, 'pending_intel');
-      await addDoc(stagingRef, {
-        category: input.category,
-        organisation: input.organisation,
-        location: input.location,
-        original_content: input.content,
-        clean_text: moderation.clean_text,
-        status: moderation.status,
-        safety_flags: moderation.safety_flags,
-        confidence_score: moderation.confidence_score,
-        suspect_bias: moderation.suspect_bias,
-        ratified_data_points: moderation.ratified_data_points,
-        timestamp: serverTimestamp(),
-        authorId: input.authorId || 'anonymous',
-        authorEmail: input.authorEmail || ''
-      });
-    }
+    console.log('Archiving Dossier to Staging Area for Human Review...');
+    const stagingRef = collection(firestore, 'pending_intel');
+    await addDoc(stagingRef, {
+      category: input.category,
+      organisation: input.organisation,
+      location: input.location,
+      original_content: input.content,
+      clean_text: moderation.clean_text,
+      status: moderation.status,
+      safety_flags: moderation.safety_flags,
+      confidence_score: moderation.confidence_score,
+      suspect_bias: moderation.suspect_bias,
+      ratified_data_points: moderation.ratified_data_points,
+      timestamp: serverTimestamp(),
+      authorId: input.authorId || 'anonymous',
+      authorEmail: input.authorEmail || ''
+    });
 
     return 'Success';
   }
