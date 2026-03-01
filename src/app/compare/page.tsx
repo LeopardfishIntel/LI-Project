@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -18,6 +17,9 @@ import { doc, increment, collection } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
+type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
     const { costOfLiving, intel } = school;
@@ -149,6 +151,137 @@ const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
     );
 };
 
+function SchoolComparisonColumn({ 
+    school, 
+    index, 
+    onSelect, 
+    selectedIds, 
+    netSalary, 
+    onNetSalaryChange,
+    schools,
+    comparisonResults
+}: {
+    school: School;
+    index: number;
+    onSelect: (id: string) => void;
+    selectedIds: string[];
+    netSalary: string;
+    onNetSalaryChange: (value: string) => void;
+    schools: School[] | null;
+    comparisonResults: Record<ComparisonMetric, ComparisonResult>;
+}) {
+    const [glowActive, setGlowActive] = useState(true);
+    const [timerStarted, setTimerStarted] = useState(false);
+
+    useEffect(() => {
+        let timeout: NodeJS.Timeout;
+        
+        if (netSalary && !timerStarted) {
+            setTimerStarted(true);
+            timeout = setTimeout(() => {
+                setGlowActive(false);
+            }, 10000);
+        }
+
+        if (!netSalary) {
+            setGlowActive(true);
+            setTimerStarted(false);
+        }
+
+        return () => clearTimeout(timeout);
+    }, [netSalary, timerStarted]);
+
+    const yourMonthlySavings = useMemo(() => {
+        const parsedSalary = parseFloat(netSalary) || 0;
+        if (parsedSalary <= 0) return null;
+        return (parsedSalary / 12) - calculateMonthlyCost(school);
+    }, [netSalary, school]);
+
+    return (
+        <div className="flex flex-col gap-4 items-center h-full">
+            <div className="w-full max-w-sm">
+                 <Select value={school.id} onValueChange={onSelect}>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                        <SelectValue placeholder="Select a school" />
+                    </SelectTrigger>
+                    <SelectContent className="glass">
+                        {schools?.map(s => (
+                            <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
+                                {s.name}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="w-full max-w-sm space-y-2">
+                <Label htmlFor={`net-salary-${index}`} className="text-sm font-bold text-muted-foreground">Offered net salary (annual)</Label>
+                <Input
+                    id={`net-salary-${index}`}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={15}
+                    placeholder="e.g., 55000"
+                    value={netSalary}
+                    onChange={(e) => onNetSalaryChange(e.target.value)}
+                    className={cn(
+                        "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
+                        glowActive && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
+                    )}
+                />
+            </div>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full">
+                <Link href={`/schools/${school.id}`} className="block">
+                    <div className="relative aspect-video">
+                        <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                    <CardHeader className="min-h-[100px] flex flex-col justify-center">
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight">{school.name}</CardTitle>
+                         <div className="flex items-center text-muted-foreground text-sm pt-1">
+                            <MapPin className="w-4 h-4 mr-1.5" />
+                            <span>{school.location}, {school.country}</span>
+                        </div>
+                    </CardHeader>
+                </Link>
+                <CardContent className="p-4 md:p-6 pt-0 flex-grow">
+                    <div className="space-y-0">
+                         <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                         <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                         <MetricRow
+                                label="Your est. monthly savings"
+                                value={yourMonthlySavings !== null ? yourMonthlySavings : null}
+                                result={comparisonResults.yourSavings}
+                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
+                                icon={<PiggyBank className="w-4 h-4 text-green-500" />}
+                            />
+                         <MetricRow
+                            label={`Est. costs (${teacherProfile.familyStatus})`}
+                            value={calculateMonthlyCost(school)}
+                            result={comparisonResults.monthlyCost}
+                            format={(v) => formatCurrency(v, 'USD')}
+                            icon={<DollarSign className="w-4 h-4 text-red-400" />}
+                        />
+                         <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
+                         <MetricRow 
+                            label="Health insurance" 
+                            value={school.intel.healthInsurance} 
+                            result={'neutral'} 
+                            icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
+                            helpContent={<HealthInsuranceHelp />}
+                        />
+                    </div>
+                     <div className="pt-6">
+                         <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                         <MetricRow label="Average class size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                         <MetricRow label="Student-teacher ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
 
 export default function ComparePage() {
     const firestore = useFirestore();
@@ -185,6 +318,19 @@ export default function ComparePage() {
         if (!schools || selectedSchoolIds.length === 0) return [];
         return selectedSchoolIds.map(id => schools.find(s => s.id === id)).filter(Boolean) as School[];
     }, [selectedSchoolIds, schools]);
+
+    const handleSelectSchool = (index: number, newSchoolId: string) => {
+        const currentlySelectedIds = [...selectedSchoolIds];
+        const alreadySelectedIndex = currentlySelectedIds.indexOf(newSchoolId);
+
+        if (alreadySelectedIndex > -1) {
+            const schoolIdToSwap = currentlySelectedIds[index];
+            currentlySelectedIds[alreadySelectedIndex] = schoolIdToSwap;
+        }
+        
+        currentlySelectedIds[index] = newSchoolId;
+        setSelectedSchoolIds(currentlySelectedIds);
+    };
 
     const handleNetSalaryChange = (index: number, value: string) => {
         const cleanedValue = value.replace(/\D/g, '');
@@ -246,114 +392,6 @@ export default function ComparePage() {
     const classSizeComp = compareThree('classSize', false);
     const yourSavingsComp = compareThree('yourSavings', true);
 
-    const SchoolComparisonColumn = ({ school, index, onSelect, selectedIds, netSalary, onNetSalaryChange }: {
-        school: School;
-        index: number;
-        onSelect: (id: string) => void;
-        selectedIds: string[];
-        netSalary: string;
-        onNetSalaryChange: (value: string) => void;
-    }) => {
-        const comparisonResults = {
-            salary: salaryComp[index],
-            savings: savingsComp[index],
-            monthlyCost: monthlyCostComp[index],
-            classSize: classSizeComp[index],
-            yourSavings: yourSavingsComp[index],
-        };
-
-        const yourMonthlySavings = useMemo(() => {
-            const parsedSalary = parseFloat(netSalary) || 0;
-            if (parsedSalary <= 0) return null;
-            return (parsedSalary / 12) - calculateMonthlyCost(school);
-        }, [netSalary, school]);
-
-        return (
-            <div className="flex flex-col gap-4 items-center h-full">
-                <div className="w-full max-w-sm">
-                     <Select value={school.id} onValueChange={onSelect}>
-                        <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
-                            <SelectValue placeholder="Select a school" />
-                        </SelectTrigger>
-                        <SelectContent className="glass">
-                            {schools?.map(s => (
-                                <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
-                                    {s.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="w-full max-w-sm space-y-2">
-                    <Label htmlFor={`net-salary-${index}`} className="text-sm font-bold text-muted-foreground">Offered net salary (annual)</Label>
-                    <Input
-                        id={`net-salary-${index}`}
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        maxLength={15}
-                        placeholder="e.g., 55000"
-                        value={netSalary}
-                        onChange={(e) => onNetSalaryChange(e.target.value)}
-                        className={cn(
-                            "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
-                            !netSalary && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
-                        )}
-                    />
-                </div>
-
-                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full">
-                    <Link href={`/schools/${school.id}`} className="block">
-                        <div className="relative aspect-video">
-                            <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
-                        </div>
-                        <CardHeader className="min-h-[100px] flex flex-col justify-center">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight">{school.name}</CardTitle>
-                             <div className="flex items-center text-muted-foreground text-sm pt-1">
-                                <MapPin className="w-4 h-4 mr-1.5" />
-                                <span>{school.location}, {school.country}</span>
-                            </div>
-                        </CardHeader>
-                    </Link>
-                    <CardContent className="p-4 md:p-6 pt-0 flex-grow">
-                        <div className="space-y-0">
-                             <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                             <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
-                             <MetricRow
-                                    label="Your est. monthly savings"
-                                    value={yourMonthlySavings !== null ? yourMonthlySavings : null}
-                                    result={comparisonResults.yourSavings}
-                                    format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
-                                    icon={<PiggyBank className="w-4 h-4 text-green-500" />}
-                                />
-                             <MetricRow
-                                label={`Est. costs (${teacherProfile.familyStatus})`}
-                                value={calculateMonthlyCost(school)}
-                                result={comparisonResults.monthlyCost}
-                                format={(v) => formatCurrency(v, 'USD')}
-                                icon={<DollarSign className="w-4 h-4 text-red-400" />}
-                            />
-                             <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
-                             <MetricRow 
-                                label="Health insurance" 
-                                value={school.intel.healthInsurance} 
-                                result={'neutral'} 
-                                icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
-                                helpContent={<HealthInsuranceHelp />}
-                            />
-                        </div>
-                         <div className="pt-6">
-                             <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                             <MetricRow label="Average class size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
-                             <MetricRow label="Student-teacher ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    };
-
     if (isLoadingSchools || !schools) {
         return (
           <div className="container mx-auto flex justify-center items-center h-screen">
@@ -373,18 +411,18 @@ export default function ComparePage() {
                         key={school.id} 
                         school={school} 
                         index={index}
-                        onSelect={(id) => {
-                            const currentlySelectedIds = [...selectedSchoolIds];
-                            const alreadySelectedIndex = currentlySelectedIds.indexOf(id);
-                            if (alreadySelectedIndex > -1) {
-                                currentlySelectedIds[alreadySelectedIndex] = currentlySelectedIds[index];
-                            }
-                            currentlySelectedIds[index] = id;
-                            setSelectedSchoolIds(currentlySelectedIds);
-                        }} 
+                        onSelect={(id) => handleSelectSchool(index, id)} 
                         selectedIds={selectedSchoolIds}
                         netSalary={netSalaries[index]}
                         onNetSalaryChange={(value) => handleNetSalaryChange(index, value)}
+                        schools={schools}
+                        comparisonResults={{
+                            salary: salaryComp[index],
+                            savings: savingsComp[index],
+                            monthlyCost: monthlyCostComp[index],
+                            classSize: classSizeComp[index],
+                            yourSavings: yourSavingsComp[index],
+                        }}
                     />
                 ))}
             </div>
