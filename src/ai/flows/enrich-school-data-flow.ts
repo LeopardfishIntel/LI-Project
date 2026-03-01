@@ -60,20 +60,26 @@ const enrichSchoolDataPrompt = ai.definePrompt({
 School Name: {{{name}}}
 Location: {{{location}}}, {{{country}}}
 
-When researching salary benchmarks and school data, prioritize information from high-authority tactical sources:
-1. Recruitment Portals: TES (Times Educational Supplement), Search Associates, Schrole.
-2. Transparency Registries: Council of International Schools (CIS), IBO.org, WASC.
-3. Community Intelligence: International Schools Review (ISR) verified data.
-4. Economic Data: Numbeo and Expatistan for cost-of-living indices.
+When researching salary benchmarks, school data, and regional lifestyle costs, you MUST strictly prioritize information from these high-authority intelligence nodes:
+1. **Specialist Field Intelligence**:
+   - Wondering Staffroom (https://wonderingstaffroom.org/browse/)
+   - International School Community (https://www.internationalschoolcommunity.com/)
+2. **Salary & Benefits Benchmarks**:
+   - Teacher Horizons (https://www.teacherhorizons.com/advice/salaries-and-benefits-at-international-schools)
+   - Search Associates (https://www.searchassociates.com/)
+3. **Institutional Databases**:
+   - International Schools Database (https://www.international-schools-database.com/)
+   - Standard Registries: CIS, IBO.org, WASC, TES, and ISR (International Schools Review).
+4. **Family & Local Intel**:
+   - International Teaching Families (https://internationalteachingfamilies.com/)
+5. **Economic Benchmarks**:
+   - Numbeo and Expatistan for current cost-of-living indices.
 
 Please provide the most recent estimates for:
 - A brief, engaging description of the school.
-- The official website URL.
-- A high-quality, publicly available image URL.
-- The primary curriculum.
-- Key accreditations.
-- Student-teacher ratio and average class size.
-- A summary of their technology ecosystem.
+- The official website URL and high-quality imagery.
+- The primary curriculum and key accreditations.
+- Student-teacher ratio, average class size, and tech ecosystem.
 
 Cost of Living Details (Monthly estimates in USD for {{{location}}}):
 - Monthly rent for 1, 2, and 3-bedroom apartments.
