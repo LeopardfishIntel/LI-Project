@@ -167,7 +167,8 @@ export function FieldIntelligenceModal() {
                 Field Report
               </DialogTitle>
               <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left">
-                <strong>Security notice:</strong> Your Anonymity is our first priority.<br /> All intel is analysed and checked by our team for transformation into actionable intelligence.
+                <strong className="block mb-1">Security & Anonymity Notice</strong>
+                Your Anonymity is our first priority. All incoming intel is processed through a secure pipeline where it is analyzed and transformed by our team into actionable intelligence. To maintain the "blind" nature of this system, all transmissions undergo a mandatory scrub of identifying metadata immediately upon submission.
               </DialogDescription>
             </DialogHeader>
             
@@ -202,7 +203,7 @@ export function FieldIntelligenceModal() {
 
               <div className="space-y-2">
                 <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase">Narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => intel === 'Enter data here...' ? setIntel('') : setIntel(e.target.value)} />
               </div>
 
               <div className="space-y-2">
