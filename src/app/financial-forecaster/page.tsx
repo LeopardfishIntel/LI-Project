@@ -44,6 +44,15 @@ import type { School } from '@/lib/types';
 import { Separator } from '@/components/ui/separator';
 import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogTrigger, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription 
+} from '@/components/ui/dialog';
+import { UkLoanCalculatorModal } from '@/components/uk-loan-calculator-modal';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -110,6 +119,7 @@ function ContractDecoderContent() {
 
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
+  const [isUkLoanModalOpen, setIsUkLoanModalOpen] = useState(false);
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -265,16 +275,16 @@ function ContractDecoderContent() {
                   <Label className="text-xs font-bold text-muted-foreground">Student loan repayment (monthly)</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
                     <button 
-                      onClick={() => window.open('https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans', 'UKGov', 'width=1000,height=800')} 
+                      onClick={() => setIsUkLoanModalOpen(true)} 
                       className="hover:text-white transition-colors"
                     >
-                      UK
+                      uk
                     </button>
                     <button 
                       onClick={() => window.open('https://studentaid.gov/manage-loans/repayment/plans', 'USGov', 'width=1000,height=800')} 
                       className="hover:text-white transition-colors"
                     >
-                      US
+                      us
                     </button>
                     <button 
                       onClick={() => window.open('/calculators/student-loan', 'LFICalc', 'width=400,height=650')} 
@@ -434,6 +444,7 @@ function ContractDecoderContent() {
             </>
           )}
         </div>
+        <UkLoanCalculatorModal isOpen={isUkLoanModalOpen} onOpenChange={setIsUkLoanModalOpen} />
       </div>
   );
 }
