@@ -36,7 +36,7 @@ export default function Footer() {
                         <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                      <Link href="https://www.facebook.com/leopardfish" aria-label="Facebook page" target="_blank" rel="noopener noreferrer" className="p-2 rounded-sm bg-white/5 hover:bg-primary/10 transition-colors group">
-                        <Facebook className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        <Facebook className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">

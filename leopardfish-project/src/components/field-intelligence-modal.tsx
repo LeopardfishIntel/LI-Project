@@ -60,7 +60,6 @@ export function FieldIntelligenceModal() {
 
   useEffect(() => {
     const handleOpen = () => {
-      resetForm();
       setIsOpen(true);
       setIsScanning(true);
       setTimeout(() => setIsScanning(false), 1500);
