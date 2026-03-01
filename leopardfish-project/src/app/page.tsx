@@ -101,7 +101,7 @@ export default function Home() {
       </section>
 
       {/* Tactical Tagline Section */}
-      <section className="py-6 bg-background border-b border-white/5">
+      <section className="py-12 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter opacity-90 leading-none">
               Teach Overseas: Know Before You Go
