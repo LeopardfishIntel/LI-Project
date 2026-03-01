@@ -109,7 +109,7 @@ export function FieldIntelligenceModal() {
         setOrganisation(result.canonical_name);
       }
     } catch (error) {
-      console.error('Validation Error:', error);
+      console.error('Validation error:', error);
     } finally {
       setIsValidating(false);
     }
@@ -117,7 +117,7 @@ export function FieldIntelligenceModal() {
 
   const handleTransmit = async () => {
     if (!category || !organisation || !location || !intel) {
-      toast({ variant: 'destructive', title: 'Input Required', description: 'Mandatory fields missing.' });
+      toast({ variant: 'destructive', title: 'Input required', description: 'Mandatory fields missing.' });
       return;
     }
     if (!consent) return;
@@ -137,7 +137,7 @@ export function FieldIntelligenceModal() {
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);
-      toast({ variant: 'destructive', title: 'Transmission Error', description: 'Failed to establish uplink.' });
+      toast({ variant: 'destructive', title: 'Transmission error', description: 'Failed to establish uplink.' });
     }
   };
 
@@ -156,7 +156,7 @@ export function FieldIntelligenceModal() {
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
             <DialogTitle className="text-2xl font-black stamped-dossier text-primary">Transmission complete</DialogTitle>
-            <p className="text-white font-black text-xl">Self-destruct in {countdown}...</p>
+            <p className="text-white font-bold text-xl">Self-destruct in {countdown}...</p>
           </div>
         ) : (
           <>
@@ -165,14 +165,14 @@ export function FieldIntelligenceModal() {
                 Field report
               </DialogTitle>
               <DialogDescription asChild>
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-sm text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
                   <div>
-                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Security & anonymity notice</strong>
+                    <strong className="block mb-1 text-white tracking-widest text-xs font-bold">Security & anonymity notice</strong>
                     Your anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
                   </div>
                   
                   <div>
-                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Operational protocols</strong>
+                    <strong className="block mb-1 text-white tracking-widest text-xs font-bold">Operational protocols</strong>
                     <ul className="mt-1 space-y-2">
                       <li><span className="font-bold text-white">Accuracy over emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
                       <li><span className="font-bold text-white">Redaction mandate:</span> Never share personally identifiable information. You are required to redact sensitive data in all attachments and text before submission.</li>
@@ -185,11 +185,11 @@ export function FieldIntelligenceModal() {
             <div className="space-y-4 py-4 max-h-[50vh] overflow-y-auto px-1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 tracking-widest">Location</Label>
+                  <Label htmlFor="location" className="text-sm font-bold text-primary/70">Location</Label>
                   <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 tracking-widest">Classification</Label>
+                  <Label htmlFor="category" className="text-sm font-bold text-primary/70">Classification</Label>
                   <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm">
                       <SelectValue placeholder="Category..." />
@@ -206,26 +206,26 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 tracking-widest">Organisation</Label>
+                <Label htmlFor="organisation" className="text-sm font-bold text-primary/70">Organisation</Label>
                 <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
-                {validationStatus && <p className="text-[9px] font-bold tracking-widest text-accent">{validationStatus}</p>}
+                {validationStatus && <p className="text-[11px] font-bold text-accent">{validationStatus}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 tracking-widest">Intel narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm rounded-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
+                <Label htmlFor="intel" className="text-sm font-bold text-primary/70">Intel narrative</Label>
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-base rounded-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
                 <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:text-white" />
-                <Label htmlFor="consent" className="text-[10px] text-white/70 font-bold tracking-tighter cursor-pointer leading-tight">
-                  I have redacted all PII and acknowledge the operational protocols.
+                <Label htmlFor="consent" className="text-xs text-white/70 font-bold tracking-tighter cursor-pointer leading-tight">
+                  I have redacted all pii and acknowledge the operational protocols.
                 </Label>
               </div>
             </div>
 
             <DialogFooter className="border-t border-white/5 pt-4">
-              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black tracking-[0.2em] rounded-sm py-6 shadow-lg shadow-primary/10">
+              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-sm py-6 shadow-lg shadow-primary/10">
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
                 Transmit intel
               </Button>

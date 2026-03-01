@@ -6,6 +6,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages.find(img => img.id === id);
@@ -126,13 +127,26 @@ export default function Home() {
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <h3 className="text-3xl md:text-5xl text-white tracking-tighter">{step.title}</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <p className="text-muted-foreground text-lg leading-relaxed max-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Provide Intel Section */}
+      <section className="py-12 bg-primary/5 border-y border-white/5">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+            <div className="space-y-2">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">Global field intelligence</h2>
+              <p className="text-muted-foreground max-w-xl font-medium">Contribute to the collective mission. Submit anonymous field reports to verify school data and alert the community to emerging red flags.</p>
+            </div>
+            <FieldIntelligenceTrigger />
           </div>
         </div>
       </section>
