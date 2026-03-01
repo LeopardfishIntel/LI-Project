@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useState, useMemo, Suspense } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -12,24 +11,8 @@ import {
   Calculator, 
   Award, 
   Pencil, 
-  Users, 
   Loader2, 
-  ShieldAlert, 
   LineChart, 
-  Globe, 
-  GraduationCap, 
-  ExternalLink, 
-  Home, 
-  Utensils, 
-  TramFront, 
-  Zap, 
-  Smartphone, 
-  Wifi, 
-  Medal, 
-  Plus, 
-  Banknote, 
-  Info,
-  Milestone,
   Sparkles,
   ServerCrash,
   TrendingUp,
@@ -40,7 +23,6 @@ import {
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
-import { Separator } from '@/components/ui/separator';
 import { getOfferTacticalVerdict } from './actions';
 import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
 
@@ -51,17 +33,6 @@ const CONVERSION_RATES: Record<string, number> = {
   GBP: 0.78,
   EUR: 0.92,
   AED: 3.67,
-};
-
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  'Japan': 'JPY',
-  'UAE': 'AED',
-  'Switzerland': 'CHF',
-  'Singapore': 'SGD',
-  'South Korea': 'KRW',
-  'United Kingdom': 'GBP',
-  'Netherlands': 'EUR',
-  'USA': 'USD',
 };
 
 function ContractDecoderContent() {
@@ -94,10 +65,10 @@ function ContractDecoderContent() {
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
     const multiplier = familyStatus === 'single' ? 1 : 1.6;
-    const rent = ((col as any).monthlyRent1BR || (col as any).apartment || 0) * rate;
-    const food = (col.food || 0) * multiplier * rate;
-    const transport = (col.transport || 0) * multiplier * rate;
-    const utilities = (col.utilities || 0) * rate;
+    const rent = (Number(col.monthlyRent1BR || (col as any).apartment || 0)) * rate;
+    const food = (Number(col.food) || 0) * multiplier * rate;
+    const transport = (Number(col.transport) || 0) * multiplier * rate;
+    const utilities = (Number(col.utilities) || 0) * rate;
     const totalCosts = (intel.housing.provided ? 0 : rent) + food + transport + utilities + (parseFloat(contingency) || 0);
     return { totalCosts };
   }, [selectedSchool, familyStatus, contingency, rate]);
@@ -126,7 +97,7 @@ function ContractDecoderContent() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
-            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">My Settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">Operational Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>

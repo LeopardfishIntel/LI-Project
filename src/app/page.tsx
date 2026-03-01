@@ -51,47 +51,43 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section: Tactical Intel with Searchlight */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden bg-background">
+      {/* Hero Section */}
+      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.2]"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
           data-ai-hint={heroImage.imageHint}
         />
-        
-        {/* Animated Searchlight Overlay */}
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
-        
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intel Grade Perspectives
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
+              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-12 px-8 bg-slate-950 hover:bg-slate-900 text-white border border-white/20 font-bold text-sm rounded-sm" asChild>
-                <Link href="/discover">Start Journey</Link>
+              <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
+                <Link href="/discover">Initialize Journey</Link>
               </Button>
-              <Button size="lg" className="h-12 px-8 bg-slate-950 hover:bg-slate-900 text-white border border-white/20 font-bold text-sm rounded-sm" asChild>
-                <Link href="/directory">Browse Dossiers</Link>
+              <Button size="lg" variant="outline" className="h-14 px-10 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
+                <Link href="/directory">Browse dossiers</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Counter Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -105,7 +101,7 @@ export default function Home() {
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
                 <div className={cn(
-                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl bg-card/20",
+                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
                 )}>
                   <Image 
