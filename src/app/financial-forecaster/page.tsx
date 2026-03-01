@@ -31,17 +31,7 @@ import {
   Plus, 
   Banknote, 
   Info,
-  Printer,
-  FileText,
-  Plane,
-  School as SchoolIcon,
-  Thermometer,
-  Car,
-  Beer,
-  ShieldCheck,
-  Binoculars,
-  Milestone,
-  ArrowRightLeft
+  Printer
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -190,141 +180,6 @@ const ORDERED_CURRENCIES = [
     .sort()
 ];
 
-const countrySpecificData: Record<string, any> = {
-    'United Kingdom': {
-        taxStatus: { text: "At this school, salaries are subject to United Kingdom's income tax.", score: 'bad', percentage: "20-45%" },
-        housing: { text: "Housing is not provided. Rent will be a significant monthly cost.", score: 'bad', percentage: "0%" },
-        flightAllowance: { text: "Annual flights are not a standard perk for jobs within the UK.", score: 'bad', percentage: "0%" },
-        dependentTuition: { text: "Staff children often get heavily discounted or free places in the private sector.", score: 'neutral', percentage: "Up to 100%" },
-        gratuity: { text: "There is no end-of-service gratuity system in the UK. Instead, schools contribute to a pension.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "As a major economy, most goods are readily available.", score: 'neutral' },
-        utilities: { text: "Heating in winter can lead to high utility bills.", score: 'bad', percentage: "+30%" },
-        transportation: { text: "Public transport is extensive but can be very expensive, especially train travel.", score: 'neutral', percentage: "+20%" },
-        socialLeisure: { text: "The cost of a meal out is generally high compared to many teaching destinations.", score: 'bad', percentage: "+40%" },
-        safety: { text: "Ranked 37th on the 2023 Global Peace Index. Day-to-day life is safe.", score: 'neutral', percentage: 'Rank 37' },
-    },
-    'UAE': {
-        taxStatus: { text: "Salaries in the UAE are 100% tax-free. No local income tax applies.", score: 'good', percentage: "0%" },
-        housing: { text: "Housing is typically provided or a full allowance is issued.", score: 'good', percentage: "100%" },
-        flightAllowance: { text: "Annual return flights are a standard contractual right in the UAE.", score: 'good', percentage: "100%" },
-        dependentTuition: { text: "Top-tier schools usually provide full tuition for up to two children.", score: 'good', percentage: "Often 100%" },
-        gratuity: { text: "An end-of-service gratuity is legally required upon contract completion.", score: 'good', percentage: "Standard" },
-        importedGoods: { text: "Western brands are abundant but carry a significant import premium.", score: 'neutral' },
-        utilities: { text: "Air conditioning is essential and will be your largest monthly utility bill.", score: 'bad', percentage: "+50%" },
-        transportation: { text: "Private vehicle ownership is standard. Petrol is cheap but tolls apply.", score: 'neutral', percentage: "Baseline" },
-        socialLeisure: { text: "Social life centers around dining and malls, which can be high-cost.", score: 'bad', percentage: "+60%" },
-        safety: { text: "Ranked 75th on the 2023 Global Peace Index. Extremely low local crime.", score: 'neutral', percentage: 'Rank 75' },
-    },
-    'Japan': {
-        taxStatus: { text: "Salaries are subject to Japanese income tax and social security deductions.", score: 'neutral', percentage: "5-45%" },
-        housing: { text: "Subsidised housing or allowance is common but may not cover full rent.", score: 'neutral', percentage: "Varies" },
-        flightAllowance: { text: "Many top schools offer an annual flight reimbursement.", score: 'neutral', percentage: "Varies" },
-        dependentTuition: { text: "Reputable international schools offer significant tuition discounts.", score: 'good', percentage: "Discounted" },
-        gratuity: { text: "No end-of-service gratuity. Schools contribute to the national pension.", score: 'neutral', percentage: "Pension" },
-        importedGoods: { text: "High quality local goods available; Western imports are expensive.", score: 'bad' },
-        utilities: { text: "Heating in winter and AC in summer are standard expenses.", score: 'neutral', percentage: "Average" },
-        transportation: { text: "Public transport is exceptional and usually subsidised by schools.", score: 'good', percentage: "-20%" },
-        socialLeisure: { text: "Dining out is affordable at local izakayas; Western bars are costly.", score: 'good', percentage: "-15%" },
-        safety: { text: "Ranked 9th on the 2023 Global Peace Index. One of the safest nations.", score: 'good', percentage: 'Rank 9' },
-    }
-};
-
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    if (numbers.length >= 2) return ((numbers[0] + numbers[1]) / 2) * scale;
-    if (numbers.length === 1) return numbers[0] * scale;
-    return 0;
-};
-
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else break;
-    }
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-    const totalTax = incomeTax + socialSecurityContrib;
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome: income - totalTax, totalTax, effectiveRate: (totalTax / income) * 100, taxCredit, incomeTaxBeforeCredit };
-};
-
-const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-sm py-0.5">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
-      </span>
-    </div>
-);
-
-const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
-    icon: React.ReactNode, 
-    label: string, 
-    value: string, 
-    currency: string, 
-    onChange: (val: string) => void 
-}) => (
-    <div className="flex justify-between items-center text-sm py-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <div className="relative w-32">
-        <Input 
-          className={cn("h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50", noSpinners)} 
-          type="number"
-          value={value}
-          placeholder="0"
-          onChange={(e) => onChange(e.target.value)}
-        />
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
-      </div>
-    </div>
-);
-
-const FeatureDetail = ({ icon, title, description, score, percentage }: { 
-  icon: React.ReactNode, 
-  title: string, 
-  description: React.ReactNode, 
-  score: 'good' | 'neutral' | 'bad', 
-  percentage?: string 
-}) => {
-  const scoreColors = { good: 'text-green-400', neutral: 'text-amber-400', bad: 'text-red-400' };
-  return (
-    <div className="flex items-start gap-4">
-        <div className="mt-1 text-primary shrink-0">{icon}</div>
-        <div className="w-full">
-            <div className="flex justify-between items-baseline">
-                <h4 className="font-semibold tracking-tight text-xs uppercase text-white">{title}</h4>
-                {percentage && <span className={cn("font-bold text-[10px]", scoreColors[score])}>{percentage}</span>}
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">{description}</p>
-        </div>
-    </div>
-  );
-};
-
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
@@ -363,12 +218,12 @@ function TaxCalculatorSection() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="tax-salary" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Gross Annual Salary</Label>
-                    <Input id="tax-salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className={cn("bg-background/50 border-white/10 text-right font-bold", noSpinners)} />
+                    <Input id="tax-salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className={cn("bg-background/50 border-white/10 text-right font-bold text-white", noSpinners)} />
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="tax-currency" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Salary Currency</Label>
                     <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger id="tax-currency" className="bg-background/50 border-white/10">
+                        <SelectTrigger id="tax-currency" className="bg-background/50 border-white/10 text-white">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="glass">
@@ -379,7 +234,7 @@ function TaxCalculatorSection() {
                 <div className="space-y-2">
                     <Label htmlFor="tax-country" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Tax Country</Label>
                     <Select value={country} onValueChange={setCountry}>
-                        <SelectTrigger id="tax-country" className="bg-background/50 border-white/10">
+                        <SelectTrigger id="tax-country" className="bg-background/50 border-white/10 text-white">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="glass">
@@ -388,7 +243,7 @@ function TaxCalculatorSection() {
                     </Select>
                 </div>
             </div>
-            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold">Calculate Tactical Signature</Button>
+            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest">Calculate Tactical Signature</Button>
             {result && (
                 <Card className="glass border-white/10 p-6 space-y-4 shadow-2xl">
                     <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
@@ -396,16 +251,16 @@ function TaxCalculatorSection() {
                         <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
                     </div>
                     <div className="flex justify-between items-center text-red-400">
-                        <span className="text-xs">Estimated Income Tax</span>
+                        <span className="text-xs font-bold uppercase tracking-tighter">Estimated Income Tax</span>
                         <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
                     </div>
                     <div className="flex justify-between items-center text-orange-400">
-                        <span className="text-xs">Social Contributions</span>
+                        <span className="text-xs font-bold uppercase tracking-tighter">Social Contributions</span>
                         <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
                     </div>
                     <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
-                        <span>Net Take-Home (Annual)</span>
-                        <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
+                        <span className="uppercase tracking-widest text-xs">Net Take-Home (Annual)</span>
+                        <span className="text-xl">{formatCurrency(result.netIncome, taxData[country].currency)}</span>
                     </div>
                 </Card>
             )}
@@ -413,68 +268,42 @@ function TaxCalculatorSection() {
     );
 }
 
-function CurrencyConverterSection() {
-    const [amount, setAmount] = useState('1000');
-    const [fromCurrency, setFromCurrency] = useState('GBP');
-    const [toCurrency, setToCurrency] = useState('USD');
-    const currencies = ORDERED_CURRENCIES;
-    const result = useMemo(() => {
-        const amt = parseFloat(amount);
-        if (isNaN(amt)) return 0;
-        const fromRate = CONVERSION_RATES[fromCurrency] || 1;
-        const toRate = CONVERSION_RATES[toCurrency] || 1;
-        return (amt / fromRate) * toRate;
-    }, [amount, fromCurrency, toCurrency]);
+const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
+    <div className="flex justify-between items-center text-sm py-0.5">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
+        {isFree ? "COVERED" : formatCurrency(value, currency)}
+      </span>
+    </div>
+);
 
-    return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="conv-amount" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Amount to Convert</Label>
-                    <Input 
-                        id="conv-amount" 
-                        type="number" 
-                        value={amount} 
-                        onChange={e => setAmount(e.target.value)} 
-                        className={cn("bg-background/50 border-white/10 text-right font-bold text-lg h-12 rounded-sm", noSpinners)} 
-                    />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">From</Label>
-                        <Select value={fromCurrency} onValueChange={setFromCurrency}>
-                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="glass">
-                                {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="space-y-2">
-                        <Label className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">To</Label>
-                        <Select value={toCurrency} onValueChange={setToCurrency}>
-                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="glass">
-                                {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-            </div>
-            <Card className="glass border-primary/20 p-8 text-center space-y-2 shadow-2xl rounded-sm">
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Estimated Tactical Exchange</h4>
-                <div className="flex flex-col items-center justify-center">
-                    <p className="text-muted-foreground text-sm line-through opacity-50 mb-1">{formatCurrency(parseFloat(amount) || 0, fromCurrency)}</p>
-                    <p className="text-4xl font-black text-white tracking-tighter">{formatCurrency(result, toCurrency)}</p>
-                </div>
-                <p className="text-[9px] text-muted-foreground uppercase pt-4 leading-tight opacity-60">Indicative benchmark figures only. Verify live market spot rates before transfer.</p>
-            </Card>
-        </div>
-    );
-}
+const InteractiveCostItem = ({ icon, label, value, currency, onChange }: { 
+    icon: React.ReactNode, 
+    label: string, 
+    value: string, 
+    currency: string, 
+    onChange: (val: string) => void 
+}) => (
+    <div className="flex justify-between items-center text-sm py-1">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-muted-foreground font-medium">{label}</span>
+      </div>
+      <div className="relative w-32">
+        <Input 
+          className={cn("h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50 text-white font-bold", noSpinners)} 
+          type="number"
+          value={value}
+          placeholder="0"
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-muted-foreground uppercase">{currency}</span>
+      </div>
+    </div>
+);
 
 function ContractDecoderContent() {
   const firestore = useFirestore();
@@ -541,11 +370,6 @@ function ContractDecoderContent() {
   const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
   const savingsPotential = totalIncome - (decodedCosts?.totalCosts || 0);
 
-  const countryIntel = useMemo(() => {
-    if (!selectedSchool) return null;
-    return countrySpecificData[selectedSchool.country] || countrySpecificData['United Kingdom'];
-  }, [selectedSchool]);
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
@@ -555,29 +379,29 @@ function ContractDecoderContent() {
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm"><SelectValue placeholder="Search schools..." /></SelectTrigger>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                   <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Family Scaling</Label>
                 <Select value={familyStatus} onValueChange={(v) => setFamilyStatus(v as FamilyStatus)}>
-                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold"><SelectValue /></SelectTrigger>
                   <SelectContent className="glass"><SelectItem value="single">Single</SelectItem><SelectItem value="couple">Couple</SelectItem><SelectItem value="family">Family 2+1</SelectItem><SelectItem value="family2">Family 2+2</SelectItem></SelectContent>
                 </Select>
               </div>
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
-                <div className="text-[10px] text-muted-foreground leading-relaxed"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.</div>
+                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.</div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-end"><Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>{suggestedMonthlyLocal > 0 && !offeredSalary && (<span className="text-[9px] font-black text-accent uppercase animate-pulse">Suggested Benchmark</span>)}</div>
                 <div className="grid grid-cols-4 gap-2">
-                  <div className="col-span-3 relative"><Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 rounded-sm h-10 text-right font-bold", noSpinners)} type="number" placeholder={suggestedMonthlyLocal > 0 ? `${Math.round(suggestedMonthlyLocal)}` : "0"} value={offeredSalary} onChange={(e) => setOfferedSalary(e.target.value)} /></div>
-                  <Select value={currency} disabled><SelectTrigger className="bg-background/50 border-white/10 h-10 rounded-sm opacity-100"><SelectValue /></SelectTrigger><SelectContent className="glass">{ORDERED_CURRENCIES.map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}</SelectContent></Select>
+                  <div className="col-span-3 relative"><Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 rounded-sm h-10 text-right font-bold text-white", noSpinners)} type="number" placeholder={suggestedMonthlyLocal > 0 ? `${Math.round(suggestedMonthlyLocal)}` : "0"} value={offeredSalary} onChange={(e) => setOfferedSalary(e.target.value)} /></div>
+                  <Select value={currency} disabled><SelectTrigger className="bg-background/50 border-white/10 h-10 rounded-sm opacity-100 text-white font-bold"><SelectValue /></SelectTrigger><SelectContent className="glass">{ORDERED_CURRENCIES.map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}</SelectContent></Select>
                 </div>
               </div>
-              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibilities Allowance (Monthly)</Label><div className="relative"><Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} type="number" placeholder="0" value={responsibilityAllowance} onChange={(e) => setResponsibilityAllowance(e.target.value)} /></div></div>
-              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Partner Monthly Salary</Label><div className="relative"><Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} type="number" placeholder="0" value={partnerSalary} onChange={(e) => setPartnerSalary(e.target.value)} /></div></div>
+              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Responsibilities Allowance (Monthly)</Label><div className="relative"><Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="0" value={responsibilityAllowance} onChange={(e) => setResponsibilityAllowance(e.target.value)} /></div></div>
+              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Partner Monthly Salary</Label><div className="relative"><Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="0" value={partnerSalary} onChange={(e) => setPartnerSalary(e.target.value)} /></div></div>
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-bold text-primary/70 uppercase">Student Loan Repayment (Monthly)</Label>
@@ -588,16 +412,16 @@ function ContractDecoderContent() {
                     <button onClick={() => window.open('/calculators/student-loan', 'StudentLoanCalc', 'width=400,height=650')} className="text-[9px] text-primary hover:underline flex items-center gap-1 font-bold">Calculator <Calculator className="size-2" /></button>
                   </div>
                 </div>
-                <div className="relative"><GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} type="number" placeholder="0" value={studentLoan} onChange={(e) => setStudentLoan(e.target.value)} /></div>
+                <div className="relative"><GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="0" value={studentLoan} onChange={(e) => setStudentLoan(e.target.value)} /></div>
               </div>
-              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Contingency Buffer (Monthly)</Label><div className="relative"><Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} type="number" placeholder="200" value={contingency} onChange={(e) => setContingency(e.target.value)} /></div></div>
+              <div className="space-y-2"><Label className="text-[10px] font-bold text-primary/70 uppercase">Contingency Buffer (Monthly)</Label><div className="relative"><Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="200" value={contingency} onChange={(e) => setContingency(e.target.value)} /></div></div>
             </CardContent>
           </Card>
         </div>
 
         <div className="lg:col-span-2 space-y-6">
           {!selectedSchool ? (
-            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20"><LineChart className="w-12 h-12 mb-4 opacity-20" /><p className="stamped-dossier text-sm">Select a school dossier to initialise the decoder.</p></div>
+            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm py-24 text-muted-foreground bg-card/20"><LineChart className="w-12 h-12 mb-4 opacity-20" /><p className="stamped-dossier text-sm text-white/50">Select a school dossier to initialise the decoder.</p></div>
           ) : (
             <>
               <div className="grid md:grid-cols-2 gap-6">
@@ -610,7 +434,6 @@ function ContractDecoderContent() {
                     <div className="flex justify-between items-center py-2 border-b border-white/5"><div className="flex items-center gap-2"><Home className="size-3 text-sky-400" /><span className="text-sm text-muted-foreground font-medium">Housing Arrangement</span></div><span className="text-sm font-bold text-white">{selectedSchool.intel.housing.provided ? "School Provided" : "Teacher Pays"}</span></div>
                     <div className="pt-4 mt-2 border-t border-white/5 space-y-2">
                         <Dialog><DialogTrigger asChild><button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-accent/5 hover:bg-accent/10 border border-accent/20 transition-all group"><div className="flex items-center gap-2"><Calculator className="size-3.5 text-accent group-hover:animate-pulse" /><span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-accent">Global Tax Engine</span></div><Info className="size-3 text-muted-foreground group-hover:text-accent" /></button></DialogTrigger><DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto glass border-white/10 shadow-2xl"><DialogHeader><DialogTitle className="stamped-dossier text-white text-xl">Worldwide Salary Tax Calculator</DialogTitle><DialogDescription className="text-muted-foreground text-xs leading-relaxed">Estimate regional tax signatures and mandatory deductions across major international teaching territories.</DialogDescription></DialogHeader><div className="mt-6 pt-6 border-t border-white/5"><TaxCalculatorSection /></div></DialogContent></Dialog>
-                        <Dialog><DialogTrigger asChild><button className="w-full text-left flex items-center justify-between text-[11px] py-2 px-3 rounded-sm bg-primary/5 hover:bg-primary/10 border-primary/20 transition-all group"><div className="flex items-center gap-2"><ArrowRightLeft className="size-3.5 text-primary group-hover:animate-pulse" /><span className="text-muted-foreground font-bold uppercase tracking-widest group-hover:text-primary">Currency Converter</span></div><Info className="size-3 text-muted-foreground group-hover:text-primary" /></button></DialogTrigger><DialogContent className="max-w-md glass border-white/10 shadow-2xl"><DialogHeader><DialogTitle className="stamped-dossier text-white text-xl">Tactical Currency Converter</DialogTitle><DialogDescription className="text-muted-foreground text-xs leading-relaxed">Perform quick-action exchange simulations using benchmark global rates.</DialogDescription></DialogHeader><div className="mt-6 pt-6 border-t border-white/5"><CurrencyConverterSection /></div></DialogContent></Dialog>
                     </div>
                   </CardContent>
                 </Card>
@@ -625,7 +448,7 @@ function ContractDecoderContent() {
                     <DecodedItem icon={<Wifi className="size-3 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
                     <InteractiveCostItem icon={<Globe className="size-3 text-blue-400" />} label="Home Country Commitment" value={homeCountryCommitment} currency={currency} onChange={setHomeCountryCommitment} />
                     {decodedCosts?.manualStudentLoan ? (<DecodedItem icon={<GraduationCap className="size-3 text-emerald-400" />} label="Student loan" value={decodedCosts.manualStudentLoan} currency={currency} />) : null}
-                    <InteractiveCostItem icon={<Milestone className="size-3 text-purple-400" />} label="Contingency Fund" value={contingency} currency={currency} onChange={setContingency} />
+                    <InteractiveCostItem icon={<Milestone className="size-3 text-purple-400" />} label="Contingency Buffer" value={contingency} currency={currency} onChange={setContingency} />
                     <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-white">Burn Rate</span><span className="text-xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span></div>
                   </CardContent>
                 </Card>
@@ -652,7 +475,7 @@ export default function EvaluatePage() {
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract Decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed">LeopardfishIntel analysis of your potential contract.<br />We strip away recruitment facade to reveal the true financial reality of your move.</p>
       </div>
-      <div className="flex justify-end mb-8 print:hidden"><Button onClick={() => window.print()} variant="outline" size="sm" className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px]"><Printer className="mr-2 size-3" /> Print Intel Report (PDF)</Button></div>
+      <div className="flex justify-end mb-8 print:hidden"><Button onClick={() => window.print()} variant="outline" size="sm" className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px] rounded-sm"><Printer className="mr-2 size-3" /> Print Intel Report (PDF)</Button></div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
     </div>
   );

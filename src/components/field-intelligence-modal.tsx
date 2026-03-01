@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -40,11 +41,9 @@ export function FieldIntelligenceModal() {
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Disambiguation states
   const [isValidating, setIsValidating] = useState(false);
   const [validationStatus, setValidationStatus] = useState('');
 
-  // Success/Destruct States
   const [isDestructing, setIsDestructing] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [isSmoked, setIsSmoked] = useState(false);
@@ -146,19 +145,19 @@ export function FieldIntelligenceModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className={cn(
-        "sm:max-w-[550px] glass bg-background/95 border-primary/30 text-foreground transition-all duration-500",
+        "sm:max-w-[550px] glass bg-background/95 border-primary/30 text-white transition-all duration-500",
         isSmoked && "animate-smoke"
       )}>
         {isScanning ? (
           <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
             <Loader2 className="size-12 text-primary animate-spin" />
-            <DialogTitle className="text-xl font-bold text-primary">Establishing Secure Uplink...</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-primary uppercase tracking-widest">Establishing Secure Uplink...</DialogTitle>
           </div>
         ) : isDestructing ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
             <DialogTitle className="text-2xl font-black stamped-dossier text-primary">TRANSMISSION COMPLETE</DialogTitle>
-            <p className="text-white font-black text-xl">SELF-DESTRUCT IN {countdown}...</p>
+            <p className="text-white font-black text-xl uppercase">SELF-DESTRUCT IN {countdown}...</p>
           </div>
         ) : (
           <>
@@ -167,17 +166,17 @@ export function FieldIntelligenceModal() {
                 Field Report
               </DialogTitle>
               <DialogDescription asChild>
-                <div className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-3">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
                   <div>
-                    <strong className="block mb-1 text-white uppercase tracking-tighter">Security & Anonymity Notice</strong>
+                    <strong className="block mb-1 text-white uppercase tracking-widest text-[10px] font-black">Security & Anonymity Notice</strong>
                     Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
                   </div>
                   
                   <div>
-                    <strong className="block mb-1 text-white uppercase tracking-tighter">Operational Protocols</strong>
+                    <strong className="block mb-1 text-white uppercase tracking-widest text-[10px] font-black">Operational Protocols</strong>
                     <ul className="mt-1 space-y-2">
-                      <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
-                      <li><span className="font-bold text-primary">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
+                      <li><span className="font-bold text-white">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
+                      <li><span className="font-bold text-white">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
                     </ul>
                   </div>
                 </div>
@@ -187,13 +186,13 @@ export function FieldIntelligenceModal() {
             <div className="space-y-4 py-4 max-h-[50vh] overflow-y-auto px-1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase">Location</Label>
-                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10" value={location} onChange={(e) => setLocation(e.target.value)} />
+                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Location</Label>
+                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold" value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 uppercase">Classification</Label>
+                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Classification</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-slate-950/50 border-white/10">
+                    <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold">
                       <SelectValue placeholder="Category..." />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -208,36 +207,26 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 uppercase">Organisation</Label>
-                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
-                {validationStatus && <p className="text-[9px] font-bold uppercase tracking-widest text-amber-500">{validationStatus}</p>}
+                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Organisation</Label>
+                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
+                {validationStatus && <p className="text-[9px] font-bold uppercase tracking-widest text-accent">{validationStatus}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase">Narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase flex items-center gap-2">
-                  <Binoculars className="size-3" /> Mission Briefing Summary
-                </Label>
-                <div className="p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
-                  <p className="text-white font-bold mb-1">Privacy Guarantee</p>
-                  <p>We do not trade teacher data. All transmissions are scrubbed of identifying metadata on submission.</p>
-                </div>
+                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Intel Narrative</Label>
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
-                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1" />
-                <Label htmlFor="consent" className="text-[10px] text-white font-bold uppercase tracking-tighter cursor-pointer">
+                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20" />
+                <Label htmlFor="consent" className="text-[10px] text-white/70 font-bold uppercase tracking-tighter cursor-pointer leading-tight">
                   I have redacted all PII and acknowledge the Operational Protocols.
                 </Label>
               </div>
             </div>
 
             <DialogFooter className="border-t border-white/5 pt-4">
-              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6">
+              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-sm py-6 shadow-lg shadow-primary/10">
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
                 Transmit Intel
               </Button>

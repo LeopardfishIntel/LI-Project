@@ -55,7 +55,7 @@ function UserNav() {
     if (!user) {
         return (
              <Link href="/login">
-                <Button variant="outline" size="sm" className="font-bold rounded-sm">
+                <Button variant="outline" size="sm" className="font-bold rounded-sm border-white/20 text-white hover:bg-white/5">
                     Login
                 </Button>
             </Link>
@@ -65,24 +65,24 @@ function UserNav() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10">
                     <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/20 text-primary font-bold">
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
                         </AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-                 <DropdownMenuItem asChild>
+            <DropdownMenuContent align="end" className="w-56 glass">
+                 <DropdownMenuItem asChild className="hover:bg-primary/10 hover:text-primary cursor-pointer">
                     <Link href="/profile">
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                <DropdownMenuSeparator className="bg-white/5" />
+                <DropdownMenuItem onClick={handleLogout} className="hover:bg-destructive/10 hover:text-destructive cursor-pointer">
                      <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                 </DropdownMenuItem>
@@ -114,9 +114,9 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <Binoculars className="size-6 text-primary" />
-            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter">
+          <Link href="/" className="flex items-center gap-2 group">
+            <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>
           </Link>
@@ -127,7 +127,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm",
+                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm uppercase tracking-tighter",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -151,7 +151,11 @@ export default function Header() {
                         <FormControl>
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm" />
+                            <Input 
+                              placeholder="Tactical Search..." 
+                              {...field} 
+                              className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50" 
+                            />
                           </div>
                         </FormControl>
                       </FormItem>
@@ -164,7 +168,7 @@ export default function Header() {
             <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
                             <Menu className="size-5" />
                         </Button>
                     </SheetTrigger>
@@ -174,7 +178,10 @@ export default function Header() {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="text-lg font-bold tracking-tighter hover:text-primary transition-colors"
+                                    className={cn(
+                                      "text-lg font-bold tracking-tighter transition-colors",
+                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
+                                    )}
                                 >
                                     {link.label}
                                 </Link>
