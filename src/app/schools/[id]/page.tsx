@@ -24,11 +24,14 @@ import {
   Gift,
   Clock,
   Laptop,
+  Loader2,
   ExternalLink,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const intelIcons = {
   salary: <DollarSign className="w-5 h-5 text-green-400" />,
@@ -54,6 +57,40 @@ const scoreColorClasses = {
   neutral: 'text-slate-400',
   bad: 'text-red-400',
 };
+
+const HealthInsuranceHelp = () => (
+    <div className="space-y-3">
+        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
+        <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
+            <Table>
+                <TableHeader className="bg-white/5">
+                    <TableRow className="hover:bg-transparent border-b-white/10">
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Tier</TableHead>
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">One word</TableHead>
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Best for...</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow className="hover:bg-transparent border-b-white/5">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Basic</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Essential</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
+                    </TableRow>
+                    <TableRow className="hover:bg-transparent border-b-white/5">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Balanced</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
+                    </TableRow>
+                    <TableRow className="hover:bg-transparent border-0">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Premium</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </div>
+    </div>
+);
 
 function SchoolProfileSkeleton() {
   return (
@@ -131,25 +168,25 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     { key: 'housing', label: 'Housing', value: school.intel.housing.value },
     {
       key: 'savingsPotential',
-      label: 'Savings Potential',
+      label: 'Savings potential',
       value: school.intel.savingsPotential.value,
       score: school.intel.savingsPotential.score,
     },
     {
       key: 'benefitsSummary',
-      label: 'Benefits Summary',
+      label: 'Benefits summary',
       value: school.intel.benefitsSummary,
     },
     {
       key: 'nonContactTime',
-      label: 'Non-Contact Time',
+      label: 'Non-contact time',
       value: school.intel.nonContactTime
         ? `${school.intel.nonContactTime}%`
         : undefined,
     },
     {
       key: 'technologyEcosystem',
-      label: 'Tech Ecosystem',
+      label: 'Tech ecosystem',
       value: school.intel.technologyEcosystem,
     },
     {
@@ -164,28 +201,28 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     },
     {
       key: 'studentTeacherRatio',
-      label: 'Student-Teacher Ratio',
+      label: 'Student-teacher ratio',
       value: school.intel.studentTeacherRatio,
     },
     {
       key: 'classSize',
-      label: 'Average Class Size',
+      label: 'Average class size',
       value: school.intel.classSize,
     },
     {
       key: 'healthInsurance',
-      label: 'Health Insurance',
+      label: 'Health insurance',
       value: school.intel.healthInsurance,
     },
-    { key: 'jobsPortal', label: 'Jobs Portal', value: school.intel.jobsPortal },
+    { key: 'jobsPortal', label: 'Jobs portal', value: school.intel.jobsPortal },
     {
       key: 'minQualifications',
-      label: 'Min. Qualifications',
+      label: 'Min. qualifications',
       value: school.intel.minQualifications,
     },
     {
       key: 'visaRestrictions',
-      label: 'Visa Restrictions',
+      label: 'Visa restrictions',
       value: school.intel.visaRestrictions,
     },
   ];
@@ -246,7 +283,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle>Core Intel</CardTitle>
+                <CardTitle>Core intel</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -257,9 +294,22 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                           {intelIcons[item.key as IntelKey]}
                         </div>
                         <div>
-                          <p className="font-semibold text-muted-foreground">
-                            {item.label}
-                          </p>
+                          {item.key === 'healthInsurance' ? (
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <button className="font-semibold text-muted-foreground border-b border-dotted border-muted-foreground/50 cursor-help hover:text-primary transition-colors text-left">
+                                        {item.label}
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80 glass border-primary/20" side="top">
+                                    <HealthInsuranceHelp />
+                                </PopoverContent>
+                            </Popover>
+                          ) : (
+                            <p className="font-semibold text-muted-foreground">
+                                {item.label}
+                            </p>
+                          )}
                           <div className="flex items-center gap-2">
                             <p
                               className={cn(

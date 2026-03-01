@@ -15,6 +15,8 @@ import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparis
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
@@ -67,13 +69,48 @@ const calculateMonthlyCost = (school: School): number => {
     );
 };
 
-const MetricRow = ({ label, value, result, format, icon, link }: {
+const HealthInsuranceHelp = () => (
+    <div className="space-y-3">
+        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
+        <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
+            <Table>
+                <TableHeader className="bg-white/5">
+                    <TableRow className="hover:bg-transparent border-b-white/10">
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Tier</TableHead>
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">One word</TableHead>
+                        <TableHead className="h-8 text-[9px] font-black uppercase text-white px-3">Best for...</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow className="hover:bg-transparent border-b-white/5">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Basic</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Essential</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
+                    </TableRow>
+                    <TableRow className="hover:bg-transparent border-b-white/5">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Balanced</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
+                    </TableRow>
+                    <TableRow className="hover:bg-transparent border-0">
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Premium</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
+        </div>
+    </div>
+);
+
+const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
     label: string;
     value: any;
     result: ComparisonResult;
     format?: (value: any) => string;
     icon: React.ReactNode;
     link?: { href: string; ariaLabel: string; };
+    helpContent?: React.ReactNode;
 }) => {
     const resultColor = (result: ComparisonResult) => {
         if (result === 'best') return 'text-green-400';
@@ -81,11 +118,26 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
         return 'text-primary-foreground';
     };
 
+    const labelContent = helpContent ? (
+        <Popover>
+            <PopoverTrigger asChild>
+                <button className="text-sm text-muted-foreground border-b border-dotted border-muted-foreground/50 cursor-help hover:text-primary transition-colors text-left">
+                    {label}
+                </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 glass border-primary/20" side="top">
+                {helpContent}
+            </PopoverContent>
+        </Popover>
+    ) : (
+        <span className="text-sm text-muted-foreground">{label}</span>
+    );
+
     return (
         <div className="flex justify-between items-center py-3 border-b border-white/5 last:border-0">
             <div className="flex items-center gap-2">
                 {icon}
-                <span className="text-sm text-muted-foreground">{label}</span>
+                {labelContent}
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
                 <span>{format ? format(value) : (value?.toString() || '—')}</span>
@@ -285,6 +337,7 @@ export default function ComparePage() {
                                 value={school.intel.healthInsurance} 
                                 result={'neutral'} 
                                 icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
+                                helpContent={<HealthInsuranceHelp />}
                             />
                         </div>
                          <div className="pt-6">
