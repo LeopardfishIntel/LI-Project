@@ -11,58 +11,39 @@ import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency, categorizeInsurance } from '@/lib/utils';
-import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
+import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2, Users2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
-const calculateMonthlyCost = (school: School): number => {
+const calculateMonthlyCost = (school: School, status: FamilyStatus): number => {
     const { costOfLiving, intel } = school;
-    
-    let adults = 1;
-    let children = 0;
+    const multiplier = getFamilyScalingMultiplier(status);
+    const { rent } = getRentForFamily(costOfLiving, status);
 
-    switch (teacherProfile.familyStatus) {
-        case 'Couple':
-            adults = 2;
-            children = 0;
-            break;
-        case 'Family (2+1)':
-            adults = 2;
-            children = 1;
-            break;
-        case 'Family (2+2)':
-            adults = 2;
-            children = 2;
-            break;
-        case 'Single':
-        default:
-            adults = 1;
-            children = 0;
-            break;
-    }
-
-    const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
-    const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
-    const mobileCost = (costOfLiving.mobile || 0) * adults;
-    const diningSocialCost = (costOfLiving.diningSocial || 0) * adults;
-    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children;
+    const foodCost = (costOfLiving.food || 0) * multiplier;
+    const transportCost = (costOfLiving.transport || 0) * multiplier;
+    const utilitiesCost = (costOfLiving.utilities || 0) * multiplier;
+    const internetCost = (costOfLiving.internet || 0);
+    const mobileCost = (costOfLiving.mobile || 0) * multiplier;
+    const diningSocialCost = (costOfLiving.diningSocial || 0) * multiplier;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * multiplier;
     
-    const rent1BR = costOfLiving.monthlyRent1BR || (costOfLiving as any).apartment || 0;
-    const apartmentCost = intel.housing.provided ? 0 : rent1BR;
+    const apartmentCost = intel.housing.provided ? 0 : rent;
 
     return (
       apartmentCost +
       foodCost +
       transportCost +
-      (costOfLiving.utilities || 0) +
-      (costOfLiving.internet || 0) +
+      utilitiesCost +
+      internetCost +
       mobileCost +
       diningSocialCost +
       (costOfLiving.vehicleInsuranceMaint || 0) +
@@ -152,6 +133,8 @@ function SchoolComparisonColumn({
     selectedIds, 
     netSalary, 
     onNetSalaryChange,
+    familyStatus,
+    onFamilyStatusChange,
     schools,
     comparisonResults
 }: {
@@ -161,6 +144,8 @@ function SchoolComparisonColumn({
     selectedIds: string[];
     netSalary: string;
     onNetSalaryChange: (value: string) => void;
+    familyStatus: FamilyStatus;
+    onFamilyStatusChange: (status: FamilyStatus) => void;
     schools: School[] | null;
     comparisonResults: Record<ComparisonMetric, ComparisonResult>;
 }) {
@@ -188,8 +173,15 @@ function SchoolComparisonColumn({
     const yourMonthlySavings = useMemo(() => {
         const parsedSalary = parseFloat(netSalary) || 0;
         if (parsedSalary <= 0) return null;
-        return (parsedSalary / 12) - calculateMonthlyCost(school);
-    }, [netSalary, school]);
+        return (parsedSalary / 12) - calculateMonthlyCost(school, familyStatus);
+    }, [netSalary, school, familyStatus]);
+
+    const familyLabel = {
+        single: 'Single',
+        couple: 'Couple',
+        family: 'Family 2+1',
+        family2: 'Family 2+2'
+    }[familyStatus];
 
     return (
         <div className="flex flex-col gap-4 items-center h-full">
@@ -208,22 +200,39 @@ function SchoolComparisonColumn({
                 </Select>
             </div>
 
-            <div className="w-full max-w-sm space-y-2">
-                <Label htmlFor={`net-salary-${index}`} className="text-sm font-bold text-muted-foreground">Offered net salary (annual)</Label>
-                <Input
-                    id={`net-salary-${index}`}
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={15}
-                    placeholder="e.g., 55000"
-                    value={netSalary}
-                    onChange={(e) => onNetSalaryChange(e.target.value)}
-                    className={cn(
-                        "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
-                        glowActive && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
-                    )}
-                />
+            <div className="w-full max-w-sm space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor={`net-salary-${index}`} className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Offered net salary (annual)</Label>
+                    <Input
+                        id={`net-salary-${index}`}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={15}
+                        placeholder="e.g., 55000"
+                        value={netSalary}
+                        onChange={(e) => onNetSalaryChange(e.target.value)}
+                        className={cn(
+                            "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
+                            glowActive && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
+                        )}
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
+                    <Select value={familyStatus} onValueChange={(v) => onFamilyStatusChange(v as FamilyStatus)}>
+                        <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-11 text-sm font-bold">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            <SelectItem value="single">Single</SelectItem>
+                            <SelectItem value="couple">Couple</SelectItem>
+                            <SelectItem value="family">Family 2+1</SelectItem>
+                            <SelectItem value="family2">Family 2+2</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full shadow-lg">
@@ -251,8 +260,8 @@ function SchoolComparisonColumn({
                                 icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                             />
                          <MetricRow
-                            label={`Est. costs (${teacherProfile.familyStatus})`}
-                            value={calculateMonthlyCost(school)}
+                            label={`Est. costs (${familyLabel})`}
+                            value={calculateMonthlyCost(school, familyStatus)}
                             result={comparisonResults.monthlyCost}
                             format={(v) => formatCurrency(v, 'USD')}
                             icon={<DollarSign className="w-4 h-4 text-red-400" />}
@@ -287,6 +296,7 @@ export default function ComparePage() {
     
     const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>([]);
     const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
+    const [familyStatuses, setFamilyStatuses] = useState<FamilyStatus[]>(['single', 'single', 'single']);
     
     useEffect(() => {
         if (firestore) {
@@ -332,8 +342,15 @@ export default function ComparePage() {
         newSalaries[index] = cleanedValue;
         setNetSalaries(newSalaries);
     };
+
+    const handleFamilyStatusChange = (index: number, status: FamilyStatus) => {
+        const newStatuses = [...familyStatuses];
+        newStatuses[index] = status;
+        setFamilyStatuses(newStatuses);
+    };
     
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
+        const status = familyStatuses[index];
         switch (metric) {
             case 'salary': {
                 const val = school.intel.salary.value || '';
@@ -351,11 +368,11 @@ export default function ComparePage() {
             case 'classSize':
                 return school.intel.classSize;
             case 'monthlyCost':
-                return calculateMonthlyCost(school);
+                return calculateMonthlyCost(school, status);
             case 'yourSavings':
                 const netSalaryValue = parseFloat(netSalaries[index]) || 0;
                 if (netSalaryValue <= 0) return -Infinity;
-                return (netSalaryValue / 12) - calculateMonthlyCost(school);
+                return (netSalaryValue / 12) - calculateMonthlyCost(school, status);
             default:
                 return 0;
         }
@@ -409,6 +426,8 @@ export default function ComparePage() {
                         selectedIds={selectedSchoolIds}
                         netSalary={netSalaries[index]}
                         onNetSalaryChange={(value) => handleNetSalaryChange(index, value)}
+                        familyStatus={familyStatuses[index]}
+                        onFamilyStatusChange={(status) => handleFamilyStatusChange(index, status)}
                         schools={schools}
                         comparisonResults={{
                             salary: salaryComp[index],
