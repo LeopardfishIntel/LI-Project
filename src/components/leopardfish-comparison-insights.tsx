@@ -33,7 +33,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                             <Sparkles className="w-8 h-8 text-primary" />
                         </div>
                         <h3 className="font-bold text-lg mb-2">Generate comparative analysis</h3>
-                        <p className="text-muted-foreground mb-6 text-sm max-w-lg leading-relaxed">
+                        <p className="text-muted-foreground mb-6 text-sm max-w-lg leading-relaxed font-medium">
                             Revealing hidden trade-offs, financial benchmarks, and the best tactical fit for your profile.
                         </p>
                         <Button onClick={handleFetchComparison} size="default" className="bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest px-8 rounded-sm">
@@ -73,14 +73,22 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                 <h3 className="font-bold text-lg tracking-tight">Final verdict</h3>
                             </div>
                              <Card className="bg-primary/5 border-primary/20 rounded-sm overflow-hidden shadow-none">
-                                <div className="p-4 md:p-6 space-y-4">
-                                    <div className="flex items-center gap-2 text-primary">
+                                <div className="p-4 md:p-6 space-y-6">
+                                    <div className="flex items-center gap-2 text-primary border-b border-white/5 pb-4">
                                         <CheckCircle2 className="size-5" />
                                         <span className="text-lg font-black uppercase tracking-tight">{result.comparison.bestFit.schoolName}</span>
                                     </div>
-                                    <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap font-medium">
-                                        {result.comparison.bestFit.reasoning}
-                                    </p>
+                                    
+                                    <div className="space-y-6">
+                                        {result.comparison.bestFit.verdictSections.map((section, idx) => (
+                                            <div key={idx} className="space-y-2">
+                                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">{section.heading}</h4>
+                                                <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                                                    {section.content}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </Card>
                         </div>
