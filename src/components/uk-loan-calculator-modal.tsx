@@ -16,9 +16,6 @@ import { GraduationCap, ShieldAlert, Globe } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-/**
- * 2025/26 uk student loan plan signatures
- */
 const PLAN_DATA: Record<string, { base: number; rate: number }> = {
   'Plan 1': { base: 26065, rate: 0.09 },
   'Plan 2': { base: 29385, rate: 0.09 },
@@ -27,9 +24,6 @@ const PLAN_DATA: Record<string, { base: number; rate: number }> = {
   'Postgraduate': { base: 21000, rate: 0.06 },
 };
 
-/**
- * Price level index (PLI) multipliers for overseas bands
- */
 const BAND_MULTIPLIERS: Record<string, number> = {
   'Band 1': 0.4,
   'Band 2': 0.6,
@@ -38,9 +32,6 @@ const BAND_MULTIPLIERS: Record<string, number> = {
   'Band 5': 1.2,
 };
 
-/**
- * Mapping of countries to SLC bands
- */
 const COUNTRY_CONFIG: Record<string, { band: string; currency: string }> = {
   'United Kingdom': { band: 'Band 4', currency: 'GBP' },
   'UAE': { band: 'Band 4', currency: 'AED' },
@@ -63,7 +54,7 @@ interface UkLoanCalculatorModalProps {
   onConfirm: (amountLocal: string) => void;
   selectedCountry?: string;
   localCurrency: string;
-  exchangeRate: number; // Local per 1 GBP
+  exchangeRate: number;
 }
 
 export function UkLoanCalculatorModal({ 
@@ -80,21 +71,14 @@ export function UkLoanCalculatorModal({
   const currentCountry = selectedCountry || 'United Kingdom';
   const config = COUNTRY_CONFIG[currentCountry] || { band: 'Band 3', currency: localCurrency };
   const plan = PLAN_DATA[selectedPlan];
-  
   const scaledThreshold = plan.base * BAND_MULTIPLIERS[config.band];
   
   const monthlyRepayment = useMemo(() => {
-    // 1. Convert local gross to GBP
-    const monthlyGrossGbp = (parseFloat(monthlyGrossLocal) || 0) / exchangeRate;
+    const monthlyGrossGbp = (parseFloat(monthlyGrossLocal) || 0) / (exchangeRate || 1);
     const annualGrossGbp = monthlyGrossGbp * 12;
-    
-    // 2. Calculate annual GBP repayment
     const annualRepaymentGbp = Math.max(0, (annualGrossGbp - scaledThreshold) * plan.rate);
     const monthlyRepaymentGbp = annualRepaymentGbp / 12;
-    
-    // 3. Convert back to local
-    const monthlyRepaymentLocal = monthlyRepaymentGbp * exchangeRate;
-    
+    const monthlyRepaymentLocal = monthlyRepaymentGbp * (exchangeRate || 1);
     return { gbp: monthlyRepaymentGbp, local: monthlyRepaymentLocal };
   }, [monthlyGrossLocal, scaledThreshold, plan.rate, exchangeRate]);
 
@@ -116,7 +100,7 @@ export function UkLoanCalculatorModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto px-1 pr-3">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-sm font-bold text-primary/70">Loan plan type</Label>

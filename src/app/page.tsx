@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section - Compact & High Visibility */}
+      {/* Hero Section */}
       <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -90,8 +90,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tagline Section */}
-      <section className="pb-12 bg-background border-b border-white/5">
+      {/* Primary Tagline */}
+      <section className="pb-12 bg-background">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
               Teach overseas: know before you go
@@ -138,13 +138,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Provide Intel Section */}
+      {/* Provide Intel CTAs */}
       <section className="py-12 bg-primary/5 border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
             <div className="space-y-2">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">Global field intelligence</h2>
-              <p className="text-muted-foreground max-w-xl font-medium">Contribute to the collective mission. Submit anonymous field reports to verify school data and alert the community to emerging red flags.</p>
+              <p className="text-muted-foreground max-w-xl font-medium text-base">Contribute to the collective mission. Submit anonymous field reports to verify school data and alert the community to emerging red flags.</p>
             </div>
             <FieldIntelligenceTrigger />
           </div>

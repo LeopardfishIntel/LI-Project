@@ -12,19 +12,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { GraduationCap, ShieldAlert, Lock } from 'lucide-react';
+import { GraduationCap, ShieldAlert } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 
-/**
- * 2026 US Student Loan Repayment Specs (Indicative)
- * Based on Federal Student Aid IDR/SAVE/RAP protocols.
- */
 const US_CONFIG = {
-  feieLimit: 126000, // Foreign Earned Income Exclusion 2026 estimate
-  povertyLevel: 16000, // 2026 estimate for single person
-  discretionaryMultiplier: 2.25, // SAVE/RAP standard
-  repaymentRate: 0.10, // Standard IDR rate
+  feieLimit: 126000,
+  povertyLevel: 16000,
+  discretionaryMultiplier: 2.25,
+  repaymentRate: 0.10,
 };
 
 interface UsLoanCalculatorModalProps {
@@ -32,7 +28,7 @@ interface UsLoanCalculatorModalProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: (amountLocal: string) => void;
   localCurrency: string;
-  exchangeRate: number; // Local per 1 USD
+  exchangeRate: number;
 }
 
 export function UsLoanCalculatorModal({ 
@@ -46,20 +42,17 @@ export function UsLoanCalculatorModal({
   const [claimFeie, setClaimFeie] = useState(true);
   
   const results = useMemo(() => {
-    const monthlyGrossUsd = (parseFloat(monthlyGrossLocal) || 0) / exchangeRate;
+    const monthlyGrossUsd = (parseFloat(monthlyGrossLocal) || 0) / (exchangeRate || 1);
     const annualGrossUsd = monthlyGrossUsd * 12;
-    
     let agi = annualGrossUsd;
     if (claimFeie) {
       agi = Math.max(0, annualGrossUsd - US_CONFIG.feieLimit);
     }
-
     const discretionaryThreshold = US_CONFIG.povertyLevel * US_CONFIG.discretionaryMultiplier;
     const annualDiscretionary = Math.max(0, agi - discretionaryThreshold);
     const annualRepaymentUsd = annualDiscretionary * US_CONFIG.repaymentRate;
     const monthlyRepaymentUsd = annualRepaymentUsd / 12;
-    const monthlyRepaymentLocal = monthlyRepaymentUsd * exchangeRate;
-
+    const monthlyRepaymentLocal = monthlyRepaymentUsd * (exchangeRate || 1);
     return {
       usd: monthlyRepaymentUsd,
       local: monthlyRepaymentLocal,
@@ -77,7 +70,7 @@ export function UsLoanCalculatorModal({
       <DialogContent className="sm:max-w-[480px] glass bg-background/95 border-primary/30 text-white shadow-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-xl font-bold text-primary normal-case">
-            < GraduationCap className="size-6" />
+            <GraduationCap className="size-6" />
             Us student loan decoder
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-base leading-relaxed">
@@ -85,7 +78,7 @@ export function UsLoanCalculatorModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto px-1 pr-3">
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-4 bg-primary/5 border border-primary/20 rounded-sm">
               <Checkbox 
@@ -99,23 +92,22 @@ export function UsLoanCalculatorModal({
                   Claim foreign earned income exclusion (feie)
                 </Label>
                 <p className="text-sm text-muted-foreground leading-tight">
-                  Most us teachers abroad can exclude up to 126,000 usd from their agi, often resulting in a 0 usd monthly payment on idr plans.
+                  Most us teachers abroad can exclude up to 126,000 usd from their adjusted gross income, often resulting in a 0 usd monthly payment.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="space-y-3">
-            <Label htmlFor="us-monthly-gross" className="text-sm font-bold text-primary/70">Monthly gross household salary (local)</Label>
+            <Label htmlFor="us-monthly-gross" className="text-sm font-bold text-primary/70">Monthly gross household salary ({localCurrency})</Label>
             <div className="relative">
               <Input 
                 id="us-monthly-gross"
                 type="number"
                 value={monthlyGrossLocal}
                 onChange={(e) => setMonthlyGrossLocal(e.target.value)}
-                className="h-12 bg-slate-950/50 border-white/10 text-right font-black text-lg pr-16 focus:border-primary/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="h-12 bg-slate-950/50 border-white/10 text-right font-black text-lg pr-4 focus:border-primary/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">{localCurrency}</span>
             </div>
           </div>
 
@@ -140,7 +132,7 @@ export function UsLoanCalculatorModal({
           <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm flex items-start gap-3">
             <ShieldAlert className="size-4 text-destructive shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Calculations assume enrollment in a federal income-driven repayment (idr) plan like save or rap. Private loans do not qualify for feie offsets.
+              Calculations assume enrolment in a federal income-driven repayment (idr) plan. Private loans do not qualify for exclusion offsets.
             </p>
           </div>
         </div>
