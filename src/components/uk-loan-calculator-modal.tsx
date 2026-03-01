@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -110,9 +109,9 @@ export function UkLoanCalculatorModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-xl font-bold text-primary normal-case">
             <GraduationCap className="size-6" />
-            Uk overseas loan decoder
+            Uk student loan decoder
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
+          <DialogDescription className="text-muted-foreground text-base leading-relaxed">
             Configure your loan plan and apply 2025/26 regional threshold scaling.
           </DialogDescription>
         </DialogHeader>
@@ -144,13 +143,13 @@ export function UkLoanCalculatorModal({
             <div className="flex items-center gap-3">
               <Globe className="size-5 text-accent" />
               <div>
-                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Regional threshold</p>
-                <p className="text-sm font-bold text-white">{formatCurrency(scaledThreshold, 'GBP')} <span className="text-[11px] text-muted-foreground">(annual)</span></p>
+                <p className="text-xs font-bold text-muted-foreground tracking-widest">Regional threshold</p>
+                <p className="text-base font-bold text-white">{formatCurrency(scaledThreshold, 'GBP')} <span className="text-xs text-muted-foreground">(annual)</span></p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Repayment rate</p>
-              <p className="text-sm font-bold text-accent">{(plan.rate * 100).toFixed(0)}%</p>
+              <p className="text-xs font-bold text-muted-foreground tracking-widest">Repayment rate</p>
+              <p className="text-base font-bold text-accent">{(plan.rate * 100).toFixed(0)}%</p>
             </div>
           </div>
 
@@ -168,12 +167,12 @@ export function UkLoanCalculatorModal({
           </div>
 
           <div className="p-6 rounded-sm border-2 border-green-500/30 bg-green-500/5 text-center space-y-3 shadow-inner">
-            <h4 className="text-xs font-bold text-green-400 tracking-widest uppercase">Estimated monthly deduction</h4>
+            <h4 className="text-sm font-bold text-green-400 tracking-widest">Estimated monthly deduction</h4>
             <div className="space-y-1">
               <p className="text-5xl font-black text-white tracking-tighter">
                 {formatCurrency(monthlyRepayment.local, localCurrency)}
               </p>
-              <p className="text-sm font-bold text-muted-foreground/60">
+              <p className="text-base font-bold text-muted-foreground/60">
                 ≈ {formatCurrency(monthlyRepayment.gbp, 'GBP')}
               </p>
             </div>
@@ -182,14 +181,14 @@ export function UkLoanCalculatorModal({
           <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm flex items-start gap-3">
             <ShieldAlert className="size-4 text-destructive shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Repayments are calculated using current price level index (PLI) bands. If you do not provide employment evidence, the SLC will default you to a fixed-rate penalty significantly higher than these estimates.
+              Repayments are calculated using current price level index (PLI) bands. If you do not provide employment evidence, the slc will default you to a fixed-rate penalty significantly higher than these estimates.
             </p>
           </div>
         </div>
 
         <DialogFooter className="border-t border-white/5 pt-4">
-          <Button onClick={handleApply} className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-sm text-base">
-            Confirm and populate dossier
+          <Button onClick={handleApply} className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-sm text-lg">
+            Agree
           </Button>
         </DialogFooter>
       </DialogContent>
