@@ -95,9 +95,9 @@ export default function Home() {
       {/* Tagline Section */}
       <section className="pb-12 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-xs sm:text-sm font-black text-white tracking-[0.4em]">
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter">
               Teach overseas: know before you go
-            </p>
+            </h2>
         </div>
       </section>
 
