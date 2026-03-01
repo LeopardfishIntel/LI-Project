@@ -450,7 +450,10 @@ function ContractDecoderContent() {
         <UkLoanCalculatorModal 
           isOpen={isUkLoanModalOpen} 
           onOpenChange={setIsUkLoanModalOpen} 
+          onConfirm={(amount) => setStudentLoan(amount)}
           selectedCountry={selectedSchool?.country} 
+          localCurrency={currency}
+          exchangeRate={rate / CONVERSION_RATES['GBP']}
         />
         <UsLoanCalculatorModal 
           isOpen={isUsLoanModalOpen} 

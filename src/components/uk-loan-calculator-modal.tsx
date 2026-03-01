@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -12,12 +13,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { GraduationCap, ShieldAlert, Globe, Info, Calculator } from 'lucide-react';
+import { GraduationCap, ShieldAlert, Globe } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 /**
- * 2025/26 UK student loan plan signatures
+ * 2025/26 uk student loan plan signatures
  */
 const PLAN_DATA: Record<string, { base: number; rate: number }> = {
   'Plan 1': { base: 26065, rate: 0.09 },
@@ -39,49 +40,69 @@ const BAND_MULTIPLIERS: Record<string, number> = {
 };
 
 /**
- * Mapping of countries to SLC bands and indicative exchange rates
+ * Mapping of countries to SLC bands
  */
-const COUNTRY_CONFIG: Record<string, { band: string; rateToGbp: number; currency: string }> = {
-  'United Kingdom': { band: 'Band 4', rateToGbp: 1, currency: 'GBP' },
-  'UAE': { band: 'Band 4', rateToGbp: 0.21, currency: 'AED' },
-  'USA': { band: 'Band 5', rateToGbp: 0.79, currency: 'USD' },
-  'Switzerland': { band: 'Band 5', rateToGbp: 0.88, currency: 'CHF' },
-  'Singapore': { band: 'Band 4', rateToGbp: 0.59, currency: 'SGD' },
-  'Japan': { band: 'Band 3', rateToGbp: 0.0052, currency: 'JPY' },
-  'South Korea': { band: 'Band 3', rateToGbp: 0.00058, currency: 'KRW' },
-  'Thailand': { band: 'Band 1', rateToGbp: 0.022, currency: 'THB' },
-  'Vietnam': { band: 'Band 1', rateToGbp: 0.000031, currency: 'VND' },
-  'China': { band: 'Band 2', rateToGbp: 0.11, currency: 'CNY' },
-  'Netherlands': { band: 'Band 3', rateToGbp: 0.84, currency: 'EUR' },
-  'Spain': { band: 'Band 3', rateToGbp: 0.84, currency: 'EUR' },
-  'Italy': { band: 'Band 3', rateToGbp: 0.84, currency: 'EUR' },
+const COUNTRY_CONFIG: Record<string, { band: string; currency: string }> = {
+  'United Kingdom': { band: 'Band 4', currency: 'GBP' },
+  'UAE': { band: 'Band 4', currency: 'AED' },
+  'USA': { band: 'Band 5', currency: 'USD' },
+  'Switzerland': { band: 'Band 5', currency: 'CHF' },
+  'Singapore': { band: 'Band 4', currency: 'SGD' },
+  'Japan': { band: 'Band 3', currency: 'JPY' },
+  'South Korea': { band: 'Band 3', currency: 'KRW' },
+  'Thailand': { band: 'Band 1', currency: 'THB' },
+  'Vietnam': { band: 'Band 1', currency: 'VND' },
+  'China': { band: 'Band 2', currency: 'CNY' },
+  'Netherlands': { band: 'Band 3', currency: 'EUR' },
+  'Spain': { band: 'Band 3', currency: 'EUR' },
+  'Italy': { band: 'Band 3', currency: 'EUR' },
 };
 
 interface UkLoanCalculatorModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onConfirm: (amountLocal: string) => void;
   selectedCountry?: string;
+  localCurrency: string;
+  exchangeRate: number; // Local per 1 GBP
 }
 
-export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }: UkLoanCalculatorModalProps) {
+export function UkLoanCalculatorModal({ 
+  isOpen, 
+  onOpenChange, 
+  onConfirm, 
+  selectedCountry, 
+  localCurrency,
+  exchangeRate 
+}: UkLoanCalculatorModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<string>('Plan 2');
   const [monthlyGrossLocal, setMonthlyGrossLocal] = useState<string>('5000');
   
   const currentCountry = selectedCountry || 'United Kingdom';
-  const config = COUNTRY_CONFIG[currentCountry] || { band: 'Band 3', rateToGbp: 0.75, currency: 'USD' };
+  const config = COUNTRY_CONFIG[currentCountry] || { band: 'Band 3', currency: localCurrency };
   const plan = PLAN_DATA[selectedPlan];
   
   const scaledThreshold = plan.base * BAND_MULTIPLIERS[config.band];
   
   const monthlyRepayment = useMemo(() => {
-    const monthlyGrossGbp = (parseFloat(monthlyGrossLocal) || 0) * config.rateToGbp;
+    // 1. Convert local gross to GBP
+    const monthlyGrossGbp = (parseFloat(monthlyGrossLocal) || 0) / exchangeRate;
     const annualGrossGbp = monthlyGrossGbp * 12;
+    
+    // 2. Calculate annual GBP repayment
     const annualRepaymentGbp = Math.max(0, (annualGrossGbp - scaledThreshold) * plan.rate);
     const monthlyRepaymentGbp = annualRepaymentGbp / 12;
-    const monthlyRepaymentLocal = monthlyRepaymentGbp / config.rateToGbp;
+    
+    // 3. Convert back to local
+    const monthlyRepaymentLocal = monthlyRepaymentGbp * exchangeRate;
     
     return { gbp: monthlyRepaymentGbp, local: monthlyRepaymentLocal };
-  }, [monthlyGrossLocal, scaledThreshold, plan.rate, config.rateToGbp]);
+  }, [monthlyGrossLocal, scaledThreshold, plan.rate, exchangeRate]);
+
+  const handleApply = () => {
+    onConfirm(Math.round(monthlyRepayment.local).toString());
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -89,7 +110,7 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-xl font-bold text-primary normal-case">
             <GraduationCap className="size-6" />
-            UK overseas loan decoder
+            Uk overseas loan decoder
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
             Configure your loan plan and apply 2025/26 regional threshold scaling.
@@ -99,9 +120,9 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
         <div className="space-y-6 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-primary/70">Loan plan type</Label>
+              <Label className="text-sm font-bold text-primary/70">Loan plan type</Label>
               <Select value={selectedPlan} onValueChange={setSelectedPlan}>
-                <SelectTrigger className="bg-slate-950/50 border-white/10 h-10">
+                <SelectTrigger className="bg-slate-950/50 border-white/10 h-11 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="glass">
@@ -112,8 +133,8 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-primary/70">Mission region</Label>
-              <div className="h-10 flex items-center px-3 bg-primary/5 border border-primary/20 rounded-sm">
+              <Label className="text-sm font-bold text-primary/70">Mission region</Label>
+              <div className="h-11 flex items-center px-3 bg-primary/5 border border-primary/20 rounded-sm">
                 <span className="text-sm font-bold truncate">{currentCountry}</span>
               </div>
             </div>
@@ -123,27 +144,26 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
             <div className="flex items-center gap-3">
               <Globe className="size-5 text-accent" />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Regional threshold</p>
-                <p className="text-sm font-bold text-white">{formatCurrency(scaledThreshold, 'GBP')} <span className="text-[10px] text-muted-foreground">(Annual)</span></p>
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Regional threshold</p>
+                <p className="text-sm font-bold text-white">{formatCurrency(scaledThreshold, 'GBP')} <span className="text-[11px] text-muted-foreground">(annual)</span></p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Repayment rate</p>
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Repayment rate</p>
               <p className="text-sm font-bold text-accent">{(plan.rate * 100).toFixed(0)}%</p>
             </div>
           </div>
 
           <div className="space-y-3">
-            <Label htmlFor="monthly-gross" className="text-sm font-bold text-primary/70">Monthly gross household salary (local)</Label>
+            <Label htmlFor="monthly-gross" className="text-sm font-bold text-primary/70">Monthly gross household salary ({localCurrency})</Label>
             <div className="relative">
               <Input 
                 id="monthly-gross"
                 type="number"
                 value={monthlyGrossLocal}
                 onChange={(e) => setMonthlyGrossLocal(e.target.value)}
-                className="h-12 bg-slate-950/50 border-white/10 text-right font-black text-lg pr-16 focus:border-primary/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="h-12 bg-slate-950/50 border-white/10 text-right font-bold text-lg pr-4 focus:border-primary/50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">{config.currency}</span>
             </div>
           </div>
 
@@ -151,7 +171,7 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
             <h4 className="text-xs font-bold text-green-400 tracking-widest uppercase">Estimated monthly deduction</h4>
             <div className="space-y-1">
               <p className="text-5xl font-black text-white tracking-tighter">
-                {formatCurrency(monthlyRepayment.local, config.currency)}
+                {formatCurrency(monthlyRepayment.local, localCurrency)}
               </p>
               <p className="text-sm font-bold text-muted-foreground/60">
                 ≈ {formatCurrency(monthlyRepayment.gbp, 'GBP')}
@@ -161,15 +181,15 @@ export function UkLoanCalculatorModal({ isOpen, onOpenChange, selectedCountry }:
 
           <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm flex items-start gap-3">
             <ShieldAlert className="size-4 text-destructive shrink-0 mt-0.5" />
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Repayments are calculated using current price level index (PLI) bands. If you do not provide employment evidence, the SLC will default you to a fixed-rate penalty significantly higher than these estimates.
             </p>
           </div>
         </div>
 
         <DialogFooter className="border-t border-white/5 pt-4">
-          <Button onClick={() => onOpenChange(false)} className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-sm text-base">
-            Confirm and close dossier
+          <Button onClick={handleApply} className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-sm text-base">
+            Confirm and populate dossier
           </Button>
         </DialogFooter>
       </DialogContent>
