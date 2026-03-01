@@ -37,6 +37,7 @@ const calculateMonthlyCost = (school: School, status: FamilyStatus): number => {
     const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * multiplier;
     
     const apartmentCost = intel.housing.provided ? 0 : rent;
+    const contingencyBuffer = 200; // Matches Evaluate page default protocol
 
     return (
       apartmentCost +
@@ -47,7 +48,8 @@ const calculateMonthlyCost = (school: School, status: FamilyStatus): number => {
       mobileCost +
       diningSocialCost +
       (costOfLiving.vehicleInsuranceMaint || 0) +
-      uncoveredMedicalCost
+      uncoveredMedicalCost +
+      contingencyBuffer
     );
 };
 
@@ -247,7 +249,7 @@ function SchoolComparisonColumn({
                          <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                          <MetricRow
-                                label="Your est. monthly savings"
+                                label="True net savings"
                                 value={yourMonthlySavings !== null ? yourMonthlySavings : null}
                                 result={comparisonResults.yourSavings}
                                 format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
