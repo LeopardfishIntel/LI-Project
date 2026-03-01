@@ -40,7 +40,7 @@ export default function Footer() {
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-3 items-center md:items-end">
-                    <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Contact Command</Link>
+                    <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Contact</Link>
                     <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Data Admin</Link>
                     <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors">Terms of Service</Link>
                     <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors">Privacy Policy</Link>
