@@ -53,6 +53,34 @@ const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number =
     );
 };
 
+const convertSalaryRange = (rangeStr: string, rate: number, targetCurrency: string) => {
+    const matches = rangeStr.match(/\d+/g);
+    if (!matches) return rangeStr;
+    
+    const scale = rangeStr.toLowerCase().includes('k') ? 1000 : 1;
+    
+    const convertedNumbers = matches.map(m => {
+        const num = parseFloat(m) * scale;
+        return num * rate;
+    });
+
+    const formatNum = (num: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'decimal',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(num);
+    };
+
+    if (convertedNumbers.length === 2) {
+        return `${formatNum(convertedNumbers[0])} - ${formatNum(convertedNumbers[1])} ${targetCurrency}`;
+    }
+    if (convertedNumbers.length === 1) {
+        return `${formatNum(convertedNumbers[0])} ${targetCurrency}`;
+    }
+    return rangeStr;
+};
+
 const HealthInsuranceHelp = () => (
     <div className="space-y-3 p-1 text-left">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
@@ -266,7 +294,13 @@ function SchoolComparisonColumn({
                 </Link>
                 <CardContent className="p-4 md:p-6 pt-0 flex-grow">
                     <div className="space-y-0 border-b border-white/5 mb-6">
-                         <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                         <MetricRow 
+                            label="Salary range" 
+                            value={school.intel.salary.value} 
+                            result={comparisonResults.salary} 
+                            format={(v) => convertSalaryRange(v, rate, currency)}
+                            icon={<DollarSign className="w-4 h-4 text-green-400" />} 
+                        />
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                          
                          <MetricRow 
