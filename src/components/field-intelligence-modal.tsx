@@ -166,13 +166,24 @@ export function FieldIntelligenceModal() {
               <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
                 Field Report
               </DialogTitle>
-              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left">
-                <strong className="block mb-1">Security & Anonymity Notice</strong>
-                Your Anonymity is our first priority. All incoming intel is processed through a secure pipeline where it is analyzed and transformed by our team into actionable intelligence. To maintain the "blind" nature of this system, all transmissions undergo a mandatory scrub of identifying metadata immediately upon submission.
+              <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-3">
+                <div>
+                  <strong className="block mb-1 text-white uppercase tracking-tighter">Security & Anonymity Notice</strong>
+                  Your Anonymity is our first priority. All incoming intel is processed through a secure pipeline where it is analyzed and transformed by our team into actionable intelligence. To maintain the "blind" nature of this system, all transmissions undergo a mandatory scrub of identifying metadata immediately upon submission.
+                </div>
+                
+                <div>
+                  <strong className="block mb-1 text-white uppercase tracking-tighter">Operational Protocols</strong>
+                  To maintain the high standard required for actionable intelligence, all reports must adhere to these three pillars:
+                  <ul className="mt-1 space-y-2">
+                    <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts and chronological events. Avoid subjective interpretations or speculative motives.</li>
+                    <li><span className="font-bold text-primary">Redaction Mandatory:</span> Never share Personally Identifiable Information. Redact sensitive data in all attachments and text.</li>
+                  </ul>
+                </div>
               </DialogDescription>
             </DialogHeader>
             
-            <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto px-1">
+            <div className="space-y-4 py-4 max-h-[50vh] overflow-y-auto px-1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase">Location</Label>
@@ -203,18 +214,15 @@ export function FieldIntelligenceModal() {
 
               <div className="space-y-2">
                 <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase">Narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => intel === 'Enter data here...' ? setIntel('') : setIntel(e.target.value)} />
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase flex items-center gap-2">
-                  <ShieldCheck className="size-3" /> Security briefing
+                  <ShieldCheck className="size-3" /> Mission Briefing Summary
                 </Label>
                 <div className="p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
-                  <p className="text-white font-bold mb-2">Protocols</p>
-                  <p>1. Accuracy Over Emotion: Stick to verifiable facts.</p>
-                  <p>2. Redaction Mandatory: Never share Personally Identifiable Information., redact where appropriate and avoid personal naming.</p>
-                  <p className="mt-4 text-white font-bold mb-2">Privacy Disclaimer</p>
+                  <p className="text-white font-bold mb-1">Privacy Guarantee</p>
                   <p>We do not trade teacher data. All transmissions are scrubbed of identifying metadata on submission.</p>
                 </div>
               </div>
@@ -222,7 +230,7 @@ export function FieldIntelligenceModal() {
               <div className="flex items-start space-x-2 pt-2">
                 <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1" />
                 <Label htmlFor="consent" className="text-[10px] text-white font-bold uppercase tracking-tighter cursor-pointer">
-                  I have redacted all PII and acknowledge the Security Briefing.
+                  I have redacted all PII and acknowledge the Operational Protocols.
                 </Label>
               </div>
             </div>
