@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
@@ -54,7 +53,7 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-lg md:text-xl font-bold tracking-tighter text-primary-foreground">
+    <div ref={ref} className="text-xl md:text-2xl font-bold tracking-tighter text-primary-foreground">
       {format(count)}
     </div>
   );
@@ -85,39 +84,39 @@ export function KeyFactsSection() {
 
   const stats = [
     {
-      icon: <Building className="w-5 h-5 text-primary" />,
+      icon: <Building className="w-6 h-6 text-primary" />,
       endValue: schoolCount,
-      label: 'International Schools',
+      label: 'International schools',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <Globe className="w-5 h-5 text-primary" />,
+      icon: <Globe className="w-6 h-6 text-primary" />,
       endValue: countryCount,
       label: 'Countries',
       format: (val: number) => `${val}`,
     },
     {
-      icon: <Users className="w-5 h-5 text-primary" />,
+      icon: <Users className="w-6 h-6 text-primary" />,
       endValue: teacherCount,
-      label: 'Teachers Registered',
+      label: 'Teachers registered',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <BarChart3 className="w-5 h-5 text-primary" />,
+      icon: <BarChart3 className="w-6 h-6 text-primary" />,
       endValue: comparisonsMade,
-      label: 'Comparisons Made',
+      label: 'Comparisons made',
       format: (val: number) => val.toLocaleString('en-US'),
     },
   ];
   
   return (
-    <div className="w-full py-8 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+    <div className="w-full py-10 bg-black/30 backdrop-blur-md rounded-lg border border-white/10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
         {stats.map((stat, index) => (
           <div key={index} className="flex flex-col items-center">
             {stat.icon}
             <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-            <p className="text-sm text-muted-foreground">{stat.label}</p>
+            <p className="text-base text-muted-foreground">{stat.label}</p>
           </div>
         ))}
       </div>

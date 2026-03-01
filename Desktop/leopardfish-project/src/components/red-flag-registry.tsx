@@ -1,0 +1,56 @@
+import { ShieldAlert, AlertTriangle, TrendingDown, BookOpen, Wallet } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export function RedFlagRegistry() {
+  const flags = [
+    {
+      icon: <AlertTriangle className="w-6 h-6 text-destructive" />,
+      title: "The November trap",
+      desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their environment."
+    },
+    {
+      icon: <TrendingDown className="w-6 h-6 text-destructive" />,
+      title: "Currency fluctuation",
+      desc: "Identifying regions where salaries are paid in local currency without protection, risking major savings loss."
+    },
+    {
+      icon: <BookOpen className="w-6 h-6 text-destructive" />,
+      title: "The handbook clause",
+      desc: "Warning that signing a contract legally binds you to handbooks that can unilaterally change your duties."
+    },
+    {
+      icon: <Wallet className="w-6 h-6 text-destructive" />,
+      title: "Hidden deductions",
+      desc: "Breaking down the 'net' vs 'gross' discrepancy in regions where social security is omitted from offers."
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-black/40 border-t border-white/5">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex items-center gap-4 mb-12">
+          <ShieldAlert className="w-10 h-10 text-destructive" />
+          <div>
+            <h2 className="text-3xl md:text-4xl text-white">Red flag registry</h2>
+            <p className="text-muted-foreground text-xs font-black tracking-widest">Critical due diligence</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {flags.map((flag, i) => (
+            <Card key={i} className="bg-destructive/5 border-destructive/20 rounded-sm overflow-hidden">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2 text-white stamped-dossier">
+                  <span>🚩</span> {flag.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">{flag.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
