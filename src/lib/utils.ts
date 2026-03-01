@@ -26,11 +26,11 @@ export function formatCurrency(amount: number, currency = 'USD') {
 
 /**
  * Normalizes institutional health insurance data into three tactical categories.
- * Elite, Comprehensive, State.
+ * Elite, Comp, State.
  */
 export function categorizeInsurance(val: string | undefined): string {
   const low = val?.toLowerCase() || '';
   if (low.includes('premium') || low.includes('elite') || low.includes('top global')) return 'Elite';
   if (low.includes('state') || low.includes('national') || low.includes('public') || low.includes('emerg')) return 'State';
-  return 'Comprehensive';
+  return 'Comp';
 }

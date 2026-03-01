@@ -70,7 +70,7 @@ const HealthInsuranceHelp = () => (
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comp</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-0">
