@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -11,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency, categorizeInsurance } from '@/lib/utils';
-import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
+import { MapPin, DollarSign, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
@@ -51,32 +50,6 @@ const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number =
       uncoveredMedicalCost +
       contingencyBuffer
     );
-};
-
-const formatMedianSalary = (rangeStr: string, rate: number, targetCurrency: string) => {
-    const matches = rangeStr.match(/\d+/g);
-    if (!matches) return rangeStr;
-    
-    const scale = rangeStr.toLowerCase().includes('k') ? 1000 : 1;
-    
-    const convertedNumbers = matches.map(m => parseFloat(m) * scale * rate);
-
-    const formatNum = (num: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'decimal',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(num);
-    };
-
-    if (convertedNumbers.length >= 2) {
-        const median = (convertedNumbers[0] + convertedNumbers[1]) / 2;
-        return `${formatNum(median)} ${targetCurrency}`;
-    }
-    if (convertedNumbers.length === 1) {
-        return `${formatNum(convertedNumbers[0])} ${targetCurrency}`;
-    }
-    return rangeStr;
 };
 
 const HealthInsuranceHelp = () => (
@@ -293,15 +266,6 @@ function SchoolComparisonColumn({
                 <CardContent className="p-4 md:p-6 pt-0 flex-grow">
                     <div className="space-y-0 border-b border-white/5 mb-6">
                          <MetricRow 
-                            label="Median Salary" 
-                            value={school.intel.salary.value} 
-                            result={comparisonResults.salary} 
-                            format={(v) => formatMedianSalary(v, rate, currency)}
-                            icon={<DollarSign className="w-4 h-4 text-green-400" />} 
-                        />
-                         <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
-                         
-                         <MetricRow 
                             label="Total income" 
                             value={totalIncomeLocal} 
                             result={'best'} 
@@ -478,7 +442,6 @@ export default function ComparePage() {
                 const numbers = val.match(/\d+/g)?.map(Number);
                 if (!numbers) return 0;
                 const scale = val.toLowerCase().includes('k') ? 1000 : 1;
-                // For "Median Salary" comparison logic, we use the average of the range.
                 if (numbers.length >= 2) {
                     return ((numbers[0] + numbers[1]) / 2) * scale;
                 }
