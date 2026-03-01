@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -52,6 +53,7 @@ import {
   DialogDescription 
 } from '@/components/ui/dialog';
 import { UkLoanCalculatorModal } from '@/components/uk-loan-calculator-modal';
+import { UsLoanCalculatorModal } from '@/components/us-loan-calculator-modal';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -118,7 +120,9 @@ function ContractDecoderContent() {
 
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
+  
   const [isUkLoanModalOpen, setIsUkLoanModalOpen] = useState(false);
+  const [isUsLoanModalOpen, setIsUsLoanModalOpen] = useState(false);
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -280,7 +284,7 @@ function ContractDecoderContent() {
                       uk
                     </button>
                     <button 
-                      onClick={() => window.open('https://studentaid.gov/manage-loans/repayment/plans', 'USGov', 'width=1000,height=800')} 
+                      onClick={() => setIsUsLoanModalOpen(true)} 
                       className="hover:text-white transition-colors"
                     >
                       us
@@ -447,6 +451,13 @@ function ContractDecoderContent() {
           isOpen={isUkLoanModalOpen} 
           onOpenChange={setIsUkLoanModalOpen} 
           selectedCountry={selectedSchool?.country} 
+        />
+        <UsLoanCalculatorModal 
+          isOpen={isUsLoanModalOpen} 
+          onOpenChange={setIsUsLoanModalOpen} 
+          localCurrency={currency}
+          exchangeRate={rate}
+          onConfirm={(amount) => setStudentLoan(amount)}
         />
       </div>
   );
