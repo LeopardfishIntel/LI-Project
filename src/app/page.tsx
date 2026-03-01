@@ -77,7 +77,7 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
                 <Link href="/discover">Start Journey</Link>
               </Button>
               <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
@@ -124,7 +124,7 @@ export default function Home() {
                   <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
                   <h3 className="text-3xl md:text-5xl text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm" asChild>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-xs h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
                 </div>
