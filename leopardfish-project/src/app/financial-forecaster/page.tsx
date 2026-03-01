@@ -228,23 +228,6 @@ function calculateTax(income: number, country: string, filingStatus: 'single' | 
     return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
 };
 
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
-    return 0;
-};
-
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
@@ -478,7 +461,7 @@ function ContractDecoderContent() {
                 </Select>
               </div>
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
-                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.</div>
+                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs.</div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-end"><Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>{suggestedMonthlyLocal > 0 && !offeredSalary && (<span className="text-[9px] font-black text-accent uppercase animate-pulse">Suggested Benchmark</span>)}</div>
@@ -549,7 +532,7 @@ function ContractDecoderContent() {
                                 <span className="text-lg font-bold text-muted-foreground/50">/mo</span>
                             </div>
                         </div>
-                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your total household income and your estimated cost of living.</div>
+                        <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your household income and estimated cost of living.</div>
                         <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm transition-all shadow-[0_0_20px_rgba(249,115,22,0.2)]" asChild><Link href="/compare">Compare Offers</Link></Button>
                     </div>
                     
@@ -566,7 +549,6 @@ function ContractDecoderContent() {
 
                     <Separator className="bg-white/5" />
 
-                    {/* Tactical SWOT Verdict Module */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm stamped-dossier text-primary flex items-center gap-2">
@@ -636,7 +618,7 @@ function ContractDecoderContent() {
 
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 print:py-0 print:px-0">
+    <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center print:hidden">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract Decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed">LeopardfishIntel analysis of your potential contract.<br />We strip away recruitment facade to reveal the true financial reality of your move.</p>

@@ -30,8 +30,8 @@ export default function Footer() {
             </div>
 
              <div className="text-center md:text-right">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-6">Connect</h4>
-                 <div className="flex justify-center md:justify-end gap-4 mb-6">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-6">Contact</h4>
+                 <div className="flex justify-center md:justify-end gap-4 mb-4">
                      <Link href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" aria-label="LinkedIn profile" target="_blank" rel="noopener noreferrer" className="p-2 rounded-sm bg-white/5 hover:bg-primary/10 transition-colors group">
                         <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </Link>
