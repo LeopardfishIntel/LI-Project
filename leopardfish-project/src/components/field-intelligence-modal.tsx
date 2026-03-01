@@ -60,6 +60,7 @@ export function FieldIntelligenceModal() {
 
   useEffect(() => {
     const handleOpen = () => {
+      resetForm();
       setIsOpen(true);
       setIsScanning(true);
       setTimeout(() => setIsScanning(false), 1500);
@@ -169,7 +170,7 @@ export function FieldIntelligenceModal() {
                 <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
                   <div>
                     <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Security & Anonymity Notice</strong>
-                    Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
+                    Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
                   </div>
                   
                   <div>
@@ -187,12 +188,12 @@ export function FieldIntelligenceModal() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Location</Label>
-                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold" value={location} onChange={(e) => setLocation(e.target.value)} />
+                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Classification</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold">
+                    <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm">
                       <SelectValue placeholder="Category..." />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -208,17 +209,17 @@ export function FieldIntelligenceModal() {
 
               <div className="space-y-2">
                 <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Organisation</Label>
-                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
+                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
                 {validationStatus && <p className="text-[9px] font-bold uppercase tracking-widest text-accent">{validationStatus}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Intel Narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm rounded-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
-                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20" />
+                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:text-white" />
                 <Label htmlFor="consent" className="text-[10px] text-white/70 font-bold uppercase tracking-tighter cursor-pointer leading-tight">
                   I have redacted all PII and acknowledge the Operational Protocols.
                 </Label>
