@@ -9,9 +9,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, ShieldAlert, GraduationCap, Lock, Globe, ServerCrash } from 'lucide-react';
+import { 
+  Loader2, 
+  ShieldAlert, 
+  GraduationCap, 
+  Lock, 
+  Globe, 
+  ServerCrash, 
+  Info, 
+  ArrowRight,
+  HelpCircle
+} from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { calculateRepayment, type CalculationOutput } from './actions';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Link from 'next/link';
 
 export default function StudentLoanCalculator() {
   const [loanType, setLoanType] = useState<'UK' | 'US'>('UK');
@@ -42,8 +59,8 @@ export default function StudentLoanCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c18] text-[#f8fafc] p-6 font-sans flex items-center justify-center">
-      <div className="w-full max-w-[380px] space-y-6">
+    <div className="min-h-screen bg-[#080c18] text-[#f8fafc] p-6 font-sans flex flex-col items-center">
+      <div className="w-full max-w-[380px] space-y-6 flex-grow">
         <header className="flex flex-col items-center text-center space-y-2">
           <GraduationCap className="size-10 text-primary mb-2" />
           <h1 className="text-xl font-black uppercase tracking-widest stamped-dossier text-primary">Repayment Simulation</h1>
@@ -67,7 +84,7 @@ export default function StudentLoanCalculator() {
         <Card className="glass border-white/10 bg-transparent rounded-sm">
           <CardContent className="pt-6 space-y-5">
             <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-primary/70 tracking-widest">Local Annual Salary</Label>
+              <Label className="text-[10px] font-black uppercase text-primary/70 tracking-widest">Gross Annual Salary (Local)</Label>
               <div className="relative">
                 <Input 
                   type="number" 
@@ -125,12 +142,12 @@ export default function StudentLoanCalculator() {
                   <p className="text-[9px] text-muted-foreground uppercase font-bold leading-tight flex items-center gap-2">
                     <Lock className="size-3 text-destructive" /> IRS Safe Harbor Rule
                   </p>
-                  <p className="text-[9px] mt-1 text-muted-foreground italic">If FEIE is active, your adjusted gross income (AGI) is typically $0 for repayment purposes.</p>
+                  <p className="text-[9px] mt-1 text-muted-foreground italic">If FEIE is active, your adjusted gross income (AGI) is typically $0 for repayment purposes if below $126k.</p>
                 </div>
               </div>
             )}
 
-            <Button onClick={handleCalculate} disabled={loading} className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-sm shadow-lg shadow-primary/20">
+            <Button onClick={handleCalculate} disabled={loading} className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-sm shadow-lg shadow-primary/20 transition-all active:scale-95">
               {loading ? <Loader2 className="size-4 animate-spin" /> : "Transmit Pulse"}
             </Button>
           </CardContent>
@@ -159,7 +176,58 @@ export default function StudentLoanCalculator() {
           </Card>
         )}
 
-        <footer className="pt-4 border-t border-white/5 opacity-50">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="help" className="border-white/10">
+            <AccordionTrigger className="text-[10px] font-black uppercase tracking-widest text-primary/80 hover:no-underline">
+              <span className="flex items-center gap-2"><HelpCircle className="size-3" /> Need Help? Tactical Briefing</span>
+            </AccordionTrigger>
+            <AccordionContent className="text-[11px] text-muted-foreground space-y-4 pt-2">
+              <div>
+                <h4 className="text-white font-bold mb-1">How to Use This Estimator (2026/27 Update)</h4>
+                
+                <div className="space-y-3">
+                  <div className="border-l-2 border-primary/30 pl-3">
+                    <p className="text-white font-bold mb-1">🇬🇧 For UK Loan Holders:</p>
+                    <ul className="space-y-1 list-disc list-inside opacity-80">
+                      <li><span className="font-bold text-white/90">Plan 1:</span> Started uni between 1998 and 2012.</li>
+                      <li><span className="font-bold text-white/90">Plan 2:</span> Started uni between 2012 and 2023.</li>
+                      <li><span className="font-bold text-white/90">Plan 5:</span> Started uni after Sept 2023.</li>
+                      <li><span className="font-bold text-white/90">Postgrad (PGL):</span> Masters or Doctoral loans.</li>
+                    </ul>
+                    <p className="mt-2 leading-relaxed">Repayment thresholds change based on the <span className="text-white font-bold">Price Level Index (PLI)</span> of your country. The SLC updated these "Country Bands" on April 6, 2026, to reflect global inflation.</p>
+                  </div>
+
+                  <div className="border-l-2 border-accent/30 pl-3">
+                    <p className="text-white font-bold mb-1">🇺🇸 For US Loan Holders:</p>
+                    <ul className="space-y-1 list-disc list-inside opacity-80">
+                      <li><span className="font-bold text-white/90">FEIE Exclusion:</span> Citizens earning under $126,000 (2026 limit) usually qualify.</li>
+                      <li><span className="font-bold text-white/90">RAP/SAVE Plan:</span> If your Adjusted Gross Income (AGI) is $0 after the exclusion, your monthly payment is $0.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/5 p-3 rounded-sm border border-white/5">
+                <h4 className="text-white font-bold mb-1 flex items-center gap-2">
+                  <ShieldAlert className="size-3 text-primary" /> 2026 Critical Intel
+                </h4>
+                <p className="mb-2 italic">The "Evidence of Income" Rule: If you don't keep employment evidence updated with the SLC, they will default you to a Fixed Installment Rate, which is significantly higher than 9%.</p>
+                <p className="text-[10px] opacity-60">Disclaimer: This tool provides an estimate. Always verify final schedules via your official SLC or US Federal Student Aid portal.</p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        <div className="pt-4 pb-8">
+          <Button asChild variant="outline" className="w-full h-14 border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm group">
+            <Link href="/discover" target="_blank">
+              <span>Moving country? Find your next nook</span>
+              <ArrowRight className="ml-2 size-3 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
+        </div>
+
+        <footer className="pt-4 border-t border-white/5 opacity-50 pb-6">
           <div className="flex items-start gap-2">
             <ShieldAlert className="size-3 text-primary shrink-0 mt-0.5" />
             <p className="text-[8px] text-muted-foreground font-bold uppercase leading-normal tracking-tighter">
