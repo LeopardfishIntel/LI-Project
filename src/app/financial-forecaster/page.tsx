@@ -31,7 +31,8 @@ import {
   Plus, 
   Banknote, 
   Info,
-  Printer
+  Printer,
+  Milestone
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -71,7 +72,7 @@ const taxData: { [key: string]: any } = {
         childTaxCredit: 200000,
         filingStatuses: {
             single: { brackets: [{ upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 }, { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [{ upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 }, { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+            married: { brackets: [ { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 }, { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
         },
     },
     "Netherlands": {
@@ -124,8 +125,8 @@ const taxData: { [key: string]: any } = {
         socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
         childTaxCredit: 0,
         filingStatuses: {
-            single: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [{ upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
+            single: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
+            married: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
         },
     },
     "USA": {
@@ -179,6 +180,47 @@ const ORDERED_CURRENCIES = [
     .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
     .sort()
 ];
+
+function calculateTax(income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) {
+    const countryData = taxData[country];
+    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
+    
+    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
+    const brackets = filingStatuses[filingStatus].brackets;
+    
+    let socialSecurityContrib = 0;
+    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
+    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
+    if (socialSecurity.rate > 0) {
+        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
+    }
+
+    let incomeForTaxCalculation = income;
+    if (country === 'Italy' && applySpecialRegime && specialRegime) {
+        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
+    }
+
+    let incomeTaxBeforeCredit = 0;
+    let lastBracketUpto = 0;
+    for (const bracket of brackets) {
+        if (incomeForTaxCalculation > lastBracketUpto) {
+            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
+            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
+            lastBracketUpto = bracket.upto;
+        } else {
+            break;
+        }
+    }
+    
+    const taxCredit = (childTaxCredit || 0) * dependents;
+    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
+
+    const totalTax = incomeTax + socialSecurityContrib;
+    const netIncome = income - totalTax;
+    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
+
+    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
+};
 
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
