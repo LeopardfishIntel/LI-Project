@@ -228,6 +228,23 @@ function calculateTax(income: number, country: string, filingStatus: 'single' | 
     return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
 };
 
+const getAverageAnnualSalary = (salaryRange?: string): number => {
+    if (!salaryRange) return 0;
+    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
+    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
+    if (!numbers) return 0;
+    
+    const scale = cleanedRange.includes('k') ? 1000 : 1;
+    
+    if (numbers.length >= 2) {
+      return ((numbers[0] + numbers[1]) / 2) * scale;
+    }
+    if (numbers.length === 1) {
+      return numbers[0] * scale;
+    }
+    return 0;
+};
+
 function TaxCalculatorSection() {
     const [salary, setSalary] = useState('60000');
     const [country, setCountry] = useState('United Kingdom');
@@ -461,7 +478,7 @@ function ContractDecoderContent() {
                 </Select>
               </div>
               <div className="bg-destructive/10 border border-destructive/20 p-3 rounded-sm mt-4">
-                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs.</div>
+                <div className="text-[10px] text-primary-foreground/90 leading-relaxed font-medium"><span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5"><ShieldAlert className="size-3" /> Due Diligence</span>Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.</div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-end"><Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>{suggestedMonthlyLocal > 0 && !offeredSalary && (<span className="text-[9px] font-black text-accent uppercase animate-pulse">Suggested Benchmark</span>)}</div>
@@ -478,6 +495,8 @@ function ContractDecoderContent() {
                   <div className="flex gap-2 items-center">
                     <a href="https://www.gov.uk/government/publications/overseas-earnings-thresholds-for-plan-5-student-loans" target="_blank" rel="noopener noreferrer" className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold">UK <ExternalLink className="size-2" /></a>
                     <a href="https://studentaid.gov/manage-loans/repayment/plans" target="_blank" rel="noopener noreferrer" className="text-[9px] text-accent hover:underline flex items-center gap-1 font-bold">US <ExternalLink className="size-2" /></a>
+                    <Separator orientation="vertical" className="h-3 bg-white/20 mx-1" />
+                    <button onClick={() => window.open('/calculators/student-loan', 'StudentLoanCalc', 'width=400,height=650')} className="text-[9px] text-primary hover:underline flex items-center gap-1 font-bold">Calculator <Calculator className="size-2" /></button>
                   </div>
                 </div>
                 <div className="relative"><GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" /><Input className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold text-white", noSpinners)} type="number" placeholder="0" value={studentLoan} onChange={(e) => setStudentLoan(e.target.value)} /></div>

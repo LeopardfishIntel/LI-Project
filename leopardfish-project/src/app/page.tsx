@@ -1,4 +1,6 @@
 
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -71,7 +73,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
               <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
             </h1>
             <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
@@ -97,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-24">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-32">
             {steps.map((step, index) => (

@@ -169,7 +169,7 @@ export function FieldIntelligenceModal() {
                 <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
                   <div>
                     <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Security & Anonymity Notice</strong>
-                    Your anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
+                    Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
                   </div>
                   
                   <div>
