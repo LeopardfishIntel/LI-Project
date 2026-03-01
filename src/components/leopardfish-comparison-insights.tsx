@@ -7,7 +7,7 @@ import { getSchoolComparisonInsights } from '@/app/compare/actions';
 import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2 } from 'lucide-react';
+import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2, Building } from 'lucide-react';
 
 export function LeopardfishComparisonInsights({ schools }: { schools: School[] }) {
     const [result, setResult] = useState<{ comparison: AiSchoolComparisonOutput | null, error?: string } | null>(null);
