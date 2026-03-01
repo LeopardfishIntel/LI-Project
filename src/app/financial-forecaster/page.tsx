@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -61,8 +62,22 @@ const CONVERSION_RATES: Record<string, number> = {
   GBP: 0.78,
   EUR: 0.92,
   AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
   SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
+  CZK: 23.5,
   AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
 };
 
 const COUNTRY_TO_CURRENCY: Record<string, string> = {
@@ -74,6 +89,22 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   'United Kingdom': 'GBP',
   'Netherlands': 'EUR',
   'USA': 'USD',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Vietnam': 'VND',
+  'China': 'CNY',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Spain': 'EUR',
+  'Italy': 'EUR',
+  'Germany': 'EUR',
+  'France': 'EUR',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD',
 };
 
 const getAverageAnnualSalary = (salaryRange?: string): number => {
@@ -226,7 +257,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer ({currency})</Label>
                   {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
                 </div>
                 <div className="flex gap-2">
@@ -245,7 +276,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance (monthly)</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance ({currency})</Label>
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -259,7 +290,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Other income</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Other income ({currency})</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -274,7 +305,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment (monthly)</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment ({currency})</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
                     <button 
                       onClick={() => setIsUkLoanModalOpen(true)} 
@@ -309,7 +340,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer (monthly)</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer ({currency})</Label>
                 <div className="relative">
                   <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
