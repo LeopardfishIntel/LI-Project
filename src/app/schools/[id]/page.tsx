@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -28,7 +29,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
-import { cn } from '@/lib/utils';
+import { cn, categorizeInsurance } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
@@ -65,18 +66,15 @@ const HealthInsuranceHelp = () => (
             <Table>
                 <TableBody>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Top global</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Elite</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Good</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Standard</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-0">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Emerging</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Foundational</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">State</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
                     </TableRow>
                 </TableBody>
@@ -208,7 +206,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     {
       key: 'healthInsurance',
       label: 'Health insurance',
-      value: school.intel.healthInsurance,
+      value: categorizeInsurance(school.intel.healthInsurance),
     },
     { key: 'jobsPortal', label: 'Jobs portal', value: school.intel.jobsPortal },
     {

@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, categorizeInsurance } from '@/lib/utils';
 import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -77,18 +77,15 @@ const HealthInsuranceHelp = () => (
             <Table>
                 <TableBody>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Top global</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Elite</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Good</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Standard</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-0">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Emerging</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Foundational</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">State</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
                     </TableRow>
                 </TableBody>
@@ -137,7 +134,7 @@ const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
                 {labelContent}
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? format(value) : (value?.toString() || '—')}</span>
+                <span>{format ? format(value) : (value !== null ? value?.toString() : '—')}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
                         <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
@@ -263,7 +260,7 @@ function SchoolComparisonColumn({
                          <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                          <MetricRow 
                             label="Health insurance" 
-                            value={school.intel.healthInsurance} 
+                            value={categorizeInsurance(school.intel.healthInsurance)} 
                             result={'neutral'} 
                             icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
                             helpContent={<HealthInsuranceHelp />}
