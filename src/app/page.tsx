@@ -63,12 +63,12 @@ export default function Home() {
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-bold tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1.5 rounded text-primary text-xs font-bold tracking-widest animate-pulse">
+              <ShieldCheck className="w-4 h-4" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
@@ -77,10 +77,10 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg text-base" asChild>
                 <Link href="/discover">Start Journey</Link>
               </Button>
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg text-base" asChild>
                 <Link href="/compare">Compare Offers</Link>
               </Button>
             </div>
@@ -88,7 +88,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 border-b border-white/5 bg-background">
+      {/* Counter Row - No top gap */}
+      <section className="pt-0 pb-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
@@ -113,7 +114,7 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
                   <div className={cn(
-                    "absolute bottom-4 text-primary text-6xl opacity-10 font-black",
+                    "absolute bottom-4 text-primary text-7xl opacity-10 font-black",
                     index % 2 === 1 ? "right-4" : "left-4"
                   )}>{step.id}</div>
                 </div>
@@ -124,7 +125,7 @@ export default function Home() {
                   <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
                   <h3 className="text-3xl md:text-5xl text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-xs h-12 px-8 rounded-sm" asChild>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
                 </div>

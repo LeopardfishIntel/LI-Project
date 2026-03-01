@@ -1,4 +1,3 @@
-
 import type {Metadata} from 'next';
 import './globals.css';
 import { cn } from "@/lib/utils";
@@ -8,6 +7,7 @@ import Footer from '@/components/layout/footer';
 import { Providers } from './providers';
 import { FieldIntelligenceModal } from '@/components/field-intelligence-modal';
 import { FloatingIntelButton } from '@/components/floating-intel-button';
+import { AnalyticsTracker } from '@/components/analytics-tracker';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-montserrat' })
@@ -30,6 +30,7 @@ export default function RootLayout({
           montserrat.variable
         )}>
         <Providers>
+            <AnalyticsTracker />
             <div className="relative flex min-h-screen flex-col">
                 <Header />
                 <main className="flex-1">
