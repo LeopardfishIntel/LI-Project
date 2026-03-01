@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -24,7 +25,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
     return (
         <Card className="glass border-border w-full">
             <CardHeader className="text-center border-b border-white/5 py-4">
-                <CardTitle className="text-xl font-bold tracking-tight">Leopardfish comparative insights</CardTitle>
+                <CardTitle className="text-xl font-bold tracking-tight">Leopardfish comparative analysis</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col p-4 md:p-6">
                 {!loading && !result && (
@@ -32,7 +33,6 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                         <div className="p-3 bg-primary/10 rounded-full mb-4">
                             <Sparkles className="w-8 h-8 text-primary" />
                         </div>
-                        <h3 className="font-bold text-lg mb-2">Generate comparative analysis</h3>
                         <p className="text-muted-foreground mb-6 text-sm max-w-lg leading-relaxed font-medium">
                             Revealing hidden trade-offs, financial benchmarks, and the best tactical fit for your profile.
                         </p>
