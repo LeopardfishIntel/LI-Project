@@ -37,7 +37,7 @@ const calculateMonthlyCost = (school: School, status: FamilyStatus): number => {
     const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * multiplier;
     
     const apartmentCost = intel.housing.provided ? 0 : rent;
-    const contingencyBuffer = 200; // Matches Evaluate page default protocol
+    const contingencyBuffer = 200; // Standard Leopardfish Intel safety margin
 
     return (
       apartmentCost +
@@ -101,7 +101,7 @@ const MetricRow = ({ label, value, result, format, icon, helpContent }: {
                     {label}
                 </button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 glass border-primary/20" side="top">
+            <PopoverContent className="w-80 glass border-primary/20 shadow-2xl" side="top">
                 {helpContent}
             </PopoverContent>
         </Popover>
@@ -166,10 +166,10 @@ function SchoolComparisonColumn({
         return () => clearTimeout(timeout);
     }, [netSalary, timerStarted]);
 
-    const yourMonthlySavings = useMemo(() => {
+    const trueNetSavings = useMemo(() => {
         const parsedSalary = parseFloat(netSalary) || 0;
         if (parsedSalary <= 0) return null;
-        return (parsedSalary / 12) - calculateMonthlyCost(school, familyStatus);
+        return parsedSalary - calculateMonthlyCost(school, familyStatus);
     }, [netSalary, school, familyStatus]);
 
     const familyLabel = {
@@ -198,14 +198,14 @@ function SchoolComparisonColumn({
 
             <div className="w-full max-w-sm space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor={`net-salary-${index}`} className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Offered net salary (annual)</Label>
+                    <Label htmlFor={`net-salary-${index}`} className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Total net salary & benefits (monthly)</Label>
                     <Input
                         id={`net-salary-${index}`}
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
                         maxLength={15}
-                        placeholder="e.g., 55000"
+                        placeholder="e.g., 5000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
                         className={cn(
@@ -216,7 +216,7 @@ function SchoolComparisonColumn({
                 </div>
 
                 <div className="space-y-2">
-                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
+                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Family scaling</Label>
                     <Select value={familyStatus} onValueChange={(v) => onFamilyStatusChange(v as FamilyStatus)}>
                         <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-11 text-sm font-bold">
                             <SelectValue />
@@ -250,7 +250,7 @@ function SchoolComparisonColumn({
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                          <MetricRow
                                 label="True net savings"
-                                value={yourMonthlySavings !== null ? yourMonthlySavings : null}
+                                value={trueNetSavings !== null ? trueNetSavings : null}
                                 result={comparisonResults.yourSavings}
                                 format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
                                 icon={<PiggyBank className="w-4 h-4 text-green-500" />}
@@ -340,7 +340,7 @@ export default function ComparePage() {
     };
 
     const handleFamilyStatusChange = (index: number, status: FamilyStatus) => {
-        // Replicate selection across all dossiers for synchronized tactical analysis
+        // Synchronise household profile across all tactical dossiers
         setFamilyStatuses([status, status, status]);
     };
     
@@ -365,9 +365,9 @@ export default function ComparePage() {
             case 'monthlyCost':
                 return calculateMonthlyCost(school, status);
             case 'yourSavings':
-                const netSalaryValue = parseFloat(netSalaries[index]) || 0;
-                if (netSalaryValue <= 0) return -Infinity;
-                return (netSalaryValue / 12) - calculateMonthlyCost(school, status);
+                const monthlyIncome = parseFloat(netSalaries[index]) || 0;
+                if (monthlyIncome <= 0) return -Infinity;
+                return monthlyIncome - calculateMonthlyCost(school, status);
             default:
                 return 0;
         }
