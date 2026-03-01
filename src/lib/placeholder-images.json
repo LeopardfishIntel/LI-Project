@@ -27,7 +27,7 @@
     {
       "id": "seoul-foreign-school",
       "description": "Seoul Foreign School main entrance",
-      "imageUrl": "https://images.unsplash.com/photo-1501909991051-7c054658fde0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzY2hvb2wlMjBzZW91bHxlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1501909991051-7c054658fde0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZW91bHxlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school seoul"
     },
     {
@@ -39,8 +39,14 @@
     {
       "id": "acs-cobham-international-school",
       "description": "ACS Cobham International School campus",
-      "imageUrl": "https://images.unsplash.com/photo-1628775926522-40212d1b82e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpbmdsaXNoJTIwYm9hcmRpbmclMjBzY2hvb2x8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1628775926522-40212d1b82e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmdsaXNoJTIwYm9hcmRpbmclMjBzY2hvb2x8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "english school campus"
+    },
+    {
+      "id": "english-college-prague",
+      "description": "English College Prague main building",
+      "imageUrl": "https://images.unsplash.com/photo-1541343672885-9be56236302a?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "prague architecture"
     },
     {
       "id": "discover-step",

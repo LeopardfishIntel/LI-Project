@@ -1,3 +1,4 @@
+
 import type { School, TeacherProfile } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
@@ -212,5 +213,31 @@ export const schools: School[] = [
       technologyEcosystem: 'Google Workspace, limited BYOD policy'
     },
     costOfLiving: { monthlyRent1BR: 2200, monthlyRent2BR: 2860, monthlyRent3BR: 3520, food: 600, transport: 150, utilities: 250, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
+  },
+  {
+    id: 'english-college-prague',
+    name: 'English College Prague',
+    description: 'A prestigious British-style international school in the heart of Prague, dedicated to academic excellence and the development of global citizens through the IB curriculum.',
+    websiteUrl: 'https://www.englishcollege.cz',
+    location: 'Prague',
+    country: 'Czech Republic',
+    ...getImage('english-college-prague'),
+    intel: {
+      salary: { value: '$40k - $55k', score: 'neutral' },
+      housing: { value: 'Allowance', provided: false },
+      savingsPotential: { value: 'Moderate', score: 'neutral' },
+      curriculum: 'IB',
+      studentTeacherRatio: '10:1',
+      classSize: 18,
+      healthInsurance: 'Comprehensive',
+      accreditation: 'HMC, IBO',
+      jobsPortal: 'School Website, TES',
+      minQualifications: 'QTS + 2 Yrs Exp',
+      visaRestrictions: 'EU preferred, but sponsorship available',
+      benefitsSummary: 'Flight allowance, relocation support, pension contribution.',
+      nonContactTime: 22,
+      technologyEcosystem: 'Google Workspace, BYOD'
+    },
+    costOfLiving: { monthlyRent1BR: 1200, monthlyRent2BR: 1680, monthlyRent3BR: 2160, food: 400, transport: 40, utilities: 180, internet: 30, mobile: 25, diningSocial: 300, vehicleInsuranceMaint: 0, uncoveredMedical: 50 },
   }
 ];
