@@ -75,6 +75,13 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 10px hsl(var(--primary))" },
           "50%": { boxShadow: "0 0 20px hsl(var(--primary))" },
         },
+        "glitch": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%": { transform: "translateX(-2px)" },
+          "40%": { transform: "translateX(2px)" },
+          "60%": { transform: "translateX(-1px)" },
+          "80%": { transform: "translateX(1px)" },
+        },
         "pulse-slow": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.7" },
@@ -91,6 +98,7 @@ const config: Config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "glow": "glow 2s ease-in-out infinite",
+        "glitch": "glitch 0.2s ease-in-out infinite",
         "pulse-slow": "pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "scan": "scanning 15s linear infinite",
       },

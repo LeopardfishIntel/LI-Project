@@ -66,8 +66,7 @@ const calculateMonthlyCost = (school: School): number => {
       mobileCost +
       diningSocialCost +
       (costOfLiving.vehicleInsuranceMaint || 0) +
-      uncoveredMedicalCost
-    );
+      uncoveredMedicalCost;
 };
 
 const HealthInsuranceHelp = () => (
@@ -190,8 +189,9 @@ export default function ComparePage() {
     }, [selectedSchoolIds, schools]);
 
     const handleNetSalaryChange = (index: number, value: string) => {
+        const cleanedValue = value.replace(/\D/g, ''); // Ensure only digits
         const newSalaries = [...netSalaries];
-        newSalaries[index] = value;
+        newSalaries[index] = cleanedValue;
         setNetSalaries(newSalaries);
     };
     
@@ -294,12 +294,13 @@ export default function ComparePage() {
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
+                        maxLength={15}
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
                         className={cn(
                             "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
-                            !netSalary && "animate-glow border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
+                            !netSalary && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
                         )}
                     />
                 </div>
