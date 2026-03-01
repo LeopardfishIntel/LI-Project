@@ -1,9 +1,8 @@
-
 'use server';
 /**
- * @fileOverview An AI-powered flow to generate a tactical SWOT analysis of a specific contract offer.
+ * @fileOverview An AI-powered flow to generate a tactical SWOT analysis and overall score of a specific contract offer.
  *
- * - evaluateOffer - A function that handles the deep-dive SWOT analysis of an offer.
+ * - evaluateOffer - A function that handles the deep-dive SWOT analysis and scoring of an offer.
  * - EvaluateOfferInput - The input type for the evaluateOffer function.
  * - EvaluateOfferOutput - The return type for the evaluateOffer function.
  */
@@ -26,6 +25,7 @@ const EvaluateOfferOutputSchema = z.object({
   weaknesses: z.string().describe('Potential downsides or areas where the offer is less competitive.'),
   opportunities: z.string().describe('Strategic growth or lifestyle opportunities presented by this move.'),
   threats: z.string().describe('Critical warnings, US/UK travel advice, or institutional red flags.'),
+  overallScore: z.number().min(0).max(10).describe('A tactical score out of 10 based on universal international teacher expectations.'),
 });
 export type EvaluateOfferOutput = z.infer<typeof EvaluateOfferOutputSchema>;
 
@@ -37,7 +37,7 @@ const evaluateOfferPrompt = ai.definePrompt({
   name: 'evaluateOfferPrompt',
   input: {schema: EvaluateOfferInputSchema},
   output: {schema: EvaluateOfferOutputSchema},
-  prompt: `You are a high-level recruitment intelligence analyst for Leopardfish Intel. Your task is to provide a tactical SWOT analysis on a potential teaching contract.
+  prompt: `You are a high-level recruitment intelligence analyst for Leopardfish Intel. Your task is to provide a tactical SWOT analysis and an overall quantitative score on a potential teaching contract.
 
 Input Dossier:
 - School: {{{schoolName}}}
@@ -50,6 +50,12 @@ Instructions:
 2. **Weaknesses**: Identify where the offer might be "treading water". Are there high local costs that eat into the package? Is the savings capacity weak compared to regional Tier 1 benchmarks?
 3. **Opportunities**: Comment on the strategic move. Does this city offer exceptional travel links or career growth pathways? Is there a lifestyle "bonus" (e.g., climate, culture)?
 4. **Threats**: This is critical intelligence. You MUST check for and report on prevailing regional risks. Include current UK (FCDO) or US (State Dept) travel advice if applicable. Mention institutional red flags (e.g., currency volatility in {{{country}}}, visa complexity, or reported institutional delays).
+5. **Overall Score**: Calculate an overall tactical score out of 10 based on universal international teacher expectations (Savings potential, housing quality, health benefits, and regional stability). 
+   - A 10.0 is an elite, low-risk, high-savings package. 
+   - A 1.0 is a high-risk, negative-savings package.
+   - Be consistent across all schools. 
+   - Weight the score against the provided family status (e.g., $1000 savings for a family of 4 is much weaker than $1000 for a single person).
+   - Return as a number to 1 decimal place.
 
 Tone: Professional, direct, and authoritative. Use British English.`,
 });

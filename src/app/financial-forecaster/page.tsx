@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -36,7 +35,8 @@ import {
   TrendingUp,
   TrendingDown,
   Compass,
-  AlertTriangle
+  AlertTriangle,
+  Target
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -479,11 +479,29 @@ function ContractDecoderContent() {
                         )}
 
                         {verdict ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
-                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
-                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
+                            <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                <div className="flex items-center justify-between glass p-6 rounded-sm border-primary/20 bg-primary/5">
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-3 bg-primary/10 rounded-full">
+                                            <Target className="size-6 text-primary" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Tactical Offer Score</h4>
+                                            <p className="text-sm font-bold text-white">Based on universal international teacher expectations</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="text-5xl font-black text-primary tracking-tighter">{verdict.overallScore.toFixed(1)}</span>
+                                        <span className="text-xl font-bold text-muted-foreground/40">/10</span>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                    <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                    <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
+                                    <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
+                                </div>
                             </div>
                         ) : isVerdictLoading ? (
                             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
