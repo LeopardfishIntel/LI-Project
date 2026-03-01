@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -55,6 +56,10 @@ import {
   DialogTitle, 
   DialogDescription 
 } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+// Tactical Utility: Remove number input spinners
+const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
 // --- Tax Calculator Logic ---
 type TaxBracket = { upto: number; rate: number };
@@ -303,65 +308,7 @@ const countrySpecificData: Record<string, any> = {
     }
 };
 
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
-    return 0;
-};
-
-const calculateTax = (income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) => {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
-
-// --- Helper Components ---
+// --- Tactical UI Components ---
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
     <div className="flex justify-between items-center text-sm py-0.5">
@@ -389,7 +336,7 @@ const InteractiveCostItem = ({ icon, label, value, currency, onChange }: {
       </div>
       <div className="relative w-32">
         <Input 
-          className="h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50" 
+          className={cn("h-7 text-right bg-background/30 border-white/5 pr-10 text-xs focus:ring-1 focus:ring-primary/50", noSpinners)} 
           type="number"
           value={value}
           placeholder="0"
@@ -429,10 +376,90 @@ const FeatureDetail = ({ icon, title, description, score, percentage }: {
 // --- Pop-up Sections ---
 
 function TaxCalculatorSection() {
+    const [salary, setSalary] = useState('60000');
+    const [country, setCountry] = useState('United Kingdom');
+    const [currency, setCurrency] = useState('GBP');
+    const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
+    const [dependents, setDependents] = useState('0');
+    const [applySpecialRegime, setApplySpecialRegime] = useState(false);
+    const [result, setResult] = useState<any>(null);
+    
+    const countriesWithCalculators = Object.keys(taxData).sort();
+    const currencies = ORDERED_CURRENCIES;
+
+    useEffect(() => {
+        if (taxData[country]) {
+            setCurrency(taxData[country].currency);
+        }
+        if (country !== 'Italy') {
+            setApplySpecialRegime(false);
+        }
+    }, [country]);
+
+    const handleCalculate = () => {
+        const income = parseFloat(salary);
+        const numDependents = parseInt(dependents) || 0;
+        const incomeInLocalCurrency = income * (CONVERSION_RATES[currency] || 1) / (CONVERSION_RATES[taxData[country].currency] || 1);
+        
+        if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
+            setResult(null);
+            return;
+        }
+        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime, numDependents);
+        setResult(calcResult);
+    };
+
     return (
-        <div className="p-4 text-center text-muted-foreground border border-dashed border-white/10 rounded-sm">
-            <p className="stamped-dossier text-white mb-2">Simulation Engine Active</p>
-            <p className="text-xs">Estimate regional tax signatures and mandatory deductions across major international teaching territories.</p>
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="tax-salary" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Gross Annual Salary</Label>
+                    <Input id="tax-salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className={cn("bg-background/50 border-white/10 text-right font-bold", noSpinners)} />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="tax-currency" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Salary Currency</Label>
+                    <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger id="tax-currency" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="tax-country" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Tax Country</Label>
+                    <Select value={country} onValueChange={setCountry}>
+                        <SelectTrigger id="tax-country" className="bg-background/50 border-white/10">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="glass">
+                            {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold">Calculate Tactical Signature</Button>
+            {result && (
+                <Card className="glass border-white/10 p-6 space-y-4 shadow-2xl">
+                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
+                        <span className="text-muted-foreground">Original Gross Salary</span>
+                        <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-red-400">
+                        <span className="text-xs">Estimated Income Tax</span>
+                        <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-orange-400">
+                        <span className="text-xs">Social Contributions</span>
+                        <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
+                        <span>Net Take-Home (Annual)</span>
+                        <span>{formatCurrency(result.netIncome, taxData[country].currency)}</span>
+                    </div>
+                </Card>
+            )}
         </div>
     );
 }
@@ -462,7 +489,7 @@ function CurrencyConverterSection() {
                         type="number" 
                         value={amount} 
                         onChange={e => setAmount(e.target.value)} 
-                        className="bg-background/50 border-white/10 text-right font-bold text-lg h-12 rounded-sm" 
+                        className={cn("bg-background/50 border-white/10 text-right font-bold text-lg h-12 rounded-sm", noSpinners)} 
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -656,7 +683,7 @@ function ContractDecoderContent() {
                     <div className="col-span-3 relative">
                         <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input 
-                        className="pl-10 bg-background/50 border-white/10 rounded-sm h-10 text-right font-bold" 
+                        className={cn("pl-10 bg-background/50 border-white/10 rounded-sm h-10 text-right font-bold", noSpinners)} 
                         type="number" 
                         placeholder={suggestedMonthlyLocal > 0 ? `${Math.round(suggestedMonthlyLocal)}` : "0"} 
                         value={offeredSalary}
@@ -681,7 +708,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
+                        className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} 
                         type="number" 
                         placeholder="0" 
                         value={responsibilityAllowance}
@@ -695,7 +722,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
+                        className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} 
                         type="number" 
                         placeholder="0" 
                         value={partnerSalary}
@@ -715,7 +742,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
+                        className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} 
                         type="number" 
                         placeholder="0" 
                         value={studentLoan}
@@ -729,7 +756,7 @@ function ContractDecoderContent() {
                     <div className="relative">
                     <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                        className="pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold" 
+                        className={cn("pl-10 bg-background/50 border-white/10 h-10 rounded-sm text-right font-bold", noSpinners)} 
                         type="number" 
                         placeholder="200" 
                         value={contingency}
@@ -848,7 +875,8 @@ function ContractDecoderContent() {
                         <DecodedItem icon={<Zap className="size-3 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                         <DecodedItem icon={<Smartphone className="size-3 text-pink-400" />} label="Mobile phone" value={decodedCosts?.mobile || 0} currency={currency} />
                         <DecodedItem icon={<Wifi className="size-3 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
-                        <DecodedItem icon={<Milestone className="size-3 text-purple-400" />} label="Contingency buffer" value={decodedCosts?.contingencyVal || 0} currency={currency} />
+                        <InteractiveCostItem icon={<Globe className="size-3 text-blue-400" />} label="Home Country Commitment" value={homeCountryCommitment} currency={currency} onChange={setHomeCountryCommitment} />
+                        <InteractiveCostItem icon={<Milestone className="size-3 text-purple-400" />} label="Contingency Fund" value={contingency} currency={currency} onChange={setContingency} />
                         <div className="pt-6 mt-4 border-t border-white/10 flex justify-between items-center">
                         <span className="text-[10px] font-black uppercase tracking-widest text-white">Burn Rate</span>
                         <span className="text-xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
