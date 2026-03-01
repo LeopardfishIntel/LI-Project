@@ -169,15 +169,14 @@ export function FieldIntelligenceModal() {
               <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-3">
                 <div>
                   <strong className="block mb-1 text-white uppercase tracking-tighter">Security & Anonymity Notice</strong>
-                  Your Anonymity is our first priority. All incoming intel is processed through a secure pipeline where it is analyzed and transformed by our team into actionable intelligence. To maintain the "blind" nature of this system, all transmissions undergo a mandatory scrub of identifying metadata immediately upon submission.
+                  Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all submissions undergo a mandatory scrub of any identifying data immediately upon submission.
                 </div>
                 
                 <div>
                   <strong className="block mb-1 text-white uppercase tracking-tighter">Operational Protocols</strong>
-                  To maintain the high standard required for actionable intelligence, all reports must adhere to these three pillars:
                   <ul className="mt-1 space-y-2">
-                    <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts and chronological events. Avoid subjective interpretations or speculative motives.</li>
-                    <li><span className="font-bold text-primary">Redaction Mandatory:</span> Never share Personally Identifiable Information. Redact sensitive data in all attachments and text.</li>
+                    <li><span className="font-bold text-primary">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
+                    <li><span className="font-bold text-primary">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
                   </ul>
                 </div>
               </DialogDescription>
@@ -219,7 +218,7 @@ export function FieldIntelligenceModal() {
 
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase flex items-center gap-2">
-                  <ShieldCheck className="size-3" /> Mission Briefing Summary
+                  <Binoculars className="size-3" /> Mission Briefing Summary
                 </Label>
                 <div className="p-3 text-[10px] bg-slate-950/40 border border-white/10 rounded-sm font-mono leading-relaxed text-muted-foreground">
                   <p className="text-white font-bold mb-1">Privacy Guarantee</p>
