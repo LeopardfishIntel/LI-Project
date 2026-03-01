@@ -81,7 +81,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                     
                                     <div className="space-y-6">
                                         {result.comparison.bestFit.verdictSections.map((section, idx) => (
-                                            <div key={idx} className="space-y-2">
+                                            <div key={`verdict-${idx}`} className="space-y-2">
                                                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">{section.heading}</h4>
                                                 <p className="text-muted-foreground text-sm leading-relaxed font-medium">
                                                     {section.content}
@@ -101,8 +101,8 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                     <h3 className="font-bold text-lg tracking-tight">School breakdowns</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {result.comparison.schoolBreakdowns.map(school => (
-                                        <Card key={school.schoolName} className="glass bg-white/2 border-white/5 flex flex-col h-full rounded-sm shadow-none">
+                                    {result.comparison.schoolBreakdowns.map((school, idx) => (
+                                        <Card key={`${school.schoolName}-${idx}`} className="glass bg-white/2 border-white/5 flex flex-col h-full rounded-sm shadow-none">
                                             <CardHeader className="p-3 border-b border-white/5">
                                                 <CardTitle className="text-sm font-black uppercase tracking-tight text-white/90">{school.schoolName}</CardTitle>
                                             </CardHeader>
