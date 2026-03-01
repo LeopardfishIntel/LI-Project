@@ -431,7 +431,7 @@ function ContractDecoderContent() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
-            <CardHeader><CardTitle className="text-[10px] font-black uppercase tracking-widest text-white text-center">My Settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">My Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
