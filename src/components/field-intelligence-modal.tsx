@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -23,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ShieldAlert, Loader2, FileUp, Zap, Building2, Binoculars, MapPin, AlertCircle, CheckCircle2, Globe, ShieldCheck, Lock } from 'lucide-react';
+import { ShieldAlert, Loader2, Zap, Binoculars, ShieldCheck, Lock } from 'lucide-react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { transmitIntelligence } from '@/ai/flows/transmit-intelligence-flow';
@@ -39,23 +40,12 @@ export function FieldIntelligenceModal() {
   const [organisation, setOrganisation] = useState('');
   const [location, setLocation] = useState('');
   const [intel, setIntel] = useState('');
-  const [websiteUrl, setWebsiteUrl] = useState('');
   const [consent, setConsent] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [status, setStatus] = useState('');
   
   // Disambiguation states
   const [isValidating, setIsValidating] = useState(false);
   const [validationStatus, setValidationStatus] = useState('');
-  const [validationResult, setValidationResult] = useState<{
-    is_ambiguous: boolean;
-    is_new_entity: boolean;
-    suggestions: string[];
-    message_to_user: string;
-    canonical_name: string;
-    school_id?: string;
-  } | null>(null);
 
   // Success/Destruct States
   const [isDestructing, setIsDestructing] = useState(false);
@@ -104,12 +94,8 @@ export function FieldIntelligenceModal() {
     setOrganisation('');
     setLocation('');
     setIntel('');
-    setWebsiteUrl('');
     setConsent(false);
-    setFile(null);
-    setStatus('');
     setIsSubmitting(false);
-    setValidationResult(null);
     setValidationStatus('');
   };
 
@@ -123,7 +109,6 @@ export function FieldIntelligenceModal() {
         user_input_city: location,
         verified_registry: registry,
       });
-      setValidationResult(result);
       setValidationStatus(result.message_to_user);
       if (!result.is_ambiguous && !result.is_new_entity && result.canonical_name !== organisation) {
         setOrganisation(result.canonical_name);
@@ -143,7 +128,6 @@ export function FieldIntelligenceModal() {
     if (!consent) return;
 
     setIsSubmitting(true);
-    setStatus('Transmitting...');
 
     try {
       await transmitIntelligence({
@@ -153,11 +137,12 @@ export function FieldIntelligenceModal() {
         content: intel,
         authorId: user?.uid,
         authorEmail: user?.email || undefined,
-      } as any);
+      });
       setIsDestructing(true);
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);
+      toast({ variant: 'destructive', title: 'Transmission Error', description: 'Failed to establish uplink.' });
     }
   };
 
@@ -182,10 +167,10 @@ export function FieldIntelligenceModal() {
           <>
             <DialogHeader>
               <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
-                Field report
+                Field Report
               </DialogTitle>
               <DialogDescription className="bg-primary/10 border border-primary/20 p-3 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed">
-                <strong>Security notice:</strong> Agent Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
+                <strong>Security notice:</strong> Your Anonymity is our first priority. Note: All intel is analysed and checked for transformation into actionable intelligence.
               </DialogDescription>
             </DialogHeader>
             
@@ -205,7 +190,8 @@ export function FieldIntelligenceModal() {
                       <SelectItem value="Contract">Contract</SelectItem>
                       <SelectItem value="Salary">Salary</SelectItem>
                       <SelectItem value="Housing">Housing</SelectItem>
-                      <SelectItem value="Admin">Admin</SelectItem>
+                      <SelectItem value="Admin">Admin Conduct</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -219,7 +205,7 @@ export function FieldIntelligenceModal() {
 
               <div className="space-y-2">
                 <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase">Narrative</Label>
-                <Textarea id="intel" placeholder="Transmitting payload..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="space-y-2">
@@ -230,7 +216,7 @@ export function FieldIntelligenceModal() {
                   <p className="text-white font-bold mb-2">Protocol for Field Intel (L.F.I. Reporting)</p>
                   <p>1. Accuracy Over Emotion: Stick to verifiable facts.</p>
                   <p>2. Redaction Mandatory: Black out all PII in attachments.</p>
-                  <p>3. Institutional Conduct focus: Avoid personal naming.</p>
+                  <p>3. Institutional Conduct Focus: Avoid personal naming.</p>
                   <p className="mt-4 text-white font-bold mb-2">Privacy Disclaimer</p>
                   <p>Identity Masking is default. We do not trade teacher data. All transmissions are scrubbed of identifying metadata.</p>
                 </ScrollArea>
@@ -247,7 +233,7 @@ export function FieldIntelligenceModal() {
             <DialogFooter className="border-t border-white/5 pt-4">
               <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm py-6">
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
-                Submit
+                Transmit Intelligence
               </Button>
             </DialogFooter>
           </>

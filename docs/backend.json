@@ -186,15 +186,23 @@
         "overallRating"
       ]
     },
-    "GlobalConfig": {
-      "title": "Global Configuration",
+    "FieldIntelligence": {
+      "title": "Field Intelligence",
       "type": "object",
-      "description": "Stores application-wide configuration data like loan thresholds.",
+      "description": "Educator-submitted tactical field intel, undergoing security moderation.",
       "properties": {
-        "UK_Config_2026": { "type": "object" },
-        "Country_Bands_2026": { "type": "object" },
-        "US_Config_2026": { "type": "object" }
-      }
+        "category": { "type": "string" },
+        "organisation": { "type": "string" },
+        "location": { "type": "string" },
+        "content": { "type": "string" },
+        "clean_text": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "auto_rejected", "verified"] },
+        "safety_flags": { "type": "array", "items": { "type": "string" } },
+        "confidence_score": { "type": "number" },
+        "authorId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["category", "organisation", "location", "content", "status", "timestamp"]
     }
   },
   "auth": {
@@ -224,13 +232,23 @@
         }
       },
       {
-        "path": "/config/{configId}",
+        "path": "/pending_intel/{reportId}",
         "definition": {
-          "entityName": "GlobalConfig",
+          "entityName": "FieldIntelligence",
           "schema": {
-            "$ref": "#/backend/entities/GlobalConfig"
+            "$ref": "#/backend/entities/FieldIntelligence"
           },
-          "description": "Operational parameters for calculator simulations."
+          "description": "Staging area for human-in-the-loop intel verification."
+        }
+      },
+      {
+        "path": "/verified_intel/{intelId}",
+        "definition": {
+          "entityName": "FieldIntelligence",
+          "schema": {
+            "$ref": "#/backend/entities/FieldIntelligence"
+          },
+          "description": "Cleared intelligence dossiers that impact website output."
         }
       }
     ]
