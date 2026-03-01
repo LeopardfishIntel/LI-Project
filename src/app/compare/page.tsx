@@ -23,56 +23,6 @@ import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
-const CONVERSION_RATES: Record<string, number> = {
-  USD: 1,
-  GBP: 0.78,
-  EUR: 0.92,
-  AED: 3.67,
-  QAR: 3.64,
-  SAR: 3.75,
-  SGD: 1.34,
-  CHF: 0.88,
-  JPY: 150,
-  THB: 35,
-  CNY: 7.2,
-  KRW: 1350,
-  HKD: 7.8,
-  MYR: 4.7,
-  VND: 25000,
-  CZK: 23.5,
-  AUD: 1.52,
-  CAD: 1.36,
-  ZAR: 18.4,
-  NZD: 1.66,
-};
-
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  'Japan': 'JPY',
-  'UAE': 'AED',
-  'Switzerland': 'CHF',
-  'Singapore': 'SGD',
-  'South Korea': 'KRW',
-  'United Kingdom': 'GBP',
-  'Netherlands': 'EUR',
-  'USA': 'USD',
-  'Czech Republic': 'CZK',
-  'Thailand': 'THB',
-  'Vietnam': 'VND',
-  'China': 'CNY',
-  'Qatar': 'QAR',
-  'Saudi Arabia': 'SAR',
-  'Hong Kong': 'HKD',
-  'Malaysia': 'MYR',
-  'Spain': 'EUR',
-  'Italy': 'EUR',
-  'Germany': 'EUR',
-  'France': 'EUR',
-  'Australia': 'AUD',
-  'Canada': 'CAD',
-  'South Africa': 'ZAR',
-  'New Zealand': 'NZD',
-};
-
 const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number => {
     const { costOfLiving, intel } = school;
     const multiplier = getFamilyScalingMultiplier(status);
@@ -104,7 +54,7 @@ const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number =
 };
 
 const HealthInsuranceHelp = () => (
-    <div className="space-y-3 p-1">
+    <div className="space-y-3 p-1 text-left">
         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
         <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
             <Table>
@@ -134,7 +84,7 @@ const MetricRow = ({ label, value, result, format, icon, helpContent }: {
     label: string;
     value: any;
     result: ComparisonResult;
-    format?: (value: any) => string;
+    format?: (value: any) => any;
     icon: React.ReactNode;
     helpContent?: React.ReactNode;
 }) => {
@@ -166,7 +116,7 @@ const MetricRow = ({ label, value, result, format, icon, helpContent }: {
                 {labelContent}
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? format(value) : (value !== null && value !== undefined ? value.toString() : '—')}</span>
+                {format ? format(value) : (value !== null && value !== undefined ? value : '—')}
             </div>
         </div>
     );
@@ -247,6 +197,8 @@ function SchoolComparisonColumn({
         family2: 'Family 2+2'
     }[familyStatus];
 
+    const savingsResult = trueNetSavingsLocal !== null && trueNetSavingsLocal >= 0 ? 'best' : 'worst';
+
     return (
         <div className="flex flex-col gap-4 items-center h-full">
             <div className="w-full max-w-sm">
@@ -316,41 +268,42 @@ function SchoolComparisonColumn({
                     <div className="space-y-0 border-b border-white/5 mb-6">
                          <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                         
                          <MetricRow 
                             label="Total income" 
                             value={totalIncomeLocal} 
-                            result={'neutral'} 
+                            result={'best'} 
                             format={(v) => v !== null ? formatCurrency(v, currency) : '—'} 
-                            icon={<DollarSign className="w-4 h-4 text-sky-400" />} 
+                            icon={<DollarSign className="w-4 h-4 text-green-400" />} 
                         />
                          <MetricRow
                             label={`Est. costs (${familyLabel})`}
                             value={costsLocal}
-                            result={comparisonResults.monthlyCost}
+                            result={'worst'} 
                             format={(v) => formatCurrency(v, currency)}
                             icon={<DollarSign className="w-4 h-4 text-red-400" />}
                         />
                          <MetricRow
                                 label="True net savings"
                                 value={trueNetSavingsLocal}
-                                result={comparisonResults.yourSavings}
+                                result={savingsResult}
                                 format={(v) => v !== null ? formatCurrency(v, currency) : '—'}
                                 icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                             />
-                         <MetricRow
+                         {trueNetSavingsUSD !== null && (
+                            <MetricRow
                                 label="or"
-                                value={trueNetSavingsUSD}
-                                result={'neutral'}
-                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
+                                value={
+                                    <div className="flex items-center gap-2 text-[11px] font-black opacity-90">
+                                        <span>{formatCurrency(trueNetSavingsUSD, 'USD')}</span>
+                                        <span className="w-px h-3 bg-white/10" />
+                                        <span>{formatCurrency(trueNetSavingsGBP || 0, 'GBP')}</span>
+                                    </div>
+                                }
+                                result={savingsResult}
                                 icon={<div className="w-4" />}
                             />
-                         <MetricRow
-                                label="or"
-                                value={trueNetSavingsGBP}
-                                result={'neutral'}
-                                format={(v) => v !== null ? formatCurrency(v, 'GBP') : '—'}
-                                icon={<div className="w-4" />}
-                            />
+                         )}
                          <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                          <MetricRow 
                             label="Health insurance" 
@@ -370,6 +323,56 @@ function SchoolComparisonColumn({
         </div>
     );
 }
+
+const CONVERSION_RATES: Record<string, number> = {
+  USD: 1,
+  GBP: 0.78,
+  EUR: 0.92,
+  AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
+  SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
+  CZK: 23.5,
+  AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
+};
+
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'USA': 'USD',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Vietnam': 'VND',
+  'China': 'CNY',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Spain': 'EUR',
+  'Italy': 'EUR',
+  'Germany': 'EUR',
+  'France': 'EUR',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD',
+};
 
 export default function ComparePage() {
     const firestore = useFirestore();
