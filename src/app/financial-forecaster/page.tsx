@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -186,7 +185,7 @@ function ContractDecoderContent() {
 
     const timeout = setTimeout(triggerSWOT, 1500);
     return () => clearTimeout(timeout);
-  }, [selectedSchoolId, offeredSalary, familyStatus, responsibilityAllowance, partnerSalary]);
+  }, [selectedSchoolId, offeredSalary, familyStatus, responsibilityAllowance, partnerSalary, savingsPotential, currency, selectedSchool, totalIncome]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -195,7 +194,7 @@ function ContractDecoderContent() {
             <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-muted-foreground">Select school dossier</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Select school dossier</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                   <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
@@ -203,7 +202,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-muted-foreground">Family scaling</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Family scaling</Label>
                 <Select value={familyStatus} onValueChange={setFamilyStatus}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                   <SelectContent className="glass">
@@ -216,7 +215,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
-                <div className="text-xs text-primary-foreground/90 leading-relaxed font-medium">
+                <div className="text-sm text-primary-foreground/90 leading-relaxed font-medium">
                   <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 text-xs"><ShieldAlert className="size-3.5" /> Due diligence</span>
                   Important! Enter net not gross pay. Check if the deduction total accounts for social security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.
                 </div>
@@ -224,7 +223,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-xs font-bold text-muted-foreground">Net monthly salary offer</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer</Label>
                   {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
                 </div>
                 <div className="flex gap-2">
@@ -243,7 +242,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-muted-foreground">Responsibilities allowance (monthly)</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance (monthly)</Label>
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -257,7 +256,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-muted-foreground">Partner monthly salary</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Partner monthly salary</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -272,7 +271,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-xs font-bold text-muted-foreground">Student loan repayment (monthly)</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment (monthly)</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
                     <button 
                       onClick={() => setIsUkLoanModalOpen(true)} 
@@ -307,7 +306,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold text-muted-foreground">Contingency buffer (monthly)</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer (monthly)</Label>
                 <div className="relative">
                   <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -393,7 +392,7 @@ function ContractDecoderContent() {
                 <div className="space-y-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="space-y-1 text-center md:text-left">
-                            <h4 className="text-xs font-bold text-muted-foreground">True net savings</h4>
+                            <h4 className="text-sm font-bold text-muted-foreground">True net savings</h4>
                             <div className="flex items-baseline gap-1">
                                 <span className={cn("text-6xl font-bold tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                                   {formatCurrency(savingsPotential, currency)}
@@ -435,7 +434,7 @@ function ContractDecoderContent() {
                         ) : (
                             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
                                 <Loader2 className="size-8 animate-spin text-primary" />
-                                <p className="text-xs font-bold">Uplinking to tactical engine...</p>
+                                <p className="text-sm font-bold">Uplinking to tactical engine...</p>
                             </div>
                         )}
                     </div>
@@ -444,7 +443,11 @@ function ContractDecoderContent() {
             </>
           )}
         </div>
-        <UkLoanCalculatorModal isOpen={isUkLoanModalOpen} onOpenChange={setIsUkLoanModalOpen} />
+        <UkLoanCalculatorModal 
+          isOpen={isUkLoanModalOpen} 
+          onOpenChange={setIsUkLoanModalOpen} 
+          selectedCountry={selectedSchool?.country} 
+        />
       </div>
   );
 }
@@ -458,7 +461,7 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
     };
     return (
         <div className={cn("glass p-6 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
-            <h4 className="text-xs font-bold flex items-center gap-2">
+            <h4 className="text-sm font-bold flex items-center gap-2">
                 {icon} {type}
             </h4>
             <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">{content}</p>
