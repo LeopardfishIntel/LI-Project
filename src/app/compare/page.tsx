@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
+import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
@@ -83,13 +83,13 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
     };
 
     return (
-        <div className="flex justify-between items-center py-3">
+        <div className="flex justify-between items-center py-3 border-b border-white/5 last:border-0">
             <div className="flex items-center gap-2">
                 {icon}
                 <span className="text-sm text-muted-foreground">{label}</span>
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? format(value) : (value.toString())}</span>
+                <span>{format ? format(value) : (value?.toString() || '—')}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
                         <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
@@ -267,29 +267,27 @@ export default function ComparePage() {
                         <div className="relative aspect-video">
                             <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
                         </div>
-                        <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">{school.name}</CardTitle>
+                        <CardHeader className="min-h-[100px] flex flex-col justify-center">
+                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight">{school.name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-sm pt-1">
                                 <MapPin className="w-4 h-4 mr-1.5" />
                                 <span>{school.location}, {school.country}</span>
                             </div>
                         </CardHeader>
                     </Link>
-                    <CardContent className="p-4 md:p-6 pt-0 divide-y divide-border/50">
-                        <div className="pt-4">
+                    <CardContent className="p-4 md:p-6 pt-0">
+                        <div className="space-y-0">
                              <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                              <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
-                             {yourMonthlySavings !== null && (
-                                <MetricRow
+                             <MetricRow
                                     label="Your est. monthly savings"
-                                    value={yourMonthlySavings}
+                                    value={yourMonthlySavings !== null ? yourMonthlySavings : null}
                                     result={comparisonResults.yourSavings}
-                                    format={(v) => formatCurrency(v, 'USD')}
+                                    format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
                                     icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                                 />
-                             )}
                              <MetricRow
-                                label={`Est. monthly costs (${teacherProfile.familyStatus})`}
+                                label={`Est. costs (${teacherProfile.familyStatus})`}
                                 value={calculateMonthlyCost(school)}
                                 result={comparisonResults.monthlyCost}
                                 format={(v) => formatCurrency(v, 'USD')}
@@ -303,7 +301,7 @@ export default function ComparePage() {
                                 icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
                             />
                         </div>
-                         <div className="pt-4">
+                         <div className="pt-6">
                              <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
                              <MetricRow label="Average class size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
                              <MetricRow label="Student-teacher ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
