@@ -97,17 +97,17 @@ function ContractDecoderContent() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
           <Card className="glass border-primary/20">
-            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">Operational Settings</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm stamped-dossier text-white text-center">Operational settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase">Select School Dossier</Label>
+                <Label className="text-[10px] font-bold text-primary/70 tracking-widest">Select school dossier</Label>
                 <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                   <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-primary/70 uppercase">Net Monthly Salary Offer</Label>
+                <Label className="text-[10px] font-bold text-primary/70 tracking-widest">Net monthly salary offer</Label>
                 <div className="relative">
                   <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -134,7 +134,7 @@ function ContractDecoderContent() {
                 <div className="space-y-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="space-y-1 text-center md:text-left">
-                            <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True Net Savings</h4>
+                            <h4 className="text-[10px] font-black text-muted-foreground tracking-[0.2em]">True net savings</h4>
                             <div className="flex items-baseline gap-1">
                                 <span className={cn("text-5xl font-black tracking-tighter", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                                   {formatCurrency(savingsPotential, currency)}
@@ -145,10 +145,10 @@ function ContractDecoderContent() {
                         <Button 
                           onClick={handleGenerateVerdict} 
                           disabled={isVerdictLoading}
-                          className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-8 py-7 h-auto rounded-sm"
+                          className="bg-primary hover:bg-primary/90 text-white font-black tracking-widest px-8 py-7 h-auto rounded-sm"
                         >
                           {isVerdictLoading ? <Loader2 className="size-4 animate-spin mr-2" /> : <Sparkles className="size-4 mr-2" />}
-                          Generate SWOT Verdict
+                          Generate SWOT verdict
                         </Button>
                     </div>
 
@@ -162,25 +162,25 @@ function ContractDecoderContent() {
                     {verdict && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                             <div className="glass p-4 rounded-sm border-l-4 border-l-green-500/50 space-y-2">
-                                <h4 className="text-[10px] font-black text-green-400 uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-green-400 tracking-widest flex items-center gap-2">
                                     <TrendingUp className="size-3" /> Strengths
                                 </h4>
                                 <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.strengths}</p>
                             </div>
                             <div className="glass p-4 rounded-sm border-l-4 border-l-amber-500/50 space-y-2">
-                                <h4 className="text-[10px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-amber-400 tracking-widest flex items-center gap-2">
                                     <TrendingDown className="size-3" /> Weaknesses
                                 </h4>
                                 <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.weaknesses}</p>
                             </div>
                             <div className="glass p-4 rounded-sm border-l-4 border-l-accent/50 space-y-2">
-                                <h4 className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-accent tracking-widest flex items-center gap-2">
                                     <Compass className="size-3" /> Opportunities
                                 </h4>
                                 <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.opportunities}</p>
                             </div>
                             <div className="glass p-4 rounded-sm border-l-4 border-l-destructive/50 space-y-2">
-                                <h4 className="text-[10px] font-black text-destructive uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-destructive tracking-widest flex items-center gap-2">
                                     <AlertTriangle className="size-3" /> Threats
                                 </h4>
                                 <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdict.threats}</p>
@@ -199,7 +199,7 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract Decoder</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed">LeopardfishIntel analysis of your potential contract.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>

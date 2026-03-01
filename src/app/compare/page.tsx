@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -241,7 +240,7 @@ export default function ComparePage() {
                 </div>
 
                 <div className="w-full max-w-sm space-y-2">
-                    <Label htmlFor={`net-salary-${index}`}>Offered Net Salary (Annual)</Label>
+                    <Label htmlFor={`net-salary-${index}`}>Offered net salary (annual)</Label>
                     <Input
                         id={`net-salary-${index}`}
                         type="text"
@@ -268,11 +267,11 @@ export default function ComparePage() {
                     </Link>
                     <CardContent className="p-4 md:p-6 pt-0 divide-y divide-border/50">
                         <div className="pt-4">
-                             <MetricRow label="Salary Range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                             <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                             <MetricRow label="Salary range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                             <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                              {yourMonthlySavings !== null && (
                                 <MetricRow
-                                    label="Your Est. Monthly Savings"
+                                    label="Your est. monthly savings"
                                     value={yourMonthlySavings}
                                     result={comparisonResults.yourSavings}
                                     format={(v) => formatCurrency(v, 'USD')}
@@ -280,7 +279,7 @@ export default function ComparePage() {
                                 />
                              )}
                              <MetricRow
-                                label={`Est. Monthly Costs (${teacherProfile.familyStatus})`}
+                                label={`Est. monthly costs (${teacherProfile.familyStatus})`}
                                 value={calculateMonthlyCost(school)}
                                 result={comparisonResults.monthlyCost}
                                 format={(v) => formatCurrency(v, 'USD')}
@@ -288,7 +287,7 @@ export default function ComparePage() {
                             />
                              <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                              <MetricRow 
-                                label="Health Insurance" 
+                                label="Health insurance" 
                                 value={school.intel.healthInsurance} 
                                 result={'neutral'} 
                                 icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
@@ -296,8 +295,8 @@ export default function ComparePage() {
                         </div>
                          <div className="pt-4">
                              <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                             <MetricRow label="Average Class Size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
-                             <MetricRow label="Student-Teacher Ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
+                             <MetricRow label="Average class size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                             <MetricRow label="Student-teacher ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
                         </div>
                     </CardContent>
                 </Card>
@@ -315,7 +314,7 @@ export default function ComparePage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">3. Compare Schools</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">3. Compare schools</h1>
             <p className="text-muted-foreground mb-12 text-center">Select up to three schools for a side-by-side comparison of key data.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">

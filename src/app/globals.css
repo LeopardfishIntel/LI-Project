@@ -51,7 +51,7 @@
     @apply bg-card/70 backdrop-blur-[10px] border border-white/10;
   }
   .stamped-dossier {
-    @apply uppercase tracking-widest font-black;
+    @apply tracking-widest font-black;
   }
 }
 

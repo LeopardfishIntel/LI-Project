@@ -79,7 +79,7 @@ export default function LoginPage() {
         <CardContent>
           {error && (
             <Alert variant="destructive" className="mb-4">
-              <AlertTitle>Login Failed</AlertTitle>
+              <AlertTitle>Login failed</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -123,7 +123,7 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
+              <div className="relative flex justify-center text-xs">
                 <span className="bg-card px-2 text-muted-foreground">Or</span>
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
               {loading === 'anonymous' ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                'Continue as Guest'
+                'Continue as guest'
               )}
             </Button>
           </form>

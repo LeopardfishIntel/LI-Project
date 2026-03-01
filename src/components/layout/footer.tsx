@@ -19,7 +19,7 @@ export default function Footer() {
             </div>
             
             <div className="text-center md:text-left">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-6">Quick Links</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-white mb-6">Quick links</h4>
                 <nav className="flex flex-col gap-3">
                     <Link href="/discover" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Discover</Link>
                     <Link href="/financial-forecaster" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Evaluate</Link>
@@ -29,7 +29,7 @@ export default function Footer() {
             </div>
 
              <div className="text-center md:text-right">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-6">Contact</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-white mb-6">Contact</h4>
                  <div className="flex justify-center md:justify-end gap-4 mb-4">
                      <Link href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" aria-label="LinkedIn profile" target="_blank" rel="noopener noreferrer" className="p-2 rounded-sm bg-white/5 hover:bg-primary/10 transition-colors group">
                         <Linkedin className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -39,16 +39,16 @@ export default function Footer() {
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
-                    <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Enquiry Form</Link>
-                    <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Data Hub</Link>
-                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms of Service</Link>
-                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Privacy Policy</Link>
+                    <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Enquiry form</Link>
+                    <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Data hub</Link>
+                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms of service</Link>
+                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Privacy policy</Link>
                 </nav>
             </div>
         </div>
         
         <div className="text-center text-[10px] text-muted-foreground/40 border-t border-white/5 pt-8 mt-12 space-y-4">
-            <p className="font-bold uppercase tracking-widest text-white/60">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
+            <p className="font-bold tracking-widest text-white/60">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
             <p className="max-w-4xl mx-auto leading-relaxed font-medium"><strong>Disclaimer:</strong> Leopardfish Intel is a platform for information and comparison purposes only. We do not act as a recruitment agency and are not affiliated with any school. All data is provided for guidance and should be verified with official sources. Your career decisions are your own.</p>
         </div>
       </div>

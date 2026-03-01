@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useState } from "react";
-import { findFitAction, FitFinderState } from "./actions";
+import { findNookAction, NookFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import type { School } from '@/lib/types';
 import { collection } from 'firebase/firestore';
 
-const initialState: FitFinderState = {
+const initialState: NookFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -31,21 +31,21 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Analysing...
+          Analyzing...
         </>
       ) : (
         <>
           <Wand2 className="mr-2 h-4 w-4" />
-          Find My Fit
+          Find my nook
         </>
       )}
     </Button>
   );
 }
 
-export default function FindYourFitPage() {
-  const [state, formAction] = useActionState(findFitAction, initialState);
-  const [otherLicence, setOtherLicence] = useState(false);
+export default function FindYourNookPage() {
+  const [state, formAction] = useActionState(findNookAction, initialState);
+  const [otherLicense, setOtherLicense] = useState(false);
 
   const firestore = useFirestore();
   const schoolsQuery = useMemoFirebase(
@@ -57,8 +57,8 @@ export default function FindYourFitPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find Your Fit</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analysing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find your nook</h1>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
@@ -68,12 +68,12 @@ export default function FindYourFitPage() {
                 value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
             />
             <CardHeader>
-              <CardTitle>Your Teacher Profile</CardTitle>
+              <CardTitle>Your teacher profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label>Age Range</Label>
+                <Label>Age range</Label>
                 <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="25" id="age-25-34" />
@@ -94,7 +94,7 @@ export default function FindYourFitPage() {
                 </RadioGroup>
               </div>
               <div className="space-y-2 pt-4">
-                <Label>Family Status</Label>
+                <Label>Family status</Label>
                 <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="single" id="fs-single" />
@@ -106,17 +106,17 @@ export default function FindYourFitPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="family" id="fs-family" />
-                    <Label htmlFor="fs-family" className="font-normal">Family with Children</Label>
+                    <Label htmlFor="fs-family" className="font-normal">Family with children</Label>
                   </div>
                 </RadioGroup>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="current-location">Current Location</Label>
+                    <Label htmlFor="current-location">Current location</Label>
                     <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="current-salary">Current Salary (Optional)</Label>
+                    <Label htmlFor="current-salary">Current salary (optional)</Label>
                     <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" />
                 </div>
               </div>
@@ -148,40 +148,40 @@ export default function FindYourFitPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Teaching Licence</Label>
+                <Label>Teaching license</Label>
                  <div className="space-y-2 pt-2">
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_qts" name="teaching_licence_cb" value="QTS or iQTS" />
+                            <Checkbox id="l_qts" name="teaching_license_cb" value="QTS or iQTS" />
                             <Label htmlFor="l_qts" className="font-normal">QTS or iQTS</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_us" name="teaching_licence_cb" value="US State Teaching Licence" />
-                            <Label htmlFor="l_us" className="font-normal">US State Teaching Licence</Label>
+                            <Checkbox id="l_us" name="teaching_license_cb" value="US State Teaching License" />
+                            <Label htmlFor="l_us" className="font-normal">US State Teaching License</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_sace" name="teaching_licence_cb" value="SACE / OCT / VIT" />
+                            <Checkbox id="l_sace" name="teaching_license_cb" value="SACE / OCT / VIT" />
                             <Label htmlFor="l_sace" className="font-normal">SACE / OCT / VIT</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_ect" name="teaching_licence_cb" value="ECT Status" />
+                            <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
                             <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_other" onCheckedChange={(checked) => setOtherLicence(!!checked)} />
+                            <Checkbox id="l_other" onCheckedChange={(checked) => setOtherLicense(!!checked)} />
                             <Label htmlFor="l_other" className="font-normal">Other</Label>
                         </div>
                     </div>
                 </div>
-                 {otherLicence && (
+                 {otherLicense && (
                     <div className="space-y-2 pl-2 pt-2">
-                        <Label htmlFor="teaching_licence_other" className="text-xs text-muted-foreground">Please specify your licence</Label>
-                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" />
+                        <Label htmlFor="teaching_license_other" className="text-xs text-muted-foreground">Please specify your license</Label>
+                        <Input id="teaching_license_other" name="teaching_license_other" placeholder="e.g., Special Education Certificate" />
                     </div>
                 )}
               </div>
               <div className="space-y-2">
-                <Label>Curriculum Preference</Label>
+                <Label>Curriculum preference</Label>
                  <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                     <div className="flex items-center space-x-2">
                         <Checkbox id="c_uk" name="curriculum" value="UK" />
@@ -203,11 +203,11 @@ export default function FindYourFitPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="experience">Years of Teaching Experience</Label>
+                  <Label htmlFor="experience">Years of teaching experience</Label>
                   <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject Taught</Label>
+                  <Label htmlFor="subject">Subject taught</Label>
                   <Select name="subject" defaultValue="Primary" required>
                     <SelectTrigger id="subject">
                       <SelectValue placeholder="Select a subject" />
@@ -242,7 +242,7 @@ export default function FindYourFitPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Preferred Regions</Label>
+                <Label>Preferred regions</Label>
                  <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                     <div className="flex items-center space-x-2">
                         <Checkbox id="r_sea" name="regions" value="Southeast Asia" />
@@ -307,7 +307,7 @@ export default function FindYourFitPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                         <Checkbox id="p_culture" name="preferences" value="Cultural immersion" />
-                        <Label htmlFor="p_culture" className="font-normal">Cultural Immersion</Label>
+                        <Label htmlFor="p_culture" className="font-normal">Cultural immersion</Label>
                     </div>
                 </div>
               </div>
@@ -316,19 +316,19 @@ export default function FindYourFitPage() {
                 <RadioGroup name="goal" defaultValue="balanced" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="saving" id="saving" />
-                    <Label htmlFor="saving" className="font-normal">Maximize Savings</Label>
+                    <Label htmlFor="saving" className="font-normal">Maximize savings</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="adventure" id="adventure" />
-                    <Label htmlFor="adventure" className="font-normal">Seek Adventure</Label>
+                    <Label htmlFor="adventure" className="font-normal">Seek adventure</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="growth" id="growth" />
-                    <Label htmlFor="growth" className="font-normal">Career Growth</Label>
+                    <Label htmlFor="growth" className="font-normal">Career growth</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="balanced" id="balanced" />
-                    <Label htmlFor="balanced" className="font-normal">Balanced Lifestyle</Label>
+                    <Label htmlFor="balanced" className="font-normal">Balanced lifestyle</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -348,7 +348,7 @@ export default function FindYourFitPage() {
             <Card className="mt-8 border-destructive bg-destructive/20">
                 <CardHeader className="flex-row items-center gap-4 space-y-0">
                     <ServerCrash className="h-6 w-6 text-destructive" />
-                    <CardTitle className="text-destructive">An Error Occurred</CardTitle>
+                    <CardTitle className="text-destructive">An error occurred</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-destructive/80">{state.error}</p>
@@ -358,7 +358,7 @@ export default function FindYourFitPage() {
 
         {state.result && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Fits</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Your recommended nooks</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
@@ -381,7 +381,7 @@ export default function FindYourFitPage() {
                                         <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
                                     </g>
                                 </svg>
-                                School Suggestions
+                                School suggestions
                             </h4>
                             <div className="space-y-3">
                                 {rec.recommendedSchools.map(school => (

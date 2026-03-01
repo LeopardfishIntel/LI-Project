@@ -5,22 +5,22 @@ export function RedFlagRegistry() {
   const flags = [
     {
       icon: <AlertTriangle className="w-6 h-6 text-destructive" />,
-      title: "The November Trap",
+      title: "The November trap",
       desc: "Alerting teachers to early 'intent to renew' deadlines that trigger before they have even settled into their environment."
     },
     {
       icon: <TrendingDown className="w-6 h-6 text-destructive" />,
-      title: "Currency Fluctuation",
+      title: "Currency fluctuation",
       desc: "Identifying regions where salaries are paid in local currency without protection, risking major savings loss."
     },
     {
       icon: <BookOpen className="w-6 h-6 text-destructive" />,
-      title: "The Handbook Clause",
+      title: "The handbook clause",
       desc: "Warning that signing a contract legally binds you to handbooks that can unilaterally change your duties."
     },
     {
       icon: <Wallet className="w-6 h-6 text-destructive" />,
-      title: "Hidden Deductions",
+      title: "Hidden deductions",
       desc: "Breaking down the 'net' vs 'gross' discrepancy in regions where social security is omitted from offers."
     }
   ];
@@ -31,8 +31,8 @@ export function RedFlagRegistry() {
         <div className="flex items-center gap-4 mb-12">
           <ShieldAlert className="w-10 h-10 text-destructive" />
           <div>
-            <h2 className="text-3xl md:text-4xl text-white">Red Flag Registry</h2>
-            <p className="text-muted-foreground uppercase text-[10px] font-black tracking-widest">Critical Due Diligence</p>
+            <h2 className="text-3xl md:text-4xl text-white">Red flag registry</h2>
+            <p className="text-muted-foreground text-[10px] font-black tracking-widest">Critical due diligence</p>
           </div>
         </div>
 

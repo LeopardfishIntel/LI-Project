@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
@@ -87,7 +86,7 @@ export function KeyFactsSection() {
     {
       icon: <Building className="w-5 h-5 text-primary" />,
       endValue: schoolCount,
-      label: 'International Schools',
+      label: 'International schools',
       format: (val: number) => val.toLocaleString(),
     },
     {
@@ -99,13 +98,13 @@ export function KeyFactsSection() {
     {
       icon: <Users className="w-5 h-5 text-primary" />,
       endValue: teacherCount,
-      label: 'Teachers Registered',
+      label: 'Teachers registered',
       format: (val: number) => val.toLocaleString(),
     },
     {
       icon: <BarChart3 className="w-5 h-5 text-primary" />,
       endValue: comparisonsMade,
-      label: 'Comparisons Made',
+      label: 'Comparisons made',
       format: (val: number) => val.toLocaleString('en-US'),
     },
   ];

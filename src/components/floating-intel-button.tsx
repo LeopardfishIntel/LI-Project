@@ -29,13 +29,13 @@ export function FloatingIntelButton() {
           )}
         >
           <Binoculars className="size-6 md:size-7" />
-          <span className="sr-only">Transmit Field Intel</span>
+          <span className="sr-only">Transmit field intel</span>
         </Button>
 
         {/* Tactical Hover Label */}
         <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 pointer-events-none">
           <div className="glass px-4 py-2 rounded-sm border-primary/30 whitespace-nowrap">
-            <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Transmit Intel</p>
+            <p className="text-[10px] font-black text-primary tracking-[0.2em]">Transmit intel</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -151,32 +150,32 @@ export function FieldIntelligenceModal() {
         {isScanning ? (
           <div className="py-16 flex flex-col items-center justify-center text-center space-y-6">
             <Loader2 className="size-12 text-primary animate-spin" />
-            <DialogTitle className="text-xl font-bold text-primary uppercase tracking-widest">Establishing Secure Uplink...</DialogTitle>
+            <DialogTitle className="text-xl font-bold text-primary tracking-widest">Establishing secure uplink...</DialogTitle>
           </div>
         ) : isDestructing ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-6">
             <Zap className="size-12 text-primary animate-pulse" />
-            <DialogTitle className="text-2xl font-black stamped-dossier text-primary">TRANSMISSION COMPLETE</DialogTitle>
-            <p className="text-white font-black text-xl uppercase">SELF-DESTRUCT IN {countdown}...</p>
+            <DialogTitle className="text-2xl font-black stamped-dossier text-primary">Transmission complete</DialogTitle>
+            <p className="text-white font-black text-xl">Self-destruct in {countdown}...</p>
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle className="text-primary flex items-center gap-2 font-bold text-xl normal-case">
-                Field Report
+                Field report
               </DialogTitle>
               <DialogDescription asChild>
                 <div className="bg-primary/10 border border-primary/20 p-4 rounded-sm text-[11px] text-primary-foreground/90 font-medium leading-relaxed text-left space-y-4">
                   <div>
-                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Security & Anonymity Notice</strong>
-                    Your Anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
+                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Security & anonymity notice</strong>
+                    Your anonymity is our first priority. All incoming intel is processed and analyzed by our team to create verified, actionable intelligence. To maintain the &quot;blind&quot; nature of this system, all transmissions undergo a mandatory scrub of any identifying data immediately upon submission.
                   </div>
                   
                   <div>
-                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Operational Protocols</strong>
+                    <strong className="block mb-1 text-white tracking-widest text-[10px] font-bold">Operational protocols</strong>
                     <ul className="mt-1 space-y-2">
-                      <li><span className="font-bold text-white">Accuracy Over Emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
-                      <li><span className="font-bold text-white">Redaction Mandate:</span> Never share Personally Identifiable Information. You are required to redact sensitive data in all attachments and text before submission.</li>
+                      <li><span className="font-bold text-white">Accuracy over emotion:</span> Reports must stick to verifiable facts. Avoid subjective interpretations, personal grievances, or speculative motives. We want verified data not opinion.</li>
+                      <li><span className="font-bold text-white">Redaction mandate:</span> Never share personally identifiable information. You are required to redact sensitive data in all attachments and text before submission.</li>
                     </ul>
                   </div>
                 </div>
@@ -186,20 +185,20 @@ export function FieldIntelligenceModal() {
             <div className="space-y-4 py-4 max-h-[50vh] overflow-y-auto px-1">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Location</Label>
-                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold" value={location} onChange={(e) => setLocation(e.target.value)} />
+                  <Label htmlFor="location" className="text-[10px] font-bold text-primary/70 tracking-widest">Location</Label>
+                  <Input id="location" placeholder="City/Country" className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Classification</Label>
+                  <Label htmlFor="category" className="text-[10px] font-bold text-primary/70 tracking-widest">Classification</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold">
+                    <SelectTrigger className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm">
                       <SelectValue placeholder="Category..." />
                     </SelectTrigger>
                     <SelectContent className="glass">
                       <SelectItem value="Contract">Contract</SelectItem>
                       <SelectItem value="Salary">Salary</SelectItem>
                       <SelectItem value="Housing">Housing</SelectItem>
-                      <SelectItem value="Admin">Admin Conduct</SelectItem>
+                      <SelectItem value="Admin">Admin conduct</SelectItem>
                       <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
@@ -207,28 +206,28 @@ export function FieldIntelligenceModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Organisation</Label>
-                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
-                {validationStatus && <p className="text-[9px] font-bold uppercase tracking-widest text-accent">{validationStatus}</p>}
+                <Label htmlFor="organisation" className="text-[10px] font-bold text-primary/70 tracking-widest">Organisation</Label>
+                <Input id="organisation" placeholder="School or Agency..." className="bg-slate-950/50 border-white/10 text-white font-bold h-10 rounded-sm" value={organisation} onChange={(e) => setOrganisation(e.target.value)} onBlur={handleVerifySchool} />
+                {validationStatus && <p className="text-[9px] font-bold tracking-widest text-accent">{validationStatus}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Intel Narrative</Label>
-                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
+                <Label htmlFor="intel" className="text-[10px] font-bold text-primary/70 tracking-widest">Intel narrative</Label>
+                <Textarea id="intel" placeholder="Enter data here..." className="min-h-[100px] bg-slate-950/50 border-white/10 text-white text-sm rounded-sm" value={intel} onChange={(e) => setIntel(e.target.value)} />
               </div>
 
               <div className="flex items-start space-x-2 pt-2">
-                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20" />
-                <Label htmlFor="consent" className="text-[10px] text-white/70 font-bold uppercase tracking-tighter cursor-pointer leading-tight">
-                  I have redacted all PII and acknowledge the Operational Protocols.
+                <Checkbox id="consent" checked={consent} onCheckedChange={(v) => setConsent(!!v)} className="mt-1 border-white/20 data-[state=checked]:bg-primary data-[state=checked]:text-white" />
+                <Label htmlFor="consent" className="text-[10px] text-white/70 font-bold tracking-tighter cursor-pointer leading-tight">
+                  I have redacted all PII and acknowledge the operational protocols.
                 </Label>
               </div>
             </div>
 
             <DialogFooter className="border-t border-white/5 pt-4">
-              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-[0.2em] rounded-sm py-6 shadow-lg shadow-primary/10">
+              <Button onClick={handleTransmit} disabled={isSubmitting || !consent} className="w-full bg-primary hover:bg-primary/90 text-white font-black tracking-[0.2em] rounded-sm py-6 shadow-lg shadow-primary/10">
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4 mr-2" />}
-                Transmit Intel
+                Transmit intel
               </Button>
             </DialogFooter>
           </>
