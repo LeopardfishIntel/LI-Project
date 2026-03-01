@@ -26,16 +26,16 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
         <Card className="glass border-border w-full">
             <CardHeader className="text-center border-b border-white/5 py-4">
                 <CardTitle className="text-xl font-bold tracking-tight">Leopardfish comparative analysis</CardTitle>
+                <p className="text-muted-foreground text-xs mt-2 max-w-lg mx-auto leading-relaxed font-medium">
+                    Please ensure you input your confirmed salary offers at the top of this page. It’s the only way we can give you an accurate comparison of your selected schools.
+                </p>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col p-4 md:p-6">
                 {!loading && !result && (
-                    <div className="flex flex-col items-center justify-center text-center flex-grow py-6 min-h-[180px]">
+                    <div className="flex flex-col items-center justify-center text-center flex-grow py-6 min-h-[150px]">
                         <div className="p-3 bg-primary/10 rounded-full mb-4">
                             <Sparkles className="w-8 h-8 text-primary" />
                         </div>
-                        <p className="text-muted-foreground mb-6 text-sm max-w-lg leading-relaxed font-medium">
-                            Revealing hidden trade-offs, financial benchmarks, and the best tactical fit for your profile.
-                        </p>
                         <Button onClick={handleFetchComparison} size="default" className="bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest px-8 rounded-sm">
                             <Sparkles className="w-4 h-4 mr-2" />
                             Run analysis
