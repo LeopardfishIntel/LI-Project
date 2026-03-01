@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency, categorizeInsurance } from '@/lib/utils';
-import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2, Users2 } from 'lucide-react';
+import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
@@ -78,13 +78,12 @@ const HealthInsuranceHelp = () => (
     </div>
 );
 
-const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
+const MetricRow = ({ label, value, result, format, icon, helpContent }: {
     label: string;
     value: any;
     result: ComparisonResult;
     format?: (value: any) => string;
     icon: React.ReactNode;
-    link?: { href: string; ariaLabel: string; };
     helpContent?: React.ReactNode;
 }) => {
     const resultColor = (result: ComparisonResult) => {
@@ -116,11 +115,6 @@ const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
                 <span>{format ? format(value) : (value !== null ? value?.toString() : '—')}</span>
-                 {link && (
-                    <Link href={link.href} aria-label={link.ariaLabel}>
-                        <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
-                    </Link>
-                )}
             </div>
         </div>
     );
@@ -147,7 +141,7 @@ function SchoolComparisonColumn({
     familyStatus: FamilyStatus;
     onFamilyStatusChange: (status: FamilyStatus) => void;
     schools: School[] | null;
-    comparisonResults: Record<ComparisonMetric, ComparisonResult>;
+    comparisonResults: Record<string, ComparisonResult>;
 }) {
     const [glowActive, setGlowActive] = useState(true);
     const [timerStarted, setTimerStarted] = useState(false);
@@ -187,7 +181,7 @@ function SchoolComparisonColumn({
         <div className="flex flex-col gap-4 items-center h-full">
             <div className="w-full max-w-sm">
                  <Select value={school.id} onValueChange={onSelect}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm h-11">
                         <SelectValue placeholder="Select a school" />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -344,9 +338,8 @@ export default function ComparePage() {
     };
 
     const handleFamilyStatusChange = (index: number, status: FamilyStatus) => {
-        const newStatuses = [...familyStatuses];
-        newStatuses[index] = status;
-        setFamilyStatuses(newStatuses);
+        // Replicate selection across all dossiers for synchronized tactical analysis
+        setFamilyStatuses([status, status, status]);
     };
     
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
