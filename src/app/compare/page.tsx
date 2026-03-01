@@ -23,7 +23,57 @@ import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from 
 type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yourSavings';
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
-const calculateMonthlyCost = (school: School, status: FamilyStatus): number => {
+const CONVERSION_RATES: Record<string, number> = {
+  USD: 1,
+  GBP: 0.78,
+  EUR: 0.92,
+  AED: 3.67,
+  QAR: 3.64,
+  SAR: 3.75,
+  SGD: 1.34,
+  CHF: 0.88,
+  JPY: 150,
+  THB: 35,
+  CNY: 7.2,
+  KRW: 1350,
+  HKD: 7.8,
+  MYR: 4.7,
+  VND: 25000,
+  CZK: 23.5,
+  AUD: 1.52,
+  CAD: 1.36,
+  ZAR: 18.4,
+  NZD: 1.66,
+};
+
+const COUNTRY_TO_CURRENCY: Record<string, string> = {
+  'Japan': 'JPY',
+  'UAE': 'AED',
+  'Switzerland': 'CHF',
+  'Singapore': 'SGD',
+  'South Korea': 'KRW',
+  'United Kingdom': 'GBP',
+  'Netherlands': 'EUR',
+  'USA': 'USD',
+  'Czech Republic': 'CZK',
+  'Thailand': 'THB',
+  'Vietnam': 'VND',
+  'China': 'CNY',
+  'Qatar': 'QAR',
+  'Saudi Arabia': 'SAR',
+  'Hong Kong': 'HKD',
+  'Malaysia': 'MYR',
+  'Spain': 'EUR',
+  'Italy': 'EUR',
+  'Germany': 'EUR',
+  'France': 'EUR',
+  'Australia': 'AUD',
+  'Canada': 'CAD',
+  'South Africa': 'ZAR',
+  'New Zealand': 'NZD',
+};
+
+const calculateMonthlyCostUSD = (school: School, status: FamilyStatus): number => {
     const { costOfLiving, intel } = school;
     const multiplier = getFamilyScalingMultiplier(status);
     const { rent } = getRentForFamily(costOfLiving, status);
@@ -116,7 +166,7 @@ const MetricRow = ({ label, value, result, format, icon, helpContent }: {
                 {labelContent}
             </div>
             <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? format(value) : (value !== null ? value?.toString() : '—')}</span>
+                <span>{format ? format(value) : (value !== null && value !== undefined ? value.toString() : '—')}</span>
             </div>
         </div>
     );
@@ -150,31 +200,36 @@ function SchoolComparisonColumn({
 
     useEffect(() => {
         let timeout: NodeJS.Timeout;
-        
         if (netSalary && !timerStarted) {
             setTimerStarted(true);
             timeout = setTimeout(() => {
                 setGlowActive(false);
             }, 10000);
         }
-
         if (!netSalary) {
             setGlowActive(true);
             setTimerStarted(false);
         }
-
         return () => clearTimeout(timeout);
     }, [netSalary, timerStarted]);
 
-    const trueNetSavings = useMemo(() => {
-        const parsedSalary = parseFloat(netSalary) || 0;
-        if (parsedSalary <= 0) return null;
-        return parsedSalary - calculateMonthlyCost(school, familyStatus);
-    }, [netSalary, school, familyStatus]);
+    const currency = COUNTRY_TO_CURRENCY[school.country] || 'USD';
+    const rate = CONVERSION_RATES[currency] || 1;
 
-    const totalIncomeValue = useMemo(() => {
-        const parsedSalary = parseFloat(netSalary) || 0;
-        return parsedSalary > 0 ? parsedSalary : null;
+    const costsLocal = useMemo(() => {
+        const costsUSD = calculateMonthlyCostUSD(school, familyStatus);
+        return costsUSD * rate;
+    }, [school, familyStatus, rate]);
+
+    const trueNetSavingsLocal = useMemo(() => {
+        const parsedSalaryLocal = parseFloat(netSalary) || 0;
+        if (parsedSalaryLocal <= 0) return null;
+        return parsedSalaryLocal - costsLocal;
+    }, [netSalary, costsLocal]);
+
+    const totalIncomeLocal = useMemo(() => {
+        const parsedSalaryLocal = parseFloat(netSalary) || 0;
+        return parsedSalaryLocal > 0 ? parsedSalaryLocal : null;
     }, [netSalary]);
 
     const familyLabel = {
@@ -203,7 +258,7 @@ function SchoolComparisonColumn({
 
             <div className="w-full max-w-sm space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor={`net-salary-${index}`} className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Total net salary & benefits (monthly)</Label>
+                    <Label htmlFor={`net-salary-${index}`} className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Total net salary & benefits (monthly) ({currency})</Label>
                     <Input
                         id={`net-salary-${index}`}
                         type="text"
@@ -239,7 +294,7 @@ function SchoolComparisonColumn({
             <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full shadow-lg">
                 <Link href={`/schools/${school.id}`} className="block">
                     <div className="relative aspect-video">
-                        <Image src={school.imageUrl} alt={school.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" data-ai-hint={school.imageHint} />
+                        <Image src={school.imageUrl} alt={school.name} fill style={{ objectFit: 'cover' }} className="group-hover:scale-105 transition-transform duration-300" data-ai-hint={school.imageHint} />
                     </div>
                     <CardHeader className="min-h-[100px] flex flex-col justify-center">
                         <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight font-black">{school.name}</CardTitle>
@@ -255,23 +310,23 @@ function SchoolComparisonColumn({
                          <MetricRow label="Savings potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                          <MetricRow 
                             label="Total income" 
-                            value={totalIncomeValue} 
+                            value={totalIncomeLocal} 
                             result={'neutral'} 
-                            format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'} 
+                            format={(v) => v !== null ? formatCurrency(v, currency) : '—'} 
                             icon={<DollarSign className="w-4 h-4 text-sky-400" />} 
                         />
                          <MetricRow
                             label={`Est. costs (${familyLabel})`}
-                            value={calculateMonthlyCost(school, familyStatus)}
+                            value={costsLocal}
                             result={comparisonResults.monthlyCost}
-                            format={(v) => formatCurrency(v, 'USD')}
+                            format={(v) => formatCurrency(v, currency)}
                             icon={<DollarSign className="w-4 h-4 text-red-400" />}
                         />
                          <MetricRow
                                 label="True net savings"
-                                value={trueNetSavings}
+                                value={trueNetSavingsLocal}
                                 result={comparisonResults.yourSavings}
-                                format={(v) => v !== null ? formatCurrency(v, 'USD') : '—'}
+                                format={(v) => v !== null ? formatCurrency(v, currency) : '—'}
                                 icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                             />
                          <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
@@ -356,8 +411,11 @@ export default function ComparePage() {
         setFamilyStatuses([status, status, status]);
     };
     
-    const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
+    const getNumericValueUSD = (school: School, metric: ComparisonMetric, index: number) => {
         const status = familyStatuses[index];
+        const currency = COUNTRY_TO_CURRENCY[school.country] || 'USD';
+        const rate = CONVERSION_RATES[currency] || 1;
+
         switch (metric) {
             case 'salary': {
                 const val = school.intel.salary.value || '';
@@ -375,11 +433,13 @@ export default function ComparePage() {
             case 'classSize':
                 return school.intel.classSize;
             case 'monthlyCost':
-                return calculateMonthlyCost(school, status);
-            case 'yourSavings':
-                const monthlyIncome = parseFloat(netSalaries[index]) || 0;
-                if (monthlyIncome <= 0) return -Infinity;
-                return monthlyIncome - calculateMonthlyCost(school, status);
+                return calculateMonthlyCostUSD(school, status);
+            case 'yourSavings': {
+                const monthlyIncomeLocal = parseFloat(netSalaries[index]) || 0;
+                if (monthlyIncomeLocal <= 0) return -Infinity;
+                const monthlyIncomeUSD = monthlyIncomeLocal / rate;
+                return monthlyIncomeUSD - calculateMonthlyCostUSD(school, status);
+            }
             default:
                 return 0;
         }
@@ -387,7 +447,7 @@ export default function ComparePage() {
     
     const compareThree = (metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] => {
         if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
-        const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
+        const values = selectedSchools.map((school, i) => getNumericValueUSD(school, metric, i));
         
         if (values.every(v => v === values[0])) return selectedSchools.map(() => 'neutral');
 
