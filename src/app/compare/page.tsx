@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -45,22 +46,24 @@ const calculateMonthlyCost = (school: School): number => {
             break;
     }
 
-    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
-    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const mobileCost = costOfLiving.mobile * adults;
-    const diningSocialCost = costOfLiving.diningSocial * adults;
-    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
-    const apartmentCost = intel.housing.provided ? 0 : costOfLiving.apartment;
+    const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
+    const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
+    const mobileCost = (costOfLiving.mobile || 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial || 0) * adults;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children;
+    
+    const rent1BR = costOfLiving.monthlyRent1BR || (costOfLiving as any).apartment || 0;
+    const apartmentCost = intel.housing.provided ? 0 : rent1BR;
 
     return (
       apartmentCost +
       foodCost +
       transportCost +
-      costOfLiving.utilities +
-      costOfLiving.internet +
+      (costOfLiving.utilities || 0) +
+      (costOfLiving.internet || 0) +
       mobileCost +
       diningSocialCost +
-      costOfLiving.vehicleInsuranceMaint +
+      (costOfLiving.vehicleInsuranceMaint || 0) +
       uncoveredMedicalCost
     );
 };
@@ -83,9 +86,9 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
         <div className="flex justify-between items-center py-3">
             <div className="flex items-center gap-2">
                 {icon}
-                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-sm text-muted-foreground">{label}</span>
             </div>
-            <div className={cn("flex items-center gap-2 text-sm font-semibold text-right whitespace-nowrap", resultColor(result))}>
+            <div className={cn("flex items-center gap-2 text-base font-bold text-right whitespace-nowrap", resultColor(result))}>
                 <span>{format ? format(value) : (value.toString())}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
@@ -155,8 +158,14 @@ export default function ComparePage() {
     
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
         switch (metric) {
-            case 'salary':
-                return parseInt(school.intel.salary.value.split(' - ')[1].replace('k', '000').replace('$', '')) || 0;
+            case 'salary': {
+                const val = school.intel.salary.value || '';
+                const numbers = val.match(/\d+/g)?.map(Number);
+                if (!numbers) return 0;
+                const scale = val.toLowerCase().includes('k') ? 1000 : 1;
+                const highValue = Math.max(...numbers);
+                return highValue * scale;
+            }
             case 'savings':
                 if (school.intel.savingsPotential.value === 'V High') return 3;
                 if (school.intel.savingsPotential.value === 'High') return 2;
@@ -168,7 +177,7 @@ export default function ComparePage() {
                 return calculateMonthlyCost(school);
             case 'yourSavings':
                 const netSalary = parseFloat(netSalaries[index]) || 0;
-                if (netSalary <= 0) return -Infinity; // Treat no/zero salary as the worst for comparison
+                if (netSalary <= 0) return -Infinity;
                 return (netSalary / 12) - calculateMonthlyCost(school);
             default:
                 return 0;
@@ -226,10 +235,10 @@ export default function ComparePage() {
             <div className="flex flex-col gap-4 items-center">
                 <div className="w-full max-w-sm">
                      <Select value={school.id} onValueChange={onSelect}>
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                             <SelectValue placeholder="Select a school" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="glass">
                             {schools?.map(s => (
                                 <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
                                     {s.name}
@@ -240,7 +249,7 @@ export default function ComparePage() {
                 </div>
 
                 <div className="w-full max-w-sm space-y-2">
-                    <Label htmlFor={`net-salary-${index}`}>Offered net salary (annual)</Label>
+                    <Label htmlFor={`net-salary-${index}`} className="text-sm font-bold text-muted-foreground">Offered net salary (annual)</Label>
                     <Input
                         id={`net-salary-${index}`}
                         type="text"
@@ -249,6 +258,7 @@ export default function ComparePage() {
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
+                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold"
                     />
                 </div>
 
