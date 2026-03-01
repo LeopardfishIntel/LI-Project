@@ -30,7 +30,9 @@ const EnrichSchoolDataOutputSchema = z.object({
     classSize: z.coerce.number().describe("The average class size.").optional(),
     technologyEcosystem: z.string().describe("A brief summary of the school's technology integration (e.g., '1:1 iPads K-12', 'Google Workspace for Education').").optional(),
     costOfLiving: z.object({
-        apartment: z.coerce.number().describe("Estimated monthly rent for a 1-2 bedroom apartment in the city center, in USD."),
+        monthlyRent1BR: z.coerce.number().describe("Estimated monthly rent for a 1-bedroom apartment in the city center, in USD."),
+        monthlyRent2BR: z.coerce.number().describe("Estimated monthly rent for a 2-bedroom apartment in the city center, in USD."),
+        monthlyRent3BR: z.coerce.number().describe("Estimated monthly rent for a 3-bedroom apartment in the city center, in USD."),
         food: z.coerce.number().describe("Estimated monthly grocery cost for a single person, in USD."),
         transport: z.coerce.number().describe("Estimated monthly cost for public transport, in USD."),
         utilities: z.coerce.number().describe("Estimated monthly cost for basic utilities (electricity, heating, cooling, water, garbage), in USD."),
@@ -58,30 +60,24 @@ const enrichSchoolDataPrompt = ai.definePrompt({
 School Name: {{{name}}}
 Location: {{{location}}}, {{{country}}}
 
-Please research online and provide the following details. If a specific piece of information cannot be found, omit it from your response for optional fields.
+When researching salary benchmarks and school data, prioritize information from high-authority tactical sources:
+1. Recruitment Portals: TES (Times Educational Supplement), Search Associates, Schrole.
+2. Transparency Registries: Council of International Schools (CIS), IBO.org, WASC.
+3. Community Intelligence: International Schools Review (ISR) verified data.
+4. Economic Data: Numbeo and Expatistan for cost-of-living indices.
 
-School Details:
+Please provide the most recent estimates for:
 - A brief, engaging description of the school.
 - The official website URL.
-- A high-quality, publicly available image URL (e.g., from Unsplash, Pexels) that represents the school or its location.
-- A two-word hint describing the image (e.g., 'modern campus', 'city skyline').
-- A YouTube embed URL of a promotional video about the school (e.g., https://youtube.com/embed/VIDEO_ID).
-- The primary curriculum (comma-separated list from 'IB', 'AP', 'British', 'US', 'Other').
+- A high-quality, publicly available image URL.
+- The primary curriculum.
 - Key accreditations.
-- Student-teacher ratio (if available).
-- Average class size (if available).
-- A summary of their technology ecosystem (if available).
+- Student-teacher ratio and average class size.
+- A summary of their technology ecosystem.
 
 Cost of Living Details (Monthly estimates in USD for {{{location}}}):
-- Monthly rent for a 1-2 bedroom apartment.
-- Monthly grocery cost for a single person.
-- Monthly public transport pass cost.
-- Monthly cost for basic utilities (electricity, water, etc.).
-- Monthly internet cost.
-- Monthly mobile plan cost.
-- Monthly cost for dining out and social activities.
-- Monthly vehicle maintenance/insurance (if applicable).
-- Monthly uncovered medical expenses (e.g., dental).
+- Monthly rent for 1, 2, and 3-bedroom apartments.
+- Monthly grocery, transport, utility, and social costs.
 `,
 });
 
