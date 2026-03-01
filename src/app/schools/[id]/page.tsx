@@ -65,19 +65,19 @@ const HealthInsuranceHelp = () => (
             <Table>
                 <TableBody>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Basic</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Essential</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Top global</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Balanced</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Good</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Standard</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-0">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Premium</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Emerging</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Foundational</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -230,7 +230,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           src={school.imageUrl}
           alt={`Hero image for ${school.name}`}
           fill
-          objectFit="cover"
+          style={{ objectFit: 'cover' }}
           className="brightness-50"
           data-ai-hint={school.imageHint}
         />
@@ -267,17 +267,17 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             {school.description && (
-                <Card className="bg-card/70 backdrop-blur-sm border-border">
+                <Card className="bg-card/70 backdrop-blur-sm border-border shadow-lg">
                 <CardHeader>
                     <CardTitle>About {school.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">{school.description}</p>
+                    <p className="text-muted-foreground leading-relaxed">{school.description}</p>
                 </CardContent>
                 </Card>
             )}
             
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
+            <Card className="bg-card/70 backdrop-blur-sm border-border shadow-lg">
               <CardHeader>
                 <CardTitle>Core intel</CardTitle>
               </CardHeader>
@@ -297,7 +297,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                         {item.label}
                                     </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-80 glass border-primary/20" side="top">
+                                <PopoverContent className="w-80 glass border-primary/20 shadow-2xl" side="top">
                                     <HealthInsuranceHelp />
                                 </PopoverContent>
                             </Popover>
@@ -309,7 +309,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                           <div className="flex items-center gap-2">
                             <p
                               className={cn(
-                                'text-lg',
+                                'text-lg font-bold',
                                 item.score && scoreColorClasses[item.score]
                               )}
                             >

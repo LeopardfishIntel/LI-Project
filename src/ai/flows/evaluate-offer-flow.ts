@@ -46,8 +46,8 @@ Input Dossier:
 - Family Status: {{{familyStatus}}}
 
 Instructions:
-1. **Strengths**: Analyse the financial and institutional "wins". Is the savings capacity strong for this family status? Is the school a known market leader?
-2. **Weaknesses**: Identify where the offer might be "treading water". Are there high local costs that eat into the package? Is the savings capacity weak compared to regional Tier 1 benchmarks?
+1. **Strengths**: Analyse the financial and institutional "wins". Is the savings capacity strong for this family status? Is the school a known market leader or Top global (Elite) institution?
+2. **Weaknesses**: Identify where the offer might be "treading water". Are there high local costs that eat into the package? Is the savings capacity weak compared to regional Top global benchmarks?
 3. **Opportunities**: Comment on the strategic move. Does this city offer exceptional travel links or career growth pathways? Is there a lifestyle "bonus" (e.g., climate, culture)?
 4. **Threats**: This is critical intelligence. You MUST check for and report on prevailing regional risks. Include current UK (FCDO) or US (State Dept) travel advice if applicable. Mention institutional red flags (e.g., currency volatility in {{{country}}}, visa complexity, or reported institutional delays).
 5. **Overall Score**: Calculate an overall tactical score out of 10 based on universal international teacher expectations (Savings potential, housing quality, health benefits, and regional stability). 

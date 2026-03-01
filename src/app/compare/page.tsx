@@ -76,19 +76,19 @@ const HealthInsuranceHelp = () => (
             <Table>
                 <TableBody>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Basic</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Essential</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Top global</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comprehensive</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Balanced</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Good</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Standard</TableCell>
                         <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-transparent border-0">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Premium</TableCell>
-                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Elite</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
+                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Emerging</TableCell>
+                        <TableCell className="py-2 text-[11px] px-3 text-muted-foreground italic">Foundational</TableCell>
+                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -130,7 +130,7 @@ const MetricRow = ({ label, value, result, format, icon, link, helpContent }: {
     );
 
     return (
-        <div className="flex justify-between items-center py-3 border-b border-white/5 last:border-0">
+        <div className="flex justify-between items-center py-3 border-b border-white/5 last:border-0 h-14">
             <div className="flex items-center gap-2">
                 {icon}
                 {labelContent}
@@ -228,13 +228,13 @@ function SchoolComparisonColumn({
                 />
             </div>
 
-            <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full">
+            <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm flex flex-col h-full shadow-lg">
                 <Link href={`/schools/${school.id}`} className="block">
                     <div className="relative aspect-video">
-                        <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
+                        <Image src={school.imageUrl} alt={school.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" data-ai-hint={school.imageHint} />
                     </div>
                     <CardHeader className="min-h-[100px] flex flex-col justify-center">
-                        <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight">{school.name}</CardTitle>
+                        <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight font-black">{school.name}</CardTitle>
                          <div className="flex items-center text-muted-foreground text-sm pt-1">
                             <MapPin className="w-4 h-4 mr-1.5" />
                             <span>{school.location}, {school.country}</span>
@@ -355,9 +355,9 @@ export default function ComparePage() {
             case 'monthlyCost':
                 return calculateMonthlyCost(school);
             case 'yourSavings':
-                const netSalary = parseFloat(netSalaries[index]) || 0;
-                if (netSalary <= 0) return -Infinity;
-                return (netSalary / 12) - calculateMonthlyCost(school);
+                const netSalaryValue = parseFloat(netSalaries[index]) || 0;
+                if (netSalaryValue <= 0) return -Infinity;
+                return (netSalaryValue / 12) - calculateMonthlyCost(school);
             default:
                 return 0;
         }
@@ -367,13 +367,13 @@ export default function ComparePage() {
         if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
         const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
         
-        if (values.every(v => v === values[0])) return ['neutral', 'neutral', 'neutral'];
+        if (values.every(v => v === values[0])) return selectedSchools.map(() => 'neutral');
 
         const sortedValues = [...values].sort((a, b) => higherIsBetter ? b - a : a - b);
         const bestValue = sortedValues[0];
         const worstValue = sortedValues[sortedValues.length - 1];
 
-        if (bestValue === worstValue) return ['neutral', 'neutral', 'neutral'];
+        if (bestValue === worstValue) return selectedSchools.map(() => 'neutral');
 
         return values.map(val => {
             if (val === bestValue) return 'best';
