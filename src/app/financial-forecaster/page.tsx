@@ -153,6 +153,7 @@ function ContractDecoderContent() {
   
   const [isUkLoanModalOpen, setIsUkLoanModalOpen] = useState(false);
   const [isUsLoanModalOpen, setIsUsLoanModalOpen] = useState(false);
+  const [dateStamp, setDateStamp] = useState('');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -166,6 +167,11 @@ function ContractDecoderContent() {
       setVerdict(null); 
     }
   }, [selectedSchool]);
+
+  useEffect(() => {
+    // Set date stamp on client only to avoid hydration mismatch
+    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
+  }, []);
 
   const rate = CONVERSION_RATES[currency] || 1;
 
@@ -445,10 +451,15 @@ function ContractDecoderContent() {
                     </div>
 
                     <div className="pt-8 border-t border-white/5 space-y-6">
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                             <h3 className="text-base text-primary flex items-center gap-2 font-bold">
-                                <Sparkles className="size-4" /> Tactical SWOT verdict
+                                <Sparkles className="size-4" /> Leopardfish Intel evaluation
                             </h3>
+                            {dateStamp && (
+                                <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
+                                    Date stamp: {dateStamp}
+                                </span>
+                            )}
                             {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
                         </div>
 
