@@ -39,7 +39,7 @@ export default function PreparePage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
-          <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-white normal-case">
+          <h1 className="text-xl md:text-3xl font-black tracking-tighter text-white normal-case">
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
@@ -146,7 +146,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <PackageCheck className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">2. Logistical payload: The relocation crater</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">2. The onboarding challenge</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Onboarding and shipping are the most financially dangerous phases of an international move.</p>
 
