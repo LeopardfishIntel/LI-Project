@@ -47,7 +47,7 @@ export interface FirebaseServicesAndUser {
 }
 
 // Return type for useUser() - specific to user auth state
-export interface UserHookResult { // Renamed from UserAuthHookResult for consistency if desired, or keep as UserAuthHookResult
+export interface UserHookResult { 
   user: User | null;
   isUserLoading: boolean;
   userError: Error | null;
@@ -55,6 +55,13 @@ export interface UserHookResult { // Renamed from UserAuthHookResult for consist
 
 // React Context
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
+
+/**
+ * Tactical Tracking: A WeakSet to monitor memoized Firestore references 
+ * without mutating the SDK objects directly. This prevents production 
+ * crashes on frozen objects.
+ */
+const memoizedRefs = new WeakSet<object>();
 
 /**
  * FirebaseProvider manages and provides Firebase services and user authentication state.
@@ -167,15 +174,27 @@ export const useFirebaseApp = (): FirebaseApp => {
   return firebaseApp;
 };
 
-type MemoFirebase <T> = T & {__memo?: boolean};
-
-export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | (MemoFirebase<T>) {
+/**
+ * Custom memoization hook for Firebase references.
+ * Marks the object as safe for use in data-fetching hooks.
+ */
+export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
   const memoized = useMemo(factory, deps);
   
-  if(typeof memoized !== 'object' || memoized === null) return memoized;
-  (memoized as MemoFirebase<T>).__memo = true;
+  if (memoized && typeof memoized === 'object') {
+    memoizedRefs.add(memoized);
+  }
   
   return memoized;
+}
+
+/**
+ * Tactical check to ensure a reference has been properly memoized.
+ * Prevents infinite loop vectors in hooks.
+ */
+export function isMemoized(obj: any): boolean {
+  if (!obj || typeof obj !== 'object') return true; // Nulls or primitives are inherently stable
+  return memoizedRefs.has(obj);
 }
 
 /**
@@ -183,7 +202,7 @@ export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | 
  * This provides the User object, loading status, and any auth errors.
  * @returns {UserHookResult} Object with user, isUserLoading, userError.
  */
-export const useUser = (): UserHookResult => { // Renamed from useAuthUser
-  const { user, isUserLoading, userError } = useFirebase(); // Leverages the main hook
+export const useUser = (): UserHookResult => {
+  const { user, isUserLoading, userError } = useFirebase();
   return { user, isUserLoading, userError };
 };

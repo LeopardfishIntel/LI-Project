@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { isMemoized } from '@/firebase/provider';
 
 /** Utility type to add an 'id' field to a given type T. */
 type WithId<T> = T & { id: string };
@@ -26,9 +27,11 @@ export interface UseDocResult<T> {
 
 /**
  * React hook to subscribe to a single Firestore document in real-time.
+ * 
+ * IMPORTANT: The reference must be stabilized using useMemoFirebase.
  */
 export function useDoc<T = any>(
-  memoizedDocRef: (DocumentReference<DocumentData> & {__memo?: boolean}) | null | undefined,
+  memoizedDocRef: DocumentReference<DocumentData> | null | undefined,
 ): UseDocResult<T> {
   type StateDataType = WithId<T> | null;
 
@@ -55,7 +58,7 @@ export function useDoc<T = any>(
         } else {
           setData(null);
         }
-        setError(null);
+        setError(null); 
         setIsLoading(false);
       },
       (err: FirestoreError) => {
@@ -75,8 +78,9 @@ export function useDoc<T = any>(
     return () => unsubscribe();
   }, [memoizedDocRef]);
 
-  if(memoizedDocRef && !memoizedDocRef.__memo) {
-    throw new Error('useDoc ref must be memoized with useMemoFirebase');
+  // Tactical Safety: Ensure the document reference is stable to prevent infinite render loops.
+  if (memoizedDocRef && !isMemoized(memoizedDocRef)) {
+    throw new Error('Mission Abort: useDoc reference must be stabilized using useMemoFirebase.');
   }
 
   return { data, isLoading, error };

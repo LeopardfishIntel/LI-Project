@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { isMemoized } from '@/firebase/provider';
 
 /** Utility type to add an 'id' field to a given type T. */
 export type WithId<T> = T & { id: string };
@@ -27,9 +28,11 @@ export interface UseCollectionResult<T> {
 
 /**
  * React hook to subscribe to a Firestore collection or query in real-time.
+ * 
+ * IMPORTANT: The query must be stabilized using useMemoFirebase.
  */
 export function useCollection<T = any>(
-    memoizedTargetRefOrQuery: (Query<DocumentData> & {__memo?: boolean}) | null | undefined,
+    memoizedTargetRefOrQuery: Query<DocumentData> | null | undefined,
 ): UseCollectionResult<T> {
   type ResultItemType = WithId<T>;
   type StateDataType = ResultItemType[] | null;
@@ -61,7 +64,6 @@ export function useCollection<T = any>(
         setIsLoading(false);
       },
       (err: FirestoreError) => {
-        // Attempt to extract path safely for the error report
         let path = 'unknown';
         try {
           if ('path' in memoizedTargetRefOrQuery) {
@@ -70,7 +72,7 @@ export function useCollection<T = any>(
             path = (memoizedTargetRefOrQuery as any)._query.path.canonicalString();
           }
         } catch (e) {
-          console.warn('Failed to extract Firestore path for error report');
+          // Path extraction failed - safe fallback
         }
 
         const contextualError = new FirestorePermissionError({
@@ -82,6 +84,7 @@ export function useCollection<T = any>(
         setData(null);
         setIsLoading(false);
 
+        // trigger global error propagation
         errorEmitter.emit('permission-error', contextualError);
       }
     );
@@ -89,8 +92,9 @@ export function useCollection<T = any>(
     return () => unsubscribe();
   }, [memoizedTargetRefOrQuery]);
 
-  if(memoizedTargetRefOrQuery && !memoizedTargetRefOrQuery.__memo) {
-    throw new Error('useCollection query must be memoized with useMemoFirebase');
+  // Tactical Safety: Ensure the query reference is stable to prevent infinite render loops.
+  if (memoizedTargetRefOrQuery && !isMemoized(memoizedTargetRefOrQuery)) {
+    throw new Error('Mission Abort: useCollection query must be stabilized using useMemoFirebase.');
   }
 
   return { data, isLoading, error };
