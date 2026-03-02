@@ -16,7 +16,8 @@ import {
   Eye,
   Info,
   Banknote,
-  Milestone
+  Milestone,
+  ExternalLink
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -31,7 +32,7 @@ export default function PreparePage() {
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed tracking-widest opacity-60">
-          Have you considered all of the contract implications? What about the non-contract factors? We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
+          We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
         </p>
       </div>
 
@@ -58,7 +59,7 @@ export default function PreparePage() {
             <FileText className="size-6 text-accent" />
             <h2 className="text-2xl font-black stamped-dossier text-white">1. The Contract: Hard realities & fine print</h2>
           </div>
-          <p className="text-muted-foreground font-medium mb-6">The contract is designed to protect the school, not you. If the definitions are vague or missing, the risk is then entirely yours.</p>
+          <p className="text-muted-foreground font-medium mb-6">If the definitions are vague or missing, the risk is then entirely yours.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-white/5">
@@ -154,8 +155,10 @@ export default function PreparePage() {
                 <p className="text-xs text-muted-foreground mt-1">Minimum accessible liquid cash for a family move.</p>
               </div>
               <ul className="text-xs space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2"><span className="text-primary font-bold">Upfront costs:</span> Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits.</li>
-                <li className="flex items-start gap-2"><span className="text-primary font-bold">Hidden first week:</span> Groceries, car rentals, and home basics before any reimbursement protocol triggers.</li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">Upfront & hidden costs:</span> 
+                  Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit, car rental fees and deposits, plus groceries and home basics before any reimbursement protocol triggers.
+                </li>
               </ul>
             </div>
 
