@@ -83,14 +83,14 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-red-500 animate-pulse" /></div>
               <div>
-                <p className="text-xs font-black uppercase text-red-400 tracking-widest mb-1">Red Flag: No Go</p>
+                <p className="text-xs font-black text-red-400 tracking-widest mb-1">red flag: one or two are enough for you to seriously consider turning down your offer</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">Critical risk. Direct impact on legal safety, professional autonomy, or fundamental financial viability. Treat as a mission-breaker without total mitigation.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
               <div>
-                <p className="text-xs font-black uppercase text-amber-400 tracking-widest mb-1">Orange Flag: Tactical Caution</p>
+                <p className="text-xs font-black text-amber-400 tracking-widest mb-1">orange flag: take caution consider what you can do to mitigate the impact</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">Logistical or financial implication. Requires substantial capital reserves or specific contractual addendums to manage effectively.</p>
               </div>
             </div>
