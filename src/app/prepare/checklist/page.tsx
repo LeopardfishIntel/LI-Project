@@ -45,18 +45,24 @@ export default function StrategicChecksheetPage() {
     }
   ];
 
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-primary/20">
       {/* UI Navigation - Hidden on Print */}
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 mb-12 print:hidden">
-        <Button variant="outline" asChild className="border-black/10 hover:bg-black/5 text-black rounded-sm">
+        <Button variant="outline" asChild className="border-black/20 hover:bg-black/5 text-black rounded-sm px-6">
           <Link href="/prepare">
-            <ArrowLeft className="mr-2 size-4" /> Return to Dossiers
+            <ArrowLeft className="mr-2 size-4" /> Return
           </Link>
         </Button>
         <div className="flex gap-3">
-          <Button onClick={() => window.print()} className="bg-black text-white hover:bg-black/90 font-bold rounded-sm">
-            <Printer className="mr-2 size-4" /> Print dossier
+          <Button onClick={handlePrint} className="bg-black text-white hover:bg-black/90 font-bold rounded-sm px-8">
+            <Printer className="mr-2 size-4" /> Print
           </Button>
         </div>
       </div>
@@ -64,7 +70,7 @@ export default function StrategicChecksheetPage() {
       {/* Printable Area */}
       <div className="max-w-4xl mx-auto border-[4px] border-black p-8 md:p-16 space-y-12 relative overflow-hidden bg-white shadow-2xl print:shadow-none print:border-[2px]">
         
-        {/* Dossier Header */}
+        {/* Dossier Header Decoration */}
         <div className="absolute top-0 right-0 p-6 opacity-10 rotate-[15deg] pointer-events-none">
           <Binoculars className="size-48 text-black" />
         </div>
