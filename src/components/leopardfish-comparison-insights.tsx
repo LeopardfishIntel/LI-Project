@@ -8,22 +8,36 @@ import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-f
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2, Building, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function LeopardfishComparisonInsights({ schools, netSalaries }: { schools: School[], netSalaries: string[] }) {
     const [result, setResult] = useState<{ comparison: AiSchoolComparisonOutput | null, error?: string } | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const isSalaryFilled = useMemo(() => {
+    // Protocol: Analysis allowed if at least TWO salaries are entered across selected slots
+    const canRunAnalysis = useMemo(() => {
         if (!schools || schools.length < 2) return false;
-        // Check if a salary exists for each active school slot
-        return schools.every((_, idx) => netSalaries[idx] && netSalaries[idx].trim() !== '' && parseInt(netSalaries[idx]) > 0);
+        const filledCount = schools.filter((_, idx) => {
+            const val = netSalaries[idx];
+            return val && val.trim() !== '' && parseInt(val) > 0;
+        }).length;
+        return filledCount >= 2;
     }, [schools, netSalaries]);
 
     async function handleFetchComparison() {
-        if (!isSalaryFilled) return;
+        if (!canRunAnalysis) return;
         setLoading(true);
         setResult(null);
-        const res = await getSchoolComparisonInsights(schools);
+
+        // Filter out schools where user hasn't provided specific salary data for this run
+        const activeIndices = schools
+            .map((_, idx) => idx)
+            .filter(idx => netSalaries[idx] && netSalaries[idx].trim() !== '' && parseInt(netSalaries[idx]) > 0);
+        
+        const activeSchools = activeIndices.map(idx => schools[idx]);
+        const activeSalaries = activeIndices.map(idx => netSalaries[idx]);
+
+        const res = await getSchoolComparisonInsights(activeSchools, activeSalaries);
         setResult(res);
         setLoading(false);
     }
@@ -33,7 +47,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
             <CardHeader className="text-center border-b border-white/5 py-4">
                 <CardTitle className="text-xl font-bold tracking-tight normal-case">Leopardfish comparative analysis</CardTitle>
                 <p className="text-muted-foreground text-sm mt-2 max-w-lg mx-auto leading-relaxed font-medium">
-                    Please ensure you input your confirmed salary offers at the top of this page. It’s the only way we can give you an accurate comparison of your selected schools.
+                    Please ensure you input your confirmed salary offers at the top of this page. We require at least two completed dossiers to generate an accurate tactical comparison.
                 </p>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col p-4 md:p-6">
@@ -43,22 +57,22 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
                             <Sparkles className="w-8 h-8 text-primary" />
                         </div>
                         
-                        {!isSalaryFilled && (
+                        {!canRunAnalysis && (
                             <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 rounded-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                 <AlertCircle className="size-4 text-destructive" />
                                 <p className="text-xs font-bold text-destructive uppercase tracking-widest">
-                                    Salary data required for analysis
+                                    Awaiting minimum of two salary dossiers
                                 </p>
                             </div>
                         )}
 
                         <Button 
                             onClick={handleFetchComparison} 
-                            disabled={!isSalaryFilled}
+                            disabled={!canRunAnalysis}
                             size="lg" 
                             className={cn(
                                 "font-bold tracking-widest px-10 rounded-sm transition-all h-12",
-                                isSalaryFilled ? "bg-primary hover:bg-primary/90 text-white" : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+                                canRunAnalysis ? "bg-primary hover:bg-primary/90 text-white" : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
                             )}
                         >
                             <Sparkles className="w-4 h-4 mr-2" />
@@ -71,7 +85,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
                     <div className="flex flex-col items-center justify-center flex-grow py-8 min-h-[180px] space-y-4">
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
                         <div className="text-center space-y-1">
-                            <p className="text-sm font-bold text-white tracking-tight">Analysing schools...</p>
+                            <p className="text-sm font-bold text-white tracking-tight">Analysing school signals...</p>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest animate-pulse">Establishing secure uplink</p>
                         </div>
                     </div>
@@ -90,7 +104,6 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
 
                 {result?.comparison && (
                     <div className="space-y-8 w-full text-left">
-                        {/* Final Verdict Section */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <Trophy className="w-5 h-5 text-primary" />
@@ -117,7 +130,6 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
                             </Card>
                         </div>
 
-                        {/* Side-by-Side School Breakdowns */}
                         {result.comparison.schoolBreakdowns && result.comparison.schoolBreakdowns.length > 0 && (
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
@@ -153,5 +165,3 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
         </Card>
     );
 }
-
-import { cn } from '@/lib/utils';

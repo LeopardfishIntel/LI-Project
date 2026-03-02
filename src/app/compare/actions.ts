@@ -5,11 +5,16 @@ import { aiSchoolComparison, AiSchoolComparisonInput } from '@/ai/flows/ai-schoo
 import type { School } from '@/lib/types';
 import { teacherProfile } from '@/lib/mock-data';
 
-export async function getSchoolComparisonInsights(schools: School[]) {
+/**
+ * Generates a comparative analysis of selected schools.
+ * Now accepts specific net salaries to provide a more accurate tactical verdict.
+ */
+export async function getSchoolComparisonInsights(schools: School[], salaries: string[]) {
     try {
-        const schoolData = schools.map(school => {
+        const schoolData = schools.map((school, idx) => {
             const coreSchoolData = JSON.stringify({
-                salary: school.intel.salary.value,
+                offeredMonthlyNetSalary: salaries[idx],
+                baseSalaryRange: school.intel.salary.value,
                 taxFree: school.intel.salary.isTaxFree ? 'Yes' : 'No',
                 housing: school.intel.housing.value,
                 savingsPotential: school.intel.savingsPotential.value,
@@ -32,15 +37,15 @@ export async function getSchoolComparisonInsights(schools: School[]) {
         };
 
         if (input.schools.length < 2) {
-             return { comparison: null, error: "Please select at least two schools to generate a comparison." };
+             return { comparison: null, error: "Please provide salary data for at least two schools to generate a comparison." };
         }
 
         const comparison = await aiSchoolComparison(input);
         return { comparison };
 
     } catch (error) {
-        console.error(error);
+        console.error("Comparison Generation Failed:", error);
         const err = error as Error;
-        return { comparison: null, error: err.message || 'Failed to generate comparison.' };
+        return { comparison: null, error: err.message || 'Failed to establish uplink with the analysis engine.' };
     }
 }
