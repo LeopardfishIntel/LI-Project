@@ -28,7 +28,8 @@ import {
   Flag,
   TrendingUp,
   TrendingDown,
-  Compass
+  Compass,
+  Target
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -42,7 +43,7 @@ export default function PreparePage() {
       {/* Page Header */}
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
@@ -65,7 +66,7 @@ export default function PreparePage() {
         <section>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="size-6 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">The Gold Standard: A note on top schools</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">The Gold Standard: A note on top schools</h2>
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-8">
@@ -80,20 +81,20 @@ export default function PreparePage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <Flag className="size-6 text-white" />
-            <h2 className="text-xl font-black stamped-dossier text-white">Contract Flags</h2>
+            <h2 className="text-xl font-black stamped-dossier text-white uppercase">Contract Flags</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1">red flag</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 uppercase">red flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">orange flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
@@ -104,11 +105,12 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <FileText className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">1. The Contract: Hard realities & fine print</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">1. The Contract: Hard realities & fine print</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">You need to ensure you have full contractual clarity, are you clear on all the specific definitions and contract terms? DON'T move forward to a signed agreement when the baseline protections are left open to interpretation.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* RED FLAGS FIRST */}
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
@@ -120,6 +122,18 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
+            <Card className="glass border-red-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
+                <Flag className="size-4 fill-red-500 text-red-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>A hallmark of a professional institution is a published, transparent pay scale. If a school refuses to show you where you sit on a scale, or if "salary is based on experience" without a clear framework, you are likely being low-balled.</p>
+                <p>Furthermore, check for specific mention of an <strong>Annual Pay Review</strong>. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
+              </CardContent>
+            </Card>
+
+            {/* ORANGE FLAGS NEXT */}
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
@@ -134,24 +148,7 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            <Card className="glass border-red-500/20 md:col-span-2">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
-                <Flag className="size-4 fill-red-500 text-red-500" />
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
-                  <p>A hallmark of a professional institution is a published, transparent pay scale. If a school refuses to show you where you sit on a scale, or if "salary is based on experience" without a clear framework, you are likely being low-balled.</p>
-                  <p>Furthermore, check for specific mention of an <strong>Annual Pay Review</strong>. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
-                </div>
-                <div className="p-6 bg-primary/5 rounded-sm border border-primary/10 flex flex-col justify-center">
-                  <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase mb-3">Diagnostic signal</p>
-                  <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed">"If the school says pay increases are 'discretionary' or 'performance-linked' without a clear rubric, assume they won't happen. Elite schools bake cost-of-living adjustments into their operational budgets."</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20 md:col-span-2">
+            <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
@@ -168,7 +165,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <PackageCheck className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">2. Logistical payload: The relocation crater</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">2. Logistical payload: The relocation crater</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Onboarding and shipping are the most financially dangerous phases of an international move.</p>
 
@@ -204,11 +201,23 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <ShieldAlert className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">3. Long-term mission survival: Avoiding burnout</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">3. Long-term mission survival: Avoiding burnout</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* RED FLAG FIRST */}
+            <Card className="glass border-red-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
+                <Flag className="size-4 fill-red-500 text-red-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>"Free schooling" often excludes Capital Levies, books, uniforms, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
+              </CardContent>
+            </Card>
+
+            {/* ORANGE FLAGS NEXT */}
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
@@ -231,16 +240,6 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            <Card className="glass border-red-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
-                <Flag className="size-4 fill-red-500 text-red-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
-                <p>"Free schooling" often excludes Capital Levies, books, uniforms, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
-              </CardContent>
-            </Card>
-
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
@@ -258,12 +257,22 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <Briefcase className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">4. Professional reality: The daily grind</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">4. Professional reality: The daily grind</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* RED FLAG FIRST */}
+            <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
+                <Flag className="size-4 fill-red-500 text-red-500" />
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
+            </div>
+
+            {/* ORANGE FLAGS NEXT */}
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">The "floating" teacher</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">'floating' teacher</h4>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
@@ -275,13 +284,6 @@ export default function PreparePage() {
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">The number one cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
-            <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
-              <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
-                <Flag className="size-4 fill-red-500 text-red-500" />
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
-            </div>
           </div>
         </section>
 
@@ -289,7 +291,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <MessageSquareQuote className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">Field anecdotes: Raw intelligence</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">Field anecdotes: Raw intelligence</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Direct reports from the field on medical and bureaucratic realities.</p>
           
@@ -314,7 +316,7 @@ export default function PreparePage() {
               <CardContent className="pt-8 space-y-4">
                 <Eye className="size-6 text-primary opacity-50" />
                 <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
-                  "My eye test for my driving license required me to just be able see well enough to place my credit card on their card reader!"
+                  "My eye test for my driving licence required me to just be able see well enough to place my credit card on their card reader!"
                 </p>
               </CardContent>
             </Card>
@@ -325,7 +327,7 @@ export default function PreparePage() {
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">5. Essential Questions</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">5. Essential Questions</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Flush out the truth before you pack your bags.</p>
           
