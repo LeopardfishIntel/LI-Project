@@ -70,20 +70,20 @@ export default function PreparePage() {
         {/* Legend for Flags */}
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-xl font-black stamped-dossier text-white uppercase">Contract Flags</h2>
+            <h2 className="text-xl font-black stamped-dossier text-white normal-case">Contract flags</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 uppercase">red flag</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1">red flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1">orange flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
@@ -94,14 +94,14 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <FileText className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">1. The Contract: Hard realities & fine print</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">1. The Contract: Hard realities</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">You need to ensure you have full contractual clarity, are you clear on all the specific definitions and contract terms? DON'T move forward to a signed agreement when the baseline protections are left open to interpretation.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -112,7 +112,7 @@ export default function PreparePage() {
 
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -123,7 +123,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -137,7 +137,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -152,14 +152,14 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <PackageCheck className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">2. Logistical payload: The relocation crater</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">2. Logistical payload: The relocation crater</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Onboarding and shipping are the most financially dangerous phases of an international move.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
@@ -172,7 +172,7 @@ export default function PreparePage() {
 
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
@@ -188,14 +188,14 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <ShieldAlert className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">3. Long-term mission survival: Avoiding burnout</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">3. Long-term survival: Avoid burnout</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -206,7 +206,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -217,7 +217,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><HeartPulse className="size-5 text-primary" /> The "co-pay creep"</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><HeartPulse className="size-5 text-primary" /> The "co-pay creep"</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -228,7 +228,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -243,7 +243,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <Briefcase className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">4. Professional reality: The daily grind</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">4. Professional reality: The daily grind</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
@@ -284,7 +284,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <MessageSquareQuote className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">Field anecdotes</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Field anecdotes</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Direct reports from the field on medical and bureaucratic realities.</p>
           
@@ -320,7 +320,7 @@ export default function PreparePage() {
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">5. Essential Questions</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">5. Essential Questions</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Flush out the truth before you pack your bags.</p>
           
