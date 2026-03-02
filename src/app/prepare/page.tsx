@@ -1,5 +1,7 @@
+
 'use client';
 
+import Link from 'next/link';
 import { 
   FileText, 
   TrendingDown, 
@@ -25,23 +27,35 @@ import {
   ShieldAlert,
   Clock,
   Zap,
-  HeartPulse
+  HeartPulse,
+  FileCheck
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export default function PreparePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       {/* Page Header */}
-      <div className="mb-16 text-center">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-white">
-          4. Are you prepared?
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
-          We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
-        </p>
+      <div className="mb-16 text-center space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
+            4. Are you prepared?
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
+            We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
+          </p>
+        </div>
+        
+        <div className="flex justify-center">
+          <Button asChild size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
+            <Link href="/prepare/checklist">
+              <FileCheck className="mr-3 size-5" /> Download strategic checksheet
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="max-w-5xl mx-auto space-y-16">
