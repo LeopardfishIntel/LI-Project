@@ -79,7 +79,7 @@ export default function PreparePage() {
               <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-3">
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers.</p>
                 <div className="p-3 bg-background/50 rounded-sm border border-white/5">
-                  <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-1">The soft reality</p>
+                  <p className="text-[10px] font-black text-accent tracking-widest mb-1">The soft reality</p>
                   <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. make sure you understand your situation before you go.</p>
                 </div>
               </CardContent>
@@ -95,7 +95,7 @@ export default function PreparePage() {
                   <p>Furthermore, check for specific mention of an <strong>Annual Pay Review</strong>. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
                 </div>
                 <div className="p-4 bg-primary/5 rounded-sm border border-primary/10 flex flex-col justify-center">
-                  <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2">Diagnostic Signal</p>
+                  <p className="text-[10px] font-black text-primary tracking-widest mb-2">Diagnostic signal</p>
                   <p className="text-xs text-muted-foreground italic">"If the school says pay increases are 'discretionary' or 'performance-linked' without a clear rubric, assume they won't happen. Elite schools bake cost-of-living adjustments into their operational budgets."</p>
                 </div>
               </CardContent>
@@ -109,7 +109,7 @@ export default function PreparePage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-accent mb-4">The USD Peg List (2026 status)</h4>
+                <h4 className="text-[10px] font-black tracking-widest text-accent mb-4">The USD Peg List (2026 status)</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {[
                     { country: 'UAE', rate: '3.67' },
@@ -127,9 +127,9 @@ export default function PreparePage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <span className="text-[10px] font-black uppercase text-muted-foreground mr-2">Official tender:</span>
+                <span className="text-[10px] font-black text-muted-foreground mr-2">Official tender:</span>
                 {['Bahamas', 'Bermuda', 'Ecuador', 'El Salvador', 'Panama', 'Turks and Caicos', 'BVI'].map(country => (
-                  <Badge key={country} variant="outline" className="bg-accent/5 border-accent/20 text-accent font-bold uppercase text-[9px] px-2">{country}</Badge>
+                  <Badge key={country} variant="outline" className="bg-accent/5 border-accent/20 text-accent font-bold text-[9px] px-2">{country}</Badge>
                 ))}
               </div>
               <p className="text-xs text-muted-foreground italic bg-background/30 p-3 rounded-sm">Note: If your destination isn't on this list, you must ask how the school mitigates exchange rate volatility.</p>
@@ -150,12 +150,12 @@ export default function PreparePage() {
               <h3 className="text-sm font-bold text-white flex items-center gap-2"><PlaneLanding className="size-4 text-primary" /> The family runway (6+ weeks)</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">For a single teacher, the "Gap Month" is a challenge. For a family, it is a potential crisis. Most schools pay in arrears; if you arrive on 1st August, your first full salary may not hit until 30th August.</p>
               <div className="p-4 glass border-red-500/20 bg-red-500/5 rounded-sm">
-                <p className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-2">Tactical reserve requirement</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-2">Tactical reserve requirement</p>
                 <p className="text-xl font-bold text-white">£4,000 – £6,000</p>
                 <p className="text-xs text-muted-foreground mt-1">Minimum accessible liquid cash for a family move.</p>
               </div>
               <div className="p-4 glass border-white/5 bg-background/20 rounded-sm">
-                <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2">Upfront & hidden costs</p>
+                <p className="text-[10px] font-black text-primary tracking-widest mb-2">Upfront & hidden costs</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Plus groceries and home basics before any reimbursement protocol triggers.</p>
               </div>
             </div>
@@ -164,7 +164,7 @@ export default function PreparePage() {
               <h3 className="text-sm font-bold text-white flex items-center gap-2"><ShoppingCart className="size-4 text-primary" /> The empty flat & the IKEA test</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
               <div className="p-4 glass border-accent/20 bg-accent/5 rounded-sm">
-                <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-2">The intel</p>
+                <p className="text-[10px] font-black text-accent tracking-widest mb-2">The intel</p>
                 <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency. That £1,000 'settling-in allowance' may only cover a family-sized refrigerator.</p>
               </div>
             </div>
@@ -179,16 +179,16 @@ export default function PreparePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-4 glass rounded-sm space-y-2">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">The "floating" teacher</h4>
+              <h4 className="text-[10px] font-black tracking-widest text-primary">The "floating" teacher</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
             </div>
             <div className="p-4 glass rounded-sm space-y-2">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Administrative bloat</h4>
+              <h4 className="text-[10px] font-black tracking-widest text-primary">Administrative bloat</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
             <div className="p-4 glass rounded-sm space-y-2">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Parental overreach</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools.</p>
+              <h4 className="text-[10px] font-black tracking-widest text-primary">Parental overreach</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
             </div>
           </div>
         </section>
@@ -257,7 +257,7 @@ export default function PreparePage() {
           <div className="mt-8 p-6 glass border-accent/20 bg-accent/5 rounded-sm flex items-start gap-4">
             <div className="flex-shrink-0 mt-1"><Info className="size-6 text-accent" /></div>
             <div className="space-y-2">
-              <h4 className="text-sm font-black uppercase tracking-widest text-accent">Insurance vetting strategy</h4>
+              <h4 className="text-sm font-black tracking-widest text-accent">Insurance vetting strategy</h4>
               <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                 You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A "Basic" local plan is often useless for expats. Always request the full policy document before signing.
               </p>
