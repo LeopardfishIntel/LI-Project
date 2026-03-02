@@ -68,7 +68,7 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-3">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
-                <p>If a school threatens legal action for discussing "internal school climate" even after you leave, it is a hallmark of paranoid management. This usually suggests a board with a history of turnover problems.</p>
+                <p>If a school threatens legal action for discussing "internal school climate" even after you leave, it is a hallmark of paranoid management. This usually suggests a board with a history of turnover problems who would rather silence staff than fix the culture.</p>
               </CardContent>
             </Card>
 
@@ -80,7 +80,7 @@ export default function PreparePage() {
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers.</p>
                 <div className="p-3 bg-background/50 rounded-sm border border-white/5">
                   <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-1">The soft reality</p>
-                  <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. Make sure you understand your situation before you go.</p>
+                  <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. make sure you understand your situation before you go.</p>
                 </div>
               </CardContent>
             </Card>
@@ -154,12 +154,10 @@ export default function PreparePage() {
                 <p className="text-xl font-bold text-white">£4,000 – £6,000</p>
                 <p className="text-xs text-muted-foreground mt-1">Minimum accessible liquid cash for a family move.</p>
               </div>
-              <ul className="text-xs space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary font-bold">Upfront & hidden costs:</span> 
-                  Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit, car rental fees and deposits, plus groceries and home basics before any reimbursement protocol triggers.
-                </li>
-              </ul>
+              <div className="p-4 glass border-white/5 bg-background/20 rounded-sm">
+                <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2">Upfront & hidden costs</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Plus groceries and home basics before any reimbursement protocol triggers.</p>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -182,11 +180,11 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-4 glass rounded-sm space-y-2">
               <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">The "floating" teacher</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">Pushing a trolley between rooms can eat 2–3 hours of your week. Is this factored into your contact hours?</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
             </div>
             <div className="p-4 glass rounded-sm space-y-2">
               <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Administrative bloat</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning.</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
             <div className="p-4 glass rounded-sm space-y-2">
               <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Parental overreach</h4>
@@ -216,7 +214,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Coins className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
+                  " Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
                 </p>
               </CardContent>
             </Card>
