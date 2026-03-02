@@ -17,6 +17,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
 
     const canRunAnalysis = useMemo(() => {
         if (!schools || schools.length < 2) return false;
+        // Check if at least two selected schools have a non-zero salary entered
         const filledCount = schools.filter((_, idx) => {
             const val = netSalaries[idx];
             return val && val.trim() !== '' && parseInt(val) > 0;
@@ -29,6 +30,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
         setLoading(true);
         setResult(null);
 
+        // Only send the schools that actually have salary data entered
         const activeIndices = schools
             .map((_, idx) => idx)
             .filter(idx => netSalaries[idx] && netSalaries[idx].trim() !== '' && parseInt(netSalaries[idx]) > 0);
