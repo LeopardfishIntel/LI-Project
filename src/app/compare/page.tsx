@@ -145,24 +145,6 @@ function SchoolComparisonColumn({
     schools: School[] | null;
     comparisonResults: Record<string, ComparisonResult>;
 }) {
-    const [glowActive, setGlowActive] = useState(true);
-    const [timerStarted, setTimerStarted] = useState(false);
-
-    useEffect(() => {
-        let timeout: NodeJS.Timeout;
-        if (netSalary && !timerStarted) {
-            setTimerStarted(true);
-            timeout = setTimeout(() => {
-                setGlowActive(false);
-            }, 10000);
-        }
-        if (!netSalary) {
-            setGlowActive(true);
-            setTimerStarted(false);
-        }
-        return () => clearTimeout(timeout);
-    }, [netSalary, timerStarted]);
-
     const currency = COUNTRY_TO_CURRENCY[school.country] || 'USD';
     const rate = CONVERSION_RATES[currency] || 1;
 
@@ -228,10 +210,7 @@ function SchoolComparisonColumn({
                         placeholder="e.g., 5000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
-                        className={cn(
-                            "bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500",
-                            glowActive && "animate-glow animate-glitch border-primary/50 shadow-[0_0_15px_rgba(249,115,22,0.3)]"
-                        )}
+                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold transition-all duration-500"
                     />
                 </div>
 
@@ -392,17 +371,9 @@ export default function ComparePage() {
     
     useEffect(() => {
         if (schools && schools.length > 0 && selectedSchoolIds.length === 0) {
-            // Randomly select 3 schools using Fisher-Yates shuffle
-            const shuffled = [...schools];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            const initialSchoolIds = shuffled.slice(0, 3).map(s => s.id);
-            
-            if (initialSchoolIds.length > 0) {
-                setSelectedSchoolIds(initialSchoolIds);
-            }
+            const shuffled = [...schools].sort(() => 0.5 - Math.random());
+            const initialIds = shuffled.slice(0, 3).map(s => s.id);
+            setSelectedSchoolIds(initialIds);
         }
     }, [schools, selectedSchoolIds.length]);
 
@@ -432,7 +403,9 @@ export default function ComparePage() {
     };
 
     const handleFamilyStatusChange = (index: number, status: FamilyStatus) => {
-        setFamilyStatuses([status, status, status]);
+        const newStatuses = [...familyStatuses];
+        newStatuses[index] = status;
+        setFamilyStatuses(newStatuses);
     };
     
     const getNumericValueUSD = (school: School, metric: ComparisonMetric, index: number) => {
@@ -475,7 +448,8 @@ export default function ComparePage() {
         if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
         const values = selectedSchools.map((school, i) => getNumericValueUSD(school, metric, i));
         
-        if (values.every(v => v === values[0])) return selectedSchools.map(() => 'neutral');
+        const allSame = values.every(v => v === values[0]);
+        if (allSame) return selectedSchools.map(() => 'neutral');
 
         const sortedValues = [...values].sort((a, b) => higherIsBetter ? b - a : a - b);
         const bestValue = sortedValues[0];

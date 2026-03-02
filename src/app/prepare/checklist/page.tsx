@@ -16,7 +16,7 @@ export default function StrategicChecksheetPage() {
         { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP, or is there a clause for inflation/devaluation?" },
         { label: "The \"Contact Minute\" Cap", sub: "Is the exact weekly teaching time in minutes stated?" },
         { label: "PPA Guarantee", sub: "Is Planning, Prep, and Assessment time \"protected\" in the contract?" },
-        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silience you from discussing work-life balance?" },
+        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silence you from discussing work-life balance?" },
         { label: "Gratuity Calculation", sub: "Is the End-of-Service bonus based on Basic salary or the Full package? Is it paid with the final salary?" },
         { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits (not just a brochure)? Check for Dental/Chronic/Co-pays." }
       ]
@@ -54,7 +54,6 @@ export default function StrategicChecksheetPage() {
 
   return (
     <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-primary/20">
-      {/* UI Navigation - Hidden on Print */}
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 mb-12 print:hidden">
         <Button variant="outline" asChild className="border-black/20 hover:bg-black/5 text-black rounded-sm px-6">
           <Link href="/prepare">
@@ -68,10 +67,7 @@ export default function StrategicChecksheetPage() {
         </div>
       </div>
 
-      {/* Printable Area */}
       <div className="max-w-4xl mx-auto border-[4px] border-black p-8 md:p-16 space-y-12 relative overflow-hidden bg-white shadow-2xl print:shadow-none print:border-[2px]">
-        
-        {/* Dossier Header Decoration */}
         <div className="absolute top-0 right-0 p-6 opacity-10 rotate-[15deg] pointer-events-none">
           <Binoculars className="size-48 text-black" />
         </div>
@@ -88,14 +84,12 @@ export default function StrategicChecksheetPage() {
           </div>
         </header>
 
-        {/* Tactical Advice Header */}
         <div className="bg-gray-100 p-6 border-l-8 border-black">
           <p className="text-sm font-bold leading-relaxed italic">
             "Verification is the difference between an adventure and an ordeal. Use this checksheet to validate institutional promises against regional realities. If a school avoids these specific points, assume the risk is being transferred to you."
           </p>
         </div>
 
-        {/* Checksheet Phases */}
         <div className="space-y-12">
           {phases.map((phase, idx) => (
             <section key={idx} className="space-y-6">
@@ -107,9 +101,7 @@ export default function StrategicChecksheetPage() {
               <div className="grid gap-4">
                 {phase.items.map((item, iIdx) => (
                   <div key={iIdx} className="flex items-start gap-4 group p-2 -ml-2 rounded-sm transition-colors hover:bg-gray-50">
-                    <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 flex items-center justify-center bg-white group-hover:border-primary/50">
-                      {/* Checkbox placeholder */}
-                    </div>
+                    <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 flex items-center justify-center bg-white group-hover:border-primary/50"></div>
                     <div className="space-y-1">
                       <p className="text-base font-black uppercase tracking-tight leading-tight">{item.label}</p>
                       <p className="text-sm text-gray-600 font-medium leading-relaxed">{item.sub}</p>
@@ -121,7 +113,6 @@ export default function StrategicChecksheetPage() {
           ))}
         </div>
 
-        {/* Footer / Auth Seal */}
         <footer className="mt-16 pt-8 border-t-2 border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="size-10 text-black" />
@@ -135,8 +126,6 @@ export default function StrategicChecksheetPage() {
           </div>
         </footer>
       </div>
-      
-      {/* Visual background element for UI view only */}
       <div className="fixed inset-0 -z-10 bg-[#080c18] print:hidden"></div>
     </div>
   );

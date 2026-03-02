@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import { 
   FileText, 
-  Briefcase, 
   Search, 
   Trophy, 
   AlertTriangle, 
@@ -17,7 +16,6 @@ import {
   Info,
   Banknote,
   Milestone,
-  ExternalLink,
   PackageCheck,
   LogOut,
   GraduationCap,
@@ -28,7 +26,8 @@ import {
   Flag,
   TrendingUp,
   TrendingDown,
-  Compass
+  Compass,
+  Briefcase
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -38,7 +37,6 @@ import { cn } from '@/lib/utils';
 export default function PreparePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
-      {/* Page Header */}
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white normal-case">
@@ -52,7 +50,6 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-16">
         
-        {/* The Gold Standard Note */}
         <section>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="size-6 text-primary" />
@@ -67,7 +64,6 @@ export default function PreparePage() {
           </Card>
         </section>
 
-        {/* Legend for Flags */}
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-xl font-black stamped-dossier text-white normal-case">Contract flags</h2>
@@ -90,7 +86,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* 1. The Contract */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <FileText className="size-7 text-accent" />
@@ -148,7 +143,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* 2. Logistical Payload */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <PackageCheck className="size-7 text-primary" />
@@ -184,7 +178,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* 3. Long-term Survival */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <ShieldAlert className="size-7 text-primary" />
@@ -239,7 +232,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* 4. Professional Reality */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <Briefcase className="size-7 text-primary" />
@@ -271,7 +263,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Strategic Checksheet Section */}
         <div className="space-y-12">
             <div className="flex justify-center">
                 <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
@@ -281,7 +272,6 @@ export default function PreparePage() {
                 </Button>
             </div>
 
-            {/* Field Anecdotes */}
             <section className="space-y-8">
                 <div className="flex items-center gap-3 mb-2">
                     <MessageSquareQuote className="size-7 text-primary" />
@@ -318,11 +308,10 @@ export default function PreparePage() {
             </section>
         </div>
 
-        {/* 5. Essential Questions */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">5. Essential Questions</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">5. Essential questions</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Flush out the truth before you pack your bags.</p>
           

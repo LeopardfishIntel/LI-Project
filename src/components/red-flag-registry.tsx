@@ -1,4 +1,5 @@
-import { ShieldAlert, Lock, Banknote, GraduationCap, HeartPulse } from 'lucide-react';
+
+import { Lock, Banknote, GraduationCap, HeartPulse, ShieldAlert } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function RedFlagRegistry() {
