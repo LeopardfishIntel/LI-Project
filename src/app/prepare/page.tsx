@@ -39,7 +39,7 @@ export default function PreparePage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white normal-case">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white normal-case">
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
