@@ -226,7 +226,7 @@ export default function PreparePage() {
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
-                <p>Even with "Premium" insurance, a 20% co-pay on a $5,000 emergency surgery in a private expat hospital is a $1,000 out-of-pocket hit. This is the #1 medical red flag.</p>
+                <p>Even with "Premium" insurance, a 20% co-pay on a £5,000 emergency surgery in a private expat hospital is a £1,000 out-of-pocket hit. This is the number one medical red flag.</p>
                 <p>Always request the "Schedule of Benefits" to check the deductible (excess) for both inpatient and outpatient care before signing.</p>
               </CardContent>
             </Card>
@@ -273,7 +273,7 @@ export default function PreparePage() {
                 <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Administrative bloat</h4>
                 <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Orange flag</Badge>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">The number one cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
             <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
               <div className="flex items-center justify-between">
