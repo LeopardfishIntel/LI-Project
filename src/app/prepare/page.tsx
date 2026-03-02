@@ -17,7 +17,9 @@ import {
   Lock,
   Stethoscope,
   Eye,
-  Info
+  Info,
+  Banknote,
+  RefreshCcw
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -59,7 +61,7 @@ export default function PreparePage() {
             <FileText className="size-6 text-accent" />
             <h2 className="text-2xl font-black stamped-dossier text-white">1. The Contract: Hard realities & fine print</h2>
           </div>
-          <p className="text-muted-foreground font-medium mb-6">The contract is designed to protect the school, not you. If the logistics are vague, the risk is yours.</p>
+          <p className="text-muted-foreground font-medium mb-6">The contract is designed to protect the school, not you. If the definitions are vague or missing, the risk is then entirely yours.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-white/5">
@@ -68,7 +70,7 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-3">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
-                <p>If a school threatens legal action for discussing "internal school climate" even after you leave, it is a hallmark of paranoid management. This usually suggests a board with a history of turnover problems who would rather silence staff than fix the culture.</p>
+                <p>If a school threatens legal action for discussing "internal school climate" even after you leave, it is a hallmark of paranoid management. This usually suggests a board with a history of turnover problems.</p>
               </CardContent>
             </Card>
 
@@ -80,11 +82,23 @@ export default function PreparePage() {
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers.</p>
                 <div className="p-3 bg-background/50 rounded-sm border border-white/5">
                   <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-1">The soft reality</p>
-                  <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference can still be used as leverage.</p>
+                  <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. Make sure you understand your situation before you go.</p>
                 </div>
-                <div className="p-3 bg-primary/5 rounded-sm border border-primary/10">
-                  <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1">The check</p>
-                  <p>Research the specific 2026 labour laws for your host country. A school that mentions "withholding references" as a penalty for resignation is often operating on the edge of local legality to keep staff trapped.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-white/5 md:col-span-2">
+              <CardHeader>
+                <CardTitle className="text-sm font-bold flex items-center gap-2 text-white"><Banknote className="size-4 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
+                  <p>A hallmark of a professional institution is a published, transparent pay scale. If a school refuses to show you where you sit on a scale, or if "salary is based on experience" without a clear framework, you are likely being low-balled.</p>
+                  <p>Furthermore, check for specific mention of an <strong>Annual Pay Review</strong>. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
+                </div>
+                <div className="p-4 bg-primary/5 rounded-sm border border-primary/10 flex flex-col justify-center">
+                  <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-2">Diagnostic Signal</p>
+                  <p className="text-xs text-muted-foreground italic">"If the school says pay increases are 'discretionary' or 'performance-linked' without a clear rubric, assume they won't happen. Elite schools bake cost-of-living adjustments into their operational budgets."</p>
                 </div>
               </CardContent>
             </Card>
@@ -153,9 +167,8 @@ export default function PreparePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
               <div className="p-4 glass border-accent/20 bg-accent/5 rounded-sm">
                 <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-2">The intel</p>
-                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
+                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency. That £1,000 'settling-in allowance' may only cover a family-sized refrigerator.</p>
               </div>
-              <p className="text-xs text-muted-foreground border-l-2 border-primary pl-4">"That £1,000 'settling-in allowance' may only cover a family-sized refrigerator."</p>
             </div>
           </div>
         </section>
@@ -222,7 +235,7 @@ export default function PreparePage() {
         <section className="space-y-6 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-6 text-accent" />
-            <h2 className="text-2xl font-black stamped-dossier text-white">4. Essential questions</h2>
+            <h2 className="text-2xl font-black stamped-dossier text-white">4. Essential Questions</h2>
           </div>
           <p className="text-muted-foreground font-medium mb-6">Flush out the truth before you pack your bags.</p>
           
@@ -248,7 +261,7 @@ export default function PreparePage() {
             <div className="space-y-2">
               <h4 className="text-sm font-black uppercase tracking-widest text-accent">Insurance vetting strategy</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A \"Basic\" local plan is often useless for expats. Always request the full policy document before signing.
+                You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A "Basic" local plan is often useless for expats. Always request the full policy document before signing.
               </p>
             </div>
           </div>
