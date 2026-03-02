@@ -119,7 +119,7 @@ export const schools: School[] = [
     ...getImage('singapore-american-school'),
     intel: {
       salary: { value: '$70k - $90k', score: 'good' },
-      housing: { value: 'Subsidised', provided: true },
+      housing: { value: 'Not Provided', provided: false },
       savingsPotential: { value: 'High', score: 'good' },
       curriculum: 'AP',
       studentTeacherRatio: '11:1',
