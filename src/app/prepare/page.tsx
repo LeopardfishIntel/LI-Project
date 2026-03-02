@@ -165,7 +165,7 @@ export default function PreparePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
               <div className="p-4 glass border-accent/20 bg-accent/5 rounded-sm">
                 <p className="text-[10px] font-black text-accent tracking-widest mb-2">The intel</p>
-                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency. That £1,000 'settling-in allowance' may only cover a family-sized refrigerator.</p>
+                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA website. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency. That £1,000 'settling-in allowance' may only cover a family-sized refrigerator.</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               "Is the relocation allowance paid as upfront cash on arrival, or via the first month’s payroll?",
-              "What is the exact weekly contact time in minutes? (Reject 'it varies').",
+              "What is the weekly cap on instructional contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment?",
               "Can I speak to a current teacher in my department, one-to-one, without a member of SLT present?",
               "What was the staff turnover rate in the last two academic years?",
               "Does the school pay for document legalisation and Apostille fees upfront?",
