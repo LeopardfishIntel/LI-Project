@@ -10,7 +10,7 @@ import {
 } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { teacherProfile as mockProfile } from '@/lib/mock-data';
+import type { TeacherProfile } from '@/lib/types';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShieldAlert } from 'lucide-react';
 
 export default function SignupPage() {
   const auth = useAuth();
@@ -44,7 +44,7 @@ export default function SignupPage() {
       return;
     }
     if (!auth) {
-      setError("Authentication service is not ready. Please try again in a moment.");
+      setError("Uplink failure: Authentication service is offline.");
       return;
     }
     setLoading(true);
@@ -66,12 +66,19 @@ export default function SignupPage() {
       // 3. Create their teacher profile document in Firestore
       if (firestore) {
         const profileRef = doc(firestore, 'users', user.uid, 'teacherProfile', user.uid);
-        const { memberSince, ...restOfMockProfile } = mockProfile;
-        const newProfile = {
-          ...restOfMockProfile,
+        const newProfile: Omit<TeacherProfile, 'memberSince' | 'id'> & {memberSince: Date; id: string} = {
           id: user.uid,
           fullName: fullName,
-          memberSince: new Date(), // Use current date for new members
+          avatarUrl: '',
+          isVerifiedTeacher: false,
+          familyStatus: 'Single',
+          ageGroup: '20-34',
+          memberSince: new Date(),
+          yearsOfExperience: 0,
+          qualifications: [],
+          linkedInProfileUrl: '',
+          preferredRegions: [],
+          preferredCountries: [],
         };
         setDocumentNonBlocking(profileRef, newProfile, { merge: true });
       }
@@ -79,53 +86,63 @@ export default function SignupPage() {
       // 4. Redirect to the profile page
       router.push('/profile');
     } catch (err: any) {
-      setError('Failed to create account. The email may already be in use.');
-      console.error(err);
+      let message = 'Failed to create account. Please verify your details.';
+      if (err.code === 'auth/email-already-in-use') {
+        message = 'This email is already registered in our database.';
+      } else if (err.code === 'auth/weak-password') {
+        message = 'Password strength insufficient. Minimum 6 characters required.';
+      } else if (err.code === 'auth/invalid-email') {
+          message = 'The email address provided is not a valid format.';
+      }
+      setError(message);
       setLoading(false);
+      // No console.error here to prevent Next.js overlay
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] py-12">
-      <Card className="mx-auto max-w-sm w-full bg-card/70 backdrop-blur-sm border-border">
+    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] py-12 px-4">
+      <Card className="mx-auto max-w-sm w-full glass border-white/10 shadow-2xl">
         <CardHeader>
-          <CardTitle className="text-xl">Sign Up</CardTitle>
-          <CardDescription>
-            Enter your information to create an account. Use your institutional
-            email for quicker verification.
+          <CardTitle className="text-2xl stamped-dossier text-primary">Register</CardTitle>
+          <CardDescription className="text-muted-foreground font-medium">
+            Create your agent profile to access advanced due diligence tools.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertTitle>Signup Failed</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="mb-6 bg-destructive/10 border-destructive/20 text-destructive">
+              <ShieldAlert className="h-4 w-4" />
+              <AlertTitle className="text-[10px] font-black uppercase tracking-widest">Protocol Error</AlertTitle>
+              <AlertDescription className="text-xs font-bold leading-relaxed">{error}</AlertDescription>
             </Alert>
           )}
           <form onSubmit={handleSignup} className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="first-name">First name</Label>
+                <Label htmlFor="first-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">First name</Label>
                 <Input
                   id="first-name"
                   placeholder="Max"
                   required
                   value={firstName}
                   onChange={e => setFirstName(e.target.value)}
+                  className="bg-background/50 border-white/10 rounded-sm h-10"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="last-name">Last name</Label>
+                <Label htmlFor="last-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Last name</Label>
                 <Input
                   id="last-name"
                   placeholder="Robinson"
                   value={lastName}
                   onChange={e => setLastName(e.target.value)}
+                  className="bg-background/50 border-white/10 rounded-sm h-10"
                 />
               </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Institutional Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -133,32 +150,31 @@ export default function SignupPage() {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                className="bg-background/50 border-white/10 rounded-sm h-10"
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Password</Label>
               <Input
                 id="password"
                 type="password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                className="bg-background/50 border-white/10 rounded-sm h-10"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-11 rounded-sm mt-2" disabled={loading}>
               {loading ? (
-                <Loader2 className="animate-spin" />
+                <Loader2 className="animate-spin size-4" />
               ) : (
-                'Create an account'
+                'Create account'
               )}
             </Button>
-            <Button variant="outline" className="w-full" disabled>
-              Sign up with LinkedIn
-            </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-6 text-center text-xs font-medium text-muted-foreground">
             Already have an account?{' '}
-            <Link href="/login" className="underline">
+            <Link href="/login" className="text-primary hover:underline font-bold">
               Sign in
             </Link>
           </div>
