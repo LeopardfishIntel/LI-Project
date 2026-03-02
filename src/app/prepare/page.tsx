@@ -22,18 +22,15 @@ import {
   GraduationCap,
   Landmark,
   ShieldAlert,
-  Clock,
   HeartPulse,
   FileCheck,
   Flag,
   TrendingUp,
   TrendingDown,
-  Compass,
-  Target
+  Compass
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -58,7 +55,7 @@ export default function PreparePage() {
         <section>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="size-6 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">The Gold Standard: A note on top schools</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The Gold Standard: Top schools</h2>
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-8">
@@ -273,7 +270,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Download Button Relocated */}
+        {/* Download Button */}
         <div className="flex justify-center pt-8">
           <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
             <Link href="/prepare/checklist">
