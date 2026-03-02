@@ -1,7 +1,15 @@
-
+/**
+ * =================================================================================
+ * Firebase Security Rules for "Know Before You Go" (Tactical Rebuild)
+ * =================================================================================
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // =====================================================================
+    // Helper Functions
+    // =====================================================================
 
     function isSignedIn() {
       return request.auth != null;
@@ -15,6 +23,14 @@ service cloud.firestore {
       return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
+    function isVerifiedTeacher() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_verifiedTeachers/$(request.auth.uid));
+    }
+
+    // =====================================================================
+    // User Profiles
+    // =====================================================================
+
     match /users/{userId}/teacherProfile/{profileId} {
       allow get, list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.id == userId;
@@ -22,29 +38,87 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
     }
 
+    // =====================================================================
+    // Institutional Data
+    // =====================================================================
+
     match /schools/{schoolId} {
       allow read: if true;
       allow write: if isAdmin();
+
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if isVerifiedTeacher() && request.resource.data.authorTeacherProfileId == request.auth.uid;
+        allow update, delete: if isSignedIn() && resource.data.authorTeacherProfileId == request.auth.uid;
+      }
     }
 
-    match /thresholds_2026/{id} {
+    match /locations_costOfLiving/{locationId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    match /exchange_rates_2026/{id} {
+    // =====================================================================
+    // Intelligence Pipeline
+    // =====================================================================
+
+    match /pending_intel/{reportId} {
+      allow create: if isSignedIn();
+      allow read, write: if isAdmin();
+    }
+
+    match /verified_intel/{intelId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    match /roles_admin/{userId} {
-      allow get: if isOwner(userId);
-      allow list, create, update, delete: if isAdmin();
+    // =====================================================================
+    // Community & Forum
+    // =====================================================================
+
+    match /forum_categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
-    
+
+    match /forum_posts/{postId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.authorTeacherProfileId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.authorTeacherProfileId == request.auth.uid;
+
+      match /replies/{replyId} {
+        allow read: if true;
+        allow create: if isSignedIn() && request.resource.data.authorTeacherProfileId == request.auth.uid;
+        allow update, delete: if isSignedIn() && resource.data.authorTeacherProfileId == request.auth.uid;
+      }
+    }
+
+    // =====================================================================
+    // System Config & Metrics
+    // =====================================================================
+
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /app_metrics/{metricId} {
       allow get: if true;
       allow write: if metricId == 'page_views';
+    }
+
+    // =====================================================================
+    // Roles (DBAC)
+    // =====================================================================
+
+    match /roles_admin/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list, write: if isAdmin();
+    }
+
+    match /roles_verifiedTeachers/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list, write: if isAdmin();
     }
   }
 }
