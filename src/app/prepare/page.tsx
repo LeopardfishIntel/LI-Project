@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { 
   FileText, 
-  TrendingDown, 
   Briefcase, 
   Search, 
   Trophy, 
@@ -25,7 +24,6 @@ import {
   Landmark,
   ShieldAlert,
   Clock,
-  Zap,
   HeartPulse,
   FileCheck
 } from 'lucide-react';
@@ -213,6 +211,7 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>"Free schooling" often excludes Capital Levies ($500–$1,000/yr), books, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
               </CardContent>
+            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
