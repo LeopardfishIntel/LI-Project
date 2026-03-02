@@ -80,21 +80,21 @@ export default function PreparePage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <Flag className="size-6 text-white" />
-            <h2 className="text-xl font-black stamped-dossier text-white">Contract Flags to be aware of</h2>
+            <h2 className="text-xl font-black stamped-dossier text-white">Contract Flags</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-red-500 animate-pulse" /></div>
               <div>
-                <p className="text-xs font-black text-red-400 tracking-widest mb-1">red flag: one or two are enough for you to seriously consider turning down your offer</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">Critical risk. Direct impact on legal safety, professional autonomy, or fundamental financial viability. Treat as a mission-breaker without total mitigation.</p>
+                <p className="text-xs font-black text-red-400 tracking-widest mb-1 uppercase">Red flag</p>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down you offer</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
               <div>
-                <p className="text-xs font-black text-amber-400 tracking-widest mb-1">orange flag: take caution consider what you can do to mitigate the impact</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">Logistical or financial implication. Requires substantial capital reserves or specific contractual addendums to manage effectively.</p>
+                <p className="text-xs font-black text-amber-400 tracking-widest mb-1 uppercase">Orange flag</p>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">take caution consider what you can do to mitigate the impact</p>
               </div>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers in certain territories.</p>
-                <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. Make sure you understand your situation before you go.</p>
+                <p>In certain jurisdictions, the legal requirement for an employer to "release" your visa or provide a specific format of reference may differ significantly from your home country. Ensure you verify the local exit protocols before deployment.</p>
               </CardContent>
             </Card>
           </div>
