@@ -7,7 +7,6 @@ import {
   Search, 
   Trophy, 
   AlertTriangle, 
-  Coins, 
   PlaneLanding, 
   ShoppingCart,
   MessageSquareQuote, 
@@ -26,12 +25,16 @@ import {
   Clock,
   HeartPulse,
   FileCheck,
-  Flag
+  Flag,
+  TrendingUp,
+  TrendingDown,
+  Compass
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function PreparePage() {
   return (
@@ -73,11 +76,11 @@ export default function PreparePage() {
           </Card>
         </section>
 
-        {/* Intelligence Protocol Legend */}
+        {/* Legend for Flags */}
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <Flag className="size-6 text-white" />
-            <h2 className="text-xl font-black stamped-dossier text-white">Intelligence protocol</h2>
+            <h2 className="text-xl font-black stamped-dossier text-white">Contract Flags to be aware of</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
@@ -301,7 +304,7 @@ export default function PreparePage() {
             </Card>
             <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
               <CardContent className="pt-8 space-y-4">
-                <Coins className="size-6 text-primary opacity-50" />
+                <Stethoscope className="size-6 text-primary opacity-50" />
                 <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
                   "Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
                 </p>
