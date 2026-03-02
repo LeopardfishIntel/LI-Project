@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -306,7 +305,7 @@ export default function PreparePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              "What is the weekly cap on instructional contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment?",
+              "What is the weekly cap on teacher contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment? For example, being excessively used for cover can eat into your prep time.",
               "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only?",
               "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement with the major international hospitals in the city?",
               "Are all mandatory fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
