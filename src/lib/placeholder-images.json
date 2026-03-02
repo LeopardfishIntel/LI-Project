@@ -67,6 +67,12 @@
       "imageHint": "crossroads path"
     },
     {
+      "id": "prepare-step",
+      "description": "A focused explorer reviewing a map with a compass, representing strategic preparation.",
+      "imageUrl": "https://images.unsplash.com/photo-1454165833767-027ffeaae608?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "strategic preparation"
+    },
+    {
       "id": "homepage-hero",
       "description": "A scenic view of a lake with mountains in the background, representing travel and adventure.",
       "imageUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop",

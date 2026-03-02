@@ -1,10 +1,11 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FieldIntelligenceTrigger } from '@/components/field-intelligence-trigger';
 
@@ -24,6 +25,7 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
+      icon: <Target className="w-8 h-8 text-primary" />,
       desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
@@ -32,6 +34,7 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
+      icon: <Calculator className="w-8 h-8 text-primary" />,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -40,10 +43,20 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: <GitCompare className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
       label: 'Final verdict'
+    },
+    {
+      id: '04',
+      title: 'Prepare',
+      icon: <ShieldCheck className="w-8 h-8 text-primary" />,
+      desc: "The due diligence checklist. From hidden education costs to regional visa protocols, ensure the fine print doesn't compromise your experience.",
+      link: '/prepare',
+      imageId: 'prepare-step',
+      label: 'Final Audit'
     },
   ];
 
