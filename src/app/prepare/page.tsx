@@ -1,3 +1,4 @@
+
 'use client';
 
 import { 
@@ -17,7 +18,15 @@ import {
   Info,
   Banknote,
   Milestone,
-  ExternalLink
+  ExternalLink,
+  PackageCheck,
+  LogOut,
+  GraduationCap,
+  Landmark,
+  ShieldAlert,
+  Clock,
+  Zap,
+  HeartPulse
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -101,81 +110,93 @@ export default function PreparePage() {
               </CardContent>
             </Card>
           </div>
-
-          <Card className="glass border-white/5">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Coins className="size-5 text-primary" /> Currency erosion & pegging</CardTitle>
-              <CardDescription className="text-sm md:text-base">If you are paid in a local currency not pegged to a stable one (GBP/USD), your savings can vanish overnight.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <div>
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-accent uppercase mb-4">The USD Peg List (2026 status)</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                  {[
-                    { country: 'UAE', rate: '3.67' },
-                    { country: 'Saudi Arabia', rate: '3.75' },
-                    { country: 'Qatar', rate: '3.64' },
-                    { country: 'Bahrain', rate: '0.376' },
-                    { country: 'Oman', rate: '0.385' },
-                    { country: 'Jordan', rate: '0.71' },
-                  ].map((peg) => (
-                    <div key={peg.country} className="p-3 bg-background/50 border border-white/5 rounded-sm text-center">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase mb-1">{peg.country}</p>
-                      <p className="text-base font-bold text-white">{peg.rate}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 items-center">
-                <span className="text-[10px] font-black text-muted-foreground tracking-widest uppercase mr-2">Official tender:</span>
-                {['Bahamas', 'Bermuda', 'Ecuador', 'El Salvador', 'Panama', 'Turks and Caicos', 'BVI'].map(country => (
-                  <Badge key={country} variant="outline" className="bg-accent/5 border-accent/20 text-accent font-bold text-[10px] px-2 py-0.5">{country}</Badge>
-                ))}
-              </div>
-              <p className="text-sm text-muted-foreground italic bg-background/30 p-4 rounded-sm border-l-2 border-accent/30">Note: If your destination isn't on this list, you must ask how the school mitigates exchange rate volatility.</p>
-            </CardContent>
-          </Card>
         </section>
 
-        {/* 2. The Onboarding Cash-Flow Crater */}
+        {/* 2. Logistical Payload */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
-            <TrendingDown className="size-7 text-red-400" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">2. The onboarding "cash-flow crater"</h2>
+            <PackageCheck className="size-7 text-primary" />
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">2. Logistical payload: The relocation crater</h2>
           </div>
-          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Onboarding is the most financially dangerous phase of an international move.</p>
+          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Onboarding and shipping are the most financially dangerous phases of an international move.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> The family runway (6+ weeks)</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">For a single teacher, the "Gap Month" is a challenge. For a family, it is a potential crisis. Most schools pay in arrears; if you arrive on 1st August, your first full salary may not hit until 30th August.</p>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Most schools pay in arrears; if you arrive on 1st August, your first full salary may not hit until 30th August. For a family, this "gap month" requires significant liquid reserves.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
                 <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
-                <p className="text-xs text-muted-foreground mt-2 font-medium">Minimum accessible liquid cash for a family move.</p>
-              </div>
-              <div className="p-5 glass border-white/5 bg-background/20 rounded-sm">
-                <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase mb-2">Upfront & hidden costs</p>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Plus groceries and home basics before any reimbursement protocol triggers.</p>
+                <p className="text-xs text-muted-foreground mt-2 font-medium">Minimum capital for family moves including visa medicals, document legalisation, and housing deposits.</p>
               </div>
             </div>
 
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & the IKEA test</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
               <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm space-y-4">
-                <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase">The intel</p>
-                <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA website. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency. That £1,000 'settling-in allowance' may only cover a family-sized refrigerator.</p>
+                <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase">The cost/benefit trade-off</p>
+                <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Don't take the recruiter's word for it. Check the local IKEA website and join local Facebook Marketplace pages; you could grab a local bargain. A £1,000 'settling-in allowance' may only cover a family-sized refrigerator if you buy new. Is shipping your 5-year-old sofa worth £2,000 in freight and port fees?</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 3. Professional Reality */}
+        {/* 3. Long-term Survival */}
+        <section className="space-y-8">
+          <div className="flex items-center gap-3 mb-2">
+            <ShieldAlert className="size-7 text-primary" />
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">3. Long-term mission survival: Avoiding burnout</h2>
+          </div>
+          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="glass border-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>In many regions (especially the Middle East), the End of Service (EOS) gratuity is your only real savings vehicle. You must verify if this is calculated on <strong>Basic Salary</strong> or <strong>Total Package</strong>. The difference can be 40%.</p>
+                <p>Also check the flight protocol: does the school provide the final flight only if you complete the full contract? What happens in a family emergency?</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><HeartPulse className="size-5 text-primary" /> The "co-pay creep"</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>Even with "Premium" insurance, a 20% co-pay on a $5,000 emergency surgery in a private expat hospital is a $1,000 out-of-pocket hit. This is the #1 medical red flag.</p>
+                <p>Always request the "Schedule of Benefits" to check the deductible (excess) for both inpatient and outpatient care before signing.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>"Free schooling" often excludes Capital Levies ($500–$1,000/yr), books, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-white/5">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>Tax-free at the source does not mean tax-free at home. If you don't spend enough days out of your home country (e.g., UK Statutory Residence Test), you might owe your home government a massive chunk of that salary.</p>
+                <p className="italic font-bold text-white/80">Consult a specialist on residency rules before assuming your savings are 'net'.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* 4. Professional Reality */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <Briefcase className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">3. Professional reality: The daily grind</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">4. Professional reality: The daily grind</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-6 glass rounded-sm space-y-3 hover:border-primary/30 transition-colors">
@@ -229,18 +250,23 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* 4. Essential Questions */}
+        {/* 5. Essential Questions */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-7 text-accent" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">4. Essential Questions</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">5. Essential Questions</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Flush out the truth before you pack your bags.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              "Is the relocation allowance paid as upfront cash on arrival, or via the first month’s payroll?",
               "What is the weekly cap on instructional contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment?",
+              "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only?",
+              "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement with the major international hospitals in the city?",
+              "Are all mandatory fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
+              "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?",
+              "In the event of a family emergency back home, does the school have a policy for compassionate leave and emergency flight assistance?",
+              "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",
               "Can I speak to a current teacher in my department, one-to-one, without a member of SLT present?",
               "What was the staff turnover rate in the last two academic years?",
               "Does the school pay for document legalisation and Apostille fees upfront?",
