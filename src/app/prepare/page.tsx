@@ -213,7 +213,6 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>"Free schooling" often excludes Capital Levies ($500–$1,000/yr), books, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
               </CardContent>
-            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
@@ -306,9 +305,9 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               "What is the weekly cap on teacher contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment? for example being excessively used for cover can eat into your prep time.",
-              "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only?",
+              "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only? Is this paid alongside my final salary payment?",
               "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement or is it a pay and reclaim agreement with the major international hospitals in the city?",
-              "Are all mandatory fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
+              "Are all dependent educational fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
               "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?",
               "In the event of a family emergency back home, does the school have a policy for compassionate leave and emergency flight assistance?",
               "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",

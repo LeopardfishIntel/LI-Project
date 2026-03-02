@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -16,8 +15,8 @@ export default function StrategicChecksheetPage() {
         { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP, or is there a clause for inflation/devaluation?" },
         { label: "The \"Contact Minute\" Cap", sub: "Is the exact weekly teaching time in minutes stated?" },
         { label: "PPA Guarantee", sub: "Is Planning, Prep, and Assessment time \"protected\" in the contract?" },
-        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silence you from discussing work-life balance?" },
-        { label: "Gratuity Calculation", sub: "Is the End-of-Service bonus based on Basic salary or the Full package?" },
+        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silience you from discussing work-life balance?" },
+        { label: "Gratuity Calculation", sub: "Is the End-of-Service bonus based on Basic salary or the Full package? Is it paid with the final salary?" },
         { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits (not just a brochure)? Check for Dental/Chronic/Co-pays." }
       ]
     },
@@ -41,7 +40,7 @@ export default function StrategicChecksheetPage() {
         { label: "Admin Bloat", sub: "How many hours a week are spent on data entry/social media evidence vs. teaching?" },
         { label: "Parental Boundaries", sub: "Does leadership support teachers in grade/behavior disputes?" },
         { label: "The \"Turnover\" Stat", sub: "What percentage of staff left in the last 2 years?" },
-        { label: "Staff Children", sub: "Are all fees (books, trips, levies) waived, or just the tuition?" }
+        { label: "Staff Children", sub: "Are all dependent educational fees (books, trips, levies) waived, or just the tuition?" }
       ]
     }
   ];
