@@ -41,7 +41,7 @@ export default function PreparePage() {
         <section>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="size-6 text-primary" />
-            <h2 className="text-2xl font-black stamped-dossier text-white">The Gold Standard: A note on elite schools</h2>
+            <h2 className="text-2xl font-black stamped-dossier text-white">The Gold Standard: A note on top schools</h2>
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
@@ -63,7 +63,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle className="text-sm font-bold flex items-center gap-2 text-white"><Lock className="size-4 text-primary" /> The "Over-zealous" privacy clause</CardTitle>
+                <CardTitle className="text-sm font-bold flex items-center gap-2 text-white"><Lock className="size-4 text-primary" /> The "over-zealous" privacy clause</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-3">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
@@ -152,7 +152,7 @@ export default function PreparePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
               <div className="p-4 glass border-accent/20 bg-accent/5 rounded-sm">
                 <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-2">The intel</p>
-                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites (PropertyFinder/Zillow) and check the local IKEA. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
+                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites (PropertyFinder/Zillow) and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
               </div>
               <p className="text-xs text-muted-foreground border-l-2 border-primary pl-4">"That £1,000 'settling-in allowance' rarely covers a family-sized refrigerator."</p>
             </div>
@@ -185,7 +185,7 @@ export default function PreparePage() {
         <section className="space-y-6">
           <div className="flex items-center gap-3 mb-2">
             <MessageSquareQuote className="size-6 text-primary" />
-            <h2 className="text-2xl font-black stamped-dossier text-white">Field Anecdotes: Raw intelligence</h2>
+            <h2 className="text-2xl font-black stamped-dossier text-white">Field anecdotes: Raw intelligence</h2>
           </div>
           <p className="text-muted-foreground font-medium mb-6">Direct reports from the field on medical and bureaucratic realities.</p>
           
@@ -210,18 +210,18 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Eye className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "My eye test for my driving license rewuired my to just be able to place my credit card on the card reader!"
+                  "My eye test for my driving license required my to just be able to place my credit card on the card reader!"
                 </p>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        {/* 4. The Intel Toolkit */}
+        {/* 4. Essential Questions */}
         <section className="space-y-6 pb-12">
           <div className="flex items-center gap-3 mb-2">
             <Search className="size-6 text-accent" />
-            <h2 className="text-2xl font-black stamped-dossier text-white">4. The Intel Toolkit: Questions to ask</h2>
+            <h2 className="text-2xl font-black stamped-dossier text-white">4. Essential questions</h2>
           </div>
           <p className="text-muted-foreground font-medium mb-6">Flush out the truth before you pack your bags.</p>
           
