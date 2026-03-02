@@ -76,14 +76,14 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1">red flag</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 lowercase">red flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 lowercase">orange flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>A hallmark of a professional institution is a published, transparent pay scale. If a school refuses to show you where you sit on a scale, or if "salary is based on experience" without a clear framework, you are likely being low-balled.</p>
-                <p>Furthermore, check for specific mention of an <strong>Annual Pay Review</strong>. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
+                <p>Furthermore, check for specific mention of an annual pay review. In inflationary environments, a static 2-year contract without an adjustment clause is a guaranteed real-terms pay cut.</p>
               </CardContent>
             </Card>
 
@@ -129,7 +129,7 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Ambiguity in contract definitions often leads to mission creep. If the housing, flight, or utility provision is not explicitly detailed, the school can unilaterally change the standard.</p>
                 <div className="p-4 bg-background/50 rounded-sm border border-white/5">
-                  <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase mb-2">Diagnostic strategy</p>
+                  <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase mb-2 normal-case">Diagnostic strategy</p>
                   <p className="text-sm">Demand specific parameters for any clause containing "as per policy" or "to be determined."</p>
                 </div>
               </CardContent>
@@ -164,7 +164,7 @@ export default function PreparePage() {
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
-                <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
+                <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2 normal-case">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
                 <p className="text-xs text-muted-foreground mt-2 font-medium">Minimum capital for family moves adjusted for the initial 6-week "gap month" before the first full salary cycle.</p>
               </div>
@@ -177,7 +177,7 @@ export default function PreparePage() {
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
               <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm space-y-4">
-                <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase">The cost/benefit trade-off</p>
+                <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase normal-case">The cost/benefit trade-off</p>
                 <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Don't take the recruiter's word for it. Check the local IKEA website and join local Facebook Marketplace pages; you could grab a local bargain. A £1,000 'settling-in allowance' may only cover a family-sized refrigerator if you buy new. Is shipping your 5-year-old sofa worth £2,000 in freight and port fees?</p>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
               <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase normal-case">Parental overreach</h4>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
@@ -256,14 +256,14 @@ export default function PreparePage() {
 
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">'floating' teacher</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase normal-case">'floating' teacher</h4>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
             </div>
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
-                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Administrative bloat</h4>
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase normal-case">Administrative bloat</h4>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">The number one cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
@@ -271,50 +271,52 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Download Button */}
-        <div className="flex justify-center pt-8">
-          <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
-            <Link href="/prepare/checklist">
-              <FileCheck className="mr-3 size-5" /> Download strategic checksheet
-            </Link>
-          </Button>
-        </div>
+        {/* Strategic Checksheet Section */}
+        <div className="space-y-12">
+            <div className="flex justify-center">
+                <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
+                    <Link href="/prepare/checklist">
+                    <FileCheck className="mr-3 size-5" /> Download strategic checksheet
+                    </Link>
+                </Button>
+            </div>
 
-        {/* Field Anecdotes */}
-        <section className="space-y-8">
-          <div className="flex items-center gap-3 mb-2">
-            <MessageSquareQuote className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Field anecdotes</h2>
-          </div>
-          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Direct reports from the field on medical and bureaucratic realities.</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
-              <CardContent className="pt-8 space-y-4">
-                <Stethoscope className="size-6 text-primary opacity-50" />
-                <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
-                  "We have seen some truly horrifying Dentist Surgeries, despite the pain we just turned and walked."
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
-              <CardContent className="pt-8 space-y-4">
-                <Stethoscope className="size-6 text-primary opacity-50" />
-                <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
-                  "Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
-              <CardContent className="pt-8 space-y-4">
-                <Eye className="size-6 text-primary opacity-50" />
-                <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
-                  "My eye test for my driving licence required me to just be able see well enough to place my credit card on their card reader!"
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
+            {/* Field Anecdotes */}
+            <section className="space-y-8">
+                <div className="flex items-center gap-3 mb-2">
+                    <MessageSquareQuote className="size-7 text-primary" />
+                    <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Field anecdotes</h2>
+                </div>
+                <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Direct reports from the field on medical and bureaucratic realities.</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+                    <CardContent className="pt-8 space-y-4">
+                        <Stethoscope className="size-6 text-primary opacity-50" />
+                        <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
+                        "We have seen some truly horrifying Dentist Surgeries, despite the pain we just turned and walked."
+                        </p>
+                    </CardContent>
+                    </Card>
+                    <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+                    <CardContent className="pt-8 space-y-4">
+                        <Stethoscope className="size-6 text-primary opacity-50" />
+                        <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
+                        "Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
+                        </p>
+                    </CardContent>
+                    </Card>
+                    <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+                    <CardContent className="pt-8 space-y-4">
+                        <Eye className="size-6 text-primary opacity-50" />
+                        <p className="text-base text-muted-foreground leading-relaxed italic font-medium">
+                        "My eye test for my driving licence required me to just be able see well enough to place my credit card on their card reader!"
+                        </p>
+                    </CardContent>
+                    </Card>
+                </div>
+            </section>
+        </div>
 
         {/* 5. Essential Questions */}
         <section className="space-y-8 pb-12">
@@ -328,16 +330,16 @@ export default function PreparePage() {
             {[
               "What is the weekly cap on teacher contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment? for example being excessively used for cover can eat into your prep time.",
               "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only? Is this paid alongside my final salary payment?",
+              "Can I see the full Schedule of Benefits for the health insurance policy? (Do not accept 'Medical is included').",
               "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement or is it a pay and reclaim agreement with the major international hospitals in the city?",
               "Are all dependent educational fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition? How many children are covered, and what are the costs for after-school clubs and childcare during induction weeks?",
-              "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?",
-              "What are the onboarding costs that i need to plan for in my first 6 weeks. Does the school provide any financial assistance in this period.",
-              "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",
               "Can I speak to a current teacher in my department, one-to-one, without a member of SLT present?",
               "What was the staff turnover rate in the last two academic years?",
+              "What are the onboarding costs that i need to plan for in my first 6 weeks. Does the school provide any financial assistance in this period.",
               "Does the school pay for document legalisation and Apostille fees upfront?",
               "Is the provided housing 'Turnkey', or will I need a furniture fund for white goods?",
-              "Can I see the full Schedule of Benefits for the health insurance policy? (Do not accept 'Medical is included')."
+              "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",
+              "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?"
             ].map((q, i) => (
               <div key={i} className="flex items-start gap-4 p-5 bg-background/40 border border-white/5 rounded-sm hover:border-primary/30 transition-colors group">
                 <MessageSquareQuote className="size-5 text-primary shrink-0 mt-1 opacity-50 group-hover:opacity-100 transition-opacity" />
@@ -349,7 +351,7 @@ export default function PreparePage() {
           <div className="mt-12 p-8 glass border-accent/20 bg-accent/5 rounded-sm flex items-start gap-6">
             <div className="flex-shrink-0 mt-1"><div className="p-3 bg-accent/10 rounded-full"><Info className="size-8 text-accent" /></div></div>
             <div className="space-y-3">
-              <h4 className="text-sm font-black tracking-[0.2em] text-accent uppercase">Insurance vetting strategy</h4>
+              <h4 className="text-sm font-black tracking-[0.2em] text-accent uppercase normal-case">Insurance vetting strategy</h4>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A "Basic" local plan is often useless for expats. Always request the full policy document before signing.
               </p>
