@@ -12,7 +12,10 @@ import {
   ShoppingCart,
   MessageSquareQuote,
   CheckCircle2,
-  Lock
+  Lock,
+  Stethoscope,
+  Eye,
+  Info
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -113,7 +116,7 @@ export default function PreparePage() {
               </div>
               <p className="text-xs text-muted-foreground italic bg-background/30 p-3 rounded-sm">Note: If your destination isn't on this list, you must ask how the school mitigates exchange rate volatility.</p>
             </CardContent>
-          </Card> section
+          </Card>
         </section>
 
         {/* 2. The Onboarding Cash-Flow Crater */}
@@ -170,6 +173,42 @@ export default function PreparePage() {
               <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Parental Overreach</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools.</p>
             </div>
+          </div>
+        </section>
+
+        {/* Field Anecdotes: Raw Intel */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3 mb-2">
+            <MessageSquareQuote className="size-6 text-primary" />
+            <h2 className="text-2xl font-black stamped-dossier text-white">Field Anecdotes: Raw Intelligence</h2>
+          </div>
+          <p className="text-muted-foreground font-medium mb-6">Direct reports from the field on medical and bureaucratic realities.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+              <CardContent className="pt-6 space-y-3">
+                <Stethoscope className="size-5 text-primary opacity-50" />
+                <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
+                  "We have seen some truly horrifying Dentist Surgeries, despite the pain we just turned and walked. Standards vary—always vet the facility before commitment."
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+              <CardContent className="pt-6 space-y-3">
+                <Coins className="size-5 text-primary opacity-50" />
+                <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
+                  "Paying 300 GBP up front for the ambulance ride (claimed back later) was stressful. This is why the 'Cash-Flow Crater' intel is mission-critical for family moves."
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass border-primary/10 bg-primary/5 rounded-sm">
+              <CardContent className="pt-6 space-y-3">
+                <Eye className="size-5 text-primary opacity-50" />
+                <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
+                  "My eye test for my driving licence required me to just be able to place my credit card on the card reader! Bureaucracy can be a formality or a hurdle—be ready for both."
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
