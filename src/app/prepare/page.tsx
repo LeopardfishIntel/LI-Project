@@ -43,7 +43,7 @@ export default function PreparePage() {
       {/* Page Header */}
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white normal-case">
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
@@ -87,14 +87,14 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 uppercase">red flag</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1">red flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1">orange flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
