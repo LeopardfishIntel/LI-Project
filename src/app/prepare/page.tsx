@@ -87,14 +87,14 @@ export default function PreparePage() {
               <div className="mt-1"><div className="size-3 rounded-full bg-red-500 animate-pulse" /></div>
               <div>
                 <p className="text-xs font-black text-red-400 tracking-widest mb-1 uppercase">Red flag</p>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact</p>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
               <div>
                 <p className="text-xs font-black text-amber-400 tracking-widest mb-1 uppercase">Orange flag</p>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider</p>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function PreparePage() {
             <FileText className="size-7 text-accent" />
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">1. The Contract: Hard realities & fine print</h2>
           </div>
-          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">If the definitions are vague or missing, the risk is then entirely yours.</p>
+          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">You need to ensure you have full contractual clarity, are you clear on all the specific definitions and contract terms? DON'T move forward to a signed agreement when the baseline protections are left open to interpretation.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
