@@ -90,7 +90,7 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
               <div>
-                <p className="text-xs font-black uppercase text-amber-400 tracking-widest mb-1">Amber Flag: Tactical Caution</p>
+                <p className="text-xs font-black uppercase text-amber-400 tracking-widest mb-1">Orange Flag: Tactical Caution</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">Logistical or financial implication. Requires substantial capital reserves or specific contractual addendums to manage effectively.</p>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Ambiguity in contract definitions often leads to mission creep. If the housing, flight, or utility provision is not explicitly detailed, the school can unilaterally change the standard.</p>
@@ -151,7 +151,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20 md:col-span-2">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers in certain territories.</p>
@@ -173,7 +173,7 @@ export default function PreparePage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Orange Flag</Badge>
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
@@ -186,7 +186,7 @@ export default function PreparePage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Orange Flag</Badge>
               </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
               <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm space-y-4">
@@ -209,7 +209,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>In many regions (especially the Middle East), the End of Service (EOS) gratuity is your only real savings vehicle. You must verify if this is calculated on <strong>Basic Salary</strong> or <strong>Total Package</strong>. The difference can be 40%.</p>
@@ -220,7 +220,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><HeartPulse className="size-5 text-primary" /> The "co-pay creep"</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Even with "Premium" insurance, a 20% co-pay on a $5,000 emergency surgery in a private expat hospital is a $1,000 out-of-pocket hit. This is the #1 medical red flag.</p>
@@ -241,7 +241,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Orange Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Tax-free at the source does not mean tax-free at home. If you don't spend enough days out of your home country (e.g., UK Statutory Residence Test), you might owe your home government a massive chunk of that salary.</p>
@@ -261,14 +261,14 @@ export default function PreparePage() {
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
                 <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">The "floating" teacher</h4>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Amber</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Orange Flag</Badge>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
             </div>
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
                 <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Administrative bloat</h4>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Amber</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Orange Flag</Badge>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
