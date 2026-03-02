@@ -1,4 +1,3 @@
-
 import { 
   ShieldCheck, 
   FileText, 
@@ -26,8 +25,10 @@ export default function PreparePage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       {/* Page Header */}
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-4 text-white">4. Operational preparation</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed uppercase tracking-widest opacity-60">Field-grade briefings for international educator due diligence.</p>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-4 text-white">4. Are you prepared?</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">
+          Have you considered all of the contract implications? What about the non-contract factors? We provide the intel you need to ensure the fine print doesn't leave you trapped. Make sure the 'hidden' costs don't derail your experience.
+        </p>
       </div>
 
       <div className="max-w-5xl mx-auto space-y-12">
@@ -41,7 +42,7 @@ export default function PreparePage() {
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
               <p className="text-muted-foreground leading-relaxed font-medium italic">
-                "Before diving into the pitfalls, it is important to note that top-tier international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school bristles at these questions, you have your answer."
+                "Before diving into the pitfalls, it is important to note that top-tier international schools already know everything on this page. For the best employers, these points aren't \"negotiables\"—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school bristles at these questions, you have your answer."
               </p>
             </CardContent>
           </Card>
@@ -242,7 +243,7 @@ export default function PreparePage() {
             <div className="space-y-2">
               <h4 className="text-sm font-black uppercase tracking-widest text-accent">Insurance Vetting Strategy</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A "Basic" local plan is often useless for expats. Always request the full policy document before signing.
+                You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A \"Basic\" local plan is often useless for expats. Always request the full policy document before signing.
               </p>
             </div>
           </div>
