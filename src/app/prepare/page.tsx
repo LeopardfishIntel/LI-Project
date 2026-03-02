@@ -94,7 +94,7 @@ export default function PreparePage() {
               <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
               <div>
                 <p className="text-xs font-black text-amber-400 tracking-widest mb-1 uppercase">Orange flag</p>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">take caution consider what you can do to mitigate the impact</p>
+                <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider</p>
               </div>
             </div>
           </div>
