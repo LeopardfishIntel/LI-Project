@@ -25,7 +25,8 @@ import {
   ShieldAlert,
   Clock,
   HeartPulse,
-  FileCheck
+  FileCheck,
+  Flag
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -72,6 +73,30 @@ export default function PreparePage() {
           </Card>
         </section>
 
+        {/* Intelligence Protocol Legend */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Flag className="size-6 text-white" />
+            <h2 className="text-xl font-black stamped-dossier text-white">Intelligence protocol</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
+              <div className="mt-1"><div className="size-3 rounded-full bg-red-500 animate-pulse" /></div>
+              <div>
+                <p className="text-xs font-black uppercase text-red-400 tracking-widest mb-1">Red Flag: No Go</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">Critical risk. Direct impact on legal safety, professional autonomy, or fundamental financial viability. Treat as a mission-breaker without total mitigation.</p>
+              </div>
+            </div>
+            <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
+              <div className="mt-1"><div className="size-3 rounded-full bg-amber-500" /></div>
+              <div>
+                <p className="text-xs font-black uppercase text-amber-400 tracking-widest mb-1">Amber Flag: Tactical Caution</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">Logistical or financial implication. Requires substantial capital reserves or specific contractual addendums to manage effectively.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 1. The Contract */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
@@ -84,7 +109,7 @@ export default function PreparePage() {
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
-                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
@@ -95,7 +120,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag: Consider implications</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Ambiguity in contract definitions often leads to mission creep. If the housing, flight, or utility provision is not explicitly detailed, the school can unilaterally change the standard.</p>
@@ -109,7 +134,7 @@ export default function PreparePage() {
             <Card className="glass border-red-500/20 md:col-span-2">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
-                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag</Badge>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -126,7 +151,7 @@ export default function PreparePage() {
             <Card className="glass border-amber-500/20 md:col-span-2">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
-                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag: Consider implications</Badge>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers in certain territories.</p>
@@ -206,7 +231,7 @@ export default function PreparePage() {
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
-                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>"Free schooling" often excludes Capital Levies ($500–$1,000/yr), books, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
@@ -308,7 +333,7 @@ export default function PreparePage() {
               "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement or is it a pay and reclaim agreement with the major international hospitals in the city?",
               "Are all dependent educational fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
               "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?",
-              "In the event of a family emergency back home, does the school have a policy for compassionate leave and emergency flight assistance?",
+              "What are the onboarding costs that i need to plan for in my first 6 weeks. Does the school provide any financial assistance in this period.",
               "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",
               "Can I speak to a current teacher in my department, one-to-one, without a member of SLT present?",
               "What was the staff turnover rate in the last two academic years?",
