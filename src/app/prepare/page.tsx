@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -59,7 +60,7 @@ export default function PreparePage() {
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-8">
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium italic">
+              <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
                 "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, that tells you all you need to know!"
               </p>
             </CardContent>
@@ -75,14 +76,14 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1">red flag</p>
+                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 uppercase">red flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">one or two are enough for you to seriously consider turning down your offer unless you are able to totally mitigate the impact.</p>
               </div>
             </div>
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">orange flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">caution consider what you can do to mitigate the impact, 4 or 5 flags start to re consider.</p>
               </div>
             </div>
