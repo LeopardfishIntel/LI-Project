@@ -27,7 +27,7 @@ import {
   Zap,
   HeartPulse
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 
@@ -70,9 +70,10 @@ export default function PreparePage() {
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">If the definitions are vague or missing, the risk is then entirely yours.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-white/5">
-              <CardHeader>
+            <Card className="glass border-red-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
@@ -80,22 +81,24 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            <Card className="glass border-white/5">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> The NOC & reference reality</CardTitle>
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag: Consider implications</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
-                <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers.</p>
+                <p>Ambiguity in contract definitions often leads to mission creep. If the housing, flight, or utility provision is not explicitly detailed, the school can unilaterally change the standard.</p>
                 <div className="p-4 bg-background/50 rounded-sm border border-white/5">
-                  <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase mb-2">The soft reality</p>
-                  <p className="text-sm">In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. Make sure you understand your situation before you go.</p>
+                  <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase mb-2">Diagnostic strategy</p>
+                  <p className="text-sm">Demand specific parameters for any clause containing "as per policy" or "to be determined."</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="glass border-white/5 md:col-span-2">
-              <CardHeader>
+            <Card className="glass border-red-500/20 md:col-span-2">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Banknote className="size-5 text-primary" /> Pay scale transparency & annual reviews</CardTitle>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
@@ -106,6 +109,17 @@ export default function PreparePage() {
                   <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase mb-3">Diagnostic signal</p>
                   <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed">"If the school says pay increases are 'discretionary' or 'performance-linked' without a clear rubric, assume they won't happen. Elite schools bake cost-of-living adjustments into their operational budgets."</p>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20 md:col-span-2">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><ShieldAlert className="size-5 text-primary" /> Visa and reference protocols</CardTitle>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag: Consider implications</Badge>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+                <p>While many countries have officially modernised their labour laws to allow mobility, the "Letter of No Objection" (NOC) culture still lingers in certain territories.</p>
+                <p>In places like Kuwait, Romania, and the Czech Republic, the legal requirement for an employer to "release" your visa or provide a specific format of reference may be different to your home country. Make sure you understand your situation before you go.</p>
               </CardContent>
             </Card>
           </div>
@@ -121,7 +135,10 @@ export default function PreparePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Amber Flag</Badge>
+              </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
                 <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
@@ -131,7 +148,10 @@ export default function PreparePage() {
             </div>
 
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2"><ShoppingCart className="size-5 text-primary" /> The empty flat & shipping delay</h3>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5">Amber Flag</Badge>
+              </div>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
               <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm space-y-4">
                 <p className="text-[10px] font-black text-accent tracking-[0.2em] uppercase">The cost/benefit trade-off</p>
@@ -150,9 +170,10 @@ export default function PreparePage() {
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-white/5">
-              <CardHeader>
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>In many regions (especially the Middle East), the End of Service (EOS) gratuity is your only real savings vehicle. You must verify if this is calculated on <strong>Basic Salary</strong> or <strong>Total Package</strong>. The difference can be 40%.</p>
@@ -160,9 +181,10 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            <Card className="glass border-white/5">
-              <CardHeader>
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><HeartPulse className="size-5 text-primary" /> The "co-pay creep"</CardTitle>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Even with "Premium" insurance, a 20% co-pay on a $5,000 emergency surgery in a private expat hospital is a $1,000 out-of-pocket hit. This is the #1 medical red flag.</p>
@@ -170,18 +192,20 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            <Card className="glass border-white/5">
-              <CardHeader>
+            <Card className="glass border-red-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Red Flag: No Go</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>"Free schooling" often excludes Capital Levies ($500–$1,000/yr), books, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
               </CardContent>
             </Card>
 
-            <Card className="glass border-white/5">
-              <CardHeader>
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Landmark className="size-5 text-primary" /> The "tax residency" ghost</CardTitle>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[9px] px-2 py-0.5 whitespace-nowrap ml-2">Amber Flag</Badge>
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>Tax-free at the source does not mean tax-free at home. If you don't spend enough days out of your home country (e.g., UK Statutory Residence Test), you might owe your home government a massive chunk of that salary.</p>
@@ -198,16 +222,25 @@ export default function PreparePage() {
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white">4. Professional reality: The daily grind</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="p-6 glass rounded-sm space-y-3 hover:border-primary/30 transition-colors">
-              <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">The "floating" teacher</h4>
+            <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">The "floating" teacher</h4>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Amber</Badge>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Lugging your books and equipment between rooms can eat 2–3 hours of your week. Is this factored into your contact hours? Look out for transition time between campuses, and help with transport.</p>
             </div>
-            <div className="p-6 glass rounded-sm space-y-3 hover:border-primary/30 transition-colors">
-              <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Administrative bloat</h4>
+            <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Administrative bloat</h4>
+                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 font-bold text-[8px] px-1 py-0">Amber</Badge>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">The #1 cause of international burnout. You may spend more time on "social media evidence" than lesson planning. A quick review of their Social media pages can provide numerous insights.</p>
             </div>
-            <div className="p-6 glass rounded-sm space-y-3 hover:border-primary/30 transition-colors">
-              <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
+            <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
+                <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/30 font-bold text-[8px] px-1 py-0">Red Flag</Badge>
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
             </div>
           </div>
