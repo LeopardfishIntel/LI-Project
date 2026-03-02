@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -104,6 +105,13 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   'South Africa': 'ZAR',
   'New Zealand': 'NZD',
 };
+
+const ORDERED_CURRENCIES = [
+  'USD', 'GBP', 'EUR',
+  ...Object.keys(CONVERSION_RATES)
+    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
+    .sort()
+];
 
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;

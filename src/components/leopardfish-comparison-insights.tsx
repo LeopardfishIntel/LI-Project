@@ -14,7 +14,6 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
     const [result, setResult] = useState<{ comparison: AiSchoolComparisonOutput | null, error?: string } | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Protocol: Analysis allowed if at least TWO salaries are entered across selected slots
     const canRunAnalysis = useMemo(() => {
         if (!schools || schools.length < 2) return false;
         const filledCount = schools.filter((_, idx) => {
@@ -29,7 +28,6 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
         setLoading(true);
         setResult(null);
 
-        // Filter out schools where user hasn't provided specific salary data for this run
         const activeIndices = schools
             .map((_, idx) => idx)
             .filter(idx => netSalaries[idx] && netSalaries[idx].trim() !== '' && parseInt(netSalaries[idx]) > 0);
@@ -47,7 +45,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
             <CardHeader className="text-center border-b border-white/5 py-4">
                 <CardTitle className="text-xl font-bold tracking-tight normal-case">Leopardfish comparative analysis</CardTitle>
                 <p className="text-muted-foreground text-sm mt-2 max-w-lg mx-auto leading-relaxed font-medium">
-                    Please ensure you input your confirmed salary offers at the top of this page. We require at least two completed dossiers to generate an accurate tactical comparison.
+                    Please ensure you input your confirmed monthly salary offers at the top of this page. We require at least two completed dossiers to generate an accurate tactical comparison.
                 </p>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col p-4 md:p-6">
@@ -61,7 +59,7 @@ export function LeopardfishComparisonInsights({ schools, netSalaries }: { school
                             <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 rounded-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                                 <AlertCircle className="size-4 text-destructive" />
                                 <p className="text-xs font-bold text-destructive uppercase tracking-widest">
-                                    Awaiting minimum of two salary dossiers
+                                    Salary data required: complete at least two dossiers
                                 </p>
                             </div>
                         )}
