@@ -11,7 +11,7 @@ import {
   Coins, 
   PlaneLanding, 
   ShoppingCart,
-  MessageSquareQuote,
+  MessageSquareQuote, 
   CheckCircle2,
   Lock,
   Stethoscope,
@@ -46,7 +46,7 @@ export default function PreparePage() {
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
               <p className="text-muted-foreground leading-relaxed font-medium italic">
-                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, then you have your answer!"
+                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, that tells you all you need to Know!"
               </p>
             </CardContent>
           </Card>
@@ -154,7 +154,7 @@ export default function PreparePage() {
                 <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-2">The intel</p>
                 <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites (PropertyFinder/Zillow) and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
               </div>
-              <p className="text-xs text-muted-foreground border-l-2 border-primary pl-4">"That £1,000 'settling-in allowance' rarely covers a family-sized refrigerator."</p>
+              <p className="text-xs text-muted-foreground border-l-2 border-primary pl-4">"That £1,000 'settling-in allowance' may only cover a family-sized refrigerator."</p>
             </div>
           </div>
         </section>
