@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -156,7 +155,7 @@ export default function PreparePage() {
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for you and the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
                 <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2 normal-case">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
@@ -181,7 +180,7 @@ export default function PreparePage() {
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <ShieldAlert className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">3. Long-term survival: Avoid burnout</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">3. Long-term survival</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
 
