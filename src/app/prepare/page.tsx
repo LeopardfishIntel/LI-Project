@@ -47,7 +47,7 @@ export default function PreparePage() {
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-70">
-            We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
+            We provide the critical questions to ensure the fine print doesn't leave you trapped. Don't let hidden implications derail your career.
           </p>
         </div>
         
@@ -80,7 +80,6 @@ export default function PreparePage() {
         {/* Legend for Flags */}
         <section className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
-            <Flag className="size-6 text-white" />
             <h2 className="text-xl font-black stamped-dossier text-white uppercase">Contract Flags</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
