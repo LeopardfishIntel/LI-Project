@@ -11,6 +11,7 @@ const getImage = (id: string) => {
 };
 
 export const teacherProfile: TeacherProfile = {
+  id: "agent-001",
   fullName: "Jane Doe",
   avatarUrl: "https://images.unsplash.com/photo-1580894908361-967195033215?q=80&w=2070&auto=format&fit=crop",
   isVerifiedTeacher: true,
@@ -217,7 +218,7 @@ export const schools: School[] = [
   {
     id: 'english-college-prague',
     name: 'The English College in Prague',
-    description: 'A selective, non-profit HMC IB World School. It offers a prestigious British-style grammar school education for students aged 13–19. widely considered the most academically rigorous of the Prague schools.',
+    description: 'A selective, non-profit HMC IB World School. It offers a prestigious British-style grammar school education for students aged 13–19. Widely considered the most academically rigorous of the Prague schools.',
     websiteUrl: 'https://www.englishcollege.cz',
     location: 'Prague',
     country: 'Czech Republic',

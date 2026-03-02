@@ -8,6 +8,7 @@ import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-f
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2, Building, AlertCircle } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
 
 export function LeopardfishComparisonInsights({ schools, netSalaries }: { schools: School[], netSalaries: string[] }) {

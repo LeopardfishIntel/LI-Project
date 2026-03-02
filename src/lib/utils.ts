@@ -11,7 +11,6 @@ export function cn(...inputs: ClassValue[]) {
  * Rule: Only have a currency sign OR the three letters, never both.
  * Rule: Always add currency letters after the number (ISO suffix).
  * Rule: Never show currency three letters in front of the number.
- * Strategy: To satisfy "letters after" and "never both", we use only the ISO code suffix.
  */
 export function formatCurrency(amount: number, currency = 'USD') {
   const formattedNumber = new Intl.NumberFormat('en-US', {
