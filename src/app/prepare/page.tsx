@@ -1,3 +1,4 @@
+
 'use client';
 
 import { 
@@ -152,7 +153,7 @@ export default function PreparePage() {
               <p className="text-sm text-muted-foreground leading-relaxed">"Unfurnished" often means exactly that: no fridge, no washing machine, no lightbulbs.</p>
               <div className="p-4 glass border-accent/20 bg-accent/5 rounded-sm">
                 <p className="text-[10px] font-black uppercase text-accent tracking-widest mb-2">The intel</p>
-                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites (PropertyFinder/Zillow) and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
+                <p className="text-sm text-muted-foreground italic leading-relaxed">Don't take the recruiter's word for it. Get on regional housing sites and check the local IKEA. Check out and join local Facebook Marketplace pages; you could grab a local bargain. Calculate a "Starter Kit" (Bed, Fridge, Basic Sofa) in local currency.</p>
               </div>
               <p className="text-xs text-muted-foreground border-l-2 border-primary pl-4">"That £1,000 'settling-in allowance' may only cover a family-sized refrigerator."</p>
             </div>
@@ -202,7 +203,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Coins className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "Paying 300 gbp up front for the ambulance ride (claimed back later) was stressful."
+                  "Paying up front for the ambulance ride (claimed back later) only added to a already stressful situation."
                 </p>
               </CardContent>
             </Card>
@@ -210,7 +211,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Eye className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "My eye test for my driving license required my to just be able to place my credit card on the card reader!"
+                  "My eye test for my driving license required me to just be able see well enough to place my credit card on their card reader!"
                 </p>
               </CardContent>
             </Card>
