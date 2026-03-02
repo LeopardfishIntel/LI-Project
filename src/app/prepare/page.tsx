@@ -1,4 +1,3 @@
-
 'use client';
 
 import { 
@@ -122,12 +121,12 @@ export default function PreparePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> The family runway (6+ weeks)</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Most schools pay in arrears; if you arrive on 1st August, your first full salary may not hit until 30th August. For a family, this "gap month" requires significant liquid reserves.</p>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits. Groceries and home basics will also need to be covered before any reimbursement protocol triggers.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
                 <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
-                <p className="text-xs text-muted-foreground mt-2 font-medium">Minimum capital for family moves including visa medicals, document legalisation, and housing deposits.</p>
+                <p className="text-xs text-muted-foreground mt-2 font-medium">Minimum capital for family moves adjusted for the initial 6-week "gap month" before the first full salary cycle.</p>
               </div>
             </div>
 
@@ -157,7 +156,7 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
                 <p>In many regions (especially the Middle East), the End of Service (EOS) gratuity is your only real savings vehicle. You must verify if this is calculated on <strong>Basic Salary</strong> or <strong>Total Package</strong>. The difference can be 40%.</p>
-                <p>Also check the flight protocol: does the school provide the final flight only if you complete the full contract? What happens in a family emergency?</p>
+                <p>Also check the flight protocol: does the school provide the final flight only if you complete the full contract? What happens when you have a two year contract and want to fly the family home for the summer?</p>
               </CardContent>
             </Card>
 
