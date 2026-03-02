@@ -40,7 +40,7 @@ export default function StrategicChecksheetPage() {
         { label: "Admin Bloat", sub: "How many hours a week are spent on data entry/social media evidence vs. teaching?" },
         { label: "Parental Boundaries", sub: "Does leadership support teachers in grade/behavior disputes?" },
         { label: "The \"Turnover\" Stat", sub: "What percentage of staff left in the last 2 years?" },
-        { label: "Staff Children", sub: "Are all dependent educational fees (books, trips, levies) waived, or just the tuition?" }
+        { label: "Staff Children", sub: "Are all dependent educational fees (books, trips, uniforms, levies) waived, or just the tuition?" }
       ]
     }
   ];
