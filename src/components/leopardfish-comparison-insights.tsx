@@ -1,20 +1,26 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { School } from '@/lib/types';
 import { getSchoolComparisonInsights } from '@/app/compare/actions';
 import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2, Building } from 'lucide-react';
+import { Loader2, Sparkles, ServerCrash, Trophy, CheckCircle2, Building, AlertCircle } from 'lucide-react';
 
-export function LeopardfishComparisonInsights({ schools }: { schools: School[] }) {
+export function LeopardfishComparisonInsights({ schools, netSalaries }: { schools: School[], netSalaries: string[] }) {
     const [result, setResult] = useState<{ comparison: AiSchoolComparisonOutput | null, error?: string } | null>(null);
     const [loading, setLoading] = useState(false);
 
+    const isSalaryFilled = useMemo(() => {
+        if (!schools || schools.length < 2) return false;
+        // Check if a salary exists for each active school slot
+        return schools.every((_, idx) => netSalaries[idx] && netSalaries[idx].trim() !== '' && parseInt(netSalaries[idx]) > 0);
+    }, [schools, netSalaries]);
+
     async function handleFetchComparison() {
-        if (!schools || schools.length < 2) return;
+        if (!isSalaryFilled) return;
         setLoading(true);
         setResult(null);
         const res = await getSchoolComparisonInsights(schools);
@@ -25,8 +31,8 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
     return (
         <Card className="glass border-border w-full">
             <CardHeader className="text-center border-b border-white/5 py-4">
-                <CardTitle className="text-xl font-bold tracking-tight">Leopardfish comparative analysis</CardTitle>
-                <p className="text-muted-foreground text-xs mt-2 max-w-lg mx-auto leading-relaxed font-medium">
+                <CardTitle className="text-xl font-bold tracking-tight normal-case">Leopardfish comparative analysis</CardTitle>
+                <p className="text-muted-foreground text-sm mt-2 max-w-lg mx-auto leading-relaxed font-medium">
                     Please ensure you input your confirmed salary offers at the top of this page. It’s the only way we can give you an accurate comparison of your selected schools.
                 </p>
             </CardHeader>
@@ -36,7 +42,25 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                         <div className="p-3 bg-primary/10 rounded-full mb-4">
                             <Sparkles className="w-8 h-8 text-primary" />
                         </div>
-                        <Button onClick={handleFetchComparison} size="default" className="bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest px-8 rounded-sm">
+                        
+                        {!isSalaryFilled && (
+                            <div className="mb-6 p-3 bg-destructive/10 border border-destructive/20 rounded-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                                <AlertCircle className="size-4 text-destructive" />
+                                <p className="text-xs font-bold text-destructive uppercase tracking-widest">
+                                    Salary data required for analysis
+                                </p>
+                            </div>
+                        )}
+
+                        <Button 
+                            onClick={handleFetchComparison} 
+                            disabled={!isSalaryFilled}
+                            size="lg" 
+                            className={cn(
+                                "font-bold tracking-widest px-10 rounded-sm transition-all h-12",
+                                isSalaryFilled ? "bg-primary hover:bg-primary/90 text-white" : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+                            )}
+                        >
                             <Sparkles className="w-4 h-4 mr-2" />
                             Run analysis
                         </Button>
@@ -58,7 +82,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                         <ServerCrash className="w-10 h-10 text-destructive mb-3" />
                         <h3 className="font-bold text-base text-destructive mb-2">Analysis failure</h3>
                         <p className="text-destructive/80 mb-6 text-xs px-4 max-w-md">{result.error}</p>
-                        <Button variant="destructive" size="sm" onClick={handleFetchComparison} className="font-bold uppercase tracking-widest text-[10px]">
+                        <Button variant="destructive" size="sm" onClick={handleFetchComparison} className="font-bold tracking-widest text-[10px]">
                             Retry protocol
                         </Button>
                     </div>
@@ -70,7 +94,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <Trophy className="w-5 h-5 text-primary" />
-                                <h3 className="font-bold text-lg tracking-tight">Final verdict</h3>
+                                <h3 className="font-bold text-lg tracking-tight normal-case">Final verdict</h3>
                             </div>
                              <Card className="bg-primary/5 border-primary/20 rounded-sm overflow-hidden shadow-none">
                                 <div className="p-4 md:p-6 space-y-6">
@@ -83,7 +107,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                         {result.comparison.bestFit.verdictSections.map((section, idx) => (
                                             <div key={`verdict-${idx}`} className="space-y-2">
                                                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80">{section.heading}</h4>
-                                                <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                                                <p className="text-muted-foreground text-sm md:text-base leading-relaxed font-medium">
                                                     {section.content}
                                                 </p>
                                             </div>
@@ -98,7 +122,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
                                     <Building className="w-5 h-5 text-accent" />
-                                    <h3 className="font-bold text-lg tracking-tight">School breakdowns</h3>
+                                    <h3 className="font-bold text-lg tracking-tight normal-case">School breakdowns</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {result.comparison.schoolBreakdowns.map((school, idx) => (
@@ -107,7 +131,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                                                 <CardTitle className="text-sm font-black uppercase tracking-tight text-white/90">{school.schoolName}</CardTitle>
                                             </CardHeader>
                                             <CardContent className="p-3 flex-grow">
-                                                <p className="text-xs text-muted-foreground leading-relaxed font-medium">
+                                                <p className="text-sm text-muted-foreground leading-relaxed font-medium">
                                                     {school.summary}
                                                 </p>
                                             </CardContent>
@@ -118,7 +142,7 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
                         )}
                         
                         <div className="text-center pt-4 border-t border-white/5">
-                            <Button variant="ghost" size="sm" onClick={handleFetchComparison} className="text-muted-foreground hover:text-primary transition-colors font-bold uppercase tracking-widest text-[9px]">
+                            <Button variant="ghost" size="sm" onClick={handleFetchComparison} className="text-muted-foreground hover:text-primary transition-colors font-bold tracking-widest text-[9px]">
                                 <Sparkles className="w-3 h-3 mr-2"/>
                                 Regenerate comparison
                             </Button>
@@ -129,3 +153,5 @@ export function LeopardfishComparisonInsights({ schools }: { schools: School[] }
         </Card>
     );
 }
+
+import { cn } from '@/lib/utils';

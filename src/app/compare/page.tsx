@@ -508,7 +508,7 @@ export default function ComparePage() {
             </div>
 
             <div className="mt-16 flex justify-center">
-                 <LeopardfishComparisonInsights schools={selectedSchools} />
+                 <LeopardfishComparisonInsights schools={selectedSchools} netSalaries={netSalaries} />
             </div>
         </div>
     );

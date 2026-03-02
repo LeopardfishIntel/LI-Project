@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This file provides an AI-powered flow to generate a comparative
@@ -75,7 +76,7 @@ Instructions for your response:
     -   Conclude the final paragraph with a clear reminder to verify all data directly with the schools.
 2.  **Individual Breakdowns:** For each school, provide a brief, objective summary (1-2 sentences) derived directly from the data.
 
-Tone: Professional, authoritative, and direct. Use British English spelling.
+Tone: Professional, authoritative, and direct. Use British English spelling (e.g., 'programme', 'analysing', 'categorise', 'licence'). No all caps in paragraph content.
 `,
 });
 
