@@ -50,14 +50,6 @@ export default function PreparePage() {
             We provide the critical questions to ensure the fine print doesn't leave you trapped. Don't let hidden implications derail your career.
           </p>
         </div>
-        
-        <div className="flex justify-center">
-          <Button asChild size="lg" className="h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
-            <Link href="/prepare/checklist">
-              <FileCheck className="mr-3 size-5" /> Download strategic checksheet
-            </Link>
-          </Button>
-        </div>
       </div>
 
       <div className="max-w-5xl mx-auto space-y-16">
@@ -281,11 +273,20 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Field Anecdotes: Raw Intel */}
+        {/* Download Button Relocated */}
+        <div className="flex justify-center pt-8">
+          <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)]">
+            <Link href="/prepare/checklist">
+              <FileCheck className="mr-3 size-5" /> Download strategic checksheet
+            </Link>
+          </Button>
+        </div>
+
+        {/* Field Anecdotes */}
         <section className="space-y-8">
           <div className="flex items-center gap-3 mb-2">
             <MessageSquareQuote className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">Field anecdotes: Raw intelligence</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">Field anecdotes</h2>
           </div>
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Direct reports from the field on medical and bureaucratic realities.</p>
           
