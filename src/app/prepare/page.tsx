@@ -1,8 +1,6 @@
-
 'use client';
 
 import { 
-  ShieldCheck, 
   FileText, 
   TrendingDown, 
   Briefcase, 
@@ -13,13 +11,12 @@ import {
   PlaneLanding, 
   ShoppingCart,
   MessageSquareQuote, 
-  CheckCircle2,
   Lock,
   Stethoscope,
   Eye,
   Info,
   Banknote,
-  RefreshCcw
+  Milestone
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -34,7 +31,7 @@ export default function PreparePage() {
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm leading-relaxed tracking-widest opacity-60">
-          Have you considered all of the contract implications? What about the non-contract factors? We provide the intel you need to ensure the fine print doesn't leave you trapped. Make sure the 'hidden' costs don't derail your experience.
+          Have you considered all of the contract implications? What about the non-contract factors? We provide the questions you need to consider to ensure the fine print doesn't leave you unhappy or trapped. Make sure these 'hidden' implications don't derail your experience.
         </p>
       </div>
 
@@ -49,7 +46,7 @@ export default function PreparePage() {
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-6">
               <p className="text-muted-foreground leading-relaxed font-medium italic">
-                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, that tells you all you need to Know!"
+                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, that tells you all you need to know!"
               </p>
             </CardContent>
           </Card>
@@ -257,10 +254,10 @@ export default function PreparePage() {
           </div>
           
           <div className="mt-8 p-6 glass border-accent/20 bg-accent/5 rounded-sm flex items-start gap-4">
-            <Info className="size-6 text-accent shrink-0 mt-1" />
+            <div className="flex-shrink-0 mt-1"><Info className="size-6 text-accent" /></div>
             <div className="space-y-2">
               <h4 className="text-sm font-black uppercase tracking-widest text-accent">Insurance vetting strategy</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                 You need to know if it covers dental, chronic conditions, and which specific hospitals are in-network. A "Basic" local plan is often useless for expats. Always request the full policy document before signing.
               </p>
             </div>
