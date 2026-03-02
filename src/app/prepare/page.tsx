@@ -142,7 +142,7 @@ export default function PreparePage() {
                 <p className="text-xs text-muted-foreground mt-1">Minimum accessible liquid cash for a family move.</p>
               </div>
               <ul className="text-xs space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2"><span className="text-primary font-bold">Upfront costs:</span> You are paying for 4+ flights, 4+ visa medicals, and 4+ sets of document legalisation.</li>
+                <li className="flex items-start gap-2"><span className="text-primary font-bold">Upfront costs:</span> Upfront costs cover visa medicals and document legalisation for the whole family. You'll also need ready cash for a housing security deposit plus car rental fees and deposits.</li>
                 <li className="flex items-start gap-2"><span className="text-primary font-bold">Hidden first week:</span> Groceries, car rentals, and home basics before any reimbursement protocol triggers.</li>
               </ul>
             </div>
