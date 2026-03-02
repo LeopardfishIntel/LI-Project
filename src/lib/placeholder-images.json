@@ -3,79 +3,79 @@
     {
       "id": "tokyo-international-school",
       "description": "Tokyo International School campus",
-      "imageUrl": "https://images.unsplash.com/photo-1589572368687-c093a494522a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBzY2hvb2wlMjB0b2t5b3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1706011388366-32d63acd229e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtb2Rlcm4lMjBzY2hvb2wlMjB0b2t5b3xlbnwwfHx8fDE3NzI0NjYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "modern school tokyo"
     },
     {
       "id": "dubai-american-academy",
       "description": "Dubai American Academy building",
-      "imageUrl": "https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=1080&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1652897723813-4750d20264f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkdWJhaSUyMGFyY2hpdGVjdHVyZXxlbnwwfHx8fDE3NzI0NjYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "dubai architecture"
     },
     {
       "id": "zurich-international-school",
-      "description": "Zurich International School with mountains in the background",
-      "imageUrl": "https://images.unsplash.com/photo-1621178854067-6af42f05a486?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzY2hvb2wlMjBzd2l0emVybGFuZCUyMG1vdW50YWluc3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Zurich International School with mountains",
+      "imageUrl": "https://images.unsplash.com/photo-1725345651873-73b731436ab0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzY2hvb2wlMjBzd2l0emVybGFuZCUyMG1vdW50YWluc3xlbnwwfHx8fDE3NzI0NjYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school switzerland mountains"
     },
     {
       "id": "singapore-american-school",
       "description": "Singapore American School lush campus",
-      "imageUrl": "https://images.unsplash.com/photo-1760259906745-5dbce396a116?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0cm9waWNhbCUyMHNjaG9vbCUyMGNhbXB1c3xlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1770967004881-5e8795cb5fde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0cm9waWNhbCUyMHNjaG9vbCUyMGNhbXB1c3xlbnwwfHx8fDE3NzI0NjYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "tropical school campus"
     },
     {
       "id": "seoul-foreign-school",
       "description": "Seoul Foreign School main entrance",
-      "imageUrl": "https://images.unsplash.com/photo-1501909991051-7c054658fde0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZW91bHxlbnwwfHx8fDE3NzEwOTEyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1664357276506-0656304b65f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzY2hvb2wlMjBzZW91bHxlbnwwfHx8fDE3NzI0NjYyOTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school seoul"
     },
     {
       "id": "amsterdam-international-school",
       "description": "Amsterdam International School near a canal",
-      "imageUrl": "https://images.unsplash.com/photo-1504975692386-cfacf81e1022?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1693726439525-148cffd5a31a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcyNDY2MjkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school amsterdam"
     },
     {
       "id": "acs-cobham-international-school",
       "description": "ACS Cobham International School campus",
-      "imageUrl": "https://images.unsplash.com/photo-1628775926522-40212d1b82e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbmdsaXNoJTIwYm9hcmRpbmclMjBzY2hvb2x8ZW58MHx8fHwxNzcxMDkxMjcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1751577695280-8b490eb80caa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxlbmdsaXNoJTIwc2Nob29sJTIwY2FtcHVzfGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "english school campus"
     },
     {
       "id": "english-college-prague",
       "description": "English College Prague main building",
-      "imageUrl": "https://images.unsplash.com/photo-1541343672885-9be56236302a?q=80&w=1080&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1697125568733-632c2ef913b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwcmFndWUlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzcyNDY2MjkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "prague architecture"
     },
     {
       "id": "discover-step",
-      "description": "A person walking on a wooden bridge towards a beautiful mountain landscape, representing the journey of discovery.",
-      "imageUrl": "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?q=80&w=1080&auto=format&fit=crop",
+      "description": "A journey of discovery through a mountain landscape.",
+      "imageUrl": "https://images.unsplash.com/photo-1702116282947-bff5a947ac27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dHJhdmVsJTIwZGVzdGluYXRpb258ZW58MHx8fHwxNzcyNDU5NjE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "travel destination"
     },
     {
       "id": "evaluate-step",
-      "description": "A vibrant, bustling city market, representing the evaluation of local cost of living.",
-      "imageUrl": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?q=80&w=1080&auto=format&fit=crop",
+      "description": "A vibrant market representing the local cost of living.",
+      "imageUrl": "https://images.unsplash.com/photo-1696238707234-643db24ce395?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaXR5JTIwbWFya2V0fGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city market"
     },
     {
       "id": "decide-step",
-      "description": "A path splitting into a crossroads in a forest, symbolizing the moment of decision.",
-      "imageUrl": "https://images.unsplash.com/photo-1545641203-7d072a14e3b2?q=80&w=1080&auto=format&fit=crop",
+      "description": "A path splitting into a crossroads in a forest.",
+      "imageUrl": "https://images.unsplash.com/photo-1568497632174-0082a20602c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjcm9zc3JvYWRzJTIwcGF0aHxlbnwwfHx8fDE3NzI0NjYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "crossroads path"
     },
     {
       "id": "prepare-step",
-      "description": "A hand with a pen reviewing a detailed contract, representing due diligence and tactical preparation.",
-      "imageUrl": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1080&auto=format&fit=crop",
+      "description": "A tactical contract review process.",
+      "imageUrl": "https://images.unsplash.com/photo-1670105751017-99567a886016?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkdWUlMjBkaWxpZ2VuY2V8ZW58MHx8fHwxNzcyNDY2MjkyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "due diligence"
     },
     {
       "id": "homepage-hero",
-      "description": "A scenic view of a lake with mountains in the background, representing travel and adventure.",
-      "imageUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop",
+      "description": "A scenic intelligence background.",
+      "imageUrl": "https://images.unsplash.com/photo-1717212492986-f06e7de99ad0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBsYWtlfGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "travel lake"
     }
   ]
