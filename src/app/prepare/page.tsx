@@ -189,7 +189,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Stethoscope className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "We have seen some truly horrifying Dentist Surgeries, despite the pain we just turned and walked. Standards vary—always vet the facility before commitment."
+                  "We have seen some truly horrifying Dentist Surgeries, despite the pain we just turned and walked."
                 </p>
               </CardContent>
             </Card>
@@ -197,7 +197,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Coins className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "Paying 300 GBP up front for the ambulance ride (claimed back later) was stressful. This is why the 'Cash-Flow Crater' intel is mission-critical for family moves."
+                  "Paying 300 gbp up front for the ambulance ride (claimed back later) was stressful."
                 </p>
               </CardContent>
             </Card>
@@ -205,7 +205,7 @@ export default function PreparePage() {
               <CardContent className="pt-6 space-y-3">
                 <Eye className="size-5 text-primary opacity-50" />
                 <p className="text-sm text-muted-foreground leading-relaxed italic font-medium">
-                  "My eye test for my driving licence required me to just be able to place my credit card on the card reader! Bureaucracy can be a formality or a hurdle—be ready for both."
+                  "My eye test for my driving license rewuired my to just be able to place my credit card on the card reader!"
                 </p>
               </CardContent>
             </Card>
