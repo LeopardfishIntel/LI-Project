@@ -110,7 +110,6 @@ export default function PreparePage() {
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">You need to ensure you have full contractual clarity, are you clear on all the specific definitions and contract terms? DON'T move forward to a signed agreement when the baseline protections are left open to interpretation.</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* RED FLAGS FIRST */}
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
@@ -133,7 +132,6 @@ export default function PreparePage() {
               </CardContent>
             </Card>
 
-            {/* ORANGE FLAGS NEXT */}
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><AlertTriangle className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
@@ -206,18 +204,17 @@ export default function PreparePage() {
           <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Identify the "slow-burn" financial drains that cause mid-contract exits.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* RED FLAG FIRST */}
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
-                <p>"Free schooling" often excludes Capital Levies, books, uniforms, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge <strong>you</strong> for that staff salary.</p>
+                <p>"Free schooling" often excludes Capital Levies, books, uniforms, and mandatory international trips. If your child needs SEN support (LSA), some schools may charge you for that staff salary.</p>
+                <p>Standard benefit packages usually only support up to 2 children. If you have more dependents, the financial impact of full or partial fees can be significant. Furthermore, investigate if there are childcare provisions for induction weeks and early morning starts, and factor in the recurring costs of after-school clubs which are rarely included.</p>
               </CardContent>
             </Card>
 
-            {/* ORANGE FLAGS NEXT */}
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
@@ -260,7 +257,6 @@ export default function PreparePage() {
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white uppercase">4. Professional reality: The daily grind</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {/* RED FLAG FIRST */}
             <div className="p-6 glass rounded-sm space-y-3 hover:border-red-500/30 transition-colors border-red-500/10">
               <div className="flex items-center justify-between">
                 <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">Parental overreach</h4>
@@ -269,7 +265,6 @@ export default function PreparePage() {
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">Ensure the leadership team backs educational best practices over "customer satisfaction" in high-fee schools. Do they maintain professional boundaries for enrolment? Is this driven by a student's ability to thrive, rather than external financial pressure.</p>
             </div>
 
-            {/* ORANGE FLAGS NEXT */}
             <div className="p-6 glass rounded-sm space-y-3 hover:border-amber-500/30 transition-colors border-amber-500/10">
               <div className="flex items-center justify-between">
                 <h4 className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">'floating' teacher</h4>
@@ -336,7 +331,7 @@ export default function PreparePage() {
               "What is the weekly cap on teacher contact time, and how is my protected PPA time structurally guaranteed against administrative encroachment? for example being excessively used for cover can eat into your prep time.",
               "Does the End of Service Gratuity calculate based on the total monthly package or the basic salary only? Is this paid alongside my final salary payment?",
               "What is the deductible (excess) and co-pay percentage for inpatient and outpatient care? Is there a direct-billing agreement or is it a pay and reclaim agreement with the major international hospitals in the city?",
-              "Are all dependent educational fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition?",
+              "Are all dependent educational fees (capital levies, books, uniforms, and exams) fully waived for staff children, or just the base tuition? How many children are covered, and what are the costs for after-school clubs and childcare during induction weeks?",
               "Does the school require weekend attendance for open days, marketing events, or residential trips, and is this compensated with time-in-lieu?",
               "What are the onboarding costs that i need to plan for in my first 6 weeks. Does the school provide any financial assistance in this period.",
               "Is the housing 'utility-inclusive' (DEWA/Electricity/Water), or is there a monthly cap? If not, what is the average monthly utility bill for a family in August/September?",
