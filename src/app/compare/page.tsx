@@ -392,10 +392,13 @@ export default function ComparePage() {
     
     useEffect(() => {
         if (schools && schools.length > 0 && selectedSchoolIds.length === 0) {
-            const preferredSchools = schools
-                .filter(school => teacherProfile.preferredCountries.includes(school.country));
-            const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
-            const initialSchoolIds = [...new Set([...preferredSchools, ...otherSchools].map(s => s.id))].slice(0, 3);
+            // Randomly select 3 schools using Fisher-Yates shuffle
+            const shuffled = [...schools];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const initialSchoolIds = shuffled.slice(0, 3).map(s => s.id);
             
             if (initialSchoolIds.length > 0) {
                 setSelectedSchoolIds(initialSchoolIds);
