@@ -32,6 +32,7 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
+      icon: null,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -76,7 +77,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)] normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
+            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
@@ -101,8 +102,13 @@ export default function Home() {
       <section className="py-24 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white normal-case leading-tight">
-              <span className="text-accent">Leopardfish Intel:</span> A Clearer Picture: Built on Integrity
+            <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
+              <span className="text-3xl md:text-5xl block mb-2">
+                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel:</span>
+              </span>
+              <span className="text-xl md:text-3xl text-white/80 font-medium">
+                A Clearer Picture: Built on Integrity
+              </span>
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
               <p>
