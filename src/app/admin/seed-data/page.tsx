@@ -138,7 +138,7 @@ export default function SeedDataPage() {
   
     try {
       for (const item of dataToSeed) {
-        const docId = 'id' in item ? item.id : item.locationName.toLowerCase().replace(/\s+/g, '-');
+        const docId = 'id' in item ? (item as any).id : item.locationName.toLowerCase().replace(/\s+/g, '-');
         const docRef = doc(collectionRef, docId);
         const dataToSave = { ...item, id: docId, lastUpdated: new Date() };
         setDocumentNonBlocking(docRef, dataToSave, { merge: true });

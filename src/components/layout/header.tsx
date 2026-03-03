@@ -31,6 +31,7 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
+  { href: "/churn-calculator", label: "Stability" },
   { href: "/prepare", label: "Prepare" },
   { href: "/directory", label: "Directory" },
 ];

@@ -194,7 +194,7 @@ Output Format (JSON for Sheets Import):
                 </TableHeader>
                 <TableBody>
                   {schools?.map((school) => {
-                    const m = school.stabilityMetrics;
+                    const m = (school as any).stabilityMetrics;
                     return (
                       <TableRow key={school.id} className="border-b-white/5 hover:bg-white/5 transition-colors">
                         <TableCell className="py-4">

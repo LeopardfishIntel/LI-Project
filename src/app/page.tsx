@@ -101,7 +101,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
               <span className="text-3xl md:text-5xl block mb-2">
-                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel:</span>
+                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
               </span>
               <span className="text-xl md:text-2xl text-white/80 font-medium block">
                 A Clearer Picture: Built on Integrity
