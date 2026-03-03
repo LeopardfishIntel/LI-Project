@@ -15,13 +15,16 @@ export type TeacherProfile = {
 };
 
 export type StabilityMetrics = {
-  crudeTurnoverRate: number; // percentage
-  fiveYearAnchorRate: number; // percentage
-  leadershipTenure: number; // years
-  stabilityScore: number; // 0-100
-  stabilityRating: 'Elite' | 'High' | 'Medium' | 'Low';
+  previousHeadcount: number; // Year T-1
+  currentHeadcount: number;  // Year T
+  totalVacancies: number;    // Unique subject vacancies
+  adjustedChurnRate: number; // (Vacancies - Growth) / Prev Headcount
+  stabilityTier: 'Fortress' | 'Stable' | 'Volatile' | 'High Risk';
   redFlagAlert: boolean;
   redFlagReasoning?: string;
+  // Legacy fields preserved for background scoring
+  fiveYearAnchorRate?: number;
+  leadershipTenure?: number;
 };
 
 export type School = {
@@ -86,20 +89,4 @@ export type LocationCostOfLiving = {
   groceriesIndex: number;
   restaurantPriceIndex: number;
   lastUpdated: any; // Firestore timestamp
-};
-
-export type FieldReport = {
-  id?: string;
-  category: string;
-  organisation: string;
-  location: string;
-  original_content: string;
-  clean_text: string;
-  status: 'pending' | 'auto_rejected';
-  safety_flags: string[];
-  confidence_score: number;
-  attachmentUrl?: string;
-  timestamp: any;
-  authorId: string;
-  authorEmail: string;
 };

@@ -6,8 +6,8 @@ import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import {
   useUser,
-  useFirestore,
   useDoc,
+  useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
 } from '@/firebase';
