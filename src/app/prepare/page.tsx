@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -9,18 +10,14 @@ import {
   ShoppingCart,
   MessageSquareQuote, 
   Lock,
-  Eye,
   Banknote,
-  Milestone,
   PackageCheck,
   LogOut,
   GraduationCap,
-  Landmark,
   ShieldAlert,
   HeartPulse,
   FileCheck,
-  Flag,
-  Briefcase
+  Flag
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -70,7 +67,7 @@ export default function PreparePage() {
             <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
               <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
               <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">orange flag</p>
+                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">amber flag</p>
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">Caution: consider what you can do to mitigate the impact. 4 or 5 flags mean you should re-evaluate the risk.</p>
               </div>
             </div>
