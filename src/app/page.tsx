@@ -117,8 +117,8 @@ export default function Home() {
               <p>
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
-              <p>
-                Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
+              <p className="text-sm md:text-base border-t border-white/5 pt-6 opacity-80">
+                Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
               </p>
             </div>
           </div>
