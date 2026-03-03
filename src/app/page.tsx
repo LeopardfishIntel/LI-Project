@@ -77,7 +77,7 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)] normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
             <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
@@ -98,6 +98,25 @@ export default function Home() {
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
+        </div>
+      </section>
+
+      {/* Integrity Row */}
+      <section className="py-24 border-b border-white/5 bg-background/50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white normal-case leading-tight">
+              <span className="text-accent">Leopardfish Intel:</span> A Clearer Picture: Built on Integrity
+            </h2>
+            <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
+              <p>
+                In an industry where the full story is often hidden, Leopardfish Intel gives you an independent advantage. We bridge the information gap by creating a joined-up view of international schools, drawing from a variety of sources—including teacher reports, local economic trends, and official school records.
+              </p>
+              <p>
+                We don’t just collect information; we make sense of it. By combining real-world accounts with wider research and school history, we turn scattered details into a clear, honest picture of what you can actually expect. Our commitment is to support the teaching community—ensuring your next career move is based on a complete global perspective, not just a recruitment brochure.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
