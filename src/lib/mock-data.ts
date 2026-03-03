@@ -53,6 +53,7 @@ export const schools: School[] = [
       technologyEcosystem: '1:1 iPads, Google Workspace'
     },
     costOfLiving: { monthlyRent1BR: 160000, monthlyRent2BR: 250000, monthlyRent3BR: 400000, food: 70000, transport: 15000, utilities: 20000, internet: 5000, mobile: 4000, diningSocial: 30000, vehicleInsuranceMaint: 0, uncoveredMedical: 10000 },
+    stabilityMetrics: { crudeTurnoverRate: 12, fiveYearAnchorRate: 35, leadershipTenure: 6, stabilityScore: 86, stabilityRating: 'High', redFlagAlert: false }
   },
   {
     id: 'gems-dubai-american-academy',
@@ -81,6 +82,7 @@ export const schools: School[] = [
       technologyEcosystem: '1:1 MacBooks, iPads, PowerSchool'
     },
     costOfLiving: { monthlyRent1BR: 7500, monthlyRent2BR: 11000, monthlyRent3BR: 15000, food: 2200, transport: 500, utilities: 700, internet: 300, mobile: 200, diningSocial: 500, vehicleInsuranceMaint: 150, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 9, fiveYearAnchorRate: 42, leadershipTenure: 5, stabilityScore: 91, stabilityRating: 'Elite', redFlagAlert: false }
   },
   {
     id: 'repton-school-abu-dhabi',
@@ -107,6 +109,7 @@ export const schools: School[] = [
       technologyEcosystem: 'Apple Distinguished School, 1:1 iPads'
     },
     costOfLiving: { monthlyRent1BR: 5500, monthlyRent2BR: 8500, monthlyRent3BR: 11500, food: 1500, transport: 400, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 8, fiveYearAnchorRate: 45, leadershipTenure: 7, stabilityScore: 92, stabilityRating: 'Elite', redFlagAlert: false }
   },
   {
     id: 'british-international-school-abu-dhabi',
@@ -133,32 +136,142 @@ export const schools: School[] = [
       technologyEcosystem: 'Global Campus integration, STEAM labs'
     },
     costOfLiving: { monthlyRent1BR: 4800, monthlyRent2BR: 7200, monthlyRent3BR: 9500, food: 1400, transport: 300, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 14, fiveYearAnchorRate: 32, leadershipTenure: 4, stabilityScore: 85, stabilityRating: 'High', redFlagAlert: false }
+  },
+  {
+    id: 'al-mamoura-academy',
+    name: 'Al Mamoura Academy',
+    description: 'A mixed-primary and girls-only secondary school in Abu Dhabi, part of the Aldar Education network, following the British curriculum.',
+    websiteUrl: 'https://www.mamourabritishacademy.ae',
+    location: 'Abu Dhabi',
+    country: 'UAE',
+    ...getImage('al-mamoura'),
+    intel: {
+      salary: { value: 'AED 126,000 – 168,000', score: 'neutral', isTaxFree: true },
+      housing: { value: 'Monthly Allowance', provided: false },
+      savingsPotential: { value: 'High', score: 'good' },
+      curriculum: 'UK',
+      studentTeacherRatio: '12:1',
+      classSize: 24,
+      healthInsurance: 'Comp',
+      accreditation: 'ADEK Very Good',
+      jobsPortal: 'Aldar Careers',
+      minQualifications: 'Degree + License',
+      visaRestrictions: 'UAE Ministry Approval Required',
+      benefitsSummary: 'Health, flights, Aldar network benefits.',
+      nonContactTime: 15,
+      technologyEcosystem: 'Microsoft Showcase School'
+    },
+    costOfLiving: { monthlyRent1BR: 5000, monthlyRent2BR: 7500, monthlyRent3BR: 10000, food: 1400, transport: 1300, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 18, fiveYearAnchorRate: 25, leadershipTenure: 3, stabilityScore: 72, stabilityRating: 'Medium', redFlagAlert: false }
+  },
+  {
+    id: 'al-yasmina-academy',
+    name: 'Al Yasmina Academy',
+    description: 'An Outstanding Aldar Academy that has recently transitioned to a massive new state-of-the-art campus in Khalifa City.',
+    websiteUrl: 'https://www.alyasminaacademy.ae',
+    location: 'Abu Dhabi',
+    country: 'UAE',
+    ...getImage('al-yasmina'),
+    intel: {
+      salary: { value: 'AED 132,000 – 180,000', score: 'good', isTaxFree: true },
+      housing: { value: 'Provided or Allowance', provided: true },
+      savingsPotential: { value: 'High', score: 'good' },
+      curriculum: 'UK',
+      studentTeacherRatio: '10:1',
+      classSize: 22,
+      healthInsurance: 'Elite',
+      accreditation: 'ADEK Outstanding',
+      jobsPortal: 'Aldar Careers',
+      minQualifications: 'Degree + License',
+      visaRestrictions: 'Standard Aldar Sponsorship',
+      benefitsSummary: 'Premium health (incl. dental), flights.',
+      nonContactTime: 17,
+      technologyEcosystem: 'Advanced campus-wide tech'
+    },
+    costOfLiving: { monthlyRent1BR: 4500, monthlyRent2BR: 6800, monthlyRent3BR: 9000, food: 1300, transport: 1100, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 11, fiveYearAnchorRate: 38, leadershipTenure: 5, stabilityScore: 88, stabilityRating: 'High', redFlagAlert: false }
+  },
+  {
+    id: 'amity-international-school-abu-dhabi',
+    name: 'Amity International School Abu Dhabi',
+    description: 'A vibrant school with a unique focus on sailing and water sports, following the British National Curriculum in Al Bahya.',
+    websiteUrl: 'https://www.amityabudhabi.com/',
+    location: 'Abu Dhabi',
+    country: 'UAE',
+    ...getImage('amity-abu-dhabi'),
+    intel: {
+      salary: { value: 'AED 120,000 – 156,000', score: 'neutral', isTaxFree: true },
+      housing: { value: 'Accommodation or Allowance', provided: true },
+      savingsPotential: { value: 'High', score: 'good' },
+      curriculum: 'UK',
+      studentTeacherRatio: '13:1',
+      classSize: 25,
+      healthInsurance: 'Comp',
+      accreditation: 'ADEK Very Good',
+      jobsPortal: 'School Website',
+      minQualifications: 'Degree + License',
+      visaRestrictions: 'Standard processing',
+      benefitsSummary: 'Health, flights, maritime facilities access.',
+      nonContactTime: 15,
+      technologyEcosystem: 'STEAM integration focus'
+    },
+    costOfLiving: { monthlyRent1BR: 4000, monthlyRent2BR: 6000, monthlyRent3BR: 8500, food: 1200, transport: 1000, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 22, fiveYearAnchorRate: 20, leadershipTenure: 2, stabilityScore: 68, stabilityRating: 'Medium', redFlagAlert: false }
+  },
+  {
+    id: 'diyafah-international-school',
+    name: 'Diyafah International School',
+    description: 'Providing an affordable British education to a diverse community in MBZ City, focused on academic and personal development.',
+    websiteUrl: 'https://www.diyafahinternationalschool.com',
+    location: 'Abu Dhabi',
+    country: 'UAE',
+    ...getImage('diyafah'),
+    intel: {
+      salary: { value: 'AED 102,000 – 138,000', score: 'neutral', isTaxFree: true },
+      housing: { value: 'Basic Housing Provided', provided: true },
+      savingsPotential: { value: 'Moderate', score: 'neutral' },
+      curriculum: 'UK',
+      studentTeacherRatio: '15:1',
+      classSize: 28,
+      healthInsurance: 'Comp',
+      accreditation: 'ADEK Good',
+      jobsPortal: 'School Website',
+      minQualifications: 'Degree + License',
+      visaRestrictions: 'UAE MoE Teaching License Required',
+      benefitsSummary: 'Standard UAE healthcare, annual flights.',
+      nonContactTime: 12,
+      technologyEcosystem: 'General ICT labs'
+    },
+    costOfLiving: { monthlyRent1BR: 3500, monthlyRent2BR: 5500, monthlyRent3BR: 7500, food: 1100, transport: 900, utilities: 800, internet: 350, mobile: 200, diningSocial: 450, vehicleInsuranceMaint: 100, uncoveredMedical: 50 },
+    stabilityMetrics: { crudeTurnoverRate: 28, fiveYearAnchorRate: 15, leadershipTenure: 2, stabilityScore: 55, stabilityRating: 'Low', redFlagAlert: true, redFlagReasoning: 'High churn detected in budget sector recruitment cycles.' }
   },
   {
     id: 'the-english-college-prague',
     name: 'The English College in Prague',
-    description: 'An academically selective school providing a transformative British-style education in a historic city. A selective, non-profit HMC IB World School.',
+    description: 'A selective, non-profit HMC IB World School. It offers a prestigious British-style grammar school education for students aged 13–19.',
     websiteUrl: 'https://www.englishcollege.cz',
     location: 'Prague',
     country: 'Czech Republic',
     ...getImage('english-college-prague'),
     intel: {
-      salary: { value: 'CZK 950,000 – 1,400,000', score: 'good' },
-      housing: { value: 'Relocation assistance only', provided: false },
+      salary: { value: 'CZK 750k – 1.14M', score: 'good' },
+      housing: { value: 'Not Provided (Relocation support)', provided: false },
       savingsPotential: { value: 'Moderate', score: 'neutral' },
-      curriculum: 'UK, IB',
-      studentTeacherRatio: '10:1',
+      curriculum: 'IB, IGCSE',
+      studentTeacherRatio: '9:1',
       classSize: 18,
-      healthInsurance: 'State (Excellent Czech public system)',
+      healthInsurance: 'State (Czech Public)',
       accreditation: 'HMC, IBO',
       jobsPortal: 'TES, School Website',
       minQualifications: 'Degree + PGCE/QTS',
-      visaRestrictions: 'Sponsored Employee Card',
+      visaRestrictions: 'Requires Sponsored Employee Card',
       benefitsSummary: 'Flight allowance, public health insurance.',
       nonContactTime: 25,
       technologyEcosystem: 'Google Workspace, BYOD'
     },
     costOfLiving: { monthlyRent1BR: 24000, monthlyRent2BR: 32000, monthlyRent3BR: 42000, food: 9500, transport: 2000, utilities: 5000, internet: 700, mobile: 600, diningSocial: 7500, vehicleInsuranceMaint: 0, uncoveredMedical: 1200 },
+    stabilityMetrics: { crudeTurnoverRate: 15, fiveYearAnchorRate: 30, leadershipTenure: 4, stabilityScore: 82, stabilityRating: 'High', redFlagAlert: false }
   },
   {
     id: 'zurich-international-school',
@@ -187,6 +300,7 @@ export const schools: School[] = [
       technologyEcosystem: 'Bring Your Own Device (BYOD), Canvas, Veracross'
     },
     costOfLiving: { monthlyRent1BR: 2300, monthlyRent2BR: 3200, monthlyRent3BR: 4500, food: 900, transport: 200, utilities: 300, internet: 70, mobile: 60, diningSocial: 600, vehicleInsuranceMaint: 200, uncoveredMedical: 200 },
+    stabilityMetrics: { crudeTurnoverRate: 6, fiveYearAnchorRate: 50, leadershipTenure: 8, stabilityScore: 95, stabilityRating: 'Elite', redFlagAlert: false }
   },
   {
     id: 'singapore-american-school',
@@ -213,6 +327,7 @@ export const schools: School[] = [
       technologyEcosystem: '1:1 MacBooks, Google Workspace'
     },
     costOfLiving: { monthlyRent1BR: 3800, monthlyRent2BR: 5200, monthlyRent3BR: 7000, food: 900, transport: 150, utilities: 300, internet: 60, mobile: 50, diningSocial: 400, vehicleInsuranceMaint: 0, uncoveredMedical: 80 },
+    stabilityMetrics: { crudeTurnoverRate: 5, fiveYearAnchorRate: 55, leadershipTenure: 10, stabilityScore: 98, stabilityRating: 'Elite', redFlagAlert: false }
   },
   {
     id: 'seoul-foreign-school',
@@ -239,6 +354,7 @@ export const schools: School[] = [
       technologyEcosystem: 'Google Workspace, 1:1 program'
     },
     costOfLiving: { monthlyRent1BR: 1400000, monthlyRent2BR: 2200000, monthlyRent3BR: 3500000, food: 750000, transport: 100000, utilities: 250000, internet: 40000, mobile: 30000, diningSocial: 250000, vehicleInsuranceMaint: 0, uncoveredMedical: 70000 },
+    stabilityMetrics: { crudeTurnoverRate: 7, fiveYearAnchorRate: 48, leadershipTenure: 6, stabilityScore: 94, stabilityRating: 'Elite', redFlagAlert: false }
   },
   {
     id: 'international-school-amsterdam',
@@ -265,5 +381,6 @@ export const schools: School[] = [
       technologyEcosystem: 'Google Workspace, Sustainable campus'
     },
     costOfLiving: { monthlyRent1BR: 1850, monthlyRent2BR: 2400, monthlyRent3BR: 3100, food: 450, transport: 150, utilities: 200, internet: 55, mobile: 45, diningSocial: 350, vehicleInsuranceMaint: 0, uncoveredMedical: 120 },
+    stabilityMetrics: { crudeTurnoverRate: 12, fiveYearAnchorRate: 35, leadershipTenure: 5, stabilityScore: 80, stabilityRating: 'High', redFlagAlert: false }
   }
 ];

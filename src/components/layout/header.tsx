@@ -32,7 +32,7 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
-  { href: "/prepare", label: "Prepare" },
+  { href: "/churn-calculator", label: "Stability" },
   { href: "/directory", label: "Directory" },
   { href: "/partners", label: "Partners" },
 ];
@@ -56,7 +56,7 @@ function UserNav() {
     if (!user) {
         return (
              <Link href="/login">
-                <Button variant="outline" size="sm" className="font-bold rounded-sm border-white/20 text-white hover:bg-white/5">
+                <Button variant="outline" size="sm" className="font-bold rounded-sm border-white/20 text-white hover:bg-white/5 text-sm">
                     Login
                 </Button>
             </Link>
@@ -69,21 +69,21 @@ function UserNav() {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10">
                     <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/20 text-primary font-bold">
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
                         </AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 glass">
-                 <DropdownMenuItem asChild className="hover:bg-primary/10 hover:text-primary cursor-pointer">
+                 <DropdownMenuItem asChild className="hover:bg-primary/10 hover:text-primary cursor-pointer text-sm">
                     <Link href="/profile">
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white/5" />
-                <DropdownMenuItem onClick={handleLogout} className="hover:bg-destructive/10 hover:text-destructive cursor-pointer">
+                <DropdownMenuItem onClick={handleLogout} className="hover:bg-destructive/10 hover:text-destructive cursor-pointer text-sm">
                      <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                 </DropdownMenuItem>
@@ -117,7 +117,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter">
+            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>
           </Link>
@@ -128,7 +128,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm tracking-tight",
+                  "px-4 py-2 text-base font-bold transition-colors rounded-sm tracking-tight",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -153,9 +153,9 @@ export default function Header() {
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input 
-                              placeholder="Tactical Search..." 
+                              placeholder="Tactical search..." 
                               {...field} 
-                              className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50" 
+                              className="h-10 pl-10 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
                             />
                           </div>
                         </FormControl>
@@ -164,32 +164,6 @@ export default function Header() {
                   />
                 </form>
               </Form>
-            </div>
-            
-            <div className="md:hidden">
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
-                            <Menu className="size-5" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="bg-background border-r border-white/5">
-                        <div className="flex flex-col gap-4 mt-8">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={cn(
-                                      "text-lg font-bold tracking-tighter transition-colors",
-                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
-                                    )}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
-                    </SheetContent>
-                </Sheet>
             </div>
             
             <UserNav />

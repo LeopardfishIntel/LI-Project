@@ -19,13 +19,15 @@ import {
   GitCompare,
   BookOpen,
   Users,
-  ShieldCheck
+  ShieldCheck,
+  TrendingUp
 } from 'lucide-react';
 
 const navLinks = [
     { href: '/discover', label: 'Discover', icon: Wand2 },
     { href: '/financial-forecaster', label: 'Evaluate', icon: Calculator },
     { href: '/compare', label: 'Decide', icon: GitCompare },
+    { href: '/churn-calculator', label: 'Stability', icon: TrendingUp },
     { href: '/prepare', label: 'Prepare', icon: ShieldCheck },
     { href: '/directory', label: 'Directory', icon: BookOpen },
     { href: '/partners', label: 'Partners', icon: Users },

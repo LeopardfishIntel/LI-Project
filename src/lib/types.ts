@@ -14,6 +14,16 @@ export type TeacherProfile = {
   preferredCountries: string[];
 };
 
+export type StabilityMetrics = {
+  crudeTurnoverRate: number; // percentage
+  fiveYearAnchorRate: number; // percentage
+  leadershipTenure: number; // years
+  stabilityScore: number; // 0-100
+  stabilityRating: 'Elite' | 'High' | 'Medium' | 'Low';
+  redFlagAlert: boolean;
+  redFlagReasoning?: string;
+};
+
 export type School = {
   id: string;
   name: string;
@@ -55,6 +65,7 @@ export type School = {
     uncoveredMedical?: number;
     apartment?: number; // For backward compatibility
   };
+  stabilityMetrics?: StabilityMetrics;
 };
 
 export type LocationCostOfLiving = {

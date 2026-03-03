@@ -100,109 +100,37 @@
           "type": "string",
           "description": "The city where the school is located."
         },
-        "address": {
-          "type": "string",
-          "description": "The physical address of the school."
-        },
         "websiteUrl": {
           "type": "string",
           "description": "The official website URL of the school.",
           "format": "uri"
         },
-        "videoUrls": {
-          "type": "array",
-          "description": "A list of URLs to promotional or informational videos about the school.",
-          "items": {
-            "type": "string"
+        "intel": {
+          "type": "object",
+          "properties": {
+            "salary": { "type": "object" },
+            "housing": { "type": "object" },
+            "savingsPotential": { "type": "object" },
+            "curriculum": { "type": "string" },
+            "studentTeacherRatio": { "type": "string" },
+            "classSize": { "type": "number" },
+            "nonContactTime": { "type": "number" }
           }
         },
-        "averageSalaryMin": {
-          "type": "number",
-          "description": "The estimated minimum average annual salary for teachers at the school."
-        },
-        "averageSalaryMax": {
-          "type": "number",
-          "description": "The estimated maximum average annual salary for teachers at the school."
-        },
-        "averageHousingCost": {
-          "type": "number",
-          "description": "The estimated average monthly housing cost in the school's vicinity."
-        },
-        "savingsPotentialMin": {
-          "type": "number",
-          "description": "The estimated minimum monthly savings potential for teachers."
-        },
-        "savingsPotentialMax": {
-          "type": "number",
-          "description": "The estimated maximum monthly savings potential for teachers."
-        },
-        "teacherStudentRatio": {
-          "type": "number",
-          "description": "The ratio of teachers to students at the school."
-        },
-        "classSizeAverage": {
-          "type": "number",
-          "description": "The average class size at the school."
-        },
-        "curriculum": {
-          "type": "string",
-          "description": "The primary curriculum followed by the school (e.g., 'IB', 'British National Curriculum', 'American Common Core')."
-        },
-        "accreditation": {
-          "type": "string",
-          "description": "The accreditation status or bodies for the school (e.g., 'CIS', 'WASC')."
-        },
-        "schoolType": {
-          "type": "string",
-          "description": "The type of school (e.g., 'International', 'Public', 'Private')."
-        },
-        "isSpotlight": {
-          "type": "boolean",
-          "description": "Indicates if the school is featured as a 'School Spotlight' on the homepage."
-        },
-        "overallRating": {
-          "type": "number",
-          "description": "The average overall rating for the school, typically derived from teacher reviews."
+        "stabilityMetrics": {
+          "type": "object",
+          "description": "Tactical retention and churn metrics for the institution.",
+          "properties": {
+            "crudeTurnoverRate": { "type": "number" },
+            "fiveYearAnchorRate": { "type": "number" },
+            "leadershipTenure": { "type": "number" },
+            "stabilityScore": { "type": "number" },
+            "stabilityRating": { "type": "string", "enum": ["Elite", "High", "Medium", "Low"] },
+            "redFlagAlert": { "type": "boolean" }
+          }
         }
       },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "country",
-        "city",
-        "websiteUrl",
-        "averageSalaryMin",
-        "averageSalaryMax",
-        "averageHousingCost",
-        "savingsPotentialMin",
-        "savingsPotentialMax",
-        "teacherStudentRatio",
-        "classSizeAverage",
-        "curriculum",
-        "accreditation",
-        "schoolType",
-        "isSpotlight",
-        "overallRating"
-      ]
-    },
-    "FieldIntelligence": {
-      "title": "Field Intelligence",
-      "type": "object",
-      "description": "Educator-submitted tactical field intel, undergoing security moderation.",
-      "properties": {
-        "category": { "type": "string" },
-        "organisation": { "type": "string" },
-        "location": { "type": "string" },
-        "content": { "type": "string" },
-        "clean_text": { "type": "string" },
-        "status": { "type": "string", "enum": ["pending", "auto_rejected", "verified"] },
-        "safety_flags": { "type": "array", "items": { "type": "string" } },
-        "confidence_score": { "type": "number" },
-        "authorId": { "type": "string" },
-        "timestamp": { "type": "string", "format": "date-time" }
-      },
-      "required": ["category", "organisation", "location", "content", "status", "timestamp"]
+      "required": ["id", "name", "description", "country", "city"]
     }
   },
   "auth": {
@@ -229,26 +157,6 @@
           "schema": {
             "$ref": "#/backend/entities/School"
           }
-        }
-      },
-      {
-        "path": "/pending_intel/{reportId}",
-        "definition": {
-          "entityName": "FieldIntelligence",
-          "schema": {
-            "$ref": "#/backend/entities/FieldIntelligence"
-          },
-          "description": "Staging area for human-in-the-loop intel verification."
-        }
-      },
-      {
-        "path": "/verified_intel/{intelId}",
-        "definition": {
-          "entityName": "FieldIntelligence",
-          "schema": {
-            "$ref": "#/backend/entities/FieldIntelligence"
-          },
-          "description": "Cleared intelligence dossiers that impact website output."
         }
       }
     ]
