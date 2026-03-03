@@ -469,7 +469,6 @@ export default function AddSchoolPage() {
 
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Cost of Living Data (Monthly, in USD)</CardTitle>

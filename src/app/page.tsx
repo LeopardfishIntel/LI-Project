@@ -97,7 +97,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Integrity Row */}
+      {/* Integrity Briefing Row */}
       <section className="py-24 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">

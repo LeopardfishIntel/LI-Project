@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -114,7 +115,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white">
+            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>
           </Link>
@@ -125,7 +126,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-base font-bold transition-colors rounded-sm tracking-tight",
+                  "px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -150,9 +151,9 @@ export default function Header() {
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input 
-                              placeholder="Tactical search..." 
+                              placeholder="Tactical Search..." 
                               {...field} 
-                              className="h-10 pl-10 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
+                              className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
                             />
                           </div>
                         </FormControl>
@@ -166,20 +167,17 @@ export default function Header() {
             <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
-                            <Menu className="size-6" />
+                        <Button variant="ghost" size="icon">
+                            <Menu className="size-5" />
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="bg-background border-r border-white/5">
-                        <div className="flex flex-col gap-6 mt-12">
+                        <div className="flex flex-col gap-4 mt-8">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={cn(
-                                      "text-xl font-bold tracking-tighter transition-colors uppercase",
-                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
-                                    )}
+                                    className="text-lg font-bold tracking-tighter hover:text-primary transition-colors"
                                 >
                                     {link.label}
                                 </Link>
