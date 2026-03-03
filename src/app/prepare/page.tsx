@@ -150,7 +150,7 @@ export default function PreparePage() {
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" means no fridge or washing machine. Shipping your own goods can take 3+ months to arrive and clear customs.</p>
               <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm space-y-4">
                 <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Check local IKEA sites. A £1,000 'settling-in allowance' may only cover basic white goods. Is shipping worth the freight fees?</p>
               </div>

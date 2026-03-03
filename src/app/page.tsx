@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -23,7 +22,7 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
-      desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
       label: 'Find your fit'
@@ -31,7 +30,7 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
       label: 'Decode offer'
@@ -39,7 +38,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "The Comparison Matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
       label: 'Final verdict'
@@ -47,7 +46,7 @@ export default function Home() {
     {
       id: '04',
       title: 'Prepare',
-      desc: "The strategic checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
+      desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Final audit'
@@ -57,13 +56,13 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
           data-ai-hint={heroImage.imageHint}
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
@@ -71,18 +70,18 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)] normal-case">
+          <div className="max-w-3xl mx-auto space-y-8 flex flex-col items-center">
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
+            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10" asChild>
                 <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10" asChild>
                 <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
@@ -90,6 +89,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Counter Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -98,7 +98,7 @@ export default function Home() {
 
       {/* Integrity Row */}
       <section className="py-24 border-b border-white/5 bg-background/50">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
               <span className="text-3xl md:text-5xl block mb-2">

@@ -32,7 +32,6 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
-  { href: "/churn-calculator", label: "Stability" },
   { href: "/prepare", label: "Prepare" },
   { href: "/directory", label: "Directory" },
 ];
@@ -117,7 +116,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
+            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>
           </Link>
@@ -128,7 +127,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-colors rounded-sm",
+                  "px-4 py-2 text-base font-bold transition-colors rounded-sm tracking-tight",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -155,7 +154,7 @@ export default function Header() {
                             <Input 
                               placeholder="Tactical search..." 
                               {...field} 
-                              className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
+                              className="h-10 pl-10 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
                             />
                           </div>
                         </FormControl>
