@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -9,39 +8,34 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2 } from 'lucide-react';
 export default function StrategicChecksheetPage() {
   const phases = [
     {
-      title: "Phase 1: The Contract Audit",
-      description: "Before you sign, ensure these terms are explicitly written, not just \"promised.\"",
+      title: "Phase 1: The contract audit",
+      description: "Ensure these terms are explicitly written, not just \"promised.\"",
       items: [
         { label: "Salary Transparency", sub: "Is there a fixed scale, or is it \"discretionary\"?" },
-        { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP, or is there a clause for inflation?" },
-        { label: "The \"Contact Minute\" Cap", sub: "Is the exact weekly teaching time in minutes stated?" },
-        { label: "PPA Guarantee", sub: "Is Planning, Prep, and Assessment time \"protected\" in the contract?" },
-        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silence you from discussing culture?" },
-        { label: "Gratuity Calculation", sub: "Is the bonus based on Basic salary or the Full package?" },
-        { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits (not just a brochure)?" }
+        { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP?" },
+        { label: "The \"Contact Minute\" Cap", sub: "Is the weekly teaching time in minutes stated?" },
+        { label: "PPA Guarantee", sub: "Is planning time \"protected\" in the contract?" },
+        { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits?" }
       ]
     },
     {
-      title: "Phase 2: The Onboarding Cash-Flow Plan",
-      description: "Use this to calculate your \"Tactical Reserve\" (Minimum £4k–£6k for families).",
+      title: "Phase 2: The onboarding cash-flow plan",
+      description: "Calculate your \"Tactical Reserve\" (Minimum £4k–£6k for families).",
       items: [
-        { label: "The First Payday", sub: "Count the days from arrival to the first paycheck. (Target: 45 days)." },
+        { label: "The First Payday", sub: "Count the days from arrival to the first paycheck." },
         { label: "Housing Deposit", sub: "Budget for 1–2 months' rent upfront." },
-        { label: "Car Hire & Deposit", sub: "Budget for 30 days of rental + the \"Credit Card Block\" for the deposit." },
-        { label: "The IKEA Test", sub: "Check local sites for the cost of white goods (Fridge, Washer)." },
-        { label: "Legalisation Fees", sub: "Total cost of 4+ Apostilles and medicals. Are these reimbursed?" },
-        { label: "Utility Setup", sub: "Budget for connection fees (Water/Electricity/Internet)." }
+        { label: "The IKEA Test", sub: "Check local sites for the cost of white goods." },
+        { label: "Legalisation Fees", sub: "Total cost of Apostilles and medicals." }
       ]
     },
     {
-      title: "Phase 3: Professional Due Diligence",
+      title: "Phase 3: Professional due diligence",
       description: "Questions for the \"One-to-One\" interview with a current teacher.",
       items: [
-        { label: "The \"Floating\" Audit", sub: "Do teachers have their own rooms, or do they move between blocks?" },
-        { label: "Admin Bloat", sub: "How many hours a week are spent on data entry vs. teaching?" },
-        { label: "Parental Boundaries", sub: "Does leadership support teachers in behavior disputes?" },
-        { label: "The \"Turnover\" Stat", sub: "What percentage of staff left in the last 2 years?" },
-        { label: "Staff Children", sub: "Are all fees (trips, uniforms, levies) waived? Is childcare included?" }
+        { label: "The \"Floating\" Audit", sub: "Do teachers have their own rooms?" },
+        { label: "Admin Bloat", sub: "How many hours a week are spent on data entry?" },
+        { label: "Parental Boundaries", sub: "Does leadership support teachers in behaviour disputes?" },
+        { label: "Staff Children", sub: "Are all fees (trips, uniforms, levies) waived?" }
       ]
     }
   ];
@@ -61,7 +55,7 @@ export default function StrategicChecksheetPage() {
           </Link>
         </Button>
         <Button onClick={handlePrint} className="bg-black text-white hover:bg-black/90 font-bold rounded-sm px-8">
-          <Printer className="mr-2 size-4" /> Print Dossier
+          <Printer className="mr-2 size-4" /> Print dossier
         </Button>
       </div>
 
@@ -84,7 +78,7 @@ export default function StrategicChecksheetPage() {
 
         <div className="bg-gray-100 p-6 border-l-8 border-black">
           <p className="text-sm font-bold leading-relaxed italic">
-            "Verification is the difference between an adventure and an ordeal. Use this checksheet to validate institutional promises against regional realities. If a school avoids these specific points, assume the risk is being transferred to you."
+            "Verification is the difference between an adventure and an ordeal. Use this checksheet to validate institutional promises against regional realities."
           </p>
         </div>
 
@@ -118,7 +112,7 @@ export default function StrategicChecksheetPage() {
             </div>
           </div>
           <div className="text-[9px] font-bold text-gray-400 text-center md:text-right max-w-xs leading-normal uppercase">
-            Intel contained herein is for guidance purposes only. Verify all final contractual and logistical details with the employer and local authorities.
+            Intel contained herein is for guidance purposes only. Verify all final details with official sources.
           </div>
         </footer>
       </div>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -140,26 +139,26 @@ Output Format (JSON for Sheets Import):
         </div>
 
         <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <StatHighlight 
-            icon={<Users className="size-5 text-sky-400" />}
-            title="Headcount delta"
-            desc="Identifying the net difference in faculty size between years. Essential for isolating growth from genuine attrition."
-          />
-          <StatHighlight 
-            icon={<TrendingUp className="size-5 text-green-400" />}
-            title="Replacement rate"
-            desc="Formula: (Total Vacancies - Growth Seats) / Total Staff. Measures how many staff are being replaced, not added."
-          />
-          <StatHighlight 
-            icon={<AlertTriangle className="size-5 text-red-400" />}
-            title="Mid-contract breaks"
-            desc="Toxic churn indicator. Identifying ads for immediate mid-year starts, suggesting unmanaged exits."
-          />
-          <StatHighlight 
-            icon={<BarChart3 className="size-5 text-primary" />}
-            title="Fortress vs High risk"
-            desc="A quantitative tier system from 'Fortress' (0-12%) to 'High Risk' (31%+) based on verified replacement data."
-          />
+          <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
+            <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors"><Users className="size-5 text-sky-400" /></div>
+            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Headcount delta</h4>
+            <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">Identifying the net difference in faculty size between years. Essential for isolating growth from genuine attrition.</p>
+          </div>
+          <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
+            <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors"><TrendingUp className="size-5 text-green-400" /></div>
+            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Replacement rate</h4>
+            <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">Formula: (Total Vacancies - Growth Seats) / Total Staff. Measures how many staff are being replaced, not added.</p>
+          </div>
+          <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
+            <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors"><AlertTriangle className="size-5 text-red-400" /></div>
+            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Mid-contract breaks</h4>
+            <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">Toxic churn indicator. Identifying ads for immediate mid-year starts, suggesting unmanaged exits.</p>
+          </div>
+          <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
+            <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors"><BarChart3 className="size-5 text-primary" /></div>
+            <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Fortress vs High risk</h4>
+            <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">A quantitative tier system from 'Fortress' (0-12%) to 'High Risk' (31%+) based on verified replacement data.</p>
+          </div>
         </div>
       </div>
 
@@ -170,7 +169,7 @@ Output Format (JSON for Sheets Import):
             <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">GASCI audited replacement rates across the network</CardDescription>
           </div>
           <Button variant="outline" size="sm" className="h-8 border-white/10 text-[10px] font-black uppercase tracking-widest">
-            <Download className="size-3 mr-2" /> Export JSON payload
+            <Download className="size-3 mr-2" /> Export registry
           </Button>
         </CardHeader>
         <CardContent className="p-0">
@@ -222,7 +221,7 @@ Output Format (JSON for Sheets Import):
                           {m?.redFlagAlert ? (
                             <div className="flex items-center justify-end gap-2 text-red-400 animate-pulse">
                               <AlertTriangle className="size-3" />
-                              <span className="text-[9px] font-black uppercase tracking-widest cursor-help" title={m.redFlagReasoning}>Toxic churn</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest cursor-help">Toxic churn</span>
                             </div>
                           ) : (
                             <span className="text-[9px] font-black uppercase tracking-widest text-green-500/60">Operational</span>
@@ -237,26 +236,6 @@ Output Format (JSON for Sheets Import):
           )}
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function StatHighlight({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
-  return (
-    <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
-      <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors">{icon}</div>
-      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{title}</h4>
-      <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{desc}</p>
-    </div>
-  );
-}
-
-function StatHighlightSmall({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
-  return (
-    <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
-      <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors">{icon}</div>
-      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{title}</h4>
-      <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{desc}</p>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -25,37 +24,37 @@ export default function Home() {
       id: '01',
       title: 'Discover',
       icon: <Target className="w-8 h-8 text-primary" />,
-      desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find Your Fit'
+      label: 'Find your fit'
     },
     {
       id: '02',
       title: 'Evaluate',
       icon: <Calculator className="w-8 h-8 text-primary" />,
-      desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Decode Offer'
+      label: 'Decode offer'
     },
     {
       id: '03',
       title: 'Decide',
       icon: <GitCompare className="w-8 h-8 text-primary" />,
-      desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Final Verdict'
+      label: 'Final verdict'
     },
     {
       id: '04',
       title: 'Prepare',
       icon: <ShieldCheck className="w-8 h-8 text-primary" />,
-      desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
+      desc: "The strategic checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
-      label: 'Final Audit'
+      label: 'Final audit'
     },
   ];
 
@@ -78,7 +77,7 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence grade protocol
             </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
               <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
@@ -88,7 +87,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
-                <Link href="/discover">Initialize Journey</Link>
+                <Link href="/discover">Initialize journey</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-14 px-10 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
                 <Link href="/directory">Browse dossiers</Link>
