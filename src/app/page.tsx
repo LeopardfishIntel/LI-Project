@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
-import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
@@ -27,7 +26,7 @@ export default function Home() {
       desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find Your Fit'
+      label: 'Find your fit'
     },
     {
       id: '02',
@@ -35,16 +34,15 @@ export default function Home() {
       desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Decode Offer'
+      label: 'Decode offer'
     },
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Final Verdict'
+      label: 'Final verdict'
     },
     {
       id: '04',
@@ -52,7 +50,7 @@ export default function Home() {
       desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
-      label: 'Final Audit'
+      label: 'Final audit'
     },
   ];
 
@@ -86,26 +84,19 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10" asChild>
-                <Link href="/discover">Discover</Link>
-              </Button>
-              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10" asChild>
-                <Link href="/financial-forecaster">Evaluate</Link>
-              </Button>
+              <Link href="/discover" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg flex items-center justify-center transition-all">
+                Discover
+              </Link>
+              <Link href="/financial-forecaster" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg flex items-center justify-center transition-all">
+                Evaluate
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-8 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
-          <KeyFactsSection />
-        </div>
-      </section>
-
       {/* Tagline Section */}
-      <section className="py-8 bg-background border-b border-white/5">
+      <section className="py-8 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-xl md:text-3xl text-white/80 font-bold tracking-tight">
               Teach overseas - Know before you go
@@ -142,6 +133,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="py-8 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <KeyFactsSection />
+        </div>
+      </section>
+
       {/* Zig-Zag Insider Journey */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
@@ -169,11 +167,14 @@ export default function Home() {
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter">{step.title}</h3>
+                  <Link href={step.link} className="group inline-flex items-center text-primary hover:text-white transition-colors">
+                    <h3 className="text-3xl md:text-5xl stamped-dossier tracking-tighter mr-3">{step.title}</h3>
+                    <ArrowRight className="size-6 md:size-8 group-hover:translate-x-2 transition-transform" />
+                  </Link>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm" asChild>
-                    <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
-                  </Button>
+                  <Link href={step.link} className="text-xs font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors">
+                    {step.label}
+                  </Link>
                 </div>
               </div>
             ))}
