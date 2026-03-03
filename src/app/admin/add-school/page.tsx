@@ -53,7 +53,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { firebaseConfig } from '@/firebase/config';
 import { Separator } from '@/components/ui/separator';
 
 const scoreSchema = z.enum(['good', 'neutral', 'bad']);
@@ -477,7 +476,7 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (<FormItem><FormLabel>Rent (1BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (<FormItem><FormLabel>Rent (3BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</Label><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
