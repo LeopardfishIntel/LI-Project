@@ -115,7 +115,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white text-lg">
+            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </span>
           </Link>
@@ -126,7 +126,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-base font-bold transition-colors rounded-sm tracking-tight",
+                  "px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"

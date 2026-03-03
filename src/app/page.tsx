@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, Target, Calculator, GitCompare, PackageCheck } from 'lucide-react';
+import { ArrowRight, Target, Calculator, GitCompare, PackageCheck, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -23,10 +23,11 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
+      icon: <Target className="w-8 h-8 text-primary" />,
       desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find your fit'
+      label: 'Discover'
     },
     {
       id: '02',
@@ -35,7 +36,7 @@ export default function Home() {
       desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Decode offer'
+      label: 'Evaluate'
     },
     {
       id: '03',
@@ -44,7 +45,7 @@ export default function Home() {
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Final verdict'
+      label: 'Decide'
     },
     {
       id: '04',
@@ -53,7 +54,7 @@ export default function Home() {
       desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
-      label: 'Final audit'
+      label: 'Prepare'
     },
   ];
 
