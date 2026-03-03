@@ -39,6 +39,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: <Calculator className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -120,7 +121,7 @@ export default function Home() {
               </p>
               <div className="pt-6 border-t border-white/5">
                 <p className="text-xs md:text-sm text-muted-foreground opacity-70">
-                  <span className="font-bold text-white mr-1">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
+                  <span className="font-bold text-white mr-1">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
                 </p>
               </div>
             </div>
