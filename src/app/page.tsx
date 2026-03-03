@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -41,6 +40,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -106,8 +106,11 @@ export default function Home() {
               <span className="text-3xl md:text-5xl block mb-2">
                 <span className="text-primary">Leopard</span><span className="text-accent">fish Intel:</span>
               </span>
-              <span className="text-xl md:text-2xl text-white/80 font-medium">
+              <span className="text-xl md:text-2xl text-white/80 font-medium block">
                 A Clearer Picture: Built on Integrity
+              </span>
+              <span className="text-sm md:text-base text-white/60 font-bold uppercase tracking-[0.3em] block mt-2">
+                Teach overseas - Know before you go
               </span>
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
@@ -117,9 +120,11 @@ export default function Home() {
               <p>
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
-              <p className="text-sm md:text-base border-t border-white/5 pt-6 opacity-80">
-                Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
-              </p>
+              <div className="pt-6 border-t border-white/5">
+                <p className="text-xs md:text-sm text-muted-foreground opacity-70">
+                  <span className="font-bold text-white mr-1">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -163,8 +168,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <RedFlagRegistry />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -17,7 +18,6 @@ import {
   Calculator,
   GitCompare,
   BookOpen,
-  Users,
   ShieldCheck,
   TrendingUp
 } from 'lucide-react';
@@ -29,7 +29,6 @@ const navLinks = [
     { href: '/churn-calculator', label: 'Stability', icon: TrendingUp },
     { href: '/prepare', label: 'Prepare', icon: ShieldCheck },
     { href: '/directory', label: 'Directory', icon: BookOpen },
-    { href: '/partners', label: 'Partners', icon: Users },
 ];
 
 export function AppSidebar() {
