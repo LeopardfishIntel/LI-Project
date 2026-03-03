@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -119,7 +120,7 @@ export default function Home() {
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
               <div className="pt-6 border-t border-white/5">
-                <p className="text-xs md:text-sm text-muted-foreground opacity-70">
+                <p className="text-xs md:text-sm text-muted-foreground opacity-70 font-medium">
                   <span className="font-bold text-white mr-1 uppercase tracking-widest text-[10px]">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
                 </p>
               </div>

@@ -137,7 +137,7 @@ export default function PreparePage() {
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Upfront costs cover visa medicals and document legalisation. You'll also need ready cash for a housing security deposit.</p>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Upfront costs cover visa medicals and document legalisation. You'll also need ready cash for a housing security deposit.</p>
               <div className="p-6 glass border-red-500/20 bg-red-500/5 rounded-sm">
                 <p className="text-[10px] font-black text-red-400 tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
@@ -170,7 +170,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>"Free schooling" often excludes capital levies, uniforms, and mandatory trips. If your child needs SEN support, some schools may charge you for that staff salary.</p>
               </CardContent>
             </Card>
@@ -180,7 +180,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Verify if the End of Service (EOS) gratuity is calculated on basic salary or total package. The difference can be 40%.</p>
               </CardContent>
             </Card>

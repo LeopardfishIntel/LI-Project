@@ -47,7 +47,6 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -256,7 +255,7 @@ export default function SeedDataPage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">
             Data Hub
             </h1>
-            <p className="text-muted-foreground text-center mt-4">
+            <p className="text-muted-foreground text-center mt-4 font-medium">
             Manage content, and run bulk & AI data operations for your application.
             </p>
         </div>
@@ -264,7 +263,7 @@ export default function SeedDataPage() {
         {isLoading && (
           <div className="flex justify-center items-center gap-4 py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="font-bold text-muted-foreground uppercase tracking-widest text-xs">Checking admin status...</p>
+            <p className="font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Checking admin status...</p>
           </div>
         )}
         {!isLoading && !user && (
@@ -300,7 +299,7 @@ export default function SeedDataPage() {
               <CardHeader>
                 <CardTitle className="normal-case">How to become an Admin</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-sm">
+              <CardContent className="space-y-4 text-sm font-medium">
                 <p>
                   To use these tools, you need to be an administrator. To
                   grant yourself admin rights, follow these steps:
@@ -316,23 +315,14 @@ export default function SeedDataPage() {
                     .
                   </AlertDescription>
                 </Alert>
-                <ol className="list-decimal list-inside space-y-2 font-medium">
+                <ol className="list-decimal list-inside space-y-2">
                   <li>
-                    Go to your{' '}
-                    <a
-                      href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/firestore/data`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sky-400 hover:underline"
-                    >
-                      Firebase Firestore Console
-                    </a>
-                    .
+                    Go to your Firebase Firestore Console.
                   </li>
                   <li>
                     Click 'Start collection' and create a new collection
                     named{' '}
-                    <code className="bg-muted px-1 py-0.5 rounded">
+                    <code className="bg-muted px-1 py-0.5 rounded font-black">
                       roles_admin
                     </code>
                     .
@@ -342,8 +332,8 @@ export default function SeedDataPage() {
                     User ID.
                   </li>
                   <li className="p-2 bg-muted rounded-md">
-                    <p className="font-semibold">Your User ID:</p>
-                    <code className="block break-all mt-1">
+                    <p className="font-semibold text-[10px] uppercase tracking-widest opacity-60">Your User ID:</p>
+                    <code className="block break-all mt-1 font-black text-primary">
                       {user.uid}
                     </code>
                   </li>
@@ -366,11 +356,11 @@ export default function SeedDataPage() {
               variant="default"
               className="bg-green-500/10 border-green-500/50"
             >
-              <ShieldCheck className="h-4 w-4" />
-              <AlertTitle className="text-green-400">
+              <ShieldCheck className="h-4 w-4 text-green-400" />
+              <AlertTitle className="text-green-400 normal-case font-bold">
                 Admin Access Granted
               </AlertTitle>
-              <AlertDescription>
+              <AlertDescription className="font-medium">
                 You are authorized to perform administrative actions.
               </AlertDescription>
             </Alert>
@@ -383,7 +373,7 @@ export default function SeedDataPage() {
                 <CardContent className="space-y-6">
                     <div className="p-4 rounded-lg bg-background/50 border">
                         <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><RefreshCcw className="text-blue-400 size-4" /> Cost of Living Data</h3>
-                        <p className="text-sm text-muted-foreground mb-4">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address excessive or outdated rental estimates.</p>
+                        <p className="text-sm text-muted-foreground mb-4 font-medium">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address excessive or outdated rental estimates.</p>
                         <Button asChild variant="outline" size="sm">
                             <Link href="/admin/update-col">
                                 <RefreshCcw className="mr-2 size-4" /> Update CoL Data
@@ -392,7 +382,7 @@ export default function SeedDataPage() {
                     </div>
                     <div className="p-4 rounded-lg bg-background/50 border">
                         <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><Sparkles className="text-green-400 size-4" /> Bulk School Enrichment</h3>
-                        <p className="text-sm text-muted-foreground mb-4">Automatically find and fill in missing information (like descriptions and curriculum details) for all incomplete school records in your database.</p>
+                        <p className="text-sm text-muted-foreground mb-4 font-medium">Automatically find and fill in missing information (like descriptions and curriculum details) for all incomplete school records in your database.</p>
                         <form action={enrichFormAction}>
                           <BulkEnrichSubmitButton />
                         </form>
@@ -436,7 +426,7 @@ export default function SeedDataPage() {
               <CardContent className="space-y-8">
                 <div className="p-4 rounded-lg bg-background/50 border">
                     <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><DatabaseZap className="text-amber-400 size-4" /> Seed Mock Data</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
+                    <p className="text-sm text-muted-foreground mb-4 font-medium">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
                     <div className="flex flex-wrap gap-4">
                         <Button onClick={() => handleSeedData('schools')} disabled={isSeeding}>
                             {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
