@@ -1,5 +1,5 @@
 
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,8 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
   useUser,
-  useFirestore,
   useDoc,
+  useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
 } from '@/firebase';
@@ -53,6 +53,7 @@ import {
   ShieldAlert,
   ArrowLeft,
   Sparkles,
+  FilePlus,
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { firebaseConfig } from '@/firebase/config';
@@ -241,29 +242,12 @@ export default function AddSchoolPage() {
       description: values.description || '',
     };
 
-    try {
-        setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
-        toast({
-            title: 'Success',
-            description: `${newSchool.name} has been deployed to the database.`,
-        });
-        form.reset();
-    } catch (e: any) {
-        toast({
-            variant: 'destructive',
-            title: 'Transmission Failed',
-            description: e.message || 'Check credentials and try again.',
-        });
-    }
-  };
-
-  const onInvalid = (errors: any) => {
-    console.warn("Validation failure:", errors);
+    setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
     toast({
-        variant: 'destructive',
-        title: 'Validation failure',
-        description: 'Ensure all required dossier fields are completed.',
+      title: 'Success',
+      description: `${newSchool.name} has been deployed to the master registry.`,
     });
+    form.reset();
   };
 
   const isLoading = isUserLoading || isAdminLoading;
@@ -271,7 +255,7 @@ export default function AddSchoolPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -303,11 +287,11 @@ export default function AddSchoolPage() {
           Add New School
         </h1>
         <p className="text-muted-foreground mb-12 font-medium">
-          Fill out the dossier below to add a new school to the master registry.
+          Fill out the dossier below to add a new school record.
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
                 <CardTitle className="normal-case">Basic information</CardTitle>
@@ -480,7 +464,7 @@ export default function AddSchoolPage() {
                 </div>
                  <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl><FormMessage /></FormMessage>)} />
+                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching Licence + 2 Yrs Exp" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</FormLabel><FormControl><Input placeholder="Under 60" {...field} /></FormControl><FormMessage /></FormItem>)} />
 
@@ -499,7 +483,7 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</Label><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (<FormItem><FormLabel>Dining/Social</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
