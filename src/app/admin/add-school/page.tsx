@@ -345,7 +345,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="imageHint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Hint</FormLabel>
+                    <FormLabel>Image Hint</Label>
                     <FormControl><Input placeholder="e.g., modern school tokyo" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -486,9 +486,9 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</Label><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (<FormItem><FormLabel>Dining/Social</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</Label><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (<FormItem><FormLabel>Uncovered Medical</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
               </CardContent>
             </Card>

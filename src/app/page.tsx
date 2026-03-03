@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Target, Calculator, GitCompare, PackageCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -31,6 +31,7 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
+      icon: <Calculator className="w-8 h-8 text-primary" />,
       desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -39,6 +40,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: <GitCompare className="w-8 h-8 text-primary" />,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -47,6 +49,7 @@ export default function Home() {
     {
       id: '04',
       title: 'Prepare',
+      icon: <PackageCheck className="w-8 h-8 text-primary" />,
       desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
