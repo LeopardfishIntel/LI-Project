@@ -79,18 +79,18 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence grade protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
-              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
+            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
-                <Link href="/discover">Initialize journey</Link>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+                <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
-                <Link href="/directory">Browse dossiers</Link>
+              <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+                <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
           </div>
