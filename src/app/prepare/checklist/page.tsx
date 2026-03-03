@@ -9,39 +9,39 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2 } from 'lucide-react';
 export default function StrategicChecksheetPage() {
   const phases = [
     {
-      title: "Phase 1: The Contract Audit (The \"Evaluate\" Stage)",
+      title: "Phase 1: The Contract Audit",
       description: "Before you sign, ensure these terms are explicitly written, not just \"promised.\"",
       items: [
         { label: "Salary Transparency", sub: "Is there a fixed scale, or is it \"discretionary\"?" },
-        { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP, or is there a clause for inflation/devaluation?" },
+        { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP, or is there a clause for inflation?" },
         { label: "The \"Contact Minute\" Cap", sub: "Is the exact weekly teaching time in minutes stated?" },
         { label: "PPA Guarantee", sub: "Is Planning, Prep, and Assessment time \"protected\" in the contract?" },
-        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silence you from discussing work-life balance?" },
-        { label: "Gratuity Calculation", sub: "Is the End-of-Service bonus based on Basic salary or the Full package? Is it paid with the final salary?" },
-        { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits (not just a brochure)? Check for Dental/Chronic/Co-pays." }
+        { label: "The \"Disparagement\" Clause", sub: "Is the NDA reasonable, or does it silence you from discussing culture?" },
+        { label: "Gratuity Calculation", sub: "Is the bonus based on Basic salary or the Full package?" },
+        { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits (not just a brochure)?" }
       ]
     },
     {
-      title: "Phase 2: The Onboarding \"Cash-Flow\" Plan",
+      title: "Phase 2: The Onboarding Cash-Flow Plan",
       description: "Use this to calculate your \"Tactical Reserve\" (Minimum £4k–£6k for families).",
       items: [
-        { label: "The First Payday", sub: "Count the days from arrival to the first full paycheck. (Target: 45 days of liquidity)." },
+        { label: "The First Payday", sub: "Count the days from arrival to the first paycheck. (Target: 45 days)." },
         { label: "Housing Deposit", sub: "Budget for 1–2 months' rent upfront." },
         { label: "Car Hire & Deposit", sub: "Budget for 30 days of rental + the \"Credit Card Block\" for the deposit." },
-        { label: "The IKEA Test", sub: "Check local sites for the cost of a \"Starter Kit\" (Fridge, Washing Machine, Bed)." },
+        { label: "The IKEA Test", sub: "Check local sites for the cost of white goods (Fridge, Washer)." },
         { label: "Legalisation Fees", sub: "Total cost of 4+ Apostilles and medicals. Are these reimbursed?" },
         { label: "Utility Setup", sub: "Budget for connection fees (Water/Electricity/Internet)." }
       ]
     },
     {
-      title: "Phase 3: Professional Due Diligence (The \"Intel\" Stage)",
+      title: "Phase 3: Professional Due Diligence",
       description: "Questions for the \"One-to-One\" interview with a current teacher.",
       items: [
-        { label: "The \"Floating\" Audit", sub: "Do teachers have their own rooms, or do they lose time moving between blocks?" },
-        { label: "Admin Bloat", sub: "How many hours a week are spent on data entry/social media evidence vs. teaching?" },
-        { label: "Parental Boundaries", sub: "Does leadership support teachers in grade/behavior disputes?" },
+        { label: "The \"Floating\" Audit", sub: "Do teachers have their own rooms, or do they move between blocks?" },
+        { label: "Admin Bloat", sub: "How many hours a week are spent on data entry vs. teaching?" },
+        { label: "Parental Boundaries", sub: "Does leadership support teachers in behavior disputes?" },
         { label: "The \"Turnover\" Stat", sub: "What percentage of staff left in the last 2 years?" },
-        { label: "Staff Children", sub: "Are all fees (books, trips, uniforms, levies) waived? How many children are covered, and are there costs for after-school clubs or induction childcare?" }
+        { label: "Staff Children", sub: "Are all fees (trips, uniforms, levies) waived? Is childcare included?" }
       ]
     }
   ];
@@ -54,17 +54,15 @@ export default function StrategicChecksheetPage() {
 
   return (
     <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-primary/20">
-      <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 mb-12 print:hidden">
+      <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 mb-12 print:hidden">
         <Button variant="outline" asChild className="border-black/20 hover:bg-black/5 text-black rounded-sm px-6">
           <Link href="/prepare">
             <ArrowLeft className="mr-2 size-4" /> Return
           </Link>
         </Button>
-        <div className="flex gap-3">
-          <Button onClick={handlePrint} className="bg-black text-white hover:bg-black/90 font-bold rounded-sm px-8">
-            <Printer className="mr-2 size-4" /> Print
-          </Button>
-        </div>
+        <Button onClick={handlePrint} className="bg-black text-white hover:bg-black/90 font-bold rounded-sm px-8">
+          <Printer className="mr-2 size-4" /> Print Dossier
+        </Button>
       </div>
 
       <div className="max-w-4xl mx-auto border-[4px] border-black p-8 md:p-16 space-y-12 relative overflow-hidden bg-white shadow-2xl print:shadow-none print:border-[2px]">
@@ -75,11 +73,11 @@ export default function StrategicChecksheetPage() {
         <header className="border-b-[6px] border-black pb-8">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-3xl">🚩</span>
-            <h1 className="text-4xl font-black uppercase tracking-tighter leading-none">Leopardfish Strategic Checksheet</h1>
+            <h1 className="text-4xl font-black uppercase tracking-tighter leading-none">Strategic checksheet</h1>
           </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-gray-500">
+          <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-gray-500">
             <span>Dossier ID: LFI-2026-CHKLST</span>
-            <span className="hidden md:inline border-l border-gray-300 h-3" />
+            <span className="border-l border-gray-300 h-3" />
             <span>Classification: Field Operational Use</span>
           </div>
         </header>
@@ -93,15 +91,13 @@ export default function StrategicChecksheetPage() {
         <div className="space-y-12">
           {phases.map((phase, idx) => (
             <section key={idx} className="space-y-6">
-              <div className="border-b-2 border-black pb-2 flex flex-col md:flex-row md:items-baseline justify-between gap-2">
-                <h2 className="text-2xl font-black uppercase tracking-tight">{phase.title}</h2>
-              </div>
+              <h2 className="text-2xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{phase.title}</h2>
               <p className="text-sm font-medium text-gray-600 italic">{phase.description}</p>
               
               <div className="grid gap-4">
                 {phase.items.map((item, iIdx) => (
                   <div key={iIdx} className="flex items-start gap-4 group p-2 -ml-2 rounded-sm transition-colors hover:bg-gray-50">
-                    <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 flex items-center justify-center bg-white group-hover:border-primary/50"></div>
+                    <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 bg-white"></div>
                     <div className="space-y-1">
                       <p className="text-base font-black uppercase tracking-tight leading-tight">{item.label}</p>
                       <p className="text-sm text-gray-600 font-medium leading-relaxed">{item.sub}</p>

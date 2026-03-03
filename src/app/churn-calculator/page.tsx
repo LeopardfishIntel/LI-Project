@@ -101,7 +101,7 @@ Output Format (JSON for Sheets Import):
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-4">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter normal-case">Staff churn & stability calculator</h1>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter normal-case">Staff churn & stability registry</h1>
         <p className="text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed uppercase text-xs tracking-widest opacity-60">
           Professional institutional audit protocol for identifying mission-critical retention risk.
         </p>
@@ -147,7 +147,7 @@ Output Format (JSON for Sheets Import):
           />
           <StatHighlight 
             icon={<TrendingUp className="size-5 text-green-400" />}
-            title="GASCIReplacement rate"
+            title="GASCI Replacement rate"
             desc="Formula: (Total Vacancies - Growth Seats) / Total Staff. Measures how many staff are being replaced, not added."
           />
           <StatHighlight 
