@@ -6,8 +6,8 @@ import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import {
   useUser,
-  useFirestore,
   useDoc,
+  useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
 } from '@/firebase';
@@ -473,7 +473,7 @@ export default function SeedDataPage() {
                     <div className="space-y-4">
                         <h3 className="font-semibold flex items-center gap-2 normal-case"><FileDown className="text-green-400 size-4" /> Export Collection</h3>
                          <Select value={exportSelection} onValueChange={setExportSelection}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                                 <SelectValue placeholder="Select a collection" />
                             </SelectTrigger>
                             <SelectContent className="glass">
@@ -490,7 +490,7 @@ export default function SeedDataPage() {
                     <div className="space-y-4">
                         <h3 className="font-semibold flex items-center gap-2 normal-case"><FileUp className="text-blue-400 size-4" /> Import Collection</h3>
                          <Select value={importSelection} onValueChange={setImportSelection}>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                                 <SelectValue placeholder="Select a collection" />
                             </SelectTrigger>
                             <SelectContent className="glass">

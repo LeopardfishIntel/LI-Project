@@ -106,16 +106,19 @@ export default function Home() {
               <span className="text-3xl md:text-5xl block mb-2">
                 <span className="text-primary">Leopard</span><span className="text-accent">fish Intel:</span>
               </span>
-              <span className="text-xl md:text-3xl text-white/80 font-medium">
+              <span className="text-xl md:text-2xl text-white/80 font-medium">
                 A Clearer Picture: Built on Integrity
               </span>
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
               <p>
-                In an industry where the full story is often hidden, Leopardfish Intel gives you an independent advantage. We bridge the information gap by creating a joined-up view of international schools, drawing from a variety of sources—including teacher reports, local economic trends, and official school records.
+                In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
               </p>
               <p>
-                We don’t just collect information; we make sense of it. By combining real-world accounts with wider research and school history, we turn scattered details into a clear, honest picture of what you can actually expect. Our commitment is to support the teaching community—ensuring your next career move is based on a complete global perspective, not just a recruitment brochure.
+                We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
+              </p>
+              <p>
+                Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to contact us directly to ensure their details remain accurate.
               </p>
             </div>
           </div>
