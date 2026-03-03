@@ -106,13 +106,6 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   'New Zealand': 'NZD',
 };
 
-const ORDERED_CURRENCIES = [
-  'USD', 'GBP', 'EUR',
-  ...Object.keys(CONVERSION_RATES)
-    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
-    .sort()
-];
-
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
     const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
@@ -144,6 +137,7 @@ function ContractDecoderContent() {
   );
   const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
 
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState<string>('single');
   const [currency, setCurrency] = useState('USD');
@@ -159,6 +153,17 @@ function ContractDecoderContent() {
   const [verdictError, setVerdictError] = useState<string | null>(null);
   const [dateStamp, setDateStamp] = useState('');
 
+  const countries = useMemo(() => {
+    if (!schools) return [];
+    return Array.from(new Set(schools.map(s => s.country))).sort();
+  }, [schools]);
+
+  const filteredSchools = useMemo(() => {
+    if (!schools) return [];
+    if (!selectedCountry) return schools;
+    return schools.filter(s => s.country === selectedCountry);
+  }, [schools, selectedCountry]);
+
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
       return schools.find(s => s.id === selectedSchoolId);
@@ -168,10 +173,17 @@ function ContractDecoderContent() {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
       if (autoCurrency) setCurrency(autoCurrency);
+      if (!selectedCountry) setSelectedCountry(selectedSchool.country);
       setVerdict(null); 
       setVerdictError(null);
     }
-  }, [selectedSchool]);
+  }, [selectedSchool, selectedCountry]);
+
+  useEffect(() => {
+    if (selectedCountry && selectedSchool && selectedSchool.country !== selectedCountry) {
+      setSelectedSchoolId(null);
+    }
+  }, [selectedCountry, selectedSchool]);
 
   useEffect(() => {
     setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
@@ -245,16 +257,30 @@ function ContractDecoderContent() {
           <Card className="glass border-primary/20 bg-background/40">
             <CardHeader><CardTitle className="text-sm font-bold text-primary/70">My evaluation</CardTitle></CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Select school</Label>
-                <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
-                  <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Country</Label>
+                  <Select value={selectedCountry ?? ''} onValueChange={setSelectedCountry}>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="All" /></SelectTrigger>
+                    <SelectContent className="glass">
+                      <SelectItem value="all_countries">All Countries</SelectItem>
+                      {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">School dossier</Label>
+                  <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
+                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Select..." /></SelectTrigger>
+                    <SelectContent className="glass">
+                      {filteredSchools.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Family scaling</Label>
+                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
                 <Select value={familyStatus} onValueChange={setFamilyStatus}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                   <SelectContent className="glass">
@@ -275,7 +301,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer ({currency})</Label>
+                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Net monthly salary offer ({currency})</Label>
                   {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
                 </div>
                 <div className="flex gap-2">
@@ -294,7 +320,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance ({currency})</Label>
+                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Responsibilities allowance ({currency})</Label>
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -308,7 +334,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Other income ({currency})</Label>
+                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Other income ({currency})</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -323,7 +349,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment ({currency})</Label>
+                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Student loan repayment ({currency})</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
                     <button className="hover:text-white transition-colors">UK Calculator</button>
                     <button className="hover:text-white transition-colors">US Calculator</button>
@@ -342,7 +368,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer ({currency})</Label>
+                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Contingency buffer ({currency})</Label>
                 <div className="relative">
                   <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -487,29 +513,11 @@ function ContractDecoderContent() {
                         )}
 
                         {verdict ? (
-                            <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                <div className="flex items-center justify-between glass p-6 rounded-sm border-primary/20 bg-primary/5">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-primary/10 rounded-full">
-                                            <Target className="size-6 text-primary" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Tactical Offer Score</h4>
-                                            <p className="text-sm font-bold text-white">Based on universal international teacher expectations</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="text-5xl font-black text-primary tracking-tighter">{verdict.overallScore.toFixed(1)}</span>
-                                        <span className="text-xl font-bold text-muted-foreground/40">/10</span>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
-                                    <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                                    <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
-                                    <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
-                                </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
+                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
                             </div>
                         ) : isVerdictLoading ? (
                             <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
