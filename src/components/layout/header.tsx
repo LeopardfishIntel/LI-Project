@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -67,7 +66,7 @@ function UserNav() {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10">
                     <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/20 text-primary font-bold">
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
                         </AvatarFallback>
                     </Avatar>
@@ -115,7 +114,7 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
+            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>
           </Link>
@@ -126,7 +125,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-xs font-bold tracking-widest uppercase transition-colors rounded-sm",
+                  "px-4 py-2 text-base font-bold transition-colors rounded-sm tracking-tight",
                   pathname.startsWith(link.href) 
                     ? "text-primary bg-primary/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -153,7 +152,7 @@ export default function Header() {
                             <Input 
                               placeholder="Tactical Search..." 
                               {...field} 
-                              className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
+                              className="h-10 pl-10 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-white placeholder:text-muted-foreground/50 focus:border-primary/50 text-sm" 
                             />
                           </div>
                         </FormControl>
@@ -167,17 +166,20 @@ export default function Header() {
             <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <Menu className="size-5" />
+                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
+                            <Menu className="size-6" />
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="bg-background border-r border-white/5">
-                        <div className="flex flex-col gap-4 mt-8">
+                        <div className="flex flex-col gap-6 mt-12">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="text-lg font-bold tracking-tighter hover:text-primary transition-colors"
+                                    className={cn(
+                                      "text-xl font-bold tracking-tighter transition-colors",
+                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
+                                    )}
                                 >
                                     {link.label}
                                 </Link>
