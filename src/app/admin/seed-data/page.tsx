@@ -44,7 +44,6 @@ import {
   FileUp,
   RefreshCcw,
   Sparkles,
-  GraduationCap
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -52,7 +51,7 @@ import { firebaseConfig } from '@/firebase/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { enrichAllSchoolsAction, seedStudentLoanConfig, type BulkEnrichState } from './actions';
+import { enrichAllSchoolsAction, type BulkEnrichState } from './actions';
 
 const collectionOptions = [
   'schools',
@@ -92,7 +91,6 @@ export default function SeedDataPage() {
   const { toast } = useToast();
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSeedingCoL, setIsSeedingCoL] = useState(false);
-  const [isSeedingLoans, setIsSeedingLoans] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -160,18 +158,6 @@ export default function SeedDataPage() {
       });
     } finally {
       setter(false);
-    }
-  };
-
-  const handleSeedLoanConfig = async () => {
-    setIsSeedingLoans(true);
-    try {
-      await seedStudentLoanConfig();
-      toast({ title: 'Config Deployed', description: '2026 loan thresholds and bands are now live.' });
-    } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Deployment Failed', description: error.message });
-    } finally {
-      setIsSeedingLoans(false);
     }
   };
 
@@ -459,10 +445,6 @@ export default function SeedDataPage() {
                         <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} variant="outline">
                             {isSeedingCoL ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Seed CoL Data
-                        </Button>
-                        <Button onClick={handleSeedLoanConfig} disabled={isSeedingLoans} variant="outline" className="border-primary/30 text-primary">
-                            {isSeedingLoans ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GraduationCap className="mr-2 h-4 w-4" />}
-                            Seed Loan Config (2026)
                         </Button>
                     </div>
                 </div>

@@ -31,7 +31,6 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      icon: null,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -40,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
