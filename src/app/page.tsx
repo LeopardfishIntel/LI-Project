@@ -39,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -57,7 +56,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section: Compact 60vh scale */}
+      {/* Hero Section */}
       <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -98,6 +97,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Separate Tagline Section */}
+      <section className="py-12 bg-background border-b border-white/5">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+            <p className="text-sm md:text-base text-white/60 font-bold uppercase tracking-[0.3em]">
+              Teach overseas - Know before you go
+            </p>
+        </div>
+      </section>
+
       {/* Integrity Briefing Row */}
       <section className="py-20 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
@@ -108,9 +116,6 @@ export default function Home() {
               </span>
               <span className="text-xl md:text-2xl text-white/80 font-medium block">
                 A Clearer Picture: Built on Integrity
-              </span>
-              <span className="text-sm md:text-base text-white/60 font-bold uppercase tracking-[0.3em] block mt-2">
-                Teach overseas - Know before you go
               </span>
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
@@ -131,9 +136,9 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-20 bg-background">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-24">
+          <div className="space-y-32">
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
                 <div className={cn(
