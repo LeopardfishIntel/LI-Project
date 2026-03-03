@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight } from 'lucide-react';
+import { RedFlagRegistry } from '@/components/red-flag-registry';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -39,7 +40,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -76,9 +76,14 @@ export default function Home() {
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
-              Move with certainty, not just hope.
-            </p>
+            <div className="space-y-4">
+              <p className="text-xl md:text-3xl text-muted-foreground font-medium leading-tight">
+                Move with certainty, not just hope.
+              </p>
+              <p className="text-base md:text-lg text-white/70 font-medium max-w-2xl mx-auto leading-relaxed">
+                Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
+              </p>
+            </div>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10" asChild>
                 <Link href="/discover">Discover</Link>
@@ -91,14 +96,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
+      {/* Stats Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Separate Tagline Section */}
+      {/* Tagline Section */}
       <section className="py-12 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-sm md:text-base text-white/60 font-bold uppercase tracking-[0.3em]">
@@ -119,7 +124,7 @@ export default function Home() {
                 A Clearer Picture: Built on Integrity
               </span>
             </h2>
-            <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
+            <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium text-center">
               <p>
                 In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
               </p>
@@ -174,6 +179,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <RedFlagRegistry />
     </div>
   );
 }

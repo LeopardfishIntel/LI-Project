@@ -115,8 +115,8 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white">
-              <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
+            <span className="hidden sm:inline-block font-bold font-headline text-xl tracking-tighter text-white text-lg">
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </span>
           </Link>
           
