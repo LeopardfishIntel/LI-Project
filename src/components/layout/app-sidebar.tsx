@@ -17,14 +17,14 @@ import {
   Wand2,
   Calculator,
   GitCompare,
-  BookOpen,
+  PackageCheck,
 } from 'lucide-react';
 
 const navLinks = [
     { href: '/discover', label: 'Discover', icon: Wand2 },
     { href: '/financial-forecaster', label: 'Evaluate', icon: Calculator },
     { href: '/compare', label: 'Decide', icon: GitCompare },
-    { href: '/directory', label: 'Directory', icon: BookOpen },
+    { href: '/prepare', label: 'Prepare', icon: PackageCheck },
 ];
 
 export function AppSidebar() {

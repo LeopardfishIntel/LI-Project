@@ -29,16 +29,18 @@ export default function Footer() {
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
-                    <Link href="/enquiry" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Enquiry form</Link>
-                    <Link href="/admin/seed-data" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Data hub</Link>
-                    <Link href="#" className="text-sm text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms of service</Link>
-                    <Link href="#" className="text-sm text-muted-foreground/50 hover:text-white transition-colors font-medium">Privacy policy</Link>
+                    <Link href="/discover" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Discover</Link>
+                    <Link href="/financial-forecaster" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Evaluate</Link>
+                    <Link href="/compare" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Decide</Link>
+                    <Link href="/prepare" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Prepare</Link>
+                    <Link href="/enquiry" className="text-sm font-bold text-muted-foreground/50 hover:text-white transition-colors">Contact</Link>
+                    <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground/50 hover:text-white transition-colors">Data hub</Link>
                 </nav>
             </div>
         </div>
         
         <div className="text-center text-xs text-muted-foreground/40 border-t border-white/5 pt-8 mt-12 space-y-4">
-            <p className="font-bold tracking-widest text-white/60">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
+            <p className="font-bold uppercase tracking-widest text-white/60">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
             <p className="max-w-4xl mx-auto leading-relaxed font-medium"><strong>Disclaimer:</strong> Leopardfish Intel is a platform for information and comparison purposes only. We do not act as a recruitment agency and are not affiliated with any school. All data is provided for guidance and should be verified with official sources. Your career decisions are your own.</p>
         </div>
       </div>

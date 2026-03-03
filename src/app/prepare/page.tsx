@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -11,10 +12,7 @@ import {
   Lock,
   Banknote,
   PackageCheck,
-  LogOut,
-  GraduationCap,
   ShieldAlert,
-  HeartPulse,
   FileCheck,
   Flag
 } from 'lucide-react';

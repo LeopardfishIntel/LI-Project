@@ -32,7 +32,7 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
-  { href: "/directory", label: "Directory" },
+  { href: "/prepare", label: "Prepare" },
 ];
 
 function UserNav() {
@@ -111,7 +111,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
@@ -150,7 +150,7 @@ export default function Header() {
                         <FormControl>
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm" />
+                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-sm" />
                           </div>
                         </FormControl>
                       </FormItem>
@@ -163,7 +163,7 @@ export default function Header() {
             <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
+                        <Button variant="ghost" size="icon" className="text-white">
                             <Menu className="size-6" />
                         </Button>
                     </SheetTrigger>

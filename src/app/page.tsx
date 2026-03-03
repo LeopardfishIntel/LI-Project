@@ -96,7 +96,7 @@ export default function Home() {
                 <Link href="/discover">Initialize Journey</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 px-8 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
-                <Link href="/directory">Browse dossiers</Link>
+                <Link href="/compare">Compare offers</Link>
               </Button>
             </div>
           </div>
