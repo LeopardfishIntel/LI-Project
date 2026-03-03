@@ -97,23 +97,23 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 border-b border-white/5 bg-background">
+      <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
       {/* Tagline Section */}
-      <section className="py-12 bg-background border-b border-white/5">
+      <section className="py-8 bg-background border-b border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-sm md:text-base text-white/60 font-bold uppercase tracking-[0.3em]">
+            <p className="text-xl md:text-3xl text-white/80 font-bold tracking-tight">
               Teach overseas - Know before you go
             </p>
         </div>
       </section>
 
       {/* Integrity Briefing Row */}
-      <section className="py-20 border-b border-white/5 bg-background/50">
+      <section className="py-12 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
@@ -142,11 +142,11 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-32">
+          <div className="space-y-16">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
                 <div className={cn(
                   "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
