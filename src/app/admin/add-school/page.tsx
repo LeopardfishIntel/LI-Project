@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -240,12 +241,29 @@ export default function AddSchoolPage() {
       description: values.description || '',
     };
 
-    setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
+    try {
+        setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
+        toast({
+            title: 'Success',
+            description: `${newSchool.name} has been deployed to the database.`,
+        });
+        form.reset();
+    } catch (e: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Transmission Failed',
+            description: e.message || 'Check credentials and try again.',
+        });
+    }
+  };
+
+  const onInvalid = (errors: any) => {
+    console.warn("Validation failure:", errors);
     toast({
-      title: 'School Added',
-      description: `${newSchool.name} has been added to the database.`,
+        variant: 'destructive',
+        title: 'Validation failure',
+        description: 'Ensure all required dossier fields are completed.',
     });
-    form.reset();
   };
 
   const isLoading = isUserLoading || isAdminLoading;
@@ -284,15 +302,15 @@ export default function AddSchoolPage() {
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
           Add New School
         </h1>
-        <p className="text-muted-foreground mb-12">
-          Fill out the form below to add a new school to the database.
+        <p className="text-muted-foreground mb-12 font-medium">
+          Fill out the dossier below to add a new school to the master registry.
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
+                <CardTitle className="normal-case">Basic information</CardTitle>
                 <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich the data.</CardDescription>
                  <div className="pt-2">
                     <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching}>
@@ -362,7 +380,7 @@ export default function AddSchoolPage() {
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2">
                     <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Spotlight School</FormLabel>
+                      <FormLabel className="normal-case">Spotlight school</FormLabel>
                       <FormDescription>Feature this school on the homepage.</FormDescription>
                     </div>
                   </FormItem>
@@ -372,7 +390,7 @@ export default function AddSchoolPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>School Intel</CardTitle>
+                <CardTitle className="normal-case">School intel</CardTitle>
                 <CardDescription>Key data points about the school's package and environment.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -384,7 +402,7 @@ export default function AddSchoolPage() {
                         <FormItem><FormLabel>Salary Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.isTaxFree" render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Tax-Free Salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel className="normal-case">Tax-free salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
                     )} />
                 </div>
 
@@ -395,7 +413,7 @@ export default function AddSchoolPage() {
                         <FormItem><FormLabel>Housing</FormLabel><FormControl><Input placeholder="Allowance" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.housing.provided" render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="!mt-0">Housing Provided</FormLabel></FormItem>
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="!mt-0 normal-case">Housing provided</FormLabel></FormItem>
                     )} />
                 </div>
 
@@ -462,7 +480,7 @@ export default function AddSchoolPage() {
                 </div>
                  <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl><FormMessage /></FormMessage>)} />
                  <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching Licence + 2 Yrs Exp" {...field} /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</FormLabel><FormControl><Input placeholder="Under 60" {...field} /></FormControl><FormMessage /></FormItem>)} />
 
@@ -471,7 +489,7 @@ export default function AddSchoolPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Cost of Living Data (Monthly, in USD)</CardTitle>
+                <CardTitle className="normal-case">Cost of living data (monthly, in local)</CardTitle>
                  <CardDescription>Monthly cost estimates for the school's location.</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -489,9 +507,9 @@ export default function AddSchoolPage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" size="lg" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Add School
+            <Button type="submit" size="lg" disabled={form.formState.isSubmitting} className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm shadow-lg shadow-primary/20">
+              {form.formState.isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <FilePlus className="mr-2 h-5 w-5" />}
+              Deploy school record
             </Button>
           </form>
         </Form>
