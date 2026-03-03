@@ -1,10 +1,11 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { ArrowRight, Target, Calculator, GitCompare, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -76,9 +77,6 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence grade protocol
-            </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
