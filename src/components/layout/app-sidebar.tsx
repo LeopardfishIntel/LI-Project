@@ -46,7 +46,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={pathname === '/'}
-              tooltip="Home"
+              tooltip={{ children: 'Home' }}
               className="hover:bg-primary/10 hover:text-primary transition-colors"
             >
               <Link href="/">
@@ -60,7 +60,7 @@ export function AppSidebar() {
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith(link.href)}
-                tooltip={link.label}
+                tooltip={{ children: link.label }}
                 className="hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Link href={link.href}>
