@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -38,6 +39,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -55,8 +57,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section: Compact 60vh scale */}
+      <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -70,7 +72,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-3xl mx-auto space-y-8 flex flex-col items-center">
+          <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight normal-case">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
@@ -97,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Integrity Briefing Row */}
-      <section className="py-24 border-b border-white/5 bg-background/50">
+      <section className="py-20 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
@@ -119,7 +121,7 @@ export default function Home() {
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
               <div className="pt-6 border-t border-white/5">
-                <p className="text-xs md:text-sm text-muted-foreground opacity-70 font-medium leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground opacity-70 font-medium leading-relaxed">
                   <span className="font-bold text-white mr-1 uppercase tracking-widest text-[10px]">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
                 </p>
               </div>
@@ -129,9 +131,9 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-32">
+          <div className="space-y-24">
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
                 <div className={cn(
