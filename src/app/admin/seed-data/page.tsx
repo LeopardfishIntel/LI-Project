@@ -6,8 +6,8 @@ import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import {
   useUser,
-  useDoc,
   useFirestore,
+  useDoc,
   useMemoFirebase,
   setDocumentNonBlocking,
 } from '@/firebase';
@@ -74,12 +74,12 @@ function BulkEnrichSubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Enriching all schools...
+          Enriching All Schools...
         </>
       ) : (
         <>
           <Sparkles className="mr-2 h-4 w-4" />
-          Enrich incomplete schools
+          Enrich Incomplete Schools
         </>
       )}
     </Button>
@@ -105,7 +105,7 @@ export default function SeedDataPage() {
   useEffect(() => {
     if (enrichState.message) {
       toast({
-        title: 'Bulk enrichment complete',
+        title: 'Bulk Enrichment Complete',
         description: enrichState.message,
         variant: enrichState.error ? 'destructive' : 'default',
         duration: 10000,
@@ -149,13 +149,13 @@ export default function SeedDataPage() {
       }
   
       toast({
-        title: 'Seeding started',
+        title: 'Seeding Started',
         description: `${successCount} documents are being added to the '${collectionName}' collection.`,
       });
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Seeding failed',
+        title: 'Seeding Failed',
         description: error.message,
       });
     } finally {
@@ -167,9 +167,9 @@ export default function SeedDataPage() {
     setIsSeedingLoans(true);
     try {
       await seedStudentLoanConfig();
-      toast({ title: 'Config deployed', description: '2026 loan thresholds and bands are now live.' });
+      toast({ title: 'Config Deployed', description: '2026 loan thresholds and bands are now live.' });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Deployment failed', description: error.message });
+      toast({ variant: 'destructive', title: 'Deployment Failed', description: error.message });
     } finally {
       setIsSeedingLoans(false);
     }
@@ -188,7 +188,7 @@ export default function SeedDataPage() {
       const data = snapshot.docs.map(doc => doc.data());
 
       if (data.length === 0) {
-        toast({ variant: 'destructive', title: 'Export failed', description: `The '${exportSelection}' collection is empty.` });
+        toast({ variant: 'destructive', title: 'Export Failed', description: `The '${exportSelection}' collection is empty.` });
         setIsExporting(false);
         return;
       }
@@ -205,11 +205,11 @@ export default function SeedDataPage() {
       URL.revokeObjectURL(url);
 
       toast({
-        title: 'Export successful',
+        title: 'Export Successful',
         description: `Exported ${data.length} documents from '${exportSelection}'.`,
       });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Export failed', description: error.message });
+      toast({ variant: 'destructive', title: 'Export Failed', description: error.message });
     } finally {
       setIsExporting(false);
     }
@@ -244,18 +244,18 @@ export default function SeedDataPage() {
         }
 
         toast({
-          title: 'Import started',
+          title: 'Import Started',
           description: `${successCount} documents are being updated in the '${importSelection}' collection.`,
         });
       } catch (error: any) {
-        toast({ variant: 'destructive', title: 'Import failed', description: error.message });
+        toast({ variant: 'destructive', title: 'Import Failed', description: error.message });
       } finally {
         setIsImporting(false);
         setImportFile(null);
       }
     };
     reader.onerror = () => {
-        toast({ variant: 'destructive', title: 'Import failed', description: "An error occurred while reading the file." });
+        toast({ variant: 'destructive', title: 'Import Failed', description: "An error occurred while reading the file." });
         setIsImporting(false);
     }
     reader.readAsText(importFile);
@@ -268,7 +268,7 @@ export default function SeedDataPage() {
       <div className="max-w-3xl mx-auto space-y-12">
         <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">
-            Data hub
+            Data Hub
             </h1>
             <p className="text-muted-foreground text-center mt-4">
             Manage content, and run bulk & AI data operations for your application.
@@ -283,7 +283,7 @@ export default function SeedDataPage() {
         )}
         {!isLoading && !user && (
           <Alert>
-            <AlertTitle>Please log in</AlertTitle>
+            <AlertTitle>Please Log In</AlertTitle>
             <AlertDescription>
               You must be logged in to perform administrative actions.
             </AlertDescription>
@@ -293,7 +293,7 @@ export default function SeedDataPage() {
           <div className="space-y-4">
             <Alert variant="destructive">
               <ShieldOff className="h-4 w-4" />
-              <AlertTitle>Admin access required</AlertTitle>
+              <AlertTitle>Admin Access Required</AlertTitle>
               <AlertDescription>
                 {adminRoleError ? (
                   <>
@@ -356,7 +356,7 @@ export default function SeedDataPage() {
                     User ID.
                   </li>
                   <li className="p-2 bg-muted rounded-md">
-                    <p className="font-semibold">Your user ID:</p>
+                    <p className="font-semibold">Your User ID:</p>
                     <code className="block break-all mt-1">
                       {user.uid}
                     </code>
@@ -382,7 +382,7 @@ export default function SeedDataPage() {
             >
               <ShieldCheck className="h-4 w-4" />
               <AlertTitle className="text-green-400">
-                Admin access granted
+                Admin Access Granted
               </AlertTitle>
               <AlertDescription>
                 You are authorized to perform administrative actions.
@@ -391,21 +391,21 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-3 normal-case"><Sparkles className="text-primary"/>AI Data tools</CardTitle>
+                    <CardTitle className="flex items-center gap-3 normal-case"><Sparkles className="text-primary"/>AI Data Tools</CardTitle>
                     <CardDescription>Use AI to enrich and update your database with real-world information.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="p-4 rounded-lg bg-background/50 border">
-                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><RefreshCcw className="text-blue-400 size-4" /> Cost of living data</h3>
-                        <p className="text-sm text-muted-foreground mb-4">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address outdated rental estimates.</p>
+                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><RefreshCcw className="text-blue-400 size-4" /> Cost of Living Data</h3>
+                        <p className="text-sm text-muted-foreground mb-4">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address excessive or outdated rental estimates.</p>
                         <Button asChild variant="outline" size="sm">
                             <Link href="/admin/update-col">
-                                <RefreshCcw className="mr-2 size-4" /> Update CoL data
+                                <RefreshCcw className="mr-2 size-4" /> Update CoL Data
                             </Link>
                         </Button>
                     </div>
                     <div className="p-4 rounded-lg bg-background/50 border">
-                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><Sparkles className="text-green-400 size-4" /> Bulk school enrichment</h3>
+                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><Sparkles className="text-green-400 size-4" /> Bulk School Enrichment</h3>
                         <p className="text-sm text-muted-foreground mb-4">Automatically find and fill in missing information (like descriptions and curriculum details) for all incomplete school records in your database.</p>
                         <form action={enrichFormAction}>
                           <BulkEnrichSubmitButton />
@@ -416,7 +416,7 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-3 normal-case"><FilePlus className="text-primary"/>Content management</CardTitle>
+                    <CardTitle className="flex items-center gap-3 normal-case"><FilePlus className="text-primary"/>Content Management</CardTitle>
                     <CardDescription>
                     Add new documents or view existing collection data.
                     </CardDescription>
@@ -424,17 +424,17 @@ export default function SeedDataPage() {
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Button asChild variant="outline">
                         <Link href="/admin/add-school" className="w-full">
-                            <Plus className="mr-2 size-4" /> Add school
+                            <Plus className="mr-2 size-4" /> Add School
                         </Link>
                     </Button>
                     <Button asChild variant="outline">
                     <Link href="/admin/data-table" className="w-full">
-                            <TableIcon className="mr-2 size-4" /> View school data
+                            <TableIcon className="mr-2 size-4" /> View School Data
                         </Link>
                     </Button>
                     <Button asChild variant="outline" className="md:col-span-2">
                         <Link href="/admin/cost-of-living-table" className="w-full text-center">
-                            <TableIcon className="mr-2 size-4" /> View cost of living registry
+                            <TableIcon className="mr-2 size-4" /> View Cost of Living Registry
                         </Link>
                     </Button>
                 </CardContent>
@@ -442,27 +442,27 @@ export default function SeedDataPage() {
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 normal-case"><DatabaseZap className="text-primary"/>Database operations</CardTitle>
+                <CardTitle className="flex items-center gap-3 normal-case"><DatabaseZap className="text-primary"/>Database Operations</CardTitle>
                 <CardDescription>
                   Seed, import, or export entire collections.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="p-4 rounded-lg bg-background/50 border">
-                    <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><DatabaseZap className="text-amber-400 size-4" /> Seed mock data</h3>
+                    <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><DatabaseZap className="text-amber-400 size-4" /> Seed Mock Data</h3>
                     <p className="text-sm text-muted-foreground mb-4">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
                     <div className="flex flex-wrap gap-4">
                         <Button onClick={() => handleSeedData('schools')} disabled={isSeeding}>
                             {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Seed school data
+                            Seed School Data
                         </Button>
                         <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} variant="outline">
                             {isSeedingCoL ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Seed CoL data
+                            Seed CoL Data
                         </Button>
                         <Button onClick={handleSeedLoanConfig} disabled={isSeedingLoans} variant="outline" className="border-primary/30 text-primary">
                             {isSeedingLoans ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GraduationCap className="mr-2 h-4 w-4" />}
-                            Seed loan config (2026)
+                            Seed Loan Config (2026)
                         </Button>
                     </div>
                 </div>
@@ -471,7 +471,7 @@ export default function SeedDataPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileDown className="text-green-400 size-4" /> Export collection</h3>
+                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileDown className="text-green-400 size-4" /> Export Collection</h3>
                          <Select value={exportSelection} onValueChange={setExportSelection}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a collection" />
@@ -488,7 +488,7 @@ export default function SeedDataPage() {
                         </Button>
                     </div>
                     <div className="space-y-4">
-                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileUp className="text-blue-400 size-4" /> Import collection</h3>
+                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileUp className="text-blue-400 size-4" /> Import Collection</h3>
                          <Select value={importSelection} onValueChange={setImportSelection}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a collection" />

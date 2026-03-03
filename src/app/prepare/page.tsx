@@ -52,7 +52,7 @@ export default function PreparePage() {
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-8">
               <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
-                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not distracted, debt-stressed ones. If a school struggles with these questions, that tells you all you need to know!"
+                "Before diving into the pitfalls, it is important to note that top international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers, not debt-stressed ones. If a school struggles with these questions, that tells you all you need to know!"
               </p>
             </CardContent>
           </Card>

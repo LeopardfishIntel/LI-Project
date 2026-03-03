@@ -101,7 +101,7 @@ Output Format (JSON for Sheets Import):
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-4">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter normal-case">Staff churn & stability registry</h1>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter normal-case">Stability audit registry</h1>
         <p className="text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed uppercase text-xs tracking-widest opacity-60">
           Professional institutional audit protocol for identifying mission-critical retention risk.
         </p>
@@ -112,7 +112,7 @@ Output Format (JSON for Sheets Import):
           <Card className="glass border-primary/30 h-full">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-primary normal-case">
-                <ShieldAlert className="size-5" /> The Leopardfish GASCI prompt
+                <ShieldAlert className="size-5" /> The GASCI auditor prompt
               </CardTitle>
               <CardDescription className="text-xs font-medium leading-relaxed">
                 Copy this tactical prompt into Gemini or ChatGPT alongside school inspection reports or job board data to generate a Growth-Adjusted audit.
@@ -125,7 +125,7 @@ Output Format (JSON for Sheets Import):
                     {copied ? <Check className="size-4 text-green-400" /> : <Copy className="size-4" />}
                   </Button>
                 </div>
-                <pre className="bg-background/50 border border-white/5 p-4 rounded-sm text-[10px] text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap h-[350px] overflow-y-auto">
+                <pre className="bg-background/50 border border-white/10 p-4 rounded-sm text-[10px] text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap h-[350px] overflow-y-auto">
                   {promptText}
                 </pre>
               </div>
@@ -147,7 +147,7 @@ Output Format (JSON for Sheets Import):
           />
           <StatHighlight 
             icon={<TrendingUp className="size-5 text-green-400" />}
-            title="GASCI Replacement rate"
+            title="Replacement rate"
             desc="Formula: (Total Vacancies - Growth Seats) / Total Staff. Measures how many staff are being replaced, not added."
           />
           <StatHighlight 
@@ -166,7 +166,7 @@ Output Format (JSON for Sheets Import):
       <Card className="glass border-white/5 overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 py-4">
           <div>
-            <CardTitle className="text-lg normal-case">Institutional stability registry</CardTitle>
+            <CardTitle className="text-lg normal-case">Stability registry</CardTitle>
             <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">GASCI audited replacement rates across the network</CardDescription>
           </div>
           <Button variant="outline" size="sm" className="h-8 border-white/10 text-[10px] font-black uppercase tracking-widest">
@@ -242,6 +242,16 @@ Output Format (JSON for Sheets Import):
 }
 
 function StatHighlight({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
+      <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors">{icon}</div>
+      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">{title}</h4>
+      <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{desc}</p>
+    </div>
+  );
+}
+
+function StatHighlightSmall({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
     <div className="glass p-6 rounded-sm space-y-3 border-white/5 bg-white/2 hover:border-primary/20 transition-all duration-500 group h-full">
       <div className="p-3 bg-white/5 w-fit rounded-sm group-hover:bg-primary/10 transition-colors">{icon}</div>

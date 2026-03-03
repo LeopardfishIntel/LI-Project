@@ -32,7 +32,7 @@ const navLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/financial-forecaster", label: "Evaluate" },
   { href: "/compare", label: "Decide" },
-  { href: "/churn-calculator", label: "Stability" },
+  { href: "/prepare", label: "Prepare" },
   { href: "/directory", label: "Directory" },
   { href: "/partners", label: "Partners" },
 ];
@@ -164,6 +164,32 @@ export default function Header() {
                   />
                 </form>
               </Form>
+            </div>
+            
+            <div className="md:hidden">
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/5">
+                            <Menu className="size-6" />
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="bg-background border-r border-white/5">
+                        <div className="flex flex-col gap-6 mt-12">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={cn(
+                                      "text-xl font-bold tracking-tighter transition-colors",
+                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
+                                    )}
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </SheetContent>
+                </Sheet>
             </div>
             
             <UserNav />
