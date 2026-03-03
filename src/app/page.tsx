@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -26,7 +26,7 @@ export default function Home() {
       desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Find your fit'
+      label: 'Find Your Fit'
     },
     {
       id: '02',
@@ -34,15 +34,15 @@ export default function Home() {
       desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Decode offer'
+      label: 'Decode Offer'
     },
     {
       id: '03',
       title: 'Decide',
-      desc: "The Comparison Matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Final verdict'
+      label: 'Final Verdict'
     },
     {
       id: '04',
@@ -50,7 +50,7 @@ export default function Home() {
       desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
-      label: 'Final audit'
+      label: 'Final Audit'
     },
   ];
 
@@ -103,7 +103,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
               <span className="text-3xl md:text-5xl block mb-2">
-                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
+                <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
               </span>
               <span className="text-xl md:text-2xl text-white/80 font-medium block">
                 A Clearer Picture: Built on Integrity
@@ -120,7 +120,7 @@ export default function Home() {
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
               <div className="pt-6 border-t border-white/5">
-                <p className="text-xs md:text-sm text-muted-foreground opacity-70 font-medium">
+                <p className="text-xs md:text-sm text-muted-foreground opacity-70 font-medium leading-relaxed">
                   <span className="font-bold text-white mr-1 uppercase tracking-widest text-[10px]">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
                 </p>
               </div>
