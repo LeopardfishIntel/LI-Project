@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useActionState, useEffect } from 'react';
@@ -138,7 +137,7 @@ export default function SeedDataPage() {
   
     try {
       for (const item of dataToSeed) {
-        const docId = 'id' in item ? (item as any).id : item.locationName.toLowerCase().replace(/\s+/g, '-');
+        const docId = 'id' in item ? (item as any).id : (item as any).locationName.toLowerCase().replace(/\s+/g, '-');
         const docRef = doc(collectionRef, docId);
         const dataToSave = { ...item, id: docId, lastUpdated: new Date() };
         setDocumentNonBlocking(docRef, dataToSave, { merge: true });
@@ -255,7 +254,7 @@ export default function SeedDataPage() {
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center">
             Data Hub
             </h1>
-            <p className="text-muted-foreground text-center mt-4 font-medium">
+            <p className="text-muted-foreground text-center mt-4 font-medium leading-relaxed">
             Manage content, and run bulk & AI data operations for your application.
             </p>
         </div>

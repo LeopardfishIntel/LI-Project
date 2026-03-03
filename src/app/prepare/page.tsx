@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -30,7 +29,7 @@ export default function PreparePage() {
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white normal-case">
             4. Are you prepared?
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-60 uppercase tracking-widest">
+          <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-60 uppercase tracking-widest text-[10px]">
             The final audit. Ensure your tactical transition is fully operational.
           </p>
         </div>
@@ -87,7 +86,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> The "over-zealous" privacy clause</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Watch for contracts with excessively aggressive Non-Disclosure Agreements (NDAs) or "disparagement" clauses that extend far beyond standard GDPR or student data protection.</p>
                 <p>If a school threatens legal action for discussing "internal school climate" even after you leave, it is a hallmark of paranoid management.</p>
               </CardContent>
@@ -98,7 +97,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale transparency</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>A hallmark of a professional institution is a published, transparent pay scale. If a school refuses to show you where you sit on a scale, you are likely being low-balled.</p>
               </CardContent>
             </Card>
@@ -108,7 +107,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Vague logistical definitions</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Ambiguity in contract definitions often leads to mission creep. If the housing, flight, or utility provision is not explicitly detailed, the school can unilaterally change the standard.</p>
               </CardContent>
             </Card>
@@ -118,7 +117,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Exit & reference protocols</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Ensure you verify the local exit protocols. If a school has the legal power to block your next move or withhold your gratuity based on "unprofessional conduct," the risk is high.</p>
               </CardContent>
             </Card>
@@ -155,35 +154,6 @@ export default function PreparePage() {
                 <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Check local IKEA sites. A £1,000 'settling-in allowance' may only cover basic white goods. Is shipping worth the freight fees?</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className="space-y-8">
-          <div className="flex items-center gap-3 mb-2">
-            <HeartPulse className="size-7 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">3. Long-term survival</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-red-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><GraduationCap className="size-5 text-primary" /> The dependent education trap</CardTitle>
-                <Flag className="size-4 fill-red-500 text-red-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>"Free schooling" often excludes capital levies, uniforms, and mandatory trips. If your child needs SEN support, some schools may charge you for that staff salary.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><LogOut className="size-5 text-primary" /> The "offboarding cliff"</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Verify if the End of Service (EOS) gratuity is calculated on basic salary or total package. The difference can be 40%.</p>
-              </CardContent>
-            </Card>
           </div>
         </section>
 

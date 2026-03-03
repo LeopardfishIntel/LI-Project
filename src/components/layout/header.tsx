@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -67,7 +66,7 @@ function UserNav() {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10">
                     <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback className="bg-primary/20 text-primary font-bold">
+                        <AvatarFallback>
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
                         </AvatarFallback>
                     </Avatar>

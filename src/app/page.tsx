@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -39,6 +38,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
