@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -39,6 +39,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -142,7 +143,7 @@ export default function Home() {
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
                 <div className={cn(
-                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
+                  "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
                 )}>
                   <Image 
