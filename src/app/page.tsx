@@ -2,9 +2,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
+import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, Target, Calculator, GitCompare, PackageCheck, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare, PackageCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -27,7 +28,7 @@ export default function Home() {
       desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
-      label: 'Discover'
+      label: 'Find Your Fit'
     },
     {
       id: '02',
@@ -36,7 +37,7 @@ export default function Home() {
       desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
-      label: 'Evaluate'
+      label: 'Decode Offer'
     },
     {
       id: '03',
@@ -45,7 +46,7 @@ export default function Home() {
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
-      label: 'Decide'
+      label: 'Final Verdict'
     },
     {
       id: '04',
@@ -54,7 +55,7 @@ export default function Home() {
       desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
-      label: 'Prepare'
+      label: 'Get Prepared'
     },
   ];
 
@@ -79,30 +80,30 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight normal-case">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
+              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
             </h1>
-            <div className="space-y-4">
+            <div className="space-y-2">
               <p className="text-xl md:text-3xl text-muted-foreground font-medium leading-tight">
                 Move with certainty, not just hope.
               </p>
-              <p className="text-base md:text-lg text-white/70 font-medium max-w-2xl mx-auto leading-relaxed">
+              <p className="text-sm md:text-lg text-white/70 font-medium max-w-2xl mx-auto leading-relaxed">
                 Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link href="/discover" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg flex items-center justify-center transition-all">
-                Discover
-              </Link>
-              <Link href="/financial-forecaster" className="h-14 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg flex items-center justify-center transition-all">
-                Evaluate
-              </Link>
+              <Button size="lg" className="h-12 px-8 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
+                <Link href="/discover">Initialize Journey</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="h-12 px-8 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
+                <Link href="/directory">Browse dossiers</Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tagline Section */}
+      {/* Signature Tagline Row */}
       <section className="py-8 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-xl md:text-3xl text-white/80 font-bold tracking-tight">
@@ -115,15 +116,10 @@ export default function Home() {
       <section className="py-12 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="font-bold tracking-tight text-white normal-case leading-tight">
-              <span className="text-3xl md:text-5xl block mb-2">
-                <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
-              </span>
-              <span className="text-xl md:text-2xl text-white/80 font-medium block">
-                A Clearer Picture
-              </span>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white normal-case">
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>: A Clearer Picture
             </h2>
-            <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium text-center">
+            <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
               <p>
                 In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
               </p>
@@ -131,8 +127,8 @@ export default function Home() {
                 We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
               </p>
               <div className="pt-6 border-t border-white/5">
-                <p className="text-sm md:text-base text-muted-foreground opacity-70 font-medium leading-relaxed">
-                  <span className="font-bold text-white mr-1 uppercase tracking-widest text-[10px]">Please note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
+                <p className="text-sm md:text-base text-muted-foreground opacity-70">
+                  <span className="font-bold text-white mr-1 uppercase tracking-widest text-[10px]">Note:</span> Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:underline font-bold">contact us</Link> directly to ensure their details remain accurate.
                 </p>
               </div>
             </div>
