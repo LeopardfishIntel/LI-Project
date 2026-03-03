@@ -33,7 +33,7 @@
     {
       "id": "amsterdam-international-school",
       "description": "Amsterdam International School near a canal",
-      "imageUrl": "https://images.unsplash.com/photo-1693726439525-148cffd5a31a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcyNDY2MjkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1693726439525-148cffd5a31a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2hvb2wlMjBhbXN0ZXJkYW18ZW58MHx8fHwxNzcyNDY2MjkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "school amsterdam"
     },
     {
@@ -49,15 +49,51 @@
       "imageHint": "prague architecture"
     },
     {
+      "id": "repton-abu-dhabi",
+      "description": "Repton School Abu Dhabi high-tech campus",
+      "imageUrl": "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "modern architecture"
+    },
+    {
+      "id": "bis-abu-dhabi",
+      "description": "The British International School Abu Dhabi",
+      "imageUrl": "https://images.unsplash.com/photo-1523050853064-8bf3ef39cf00?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "school campus"
+    },
+    {
+      "id": "al-mamoura",
+      "description": "Al Mamoura Academy girls education center",
+      "imageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "school library"
+    },
+    {
+      "id": "al-yasmina",
+      "description": "Al Yasmina Academy campus in Abu Dhabi",
+      "imageUrl": "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "classroom student"
+    },
+    {
+      "id": "amity-abu-dhabi",
+      "description": "Amity International School Abu Dhabi marina campus",
+      "imageUrl": "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "campus waterfront"
+    },
+    {
+      "id": "diyafah",
+      "description": "Diyafah International School entrance",
+      "imageUrl": "https://images.unsplash.com/photo-1541339907198-e087563f02b1?q=80&w=1080&auto=format&fit=crop",
+      "imageHint": "school building"
+    },
+    {
       "id": "discover-step",
       "description": "A person walking on a wooden bridge towards a beautiful mountain landscape, representing the journey of discovery.",
-      "imageUrl": "https://images.unsplash.com/photo-1554366347-897a5113f6ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwwfHx8fDE3NzI0NTk2MTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1554366347-897a5113f6ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0cm92ZWwlMjBkZXN0aW5hdGlvbnxlbnwwfHx8fDE3NzI0NTk2MTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "travel destination"
     },
     {
       "id": "evaluate-step",
       "description": "A vibrant, bustling city market, representing the evaluation of local cost of living.",
-      "imageUrl": "https://images.unsplash.com/photo-1720175646487-eba0c1846f80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjaXR5JTIwbWFya2V0fGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1720175646487-eba0c1846f80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjaXR5JTIwbWFya2V0fGVufDB8fHx8MTc3MjQ1OTYxNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "city market"
     },
     {
@@ -75,7 +111,7 @@
     {
       "id": "homepage-hero",
       "description": "A scenic view of a lake with mountains in the background, representing travel and adventure.",
-      "imageUrl": "https://images.unsplash.com/photo-1715871058561-4dced94d23e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0cmF2ZWwlMjBsYWtlfGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1715871058561-4dced94d23e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0cm92ZWwlMjBsYWtlfGVufDB8fHx8MTc3MjQ2NjI5MXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "travel lake"
     }
   ]
