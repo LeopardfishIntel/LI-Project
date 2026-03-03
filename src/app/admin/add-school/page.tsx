@@ -51,9 +51,9 @@ import {
   ShieldOff,
   ArrowLeft,
   Sparkles,
-  FilePlus,
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { firebaseConfig } from '@/firebase/config';
 import { Separator } from '@/components/ui/separator';
 
 const scoreSchema = z.enum(['good', 'neutral', 'bad']);
@@ -241,8 +241,8 @@ export default function AddSchoolPage() {
 
     setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
     toast({
-      title: 'Success',
-      description: `${newSchool.name} has been deployed to the master registry.`,
+      title: 'School Added',
+      description: `${newSchool.name} has been added to the database.`,
     });
     form.reset();
   };
@@ -262,7 +262,7 @@ export default function AddSchoolPage() {
       <div className="container mx-auto px-4 md:px-6 py-12">
         <Alert variant="destructive" className="max-w-xl mx-auto">
           <ShieldOff className="h-4 w-4" />
-          <AlertTitle>Admin Access Required</AlertTitle>
+          <AlertTitle>Admin access required</AlertTitle>
           <AlertDescription>
             You do not have permission to view this page.
           </AlertDescription>
@@ -277,24 +277,24 @@ export default function AddSchoolPage() {
         <Button asChild variant="outline" className="mb-8">
             <Link href="/admin/seed-data">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Data Admin
+                Back to Data hub
             </Link>
         </Button>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-          Add New School
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 normal-case">
+          Add new school
         </h1>
-        <p className="text-muted-foreground mb-12 font-medium">
-          Fill out the dossier below to add a new school record.
+        <p className="text-muted-foreground mb-12">
+          Fill out the form below to add a new school record.
         </p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Card>
+            <Card className="glass border-white/5">
               <CardHeader>
                 <CardTitle className="normal-case">Basic information</CardTitle>
-                <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich the data.</CardDescription>
+                <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich.</CardDescription>
                  <div className="pt-2">
-                    <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching}>
+                    <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching} size="sm">
                         {isEnriching ? <Loader2 className="mr-2 animate-spin" /> : <Sparkles className="mr-2" />}
                         Enrich with AI
                     </Button>
@@ -304,64 +304,64 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>School Name</FormLabel>
-                    <FormControl><Input placeholder="e.g., International School of Excellence" {...field} /></FormControl>
+                    <FormControl><Input placeholder="e.g., International School of Excellence" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="location" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Location (City)</FormLabel>
-                    <FormControl><Input placeholder="e.g., Tokyo" {...field} /></FormControl>
+                    <FormControl><Input placeholder="e.g., Tokyo" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="country" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
-                    <FormControl><Input placeholder="e.g., Japan" {...field} /></FormControl>
+                    <FormControl><Input placeholder="e.g., Japan" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Textarea placeholder="A brief description of the school..." {...field} /></FormControl>
+                    <FormControl><Textarea placeholder="A brief description of the school..." {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="websiteUrl" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Website URL</FormLabel>
-                    <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                    <FormControl><Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="imageUrl" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
-                    <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                    <FormControl><Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="imageHint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Hint</Label>
-                    <FormControl><Input placeholder="e.g., modern school tokyo" {...field} /></FormControl>
+                    <FormLabel>Image Hint</FormLabel>
+                    <FormControl><Input placeholder="e.g., modern school tokyo" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="videoUrl" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Video URL (Optional)</FormLabel>
-                    <FormControl><Input placeholder="https://youtube.com/embed/..." {...field} /></FormControl>
+                    <FormControl><Input placeholder="https://youtube.com/embed/..." {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="spotlight" render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2">
                     <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel className="normal-case">Spotlight school</FormLabel>
+                      <FormLabel>Spotlight school</FormLabel>
                       <FormDescription>Feature this school on the homepage.</FormDescription>
                     </div>
                   </FormItem>
@@ -369,7 +369,7 @@ export default function AddSchoolPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="glass border-white/5">
               <CardHeader>
                 <CardTitle className="normal-case">School intel</CardTitle>
                 <CardDescription>Key data points about the school's package and environment.</CardDescription>
@@ -377,39 +377,39 @@ export default function AddSchoolPage() {
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.salary.value" render={({ field }) => (
-                        <FormItem><FormLabel>Salary Range</FormLabel><FormControl><Input placeholder="$60k - $80k" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Salary Range</FormLabel><FormControl><Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.score" render={({ field }) => (
-                        <FormItem><FormLabel>Salary Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Salary Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.isTaxFree" render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel className="normal-case">Tax-free salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Tax-free salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
                     )} />
                 </div>
 
-                <Separator />
+                <Separator className="bg-white/5" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.housing.value" render={({ field }) => (
-                        <FormItem><FormLabel>Housing</FormLabel><FormControl><Input placeholder="Allowance" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Housing</FormLabel><FormControl><Input placeholder="Allowance" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.housing.provided" render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="!mt-0 normal-case">Housing provided</FormLabel></FormItem>
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="!mt-0">Housing provided</FormLabel></FormItem>
                     )} />
                 </div>
 
-                 <Separator />
+                 <Separator className="bg-white/5" />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.savingsPotential.value" render={({ field }) => (
-                        <FormItem><FormLabel>Savings Potential</FormLabel><FormControl><Input placeholder="High" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Savings Potential</FormLabel><FormControl><Input placeholder="High" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.savingsPotential.score" render={({ field }) => (
-                        <FormItem><FormLabel>Savings Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Savings Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
                     )} />
                 </div>
 
-                <Separator />
+                <Separator className="bg-white/5" />
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <FormField
@@ -453,49 +453,44 @@ export default function AddSchoolPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField control={form.control} name="intel.accreditation" render={({ field }) => (<FormItem><FormLabel>Accreditation</FormLabel><FormControl><Input placeholder="CIS, WASC" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (<FormItem><FormLabel>Student-Teacher Ratio</FormLabel><FormControl><Input placeholder="10:1" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.classSize" render={({ field }) => (<FormItem><FormLabel>Average Class Size</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (<FormItem><FormLabel>Non-Contact Time (%)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (<FormItem><FormLabel>Health Insurance</FormLabel><FormControl><Input placeholder="Premium" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.accreditation" render={({ field }) => (<FormItem><FormLabel>Accreditation</FormLabel><FormControl><Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (<FormItem><FormLabel>Student-Teacher Ratio</FormLabel><FormControl><Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.classSize" render={({ field }) => (<FormItem><FormLabel>Average Class Size</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (<FormItem><FormLabel>Non-Contact Time (%)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (<FormItem><FormLabel>Health Insurance</FormLabel><FormControl><Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 </div>
-                 <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Jobs Portal</FormLabel>
-                        <FormControl><Input placeholder="TES, Search Associates" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                 )} />
-                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</Label><FormControl><Input placeholder="Teaching Licence + 2 Yrs Exp" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</Label><FormControl><Input placeholder="Under 60" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (<FormItem><FormLabel>Jobs Portal</FormLabel><FormControl><Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</FormLabel><FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
 
               </CardContent>
             </Card>
-            <Card>
+
+            <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle className="normal-case">Cost of living data (monthly, in local)</CardTitle>
+                <CardTitle className="normal-case">Cost of living data (Monthly, in USD)</CardTitle>
                  <CardDescription>Monthly cost estimates for the school's location.</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (<FormItem><FormLabel>Rent (1BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (<FormItem><FormLabel>Rent (3BR)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (<FormItem><FormLabel>Dining/Social</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (<FormItem><FormLabel>Uncovered Medical</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (<FormItem><FormLabel>Rent (1BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (<FormItem><FormLabel>Rent (3BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (<FormItem><FormLabel>Dining/Social</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (<FormItem><FormLabel>Uncovered Medical</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
               </CardContent>
             </Card>
 
-            <Button type="submit" size="lg" disabled={form.formState.isSubmitting} className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-sm shadow-lg shadow-primary/20">
-              {form.formState.isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <FilePlus className="mr-2 h-5 w-5" />}
-              Deploy school record
+            <Button type="submit" size="lg" disabled={form.formState.isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-14 rounded-sm">
+              {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Publish school dossier
             </Button>
           </form>
         </Form>
