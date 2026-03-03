@@ -40,6 +40,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: null,
       desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -121,7 +122,7 @@ export default function Home() {
                 <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
               </span>
               <span className="text-xl md:text-2xl text-white/80 font-medium block">
-                A Clearer Picture: Built on Integrity
+                A Clearer Picture
               </span>
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium text-center">
