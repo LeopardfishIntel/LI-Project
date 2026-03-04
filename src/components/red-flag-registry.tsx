@@ -1,5 +1,6 @@
+
 import { ShieldAlert, ArrowRight, Lock, Banknote, GraduationCap, HeartPulse } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 
 export function RedFlagRegistry() {
@@ -38,17 +39,17 @@ export function RedFlagRegistry() {
             </div>
           </div>
 
-          <Card className="glass rounded-sm overflow-hidden border-primary/20">
-            <CardContent className="p-8 md:p-12 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+          <Card className="glass rounded-sm overflow-hidden border-primary/20 shadow-2xl">
+            <CardContent className="p-8 md:p-12 space-y-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
                 {flags.map((flag, i) => (
                   <div key={i} className="flex items-start gap-4 group">
                     <div className="p-2.5 bg-destructive/10 rounded-sm mt-1 group-hover:bg-destructive/20 transition-colors">
                       {flag.icon}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <h4 className="text-lg font-bold text-white leading-tight">{flag.title}</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                      <p className="text-sm text-muted-foreground leading-relaxed font-medium opacity-80">
                         {flag.desc}
                       </p>
                     </div>
@@ -56,8 +57,9 @@ export function RedFlagRegistry() {
                 ))}
               </div>
 
-              <div className="pt-8 border-t border-white/5 flex justify-center md:justify-start">
-                <Link href="/prepare" className="group flex items-center gap-3 bg-primary/10 hover:bg-primary/20 border border-primary/30 px-6 py-3 rounded-sm transition-all">
+              <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                <p className="text-sm text-muted-foreground italic font-medium">Get the full tactical briefing before signing your next offer.</p>
+                <Link href="/prepare" className="group flex items-center gap-3 bg-primary/10 hover:bg-primary/20 border border-primary/30 px-8 py-4 rounded-sm transition-all shadow-lg shadow-primary/5">
                   <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">Access full flag registry</span>
                   <ArrowRight className="size-4 text-primary group-hover:translate-x-1 transition-transform" />
                 </Link>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -444,8 +445,7 @@ export default function AddSchoolPage() {
                           </FormControl>
                           <FormMessage />
                         </FormItem>
-                      )}
-                    />
+                      )} />
                     <FormField control={form.control} name="intel.accreditation" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Accreditation</FormLabel>
@@ -543,7 +543,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rent (3BR)</FormLabel>
+                    <FormLabel>Rent (3BR)</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -571,7 +571,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internet</FormLabel>
+                    <FormLabel>Internet</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>

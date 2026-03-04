@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState } from "react";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
+import { Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,17 +28,18 @@ const initialState: FitFinderState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto">
+    <Button 
+      type="submit" 
+      disabled={pending} 
+      className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm shadow-lg shadow-primary/20"
+    >
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           Analyzing...
         </>
       ) : (
-        <>
-          <Wand2 className="mr-2 h-4 w-4" />
-          Find my fit
-        </>
+        "Find my fit"
       )}
     </Button>
   );
@@ -113,11 +115,11 @@ export default function FindYourFitPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="current-location">Current location</Label>
-                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" />
+                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-background/50 border-white/10" />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="current-salary">Current salary (optional)</Label>
-                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" />
+                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-background/50 border-white/10" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -176,7 +178,7 @@ export default function FindYourFitPage() {
                  {otherLicense && (
                     <div className="space-y-2 pl-2 pt-2">
                         <Label htmlFor="teaching_licence_other" className="text-xs text-muted-foreground">Please specify your licence</Label>
-                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" />
+                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" className="bg-background/50 border-white/10" />
                     </div>
                 )}
               </div>
@@ -204,15 +206,15 @@ export default function FindYourFitPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="experience">Years of teaching experience</Label>
-                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
+                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" className="bg-background/50 border-white/10" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject taught</Label>
                   <Select name="subject" defaultValue="Primary" required>
-                    <SelectTrigger id="subject">
+                    <SelectTrigger id="subject" className="bg-background/50 border-white/10">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="glass">
                       <SelectItem value="Early Years">Early Years</SelectItem>
                       <SelectItem value="Primary">Primary</SelectItem>
                       <SelectItem value="Other Primary">Other Primary</SelectItem>
