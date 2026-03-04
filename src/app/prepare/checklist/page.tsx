@@ -23,6 +23,8 @@ export default function StrategicChecksheetPage() {
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
         { label: "Contact Minute Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
+        { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and co-pays audited." },
+        { label: "Housing standard", sub: "Detailed photos of specific unit/compound obtained." },
         { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of conduct ratings." }
       ]
     },
@@ -31,8 +33,7 @@ export default function StrategicChecksheetPage() {
       description: "Onboarding cash-flow and capital requirements.",
       items: [
         { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
-        { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." },
-        { label: "Medical co-pay", sub: "Full Schedule of Benefits obtained and co-pays audited." }
+        { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." }
       ]
     },
     {
@@ -49,7 +50,7 @@ export default function StrategicChecksheetPage() {
       items: [
         { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
         { label: "PPA Guarantee", sub: "Is non-contact time contractually protected?" },
-        { label: "Housing standard", sub: "Detailed photos of specific unit/compound obtained." }
+        { label: "Legalisation Fees", sub: "Does the school reimburse document fees upfront?" }
       ]
     }
   ];

@@ -14,7 +14,8 @@ import {
   BarChart3,
   Stethoscope,
   Globe,
-  Users
+  Users,
+  Home
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,7 +54,7 @@ export default function PreparePage() {
           </Card>
         </section>
 
-        {/* Section 2: Risk Factor Matrix */}
+        {/* Section 2: Risk Factor Matrix (The Flag System) */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Risk factor matrix (The flag system)</h2>
@@ -77,6 +78,26 @@ export default function PreparePage() {
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Stethoscope className="size-5 text-primary" /> Medical co-pay gap</CardTitle>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>Verify deductibles for inpatient care. In some regions, even "comprehensive" plans require a 20% co-pay on every bill, which can be ruinous for families.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Home className="size-5 text-primary" /> Housing quality audit</CardTitle>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>Ambiguity in housing definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes or compound issues.</p>
               </CardContent>
             </Card>
 
@@ -161,36 +182,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 5: Regional Tactical Intel */}
-        <section className="space-y-8">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Regional tactical intel</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Stethoscope className="size-5 text-primary" /> Medical co-pay gap</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
-                <p>Verify deductibles for inpatient care. In some regions, even "comprehensive" plans require a 20% co-pay on every bill, which can be ruinous for families.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Home className="size-5 text-primary" /> Housing quality audit</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
-                <p>Ambiguity in housing definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes or compound issues.</p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Section 6: The "Hard-Talk" Inquiry */}
+        {/* Section 5: The "Hard-Talk" Inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The "Hard-Talk" inquiry (Essential questions)</h2>
