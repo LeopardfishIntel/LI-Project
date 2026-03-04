@@ -1,5 +1,7 @@
+
 'use client';
 
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { 
   PlaneLanding, 
@@ -14,13 +16,30 @@ import {
   Stethoscope,
   Globe,
   Users,
-  Home
+  Home,
+  Calculator,
+  Milestone
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 export default function PreparePage() {
+  const [calcStatus, setCalcStatus] = useState<string>('single');
+  const baseReserve = 4000;
+  
+  const calculatedReserve = useMemo(() => {
+    const multipliers: Record<string, number> = {
+      single: 1,
+      couple: 1.6,
+      family: 2.1,
+      family2: 2.5
+    };
+    return baseReserve * (multipliers[calcStatus] || 1);
+  }, [calcStatus]);
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white">
       <div className="mb-16 text-center space-y-6">
@@ -119,10 +138,34 @@ export default function PreparePage() {
             <div className="space-y-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
-              <div className="p-6 glass border-primary/20 bg-primary/5 rounded-sm">
-                <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
-                <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
-                <p className="text-xs text-muted-foreground mt-2 font-medium italic">Minimum capital for family moves adjusted for the initial 6-week "gap month" before the first full salary cycle.</p>
+              
+              <div className="p-6 glass border-primary/20 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <div className="flex-1 space-y-2">
+                  <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase">Tactical reserve requirement</p>
+                  <p className="text-4xl font-black text-white tracking-tighter">
+                    {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
+                  </p>
+                  <p className="text-xs text-muted-foreground font-medium italic">Minimum capital for {calcStatus === 'single' ? 'single' : 'family'} moves adjusted for the initial 6-week "gap month" before the first full salary cycle.</p>
+                </div>
+                <div className="w-full md:w-48 space-y-3 pt-1">
+                  <div className="space-y-1.5">
+                    <Label className="text-[9px] font-black uppercase text-primary/60 tracking-widest">Scaling profile</Label>
+                    <Select value={calcStatus} onValueChange={setCalcStatus}>
+                      <SelectTrigger className="h-8 text-xs bg-background/40 border-white/5 text-white font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="glass">
+                        <SelectItem value="single">Single</SelectItem>
+                        <SelectItem value="couple">Couple</SelectItem>
+                        <SelectItem value="family">Family (2+1)</SelectItem>
+                        <SelectItem value="family2">Family (2+2)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/60 uppercase">
+                    <Calculator className="size-3" /> Real-time projection
+                  </div>
+                </div>
               </div>
             </div>
 

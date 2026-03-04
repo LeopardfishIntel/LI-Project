@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -23,15 +24,15 @@ export default function StrategicChecksheetPage() {
       title: "The True Cost of Landing",
       description: "Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.",
       items: [
-        { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
+        { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£10k available for the 'Gap Month' based on unit size." },
         { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." }
       ]
     },
     {
-      title: "Leadership & stability intel",
+      title: "Leadership & stability",
       description: "Senior leadership stability is the benchmark of a settled school; utilise these indicators to distinguish between a high-performing environment and one defined by systemic volatility.",
       items: [
-        { label: "GASCI Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
+        { label: "Stability Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
         { label: "Tenure Audit", sub: "Principal and HOD confirmed in post for >2 years." }
       ]
     },
