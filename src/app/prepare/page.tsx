@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   PlaneLanding, 
@@ -16,68 +16,45 @@ import {
   Globe,
   Users,
   Home,
-  Calculator,
-  Milestone,
   ArrowRight,
   FileText,
   Wallet,
   Clock,
   Compass,
-  Loader2
+  Table as TableIcon
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn, formatCurrency } from '@/lib/utils';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
-const CONVERSION_FROM_GBP: Record<string, number> = {
-  GBP: 1,
-  USD: 1.28,
-  AUD: 1.95,
-};
-
-const SCALING_MULTIPLIERS: Record<string, number> = {
-  single: 1,
-  couple: 1.6,
-  family: 2.1,
-  family2: 2.5
-};
-
-const BASE_BREAKDOWN = [
-  { id: 'docs', title: "Document integrity", base: 500, icon: <FileText className="size-3.5" /> },
-  { id: 'rent', title: "Housing liquidity", base: 2000, icon: <Wallet className="size-3.5" /> },
-  { id: 'gap', title: "The 6-week gap", base: 1000, icon: <Clock className="size-3.5" /> },
-  { id: 'setup', title: "Mission setup", base: 500, icon: <Compass className="size-3.5" /> },
+const RESERVE_BENCHMARKS = [
+  { country: 'UAE', visa: '$1,100', rent: '$0 (School Paid)', furnishing: '$2,700 – $5,400', transport: '$350 – $500', connectivity: '$150 – $250', total: '$4,300+' },
+  { country: 'China', visa: '$1,200', rent: '$0 (School Paid)', furnishing: '$500 – $1,200', transport: 'N/A (E-bike)', connectivity: '$40 – $80', total: '$1,740+' },
+  { country: 'Japan', visa: '$1,300', rent: '$1,500 – $2,500', furnishing: '$1,700 – $2,700', transport: '$800 – $1,200', connectivity: '$80 – $150', total: '$5,380+' },
+  { country: 'Spain', visa: '$900', rent: '$1,600 – $3,000', furnishing: '$800 – $1,500', transport: '$400 – $700', connectivity: '$70 – $120', total: '$3,770+' },
+  { country: 'Thailand', visa: '$1,000', rent: '$1,000 – $1,800', furnishing: '$400 – $900', transport: '$400 – $600', connectivity: '$50 – $100', total: '$2,850+' },
+  { country: 'Vietnam', visa: '$1,000', rent: '$600 – $1,200', furnishing: '$300 – $700', transport: '$100 (Scooter)', connectivity: '$30 – $60', total: '$2,030+' },
 ];
 
 export default function PreparePage() {
-  const [calcStatus, setCalcStatus] = useState<string>('single');
-  const [currency, setCurrency] = useState<string>('GBP');
   const [dateStamp, setDateStamp] = useState('');
 
   useEffect(() => {
     setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
   }, []);
 
-  const multiplier = useMemo(() => SCALING_MULTIPLIERS[calcStatus] || 1, [calcStatus]);
-  const exchRate = useMemo(() => CONVERSION_FROM_GBP[currency] || 1, [currency]);
-
-  const liveBreakdown = useMemo(() => {
-    return BASE_BREAKDOWN.map(item => ({
-      ...item,
-      amount: item.base * multiplier * exchRate
-    }));
-  }, [multiplier, exchRate]);
-
-  const totalReserve = useMemo(() => {
-    return liveBreakdown.reduce((acc, curr) => acc + curr.amount, 0);
-  }, [liveBreakdown]);
-
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
       <div className="mb-12 text-center space-y-3">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case">
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-[10px] leading-relaxed uppercase tracking-[0.3em] opacity-60">
@@ -159,108 +136,70 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: The True Cost of Landing */}
+        {/* Section 2: Tactical Reserve Benchmarks */}
         <section className="space-y-8">
           <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The True Cost of Landing</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Tactical reserve benchmarks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
+              Relocating abroad is rarely cost-neutral. Use this comparative registry to identify the upfront liquid capital required for the initial 6-week "gap month" before your first full salary cycle.
             </p>
           </div>
           
-          <div className="space-y-6">
-            <Card className="glass border-primary/30 bg-primary/5 rounded-sm overflow-hidden shadow-2xl relative">
-              <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
-                <Calculator className="size-48 text-white" />
-              </div>
-              
-              <div className="p-6 md:p-8 space-y-8 relative z-10">
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                        <p className="text-[10px] font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
-                        {dateStamp && (
-                            <span className="hidden sm:inline-block text-[8px] font-black text-white/30 uppercase tracking-[0.2em] border border-white/5 px-2 py-0.5 rounded-sm">
-                                LFI.{dateStamp}
-                            </span>
-                        )}
-                    </div>
-                    <p className="text-5xl md:text-6xl font-black text-white tracking-tighter transition-all duration-500">
-                      {formatCurrency(totalReserve, currency)}
-                    </p>
-                    <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-w-lg">
-                      Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} units adjusted for the initial 6-week "gap month" before the first full salary cycle.
-                    </p>
-                  </div>
-
-                  <div className="w-full lg:w-64 space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1.5">
-                            <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Scaling</Label>
-                            <Select value={calcStatus} onValueChange={setCalcStatus}>
-                                <SelectTrigger className="h-9 bg-background/60 border-white/10 text-white font-bold text-xs rounded-sm">
-                                <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="glass">
-                                <SelectItem value="single">Single</SelectItem>
-                                <SelectItem value="couple">Couple</SelectItem>
-                                <SelectItem value="family">Family (2+1)</SelectItem>
-                                <SelectItem value="family2">Family (2+2)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-1.5">
-                            <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Currency</Label>
-                            <Select value={currency} onValueChange={setCurrency}>
-                                <SelectTrigger className="h-9 bg-background/60 border-white/10 text-white font-bold text-xs rounded-sm">
-                                <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="glass">
-                                    <SelectItem value="GBP">GBP</SelectItem>
-                                    <SelectItem value="USD">USD</SelectItem>
-                                    <SelectItem value="AUD">AUD</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 bg-white/5 rounded-sm border border-white/5">
-                      <Calculator className="size-3 text-accent animate-pulse" />
-                      <span className="text-[9px] font-black text-accent uppercase tracking-widest">Real-time projection active</span>
-                    </div>
-                  </div>
+          <Card className="glass border-primary/20 bg-primary/5 rounded-sm overflow-hidden shadow-2xl">
+            <CardHeader className="border-b border-white/5 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <TableIcon className="size-5 text-primary" />
+                  <CardTitle className="text-base normal-case font-bold">Regional Entry Matrix (USD)</CardTitle>
                 </div>
-
-                {/* Item-by-item breakdown row */}
-                <div className="pt-6 border-t border-white/10">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                        {liveBreakdown.map((item) => (
-                            <div key={item.id} className="space-y-1 group">
-                                <div className="flex items-center gap-2 border-b border-white/5 pb-1 group-hover:border-primary/30 transition-colors">
-                                    <span className="text-primary group-hover:scale-110 transition-transform">{item.icon}</span>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
-                                        {item.title}
-                                    </span>
-                                </div>
-                                <p className="text-base md:text-lg font-black text-white/90 group-hover:text-primary transition-colors">
-                                    {formatCurrency(item.amount, currency)}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                {dateStamp && (
+                  <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] border border-white/5 px-2 py-0.5 rounded-sm">
+                    Ref: LFI.{dateStamp}
+                  </span>
+                )}
               </div>
-            </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
-              <div className="space-y-3">
-                <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
-                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-white/5">
+                    <TableRow className="border-b-white/5 hover:bg-transparent">
+                      <TableHead className="text-[10px] font-black uppercase text-white tracking-widest h-12">Country</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Visa & flight</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Rent & deposit</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Furnishing</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Transport (1mo)</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Telco & net</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-primary tracking-widest text-right pr-6">6-Week total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {RESERVE_BENCHMARKS.map((row, idx) => (
+                      <TableRow key={idx} className="border-b-white/5 hover:bg-white/5 transition-colors">
+                        <TableCell className="py-4 font-bold text-sm text-white">{row.country}</TableCell>
+                        <TableCell className="text-center text-xs font-medium text-muted-foreground">{row.visa}</TableCell>
+                        <TableCell className="text-center text-xs font-medium text-muted-foreground">{row.rent}</TableCell>
+                        <TableCell className="text-center text-xs font-medium text-muted-foreground">{row.furnishing}</TableCell>
+                        <TableCell className="text-center text-xs font-medium text-muted-foreground">{row.transport}</TableCell>
+                        <TableCell className="text-center text-xs font-medium text-muted-foreground">{row.connectivity}</TableCell>
+                        <TableCell className="text-right pr-6 font-black text-primary text-sm">{row.total}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="space-y-3">
-                <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-4 text-primary" /> The IKEA test</h3>
-                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+            <div className="space-y-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-4 text-primary" /> The IKEA test</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
             </div>
           </div>
         </section>
@@ -329,7 +268,7 @@ export default function PreparePage() {
         <div className="flex justify-center pt-8">
             <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)] border-0">
                 <Link href="/prepare/checklist">
-                <FileCheck className="mr-3 size-5" /> Download strategic checksheet
+                <CheckCircle2 className="mr-3 size-5" /> Access strategic checksheet
                 </Link>
             </Button>
         </div>
@@ -337,4 +276,24 @@ export default function PreparePage() {
       </div>
     </div>
   );
+}
+
+function CheckCircle2(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )
 }
