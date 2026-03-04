@@ -92,7 +92,7 @@ export function FeatureHighlights() {
               <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                 <p className="text-sm text-muted-foreground italic font-medium">Verify your next move with field-grade financial and institutional data.</p>
                 <div className="flex gap-4">
-                    <Button variant="outline" className="border-white/10 hover:bg-white/5 rounded-sm text-xs font-bold uppercase tracking-widest h-12 px-8" asChild>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
                         <Link href="/directory">Browse Schools</Link>
                     </Button>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
