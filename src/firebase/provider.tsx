@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
@@ -59,7 +60,7 @@ export const FirebaseContext = createContext<FirebaseContextState | undefined>(u
 /**
  * Tactical Tracking: A WeakSet to monitor memoized Firestore references 
  * without mutating the SDK objects directly. This prevents production 
- * crashes on frozen objects.
+ * crashes on frozen objects or internal SDK "call" failures.
  */
 const memoizedRefs = new WeakSet<object>();
 
@@ -176,7 +177,7 @@ export const useFirebaseApp = (): FirebaseApp => {
 
 /**
  * Custom memoization hook for Firebase references.
- * Marks the object as safe for use in data-fetching hooks.
+ * Marks the object as safe for use in data-fetching hooks without mutating it.
  */
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
   const memoized = useMemo(factory, deps);
