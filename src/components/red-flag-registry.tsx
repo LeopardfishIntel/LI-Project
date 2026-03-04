@@ -1,4 +1,3 @@
-
 import { ShieldAlert, ArrowRight, Lock, Banknote, GraduationCap, HeartPulse } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';

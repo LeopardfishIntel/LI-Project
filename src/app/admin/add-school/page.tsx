@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -14,7 +13,7 @@ import {
 } from '@/firebase';
 import { doc, collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
-import Link from 'next/link';
+import Link from 'next/next/link';
 import { getEnrichedSchoolData } from './actions';
 
 import { Button } from '@/components/ui/button';
@@ -879,7 +878,7 @@ export default function AddSchoolPage() {
               </CardContent>
             </Card>
 
-            <Button type="submit" size="lg" disabled={form.formState.isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-14 rounded-sm">
+            <Button type="submit" size="lg" disabled={form.formState.isSubmitting} className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-14 rounded-sm border-0">
               {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Publish school dossier
             </Button>

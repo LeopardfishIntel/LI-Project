@@ -1,11 +1,10 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare, PackageCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -24,7 +23,6 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
-      icon: <Target className="w-8 h-8 text-primary" />,
       desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
@@ -33,7 +31,6 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      icon: <Calculator className="w-8 h-8 text-primary" />,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -42,7 +39,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: <GitCompare className="w-8 h-8 text-primary" />,
+      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -51,7 +48,6 @@ export default function Home() {
     {
       id: '04',
       title: 'Prepare',
-      icon: <PackageCheck className="w-8 h-8 text-primary" />,
       desc: "The strategic checksheet. Finalise your due diligence before you depart. Verify housing, medical co-pays, and local exit protocols with field-grade precision.",
       link: '/prepare',
       imageId: 'prepare-step',
@@ -73,7 +69,7 @@ export default function Home() {
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center">
@@ -155,7 +151,6 @@ export default function Home() {
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <div className="p-4 bg-primary/10 rounded-sm w-fit border border-primary/20">{step.icon}</div>
                   <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm border-0" asChild>
