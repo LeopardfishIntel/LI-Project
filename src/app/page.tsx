@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -32,7 +31,6 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      icon: null,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -78,7 +76,7 @@ export default function Home() {
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Insights
             </div>
             <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
-              <span className="text-primary">Leopardfish</span> <span className="text-white">Intel</span>
+              <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             <p className="text-xl md:text-2xl text-white font-bold max-w-2xl leading-tight">
               Move with certainty, not just hope.
@@ -98,7 +96,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
+      {/* Stats Counter Section - Positioned directly beneath hero */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -119,7 +117,7 @@ export default function Home() {
               We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
             </p>
             <p className="italic opacity-60">
-              Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="/enquiry" className="text-primary hover:text-white underline transition-colors">contact us</Link> directly to ensure their details remain accurate.
+              Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <a href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</a> directly to ensure their details remain accurate.
             </p>
           </div>
         </div>
