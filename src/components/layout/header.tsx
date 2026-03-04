@@ -167,15 +167,12 @@ export default function Header() {
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="bg-background border-r border-white/5">
-                        <div className="flex flex-col gap-6 mt-12">
+                        <div className="flex flex-col gap-4 mt-8">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={cn(
-                                      "text-xl font-bold tracking-tighter transition-colors",
-                                      pathname.startsWith(link.href) ? "text-primary" : "text-white"
-                                    )}
+                                    className="text-lg font-bold tracking-tighter hover:text-primary transition-colors"
                                 >
                                     {link.label}
                                 </Link>
