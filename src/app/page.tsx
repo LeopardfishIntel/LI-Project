@@ -40,7 +40,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: <ArrowRight className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -58,7 +57,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Compact Hero Section */}
+      {/* Hero Section: Compact 60vh */}
       <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -103,21 +102,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section (Directly underneath hero) */}
+      {/* Stats Counter Section (Directly beneath hero) */}
       <section className="py-10 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Mission Section */}
+      {/* Mission Section: Centered Title and Text Block */}
       <section className="py-20 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-8">
-          <h2 className="text-lg font-bold text-white uppercase tracking-widest">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-white">
             Know before you go
           </h2>
-          <div className="space-y-6 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-left">
-            <p className="text-white/90 font-bold">
+          <div className="space-y-6 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+            <p>
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
             <p>
@@ -130,7 +129,7 @@ export default function Home() {
       {/* Zig-Zag Insider Journey */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-24">
+          <div className="space-y-32">
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
                 <div className={cn(
