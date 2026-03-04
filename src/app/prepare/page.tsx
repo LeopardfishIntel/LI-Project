@@ -198,9 +198,12 @@ export default function PreparePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-start gap-3 space-y-0">
-                <Stethoscope className="size-5 text-primary" />
-                <CardTitle className="text-lg font-bold text-white normal-case">The medical co-pay gap</CardTitle>
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <div className="flex items-center gap-3">
+                  <Stethoscope className="size-5 text-primary" />
+                  <CardTitle className="text-lg font-bold text-white normal-case">The medical co-pay gap</CardTitle>
+                </div>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Does your insurance cover dental and optical? What is the deductible for inpatient surgery? In some regions, a "comprehensive" plan still requires you to pay 20% of every bill.</p>
@@ -208,9 +211,12 @@ export default function PreparePage() {
             </Card>
 
             <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-start gap-3 space-y-0">
-                <Home className="size-5 text-primary" />
-                <CardTitle className="text-lg font-bold text-white normal-case">Housing quality audit</CardTitle>
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <div className="flex items-center gap-3">
+                  <Home className="size-5 text-primary" />
+                  <CardTitle className="text-lg font-bold text-white normal-case">Housing quality audit</CardTitle>
+                </div>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>If housing is provided, ask for photos of the specific unit, not a "sample". Check the commuting distance and whether the AC/heating is central or unit-based (impacting bills).</p>
@@ -246,7 +252,7 @@ export default function PreparePage() {
               "Is the provided housing 'turnkey' or unfurnished?",
               "Is there a monthly cap on utility-inclusive housing?"
             ].map((q, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 bg-background/40 border border-white/5 rounded-sm hover:border-primary/30 transition-colors group">
+              <div key={i} className="flex items-start gap-4 p-5 bg-background/40 border border-border/10 rounded-sm hover:border-primary/30 transition-colors group">
                 <MessageSquareQuote className="size-5 text-primary shrink-0 mt-1 opacity-50 group-hover:opacity-100 transition-opacity" />
                 <p className="text-base font-medium text-white/90 leading-relaxed italic">"{q}"</p>
               </div>
