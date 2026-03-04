@@ -63,7 +63,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[75vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -77,16 +77,24 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
+          <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-4 py-1.5 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
+            
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
-              Move with certainty, not just hope.
-            </p>
+            
+            <div className="space-y-4">
+              <p className="text-2xl md:text-4xl text-white font-bold max-w-3xl mx-auto leading-tight">
+                Move with certainty, not just hope.
+              </p>
+              <p className="text-base md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
+                Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
+              </p>
+            </div>
+
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className={heroButtonClass} asChild>
                 <Link href="/discover">Discover</Link>

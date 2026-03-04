@@ -461,7 +461,7 @@ export default function AddSchoolPage() {
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                  <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Jobs Portal</FormLabel>
+                     <FormLabel>Jobs Portal</Label>
                      <FormControl><Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
