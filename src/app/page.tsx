@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -39,7 +40,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -57,7 +57,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section: Centered and Responsive */}
+      {/* Hero Section */}
       <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -72,12 +72,12 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 flex flex-col items-center justify-center text-center h-full">
-          <div className="max-w-4xl space-y-8 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1.5 rounded text-primary text-[10px] md:text-xs font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Insights
+          <div className="max-w-4xl space-y-10 flex flex-col items-center">
+            <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_20px_rgba(249,115,22,0.2)]">
+              <ShieldCheck className="size-4 md:size-6" /> Intelligence Grade Insights
             </div>
             
-            <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-[1.1] uppercase">
+            <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-[1.1]">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             
@@ -102,7 +102,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section: Directly beneath hero */}
+      {/* Stats Counter Section */}
       <section className="py-10 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -112,7 +112,7 @@ export default function Home() {
       {/* Mission Section */}
       <section className="py-20 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-10">
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight normal-case">
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
             Know before you go
           </h2>
           <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-left">
@@ -129,7 +129,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey: Image-led, icon-free */}
+      {/* Zig-Zag Insider Journey */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-32">
@@ -156,7 +156,7 @@ export default function Home() {
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter normal-case">{step.title}</h3>
+                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter">{step.title}</h3>
                   <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm border-0" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
