@@ -58,6 +58,8 @@ export default function Home() {
     },
   ];
 
+  const heroButtonClass = "h-12 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10 transition-all";
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
@@ -76,7 +78,7 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black tracking-widest animate-pulse">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
@@ -86,11 +88,11 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-12 px-8 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
-                <Link href="/discover">Initialize Journey</Link>
+              <Button size="lg" className={heroButtonClass} asChild>
+                <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
-                <Link href="/compare">Compare offers</Link>
+              <Button size="lg" className={heroButtonClass} asChild>
+                <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
           </div>
@@ -109,7 +111,7 @@ export default function Home() {
       {/* Unified Mission Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center">
-          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-center">
             <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>

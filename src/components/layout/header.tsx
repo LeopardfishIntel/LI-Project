@@ -149,7 +149,7 @@ export default function Header() {
                         <FormControl>
                           <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Tactical Search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-sm" />
+                            <Input placeholder="Tactical search..." {...field} className="h-9 pl-9 w-full sm:w-64 bg-background/50 border-white/10 rounded-sm text-sm" />
                           </div>
                         </FormControl>
                       </FormItem>
