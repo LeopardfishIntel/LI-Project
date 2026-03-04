@@ -410,10 +410,7 @@ export default function AddSchoolPage() {
                 <Separator className="bg-white/5" />
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="intel.curriculum"
-                      render={({ field }) => (
+                    <FormField control={form.control} name="intel.curriculum" render={({ field }) => (
                         <FormItem className="md:col-span-2 lg:col-span-3">
                           <FormLabel>Curriculum</FormLabel>
                           <FormControl>
@@ -439,9 +436,7 @@ export default function AddSchoolPage() {
                                         field.onChange(sortedValues.join(', '));
                                       }}
                                     />
-                                    <Label htmlFor={`curriculum-${item}`} className="font-normal">
-                                      {item}
-                                    </Label>
+                                    <Label htmlFor={`curriculum-${item}`} className="font-normal">{item}</Label>
                                   </div>
                                 );
                               })}

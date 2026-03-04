@@ -105,13 +105,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Unified Mission Section with Integrated Tagline */}
+      {/* Mission Section */}
       <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
           <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
             Know before you go
           </h2>
-          <div className="space-y-8 text-lg text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
             <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
@@ -125,7 +125,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Counter Section */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
