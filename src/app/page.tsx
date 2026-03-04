@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -105,26 +106,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Signature Tagline Row - Compressed Gaps */}
-      <section className="py-4 bg-background border-y border-white/5">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
-              Teach overseas - Know before you go
-            </p>
-        </div>
-      </section>
-
-      {/* Unified Mission Section */}
-      <section className="py-12 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center">
-          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-center">
+      {/* Unified Mission Section with Integrated Tagline */}
+      <section className="py-16 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
+            Teach overseas - Know before you go
+          </h2>
+          <div className="space-y-8 text-lg text-muted-foreground font-medium leading-relaxed">
             <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
             <p>
               We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
             </p>
-            <p className="text-lg md:text-lg italic opacity-60">
+            <p className="italic opacity-60">
               Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</Link> directly to ensure their details remain accurate.
             </p>
           </div>
