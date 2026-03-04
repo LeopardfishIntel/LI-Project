@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -585,7 +584,7 @@ export default function AddSchoolPage() {
                                     />
                                     <Label htmlFor={`curriculum-${item}`} className="font-normal">{item}</Label>
                                   </div>
-                                );
+                                )
                               })}
                             </div>
                           </FormControl>
