@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -592,7 +591,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vehicle maint.</FormLabel>
+                    <FormLabel>Vehicle maint.</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
