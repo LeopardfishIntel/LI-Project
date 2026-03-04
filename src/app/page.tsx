@@ -39,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',

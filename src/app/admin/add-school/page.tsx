@@ -13,7 +13,7 @@ import {
 } from '@/firebase';
 import { doc, collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
-import Link from 'next/next/link';
+import Link from 'next/link';
 import { getEnrichedSchoolData } from './actions';
 
 import { Button } from '@/components/ui/button';
