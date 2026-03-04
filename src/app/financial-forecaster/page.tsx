@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -33,7 +34,8 @@ import {
   TrendingDown,
   Compass,
   AlertTriangle,
-  Trophy
+  Trophy,
+  Coffee
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -155,19 +157,26 @@ function ContractDecoderContent() {
     if (!selectedSchool) return null;
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
-    const multiplier = familyStatus === 'single' ? 1 : 1.6;
+    
+    // PRD-mandated scaling multipliers
+    let multiplier = 1;
+    if (familyStatus === 'couple') multiplier = 1.6;
+    else if (familyStatus === 'family') multiplier = 2.1;
+    else if (familyStatus === 'family2') multiplier = 2.5;
+
     const rentVal = Number(col.monthlyRent1BR || (col as any).apartment || 0);
     const food = (Number(col.food) || 0) * multiplier * rate;
     const transport = (Number(col.transport) || 0) * multiplier * rate;
     const utilities = (Number(col.utilities) || 0) * multiplier * rate;
     const internet = (Number(col.internet) || 0) * rate;
     const mobile = (Number(col.mobile) || 0) * multiplier * rate;
+    const dining = (Number(col.diningSocial) || 0) * multiplier * rate;
     const manualHome = (parseFloat(homeCountryCommitment) || 0) * rate;
     const manualLoan = (parseFloat(studentLoan) || 0) * rate;
     const contingencyVal = (parseFloat(contingency) || 0) * rate;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + manualHome + manualLoan + contingencyVal;
-    return { rent: rentVal * rate, food, transport, utilities, internet, mobile, totalCosts, manualHome, manualLoan, contingencyVal };
+    const totalCosts = (intel.housing.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + dining + manualHome + manualLoan + contingencyVal;
+    return { rent: rentVal * rate, food, transport, utilities, internet, mobile, dining, totalCosts, manualHome, manualLoan, contingencyVal };
   }, [selectedSchool, familyStatus, contingency, homeCountryCommitment, studentLoan, rate]);
 
   const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
@@ -225,9 +234,9 @@ function ContractDecoderContent() {
                     <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                     <SelectContent className="glass">
                       <SelectItem value="single">Single</SelectItem>
-                      <SelectItem value="couple">Couple</SelectItem>
-                      <SelectItem value="family">Family (2+1)</SelectItem>
-                      <SelectItem value="family2">Family (2+2)</SelectItem>
+                      <SelectItem value="couple">Couple (1.6x)</SelectItem>
+                      <SelectItem value="family">Family 2+1 (2.1x)</SelectItem>
+                      <SelectItem value="family2">Family 2+2 (2.5x)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -343,7 +352,7 @@ function ContractDecoderContent() {
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
-                          {!offeredSalary && <p className="text-[10px] font-bold text-accent">Benchmark applied</p>}
+                          {!offeredSalary && <p className="text-[10px] font-black uppercase tracking-tighter text-accent animate-pulse">Aggregated Salary Projection</p>}
                         </div>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-white/5">
@@ -379,6 +388,7 @@ function ContractDecoderContent() {
                       <DecodedItem icon={<Zap className="size-4 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                       <DecodedItem icon={<Smartphone className="size-4 text-pink-400" />} label="Mobile phone" value={decodedCosts?.mobile || 0} currency={currency} />
                       <DecodedItem icon={<Wifi className="size-4 text-indigo-400" />} label="Home internet (Fixed)" value={decodedCosts?.internet || 0} currency={currency} />
+                      <DecodedItem icon={<Coffee className="size-4 text-orange-400" />} label="Dining & social (Scaled)" value={decodedCosts?.dining || 0} currency={currency} />
                       <DecodedItem icon={<Globe className="size-4 text-blue-400" />} label="Home commitments" value={decodedCosts?.manualHome || 0} currency={currency} />
                       <DecodedItem icon={<GraduationCap className="size-4 text-emerald-400" />} label="Student loans" value={decodedCosts?.manualLoan || 0} currency={currency} />
                       
