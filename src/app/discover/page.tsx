@@ -1,4 +1,5 @@
-'use client';
+
+"use client";
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, ServerCrash, Lightbulb } from "lucide-react";
+import { Wand2, Loader2, ServerCrash, Lightbulb } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -54,8 +55,10 @@ export default function FindYourFitPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find your fit</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white">
+          1. Find your fit
+        </h1>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-medium text-sm leading-relaxed">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>

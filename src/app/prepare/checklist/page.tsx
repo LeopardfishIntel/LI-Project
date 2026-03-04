@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -7,14 +8,6 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 
 export default function StrategicChecksheetPage() {
   const sections = [
-    {
-      title: "The Gold Standard",
-      description: "Verification of the 'Gold Standard' transparency baseline.",
-      items: [
-        { label: "Salary Transparency", sub: "Is there a fixed, published scale, or is it 'discretionary'?" },
-        { label: "Evidence of Respect", sub: "Is leadership willing to connect you with current staff?" }
-      ]
-    },
     {
       title: "Risk factor matrix (The flag system)",
       description: "Explicit terms required to mitigate institutional red signals.",
@@ -98,28 +91,31 @@ export default function StrategicChecksheetPage() {
         </div>
 
         <div className="space-y-12">
+          <section className="space-y-6">
+            <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">Risk Signal Protocol</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 border-2 border-black space-y-2">
+                <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                  <Flag className="size-4 fill-black text-black" /> RED SIGNAL
+                </p>
+                <p className="text-xs font-bold leading-tight uppercase">Critical risk.</p>
+                <p className="text-[11px] leading-relaxed">One or two signals are enough to justify declining an offer unless total mitigation is possible.</p>
+              </div>
+              <div className="p-4 border-2 border-black space-y-2">
+                <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                  <Flag className="size-4 text-black" /> AMBER SIGNAL
+                </p>
+                <p className="text-xs font-bold leading-tight uppercase">Operational caution.</p>
+                <p className="text-[11px] leading-relaxed">Consider mitigation strategies. Multiple signals require a full re-evaluation of risk.</p>
+              </div>
+            </div>
+          </section>
+
           {sections.map((section, idx) => (
             <section key={idx} className="space-y-6">
               <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{section.title}</h2>
               <p className="text-xs font-medium text-gray-600 italic">{section.description}</p>
               
-              {section.isFlagged && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="p-3 border border-gray-200 rounded-sm space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                      <Flag className="size-3 fill-black text-black" /> RED SIGNAL
-                    </p>
-                    <p className="text-[10px] font-medium leading-tight">Critical risk. One or two signals are enough to justify declining an offer unless total mitigation is possible.</p>
-                  </div>
-                  <div className="p-3 border border-gray-200 rounded-sm space-y-1">
-                    <p className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                      <Flag className="size-3 text-black" /> AMBER SIGNAL
-                    </p>
-                    <p className="text-[10px] font-medium leading-tight">Operational caution. Consider mitigation strategies. Multiple signals require a full re-evaluation of risk.</p>
-                  </div>
-                </div>
-              )}
-
               <div className="grid gap-4">
                 {section.items.map((item, iIdx) => (
                   <div key={iIdx} className="flex items-start gap-4 group p-2 -ml-2 rounded-sm transition-colors hover:bg-gray-50">
