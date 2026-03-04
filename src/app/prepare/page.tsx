@@ -14,8 +14,7 @@ import {
   BarChart3,
   Stethoscope,
   Globe,
-  Users,
-  Zap
+  Users
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -60,23 +59,6 @@ export default function PreparePage() {
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Risk factor matrix (The flag system)</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div className="p-4 rounded-sm border border-red-500/20 bg-red-500/5 flex items-start gap-4">
-              <div className="mt-1"><Flag className="size-4 fill-red-500 text-red-500" /></div>
-              <div>
-                <p className="text-[10px] font-black text-red-400 tracking-widest mb-1 uppercase">RED SIGNAL</p>
-                <p className="text-xs text-muted-foreground leading-relaxed font-medium">Critical risk. One or two signals are enough to justify declining an offer unless total mitigation is possible.</p>
-              </div>
-            </div>
-            <div className="p-4 rounded-sm border border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
-              <div className="mt-1"><Flag className="size-4 fill-amber-500 text-amber-500" /></div>
-              <div>
-                <p className="text-[10px] font-black text-amber-400 tracking-widest mb-1 uppercase">AMBER SIGNAL</p>
-                <p className="text-xs text-muted-foreground leading-relaxed font-medium">Operational caution. Consider mitigation strategies. Multiple signals require a full re-evaluation of risk.</p>
-              </div>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
@@ -146,9 +128,9 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
-              <div className="p-6 glass border-accent/20 bg-accent/5 rounded-sm">
+              <div className="p-6 glass border-amber-500/20 bg-amber-500/5 rounded-sm">
                 <div className="flex items-center gap-3 mb-3">
-                  <Stethoscope className="size-5 text-accent" />
+                  <Stethoscope className="size-5 text-amber-500" />
                   <h4 className="text-white font-bold text-sm">The medical co-pay gap</h4>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed font-medium">Verify deductibles for inpatient care. In some regions, even "comprehensive" plans require a 20% co-pay on every bill, which can be ruinous for families.</p>
