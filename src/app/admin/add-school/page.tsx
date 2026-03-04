@@ -512,7 +512,7 @@ export default function AddSchoolPage() {
                  )} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Visa Restrictions</Label>
+                     <FormLabel>Visa Restrictions</FormLabel>
                      <FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>

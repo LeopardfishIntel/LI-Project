@@ -111,7 +111,7 @@ export default function Home() {
           <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
             Know before you go
           </h2>
-          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-left">
             <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
