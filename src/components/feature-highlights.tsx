@@ -11,7 +11,9 @@ import {
   Zap
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function FeatureHighlights() {
   const capabilities = [
@@ -69,7 +71,7 @@ export function FeatureHighlights() {
             </div>
           </div>
 
-          <Card className="glass rounded-sm overflow-hidden border-primary/20 shadow-2xl">
+          <Card className={cn("glass rounded-sm overflow-hidden border-primary/20 shadow-2xl")}>
             <CardContent className="p-8 md:p-12 space-y-12">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
                 {capabilities.map((cap, i) => (

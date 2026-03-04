@@ -39,6 +39,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: <ArrowRight className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -57,7 +58,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Intelligence Grade Hero */}
-      <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[60vh] md:h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
