@@ -99,8 +99,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Signature Tagline Row */}
-      <section className="py-12 md:py-16 bg-background border-y border-white/5">
+      {/* Signature Tagline Row - Compressed */}
+      <section className="py-4 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
               Teach overseas - Know before you go
