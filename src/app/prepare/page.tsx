@@ -25,7 +25,7 @@ import {
   Compass,
   Loader2
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -75,7 +75,7 @@ export default function PreparePage() {
   }, [liveBreakdown]);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 text-white">
+    <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
       <div className="mb-12 text-center space-y-3">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
@@ -131,7 +131,7 @@ export default function PreparePage() {
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Home className="size-5 text-primary" /> Housing quality audit</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </Header>
+              </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in housing definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes.</p>
               </CardContent>
@@ -159,7 +159,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: The True Cost of Landing (Compact Calculator) */}
+        {/* Section 2: The True Cost of Landing */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The True Cost of Landing</h2>
@@ -230,7 +230,7 @@ export default function PreparePage() {
                   </div>
                 </div>
 
-                {/* Compact Item-by-item breakdown row */}
+                {/* Item-by-item breakdown row */}
                 <div className="pt-6 border-t border-white/10">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                         {liveBreakdown.map((item) => (

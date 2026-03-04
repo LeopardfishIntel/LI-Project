@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -158,7 +157,7 @@ function ContractDecoderContent() {
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
     
-    // PRD-mandated scaling multipliers
+    // Scaling multipliers
     let multiplier = 1;
     if (familyStatus === 'couple') multiplier = 1.6;
     else if (familyStatus === 'family') multiplier = 2.1;
