@@ -80,7 +80,7 @@ export default function Home() {
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
             
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
             
@@ -124,7 +124,7 @@ export default function Home() {
             <p>
               We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
             </p>
-            <p className="text-sm border-t border-white/5 pt-8 italic opacity-60">
+            <p className="text-lg md:text-lg italic opacity-60">
               Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</Link> directly to ensure their details remain accurate.
             </p>
           </div>

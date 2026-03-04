@@ -517,7 +517,7 @@ export default function AddSchoolPage() {
                  )} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Visa Restrictions</FormLabel>
+                     <FormLabel>Visa Restrictions</Label>
                      <FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
@@ -576,7 +576,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internet</Label>
+                    <FormLabel>Internet</FormLabel>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -597,7 +597,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vehicle Maint.</FormLabel>
+                    <FormLabel>Vehicle Maint.</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
