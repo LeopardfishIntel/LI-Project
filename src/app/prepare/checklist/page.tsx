@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -7,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Printer, Binoculars, CheckCircle2 } from 'lucide-react';
 
 export default function StrategicChecksheetPage() {
-  const phases = [
+  const sections = [
     {
-      title: "Phase 1: The integrity baseline",
+      title: "The integrity baseline (The \"Gold Standard\")",
       description: "Verification of the 'Gold Standard' transparency baseline.",
       items: [
         { label: "Salary Transparency", sub: "Is there a fixed, published scale, or is it 'discretionary'?" },
@@ -17,7 +16,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "Phase 2: Risk factor matrix",
+      title: "Risk factor matrix (The flag system)",
       description: "Explicit terms required to mitigate institutional red signals.",
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
@@ -27,7 +26,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "Phase 3: Tactical readiness",
+      title: "Tactical readiness & capital requirements",
       description: "Onboarding cash-flow and capital requirements.",
       items: [
         { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
@@ -36,7 +35,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "Phase 4: Leadership & stability",
+      title: "Leadership & stability intel",
       description: "Data-led institutional performance signals.",
       items: [
         { label: "GASCI Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
@@ -44,7 +43,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "Phase 5: The 'Hard-Talk' inquiry",
+      title: "The \"Hard-Talk\" inquiry (Essential questions)",
       description: "Verification questions for final stage due diligence.",
       items: [
         { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
@@ -97,13 +96,13 @@ export default function StrategicChecksheetPage() {
         </div>
 
         <div className="space-y-12">
-          {phases.map((phase, idx) => (
+          {sections.map((section, idx) => (
             <section key={idx} className="space-y-6">
-              <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{phase.title}</h2>
-              <p className="text-xs font-medium text-gray-600 italic">{phase.description}</p>
+              <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{section.title}</h2>
+              <p className="text-xs font-medium text-gray-600 italic">{section.description}</p>
               
               <div className="grid gap-4">
-                {phase.items.map((item, iIdx) => (
+                {section.items.map((item, iIdx) => (
                   <div key={iIdx} className="flex items-start gap-4 group p-2 -ml-2 rounded-sm transition-colors hover:bg-gray-50">
                     <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 bg-white"></div>
                     <div className="space-y-1">

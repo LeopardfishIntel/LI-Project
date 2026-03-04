@@ -1,23 +1,18 @@
-
 'use client';
 
 import Link from 'next/link';
 import { 
-  FileText, 
-  Search, 
   Trophy, 
   PlaneLanding, 
   ShoppingCart,
   MessageSquareQuote, 
   Lock,
   Banknote,
-  PackageCheck,
   ShieldAlert,
   FileCheck,
   Flag,
   BarChart3,
   Stethoscope,
-  Home,
   Globe,
   Users,
   Zap
@@ -42,10 +37,9 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-20">
         
-        {/* Phase 1: The Integrity Baseline */}
+        {/* Section 1: The Integrity Baseline */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-black text-xl italic">Phase 1:</span>
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The integrity baseline (The "Gold Standard")</h2>
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
@@ -60,10 +54,9 @@ export default function PreparePage() {
           </Card>
         </section>
 
-        {/* Phase 2: Risk Factor Matrix */}
+        {/* Section 2: Risk Factor Matrix */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-black text-xl italic">Phase 2:</span>
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Risk factor matrix (The flag system)</h2>
           </div>
           
@@ -127,10 +120,9 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Phase 3: Tactical Readiness & Capital Requirements */}
+        {/* Section 3: Tactical Readiness & Capital Requirements */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-black text-xl italic">Phase 3:</span>
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Tactical readiness & capital requirements</h2>
           </div>
           
@@ -165,10 +157,9 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Phase 4: Leadership & Stability Intel */}
+        {/* Section 4: Leadership & Stability Intel */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-black text-xl italic">Phase 4:</span>
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Leadership & stability intel</h2>
           </div>
           
@@ -195,10 +186,9 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Phase 5: The "Hard-Talk" Inquiry */}
+        {/* Section 5: The "Hard-Talk" Inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
-            <span className="text-primary font-black text-xl italic">Phase 5:</span>
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The "Hard-Talk" inquiry (Essential questions)</h2>
           </div>
           
