@@ -22,9 +22,10 @@ import {
   FileText,
   Wallet,
   Clock,
-  Compass
+  Compass,
+  Loader2
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -69,7 +70,7 @@ export default function PreparePage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white">
-      <div className="mb-16 text-center space-y-6">
+      <div className="mb-16 text-center space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
@@ -138,6 +139,7 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
+            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
