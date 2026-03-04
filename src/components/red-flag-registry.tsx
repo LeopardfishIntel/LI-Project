@@ -1,3 +1,4 @@
+
 import { ShieldAlert, ArrowRight, Lock, Banknote, GraduationCap, HeartPulse } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
@@ -34,7 +35,7 @@ export function RedFlagRegistry() {
             <ShieldAlert className="w-10 h-10 text-primary" />
             <div>
               <h2 className="text-3xl md:text-4xl text-white">Contract flags</h2>
-              <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">Critical due diligence</p>
+              <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Critical due diligence</p>
             </div>
           </div>
 

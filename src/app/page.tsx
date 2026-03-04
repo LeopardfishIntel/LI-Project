@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -60,7 +61,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section: Reordered to sit beneath Hero */}
+      {/* Stats Counter Section: Positioned immediately underneath Hero */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
