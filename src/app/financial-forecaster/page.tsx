@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -351,7 +352,7 @@ function ContractDecoderContent() {
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
-                          {!offeredSalary && <p className="text-[10px] font-black uppercase tracking-tighter text-accent animate-pulse">Aggregated Salary Projection</p>}
+                          {!offeredSalary && <p className="text-[10px] font-bold text-accent">Aggregated Salary Projection</p>}
                         </div>
                       </div>
                       <div className="flex justify-between items-center py-2 border-b border-white/5">

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -21,7 +22,9 @@ import {
   Wallet,
   Clock,
   Compass,
-  Table as TableIcon
+  Table as TableIcon,
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,7 +44,30 @@ const RESERVE_BENCHMARKS = [
   { country: 'Japan', visa: '$1,300', rent: '$1,500 – $2,500', furnishing: '$1,700 – $2,700', transport: '$800 – $1,200', connectivity: '$80 – $150', total: '$5,380+' },
   { country: 'Spain', visa: '$900', rent: '$1,600 – $3,000', furnishing: '$800 – $1,500', transport: '$400 – $700', connectivity: '$70 – $120', total: '$3,770+' },
   { country: 'Thailand', visa: '$1,000', rent: '$1,000 – $1,800', furnishing: '$400 – $900', transport: '$400 – $600', connectivity: '$50 – $100', total: '$2,850+' },
-  { country: 'Vietnam', visa: '$1,000', rent: '$600 – $1,200', furnishing: '$300 – $700', transport: '$100 (Scooter)', connectivity: '$30 – $60', total: '$2,030+' },
+  { country: 'Vietnam', visa: '$1,000', rent: '$600 – $1,200', furnishing: '$300 – $700', transport: '$100 (Scooter)', connectivity: '$30 – $60', total: '$2,030+' }
+];
+
+const BREAKDOWN_ITEMS = [
+  {
+    icon: <FileText className="size-4 text-primary" />,
+    title: "Document Integrity",
+    desc: "Legalisation, notary fees, and international courier logistics for entry visa processing."
+  },
+  {
+    icon: <Wallet className="size-4 text-primary" />,
+    title: "Housing Liquidity",
+    desc: "Upfront first month's rent + security deposit for non-provided accommodation."
+  },
+  {
+    icon: <Clock className="size-4 text-primary" />,
+    title: "The 6-Week Gap",
+    desc: "Daily survival costs (food, transport, telco) before the first full salary cycle."
+  },
+  {
+    icon: <Compass className="size-4 text-primary" />,
+    title: "Mission Setup",
+    desc: "The 'IKEA Test'—initial appliances, bedding, and local connectivity installation."
+  }
 ];
 
 export default function PreparePage() {
@@ -76,7 +102,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> Over-zealous privacy clauses</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> NDA signal audit</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
@@ -139,7 +165,7 @@ export default function PreparePage() {
         {/* Section 2: Tactical Reserve Benchmarks */}
         <section className="space-y-8">
           <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Tactical reserve benchmarks</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
               Relocating abroad is rarely cost-neutral. Use this comparative registry to identify the upfront liquid capital required for the initial 6-week "gap month" before your first full salary cycle.
             </p>
@@ -165,11 +191,11 @@ export default function PreparePage() {
                   <TableHeader className="bg-white/5">
                     <TableRow className="border-b-white/5 hover:bg-transparent">
                       <TableHead className="text-[10px] font-black uppercase text-white tracking-widest h-12">Country</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Visa & flight</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Rent & deposit</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Visa & docs</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Rent (1.5mo)</TableHead>
                       <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Furnishing</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Transport (1mo)</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Telco & net</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Transport</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase text-muted-foreground tracking-widest text-center">Connectivity</TableHead>
                       <TableHead className="text-[10px] font-black uppercase text-primary tracking-widest text-right pr-6">6-Week total</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -191,7 +217,22 @@ export default function PreparePage() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {BREAKDOWN_ITEMS.map((item, idx) => (
+              <div key={idx} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                <div className="flex items-center justify-between">
+                  <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
+                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">0{idx + 1}</span>
+                </div>
+                <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.title}</h4>
+                <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             <div className="space-y-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
@@ -276,24 +317,4 @@ export default function PreparePage() {
       </div>
     </div>
   );
-}
-
-function CheckCircle2(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
 }
