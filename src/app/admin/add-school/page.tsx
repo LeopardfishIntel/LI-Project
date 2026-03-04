@@ -177,7 +177,7 @@ export default function AddSchoolPage() {
     setIsEnriching(false);
 
     if (error) {
-        toast({ variant: 'destructive', title: 'AI Enrichment Failed', description: error });
+        toast({ variant: 'destructive', title: 'AI enrichment failed', description: error });
     }
 
     if (data) {
@@ -206,7 +206,7 @@ export default function AddSchoolPage() {
             if (data.costOfLiving.uncoveredMedical) form.setValue('costOfLiving.uncoveredMedical', data.costOfLiving.uncoveredMedical, { shouldValidate: true });
         }
         
-        toast({ title: 'AI Enrichment Complete', description: 'Form fields have been populated.' });
+        toast({ title: 'AI enrichment complete', description: 'Form fields have been populated.' });
     }
   };
 
@@ -239,7 +239,7 @@ export default function AddSchoolPage() {
 
     setDocumentNonBlocking(schoolDocRef, newSchool, { merge: false });
     toast({
-      title: 'School Added',
+      title: 'School added',
       description: `${newSchool.name} has been added to the database.`,
     });
     form.reset();
@@ -301,7 +301,7 @@ export default function AddSchoolPage() {
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>School Name</FormLabel>
+                    <FormLabel>School name</FormLabel>
                     <FormControl><Input placeholder="e.g., International School of Excellence" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -343,7 +343,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="imageHint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image Hint</FormLabel>
+                    <FormLabel>Image hint</FormLabel>
                     <FormControl><Input placeholder="e.g., modern school tokyo" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -375,10 +375,10 @@ export default function AddSchoolPage() {
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.salary.value" render={({ field }) => (
-                        <FormItem><FormLabel>Salary Range</FormLabel><FormControl><Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Salary range</FormLabel><FormControl><Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.score" render={({ field }) => (
-                        <FormItem><FormLabel>Salary Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Salary score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.isTaxFree" render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Tax-free salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
@@ -400,10 +400,10 @@ export default function AddSchoolPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.savingsPotential.value" render={({ field }) => (
-                        <FormItem><FormLabel>Savings Potential</FormLabel><FormControl><Input placeholder="High" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Savings potential</FormLabel><FormControl><Input placeholder="High" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
                     )} />
                      <FormField control={form.control} name="intel.savingsPotential.score" render={({ field }) => (
-                        <FormItem><FormLabel>Savings Score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem><FormLabel>Savings score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
                     )} />
                 </div>
 
@@ -455,28 +455,28 @@ export default function AddSchoolPage() {
                     )} />
                     <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Student-Teacher Ratio</FormLabel>
+                        <FormLabel>Student-teacher ratio</FormLabel>
                         <FormControl><Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.classSize" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Average Class Size</FormLabel>
+                        <FormLabel>Average class size</FormLabel>
                         <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Non-Contact Time (%)</FormLabel>
+                        <FormLabel>Non-contact time (%)</FormLabel>
                         <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Health Insurance</FormLabel>
+                        <FormLabel>Health insurance</FormLabel>
                         <FormControl><Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" /></FormControl>
                         <FormMessage />
                       </FormItem>
@@ -484,35 +484,35 @@ export default function AddSchoolPage() {
                 </div>
                  <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Tech Ecosystem</FormLabel>
+                     <FormLabel>Tech ecosystem</FormLabel>
                      <FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Benefits Summary</FormLabel>
+                     <FormLabel>Benefits summary</FormLabel>
                      <FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Jobs Portal</FormLabel>
+                     <FormLabel>Jobs portal</FormLabel>
                      <FormControl><Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Min. Qualifications</FormLabel>
+                     <FormLabel>Min. qualifications</FormLabel>
                      <FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Visa Restrictions</FormLabel>
+                     <FormLabel>Visa restrictions</FormLabel>
                      <FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
@@ -585,21 +585,21 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dining/Social</FormLabel>
+                    <FormLabel>Dining/social</FormLabel>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vehicle Maint.</Label>
+                    <FormLabel>Vehicle maint.</FormLabel>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Uncovered Medical</FormLabel>
+                    <FormLabel>Uncovered medical</FormLabel>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
