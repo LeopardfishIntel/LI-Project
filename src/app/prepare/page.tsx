@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 export default function PreparePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12">
+    <div className="container mx-auto px-4 md:px-6 py-12 text-white">
       <div className="mb-16 text-center space-y-6">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
@@ -34,10 +34,10 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-20">
         
-        {/* Section 1: Material Risks and Deal-Breakers */}
+        {/* Section 1: Material Risks */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks and Deal-Breakers</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -87,7 +87,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Ambiguity in housing or flight definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes.</p>
+                <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
             </Card>
 

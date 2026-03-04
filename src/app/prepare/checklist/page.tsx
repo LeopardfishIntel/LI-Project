@@ -8,7 +8,7 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 export default function StrategicChecksheetPage() {
   const sections = [
     {
-      title: "Material Risks and Deal-Breakers",
+      title: "Material Risks",
       description: "Explicit terms required to mitigate institutional red signals.",
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -502,7 +501,7 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
     };
     return (
         <div className={cn("glass p-6 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
-            <h4 className="text-sm font-bold flex items-center gap-2">
+            <h4 className="text-sm font-bold flex items-center gap-2 text-white uppercase tracking-wider">
                 {icon} {type}
             </h4>
             <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">{content}</p>
@@ -514,7 +513,9 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center print:hidden">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract decoder</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case text-center">
+          2. Contract decoder
+        </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed tracking-widest opacity-60 uppercase">Field-grade financial intelligence for your next move.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
