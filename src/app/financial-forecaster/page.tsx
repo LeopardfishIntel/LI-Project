@@ -106,7 +106,7 @@ const getAverageAnnualSalary = (salaryRange?: string): number => {
 };
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-sm py-2 border-b border-white/5 last:border-0">
+    <div className="flex justify-between items-center text-base py-2 border-b border-white/5 last:border-0">
       <div className="flex items-center gap-3">
         {icon}
         <span className="text-muted-foreground font-medium">{label}</span>
@@ -222,53 +222,45 @@ function ContractDecoderContent() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Settings Sidebar */}
-        <aside className="lg:col-span-4 space-y-6">
-          <Card className="glass border-primary/20 bg-background/40 shadow-xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle>
-            </CardHeader>
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="glass border-primary/20 bg-background/40">
+            <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
             <CardContent className="space-y-6">
-              {/* Context Group */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">School dossier</Label>
-                  <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
-                    <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Select school</Label>
+                <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
+                  <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Family scaling</Label>
-                  <Select value={familyStatus} onValueChange={setFamilyStatus}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="single">Single</SelectItem>
-                      <SelectItem value="couple">Couple</SelectItem>
-                      <SelectItem value="family">Family (2+1)</SelectItem>
-                      <SelectItem value="family2">Family (2+2)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Family scaling</Label>
+                <Select value={familyStatus} onValueChange={setFamilyStatus}>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
+                  <SelectContent className="glass">
+                    <SelectItem value="single">Single</SelectItem>
+                    <SelectItem value="couple">Couple</SelectItem>
+                    <SelectItem value="family">Family (2+1)</SelectItem>
+                    <SelectItem value="family2">Family (2+2)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
                 <div className="text-[11px] text-primary-foreground/90 leading-relaxed font-medium">
-                  <span className="font-black text-destructive flex items-center gap-1 mb-1.5 uppercase tracking-tighter"><ShieldAlert className="size-3.5" /> Financial due diligence</span>
-                  Please provide net pay figures rather than gross. Ensure your deduction totals include social security, pension contributions, and all healthcare premiums (medical, dental, and optical). Any unallocated costs should be factored into the contingency section below.
+                  <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 uppercase tracking-tighter"><ShieldAlert className="size-3.5" /> Financial due diligence</span>
+                  Financial Due Diligence: Please provide net pay figures rather than gross. Ensure your deduction totals include social security, pension contributions, and all healthcare premiums (medical, dental, and optical). Any unallocated costs should be factored into the Contingency section below.
                 </div>
               </div>
 
-              {/* Income Group */}
-              <div className="space-y-4 pt-4 border-t border-white/5">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/50">Income parameters</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-end">
-                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Net monthly salary ({currency})</Label>
-                    {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[9px] font-black text-accent uppercase animate-pulse">Suggested benchmark</span>}
-                  </div>
-                  <div className="relative">
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer ({currency})</Label>
+                  {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
+                </div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
                     <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
                       className={cn("pl-10 bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold text-white", noSpinners)} 
@@ -278,132 +270,95 @@ function ContractDecoderContent() {
                       onChange={(e) => setOfferedSalary(e.target.value)} 
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Responsibilities allowance ({currency})</Label>
-                  <div className="relative">
-                    <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="0" 
-                      value={responsibilityAllowance} 
-                      onChange={(e) => setResponsibilityAllowance(e.target.value)} 
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Other monthly income ({currency})</Label>
-                  <div className="relative">
-                    <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="0" 
-                      value={partnerSalary} 
-                      onChange={(e) => setPartnerSalary(e.target.value)} 
-                    />
-                  </div>
+                  <div className="w-24 px-3 flex items-center justify-center bg-background/50 border border-white/10 rounded-sm font-bold text-sm">{currency}</div>
                 </div>
               </div>
 
-              {/* Commitments Group */}
-              <div className="space-y-4 pt-4 border-t border-white/5">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/50">Global commitments</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-end">
-                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Student loan repayment</Label>
-                    <div className="flex gap-2 text-[10px] font-black text-accent uppercase tracking-tighter">
-                      <button className="hover:text-white transition-colors">UK</button>
-                      <span className="opacity-20">|</span>
-                      <button className="hover:text-white transition-colors">US</button>
-                    </div>
-                  </div>
-                  <div className="relative">
-                    <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="0" 
-                      value={studentLoan} 
-                      onChange={(e) => setStudentLoan(e.target.value)} 
-                    />
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance ({currency})</Label>
+                <div className="relative">
+                  <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                    type="number" 
+                    placeholder="0" 
+                    value={responsibilityAllowance} 
+                    onChange={(e) => setResponsibilityAllowance(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Other monthly income ({currency})</Label>
+                <div className="relative">
+                  <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                    type="number" 
+                    placeholder="0" 
+                    value={partnerSalary} 
+                    onChange={(e) => setPartnerSalary(e.target.value)} 
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-end">
+                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment ({currency})</Label>
+                  <div className="flex gap-3 text-[11px] font-bold text-accent">
+                    <button className="hover:text-white transition-colors">UK Calculator</button>
+                    <button className="hover:text-white transition-colors">US Calculator</button>
                   </div>
                 </div>
+                <div className="relative">
+                  <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                    type="number" 
+                    placeholder="0" 
+                    value={studentLoan} 
+                    onChange={(e) => setStudentLoan(e.target.value)} 
+                  />
+                </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest opacity-60">Contingency buffer ({currency})</Label>
-                  <div className="relative">
-                    <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="200" 
-                      value={contingency} 
-                      onChange={(e) => setContingency(e.target.value)} 
-                    />
-                  </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer ({currency})</Label>
+                <div className="relative">
+                  <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input 
+                    className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                    type="number" 
+                    placeholder="200" 
+                    value={contingency} 
+                    onChange={(e) => setContingency(e.target.value)} 
+                  />
                 </div>
               </div>
             </CardContent>
           </Card>
-        </aside>
+        </div>
 
-        {/* Main Analytics Area */}
-        <main className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-8">
           {!selectedSchool ? (
-            <div className="h-[650px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm text-muted-foreground bg-card/20 group hover:border-primary/20 transition-colors">
-              <LineChart className="w-16 h-16 mb-4 opacity-10 group-hover:opacity-20 transition-opacity" />
-              <p className="text-sm text-white/30 uppercase font-black tracking-widest">Initialise school dossier to begin decoding</p>
+            <div className="h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm text-muted-foreground bg-card/20">
+              <LineChart className="w-16 h-16 mb-4 opacity-10" />
+              <p className="text-base text-white/30 font-medium">Initialise school dossier to begin decoding</p>
             </div>
           ) : (
             <>
-              {/* Executive Summary Card */}
-              <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl relative overflow-hidden transition-all duration-500", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
-                <div className="space-y-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div className="space-y-1 text-center md:text-left">
-                            <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">True net savings</h4>
-                            <div className="flex items-baseline gap-1">
-                                <span className={cn("text-6xl font-black tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
-                                  {formatCurrency(savingsPotential, currency)}
-                                </span>
-                                <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
-                            </div>
-                        </div>
-                        <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your household income and estimated cost of living.</div>
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
-                        {['GBP', 'USD', 'EUR', 'AUD'].map(ccy => {
-                            const conv = (savingsPotential / rate) * (CONVERSION_RATES[ccy] || 1);
-                            return (
-                                <div key={ccy} className="space-y-1">
-                                    <p className="text-[11px] font-black text-muted-foreground/60 uppercase tracking-widest">{ccy}</p>
-                                    <p className="text-xl font-bold text-white/90">{formatCurrency(conv, ccy)}</p>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-              </Card>
-
-              {/* Detailed Breakdown Grid */}
               <div className="grid md:grid-cols-2 gap-8">
                 <Card className="glass border-white/5 bg-background/40">
-                  <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2"><Award className="size-4" /> Income & benefits</CardTitle></CardHeader>
-                  <CardContent className="space-y-2 pt-4">
+                  <CardHeader className="pb-4"><CardTitle className="text-xs font-bold text-primary flex items-center gap-2"><Award className="size-4" /> Income & benefits</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Banknote className="size-4 text-green-400" />
                         <span className="text-base text-muted-foreground font-medium">Monthly net salary</span>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-lg text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
-                        {!offeredSalary && <p className="text-[10px] font-bold text-accent uppercase tracking-tighter">Benchmark applied</p>}
+                        <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
+                        {!offeredSalary && <p className="text-[10px] font-bold text-accent">Benchmark applied</p>}
                       </div>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
@@ -411,28 +366,28 @@ function ContractDecoderContent() {
                         <Medal className="size-4 text-amber-400" />
                         <span className="text-base text-muted-foreground font-medium">Responsibility allowance</span>
                       </div>
-                      <span className="font-bold text-white">{formatCurrency(responsibilityAllowanceNum, currency)}</span>
+                      <span className="font-bold text-white text-base">{formatCurrency(responsibilityAllowanceNum, currency)}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <Plus className="size-4 text-sky-400" />
                         <span className="text-base text-muted-foreground font-medium">Other income</span>
                       </div>
-                      <span className="font-bold text-white">{formatCurrency(partnerSalaryNum, currency)}</span>
+                      <span className="font-bold text-white text-base">{formatCurrency(partnerSalaryNum, currency)}</span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <div className="flex items-center gap-3">
                         <Home className="size-4 text-sky-400" />
                         <span className="text-base text-muted-foreground font-medium">Housing arrangement</span>
                       </div>
-                      <span className="font-bold text-white text-sm">{selectedSchool.intel.housing.provided ? "Provided" : "Teacher pays"}</span>
+                      <span className="font-bold text-white text-base">{selectedSchool.intel.housing.provided ? "School provided" : "Teacher pays"}</span>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="glass border-white/5 bg-background/40">
-                  <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
-                  <CardContent className="space-y-1 pt-4">
+                  <CardHeader className="pb-4"><CardTitle className="text-xs font-bold text-primary flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
+                  <CardContent className="space-y-1">
                     <DecodedItem icon={<Home className="size-4 text-sky-400" />} label="Monthly rent (1BR)" value={decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
                     <DecodedItem icon={<Utensils className="size-4 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
                     <DecodedItem icon={<TramFront className="size-4 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
@@ -443,65 +398,94 @@ function ContractDecoderContent() {
                     <DecodedItem icon={<GraduationCap className="size-4 text-emerald-400" />} label="Student loans" value={decodedCosts?.manualLoan || 0} currency={currency} />
                     
                     <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10">
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Total burn rate</span>
-                      <span className="text-2xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
+                      <span className="text-[11px] font-bold text-white">Burn rate</span>
+                      <span className="text-3xl font-bold text-primary">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Verdict Section */}
-              <div className="pt-8 border-t border-white/5 space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                      <h3 className="text-base text-primary flex items-center gap-2 font-bold normal-case">
-                          <Sparkles className="size-4" /> Tactical SWOT verdict
-                      </h3>
-                      {dateStamp && (
-                          <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
-                              Dossier signature: {dateStamp}
-                          </span>
-                      )}
-                      {!verdict && !isVerdictLoading && (
-                          <Button 
-                              size="sm" 
-                              variant="outline" 
-                              onClick={handleGenerateVerdict}
-                              className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
-                          >
-                              <Sparkles className="size-3 mr-2" />
-                              Run SWOT protocol
-                          </Button>
-                      )}
-                      {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
-                  </div>
+              <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl relative overflow-hidden transition-all duration-500", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
+                <div className="space-y-8">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="space-y-1 text-center md:text-left">
+                            <h4 className="text-sm font-bold text-muted-foreground">True net savings</h4>
+                            <div className="flex items-baseline gap-1">
+                                <span className={cn("text-6xl font-bold tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
+                                  {formatCurrency(savingsPotential, currency)}
+                                </span>
+                                <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
+                            </div>
+                        </div>
+                        <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                        <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
+                    </div>
 
-                  {verdictError && (
-                      <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
-                          <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
-                          <div className="space-y-1">
-                              <p className="text-xs font-bold text-destructive">Uplink failure</p>
-                              <p className="text-xs text-muted-foreground leading-relaxed font-medium">{verdictError}</p>
-                          </div>
-                      </div>
-                  )}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
+                        {['GBP', 'USD', 'EUR', 'AUD'].map(ccy => {
+                            const conv = (savingsPotential / rate) * (CONVERSION_RATES[ccy] || 1);
+                            return (
+                                <div key={ccy} className="space-y-1">
+                                    <p className="text-[11px] font-bold text-muted-foreground/60 uppercase">{ccy}</p>
+                                    <p className="text-xl font-bold text-white/90">{formatCurrency(conv, ccy)}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
 
-                  {verdict ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                          <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
-                          <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                          <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
-                          <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
-                      </div>
-                  ) : isVerdictLoading ? (
-                      <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
-                          <Loader2 className="size-8 animate-spin text-primary" />
-                          <p className="text-sm font-bold">Uplinking to tactical engine...</p>
-                      </div>
-                  ) : null}
-              </div>
+                    <div className="pt-8 border-t border-white/5 space-y-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <h3 className="text-base text-primary flex items-center gap-2 font-bold">
+                                <Sparkles className="size-4" /> Tactical SWOT verdict
+                            </h3>
+                            {dateStamp && (
+                                <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
+                                    Date stamp: {dateStamp}
+                                </span>
+                            )}
+                            {!verdict && !isVerdictLoading && (
+                                <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    onClick={handleGenerateVerdict}
+                                    className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
+                                >
+                                    <Sparkles className="size-3 mr-2" />
+                                    Run SWOT protocol
+                                </Button>
+                            )}
+                            {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
+                        </div>
+
+                        {verdictError && (
+                            <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
+                                <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-destructive">Uplink failure</p>
+                                    <p className="text-xs text-muted-foreground">{verdictError}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {verdict ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
+                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
+                            </div>
+                        ) : isVerdictLoading ? (
+                            <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
+                                <Loader2 className="size-8 animate-spin text-primary" />
+                                <p className="text-sm font-bold">Uplinking to tactical engine...</p>
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+              </Card>
             </>
           )}
-        </main>
+        </div>
       </div>
   );
 }
@@ -528,7 +512,7 @@ export default function EvaluatePage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract decoder</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-sm md:text-base leading-relaxed tracking-widest opacity-60 uppercase tracking-widest text-[10px]">Field-grade financial intelligence for your next move.</p>
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed tracking-widest opacity-60">Field-grade financial intelligence for your next move.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
     </div>
