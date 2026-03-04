@@ -145,7 +145,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><BarChart3 className="size-5 text-primary" /> Toxic churn signals (GASCI)</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><BarChart3 className="size-5 text-primary" /> Toxic churn signals</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
