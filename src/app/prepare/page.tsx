@@ -39,7 +39,7 @@ export default function PreparePage() {
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
+              International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.
             </p>
           </div>
           

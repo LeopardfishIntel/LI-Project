@@ -9,7 +9,7 @@ export default function StrategicChecksheetPage() {
   const sections = [
     {
       title: "Material Risks",
-      description: "Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.",
+      description: "International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.",
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
