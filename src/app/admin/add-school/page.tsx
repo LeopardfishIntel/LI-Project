@@ -508,7 +508,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Transport</FormLabel>
+                    <FormLabel>Transport</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -522,7 +522,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Internet</FormLabel>
+                    <FormLabel>Internet</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
