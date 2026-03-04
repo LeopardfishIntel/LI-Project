@@ -21,7 +21,7 @@ export default function StrategicChecksheetPage() {
     },
     {
       title: "The True Cost of Landing",
-      description: "Onboarding cash-flow and capital requirements.",
+      description: "Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.",
       items: [
         { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
         { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." }

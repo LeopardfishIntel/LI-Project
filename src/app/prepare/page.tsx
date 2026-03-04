@@ -108,8 +108,11 @@ export default function PreparePage() {
 
         {/* Section 2: The True Cost of Landing */}
         <section className="space-y-8">
-          <div className="flex items-center gap-3">
+          <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The True Cost of Landing</h2>
+            <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+              Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
