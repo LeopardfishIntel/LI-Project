@@ -93,10 +93,10 @@ export function FeatureHighlights() {
                 <p className="text-sm text-muted-foreground italic font-medium">Verify your next move with field-grade financial and institutional data.</p>
                 <div className="flex gap-4">
                     <Button variant="outline" className="border-white/10 hover:bg-white/5 rounded-sm text-xs font-bold uppercase tracking-widest h-12 px-8" asChild>
-                        <Link href="/directory">Browse dossiers</Link>
+                        <Link href="/directory">Browse Schools</Link>
                     </Button>
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
-                        <Link href="/discover">Initialize fit finder <ArrowRight className="ml-2 size-4" /></Link>
+                        <Link href="/discover">Find my fit <ArrowRight className="ml-2 size-4" /></Link>
                     </Button>
                 </div>
               </div>
