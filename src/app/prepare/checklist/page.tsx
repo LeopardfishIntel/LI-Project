@@ -9,7 +9,7 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 export default function StrategicChecksheetPage() {
   const sections = [
     {
-      title: "Risk factor matrix (The flag system)",
+      title: "Risk factor matrix",
       description: "Explicit terms required to mitigate institutional red signals.",
       isFlagged: true,
       items: [
@@ -17,7 +17,7 @@ export default function StrategicChecksheetPage() {
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
         { label: "Contact Minute Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
         { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and co-pays audited." },
-        { label: "Housing standard", sub: "Detailed photos of specific unit/compound obtained." },
+        { label: "Housing Standard", sub: "Detailed photos of specific unit/compound obtained." },
         { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of conduct ratings." }
       ]
     },
@@ -38,7 +38,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "The \"Hard-Talk\" inquiry (Essential questions)",
+      title: "The \"Hard-Talk\" inquiry",
       description: "Verification questions for final stage due diligence.",
       items: [
         { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
@@ -83,12 +83,6 @@ export default function StrategicChecksheetPage() {
             <span>Classification: Operational Use</span>
           </div>
         </header>
-
-        <div className="bg-gray-100 p-6 border-l-8 border-black">
-          <p className="text-sm font-bold leading-relaxed italic">
-            "Verification is the difference between an adventure and an ordeal. Use this checksheet to validate institutional promises against regional realities."
-          </p>
-        </div>
 
         <div className="space-y-12">
           <section className="space-y-6">

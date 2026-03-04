@@ -28,7 +28,7 @@ const initialState: FitFinderState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0">
+    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0 shadow-lg shadow-primary/10">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -55,10 +55,10 @@ export default function FindYourFitPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white mb-4">
           1. Find your fit
         </h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-medium text-sm leading-relaxed">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
@@ -68,7 +68,7 @@ export default function FindYourFitPage() {
                 value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
             />
             <CardHeader>
-              <CardTitle>Your teacher profile</CardTitle>
+              <CardTitle className="normal-case">Your teacher profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -113,11 +113,11 @@ export default function FindYourFitPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="current-location">Current location</Label>
-                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-background/50 border-white/10" />
+                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-background/50 border-white/10 rounded-sm" />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="current-salary">Current salary (optional)</Label>
-                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-background/50 border-white/10" />
+                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-background/50 border-white/10 rounded-sm" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -348,48 +348,41 @@ export default function FindYourFitPage() {
             <Card className="mt-8 border-destructive bg-destructive/20">
                 <CardHeader className="flex-row items-center gap-4 space-y-0">
                     <ServerCrash className="h-6 w-6 text-destructive" />
-                    <CardTitle className="text-destructive">An error occurred</CardTitle>
+                    <CardTitle className="text-destructive normal-case font-bold">An error occurred</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-destructive/80">{state.error}</p>
+                    <p className="text-destructive/80 font-medium">{state.error}</p>
                 </CardContent>
             </Card>
         )}
 
         {state.result && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your recommended fits</h2>
+          <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-2xl font-bold text-center mb-6 text-white normal-case">Your recommended fits</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Lightbulb className="h-6 w-6 text-amber-400" />
+                    <CardTitle className="flex items-center gap-2 normal-case font-bold text-white">
+                        <Lightbulb className="h-6 w-6 text-primary" />
                         {rec.name}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{rec.reasoning}</p>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground leading-relaxed font-medium">{rec.reasoning}</p>
                     {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
-                        <div className="mt-6 pt-4 border-t border-border/50">
-                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2">
-                                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g transform="rotate(45 12 12)">
-                                        <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                                        <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                                        <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                                        <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                                    </g>
-                                </svg>
+                        <div className="mt-6 pt-6 border-t border-white/5">
+                            <h4 className="font-bold mb-4 text-base flex items-center gap-3 text-primary uppercase tracking-widest">
+                                <Building className="size-5" />
                                 School suggestions
                             </h4>
                             <div className="space-y-3">
                                 {rec.recommendedSchools.map(school => (
-                                    <div key={school.id} className="p-3 bg-accent/40 rounded-md border border-transparent hover:border-primary/30 transition-colors">
-                                        <Link href={`/schools/${school.id}`} className="font-semibold hover:text-primary transition-colors">
+                                    <div key={school.id} className="p-4 bg-primary/5 rounded-sm border border-transparent hover:border-primary/30 transition-all group">
+                                        <Link href={`/schools/${school.id}`} className="font-bold text-white hover:text-primary transition-colors text-lg">
                                             {school.name}
                                         </Link>
-                                        <p className="text-sm text-muted-foreground mt-1">{school.reasoning}</p>
+                                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed font-medium">{school.reasoning}</p>
                                     </div>
                                 ))}
                             </div>
