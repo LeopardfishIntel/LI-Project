@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -29,7 +28,7 @@ export default function PreparePage() {
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-6">
         <div className="space-y-2">
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white normal-case">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white">
             4. Are you prepared?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base md:text-lg leading-relaxed tracking-wide opacity-60 uppercase tracking-widest text-[10px]">
@@ -206,7 +205,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Does your insurance cover dental and optical? What is the deductible for inpatient surgery? In some regions, a "comprehensive" plan still requires you to pay 20% of every bill.</p>
+                <p>Does your insurance cover dental and optical? What is the deductible for inpatient care? In some regions, a "comprehensive" plan still requires you to pay 20% of every bill.</p>
               </CardContent>
             </Card>
 

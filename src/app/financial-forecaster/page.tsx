@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -55,95 +54,6 @@ import {
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
-const taxData: { [key: string]: any } = {
-    "Italy": {
-        currency: "EUR",
-        socialSecurity: { rate: 0.0919 },
-        childTaxCredit: 950,
-        specialRegime: {
-            name: "New Arrival Tax Discount",
-            description: "Applies a 70% tax exemption on income for up to 5 years for new tax residents ('impatriati' regime).",
-            taxablePercentage: 0.30
-        },
-        filingStatuses: {
-            single: { brackets: [{ upto: 28000, rate: 0.23 }, { upto: 50000, rate: 0.35 }, { upto: Infinity, rate: 0.43 }]},
-            married: { brackets: [{ upto: 28000, rate: 0.23 }, { upto: 50000, rate: 0.35 }, { upto: Infinity, rate: 0.43 }]},
-        },
-    },
-    "Japan": {
-        currency: "JPY",
-        socialSecurity: { rate: 0.145, cap: 8160000 },
-        childTaxCredit: 200000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 1950000, rate: 0.05 }, { upto: 3300000, rate: 0.10 }, { upto: 6950000, rate: 0.20 }, { upto: 9000000, rate: 0.23 }, { upto: 18000000, rate: 0.33 }, { upto: 40000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [ { upto: 3000000, rate: 0.05 }, { upto: 4500000, rate: 0.10 }, { upto: 7500000, rate: 0.20 }, { upto: 10000000, rate: 0.23 }, { upto: 19000000, rate: 0.33 }, { upto: 41000000, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-        },
-    },
-    "Netherlands": {
-        currency: "EUR",
-        socialSecurity: { rate: 0.2765, cap: 38098 },
-        childTaxCredit: 800,
-        filingStatuses: {
-            single: { brackets: [{ upto: 38098, rate: 0.0932 }, { upto: 75518, rate: 0.3697 }, { upto: Infinity, rate: 0.4950 }]},
-            married: { brackets: [{ upto: 38098, rate: 0.0932 }, { upto: 75518, rate: 0.3697 }, { upto: Infinity, rate: 0.4950 }]},
-        },
-    },
-    "Singapore": {
-        currency: "SGD",
-        socialSecurity: { rate: 0.20, cap: 6000 * 12 },
-        childTaxCredit: 2000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 }, { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 }, { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 }]},
-            married: { brackets: [{ upto: 20000, rate: 0 }, { upto: 30000, rate: 0.02 }, { upto: 40000, rate: 0.035 }, { upto: 80000, rate: 0.07 }, { upto: 120000, rate: 0.115 }, { upto: 160000, rate: 0.15 }, { upto: 320000, rate: 0.19 }, { upto: Infinity, rate: 0.22 }]},
-        },
-    },
-    "South Korea": {
-        currency: "KRW",
-        socialSecurity: { rate: 0.09, cap: 70800000 },
-        childTaxCredit: 150000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 }, { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 }, { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 }]},
-            married: { brackets: [{ upto: 14000000, rate: 0.06 }, { upto: 50000000, rate: 0.15 }, { upto: 88000000, rate: 0.24 }, { upto: 150000000, rate: 0.35 }, { upto: 300000000, rate: 0.38 }, { upto: 500000000, rate: 0.40 }, { upto: 1000000000, rate: 0.42 }, { upto: Infinity, rate: 0.45 }]},
-        },
-    },
-    "Switzerland": {
-        currency: "CHF",
-        socialSecurity: { rate: 0.064 },
-        childTaxCredit: 1200,
-        filingStatuses: {
-            single: { brackets: [{ upto: 20000, rate: 0.05 }, { upto: 50000, rate: 0.12 }, { upto: 100000, rate: 0.18 }, { upto: 200000, rate: 0.25 }, { upto: Infinity, rate: 0.30 }]},
-            married: { brackets: [{ upto: 40000, rate: 0.05 }, { upto: 80000, rate: 0.10 }, { upto: 150000, rate: 0.15 }, { upto: 250000, rate: 0.22 }, { upto: Infinity, rate: 0.28 }]},
-        },
-    },
-    "UAE": {
-        currency: "AED",
-        socialSecurity: { rate: 0 },
-        childTaxCredit: 0,
-        filingStatuses: {
-            single: { brackets: [{ upto: Infinity, rate: 0 }] },
-            married: { brackets: [{ upto: Infinity, rate: 0 }] },
-        },
-    },
-    "United Kingdom": {
-        currency: "GBP",
-        socialSecurity: { rate: 0.12, floor: 12570, cap: 50270 },
-        childTaxCredit: 0,
-        filingStatuses: {
-            single: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-            married: { brackets: [ { upto: 12570, rate: 0 }, { upto: 50270, rate: 0.20 }, { upto: 125140, rate: 0.40 }, { upto: Infinity, rate: 0.45 } ]},
-        },
-    },
-    "USA": {
-        currency: "USD",
-        socialSecurity: { rate: 0.0765, cap: 168600 },
-        childTaxCredit: 2000,
-        filingStatuses: {
-            single: { brackets: [{ upto: 11000, rate: 0.10 }, { upto: 44725, rate: 0.12 }, { upto: 95375, rate: 0.22 }, { upto: 182100, rate: 0.24 }, { upto: 231250, rate: 0.32 }, { upto: 578125, rate: 0.35 }, { upto: Infinity, rate: 0.37 }]},
-            married: { brackets: [{ upto: 22000, rate: 0.10 }, { upto: 89450, rate: 0.12 }, { upto: 190750, rate: 0.22 }, { upto: 364200, rate: 0.24 }, { upto: 462500, rate: 0.32 }, { upto: 693750, rate: 0.35 }, { upto: Infinity, rate: 0.37 }]},
-        },
-    },
-};
-
 const CONVERSION_RATES: Record<string, number> = {
   USD: 1,
   GBP: 0.78,
@@ -194,158 +104,16 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   'New Zealand': 'NZD',
 };
 
-const ORDERED_CURRENCIES = [
-  'USD', 'GBP', 'EUR',
-  ...Object.keys(CONVERSION_RATES)
-    .filter(c => !['USD', 'GBP', 'EUR'].includes(c))
-    .sort()
-];
-
-function calculateTax(income: number, country: string, filingStatus: 'single' | 'married', applySpecialRegime: boolean, dependents: number) {
-    const countryData = taxData[country];
-    if (!countryData || income <= 0) return { totalTax: 0, incomeTax: 0, socialSecurity: 0, netIncome: income, effectiveRate: 0, taxCredit: 0, incomeTaxBeforeCredit: 0 };
-    
-    const { socialSecurity, filingStatuses, specialRegime, childTaxCredit } = countryData;
-    const brackets = filingStatuses[filingStatus].brackets;
-    
-    let socialSecurityContrib = 0;
-    const socialSecurityTaxableIncome = socialSecurity.floor ? Math.max(0, income - socialSecurity.floor) : income;
-    const socialSecurityCappedIncome = socialSecurity.cap ? Math.min(socialSecurityTaxableIncome, socialSecurity.cap) : socialSecurityTaxableIncome;
-    if (socialSecurity.rate > 0) {
-        socialSecurityContrib = socialSecurityCappedIncome * socialSecurity.rate;
-    }
-
-    let incomeForTaxCalculation = income;
-    if (country === 'Italy' && applySpecialRegime && specialRegime) {
-        incomeForTaxCalculation = income * specialRegime.taxablePercentage;
-    }
-
-    let incomeTaxBeforeCredit = 0;
-    let lastBracketUpto = 0;
-    for (const bracket of brackets) {
-        if (incomeForTaxCalculation > lastBracketUpto) {
-            const taxableInBracket = Math.min(incomeForTaxCalculation, bracket.upto) - lastBracketUpto;
-            incomeTaxBeforeCredit += taxableInBracket * bracket.rate;
-            lastBracketUpto = bracket.upto;
-        } else {
-            break;
-        }
-    }
-    
-    const taxCredit = (childTaxCredit || 0) * dependents;
-    const incomeTax = Math.max(0, incomeTaxBeforeCredit - taxCredit);
-
-    const totalTax = incomeTax + socialSecurityContrib;
-    const netIncome = income - totalTax;
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0;
-
-    return { incomeTax, socialSecurity: socialSecurityContrib, netIncome, totalTax, effectiveRate, taxCredit, incomeTaxBeforeCredit };
-};
-
 const getAverageAnnualSalary = (salaryRange?: string): number => {
     if (!salaryRange) return 0;
     const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
     const numbers = cleanedRange.match(/\d+/g)?.map(Number);
     if (!numbers) return 0;
-    
     const scale = cleanedRange.includes('k') ? 1000 : 1;
-    
-    if (numbers.length >= 2) {
-      return ((numbers[0] + numbers[1]) / 2) * scale;
-    }
-    if (numbers.length === 1) {
-      return numbers[0] * scale;
-    }
+    if (numbers.length >= 2) return ((numbers[0] + numbers[1]) / 2) * scale;
+    if (numbers.length === 1) return numbers[0] * scale;
     return 0;
 };
-
-function TaxCalculatorSection() {
-    const [salary, setSalary] = useState('60000');
-    const [country, setCountry] = useState('United Kingdom');
-    const [currency, setCurrency] = useState('GBP');
-    const [filingStatus, setFilingStatus] = useState<'single' | 'married'>('single');
-    const [dependents, setDependents] = useState('0');
-    const [applySpecialRegime, setApplySpecialRegime] = useState(false);
-    const [result, setResult] = useState<any>(null);
-    
-    const countriesWithCalculators = Object.keys(taxData).sort();
-    const currencies = ORDERED_CURRENCIES;
-
-    useEffect(() => {
-        if (taxData[country]) {
-            setCurrency(taxData[country].currency);
-        }
-        if (country !== 'Italy') {
-            setApplySpecialRegime(false);
-        }
-    }, [country]);
-
-    const handleCalculate = () => {
-        const income = parseFloat(salary);
-        const numDependents = parseInt(dependents) || 0;
-        const incomeInLocalCurrency = income * (CONVERSION_RATES[currency] || 1) / (CONVERSION_RATES[taxData[country].currency] || 1);
-        if (isNaN(incomeInLocalCurrency) || incomeInLocalCurrency <= 0) {
-            setResult(null);
-            return;
-        }
-        const calcResult = calculateTax(incomeInLocalCurrency, country, filingStatus, applySpecialRegime, numDependents);
-        setResult(calcResult);
-    };
-
-    return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="tax-salary" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Gross Annual Salary</Label>
-                    <Input id="tax-salary" type="number" value={salary} onChange={e => setSalary(e.target.value)} className={cn("bg-background/50 border-white/10 text-right font-bold text-white", noSpinners)} />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="tax-currency" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Salary Currency</Label>
-                    <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger id="tax-currency" className="bg-background/50 border-white/10 text-white">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="glass">
-                            {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="tax-country" className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">Tax Country</Label>
-                    <Select value={country} onValueChange={setCountry}>
-                        <SelectTrigger id="tax-country" className="bg-background/50 border-white/10 text-white">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="glass">
-                            {countriesWithCalculators.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
-            <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-widest">Calculate Tactical Signature</Button>
-            {result && (
-                <Card className="glass border-white/10 p-6 space-y-4 shadow-2xl">
-                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-2">
-                        <span className="text-muted-foreground">Original Gross Salary</span>
-                        <span className="font-bold text-white">{formatCurrency(parseFloat(salary) || 0, currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-red-400">
-                        <span className="text-xs font-bold uppercase tracking-tighter">Estimated Income Tax</span>
-                        <span className="font-bold">-{formatCurrency(result.incomeTax, taxData[country].currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-amber-400">
-                        <span className="text-xs font-bold uppercase tracking-tighter">Social Contributions</span>
-                        <span className="font-bold">-{formatCurrency(result.socialSecurity, taxData[country].currency)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-green-400 font-bold border-t border-white/5 pt-4 mt-2">
-                        <span className="uppercase tracking-widest text-xs">Net Take-Home (Annual)</span>
-                        <span className="text-xl">{formatCurrency(result.netIncome, taxData[country].currency)}</span>
-                    </div>
-                </Card>
-            )}
-        </div>
-    );
-}
 
 const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
     <div className="flex justify-between items-center text-base py-2 border-b border-white/5 last:border-0">
@@ -367,7 +135,6 @@ function ContractDecoderContent() {
   );
   const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
 
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState<string>('single');
   const [currency, setCurrency] = useState('USD');
@@ -383,17 +150,6 @@ function ContractDecoderContent() {
   const [verdictError, setVerdictError] = useState<string | null>(null);
   const [dateStamp, setDateStamp] = useState('');
 
-  const countries = useMemo(() => {
-    if (!schools) return [];
-    return Array.from(new Set(schools.map(s => s.country))).sort();
-  }, [schools]);
-
-  const filteredSchools = useMemo(() => {
-    if (!schools) return [];
-    if (!selectedCountry || selectedCountry === 'all_countries') return schools;
-    return schools.filter(s => s.country === selectedCountry);
-  }, [schools, selectedCountry]);
-
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
       return schools.find(s => s.id === selectedSchoolId);
@@ -403,17 +159,10 @@ function ContractDecoderContent() {
     if (selectedSchool) {
       const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
       if (autoCurrency) setCurrency(autoCurrency);
-      if (!selectedCountry) setSelectedCountry(selectedSchool.country);
       setVerdict(null); 
       setVerdictError(null);
     }
-  }, [selectedSchool, selectedCountry]);
-
-  useEffect(() => {
-    if (selectedCountry && selectedCountry !== 'all_countries' && selectedSchool && selectedSchool.country !== selectedCountry) {
-      setSelectedSchoolId(null);
-    }
-  }, [selectedCountry, selectedSchool]);
+  }, [selectedSchool]);
 
   useEffect(() => {
     setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
@@ -487,30 +236,16 @@ function ContractDecoderContent() {
           <Card className="glass border-primary/20 bg-background/40">
             <CardHeader><CardTitle className="text-sm font-bold text-primary/70">My evaluation</CardTitle></CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Country</Label>
-                  <Select value={selectedCountry ?? ''} onValueChange={setSelectedCountry}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="All" /></SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="all_countries">All Countries</SelectItem>
-                      {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">School dossier</Label>
-                  <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Select..." /></SelectTrigger>
-                    <SelectContent className="glass">
-                      {filteredSchools.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-bold text-muted-foreground">Select school</Label>
+                <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
+                  <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
+                  <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Family scaling</Label>
                 <Select value={familyStatus} onValueChange={setFamilyStatus}>
                   <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                   <SelectContent className="glass">
@@ -531,7 +266,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Net monthly salary offer ({currency})</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Net monthly salary offer ({currency})</Label>
                   {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-accent animate-pulse">Suggested benchmark</span>}
                 </div>
                 <div className="flex gap-2">
@@ -550,7 +285,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Responsibilities allowance ({currency})</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Responsibilities allowance ({currency})</Label>
                 <div className="relative">
                   <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -564,7 +299,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Other income ({currency})</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Other income ({currency})</Label>
                 <div className="relative">
                   <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -579,7 +314,7 @@ function ContractDecoderContent() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
-                  <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Student loan repayment ({currency})</Label>
+                  <Label className="text-sm font-bold text-muted-foreground">Student loan repayment ({currency})</Label>
                   <div className="flex gap-3 text-[11px] font-bold text-accent">
                     <button className="hover:text-white transition-colors">UK Calculator</button>
                     <button className="hover:text-white transition-colors">US Calculator</button>
@@ -598,7 +333,7 @@ function ContractDecoderContent() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Contingency buffer ({currency})</Label>
+                <Label className="text-sm font-bold text-muted-foreground">Contingency buffer ({currency})</Label>
                 <div className="relative">
                   <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                   <Input 
@@ -645,7 +380,7 @@ function ContractDecoderContent() {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
-                        <Plus className="size-4 text-sky-400" />
+                        <Medal className="size-4 text-sky-400" />
                         <span className="text-base text-muted-foreground font-medium">Other income</span>
                       </div>
                       <span className="font-bold text-white text-base">{formatCurrency(partnerSalaryNum, currency)}</span>
@@ -693,7 +428,7 @@ function ContractDecoderContent() {
                             </div>
                         </div>
                         <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
+                        <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
@@ -786,7 +521,7 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">2. Contract decoder</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case text-center">2. Contract decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed tracking-widest opacity-60">Field-grade financial intelligence for your next move.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
