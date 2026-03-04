@@ -133,44 +133,55 @@ export default function PreparePage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+          <div className="space-y-12">
+            {/* Expanded Calculator Box */}
+            <div className="p-8 md:p-12 glass border-primary/30 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-12 items-center md:items-start shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
+                <Calculator className="size-48 text-white" />
+              </div>
               
-              <div className="p-6 glass border-primary/20 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-8 items-center md:items-start">
-                <div className="flex-1 space-y-2">
-                  <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase">Tactical reserve requirement</p>
-                  <p className="text-4xl font-black text-white tracking-tighter">
-                    {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
-                  </p>
-                  <p className="text-xs text-muted-foreground font-medium italic">Minimum capital for {calcStatus === 'single' ? 'single' : 'family'} moves adjusted for the initial 6-week "gap month" before the first full salary cycle.</p>
+              <div className="flex-1 space-y-4 relative z-10">
+                <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
+                <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
+                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
+                </p>
+                <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
+                  Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} moves adjusted for the initial 6-week "gap month" before the first full salary cycle.
+                </p>
+              </div>
+
+              <div className="w-full md:w-64 space-y-6 pt-2 relative z-10">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
+                  <Select value={calcStatus} onValueChange={setCalcStatus}>
+                    <SelectTrigger className="h-12 bg-background/60 border-white/10 text-white font-bold text-base rounded-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="glass">
+                      <SelectItem value="single">Single</SelectItem>
+                      <SelectItem value="couple">Couple</SelectItem>
+                      <SelectItem value="family">Family (2+1)</SelectItem>
+                      <SelectItem value="family2">Family (2+2)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="w-full md:w-48 space-y-3 pt-1">
-                  <div className="space-y-1.5">
-                    <Label className="text-[9px] font-black uppercase text-primary/60 tracking-widest">Scaling profile</Label>
-                    <Select value={calcStatus} onValueChange={setCalcStatus}>
-                      <SelectTrigger className="h-8 text-xs bg-background/40 border-white/5 text-white font-bold">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="glass">
-                        <SelectItem value="single">Single</SelectItem>
-                        <SelectItem value="couple">Couple</SelectItem>
-                        <SelectItem value="family">Family (2+1)</SelectItem>
-                        <SelectItem value="family2">Family (2+2)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/60 uppercase">
-                    <Calculator className="size-3" /> Real-time projection
-                  </div>
+                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-sm border border-white/5">
+                  <Calculator className="size-4 text-accent animate-pulse" />
+                  <span className="text-[10px] font-black text-accent uppercase tracking-widest">Real-time projection</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
+              </div>
             </div>
           </div>
         </section>
