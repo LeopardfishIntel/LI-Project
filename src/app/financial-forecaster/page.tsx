@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -175,8 +174,8 @@ function ContractDecoderContent() {
     const manualLoan = (parseFloat(studentLoan) || 0) * rate;
     const contingencyVal = (parseFloat(contingency) || 0) * rate;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + dining + manualHome + manualLoan + contingencyVal;
-    return { rent: rentVal * rate, food, transport, utilities, internet, mobile, dining, totalCosts, manualHome, manualLoan, contingencyVal };
+    const totalCosts = (intel.housing.provided ? 0 : rentVal * rate) + food + transport + utilities + dining + internet + mobile + manualHome + manualLoan + contingencyVal;
+    return { rent: rentVal * rate, food, transport, utilities, dining, internet, mobile, totalCosts, manualHome, manualLoan, contingencyVal };
   }, [selectedSchool, familyStatus, contingency, homeCountryCommitment, studentLoan, rate]);
 
   const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
