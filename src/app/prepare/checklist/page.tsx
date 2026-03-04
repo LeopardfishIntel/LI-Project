@@ -9,7 +9,7 @@ export default function StrategicChecksheetPage() {
   const sections = [
     {
       title: "Material Risks",
-      description: "Explicit terms required to mitigate institutional red signals.",
+      description: "Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.",
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
@@ -80,9 +80,6 @@ export default function StrategicChecksheetPage() {
             <span className="border-l border-gray-300 h-3" />
             <span>Classification: Operational Use</span>
           </div>
-          <p className="text-sm font-bold text-gray-600 mt-4 italic">
-            Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
-          </p>
         </header>
 
         <div className="space-y-12">
@@ -109,7 +106,7 @@ export default function StrategicChecksheetPage() {
           {sections.map((section, idx) => (
             <section key={idx} className="space-y-6">
               <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{section.title}</h2>
-              <p className="text-xs font-medium text-gray-600 italic">{section.description}</p>
+              <p className="text-xs font-bold text-gray-600 italic leading-relaxed">{section.description}</p>
               
               <div className="grid gap-4">
                 {section.items.map((item, iIdx) => (

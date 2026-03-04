@@ -28,7 +28,7 @@ export default function PreparePage() {
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
-          Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
+          Professional educator due diligence and risk assessment.
         </p>
       </div>
 
@@ -36,8 +36,11 @@ export default function PreparePage() {
         
         {/* Section 1: Material Risks */}
         <section className="space-y-8">
-          <div className="flex items-center gap-3">
+          <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks</h2>
+            <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+              Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
