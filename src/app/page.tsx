@@ -76,7 +76,7 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black tracking-widest animate-pulse">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
@@ -108,6 +108,20 @@ export default function Home() {
             <p className="text-3xl md:text-5xl text-white font-bold tracking-tight">
               Teach overseas - Know before you go
             </p>
+        </div>
+      </section>
+
+      {/* Integrity row - Reinstated */}
+      <section className="py-8 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <div className="inline-flex flex-col items-center">
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-2 leading-none">
+              Leopardfish Intel
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground font-medium">
+              A Clearer Picture.
+            </p>
+          </div>
         </div>
       </section>
 
