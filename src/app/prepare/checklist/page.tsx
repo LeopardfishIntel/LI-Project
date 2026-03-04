@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -14,8 +13,8 @@ export default function StrategicChecksheetPage() {
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
-        { label: "Contact Minute Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
-        { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and co-pays audited." },
+        { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
+        { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited." },
         { label: "Housing Standard", sub: "Detailed photos of specific unit/compound obtained." },
         { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of conduct ratings." }
       ]
@@ -42,6 +41,7 @@ export default function StrategicChecksheetPage() {
       items: [
         { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
         { label: "PPA Guarantee", sub: "Is non-contact time contractually protected?" },
+        { label: "Contact Time", sub: "What is the weekly cap on teacher contact time?" },
         { label: "Legalisation Fees", sub: "Does the school reimburse document fees upfront?" }
       ]
     }

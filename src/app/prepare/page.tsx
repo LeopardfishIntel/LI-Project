@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -218,7 +217,7 @@ export default function PreparePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              "What is the weekly cap on teacher contact minutes?",
+              "What is the weekly cap on teacher contact time?",
               "Is the EOS gratuity based on basic salary or total package?",
               "Can I see the full Schedule of Benefits for health insurance?",
               "What is the deductible and co-pay for inpatient care?",
