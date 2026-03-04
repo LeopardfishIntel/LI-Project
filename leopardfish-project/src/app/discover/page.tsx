@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useState } from "react";
-import { findNookAction, NookFinderState } from "./actions";
+import { findFitAction, FitFinderState } from "./actions";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +18,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import type { School } from '@/lib/types';
 import { collection } from 'firebase/firestore';
 
-const initialState: NookFinderState = {
+const initialState: FitFinderState = {
   result: null,
   error: null,
   pending: false,
@@ -28,24 +27,21 @@ const initialState: NookFinderState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto">
+    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0 shadow-lg shadow-primary/10">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           Analyzing...
         </>
       ) : (
-        <>
-          <Wand2 className="mr-2 h-4 w-4" />
-          Find My Nook
-        </>
+        "Find my fit"
       )}
     </Button>
   );
 }
 
-export default function FindYourNookPage() {
-  const [state, formAction] = useActionState(findNookAction, initialState);
+export default function FindYourFitPage() {
+  const [state, formAction] = useActionState(findFitAction, initialState);
   const [otherLicense, setOtherLicense] = useState(false);
 
   const firestore = useFirestore();
@@ -58,8 +54,10 @@ export default function FindYourNookPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case">1. Find Your Nook</h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto">Your profile, our direction. We’ve replaced guesswork with data-driven insights. By analyzing your specific strengths, we provide a manicured selection of schools and regions for your next career move.</p>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white mb-4">
+          1. Find your fit
+        </h1>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
@@ -69,12 +67,12 @@ export default function FindYourNookPage() {
                 value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
             />
             <CardHeader>
-              <CardTitle>Your Teacher Profile</CardTitle>
+              <CardTitle className="normal-case">Your teacher profile</CardTitle>
               <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label>Age Range</Label>
+                <Label>Age range</Label>
                 <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="25" id="age-25-34" />
@@ -95,7 +93,7 @@ export default function FindYourNookPage() {
                 </RadioGroup>
               </div>
               <div className="space-y-2 pt-4">
-                <Label>Family Status</Label>
+                <Label>Family status</Label>
                 <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="single" id="fs-single" />
@@ -107,18 +105,18 @@ export default function FindYourNookPage() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="family" id="fs-family" />
-                    <Label htmlFor="fs-family" className="font-normal">Family with Children</Label>
+                    <Label htmlFor="fs-family" className="font-normal">Family with children</Label>
                   </div>
                 </RadioGroup>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="current-location">Current Location</Label>
-                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" />
+                    <Label htmlFor="current-location">Current location</Label>
+                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-background/50 border-white/10 rounded-sm" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="current-salary">Current Salary (Optional)</Label>
-                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" />
+                    <Label htmlFor="current-salary">Current salary (optional)</Label>
+                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-background/50 border-white/10 rounded-sm" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -149,23 +147,23 @@ export default function FindYourNookPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Teaching License</Label>
+                <Label>Teaching licence</Label>
                  <div className="space-y-2 pt-2">
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_qts" name="teaching_license_cb" value="QTS or iQTS" />
+                            <Checkbox id="l_qts" name="teaching_licence_cb" value="QTS or iQTS" />
                             <Label htmlFor="l_qts" className="font-normal">QTS or iQTS</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_us" name="teaching_license_cb" value="US State Teaching License" />
-                            <Label htmlFor="l_us" className="font-normal">US State Teaching License</Label>
+                            <Checkbox id="l_us" name="teaching_licence_cb" value="US State Teaching Licence" />
+                            <Label htmlFor="l_us" className="font-normal">US State Teaching Licence</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_sace" name="teaching_license_cb" value="SACE / OCT / VIT" />
+                            <Checkbox id="l_sace" name="teaching_licence_cb" value="SACE / OCT / VIT" />
                             <Label htmlFor="l_sace" className="font-normal">SACE / OCT / VIT</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="l_ect" name="teaching_license_cb" value="ECT Status" />
+                            <Checkbox id="l_ect" name="teaching_licence_cb" value="ECT Status" />
                             <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -176,13 +174,13 @@ export default function FindYourNookPage() {
                 </div>
                  {otherLicense && (
                     <div className="space-y-2 pl-2 pt-2">
-                        <Label htmlFor="teaching_license_other" className="text-xs text-muted-foreground">Please specify your license</Label>
-                        <Input id="teaching_license_other" name="teaching_license_other" placeholder="e.g., Special Education Certificate" />
+                        <Label htmlFor="teaching_licence_other" className="text-xs text-muted-foreground">Please specify your licence</Label>
+                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" className="bg-background/50 border-white/10" />
                     </div>
                 )}
               </div>
               <div className="space-y-2">
-                <Label>Curriculum Preference</Label>
+                <Label>Curriculum preference</Label>
                  <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                     <div className="flex items-center space-x-2">
                         <Checkbox id="c_uk" name="curriculum" value="UK" />
@@ -204,16 +202,16 @@ export default function FindYourNookPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="experience">Years of Teaching Experience</Label>
-                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" />
+                  <Label htmlFor="experience">Years of teaching experience</Label>
+                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" className="bg-background/50 border-white/10" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject Taught</Label>
+                  <Label htmlFor="subject">Subject taught</Label>
                   <Select name="subject" defaultValue="Primary" required>
-                    <SelectTrigger id="subject">
+                    <SelectTrigger id="subject" className="bg-background/50 border-white/10">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="glass">
                       <SelectItem value="Early Years">Early Years</SelectItem>
                       <SelectItem value="Primary">Primary</SelectItem>
                       <SelectItem value="Other Primary">Other Primary</SelectItem>
@@ -243,7 +241,7 @@ export default function FindYourNookPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Preferred Regions</Label>
+                <Label>Preferred regions</Label>
                  <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                     <div className="flex items-center space-x-2">
                         <Checkbox id="r_sea" name="regions" value="Southeast Asia" />
@@ -308,7 +306,7 @@ export default function FindYourNookPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                         <Checkbox id="p_culture" name="preferences" value="Cultural immersion" />
-                        <Label htmlFor="p_culture" className="font-normal">Cultural Immersion</Label>
+                        <Label htmlFor="p_culture" className="font-normal">Cultural immersion</Label>
                     </div>
                 </div>
               </div>
@@ -317,19 +315,19 @@ export default function FindYourNookPage() {
                 <RadioGroup name="goal" defaultValue="balanced" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="saving" id="saving" />
-                    <Label htmlFor="saving" className="font-normal">Maximize Savings</Label>
+                    <Label htmlFor="saving" className="font-normal">Maximize savings</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="adventure" id="adventure" />
-                    <Label htmlFor="adventure" className="font-normal">Seek Adventure</Label>
+                    <Label htmlFor="adventure" className="font-normal">Seek adventure</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="growth" id="growth" />
-                    <Label htmlFor="growth" className="font-normal">Career Growth</Label>
+                    <Label htmlFor="growth" className="font-normal">Career growth</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="balanced" id="balanced" />
-                    <Label htmlFor="balanced" className="font-normal">Balanced Lifestyle</Label>
+                    <Label htmlFor="balanced" className="font-normal">Balanced lifestyle</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -349,48 +347,41 @@ export default function FindYourNookPage() {
             <Card className="mt-8 border-destructive bg-destructive/20">
                 <CardHeader className="flex-row items-center gap-4 space-y-0">
                     <ServerCrash className="h-6 w-6 text-destructive" />
-                    <CardTitle className="text-destructive">An Error Occurred</CardTitle>
+                    <CardTitle className="text-destructive normal-case font-bold">An error occurred</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-destructive/80">{state.error}</p>
+                    <p className="text-destructive/80 font-medium">{state.error}</p>
                 </CardContent>
             </Card>
         )}
 
         {state.result && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-center mb-6">Your Recommended Nooks</h2>
+          <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-2xl font-bold text-center mb-6 text-white normal-case">Your recommended fits</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Lightbulb className="h-6 w-6 text-amber-400" />
+                    <CardTitle className="flex items-center gap-2 normal-case font-bold text-white">
+                        <Lightbulb className="h-6 w-6 text-primary" />
                         {rec.name}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{rec.reasoning}</p>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground leading-relaxed font-medium">{rec.reasoning}</p>
                     {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
-                        <div className="mt-6 pt-4 border-t border-border/50">
-                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2">
-                                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g transform="rotate(45 12 12)">
-                                        <rect x="2" y="2" width="20" height="20" rx="3" fill="hsl(var(--primary))"/>
-                                        <path d="M12 6C16.5 10 16.5 14 12 18C7.5 14 7.5 10 12 6Z" fill="hsl(var(--accent))"/>
-                                        <path d="M10.5 6C14 10 14 14 10.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                                        <path d="M13.5 6C10 10 10 14 13.5 18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                                    </g>
-                                </svg>
-                                School Suggestions
+                        <div className="mt-6 pt-6 border-t border-white/5">
+                            <h4 className="font-bold mb-4 text-base flex items-center gap-3 text-primary uppercase tracking-widest">
+                                <Building className="size-5" />
+                                School suggestions
                             </h4>
                             <div className="space-y-3">
                                 {rec.recommendedSchools.map(school => (
-                                    <div key={school.id} className="p-3 bg-accent/40 rounded-md border border-transparent hover:border-primary/30 transition-colors">
-                                        <Link href={`/schools/${school.id}`} className="font-semibold hover:text-primary transition-colors">
+                                    <div key={school.id} className="p-4 bg-primary/5 rounded-sm border border-transparent hover:border-primary/30 transition-all group">
+                                        <Link href={`/schools/${school.id}`} className="font-bold text-white hover:text-primary transition-colors text-lg">
                                             {school.name}
                                         </Link>
-                                        <p className="text-sm text-muted-foreground mt-1">{school.reasoning}</p>
+                                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed font-medium">{school.reasoning}</p>
                                     </div>
                                 ))}
                             </div>

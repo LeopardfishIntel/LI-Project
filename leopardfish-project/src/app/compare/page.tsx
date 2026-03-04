@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -46,22 +45,22 @@ const calculateMonthlyCost = (school: School): number => {
             break;
     }
 
-    const foodCost = costOfLiving.food * adults + costOfLiving.food * 0.5 * children;
-    const transportCost = costOfLiving.transport * adults + costOfLiving.transport * 0.3 * children;
-    const mobileCost = costOfLiving.mobile * adults;
-    const diningSocialCost = costOfLiving.diningSocial * adults;
-    const uncoveredMedicalCost = costOfLiving.uncoveredMedical * adults + costOfLiving.uncoveredMedical * 0.5 * children;
-    const apartmentCost = intel.housing.provided ? 0 : costOfLiving.apartment;
+    const foodCost = (costOfLiving.food ?? 0) * adults + (costOfLiving.food ?? 0) * 0.5 * children;
+    const transportCost = (costOfLiving.transport ?? 0) * adults + (costOfLiving.transport ?? 0) * 0.3 * children;
+    const mobileCost = (costOfLiving.mobile ?? 0) * adults;
+    const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
+    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical ?? 0) * adults + (costOfLiving.uncoveredMedical ?? 0) * 0.5 * children;
+    const apartmentCost = intel.housing.provided ? 0 : (costOfLiving.monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0);
 
     return (
       apartmentCost +
       foodCost +
       transportCost +
-      costOfLiving.utilities +
-      costOfLiving.internet +
+      (costOfLiving.utilities ?? 0) +
+      (costOfLiving.internet ?? 0) +
       mobileCost +
       diningSocialCost +
-      costOfLiving.vehicleInsuranceMaint +
+      (costOfLiving.vehicleInsuranceMaint ?? 0) +
       uncoveredMedicalCost
     );
 };
@@ -157,7 +156,7 @@ export default function ComparePage() {
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
         switch (metric) {
             case 'salary':
-                return parseInt(school.intel.salary.value.split(' - ')[1].replace('k', '000').replace('$', '')) || 0;
+                return parseInt(school.intel.salary.value.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
             case 'savings':
                 if (school.intel.savingsPotential.value === 'V High') return 3;
                 if (school.intel.savingsPotential.value === 'High') return 2;
@@ -169,7 +168,7 @@ export default function ComparePage() {
                 return calculateMonthlyCost(school);
             case 'yourSavings':
                 const netSalary = parseFloat(netSalaries[index]) || 0;
-                if (netSalary <= 0) return -Infinity; // Treat no/zero salary as the worst for comparison
+                if (netSalary <= 0) return -Infinity; 
                 return (netSalary / 12) - calculateMonthlyCost(school);
             default:
                 return 0;
@@ -180,13 +179,13 @@ export default function ComparePage() {
         if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
         const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
         
-        if (values.every(v => v === values[0])) return ['neutral', 'neutral', 'neutral'];
+        if (values.every(v => v === values[0])) return selectedSchools.map(() => 'neutral');
 
         const sortedValues = [...values].sort((a, b) => higherIsBetter ? b - a : a - b);
         const bestValue = sortedValues[0];
         const worstValue = sortedValues[sortedValues.length - 1];
 
-        if (bestValue === worstValue) return ['neutral', 'neutral', 'neutral'];
+        if (bestValue === worstValue) return selectedSchools.map(() => 'neutral');
 
         return values.map(val => {
             if (val === bestValue) return 'best';
@@ -227,10 +226,10 @@ export default function ComparePage() {
             <div className="flex flex-col gap-4 items-center">
                 <div className="w-full max-w-sm">
                      <Select value={school.id} onValueChange={onSelect}>
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-background/50 border-white/10 h-11 rounded-sm">
                             <SelectValue placeholder="Select a school" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="glass">
                             {schools?.map(s => (
                                 <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
                                     {s.name}
@@ -241,7 +240,7 @@ export default function ComparePage() {
                 </div>
 
                 <div className="w-full max-w-sm space-y-2">
-                    <Label htmlFor={`net-salary-${index}`}>Offered Net Salary (Annual)</Label>
+                    <Label htmlFor={`net-salary-${index}`} className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Offered Net Salary (Annual)</Label>
                     <Input
                         id={`net-salary-${index}`}
                         type="text"
@@ -250,16 +249,17 @@ export default function ComparePage() {
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
+                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold text-white"
                     />
                 </div>
 
-                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm">
+                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm shadow-2xl">
                     <Link href={`/schools/${school.id}`} className="block">
                         <div className="relative aspect-video">
-                            <Image src={school.imageUrl} alt={school.name} fill objectFit="cover" data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300" />
+                            <Image src={school.imageUrl} alt={school.name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                         </div>
                         <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">{school.name}</CardTitle>
+                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 text-white">{school.name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-sm pt-1">
                                 <MapPin className="w-4 h-4 mr-1.5" />
                                 <span>{school.location}, {school.country}</span>
@@ -308,15 +308,15 @@ export default function ComparePage() {
     if (isLoadingSchools || !schools) {
         return (
           <div className="container mx-auto flex justify-center items-center h-screen">
-            <Loader2 className="h-8 w-8 animate-spin" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         );
     }
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case">3. Compare Schools</h1>
-            <p className="text-muted-foreground mb-12 text-center">Select up to three schools for a side-by-side comparison of key data.</p>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case text-white">3. Compare schools</h1>
+            <p className="text-muted-foreground mb-12 text-center max-w-2xl mx-auto font-medium text-sm leading-relaxed">Select up to three schools for a side-by-side comparison of key data.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
                 {selectedSchools.map((school, index) => (
@@ -333,7 +333,7 @@ export default function ComparePage() {
             </div>
 
             <div className="mt-16 flex justify-center">
-                 <LeopardfishComparisonInsights schools={selectedSchools} />
+                 <LeopardfishComparisonInsights schools={selectedSchools} netSalaries={netSalaries} />
             </div>
         </div>
     );
