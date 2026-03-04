@@ -45,10 +45,10 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 };
 
 const BASE_BREAKDOWN = [
-  { id: 'docs', title: "Document Integrity", base: 500, icon: <FileText className="size-4" /> },
-  { id: 'rent', title: "Housing Liquidity", base: 2000, icon: <Wallet className="size-4" /> },
-  { id: 'gap', title: "The 6-Week Gap", base: 1000, icon: <Clock className="size-4" /> },
-  { id: 'setup', title: "Mission Setup", base: 500, icon: <Compass className="size-4" /> },
+  { id: 'docs', title: "Document integrity", base: 500, icon: <FileText className="size-3.5" /> },
+  { id: 'rent', title: "Housing liquidity", base: 2000, icon: <Wallet className="size-3.5" /> },
+  { id: 'gap', title: "The 6-week gap", base: 1000, icon: <Clock className="size-3.5" /> },
+  { id: 'setup', title: "Mission setup", base: 500, icon: <Compass className="size-3.5" /> },
 ];
 
 export default function PreparePage() {
@@ -76,16 +76,16 @@ export default function PreparePage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white">
-      <div className="mb-16 text-center space-y-4">
+      <div className="mb-12 text-center space-y-3">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-[10px] leading-relaxed uppercase tracking-[0.3em] opacity-60">
           Professional educator due diligence and risk assessment.
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-20">
+      <div className="max-w-5xl mx-auto space-y-16">
         
         {/* Section 1: Material Risks */}
         <section className="space-y-8">
@@ -159,7 +159,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: The True Cost of Landing */}
+        {/* Section 2: The True Cost of Landing (Compact Calculator) */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The True Cost of Landing</h2>
@@ -168,38 +168,37 @@ export default function PreparePage() {
             </p>
           </div>
           
-          <div className="space-y-8">
-            {/* Full-Width Tactical Reserve Calculator */}
+          <div className="space-y-6">
             <Card className="glass border-primary/30 bg-primary/5 rounded-sm overflow-hidden shadow-2xl relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
-                <Calculator className="size-64 text-white" />
+                <Calculator className="size-48 text-white" />
               </div>
               
-              <div className="p-8 md:p-12 space-y-10 relative z-10">
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                        <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
+              <div className="p-6 md:p-8 space-y-8 relative z-10">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <p className="text-[10px] font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
                         {dateStamp && (
-                            <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] border border-white/5 px-2 py-0.5 rounded-sm w-fit">
-                                Ledger Ref: LFI.{dateStamp}
+                            <span className="hidden sm:inline-block text-[8px] font-black text-white/30 uppercase tracking-[0.2em] border border-white/5 px-2 py-0.5 rounded-sm">
+                                LFI.{dateStamp}
                             </span>
                         )}
                     </div>
-                    <p className="text-6xl md:text-8xl font-black text-white tracking-tighter transition-all duration-500">
+                    <p className="text-5xl md:text-6xl font-black text-white tracking-tighter transition-all duration-500">
                       {formatCurrency(totalReserve, currency)}
                     </p>
-                    <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-xl">
-                      Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} units adjusted for the initial 6-week "gap month" before the first full salary cycle completes.
+                    <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-w-lg">
+                      Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} units adjusted for the initial 6-week "gap month" before the first full salary cycle.
                     </p>
                   </div>
 
-                  <div className="w-full lg:w-72 space-y-6">
-                    <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
+                  <div className="w-full lg:w-64 space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
+                            <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Scaling</Label>
                             <Select value={calcStatus} onValueChange={setCalcStatus}>
-                                <SelectTrigger className="h-11 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                                <SelectTrigger className="h-9 bg-background/60 border-white/10 text-white font-bold text-xs rounded-sm">
                                 <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="glass">
@@ -210,43 +209,39 @@ export default function PreparePage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Currency profile</Label>
+                        <div className="space-y-1.5">
+                            <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Currency</Label>
                             <Select value={currency} onValueChange={setCurrency}>
-                                <SelectTrigger className="h-11 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                                <SelectTrigger className="h-9 bg-background/60 border-white/10 text-white font-bold text-xs rounded-sm">
                                 <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="glass">
-                                    <SelectItem value="GBP">GBP (£)</SelectItem>
-                                    <SelectItem value="USD">USD ($)</SelectItem>
-                                    <SelectItem value="AUD">AUD (A$)</SelectItem>
+                                    <SelectItem value="GBP">GBP</SelectItem>
+                                    <SelectItem value="USD">USD</SelectItem>
+                                    <SelectItem value="AUD">AUD</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-sm border border-white/5">
-                      <Calculator className="size-4 text-accent animate-pulse" />
-                      <span className="text-[10px] font-black text-accent uppercase tracking-widest">Real-time projection operational</span>
+                    <div className="flex items-center gap-2 p-2 bg-white/5 rounded-sm border border-white/5">
+                      <Calculator className="size-3 text-accent animate-pulse" />
+                      <span className="text-[9px] font-black text-accent uppercase tracking-widest">Real-time projection active</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Item-by-item breakdown row */}
-                <div className="pt-10 border-t border-white/10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                {/* Compact Item-by-item breakdown row */}
+                <div className="pt-6 border-t border-white/10">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                         {liveBreakdown.map((item) => (
-                            <div key={item.id} className="space-y-3 group">
-                                <div className="flex items-center justify-between border-b border-white/5 pb-2 group-hover:border-primary/30 transition-colors">
-                                    <div className="flex items-center gap-2">
-                                        <div className="p-1.5 bg-primary/10 rounded-sm text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                                            {item.icon}
-                                        </div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
-                                            {item.title}
-                                        </span>
-                                    </div>
+                            <div key={item.id} className="space-y-1 group">
+                                <div className="flex items-center gap-2 border-b border-white/5 pb-1 group-hover:border-primary/30 transition-colors">
+                                    <span className="text-primary group-hover:scale-110 transition-transform">{item.icon}</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
+                                        {item.title}
+                                    </span>
                                 </div>
-                                <p className="text-xl md:text-2xl font-black text-white group-hover:text-primary transition-colors">
+                                <p className="text-base md:text-lg font-black text-white/90 group-hover:text-primary transition-colors">
                                     {formatCurrency(item.amount, currency)}
                                 </p>
                             </div>
@@ -256,15 +251,15 @@ export default function PreparePage() {
               </div>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+              <div className="space-y-3">
+                <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
+              <div className="space-y-3">
+                <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-4 text-primary" /> The IKEA test</h3>
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
               </div>
             </div>
           </div>
