@@ -29,7 +29,7 @@ export default function StrategicChecksheetPage() {
     },
     {
       title: "Leadership & stability intel",
-      description: "Data-led institutional performance signals.",
+      description: "Senior leadership stability is the benchmark of a settled school; utilise these indicators to distinguish between a high-performing environment and one defined by systemic volatility.",
       items: [
         { label: "GASCI Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
         { label: "Tenure Audit", sub: "Principal and HOD confirmed in post for >2 years." }

@@ -135,8 +135,11 @@ export default function PreparePage() {
 
         {/* Section 3: Leadership & Stability */}
         <section className="space-y-8">
-          <div className="flex items-center gap-3">
+          <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Leadership & stability</h2>
+            <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+              Senior leadership stability is the benchmark of a settled school; utilise these indicators to distinguish between a high-performing environment and one defined by systemic volatility.
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
