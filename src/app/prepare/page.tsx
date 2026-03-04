@@ -14,7 +14,10 @@ import {
   PackageCheck,
   ShieldAlert,
   FileCheck,
-  Flag
+  Flag,
+  BarChart3,
+  Stethoscope,
+  Home
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -152,6 +155,65 @@ export default function PreparePage() {
                 <p className="text-sm md:text-base text-muted-foreground italic leading-relaxed font-medium">Check local IKEA sites. A £1,000 'settling-in allowance' may only cover basic white goods. Is shipping worth the freight fees?</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="space-y-8">
+          <div className="flex items-center gap-3 mb-2">
+            <BarChart3 className="size-7 text-accent" />
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">3. Institutional stability</h2>
+          </div>
+          <p className="text-base md:text-lg text-muted-foreground font-medium mb-8">Numbers don't lie. Use staff churn data to identify schools that are expanding versus schools that are leaking talent.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="glass border-red-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><BarChart3 className="size-5 text-primary" /> Toxic churn signals</CardTitle>
+                <Flag className="size-4 fill-red-500 text-red-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>If a school is consistently advertising mid-year vacancies (October/November), it signals unmanaged exits. Look for the Growth-Adjusted Staff Churn Index (GASCI).</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Users className="size-5 text-primary" /> Leadership tenure</CardTitle>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>High leadership turnover usually leads to inconsistent policy enforcement. If the Principal and Head of Department have both been in post for less than 2 years, proceed with caution.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="space-y-8">
+          <div className="flex items-center gap-3 mb-2">
+            <Globe className="size-7 text-primary" />
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">4. Regional tactical intel</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-start gap-3 space-y-0">
+                <Stethoscope className="size-5 text-primary" />
+                <CardTitle className="text-lg font-bold text-white normal-case">The medical co-pay gap</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
+                <p>Does your insurance cover dental and optical? What is the deductible for inpatient surgery? In some regions, a "comprehensive" plan still requires you to pay 20% of every bill.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-start gap-3 space-y-0">
+                <Home className="size-5 text-primary" />
+                <CardTitle className="text-lg font-bold text-white normal-case">Housing quality audit</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
+                <p>If housing is provided, ask for photos of the specific unit, not a "sample". Check the commuting distance and whether the AC/heating is central or unit-based (impacting bills).</p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
