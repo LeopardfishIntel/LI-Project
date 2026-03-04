@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -33,7 +32,8 @@ import {
   TrendingUp,
   TrendingDown,
   Compass,
-  AlertTriangle
+  AlertTriangle,
+  Trophy
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -436,7 +436,7 @@ function ContractDecoderContent() {
                     <div className="pt-8 border-t border-white/5 space-y-6">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                             <h3 className="text-base text-primary flex items-center gap-2 font-bold">
-                                <Sparkles className="size-4" /> Tactical SWOT verdict
+                                <Sparkles className="size-4" /> Leopardfish Intel evaluation
                             </h3>
                             {dateStamp && (
                                 <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
@@ -509,12 +509,31 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
 
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="mb-16 text-center">
+    <div className="container mx-auto px-4 md:px-6 py-12 space-y-20">
+      <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case">2. Contract decoder</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base leading-relaxed tracking-widest opacity-60">Field-grade financial intelligence for your next move.</p>
       </div>
-      <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}><ContractDecoderContent /></Suspense>
+      
+      <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+        <ContractDecoderContent />
+      </Suspense>
+
+      <section className="max-w-5xl mx-auto space-y-8 pt-12 border-t border-white/5">
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The Gold Standard</h2>
+        </div>
+        <Card className="glass border-primary/20 bg-primary/5">
+          <CardContent className="pt-8">
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+              <Trophy className="size-12 text-primary shrink-0" />
+              <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
+                "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }

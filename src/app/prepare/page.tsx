@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { 
-  Trophy, 
   PlaneLanding, 
   ShoppingCart,
   MessageSquareQuote, 
@@ -37,24 +36,7 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-20">
         
-        {/* Section 1: The Gold Standard */}
-        <section className="space-y-8">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The Gold Standard</h2>
-          </div>
-          <Card className="glass border-primary/20 bg-primary/5">
-            <CardContent className="pt-8">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <Trophy className="size-12 text-primary shrink-0" />
-                <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
-                  "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Section 2: Risk factor matrix (The flag system) */}
+        {/* Section 1: Risk factor matrix (The flag system) */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Risk factor matrix (The flag system)</h2>
@@ -109,7 +91,6 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Ambiguity in housing or flight definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes.</p>
               </CardContent>
-            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
@@ -123,7 +104,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 3: Tactical Readiness & Capital Requirements */}
+        {/* Section 2: Tactical Readiness & Capital Requirements */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Tactical readiness & capital requirements</h2>
@@ -153,7 +134,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 4: Leadership & Stability Intel */}
+        {/* Section 3: Leadership & Stability Intel */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Leadership & stability intel</h2>
@@ -182,7 +163,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 5: The "Hard-Talk" inquiry */}
+        {/* Section 4: The "Hard-Talk" inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The "Hard-Talk" inquiry (Essential questions)</h2>
