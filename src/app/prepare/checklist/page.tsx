@@ -8,7 +8,7 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 export default function StrategicChecksheetPage() {
   const sections = [
     {
-      title: "The integrity baseline (The \"Gold Standard\")",
+      title: "The Gold Standard",
       description: "Verification of the 'Gold Standard' transparency baseline.",
       items: [
         { label: "Salary Transparency", sub: "Is there a fixed, published scale, or is it 'discretionary'?" },

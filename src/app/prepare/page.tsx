@@ -36,10 +36,10 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-20">
         
-        {/* Section 1: The Integrity Baseline */}
+        {/* Section 1: The Gold Standard */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The integrity baseline (The "Gold Standard")</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The Gold Standard</h2>
           </div>
           <Card className="glass border-primary/20 bg-primary/5">
             <CardContent className="pt-8">
@@ -65,7 +65,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> Over-zealous privacy clauses</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Watch for contracts with aggressive NDAs or "disparagement" clauses. If a school threatens legal action for discussing "internal climate" even after you leave, it indicates a paranoid leadership culture.</p>
               </CardContent>
             </Card>
@@ -75,7 +75,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale ambiguity</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
               </CardContent>
             </Card>
@@ -85,7 +85,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Vague logistical terms</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Ambiguity in housing or flight definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes.</p>
               </CardContent>
             </Card>
@@ -95,7 +95,7 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Exit & reference control</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>Verify regional exit protocols. If a school has the legal power to block your next move or withhold gratuity based on "conduct," the tactical risk is high.</p>
               </CardContent>
             </Card>
@@ -114,7 +114,7 @@ export default function PreparePage() {
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
               <div className="p-6 glass border-primary/20 bg-primary/5 rounded-sm">
                 <p className="text-[10px] font-black text-primary tracking-[0.2em] uppercase mb-2">Tactical reserve requirement</p>
                 <p className="text-3xl font-black text-white tracking-tighter">£4,000 – £6,000</p>
@@ -127,14 +127,7 @@ export default function PreparePage() {
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
-              <div className="p-6 glass border-amber-500/20 bg-amber-500/5 rounded-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <Stethoscope className="size-5 text-amber-500" />
-                  <h4 className="text-white font-bold text-sm">The medical co-pay gap</h4>
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-medium">Verify deductibles for inpatient care. In some regions, even "comprehensive" plans require a 20% co-pay on every bill, which can be ruinous for families.</p>
-              </div>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
             </div>
           </div>
         </section>
@@ -151,24 +144,53 @@ export default function PreparePage() {
                 <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><BarChart3 className="size-5 text-primary" /> Toxic churn signals (GASCI)</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>If a school is consistently advertising mid-year vacancies (October/November), it signals unmanaged exits. Use our Growth-Adjusted Staff Churn Index to identify replacement rates versus expansion.</p>
               </CardContent>
             </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Users className="size-5 text-primary" /> Leadership tenure audit</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Users className="size-5 text-primary" /> Leadership tenure</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground leading-relaxed space-y-4 font-medium">
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
                 <p>High leadership turnover leads to inconsistent policy enforcement. If the Principal and Head of Department have both been in post for less than 2 years, proceed with extreme caution.</p>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        {/* Section 5: The "Hard-Talk" Inquiry */}
+        {/* Section 5: Regional Tactical Intel */}
+        <section className="space-y-8">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Regional tactical intel</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Stethoscope className="size-5 text-primary" /> Medical co-pay gap</CardTitle>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>Verify deductibles for inpatient care. In some regions, even "comprehensive" plans require a 20% co-pay on every bill, which can be ruinous for families.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass border-amber-500/20">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Home className="size-5 text-primary" /> Housing quality audit</CardTitle>
+                <Flag className="size-4 fill-amber-500 text-amber-500" />
+              </CardHeader>
+              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed space-y-4 font-medium">
+                <p>Ambiguity in housing definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes or compound issues.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Section 6: The "Hard-Talk" Inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The "Hard-Talk" inquiry (Essential questions)</h2>
