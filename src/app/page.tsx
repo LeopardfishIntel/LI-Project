@@ -82,14 +82,9 @@ export default function Home() {
             <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
-            <div className="space-y-2">
-              <p className="text-xl md:text-3xl text-muted-foreground font-medium leading-tight">
-                Move with certainty, not just hope.
-              </p>
-              <p className="text-sm md:text-lg text-white/70 font-medium max-w-2xl mx-auto leading-relaxed">
-                Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
-              </p>
-            </div>
+            <p className="text-xl md:text-3xl text-muted-foreground font-medium max-w-2xl leading-tight">
+              Move with certainty, not just hope.
+            </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-12 px-8 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg" asChild>
                 <Link href="/discover">Initialize Journey</Link>
@@ -102,26 +97,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Signature Tagline Row */}
-      <section className="py-12 bg-background border-y border-white/5">
+      {/* Enlarged Tagline Row */}
+      <section className="py-12 md:py-16 bg-background border-y border-white/5">
         <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-3xl md:text-5xl text-white font-bold tracking-tight">
+            <p className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
               Teach overseas - Know before you go
             </p>
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="py-8 border-b border-white/5 bg-background">
+      {/* Unified Mission Section */}
+      <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center">
-          <div className="space-y-6 text-muted-foreground font-medium leading-relaxed">
-            <p className="text-lg md:text-xl text-white/90 font-bold">
+          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+            <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
             <p>
               We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
             </p>
-            <p className="text-sm border-t border-white/5 pt-6 italic">
+            <p className="text-sm border-t border-white/5 pt-8 italic opacity-60">
               Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</Link> directly to ensure their details remain accurate.
             </p>
           </div>

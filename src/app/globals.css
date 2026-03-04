@@ -37,6 +37,7 @@
 @layer base {
   * {
     @apply border-border;
+    text-transform: none !important;
   }
   body {
     @apply bg-background text-foreground font-body;

@@ -28,10 +28,10 @@ export default function Footer() {
                     </Link>
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
-                    <Link href="/discover" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Discover</Link>
-                    <Link href="/financial-forecaster" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Evaluate</Link>
-                    <Link href="/compare" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Decide</Link>
-                    <Link href="/prepare" className="text-base font-bold text-muted-foreground hover:text-primary transition-colors">Prepare</Link>
+                    <Link href="/discover" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Discover</Link>
+                    <Link href="/financial-forecaster" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Evaluate</Link>
+                    <Link href="/compare" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Decide</Link>
+                    <Link href="/prepare" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">Prepare</Link>
                     <Link href="/enquiry" className="text-sm font-bold text-muted-foreground/50 hover:text-white transition-colors">Contact</Link>
                     <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground/50 hover:text-white transition-colors">Data hub</Link>
                 </nav>
