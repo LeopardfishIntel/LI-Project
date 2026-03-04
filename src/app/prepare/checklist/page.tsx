@@ -80,6 +80,9 @@ export default function StrategicChecksheetPage() {
             <span className="border-l border-gray-300 h-3" />
             <span>Classification: Operational Use</span>
           </div>
+          <p className="text-sm font-bold text-gray-600 mt-4 italic">
+            Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
+          </p>
         </header>
 
         <div className="space-y-12">

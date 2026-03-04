@@ -28,7 +28,7 @@ export default function PreparePage() {
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
-          The final audit. Ensure your tactical transition is fully operational.
+          Contracts change from year to year. Read yours carefully and look out for these flags. If in doubt seek professional advice.
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 3: Leadership & Stability Intel */}
+        {/* Section 3: Leadership & Stability */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Leadership & stability</h2>
