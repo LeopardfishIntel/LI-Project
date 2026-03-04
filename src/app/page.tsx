@@ -5,7 +5,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare, PackageCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -51,7 +51,7 @@ export default function Home() {
     {
       id: '04',
       title: 'Prepare',
-      icon: <PackageCheck className="w-8 h-8 text-primary" />,
+      icon: <Target className="w-8 h-8 text-primary" />,
       desc: "The strategic checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
@@ -68,7 +68,7 @@ export default function Home() {
           alt={heroImage.description}
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
           data-ai-hint={heroImage.imageHint}
         />
         <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
@@ -76,24 +76,19 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-4 py-1.5 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
+          <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Insights
             </div>
-            
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight uppercase">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
-            
-            <div className="space-y-4">
-              <p className="text-2xl md:text-4xl text-white font-bold max-w-3xl mx-auto leading-tight">
-                Move with certainty, not just hope.
-              </p>
-              <p className="text-base md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
-                Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
-              </p>
-            </div>
-
+            <p className="text-xl md:text-2xl text-white font-bold max-w-2xl leading-tight">
+              Move with certainty, not just hope.
+            </p>
+            <p className="text-base md:text-lg text-muted-foreground font-medium max-w-2xl leading-relaxed">
+              Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
+            </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Button size="lg" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
                 <Link href="/discover">Discover</Link>
@@ -106,14 +101,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
+      {/* Stats Section moved underneath Hero */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Mission Section */}
+      {/* Mission Section with Title */}
       <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
           <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
@@ -134,13 +129,13 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-12 bg-background">
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-16">
+          <div className="space-y-32">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
                 <div className={cn(
-                  "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
+                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
                 )}>
                   <Image 
@@ -160,13 +155,12 @@ export default function Home() {
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <Link href={step.link} className="group inline-flex items-center text-primary hover:text-white transition-colors">
-                    <h3 className="text-3xl md:text-5xl stamped-dossier tracking-tighter mr-3">{step.title}</h3>
-                    <ArrowRight className="size-6 md:size-8 group-hover:translate-x-2 transition-transform" />
+                  <Link href={step.link} className="group">
+                    <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter hover:text-primary transition-colors">{step.title}</h3>
                   </Link>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-lg font-medium">{step.desc}</p>
-                  <Link href={step.link} className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors">
-                    {step.label}
+                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <Link href={step.link} className="text-primary font-bold text-xs uppercase tracking-widest flex items-center gap-2 group">
+                    {step.label} <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </div>

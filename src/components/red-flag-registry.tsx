@@ -7,22 +7,22 @@ export function RedFlagRegistry() {
   const flags = [
     {
       icon: <Lock className="size-4 text-destructive" />,
-      title: "Privacy trap",
+      title: "Privacy Trap",
       desc: "Aggressive NDAs silencing field reports."
     },
     {
       icon: <Banknote className="size-4 text-destructive" />,
-      title: "Pay transparency",
+      title: "Pay Transparency",
       desc: "Refusal to publish clear salary scales."
     },
     {
       icon: <GraduationCap className="size-4 text-destructive" />,
-      title: "Education fees",
+      title: "Education Fees",
       desc: "Hidden costs for staff dependent seats."
     },
     {
       icon: <HeartPulse className="size-4 text-amber-500" />,
-      title: "Medical co-pays",
+      title: "Medical Co-pays",
       desc: "Significant gaps in inpatient coverage."
     }
   ];

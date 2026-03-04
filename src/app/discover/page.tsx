@@ -28,11 +28,7 @@ const initialState: FitFinderState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button 
-      type="submit" 
-      disabled={pending} 
-      className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm shadow-lg shadow-primary/20"
-    >
+    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />

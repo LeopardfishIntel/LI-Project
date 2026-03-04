@@ -31,8 +31,8 @@ export default function Footer() {
                 <nav className="flex flex-col gap-2 items-center md:items-end">
                     <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Enquiry Form</Link>
                     <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Data Hub</Link>
-                    <Link href="#" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Terms and conditions</Link>
-                    <Link href="#" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Privacy</Link>
+                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms and Conditions</Link>
+                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Privacy Policy</Link>
                 </nav>
             </div>
         </div>

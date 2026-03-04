@@ -529,7 +529,7 @@ export default function AddSchoolPage() {
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rent (1BR)</FormLabel>
+                    <FormLabel>Rent (1BR)</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
