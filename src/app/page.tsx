@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -52,13 +51,13 @@ export default function Home() {
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Get ready'
-    },
+    }
   ];
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Compact Hero Section */}
+      <section className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -71,30 +70,30 @@ export default function Home() {
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-30"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
         </div>
-        <div className="relative z-30 container mx-auto px-4 md:px-6 flex flex-col items-center justify-center text-center h-full">
-          <div className="max-w-4xl space-y-10 flex flex-col items-center">
+        <div className="relative z-30 container mx-auto px-4 md:px-6 flex flex-col items-center justify-center text-center">
+          <div className="max-w-4xl space-y-8 flex flex-col items-center">
             <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_20px_rgba(249,115,22,0.2)]">
               <ShieldCheck className="size-4 md:size-6" /> Intelligence Grade Insights
             </div>
             
-            <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-[1.1]">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             
-            <div className="space-y-4">
-              <p className="text-xl md:text-3xl text-white font-bold tracking-tight">
+            <div className="space-y-3">
+              <p className="text-xl md:text-2xl text-white font-bold tracking-tight">
                 Move with certainty, not just hope.
               </p>
-              <p className="text-base md:text-xl text-muted-foreground font-medium max-w-2xl leading-relaxed">
+              <p className="text-sm md:text-base text-muted-foreground font-medium max-w-xl leading-relaxed">
                 Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified school data.
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-lg shadow-primary/20 border-0" asChild>
+            <div className="flex flex-wrap justify-center gap-4 pt-2">
+              <Button size="lg" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-lg shadow-primary/20 border-0" asChild>
                 <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-lg shadow-primary/20 border-0" asChild>
+              <Button size="lg" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-lg shadow-primary/20 border-0" asChild>
                 <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
@@ -102,7 +101,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
+      {/* Stats Counter Section (Directly underneath hero) */}
       <section className="py-10 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
@@ -111,19 +110,16 @@ export default function Home() {
 
       {/* Mission Section */}
       <section className="py-20 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-10">
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-8">
+          <h2 className="text-lg font-bold text-white uppercase tracking-widest">
             Know before you go
           </h2>
-          <div className="space-y-8 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-left">
+          <div className="space-y-6 text-base md:text-lg text-muted-foreground font-medium leading-relaxed text-left">
             <p className="text-white/90 font-bold">
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
             <p>
               We don’t just collect information; we make sense of it. Our focus is on hard data rather than gossip or opinion. By combining verified figures with cost-of-living indices and regional history, we turn scattered details into a clear, honest picture of what you can actually expect.
-            </p>
-            <p className="italic opacity-60">
-              Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <a href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</a> directly to ensure their details remain accurate.
             </p>
           </div>
         </div>
@@ -132,7 +128,7 @@ export default function Home() {
       {/* Zig-Zag Insider Journey */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-32">
+          <div className="space-y-24">
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
                 <div className={cn(
