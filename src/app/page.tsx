@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
+import { FeatureHighlights } from '@/components/feature-highlights';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -58,7 +57,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Intelligence Grade Hero */}
-      <section className="relative w-full h-[60vh] md:h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -70,31 +69,28 @@ export default function Home() {
         />
         
         {/* Centered Content Overlay */}
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
               <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_25px_rgba(249,115,22,0.2)]">
                 <ShieldCheck className="size-5 md:size-7" /> Actionable International School Insights
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-7xl font-black tracking-tighter leading-tight">
+              <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight">
                 <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
               </h1>
               
               <div className="space-y-4">
-                <p className="text-lg sm:text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+                <p className="text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
                   Move with certainty, not just hope.
-                </p>
-                <p className="text-xs sm:text-sm md:text-lg text-muted-foreground font-medium max-w-xl leading-relaxed mx-auto opacity-90">
-                  Safeguard your career with real-world field intelligence, side-by-side offer comparisons, and verified institutional benchmarks.
                 </p>
               </div>
 
               <div className="flex flex-wrap justify-center gap-4 pt-4">
-                <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-xl shadow-primary/20 border-0" asChild>
+                <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm border-0" asChild>
                   <Link href="/discover">Discover</Link>
                 </Button>
-                <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-xl shadow-primary/20 border-0" asChild>
+                <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm border-0" asChild>
                   <Link href="/financial-forecaster">Evaluate</Link>
                 </Button>
               </div>
@@ -173,7 +169,7 @@ export default function Home() {
         </div>
       </section>
 
-      <RedFlagRegistry />
+      <FeatureHighlights />
     </div>
   );
 }
