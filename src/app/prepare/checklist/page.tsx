@@ -12,26 +12,28 @@ export default function StrategicChecksheetPage() {
       description: "International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.",
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
-        { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
-        { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
-        { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited." },
-        { label: "Housing Standard", sub: "Detailed photos of specific unit/compound obtained." },
-        { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of conduct ratings." }
+        { label: "Pay Scale Transparency", sub: "Confirmation of placement on a transparent institutional scale." },
+        { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly capped in the contract?" },
+        { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited for inpatient gaps." },
+        { label: "Housing Standard", sub: "Detailed specifications or photos of specific unit/compound obtained." },
+        { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of school-controlled conduct ratings." }
       ]
     },
     {
       title: "The True Cost of Landing",
       description: "Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.",
       items: [
-        { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£10k available for the 'Gap Month' based on unit size." },
-        { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." }
+        { label: "Tactical Reserve", sub: "Confirmed liquid capital (£4k–£10k) available for the initial 'Gap Month'." },
+        { label: "Document Integrity", sub: "Apostilles, notary public fees, and courier logistics accounted for." },
+        { label: "Housing Liquidity", sub: "Provisions made for initial security deposit and upfront rent if required." },
+        { label: "The IKEA Test", sub: "Appliance and setup costs researched for local region." }
       ]
     },
     {
       title: "Leadership & stability",
       description: "Senior leadership stability is the benchmark of a settled school; utilise these indicators to distinguish between a high-performing environment and one defined by systemic volatility.",
       items: [
-        { label: "Stability Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
+        { label: "Stability Index", sub: "Replacement churn rate calculated (Excluding expansion growth seats)." },
         { label: "Tenure Audit", sub: "Principal and HOD confirmed in post for >2 years." }
       ]
     },
@@ -39,10 +41,9 @@ export default function StrategicChecksheetPage() {
       title: "The \"Hard-Talk\" inquiry",
       description: "Verification questions for final stage due diligence.",
       items: [
-        { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
-        { label: "PPA Guarantee", sub: "Is non-contact time contractually protected?" },
-        { label: "Contact Time", sub: "What is the weekly cap on teacher contact time?" },
-        { label: "Legalisation Fees", sub: "Does the school reimburse document fees upfront?" }
+        { label: "Fee Waiver", sub: "Confirmation that all staff children levies/capital fees are waived." },
+        { label: "PPA Protection", sub: "Is non-contact time contractually guaranteed?" },
+        { label: "Legalisation Reimbursement", sub: "Does the school reimburse document fees upon arrival?" }
       ]
     }
   ];
@@ -92,14 +93,14 @@ export default function StrategicChecksheetPage() {
                   <Flag className="size-4 fill-black text-black" /> RED SIGNAL
                 </p>
                 <p className="text-xs font-bold leading-tight uppercase">Critical risk.</p>
-                <p className="text-[11px] leading-relaxed">One or two signals are enough to justify declining an offer unless total mitigation is possible.</p>
+                <p className="text-[11px] leading-relaxed">High-impact contractual pitfalls. One or two signals justify declining an offer unless total mitigation is possible.</p>
               </div>
               <div className="p-4 border-2 border-black space-y-2">
                 <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
                   <Flag className="size-4 text-black" /> AMBER SIGNAL
                 </p>
                 <p className="text-xs font-bold leading-tight uppercase">Operational caution.</p>
-                <p className="text-[11px] leading-relaxed">Consider mitigation strategies. Multiple signals require a full re-evaluation of risk.</p>
+                <p className="text-[11px] leading-relaxed">Procedural risks. Multiple signals require a full re-evaluation of institutional stability.</p>
               </div>
             </div>
           </section>

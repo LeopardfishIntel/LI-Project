@@ -17,7 +17,12 @@ import {
   Users,
   Home,
   Calculator,
-  Milestone
+  Milestone,
+  ArrowRight,
+  FileText,
+  Wallet,
+  Clock,
+  Compass
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,6 +43,29 @@ export default function PreparePage() {
     };
     return baseReserve * (multipliers[calcStatus] || 1);
   }, [calcStatus]);
+
+  const breakdown = [
+    {
+      icon: <FileText className="size-4 text-primary" />,
+      title: "Document Integrity",
+      desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
+    },
+    {
+      icon: <Wallet className="size-4 text-primary" />,
+      title: "Housing Liquidity",
+      desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
+    },
+    {
+      icon: <Clock className="size-4 text-primary" />,
+      title: "The 6-Week Gap",
+      desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
+    },
+    {
+      icon: <Compass className="size-4 text-primary" />,
+      title: "Mission Setup",
+      desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
+    }
+  ];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white">
@@ -110,7 +138,6 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
-            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
@@ -133,7 +160,7 @@ export default function PreparePage() {
             </p>
           </div>
           
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Expanded Calculator Box */}
             <div className="p-8 md:p-12 glass border-primary/30 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-12 items-center md:items-start shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
@@ -172,7 +199,23 @@ export default function PreparePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Tactical 6-Week Breakdown */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {breakdown.map((item, idx) => (
+                <div key={idx} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
+                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">0{idx + 1}</span>
+                  </div>
+                  <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.title}</h4>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
               <div className="space-y-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
                 <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
