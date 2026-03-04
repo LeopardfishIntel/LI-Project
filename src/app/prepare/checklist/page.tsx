@@ -8,10 +8,10 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 export default function StrategicChecksheetPage() {
   const sections = [
     {
-      title: "Material Risks",
+      title: "Material risks",
       description: "International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.",
       items: [
-        { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
+        { label: "Confidentiality Clauses", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Pay Scale Transparency", sub: "Confirmation of placement on a transparent institutional scale." },
         { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly capped in the contract?" },
         { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited for inpatient gaps." },
