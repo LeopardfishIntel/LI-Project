@@ -49,7 +49,7 @@ export function AppSidebar() {
               className="hover:bg-primary/10 hover:text-primary transition-colors"
             >
               <Link href="/">
-                <Home className="size-5" />
+                <Home />
                 <span className="font-bold uppercase tracking-wider text-xs">Home</span>
               </Link>
             </SidebarMenuButton>
@@ -63,7 +63,7 @@ export function AppSidebar() {
                 className="hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Link href={link.href}>
-                  <link.icon className="size-5" />
+                  <link.icon />
                   <span className="font-bold uppercase tracking-wider text-xs">{link.label}</span>
                 </Link>
               </SidebarMenuButton>
