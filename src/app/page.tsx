@@ -105,6 +105,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Counter Section - Moved underneath hero */}
+      <section className="py-8 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <KeyFactsSection />
+        </div>
+      </section>
+
       {/* Mission Section */}
       <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
@@ -122,13 +129,6 @@ export default function Home() {
               Please note: Our insights are only as sharp as the latest reports. We reach out to schools to verify data and invite institutions to <Link href="mailto:roger@leopardfishintel.com" className="text-primary hover:text-white underline transition-colors">contact us</Link> directly to ensure their details remain accurate.
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Counter Section */}
-      <section className="py-8 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
-          <KeyFactsSection />
         </div>
       </section>
 
@@ -163,7 +163,7 @@ export default function Home() {
                     <h3 className="text-3xl md:text-5xl stamped-dossier tracking-tighter mr-3">{step.title}</h3>
                     <ArrowRight className="size-6 md:size-8 group-hover:translate-x-2 transition-transform" />
                   </Link>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <p className="text-muted-foreground text-lg leading-relaxed max-lg font-medium">{step.desc}</p>
                   <Link href={step.link} className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 hover:text-primary transition-colors">
                     {step.label}
                   </Link>

@@ -1,26 +1,26 @@
-import { Lock, Banknote, GraduationCap, HeartPulse, ShieldAlert, ArrowRight } from 'lucide-react';
+import { ShieldAlert, ArrowRight, Lock, Banknote, GraduationCap, HeartPulse } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
 export function RedFlagRegistry() {
   const flags = [
     {
-      icon: <Lock className="w-6 h-6 text-destructive" />,
+      icon: <Lock className="size-4 text-destructive" />,
       title: "Privacy trap",
       desc: "Aggressive NDAs silencing field reports."
     },
     {
-      icon: <Banknote className="w-6 h-6 text-destructive" />,
+      icon: <Banknote className="size-4 text-destructive" />,
       title: "Pay transparency",
       desc: "Refusal to publish clear salary scales."
     },
     {
-      icon: <GraduationCap className="w-6 h-6 text-destructive" />,
+      icon: <GraduationCap className="size-4 text-destructive" />,
       title: "Education fees",
       desc: "Hidden costs for staff dependent seats."
     },
     {
-      icon: <HeartPulse className="w-6 h-6 text-amber-500" />,
+      icon: <HeartPulse className="size-4 text-amber-500" />,
       title: "Medical co-pays",
       desc: "Significant gaps in inpatient coverage."
     }
@@ -29,7 +29,7 @@ export function RedFlagRegistry() {
   return (
     <section className="py-24 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+        <div className="max-w-4xl mx-auto space-y-12">
           <div className="flex items-center gap-4">
             <ShieldAlert className="w-10 h-10 text-primary" />
             <div>
@@ -37,30 +37,33 @@ export function RedFlagRegistry() {
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">Critical due diligence</p>
             </div>
           </div>
-          <Link href="/prepare" className="group flex items-center gap-2 text-primary font-bold uppercase tracking-widest text-[10px] hover:text-white transition-colors">
-            Access full flag registry <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {flags.map((flag, i) => (
-            <Card key={i} className="glass rounded-sm overflow-hidden hover:border-primary/30 transition-all group cursor-pointer">
-              <Link href="/prepare">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base flex items-center gap-3 text-white font-bold normal-case">
-                    <div className="p-2 bg-background/50 rounded-sm group-hover:bg-primary/10 transition-colors">
+          <Card className="glass rounded-sm overflow-hidden border-primary/20">
+            <CardContent className="p-8 md:p-12 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                {flags.map((flag, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    <div className="p-2.5 bg-destructive/10 rounded-sm mt-1 group-hover:bg-destructive/20 transition-colors">
                       {flag.icon}
                     </div>
-                    {flag.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed font-medium mb-4">{flag.desc}</p>
-                  <span className="text-[9px] font-black uppercase text-primary/40 group-hover:text-primary transition-colors">Read more</span>
-                </CardContent>
-              </Link>
-            </Card>
-          ))}
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold text-white leading-tight">{flag.title}</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                        {flag.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-8 border-t border-white/5 flex justify-center md:justify-start">
+                <Link href="/prepare" className="group flex items-center gap-3 bg-primary/10 hover:bg-primary/20 border border-primary/30 px-6 py-3 rounded-sm transition-all">
+                  <span className="text-xs font-black uppercase tracking-[0.2em] text-primary">Access full flag registry</span>
+                  <ArrowRight className="size-4 text-primary group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
