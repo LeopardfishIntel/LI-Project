@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -8,34 +9,47 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2 } from 'lucide-react';
 export default function StrategicChecksheetPage() {
   const phases = [
     {
-      title: "Phase 1: The contract audit",
-      description: "Ensure these terms are explicitly written, not just \"promised.\"",
+      title: "Phase 1: The integrity baseline",
+      description: "Verification of the 'Gold Standard' transparency baseline.",
       items: [
-        { label: "Salary Transparency", sub: "Is there a fixed scale, or is it \"discretionary\"?" },
-        { label: "Currency Protection", sub: "Is the salary pegged to the USD/GBP?" },
-        { label: "The \"Contact Minute\" Cap", sub: "Is the weekly teaching time in minutes stated?" },
-        { label: "PPA Guarantee", sub: "Is planning time \"protected\" in the contract?" },
-        { label: "Medical Granularity", sub: "Do you have the Full Schedule of Benefits?" }
+        { label: "Salary Transparency", sub: "Is there a fixed, published scale, or is it 'discretionary'?" },
+        { label: "Evidence of Respect", sub: "Is leadership willing to connect you with current staff?" }
       ]
     },
     {
-      title: "Phase 2: The onboarding cash-flow plan",
-      description: "Calculate your \"Tactical Reserve\" (Minimum £4k–£6k for families).",
+      title: "Phase 2: Risk factor matrix",
+      description: "Explicit terms required to mitigate institutional red signals.",
       items: [
-        { label: "The First Payday", sub: "Count the days from arrival to the first paycheck." },
-        { label: "Housing Deposit", sub: "Budget for 1–2 months' rent upfront." },
-        { label: "The IKEA Test", sub: "Check local sites for the cost of white goods." },
-        { label: "Legalisation Fees", sub: "Total cost of Apostilles and medicals." }
+        { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
+        { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
+        { label: "Contact Minute Cap", sub: "Is the weekly teaching time explicitly stated in minutes?" },
+        { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of conduct ratings." }
       ]
     },
     {
-      title: "Phase 3: Professional due diligence",
-      description: "Questions for the \"One-to-One\" interview with a current teacher.",
+      title: "Phase 3: Tactical readiness",
+      description: "Onboarding cash-flow and capital requirements.",
       items: [
-        { label: "The \"Floating\" Audit", sub: "Do teachers have their own rooms?" },
-        { label: "Admin Bloat", sub: "How many hours a week are spent on data entry?" },
-        { label: "Parental Boundaries", sub: "Does leadership support teachers in behaviour disputes?" },
-        { label: "Staff Children", sub: "Are all fees (trips, uniforms, levies) waived?" }
+        { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
+        { label: "The IKEA Test", sub: "Review local appliance costs vs settling-in allowance." },
+        { label: "Medical co-pay", sub: "Full Schedule of Benefits obtained and co-pays audited." }
+      ]
+    },
+    {
+      title: "Phase 4: Leadership & stability",
+      description: "Data-led institutional performance signals.",
+      items: [
+        { label: "GASCI Index", sub: "Replacement churn rate calculated (Is the school leaking talent?)" },
+        { label: "Tenure Audit", sub: "Principal and HOD confirmed in post for >2 years." }
+      ]
+    },
+    {
+      title: "Phase 5: The 'Hard-Talk' inquiry",
+      description: "Verification questions for final stage due diligence.",
+      items: [
+        { label: "Hidden Fees", sub: "Confirmation that all staff children levies are waived." },
+        { label: "PPA Guarantee", sub: "Is non-contact time contractually protected?" },
+        { label: "Housing standard", sub: "Detailed photos of specific unit/compound obtained." }
       ]
     }
   ];
@@ -72,7 +86,7 @@ export default function StrategicChecksheetPage() {
           <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-gray-500">
             <span>Dossier ID: LFI-2026-CHKLST</span>
             <span className="border-l border-gray-300 h-3" />
-            <span>Classification: Field Operational Use</span>
+            <span>Classification: Operational Use</span>
           </div>
         </header>
 
@@ -85,8 +99,8 @@ export default function StrategicChecksheetPage() {
         <div className="space-y-12">
           {phases.map((phase, idx) => (
             <section key={idx} className="space-y-6">
-              <h2 className="text-2xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{phase.title}</h2>
-              <p className="text-sm font-medium text-gray-600 italic">{phase.description}</p>
+              <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">{phase.title}</h2>
+              <p className="text-xs font-medium text-gray-600 italic">{phase.description}</p>
               
               <div className="grid gap-4">
                 {phase.items.map((item, iIdx) => (
