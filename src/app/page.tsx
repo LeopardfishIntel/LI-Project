@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -39,6 +40,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
+      icon: <ArrowRight className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -73,7 +75,7 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6 flex flex-col items-center justify-center text-center">
           <div className="max-w-4xl space-y-8 flex flex-col items-center">
             <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_20px_rgba(249,115,22,0.2)]">
-              <ShieldCheck className="size-4 md:size-6" /> Intelligence Grade Insights
+              <ShieldCheck className="size-4 md:size-6" /> Strategic International School Insights
             </div>
             
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight">
