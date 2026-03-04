@@ -25,7 +25,7 @@ export default function Home() {
       id: '01',
       title: 'Discover',
       icon: <Target className="w-8 h-8 text-primary" />,
-      desc: "The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
       label: 'Find your fit'
@@ -34,7 +34,7 @@ export default function Home() {
       id: '02',
       title: 'Evaluate',
       icon: <Calculator className="w-8 h-8 text-primary" />,
-      desc: "The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
       label: 'Decode offer'
@@ -43,7 +43,7 @@ export default function Home() {
       id: '03',
       title: 'Decide',
       icon: <GitCompare className="w-8 h-8 text-primary" />,
-      desc: "The Comparison Matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
       label: 'Final verdict'
@@ -52,7 +52,7 @@ export default function Home() {
       id: '04',
       title: 'Prepare',
       icon: <PackageCheck className="w-8 h-8 text-primary" />,
-      desc: "The Strategic Checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
+      desc: "The strategic checksheet. Finalise your due diligence. From hidden costs to professional boundaries, ensure you are operational before you depart.",
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Get prepared'
@@ -78,11 +78,11 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-4 py-1.5 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
+              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Insights
             </div>
             
             <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
-              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+              <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             
             <div className="space-y-4">
@@ -106,7 +106,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section - Moved underneath hero */}
+      {/* Stats Counter Section */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />

@@ -536,7 +536,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rent (2BR)</FormLabel>
+                    <FormLabel>Rent (2BR)</Label>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>
