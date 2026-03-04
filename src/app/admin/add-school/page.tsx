@@ -302,62 +302,80 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>School name</FormLabel>
-                    <FormControl><Input placeholder="e.g., International School of Excellence" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="e.g., International School of Excellence" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="location" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Location (City)</FormLabel>
-                    <FormControl><Input placeholder="e.g., Tokyo" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="e.g., Tokyo" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="country" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
-                    <FormControl><Input placeholder="e.g., Japan" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="e.g., Japan" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Textarea placeholder="A brief description of the school..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Textarea placeholder="A brief description of the school..." {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="websiteUrl" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Website URL</FormLabel>
-                    <FormControl><Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="imageUrl" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image URL</FormLabel>
-                    <FormControl><Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="imageHint" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Image hint</FormLabel>
-                    <FormControl><Input placeholder="e.g., modern school tokyo" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="e.g., modern school tokyo" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="videoUrl" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Video URL (Optional)</FormLabel>
-                    <FormControl><Input placeholder="https://youtube.com/embed/..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input placeholder="https://youtube.com/embed/..." {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="spotlight" render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2">
-                    <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel>Spotlight school</FormLabel>
                       <FormDescription>Feature this school on the homepage.</FormDescription>
@@ -375,13 +393,40 @@ export default function AddSchoolPage() {
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.salary.value" render={({ field }) => (
-                        <FormItem><FormLabel>Salary range</FormLabel><FormControl><Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
+                        <FormItem>
+                          <FormLabel>Salary range</FormLabel>
+                          <FormControl>
+                            <Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.score" render={({ field }) => (
-                        <FormItem><FormLabel>Salary score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem>
+                          <FormLabel>Salary score</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="glass">
+                              <SelectItem value="good">Good</SelectItem>
+                              <SelectItem value="neutral">Neutral</SelectItem>
+                              <SelectItem value="bad">Bad</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
                     )} />
                      <FormField control={form.control} name="intel.salary.isTaxFree" render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Tax-free salary</FormLabel><FormDescription>Is the salary tax-free in the host country?</FormDescription></div></FormItem>
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2">
+                          <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>Tax-free salary</FormLabel>
+                            <FormDescription>Is the salary tax-free in the host country?</FormDescription>
+                          </div>
+                        </FormItem>
                     )} />
                 </div>
 
@@ -389,10 +434,21 @@ export default function AddSchoolPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.housing.value" render={({ field }) => (
-                        <FormItem><FormLabel>Housing</FormLabel><FormControl><Input placeholder="Allowance" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
+                        <FormItem>
+                          <FormLabel>Housing</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Allowance" {...field} className="bg-background/50 border-white/10" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                     )} />
                      <FormField control={form.control} name="intel.housing.provided" render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="!mt-0">Housing provided</FormLabel></FormItem>
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8">
+                          <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          </FormControl>
+                          <FormLabel className="!mt-0">Housing provided</FormLabel>
+                        </FormItem>
                     )} />
                 </div>
 
@@ -400,10 +456,29 @@ export default function AddSchoolPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
                     <FormField control={form.control} name="intel.savingsPotential.value" render={({ field }) => (
-                        <FormItem><FormLabel>Savings potential</FormLabel><FormControl><Input placeholder="High" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>
+                        <FormItem>
+                          <FormLabel>Savings potential</FormLabel>
+                          <FormControl>
+                            <Input placeholder="High" {...field} className="bg-background/50 border-white/10" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                     )} />
                      <FormField control={form.control} name="intel.savingsPotential.score" render={({ field }) => (
-                        <FormItem><FormLabel>Savings score</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger></FormControl><SelectContent className="glass"><SelectItem value="good">Good</SelectItem><SelectItem value="neutral">Neutral</SelectItem><SelectItem value="bad">Bad</SelectItem></SelectContent></Select><FormMessage /></FormItem>
+                        <FormItem>
+                          <FormLabel>Savings score</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="bg-background/50 border-white/10"><SelectValue placeholder="Select score" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="glass">
+                              <SelectItem value="good">Good</SelectItem>
+                              <SelectItem value="neutral">Neutral</SelectItem>
+                              <SelectItem value="bad">Bad</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
                     )} />
                 </div>
 
@@ -448,35 +523,45 @@ export default function AddSchoolPage() {
                     <FormField control={form.control} name="intel.accreditation" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Accreditation</FormLabel>
-                        <FormControl><Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormControl>
+                          <Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Student-teacher ratio</FormLabel>
-                        <FormControl><Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormControl>
+                          <Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.classSize" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Average class size</FormLabel>
-                        <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormControl>
+                          <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Non-contact time (%)</FormLabel>
-                        <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormControl>
+                          <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Health insurance</FormLabel>
-                        <FormControl><Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormControl>
+                          <Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -484,35 +569,45 @@ export default function AddSchoolPage() {
                  <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (
                    <FormItem>
                      <FormLabel>Tech ecosystem</FormLabel>
-                     <FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormControl>
+                       <Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" />
+                     </FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (
                    <FormItem>
                      <FormLabel>Benefits summary</FormLabel>
-                     <FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormControl>
+                       <Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" />
+                     </FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (
                    <FormItem>
                      <FormLabel>Jobs portal</FormLabel>
-                     <FormControl><Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormControl>
+                       <Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" />
+                     </FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (
                    <FormItem>
                      <FormLabel>Min. qualifications</FormLabel>
-                     <FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormControl>
+                       <Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" />
+                     </FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
                  <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (
                    <FormItem>
                      <FormLabel>Visa restrictions</FormLabel>
-                     <FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormControl>
+                       <Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" />
+                     </FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
@@ -529,77 +624,99 @@ export default function AddSchoolPage() {
                 <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Rent (1BR)</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rent (2BR)</Label>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormLabel>Rent (2BR)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rent (3BR)</Label>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormLabel>Rent (3BR)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Groceries</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Transport</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Utilities</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Internet</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Mobile</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Dining/social</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Vehicle maint.</Label>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Uncovered medical</FormLabel>
-                    <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                    <FormControl>
+                      <Input type="number" {...field} className="bg-background/50 border-white/10" />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
