@@ -47,14 +47,14 @@ export default function PreparePage() {
               <div className="flex flex-col md:flex-row gap-6 items-start">
                 <Trophy className="size-12 text-primary shrink-0" />
                 <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
-                  "Before diving into the pitfalls, note that elite international schools already know everything on this page. For the best employers, these points aren't 'negotiables'—they are the baseline for staff wellbeing. Excellent schools provide transparency because they want focused, happy teachers. If a school struggles with these questions, that tells you all you need to know."
+                  "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
                 </p>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Section 2: Risk Factor Matrix (The Flag System) */}
+        {/* Section 2: Risk factor matrix (The flag system) */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">Risk factor matrix (The flag system)</h2>
@@ -182,7 +182,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 5: The "Hard-Talk" Inquiry */}
+        {/* Section 5: The "Hard-Talk" inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case">The "Hard-Talk" inquiry (Essential questions)</h2>
