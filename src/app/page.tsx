@@ -79,7 +79,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Insights
             </div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight uppercase">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </h1>
             <p className="text-xl md:text-2xl text-white font-bold max-w-2xl leading-tight">
@@ -100,14 +100,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section moved underneath Hero */}
+      {/* Stats Section */}
       <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Mission Section with Title */}
+      {/* Mission Section */}
       <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
           <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">

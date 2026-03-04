@@ -33,7 +33,7 @@ export function RedFlagRegistry() {
           <div className="flex items-center gap-4">
             <ShieldAlert className="w-10 h-10 text-primary" />
             <div>
-              <h2 className="text-3xl md:text-4xl text-white normal-case">Contract flags</h2>
+              <h2 className="text-3xl md:text-4xl text-white">Contract flags</h2>
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">Critical due diligence</p>
             </div>
           </div>
