@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -259,8 +260,8 @@ function ContractDecoderContent() {
 
               <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
                 <div className="text-sm text-primary-foreground/90 leading-relaxed font-medium">
-                  <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 text-xs"><ShieldAlert className="size-3.5" /> Due diligence</span>
-                  Important! Enter net not gross pay. Check if the deduction total accounts for social security, pension, and all health, dental, and optical costs. If not add some extra to the contingency cost section below.
+                  <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 text-xs"><ShieldAlert className="size-3.5" /> Financial Due Diligence</span>
+                  Please provide net pay figures rather than gross. Ensure your deduction totals include social security, pension contributions, and all healthcare premiums (medical, dental, and optical). Any unallocated costs should be factored into the Contingency section below.
                 </div>
               </div>
 
@@ -380,7 +381,7 @@ function ContractDecoderContent() {
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <div className="flex items-center gap-3">
-                        <Medal className="size-4 text-sky-400" />
+                        <Plus className="size-4 text-sky-400" />
                         <span className="text-base text-muted-foreground font-medium">Other income</span>
                       </div>
                       <span className="font-bold text-white text-base">{formatCurrency(partnerSalaryNum, currency)}</span>
@@ -428,7 +429,7 @@ function ContractDecoderContent() {
                             </div>
                         </div>
                         <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
-                        <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
+                        <Button className="bg-primary hover:bg-primary/90 text-white font-bold px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
