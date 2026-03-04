@@ -9,11 +9,11 @@ export default function Footer() {
             <div className="flex flex-col items-center md:items-start space-y-4">
                 <div className="flex items-center">
                     <Binoculars className="h-6 w-6 mr-2 text-primary" />
-                    <span className="font-bold font-headline text-xl tracking-tighter text-white">
+                    <span className="font-bold font-headline text-lg tracking-tighter text-white">
                       <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
                     </span>
                 </div>
-                <p className="text-sm text-muted-foreground text-center md:text-left leading-relaxed max-w-xs font-medium">
+                <p className="text-xs text-muted-foreground text-center md:text-left leading-relaxed max-w-xs font-medium">
                     Your international teaching journey, mapped. Find your ideal destination, calculate your real-world savings, and compare school offers side-by-side.
                 </p>
             </div>
@@ -38,7 +38,7 @@ export default function Footer() {
             </div>
         </div>
         
-        <div className="text-center text-xs text-muted-foreground/40 border-t border-white/5 pt-8 mt-12 space-y-4">
+        <div className="text-center text-[10px] text-muted-foreground/40 border-t border-white/5 pt-8 mt-12 space-y-4">
             <p className="font-bold uppercase tracking-widest text-white/60">&copy; {new Date().getFullYear()} <Link href="https://www.leopardfishintel.com" className="hover:text-primary transition-colors" target="_blank" rel="noopener noreferrer">Leopardfish Intel</Link>. All rights reserved.</p>
             <p className="max-w-4xl mx-auto leading-relaxed font-medium"><strong>Disclaimer:</strong> Leopardfish Intel is a platform for information and comparison purposes only. We do not act as a recruitment agency and are not affiliated with any school. All data is provided for guidance and should be verified with official sources. Your career decisions are your own.</p>
         </div>
