@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -110,7 +109,7 @@ export default function Home() {
       <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-12">
           <h2 className="text-3xl md:text-5xl lg:text-6xl text-white font-bold tracking-tight">
-            Teach overseas - Know before you go
+            Know before you go
           </h2>
           <div className="space-y-8 text-lg text-muted-foreground font-medium leading-relaxed">
             <p className="text-white/90 font-bold">
