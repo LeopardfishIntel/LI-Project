@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   PlaneLanding, 
@@ -25,48 +25,54 @@ import {
   Compass,
   Loader2
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
+
+const CONVERSION_FROM_GBP: Record<string, number> = {
+  GBP: 1,
+  USD: 1.28,
+  AUD: 1.95,
+};
+
+const SCALING_MULTIPLIERS: Record<string, number> = {
+  single: 1,
+  couple: 1.6,
+  family: 2.1,
+  family2: 2.5
+};
+
+const BASE_BREAKDOWN = [
+  { id: 'docs', title: "Document Integrity", base: 500, icon: <FileText className="size-4" /> },
+  { id: 'rent', title: "Housing Liquidity", base: 2000, icon: <Wallet className="size-4" /> },
+  { id: 'gap', title: "The 6-Week Gap", base: 1000, icon: <Clock className="size-4" /> },
+  { id: 'setup', title: "Mission Setup", base: 500, icon: <Compass className="size-4" /> },
+];
 
 export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
-  const baseReserve = 4000;
-  
-  const calculatedReserve = useMemo(() => {
-    const multipliers: Record<string, number> = {
-      single: 1,
-      couple: 1.6,
-      family: 2.1,
-      family2: 2.5
-    };
-    return baseReserve * (multipliers[calcStatus] || 1);
-  }, [calcStatus]);
+  const [currency, setCurrency] = useState<string>('GBP');
+  const [dateStamp, setDateStamp] = useState('');
 
-  const breakdown = [
-    {
-      icon: <FileText className="size-4 text-primary" />,
-      title: "Document Integrity",
-      desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
-    },
-    {
-      icon: <Wallet className="size-4 text-primary" />,
-      title: "Housing Liquidity",
-      desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
-    },
-    {
-      icon: <Clock className="size-4 text-primary" />,
-      title: "The 6-Week Gap",
-      desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
-    },
-    {
-      icon: <Compass className="size-4 text-primary" />,
-      title: "Mission Setup",
-      desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
-    }
-  ];
+  useEffect(() => {
+    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
+  }, []);
+
+  const multiplier = useMemo(() => SCALING_MULTIPLIERS[calcStatus] || 1, [calcStatus]);
+  const exchRate = useMemo(() => CONVERSION_FROM_GBP[currency] || 1, [currency]);
+
+  const liveBreakdown = useMemo(() => {
+    return BASE_BREAKDOWN.map(item => ({
+      ...item,
+      amount: item.base * multiplier * exchRate
+    }));
+  }, [multiplier, exchRate]);
+
+  const totalReserve = useMemo(() => {
+    return liveBreakdown.reduce((acc, curr) => acc + curr.amount, 0);
+  }, [liveBreakdown]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white">
@@ -84,7 +90,7 @@ export default function PreparePage() {
         {/* Section 1: Material Risks */}
         <section className="space-y-8">
           <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material risks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
               International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.
             </p>
@@ -163,59 +169,92 @@ export default function PreparePage() {
           </div>
           
           <div className="space-y-8">
-            {/* Expanded Calculator Box */}
-            <div className="p-8 md:p-12 glass border-primary/30 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-12 items-center md:items-start shadow-2xl relative overflow-hidden">
+            {/* Full-Width Tactical Reserve Calculator */}
+            <Card className="glass border-primary/30 bg-primary/5 rounded-sm overflow-hidden shadow-2xl relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
-                <Calculator className="size-48 text-white" />
+                <Calculator className="size-64 text-white" />
               </div>
               
-              <div className="flex-1 space-y-4 relative z-10">
-                <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
-                <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
-                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
-                </p>
-                <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
-                  Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} moves adjusted for the initial 6-week "gap month" before the first full salary cycle.
-                </p>
-              </div>
-
-              <div className="w-full md:w-64 space-y-6 pt-2 relative z-10">
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
-                  <Select value={calcStatus} onValueChange={setCalcStatus}>
-                    <SelectTrigger className="h-12 bg-background/60 border-white/10 text-white font-bold text-base rounded-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="single">Single</SelectItem>
-                      <SelectItem value="couple">Couple</SelectItem>
-                      <SelectItem value="family">Family (2+1)</SelectItem>
-                      <SelectItem value="family2">Family (2+2)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-sm border border-white/5">
-                  <Calculator className="size-4 text-accent animate-pulse" />
-                  <span className="text-[10px] font-black text-accent uppercase tracking-widest">Real-time projection</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Tactical 6-Week Breakdown */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {breakdown.map((item, idx) => (
-                <div key={idx} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
-                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">0{idx + 1}</span>
+              <div className="p-8 md:p-12 space-y-10 relative z-10">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                        <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
+                        {dateStamp && (
+                            <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] border border-white/5 px-2 py-0.5 rounded-sm w-fit">
+                                Ledger Ref: LFI.{dateStamp}
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-6xl md:text-8xl font-black text-white tracking-tighter transition-all duration-500">
+                      {formatCurrency(totalReserve, currency)}
+                    </p>
+                    <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-xl">
+                      Minimum capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} units adjusted for the initial 6-week "gap month" before the first full salary cycle completes.
+                    </p>
                   </div>
-                  <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.title}</h4>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">
-                    {item.desc}
-                  </p>
+
+                  <div className="w-full lg:w-72 space-y-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
+                            <Select value={calcStatus} onValueChange={setCalcStatus}>
+                                <SelectTrigger className="h-11 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                                <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="glass">
+                                <SelectItem value="single">Single</SelectItem>
+                                <SelectItem value="couple">Couple</SelectItem>
+                                <SelectItem value="family">Family (2+1)</SelectItem>
+                                <SelectItem value="family2">Family (2+2)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Currency profile</Label>
+                            <Select value={currency} onValueChange={setCurrency}>
+                                <SelectTrigger className="h-11 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                                <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="glass">
+                                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                                    <SelectItem value="USD">USD ($)</SelectItem>
+                                    <SelectItem value="AUD">AUD (A$)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-sm border border-white/5">
+                      <Calculator className="size-4 text-accent animate-pulse" />
+                      <span className="text-[10px] font-black text-accent uppercase tracking-widest">Real-time projection operational</span>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Item-by-item breakdown row */}
+                <div className="pt-10 border-t border-white/10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+                        {liveBreakdown.map((item) => (
+                            <div key={item.id} className="space-y-3 group">
+                                <div className="flex items-center justify-between border-b border-white/5 pb-2 group-hover:border-primary/30 transition-colors">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-primary/10 rounded-sm text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                            {item.icon}
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-white transition-colors">
+                                            {item.title}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-xl md:text-2xl font-black text-white group-hover:text-primary transition-colors">
+                                    {formatCurrency(item.amount, currency)}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+              </div>
+            </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
               <div className="space-y-4">
