@@ -52,7 +52,7 @@ export const schools: School[] = [
       nonContactTime: 22,
       technologyEcosystem: '1:1 iPads, Google Workspace'
     },
-    costOfLiving: { monthlyRent1BR: 160000, monthlyRent2BR: 250000, monthlyRent3BR: 400000, food: 70000, transport: 15000, utilities: 20000, internet: 5000, mobile: 4000, diningSocial: 30000, vehicleInsuranceMaint: 0, uncoveredMedical: 10000 },
+    costOfLiving: { monthlyRent1BR: 160000, monthlyRent2BR: 250000, monthlyRent3BR: 400000, food: 70000, transport: 15000, utilities: 20000, internet: 5000, mobile: 4000, diningSocial: 30000, vehicleInsuranceMaint: 0, uncoveredMedical: 100 },
     stabilityMetrics: { previousHeadcount: 85, currentHeadcount: 88, totalVacancies: 15, adjustedChurnRate: 14.1, stabilityTier: 'Stable', redFlagAlert: false }
   },
   {
