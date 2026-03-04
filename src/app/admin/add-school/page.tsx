@@ -278,10 +278,10 @@ export default function AddSchoolPage() {
                 Back to Data hub
             </Link>
         </Button>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-white">
           Add new school
         </h1>
-        <p className="text-muted-foreground mb-12">
+        <p className="text-muted-foreground mb-12 font-medium">
           Fill out the form below to add a new school record.
         </p>
 
@@ -289,7 +289,7 @@ export default function AddSchoolPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle>Basic information</CardTitle>
+                <CardTitle className="text-white">Basic information</CardTitle>
                 <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich.</CardDescription>
                  <div className="pt-2">
                     <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching} size="sm">
@@ -369,7 +369,7 @@ export default function AddSchoolPage() {
 
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle>School intel</CardTitle>
+                <CardTitle className="text-white">School intel</CardTitle>
                 <CardDescription>Key data points about the school's package and environment.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -451,30 +451,84 @@ export default function AddSchoolPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField control={form.control} name="intel.accreditation" render={({ field }) => (<FormItem><FormLabel>Accreditation</FormLabel><FormControl><Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (<FormItem><FormLabel>Student-Teacher Ratio</FormLabel><FormControl><Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.classSize" render={({ field }) => (<FormItem><FormLabel>Average Class Size</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (<FormItem><FormLabel>Non-Contact Time (%)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                    <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (<FormItem><FormLabel>Health Insurance</FormLabel><FormControl><Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                    <FormField control={form.control} name="intel.accreditation" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Accreditation</FormLabel>
+                        <FormControl><Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="intel.studentTeacherRatio" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Student-Teacher Ratio</FormLabel>
+                        <FormControl><Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="intel.classSize" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Average Class Size</FormLabel>
+                        <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="intel.nonContactTime" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Non-Contact Time (%)</FormLabel>
+                        <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="intel.healthInsurance" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Health Insurance</FormLabel>
+                        <FormControl><Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                 </div>
-                 <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (<FormItem><FormLabel>Tech Ecosystem</FormLabel><FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (<FormItem><FormLabel>Benefits Summary</FormLabel><FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.technologyEcosystem" render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Tech Ecosystem</FormLabel>
+                     <FormControl><Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )} />
+                 <FormField control={form.control} name="intel.benefitsSummary" render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Benefits Summary</FormLabel>
+                     <FormControl><Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )} />
                  <FormField control={form.control} name="intel.jobsPortal" render={({ field }) => (
                    <FormItem>
-                     <FormLabel>Jobs Portal</Label>
+                     <FormLabel>Jobs Portal</FormLabel>
                      <FormControl><Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" /></FormControl>
                      <FormMessage />
                    </FormItem>
                  )} />
-                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (<FormItem><FormLabel>Min. Qualifications</FormLabel><FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                 <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (<FormItem><FormLabel>Visa Restrictions</FormLabel><FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                 <FormField control={form.control} name="intel.minQualifications" render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Min. Qualifications</FormLabel>
+                     <FormControl><Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )} />
+                 <FormField control={form.control} name="intel.visaRestrictions" render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Visa Restrictions</FormLabel>
+                     <FormControl><Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" /></FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )} />
 
               </CardContent>
             </Card>
 
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle>Cost of living data (Monthly, in USD)</CardTitle>
+                <CardTitle className="text-white">Cost of living data (Monthly, in USD)</CardTitle>
                  <CardDescription>Monthly cost estimates for the school's location.</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -508,7 +562,7 @@ export default function AddSchoolPage() {
                 )} />
                 <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Transport</Label>
+                    <FormLabel>Transport</FormLabel>
                     <FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl>
                     <FormMessage />
                   </FormItem>

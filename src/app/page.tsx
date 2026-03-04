@@ -58,8 +58,6 @@ export default function Home() {
     },
   ];
 
-  const heroButtonClass = "h-12 px-10 bg-primary/20 hover:bg-primary/30 text-white font-bold rounded-sm border border-primary/30 shadow-lg shadow-primary/10 transition-all";
-
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
@@ -96,10 +94,10 @@ export default function Home() {
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className={heroButtonClass} asChild>
+              <Button size="lg" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
                 <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" className={heroButtonClass} asChild>
+              <Button size="lg" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-bold rounded-sm shadow-lg shadow-primary/20" asChild>
                 <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
