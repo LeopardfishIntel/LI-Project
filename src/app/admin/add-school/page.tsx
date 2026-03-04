@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -279,7 +278,7 @@ export default function AddSchoolPage() {
                 Back to Data hub
             </Link>
         </Button>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 normal-case">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
           Add new school
         </h1>
         <p className="text-muted-foreground mb-12">
@@ -290,7 +289,7 @@ export default function AddSchoolPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle className="normal-case">Basic information</CardTitle>
+                <CardTitle>Basic information</CardTitle>
                 <CardDescription>Core details about the school. Enter a name, location, and country, then use AI to enrich.</CardDescription>
                  <div className="pt-2">
                     <Button type="button" variant="outline" onClick={handleEnrich} disabled={!canEnrich || isEnriching} size="sm">
@@ -370,7 +369,7 @@ export default function AddSchoolPage() {
 
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle className="normal-case">School intel</CardTitle>
+                <CardTitle>School intel</CardTitle>
                 <CardDescription>Key data points about the school's package and environment.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -469,18 +468,18 @@ export default function AddSchoolPage() {
 
             <Card className="glass border-white/5">
               <CardHeader>
-                <CardTitle className="normal-case">Cost of living data (Monthly, in USD)</CardTitle>
+                <CardTitle>Cost of living data (Monthly, in USD)</CardTitle>
                  <CardDescription>Monthly cost estimates for the school's location.</CardDescription>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="costOfLiving.monthlyRent1BR" render={({ field }) => (<FormItem><FormLabel>Rent (1BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</Label><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.monthlyRent2BR" render={({ field }) => (<FormItem><FormLabel>Rent (2BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.monthlyRent3BR" render={({ field }) => (<FormItem><FormLabel>Rent (3BR)</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.food" render={({ field }) => (<FormItem><FormLabel>Groceries</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.transport" render={({ field }) => (<FormItem><FormLabel>Transport</Label><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.utilities" render={({ field }) => (<FormItem><FormLabel>Utilities</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.internet" render={({ field }) => (<FormItem><FormLabel>Internet</Label><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
-                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
+                <FormField control={form.control} name="costOfLiving.mobile" render={({ field }) => (<FormItem><FormLabel>Mobile</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.diningSocial" render={({ field }) => (<FormItem><FormLabel>Dining/Social</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.vehicleInsuranceMaint" render={({ field }) => (<FormItem><FormLabel>Vehicle Maint.</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />
                 <FormField control={form.control} name="costOfLiving.uncoveredMedical" render={({ field }) => (<FormItem><FormLabel>Uncovered Medical</FormLabel><FormControl><Input type="number" {...field} className="bg-background/50 border-white/10" /></FormControl><FormMessage /></FormItem>)} />

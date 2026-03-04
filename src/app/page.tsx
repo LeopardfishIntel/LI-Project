@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -77,11 +76,11 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1 rounded text-primary text-[10px] font-black tracking-widest animate-pulse">
               <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight uppercase">
-              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
+            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight">
+              <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
             </h1>
             <div className="space-y-2">
               <p className="text-xl md:text-3xl text-muted-foreground font-medium leading-tight">
@@ -116,7 +115,7 @@ export default function Home() {
       <section className="py-12 border-b border-white/5 bg-background/50">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white normal-case">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
               <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>: A Clearer Picture
             </h2>
             <div className="space-y-6 text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
