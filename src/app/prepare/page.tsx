@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -25,7 +24,7 @@ export default function PreparePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className="mb-16 text-center space-y-6">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
@@ -35,10 +34,10 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-20">
         
-        {/* Section 1: Risk Factor Matrix (The Flag System) */}
+        {/* Section 1: Material Risks and Deal-Breakers */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Risk factor matrix</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material Risks and Deal-Breakers</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,10 +103,10 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: Tactical Readiness & Capital Requirements */}
+        {/* Section 2: The True Cost of Landing */}
         <section className="space-y-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Tactical readiness</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The True Cost of Landing</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">

@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -9,9 +8,8 @@ import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react
 export default function StrategicChecksheetPage() {
   const sections = [
     {
-      title: "Risk factor matrix",
+      title: "Material Risks and Deal-Breakers",
       description: "Explicit terms required to mitigate institutional red signals.",
-      isFlagged: true,
       items: [
         { label: "NDA Audit", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Currency Protection", sub: "Is the local salary pegged to a stable reserve currency?" },
@@ -22,7 +20,7 @@ export default function StrategicChecksheetPage() {
       ]
     },
     {
-      title: "Tactical readiness & capital requirements",
+      title: "The True Cost of Landing",
       description: "Onboarding cash-flow and capital requirements.",
       items: [
         { label: "Tactical Reserve", sub: "Confirmed minimum £4k–£6k available for the 'Gap Month'." },
@@ -86,7 +84,7 @@ export default function StrategicChecksheetPage() {
 
         <div className="space-y-12">
           <section className="space-y-6">
-            <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">Risk Signal Protocol</h2>
+            <h2 className="text-xl font-black uppercase tracking-tight border-b-2 border-black pb-2">Risk signal protocol</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 border-2 border-black space-y-2">
                 <p className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
