@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -55,10 +54,33 @@ export default function PreparePage() {
     return baseReserve * multiplier;
   }, [multiplier]);
 
+  const breakdown = [
+    {
+      icon: <FileText className="size-4 text-primary" />,
+      title: "Document Integrity",
+      desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
+    },
+    {
+      icon: <Wallet className="size-4 text-primary" />,
+      title: "Housing Liquidity",
+      desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
+    },
+    {
+      icon: <Clock className="size-4 text-primary" />,
+      title: "The 6-Week Gap",
+      desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
+    },
+    {
+      icon: <Compass className="size-4 text-primary" />,
+      title: "Mission Setup",
+      desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
+    }
+  ];
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
       <div className="mb-16 text-center space-y-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
@@ -124,7 +146,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
+                <p>If your flight and moving allowances are poorly defined, the school can easily downgrade them later. Ensure the exact value and frequency of these benefits are clearly stated in your contract so the goalposts cannot be moved.</p>
               </CardContent>
             </Card>
 
