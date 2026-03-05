@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -26,7 +27,7 @@ import {
   Calculator,
   Milestone
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -139,16 +140,16 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
-            </Card>
 
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Exit & reference control</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Verify regional exit protocols. If a school has the legal power to block your next move or withhold gratuity based on "conduct," the tactical risk is high.</p>
-              </CardContent>
+              <Card className="glass border-amber-500/20">
+                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                  <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Exit & reference control</CardTitle>
+                  <Flag className="size-4 fill-amber-500 text-amber-500" />
+                </CardHeader>
+                <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
+                  <p>Verify regional exit protocols. If a school has the legal power to block your next move or withhold gratuity based on "conduct," the tactical risk is high.</p>
+                </CardContent>
+              </Card>
             </Card>
           </div>
         </section>
@@ -171,7 +172,7 @@ export default function PreparePage() {
                     {formatCurrency(calculatedTotal, calcCurrency)}
                   </p>
                   <p className="text-xs text-muted-foreground font-medium max-w-sm leading-relaxed">
-                    Indicative liquid capital for {calcStatus.startsWith('family') ? 'family' : calcStatus === 'couple' ? 'couple' : 'single'} moves adjusted for the initial 6-week window.
+                    <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
                   </p>
                 </div>
 
