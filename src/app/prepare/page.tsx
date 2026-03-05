@@ -329,7 +329,7 @@ export default function PreparePage() {
               "Is the End Of Service gratuity based on basic salary or total package?",
               "Can I see the full schedule of benefits for health insurance?",
               "How much is the excess and the contribution for hospital stays?",
-              "Are all capital levies and mandatory fees waived for staff children?",
+              "Are all school fees, surcharges and other ancillary fees fully covered for staff children? How much should I budget for school uniform?",
               "Can I speak to a current teacher in my department privately?",
               "What was the replacement churn rate in the last two years?",
               "Does the school pay for document legalisation fees upfront?",
