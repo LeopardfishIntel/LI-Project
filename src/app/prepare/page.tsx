@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -19,23 +20,19 @@ import {
   Calculator,
   Milestone,
   ArrowRight,
-  FileText,
-  Wallet,
-  Clock,
-  Compass,
   CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const RESERVE_ITEMS = [
-  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, icon: <FileText className="size-4" />, num: '01' },
-  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000, icon: <Wallet className="size-4" />, num: '02' },
-  { id: 'expenditure', label: 'Daily expenditure', baseGbp: 1000, icon: <Clock className="size-4" />, num: '03' },
-  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500, icon: <Compass className="size-4" />, num: '04' },
+  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, num: '01' },
+  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000, num: '02' },
+  { id: 'expenditure', label: 'Daily expenditure - 6 weeks', baseGbp: 1000, num: '03' },
+  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500, num: '04' },
 ];
 
 const SCALING_MULTIPLIERS: Record<string, number> = {
@@ -56,23 +53,19 @@ export default function PreparePage() {
 
   const breakdown = [
     {
-      icon: <FileText className="size-4 text-primary" />,
       title: "Document Integrity",
       desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
     },
     {
-      icon: <Wallet className="size-4 text-primary" />,
       title: "Rent and Deposit",
       desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
     },
     {
-      icon: <Clock className="size-4 text-primary" />,
-      title: "The 6-Week Gap",
+      title: "Daily expenditure - 6 weeks",
       desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
     },
     {
-      icon: <Compass className="size-4 text-primary" />,
-      title: "Mission Setup",
+      title: "Basic home comforts",
       desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
     }
   ];
@@ -116,7 +109,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the school or city baseline.</p>
+                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
               </CardContent>
             </Card>
 
@@ -173,7 +166,7 @@ export default function PreparePage() {
           
           <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
             {/* Top Part: The Projection Summary */}
-            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5">
+            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5 relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
                 <Calculator className="size-48 text-white" />
               </div>
@@ -210,13 +203,12 @@ export default function PreparePage() {
               </div>
             </div>
 
-            {/* Bottom Part: The Itemised Registry */}
+            {/* Bottom Part: The Itemised Registry (Icons Removed) */}
             <div className="p-6 md:p-8 bg-black/20">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {RESERVE_ITEMS.map((item) => (
-                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                    <div className="flex items-center justify-between">
-                      <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
+                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm relative">
+                    <div className="flex items-center justify-end">
                       <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{item.num}</span>
                     </div>
                     <div className="space-y-1">
