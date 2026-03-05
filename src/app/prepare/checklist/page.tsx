@@ -26,7 +26,7 @@ export default function StrategicChecksheetPage() {
       items: [
         { label: "Visa and Documentation", sub: "Apostilles, notary public fees, and courier logistics accounted for." },
         { label: "Housing Liquidity", sub: "Provisions made for initial security deposit and upfront rent if required." },
-        { label: "Daily expenditure", sub: "Confirmed liquid capital (£4k–£10k) available for the initial 'Gap Month'." },
+        { label: "Daily expenditure", sub: "Confirmed liquid capital available for the initial 'Gap Month'." },
         { label: "Basic home comforts", sub: "Appliance and setup costs researched for local region (The IKEA Test)." }
       ]
     },

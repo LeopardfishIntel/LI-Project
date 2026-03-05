@@ -34,10 +34,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn, formatCurrency } from '@/lib/utils';
 
 const RESERVE_ITEMS = [
-  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, icon: <FileText className="size-3" /> },
-  { id: 'housing', label: 'Housing deposit', baseGbp: 2000, icon: <Wallet className="size-3" /> },
-  { id: 'gap', label: 'Daily expenditure', baseGbp: 1000, icon: <Clock className="size-3" /> },
-  { id: 'setup', label: 'Basic home comforts', baseGbp: 500, icon: <Compass className="size-3" /> },
+  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, icon: <FileText className="size-4" />, num: '01' },
+  { id: 'housing', label: 'Housing liquidity', baseGbp: 2000, icon: <Wallet className="size-4" />, num: '02' },
+  { id: 'expenditure', label: 'Daily expenditure', baseGbp: 1000, icon: <Clock className="size-4" />, num: '03' },
+  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500, icon: <Compass className="size-4" />, num: '04' },
 ];
 
 const SCALING_MULTIPLIERS: Record<string, number> = {
@@ -51,34 +51,10 @@ export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const baseReserve = 4000;
   
-  const calculatedReserve = useMemo(() => {
-    return baseReserve * (SCALING_MULTIPLIERS[calcStatus] || 1);
-  }, [calcStatus]);
-
   const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
-
-  const breakdown = [
-    {
-      icon: <FileText className="size-4 text-primary" />,
-      title: "Visa and Documentation",
-      desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
-    },
-    {
-      icon: <Wallet className="size-4 text-primary" />,
-      title: "Housing Liquidity",
-      desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
-    },
-    {
-      icon: <Clock className="size-4 text-primary" />,
-      title: "Daily Expenditure",
-      desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
-    },
-    {
-      icon: <Compass className="size-4 text-primary" />,
-      title: "Basic Home Comforts",
-      desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
-    }
-  ];
+  const calculatedReserve = useMemo(() => {
+    return baseReserve * multiplier;
+  }, [multiplier]);
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
@@ -165,7 +141,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: Tactical Reserve Calculator */}
+        {/* Section 2: Tactical Reserve Calculator - Unified Layout */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
@@ -174,8 +150,9 @@ export default function PreparePage() {
             </p>
           </div>
           
-          <div className="space-y-8">
-            <div className="p-8 md:p-12 glass border-primary/30 bg-primary/5 rounded-sm flex flex-col md:flex-row gap-12 items-center md:items-start shadow-2xl relative overflow-hidden">
+          <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
+            {/* Top Part: The Projection Summary */}
+            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
                 <Calculator className="size-48 text-white" />
               </div>
@@ -212,31 +189,36 @@ export default function PreparePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {breakdown.map((item, idx) => (
-                <div key={item.title} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
-                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">0{idx + 1}</span>
+            {/* Bottom Part: The Itemised Registry */}
+            <div className="p-6 md:p-8 bg-black/20">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {RESERVE_ITEMS.map((item) => (
+                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
+                      <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{item.num}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-[10px] font-black uppercase tracking-tight text-white/90">{item.label}</h4>
+                      <p className="text-sm font-bold text-primary">
+                        {formatCurrency(item.baseGbp * multiplier, 'GBP')}
+                      </p>
+                    </div>
                   </div>
-                  <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.title}</h4>
-                  <p className="text-[11px] font-bold text-white tracking-tighter">
-                    {formatCurrency(RESERVE_ITEMS[idx].baseGbp * multiplier, 'GBP')}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
-              </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
+              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
             </div>
           </div>
         </section>
