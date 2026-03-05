@@ -21,7 +21,8 @@ import {
   ArrowRight,
   PencilLine,
   CheckCircle2,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import type { School } from '@/lib/types';
+import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -40,7 +45,15 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 };
 
 export default function PreparePage() {
+  const firestore = useFirestore();
+  const schoolsQuery = useMemoFirebase(
+    () => (firestore ? collection(firestore, 'schools') : null),
+    [firestore]
+  );
+  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
+
   const [calcStatus, setCalcStatus] = useState<string>('single');
+  const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   
   const [budget, setBudget] = useState({
     docs: 500,
@@ -49,15 +62,33 @@ export default function PreparePage() {
     comforts: 500
   });
 
+  const selectedSchool = useMemo(() => {
+    if (!selectedSchoolId || !schools) return null;
+    return schools.find(s => s.id === selectedSchoolId);
+  }, [selectedSchoolId, schools]);
+
   useEffect(() => {
     const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
+    
+    // Default rent logic
+    let rentEstimate = 2000;
+    if (selectedSchool) {
+      if (selectedSchool.intel.housing.provided) {
+        rentEstimate = 0; // Housing is covered
+      } else {
+        const { rent } = getRentForFamily(selectedSchool.costOfLiving, calcStatus as FamilyStatus);
+        // Rent estimate for landing usually includes deposit (assume 2x monthly for safety)
+        rentEstimate = Math.round(rent * 2); 
+      }
+    }
+
     setBudget({
       docs: Math.round(500 * multiplier),
-      housing: Math.round(2000 * multiplier),
+      housing: Math.round(rentEstimate),
       expenditure: Math.round(1000 * multiplier),
       comforts: Math.round(500 * multiplier)
     });
-  }, [calcStatus]);
+  }, [calcStatus, selectedSchool]);
 
   const totalReserve = useMemo(() => {
     return budget.docs + budget.housing + budget.expenditure + budget.comforts;
@@ -98,7 +129,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Audit your contract for over-zealous Non-Disclosure Agreements or terms suppressing reputational commentary. A school that threatens legal recourse for discussing its internal climate after your departure is signalling a deeply insecure governance structure.</p>
+                <p>Audit your contract for over-zealous non-disclosure agreements or terms suppressing reputational commentary. A school that threatens legal recourse for discussing its internal climate after your departure is signalling a deeply insecure governance structure.</p>
               </CardContent>
             </Card>
 
@@ -186,7 +217,7 @@ export default function PreparePage() {
                 </p>
               </div>
 
-              <div className="w-full md:w-56 space-y-4 pt-1 relative z-10">
+              <div className="w-full md:w-64 space-y-4 pt-1 relative z-10">
                 <div className="space-y-1.5">
                   <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
                   <Select value={calcStatus} onValueChange={setCalcStatus}>
@@ -201,9 +232,16 @@ export default function PreparePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center gap-2 p-2.5 bg-white/5 rounded-sm border border-white/5">
-                  <Calculator className="size-3 text-accent animate-pulse" />
-                  <span className="text-[9px] font-black text-accent uppercase tracking-widest">Real-time projection</span>
+                <div className="space-y-1.5">
+                  <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Target dossier</Label>
+                  <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
+                    <SelectTrigger className="h-10 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                      <SelectValue placeholder={isLoadingSchools ? "Loading..." : "Select school..."} />
+                    </SelectTrigger>
+                    <SelectContent className="glass max-h-[200px]">
+                      {schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -211,7 +249,7 @@ export default function PreparePage() {
             <div className="p-5 md:p-8 bg-black/30 space-y-5">
               <div className="flex items-center gap-2 px-1">
                 <PencilLine className="size-3 text-primary" />
-                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor your budget: adjust these standard figures to match the reality of your target destination.</p>
+                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor your budget: adjust these standard figures to match the reality of your own spending patterns.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {budgetItems.map((item) => (
@@ -290,7 +328,7 @@ export default function PreparePage() {
             {[
               "What is the weekly cap on teacher contact time?",
               "Is the EOS gratuity based on basic salary or total package?",
-              "Can I see the full Schedule of Benefits for health insurance?",
+              "Can I see the full schedule of benefits for health insurance?",
               "What is the deductible and co-pay for inpatient care?",
               "Are all capital levies and mandatory fees waived for staff children?",
               "Can I speak to a current teacher in my department privately?",
