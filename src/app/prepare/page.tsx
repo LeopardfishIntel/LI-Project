@@ -20,20 +20,22 @@ import {
   Calculator,
   Milestone,
   ArrowRight,
-  CheckCircle2
+  FileText,
+  Wallet,
+  Clock,
+  Compass,
+  Loader2,
+  CheckCircle2,
+  PencilLine
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
 
-const RESERVE_ITEMS = [
-  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500 },
-  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000 },
-  { id: 'expenditure', label: 'Daily expenditure - 6 weeks', baseGbp: 1000 },
-  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500 },
-];
+const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
 const SCALING_MULTIPLIERS: Record<string, number> = {
   single: 1,
@@ -44,12 +46,36 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 
 export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
-  const baseReserve = 4000;
   
-  const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
-  const calculatedReserve = useMemo(() => {
-    return baseReserve * multiplier;
-  }, [multiplier]);
+  // Budget State: Absolute values in GBP
+  const [budget, setBudget] = useState({
+    docs: 500,
+    housing: 2000,
+    expenditure: 1000,
+    comforts: 500
+  });
+
+  // Apply benchmark scaling when status changes
+  useEffect(() => {
+    const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
+    setBudget({
+      docs: Math.round(500 * multiplier),
+      housing: Math.round(2000 * multiplier),
+      expenditure: Math.round(1000 * multiplier),
+      comforts: Math.round(500 * multiplier)
+    });
+  }, [calcStatus]);
+
+  const totalReserve = useMemo(() => {
+    return budget.docs + budget.housing + budget.expenditure + budget.comforts;
+  }, [budget]);
+
+  const budgetItems = [
+    { id: 'docs', label: 'Visa and Documentation' },
+    { id: 'housing', label: 'Rent and Deposit' },
+    { id: 'expenditure', label: 'Daily expenditure - 6 weeks' },
+    { id: 'comforts', label: 'Basic home comforts' },
+  ];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
@@ -136,7 +162,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: Tactical Reserve Calculator */}
+        {/* Section 2: Unified Tactical Reserve Calculator */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
@@ -155,7 +181,7 @@ export default function PreparePage() {
               <div className="flex-1 space-y-4 relative z-10">
                 <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
                 <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
-                  {formatCurrency(calculatedReserve, 'GBP')}
+                  {formatCurrency(totalReserve, 'GBP')}
                 </p>
                 <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
                   <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
@@ -184,15 +210,28 @@ export default function PreparePage() {
               </div>
             </div>
 
-            {/* Bottom Part: Itemised Breakdown (Compact, No numbers, No icons) */}
-            <div className="p-6 md:p-8 bg-black/20">
+            {/* Bottom Part: Interactive Budget Override */}
+            <div className="p-6 md:p-8 bg-black/20 space-y-6">
+              <div className="flex items-center gap-2 px-1">
+                <PencilLine className="size-3 text-primary" />
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Budget override: Adjust estimates based on your target region</p>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {RESERVE_ITEMS.map((item) => (
-                  <div key={item.id} className="glass p-4 space-y-1 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                    <h4 className="text-[10px] font-black uppercase tracking-tight text-muted-foreground">{item.label}</h4>
-                    <p className="text-xl font-bold text-white tracking-tight">
-                      {formatCurrency(item.baseGbp * multiplier, 'GBP')}
-                    </p>
+                {budgetItems.map((item) => (
+                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                    <h4 className="text-[10px] font-black uppercase tracking-tight text-muted-foreground leading-tight h-8">{item.label}</h4>
+                    <div className="flex items-center gap-1 border-b border-primary/20 pb-1 mt-auto">
+                      <span className="text-sm font-black text-primary/50">£</span>
+                      <Input 
+                        type="number"
+                        value={budget[item.id as keyof typeof budget]}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          setBudget(prev => ({ ...prev, [item.id]: val }));
+                        }}
+                        className={cn("bg-transparent border-0 h-8 p-0 text-2xl font-black text-white focus-visible:ring-0 shadow-none", noSpinners)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
