@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -24,8 +23,8 @@ import {
   Wallet,
   Clock,
   Compass,
-  Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -115,7 +114,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Ambiguity in housing definitions leads to mission creep. Ensure the standard of provision is explicitly documented to prevent unilateral changes.</p>
+                <p>Vague housing terms often lead to a quiet downgrade in your living standards. Ensure the exact quality of your accommodation is clearly written into the contract—and if you receive a cash allowance, ensure it explicitly keeps pace with local rent inflation.</p>
               </CardContent>
             </Card>
 

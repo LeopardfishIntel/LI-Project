@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -16,7 +15,7 @@ export default function StrategicChecksheetPage() {
         { label: "Pay Scale Transparency", sub: "Confirmation of placement on a transparent institutional scale." },
         { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly capped in the contract?" },
         { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited for inpatient gaps." },
-        { label: "Housing Standard", sub: "Detailed specifications or photos of specific unit/compound obtained." },
+        { label: "Housing Standard", sub: "Specifications clearly defined and cash allowances tied to local rent inflation." },
         { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of school-controlled conduct ratings." }
       ]
     },
