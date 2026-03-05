@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -210,7 +209,7 @@ export default function PreparePage() {
             <div className="p-5 md:p-8 bg-black/30 space-y-5">
               <div className="flex items-center gap-2 px-1">
                 <PencilLine className="size-3 text-primary" />
-                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Budget override: Adjust estimates based on local mission data</p>
+                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor Your Budget: Adjust these standard figures to match the reality of your target destination.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {budgetItems.map((item) => (
