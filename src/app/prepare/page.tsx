@@ -21,7 +21,8 @@ import {
   ArrowRight,
   PencilLine,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Info
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -159,11 +160,19 @@ export default function PreparePage() {
 
         {/* Section 2: Unified Tactical Reserve Calculator */}
         <section className="space-y-6">
-          <div className="space-y-3">
-            <h2 className="text-xl md:text-2xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
-            <p className="text-xs font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="space-y-3">
+              <h2 className="text-xl md:text-2xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
+              <p className="text-xs font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+                Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
+              </p>
+            </div>
+            <Link 
+              href="/prepare/budget-briefing" 
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-colors"
+            >
+              <Info className="size-3" /> Read tactical briefing
+            </Link>
           </div>
           
           <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
