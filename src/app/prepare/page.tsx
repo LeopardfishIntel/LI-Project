@@ -169,7 +169,7 @@ export default function PreparePage() {
             </div>
             <Link 
               href="/prepare/budget-briefing" 
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-colors"
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
             >
               <Info className="size-3" /> Read tactical briefing
             </Link>
@@ -271,7 +271,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>If a school is consistently advertising mid-year vacancies (October/November), it signals unmanaged exits. Use our Growth-Adjust Staff Churn Index to identify replacement rates versus expansion.</p>
+                <p>If a school is consistently advertising mid-year vacancies (October/November), it signals unmanaged exits. Use our Growth-Adjusted Staff Churn Index to identify replacement rates versus expansion.</p>
               </CardContent>
             </Card>
 
