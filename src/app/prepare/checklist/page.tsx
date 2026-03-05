@@ -9,7 +9,7 @@ export default function StrategicChecksheetPage() {
   const sections = [
     {
       title: "Material risks",
-      description: "International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.",
+      description: "International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If any deal-breakers emerge, seek professional consultation before signing.",
       items: [
         { label: "Confidentiality Clauses", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Pay Scale Transparency", sub: "Confirmation of placement on a transparent institutional scale." },

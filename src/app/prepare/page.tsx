@@ -82,7 +82,7 @@ export default function PreparePage() {
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material risks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If you identify any deal-breakers, seek professional consultation.
+              International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If any deal-breakers emerge, seek professional consultation before signing.
             </p>
           </div>
           
@@ -135,7 +135,6 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
-            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
