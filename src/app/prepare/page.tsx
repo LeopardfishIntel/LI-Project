@@ -34,7 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn, formatCurrency } from '@/lib/utils';
 
 const RESERVE_ITEMS = [
-  { id: 'docs', label: 'Documents', baseGbp: 500, icon: <FileText className="size-3" /> },
+  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, icon: <FileText className="size-3" /> },
   { id: 'housing', label: 'Housing deposit', baseGbp: 2000, icon: <Wallet className="size-3" /> },
   { id: 'gap', label: 'Daily expenditure', baseGbp: 1000, icon: <Clock className="size-3" /> },
   { id: 'setup', label: 'Basic home comforts', baseGbp: 500, icon: <Compass className="size-3" /> },
@@ -60,7 +60,7 @@ export default function PreparePage() {
   const breakdown = [
     {
       icon: <FileText className="size-4 text-primary" />,
-      title: "Document Integrity",
+      title: "Visa and Documentation",
       desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
     },
     {
