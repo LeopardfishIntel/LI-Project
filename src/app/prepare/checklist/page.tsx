@@ -23,10 +23,10 @@ export default function StrategicChecksheetPage() {
       title: "The True Cost of Landing",
       description: "Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.",
       items: [
-        { label: "Tactical Reserve", sub: "Confirmed liquid capital (£4k–£10k) available for the initial 'Gap Month'." },
+        { label: "Daily expenditure", sub: "Confirmed liquid capital (£4k–£10k) available for the initial 'Gap Month'." },
         { label: "Document Integrity", sub: "Apostilles, notary public fees, and courier logistics accounted for." },
         { label: "Housing Liquidity", sub: "Provisions made for initial security deposit and upfront rent if required." },
-        { label: "The IKEA Test", sub: "Appliance and setup costs researched for local region." }
+        { label: "Basic home comforts", sub: "Appliance and setup costs researched for local region (The IKEA Test)." }
       ]
     },
     {
