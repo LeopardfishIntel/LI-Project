@@ -103,7 +103,7 @@ export default function BudgetBriefingPage() {
           </div>
         </footer>
       </div>
-      <div className="fixed inset-0 -z-10 bg-[#080c18]"></div>
+      <div className="fixed inset-0 -z-10 bg-[#080c18] print:hidden"></div>
     </div>
   );
 }
