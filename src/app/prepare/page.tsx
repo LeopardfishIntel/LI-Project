@@ -26,13 +26,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 const RESERVE_ITEMS = [
-  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, num: '01' },
-  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000, num: '02' },
-  { id: 'expenditure', label: 'Daily expenditure - 6 weeks', baseGbp: 1000, num: '03' },
-  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500, num: '04' },
+  { id: 'docs', label: 'Visa and Documentation', baseGbp: 500 },
+  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000 },
+  { id: 'expenditure', label: 'Daily expenditure - 6 weeks', baseGbp: 1000 },
+  { id: 'comforts', label: 'Basic home comforts', baseGbp: 500 },
 ];
 
 const SCALING_MULTIPLIERS: Record<string, number> = {
@@ -50,25 +50,6 @@ export default function PreparePage() {
   const calculatedReserve = useMemo(() => {
     return baseReserve * multiplier;
   }, [multiplier]);
-
-  const breakdown = [
-    {
-      title: "Document Integrity",
-      desc: "Legalisation, notary public fees, and international courier logistics required for entry visa processing."
-    },
-    {
-      title: "Rent and Deposit",
-      desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
-    },
-    {
-      title: "Daily expenditure - 6 weeks",
-      desc: "Daily survival costs (food, transport, telco) before the first full salary cycle completes."
-    },
-    {
-      title: "Basic home comforts",
-      desc: "The 'IKEA Test'—initial household appliances, bedding, and local connectivity installation."
-    }
-  ];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
@@ -109,7 +90,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
+                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the school or city baseline.</p>
               </CardContent>
             </Card>
 
@@ -155,7 +136,7 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: Tactical Reserve Calculator - Unified Layout */}
+        {/* Section 2: Tactical Reserve Calculator */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
@@ -174,7 +155,7 @@ export default function PreparePage() {
               <div className="flex-1 space-y-4 relative z-10">
                 <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
                 <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
-                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
+                  {formatCurrency(calculatedReserve, 'GBP')}
                 </p>
                 <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
                   <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
@@ -203,20 +184,15 @@ export default function PreparePage() {
               </div>
             </div>
 
-            {/* Bottom Part: The Itemised Registry (Icons Removed) */}
+            {/* Bottom Part: Itemised Breakdown (Compact, No numbers, No icons) */}
             <div className="p-6 md:p-8 bg-black/20">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {RESERVE_ITEMS.map((item) => (
-                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm relative">
-                    <div className="flex items-center justify-end">
-                      <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{item.num}</span>
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-[10px] font-black uppercase tracking-tight text-white/90">{item.label}</h4>
-                      <p className="text-sm font-bold text-primary">
-                        {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(item.baseGbp * multiplier)}
-                      </p>
-                    </div>
+                  <div key={item.id} className="glass p-4 space-y-1 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                    <h4 className="text-[10px] font-black uppercase tracking-tight text-muted-foreground">{item.label}</h4>
+                    <p className="text-xl font-bold text-white tracking-tight">
+                      {formatCurrency(item.baseGbp * multiplier, 'GBP')}
+                    </p>
                   </div>
                 ))}
               </div>
