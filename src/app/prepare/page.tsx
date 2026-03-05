@@ -21,7 +21,6 @@ import {
   ArrowRight,
   PencilLine,
   CheckCircle2,
-  Loader2,
   Info
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -165,9 +164,9 @@ export default function PreparePage() {
             </div>
             <Link 
               href="/prepare/budget-briefing" 
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
+              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse-slow drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
             >
-              <Info className="size-3" /> Read tactical briefing
+              <Info className="size-3" /> Read Me.
             </Link>
           </div>
           
