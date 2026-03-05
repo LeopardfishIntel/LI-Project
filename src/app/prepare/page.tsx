@@ -16,17 +16,17 @@ import {
   Globe,
   Users,
   Home,
-  Calculator,
-  Milestone,
   ArrowRight,
   FileText,
   Wallet,
   Clock,
   Compass,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Calculator,
+  Milestone
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -55,13 +55,17 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const [calcCurrency, setCalcCurrency] = useState<string>('GBP');
-  const baseReserve = 4000;
+  const [dateStamp, setDateStamp] = useState('');
+
+  useEffect(() => {
+    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
+  }, []);
 
   const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
   const rate = CURRENCY_RATES[calcCurrency] || 1;
 
   const calculatedTotal = useMemo(() => {
-    return baseReserve * multiplier * rate;
+    return 4000 * multiplier * rate;
   }, [multiplier, rate]);
 
   return (
@@ -99,7 +103,7 @@ export default function PreparePage() {
 
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale transparency</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale ambiguity</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
@@ -135,6 +139,7 @@ export default function PreparePage() {
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
                 <p>Ambiguity in flight definitions or relocation allowances leads to mission creep. Ensure the standard of provision is explicitly documented.</p>
               </CardContent>
+            </Card>
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
