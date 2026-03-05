@@ -233,7 +233,7 @@ export default function PreparePage() {
                           const val = parseInt(e.target.value) || 0;
                           setBudget(prev => ({ ...prev, [item.id]: val }));
                         }}
-                        className={cn("bg-transparent border-0 h-7 p-0 text-xl font-black text-white focus-visible:ring-0 shadow-none selection:bg-primary/30", noSpinners)}
+                        className={cn("bg-transparent border-0 h-7 p-0 text-xl font-black text-muted-foreground focus-visible:ring-0 shadow-none selection:bg-primary/30", noSpinners)}
                       />
                     </div>
                   </div>
