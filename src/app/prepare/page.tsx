@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -195,7 +196,7 @@ export default function PreparePage() {
               href="/prepare/budget-briefing" 
               className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse-slow drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
             >
-              <Info className="size-3" /> Read me.
+              <Info className="size-3" /> Read Me.
             </Link>
           </div>
           
@@ -325,9 +326,9 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               "What is the weekly cap on teacher contact time?",
-              "Is the EOS gratuity based on basic salary or total package?",
+              "Is the End Of Service gratuity based on basic salary or total package?",
               "Can I see the full schedule of benefits for health insurance?",
-              "What is the deductible and co-pay for inpatient care?",
+              "How much is the excess and the contribution for hospital stays?",
               "Are all capital levies and mandatory fees waived for staff children?",
               "Can I speak to a current teacher in my department privately?",
               "What was the replacement churn rate in the last two years?",
