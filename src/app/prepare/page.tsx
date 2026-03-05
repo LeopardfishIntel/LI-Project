@@ -33,7 +33,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
-import { getRentForFamily, getFamilyScalingMultiplier, type FamilyStatus } from '@/lib/rent-calculator';
+import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -70,14 +70,12 @@ export default function PreparePage() {
   useEffect(() => {
     const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
     
-    // Default rent logic
     let rentEstimate = 2000;
     if (selectedSchool) {
       if (selectedSchool.intel.housing.provided) {
-        rentEstimate = 0; // Housing is covered
+        rentEstimate = 0;
       } else {
         const { rent } = getRentForFamily(selectedSchool.costOfLiving, calcStatus as FamilyStatus);
-        // Rent estimate for landing usually includes deposit (assume 2x monthly for safety)
         rentEstimate = Math.round(rent * 2); 
       }
     }
@@ -139,7 +137,7 @@ export default function PreparePage() {
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the school or city baseline.</p>
+                <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
               </CardContent>
             </Card>
 
@@ -197,7 +195,7 @@ export default function PreparePage() {
               href="/prepare/budget-briefing" 
               className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse-slow drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
             >
-              <Info className="size-3" /> Read Me.
+              <Info className="size-3" /> Read me.
             </Link>
           </div>
           
@@ -212,8 +210,8 @@ export default function PreparePage() {
                 <p className="text-5xl md:text-6xl font-black text-white tracking-tighter">
                   {formatCurrency(totalReserve, 'GBP')}
                 </p>
-                <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-w-sm">
-                  <strong>Estimated</strong> upfront capital required to bridge the gap between touchdown and your initial payday.
+                <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-sm">
+                  Estimated upfront capital required to bridge the gap between touchdown and your initial payday.
                 </p>
               </div>
 
@@ -319,10 +317,10 @@ export default function PreparePage() {
 
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The "hard-talk" inquiry</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The big questions</h2>
           </div>
           
-          <p className="text-base text-muted-foreground font-medium mb-8">Verification is the difference between an adventure and an ordeal. Put these questions to current staff or during your final interview stage.</p>
+          <p className="text-base text-muted-foreground font-medium mb-8">Checking the facts could be the difference between a proper adventure and a total nightmare.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
