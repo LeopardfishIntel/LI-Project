@@ -33,7 +33,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 
 const RESERVE_ITEMS = [
   { id: 'docs', label: 'Visa and Documentation', baseGbp: 500, icon: <FileText className="size-4" />, num: '01' },
-  { id: 'housing', label: 'Housing liquidity', baseGbp: 2000, icon: <Wallet className="size-4" />, num: '02' },
+  { id: 'housing', label: 'Rent and Deposit', baseGbp: 2000, icon: <Wallet className="size-4" />, num: '02' },
   { id: 'expenditure', label: 'Daily expenditure', baseGbp: 1000, icon: <Clock className="size-4" />, num: '03' },
   { id: 'comforts', label: 'Basic home comforts', baseGbp: 500, icon: <Compass className="size-4" />, num: '04' },
 ];
@@ -62,7 +62,7 @@ export default function PreparePage() {
     },
     {
       icon: <Wallet className="size-4 text-primary" />,
-      title: "Housing Liquidity",
+      title: "Rent and Deposit",
       desc: "Upfront first month's rent + security deposit if the institution does not provide turnkey accommodation."
     },
     {

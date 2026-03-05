@@ -24,7 +24,7 @@ export default function StrategicChecksheetPage() {
       description: "Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.",
       items: [
         { label: "Visa and Documentation", sub: "Apostilles, notary public fees, and courier logistics accounted for." },
-        { label: "Housing Liquidity", sub: "Provisions made for initial security deposit and upfront rent if required." },
+        { label: "Rent and Deposit", sub: "Provisions made for initial security deposit and upfront rent if required." },
         { label: "Daily expenditure", sub: "Confirmed liquid capital available for the initial 'Gap Month'." },
         { label: "Basic home comforts", sub: "Appliance and setup costs researched for local region (The IKEA Test)." }
       ]
