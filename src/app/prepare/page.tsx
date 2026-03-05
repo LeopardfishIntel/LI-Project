@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -23,7 +22,8 @@ import {
   PencilLine,
   CheckCircle2,
   Info,
-  Loader2
+  Loader2,
+  Trophy
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -342,6 +342,22 @@ export default function PreparePage() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className="space-y-8 pt-12 border-t border-white/5">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The Gold Standard</h2>
+          </div>
+          <Card className="glass border-primary/20 bg-primary/5">
+            <CardContent className="pt-8">
+              <div className="flex flex-col md:flex-row gap-6 items-start">
+                <Trophy className="size-12 text-primary shrink-0" />
+                <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
+                  "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         <div className="flex justify-center pt-8">
