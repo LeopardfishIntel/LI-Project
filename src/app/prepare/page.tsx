@@ -20,13 +20,9 @@ import {
   Calculator,
   Milestone,
   ArrowRight,
-  FileText,
-  Wallet,
-  Clock,
-  Compass,
-  Loader2,
+  PencilLine,
   CheckCircle2,
-  PencilLine
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,16 +75,16 @@ export default function PreparePage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
-      <div className="mb-16 text-center space-y-4">
+      <div className="mb-12 text-center space-y-3">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-[10px] leading-relaxed uppercase tracking-[0.3em] opacity-60">
           Professional educator due diligence and risk assessment.
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-20">
+      <div className="max-w-5xl mx-auto space-y-16">
         
         {/* Section 1: Material Risks */}
         <section className="space-y-8">
@@ -163,36 +159,36 @@ export default function PreparePage() {
         </section>
 
         {/* Section 2: Unified Tactical Reserve Calculator */}
-        <section className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
-            <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+        <section className="space-y-6">
+          <div className="space-y-3">
+            <h2 className="text-xl md:text-2xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
+            <p className="text-xs font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
               Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
             </p>
           </div>
           
           <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
             {/* Top Part: The Projection Summary */}
-            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5 relative">
+            <div className="p-6 md:p-10 flex flex-col md:flex-row gap-10 items-center md:items-start border-b border-white/5 relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
-                <Calculator className="size-48 text-white" />
+                <Calculator className="size-40 text-white" />
               </div>
               
-              <div className="flex-1 space-y-4 relative z-10">
-                <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
-                <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
+              <div className="flex-1 space-y-3 relative z-10">
+                <p className="text-[10px] font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
+                <p className="text-5xl md:text-6xl font-black text-white tracking-tighter">
                   {formatCurrency(totalReserve, 'GBP')}
                 </p>
-                <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
+                <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-w-sm">
                   <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
                 </p>
               </div>
 
-              <div className="w-full md:w-64 space-y-6 pt-2 relative z-10">
-                <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
+              <div className="w-full md:w-56 space-y-4 pt-1 relative z-10">
+                <div className="space-y-1.5">
+                  <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
                   <Select value={calcStatus} onValueChange={setCalcStatus}>
-                    <SelectTrigger className="h-12 bg-background/60 border-white/10 text-white font-bold text-base rounded-sm">
+                    <SelectTrigger className="h-10 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="glass">
@@ -203,25 +199,25 @@ export default function PreparePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-sm border border-white/5">
-                  <Calculator className="size-4 text-accent animate-pulse" />
-                  <span className="text-[10px] font-black text-accent uppercase tracking-widest">Real-time projection</span>
+                <div className="flex items-center gap-2 p-2.5 bg-white/5 rounded-sm border border-white/5">
+                  <Calculator className="size-3 text-accent animate-pulse" />
+                  <span className="text-[9px] font-black text-accent uppercase tracking-widest">Real-time projection</span>
                 </div>
               </div>
             </div>
 
             {/* Bottom Part: Interactive Budget Override */}
-            <div className="p-6 md:p-8 bg-black/20 space-y-6">
+            <div className="p-5 md:p-8 bg-black/30 space-y-5">
               <div className="flex items-center gap-2 px-1">
                 <PencilLine className="size-3 text-primary" />
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Budget override: Adjust estimates based on your target region</p>
+                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Budget override: Adjust estimates based on local mission data</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {budgetItems.map((item) => (
-                  <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                    <h4 className="text-[10px] font-black uppercase tracking-tight text-muted-foreground leading-tight h-8">{item.label}</h4>
-                    <div className="flex items-center gap-1 border-b border-primary/20 pb-1 mt-auto">
-                      <span className="text-sm font-black text-primary/50">£</span>
+                  <div key={item.id} className="glass p-4 space-y-3 bg-black/40 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+                    <h4 className="text-[9px] font-black uppercase tracking-tight text-muted-foreground/80 leading-tight h-6">{item.label}</h4>
+                    <div className="flex items-center gap-2 bg-background/40 border border-white/10 rounded-sm px-2 py-1.5 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+                      <span className="text-sm font-black text-primary/70">£</span>
                       <Input 
                         type="number"
                         value={budget[item.id as keyof typeof budget]}
@@ -229,7 +225,7 @@ export default function PreparePage() {
                           const val = parseInt(e.target.value) || 0;
                           setBudget(prev => ({ ...prev, [item.id]: val }));
                         }}
-                        className={cn("bg-transparent border-0 h-8 p-0 text-2xl font-black text-white focus-visible:ring-0 shadow-none", noSpinners)}
+                        className={cn("bg-transparent border-0 h-7 p-0 text-xl font-black text-white focus-visible:ring-0 shadow-none selection:bg-primary/30", noSpinners)}
                       />
                     </div>
                   </div>
@@ -238,15 +234,15 @@ export default function PreparePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-4">
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-5 text-primary" /> Upfront & hidden costs</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            <div className="space-y-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
             </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-5 text-primary" /> The IKEA test</h3>
-              <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
+            <div className="space-y-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-4 text-primary" /> The IKEA test</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
             </div>
           </div>
         </section>
