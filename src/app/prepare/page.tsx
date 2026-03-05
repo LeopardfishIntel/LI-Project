@@ -43,7 +43,6 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
   
-  // Budget State: Absolute values in GBP
   const [budget, setBudget] = useState({
     docs: 500,
     housing: 2000,
@@ -51,7 +50,6 @@ export default function PreparePage() {
     comforts: 500
   });
 
-  // Apply benchmark scaling when status changes
   useEffect(() => {
     const multiplier = SCALING_MULTIPLIERS[calcStatus] || 1;
     setBudget({
@@ -67,8 +65,8 @@ export default function PreparePage() {
   }, [budget]);
 
   const budgetItems = [
-    { id: 'docs', label: 'Visa and Documentation' },
-    { id: 'housing', label: 'Rent and Deposit' },
+    { id: 'docs', label: 'Visa and documentation' },
+    { id: 'housing', label: 'Rent and deposit' },
     { id: 'expenditure', label: 'Daily expenditure - 6 weeks' },
     { id: 'comforts', label: 'Basic home comforts' },
   ];
@@ -86,7 +84,6 @@ export default function PreparePage() {
 
       <div className="max-w-5xl mx-auto space-y-16">
         
-        {/* Section 1: Material Risks */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material risks</h2>
@@ -98,7 +95,7 @@ export default function PreparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="glass border-red-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> Confidentiality Clauses</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> Confidentiality clauses</CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
@@ -138,7 +135,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Flights and Relocation</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Flights and relocation</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
@@ -158,7 +155,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 2: Unified Tactical Reserve Calculator */}
         <section className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div className="space-y-3">
@@ -176,7 +172,6 @@ export default function PreparePage() {
           </div>
           
           <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
-            {/* Top Part: The Projection Summary */}
             <div className="p-6 md:p-10 flex flex-col md:flex-row gap-10 items-center md:items-start border-b border-white/5 relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
                 <Calculator className="size-40 text-white" />
@@ -188,7 +183,7 @@ export default function PreparePage() {
                   {formatCurrency(totalReserve, 'GBP')}
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-w-sm">
-                  <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
+                  <strong>Estimated</strong> upfront capital required to bridge the gap between touchdown and your initial payday.
                 </p>
               </div>
 
@@ -214,11 +209,10 @@ export default function PreparePage() {
               </div>
             </div>
 
-            {/* Bottom Part: Interactive Budget Override */}
             <div className="p-5 md:p-8 bg-black/30 space-y-5">
               <div className="flex items-center gap-2 px-1">
                 <PencilLine className="size-3 text-primary" />
-                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor Your Budget: Adjust these standard figures to match the reality of your target destination.</p>
+                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor your budget: adjust these standard figures to match the reality of your target destination.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {budgetItems.map((item) => (
@@ -255,7 +249,6 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 3: Leadership & Stability */}
         <section className="space-y-8">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Leadership & stability</h2>
@@ -287,10 +280,9 @@ export default function PreparePage() {
           </div>
         </section>
 
-        {/* Section 4: The "Hard-Talk" inquiry */}
         <section className="space-y-8 pb-12">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The "Hard-Talk" inquiry</h2>
+            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The "hard-talk" inquiry</h2>
           </div>
           
           <p className="text-base text-muted-foreground font-medium mb-8">Verification is the difference between an adventure and an ordeal. Put these questions to current staff or during your final interview stage.</p>
