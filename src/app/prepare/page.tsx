@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -23,7 +24,8 @@ import {
   Wallet,
   Clock,
   Compass,
-  Loader2
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,9 +81,9 @@ export default function PreparePage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 text-white">
+    <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
       <div className="mb-16 text-center space-y-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case">
           4. Are you prepared?
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-xs leading-relaxed uppercase tracking-[0.3em] opacity-60">
@@ -211,15 +213,15 @@ export default function PreparePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {RESERVE_ITEMS.map((item, idx) => (
-                <div key={item.id} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
+              {breakdown.map((item, idx) => (
+                <div key={item.title} className="glass p-5 space-y-3 bg-white/2 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
                   <div className="flex items-center justify-between">
                     <div className="p-2 bg-primary/10 rounded-sm">{item.icon}</div>
                     <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">0{idx + 1}</span>
                   </div>
-                  <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.label}</h4>
+                  <h4 className="text-xs font-black uppercase tracking-tight text-white/90">{item.title}</h4>
                   <p className="text-[11px] font-bold text-white tracking-tighter">
-                    {formatCurrency(item.baseGbp * multiplier, 'GBP')}
+                    {formatCurrency(RESERVE_ITEMS[idx].baseGbp * multiplier, 'GBP')}
                   </p>
                 </div>
               ))}
