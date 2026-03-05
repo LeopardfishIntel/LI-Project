@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -13,7 +14,7 @@ export default function StrategicChecksheetPage() {
       items: [
         { label: "Confidentiality Clauses", sub: "Ensure privacy clauses are limited to standard data protection." },
         { label: "Pay Scale Transparency", sub: "Confirmation of placement on a transparent institutional scale." },
-        { label: "Contact Time Cap", sub: "Is the weekly teaching time explicitly capped in the contract?" },
+        { label: "Flights and Relocation", sub: "Ambiguity in flight definitions or relocation allowances audited." },
         { label: "Medical Co-pay Audit", sub: "Full Schedule of Benefits obtained and audited for inpatient gaps." },
         { label: "Housing Standard", sub: "Specifications clearly defined and cash allowances tied to local rent inflation." },
         { label: "Exit Protocol", sub: "Confirmation that gratuity is independent of school-controlled conduct ratings." }
@@ -113,7 +114,7 @@ export default function StrategicChecksheetPage() {
               <div className="grid gap-4">
                 {section.items.map((item, iIdx) => (
                   <div key={iIdx} className="flex items-start gap-4 group p-2 -ml-2 rounded-sm transition-colors hover:bg-gray-50">
-                    <div className="mt-1 size-6 border-2 border-black rounded-sm flex-shrink-0 bg-white"></div>
+                    <div className="mt-1 size-6 size-6 border-2 border-black rounded-sm flex-shrink-0 bg-white"></div>
                     <div className="space-y-1">
                       <p className="text-base font-black uppercase tracking-tight leading-tight">{item.label}</p>
                       <p className="text-sm text-gray-600 font-medium leading-relaxed">{item.sub}</p>

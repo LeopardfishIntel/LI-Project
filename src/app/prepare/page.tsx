@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -23,8 +24,7 @@ import {
   Wallet,
   Clock,
   Compass,
-  CheckCircle2,
-  Loader2
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,7 @@ export default function PreparePage() {
 
             <Card className="glass border-amber-500/20">
               <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Vague logistical terms</CardTitle>
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Flights and Relocation</CardTitle>
                 <Flag className="size-4 fill-amber-500 text-amber-500" />
               </CardHeader>
               <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
@@ -159,7 +159,7 @@ export default function PreparePage() {
               <div className="flex-1 space-y-4 relative z-10">
                 <p className="text-xs font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
                 <p className="text-6xl md:text-7xl font-black text-white tracking-tighter">
-                  {formatCurrency(calculatedReserve, 'GBP')}
+                  {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(calculatedReserve)}
                 </p>
                 <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed max-w-md">
                   <strong>Estimated</strong> Upfront Capital required to bridge the gap between Touchdown and your Initial Payday.
@@ -200,7 +200,7 @@ export default function PreparePage() {
                     <div className="space-y-1">
                       <h4 className="text-[10px] font-black uppercase tracking-tight text-white/90">{item.label}</h4>
                       <p className="text-sm font-bold text-primary">
-                        {formatCurrency(item.baseGbp * multiplier, 'GBP')}
+                        {new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(item.baseGbp * multiplier)}
                       </p>
                     </div>
                   </div>
