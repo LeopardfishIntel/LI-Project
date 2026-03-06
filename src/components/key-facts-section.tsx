@@ -117,7 +117,7 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full py-6 bg-black/70 backdrop-blur-md border-t border-white/10">
+    <div className="w-full py-6 bg-transparent">
       <div className="max-w-[1400px] mx-auto px-4 md:px-6">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-center">
           {stats.map((stat, index) => (
