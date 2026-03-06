@@ -58,7 +58,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Intelligence Grade Hero */}
-      <section className="relative w-full h-[60vh] md:h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[85vh] min-h-[600px] flex flex-col justify-between overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -69,8 +69,14 @@ export default function Home() {
           data-ai-hint={heroImage.imageHint}
         />
         
+        {/* Animated Scan Lines */}
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-20"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-background"></div>
+        </div>
+
         {/* Centered Content Overlay */}
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30">
+        <div className="relative z-20 flex-grow flex items-center justify-center pt-16">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
               <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_25px_rgba(249,115,22,0.2)]">
@@ -98,28 +104,29 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
-        {/* Animated Scan Lines */}
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-20"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
-        </div>
-      </section>
 
-      {/* Stats Counter Section - Minimum Padding */}
-      <section className="py-2 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
+        {/* Stats Counter - Integrated into Hero Bottom */}
+        <div className="relative z-30 container mx-auto px-4 md:px-6 pb-8">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Mission Section - Compacted */}
-      <section className="py-6 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-4">
+      {/* Tagline Section */}
+      <section className="py-12 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+            <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
+              Teach Overseas: Know Before You Go
+            </p>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="py-12 md:py-20 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
           </h2>
-          <div className="space-y-4 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-6 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
             <p>
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
@@ -130,12 +137,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey - No Section Padding */}
-      <section className="py-0 bg-background">
+      {/* Zig-Zag Insider Journey */}
+      <section className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-4">
+          <div className="space-y-16 md:space-y-24">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-6 lg:gap-16 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 lg:gap-24 items-center">
                 <div className={cn(
                   "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -155,11 +162,11 @@ export default function Home() {
                   )}>{step.id}</div>
                 </div>
                 <div className={cn(
-                  "space-y-4 flex flex-col",
+                  "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <h3 className="text-2xl md:text-4xl stamped-dossier text-white tracking-tighter leading-none">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] h-10 px-8 rounded-sm border-0 shadow-lg shadow-primary/10" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-3.5 h-3.5" /></Link>
                   </Button>
