@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import type { School } from '@/lib/types';
+import type { School, LocationCostOfLiving } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -138,13 +138,21 @@ function SchoolProfileSkeleton() {
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const firestore = useFirestore();
+  
   const schoolRef = useMemoFirebase(
     () => (firestore ? doc(firestore, 'schools', id) : null),
     [firestore, id]
   );
-  const { data: school, isLoading } = useDoc<School>(schoolRef);
+  const { data: school, isLoading: isSchoolLoading } = useDoc<School>(schoolRef);
 
-  if (isLoading) {
+  // Fetch linked location data
+  const locationRef = useMemoFirebase(
+    () => (firestore && school?.locationId ? doc(firestore, 'locations_costOfLiving', school.locationId) : null),
+    [firestore, school?.locationId]
+  );
+  const { data: locationData, isLoading: isLocationLoading } = useDoc<LocationCostOfLiving>(locationRef);
+
+  if (isSchoolLoading) {
     return <SchoolProfileSkeleton />;
   }
 
@@ -324,7 +332,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           </div>
 
           <div className="space-y-8">
-            <CostOfLivingCalculator school={school} />
+            {/* If locationData is linked, use it. Fallback to school snapshot if link is pending. */}
+            <CostOfLivingCalculator school={school} overrideLocationData={locationData || undefined} />
           </div>
         </div>
       </div>

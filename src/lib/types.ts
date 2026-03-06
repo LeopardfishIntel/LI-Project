@@ -54,7 +54,8 @@ export type School = {
     nonContactTime?: number;
     technologyEcosystem?: string;
   };
-  // Snapshot of CoL data for performance, can be updated via the locationId link
+  // costOfLiving is now primarily managed in the LocationCostOfLiving collection,
+  // but a local snapshot is kept here for performance.
   costOfLiving: {
     monthlyRent1BR?: number;
     monthlyRent2BR?: number;
