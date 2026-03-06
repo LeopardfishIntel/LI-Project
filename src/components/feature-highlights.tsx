@@ -45,7 +45,7 @@ export function FeatureHighlights() {
     {
       icon: <Sparkles className="size-5 text-primary" />,
       title: "SWOT verdicts",
-      desc: "Receive AI-powered analytical reports identifying strengths and institutional risks."
+      desc: "Receive curated analytical reports identifying strengths and institutional risks."
     },
     {
       icon: <FileCheck className="size-5 text-accent" />,
@@ -75,8 +75,8 @@ export function FeatureHighlights() {
             <CardContent className="p-8 md:p-12 space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
                 {capabilities.map((cap, i) => (
-                  <div key={i} className="flex flex-col gap-3 group">
-                    <div className="p-2 bg-white/5 rounded-sm w-fit group-hover:bg-primary/10 transition-colors">
+                  <div key={i} className="flex items-start gap-4 group">
+                    <div className="p-2.5 bg-white/5 rounded-sm mt-1 group-hover:bg-primary/10 transition-colors">
                       {cap.icon}
                     </div>
                     <div className="space-y-1.5">
@@ -90,7 +90,7 @@ export function FeatureHighlights() {
               </div>
 
               <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                <p className="text-sm text-muted-foreground italic font-medium">Verify your next move with field-grade financial and institutional data.</p>
+                <p className="text-sm text-muted-foreground italic font-medium">Make informed decisions with verified financial and institutional data.</p>
                 <div className="flex gap-3">
                     <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
                         <Link href="/directory">Browse Schools</Link>
