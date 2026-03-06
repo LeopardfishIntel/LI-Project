@@ -1,5 +1,6 @@
-import { Linkedin, Facebook, Binoculars } from "lucide-react";
+import { Linkedin, Facebook } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -7,8 +8,14 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-12">
             <div className="flex flex-col items-center md:items-start space-y-4">
-                <div className="flex items-center">
-                    <Binoculars className="h-6 w-6 mr-2 text-primary" />
+                <div className="flex items-center gap-3">
+                    <div className="relative size-6">
+                      <Image 
+                        src="/assets/logo.svg" 
+                        alt="Leopardfish Intel Logo" 
+                        fill
+                      />
+                    </div>
                     <span className="font-bold font-headline text-lg tracking-tighter text-white">
                       <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
                     </span>
@@ -29,8 +36,8 @@ export default function Footer() {
                 </div>
                 <nav className="flex flex-col gap-2 items-center md:items-end">
                     <Link href="/enquiry" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Contact</Link>
-                    <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Data hub</Link>
-                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms and Conditions</Link>
+                    <Link href="/admin/seed-data" className="text-sm font-bold text-muted-foreground hover:text-white transition-colors">Data Admin</Link>
+                    <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Terms of Service</Link>
                     <Link href="#" className="text-xs text-muted-foreground/50 hover:text-white transition-colors font-medium">Privacy Policy</Link>
                 </nav>
             </div>
