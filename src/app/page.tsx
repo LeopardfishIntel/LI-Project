@@ -107,7 +107,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-16 border-b border-white/5 bg-background">
+      <section className="py-10 md:py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
@@ -123,16 +123,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-background">
+      <section className="py-10 md:py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-12 md:space-y-16">
+          <div className="space-y-10 md:space-y-14">
             {steps.map((step, index) => (
               <div key={step.id} className={cn(
-                "grid md:grid-cols-2 gap-12 lg:gap-24 items-center",
+                "grid md:grid-cols-2 gap-8 lg:gap-20 items-stretch",
                 index % 2 === 1 && "md:flex-row-reverse"
               )}>
                 <div className={cn(
-                  "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
+                  "relative min-h-[300px] md:h-auto rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
                 )}>
                   <Image 
@@ -150,7 +150,7 @@ export default function Home() {
                   )}>{step.id}</div>
                 </div>
                 <div className={cn(
-                  "space-y-6 flex flex-col",
+                  "space-y-6 flex flex-col justify-center",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <h3 className="text-2xl md:text-4xl stamped-dossier text-white tracking-tighter leading-none">{step.title}</h3>
