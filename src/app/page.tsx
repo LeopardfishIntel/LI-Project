@@ -65,12 +65,12 @@ export default function Home() {
           fill
           priority
           style={{ objectFit: 'cover' }}
-          className="absolute inset-0 w-full h-full opacity-60"
+          className="absolute inset-0 w-full h-full opacity-70"
           data-ai-hint={heroImage.imageHint}
         />
         
-        {/* Centered Content Overlay */}
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        {/* Centered Content Overlay - Removed blur to allow image clarity */}
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
               <div className="inline-flex items-center gap-3 bg-primary/10 border border-primary/30 px-6 py-2 rounded text-primary text-xs md:text-lg font-black uppercase tracking-widest animate-pulse shadow-[0_0_25px_rgba(249,115,22,0.2)]">
