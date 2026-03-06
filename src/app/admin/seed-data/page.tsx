@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useActionState, useEffect } from 'react';
@@ -52,14 +53,11 @@ import { Separator } from '@/components/ui/separator';
 import { enrichAllSchoolsAction, type BulkEnrichState } from './actions';
 
 const collectionOptions = [
-  'schools',
-  'users',
-  'roles_admin',
-  'roles_verifiedTeachers',
-  'forum_categories',
-  'forum_posts',
-  'app_metrics',
-  'locations_costOfLiving',
+  { value: 'schools', label: 'Schools Dossier' },
+  { value: 'locations_costOfLiving', label: 'Cost of Living Index' },
+  { value: 'users', label: 'User Profiles' },
+  { value: 'forum_posts', label: 'Forum Content' },
+  { value: 'roles_admin', label: 'Admin Access List' },
 ];
 
 const bulkEnrichInitialState: BulkEnrichState = { message: null, error: null, summary: null };
@@ -255,7 +253,7 @@ export default function SeedDataPage() {
             Data Hub
             </h1>
             <p className="text-muted-foreground text-center mt-4 font-medium leading-relaxed">
-            Manage content, and run bulk & AI data operations for your application.
+            Manage your Google Sheets imports and run bulk AI data operations.
             </p>
         </div>
 
@@ -265,90 +263,7 @@ export default function SeedDataPage() {
             <p className="font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Checking admin status...</p>
           </div>
         )}
-        {!isLoading && !user && (
-          <Alert>
-            <AlertTitle>Please Log In</AlertTitle>
-            <AlertDescription>
-              You must be logged in to perform administrative actions.
-            </AlertDescription>
-          </Alert>
-        )}
-        {!isLoading && user && !isAdmin && (
-          <div className="space-y-4">
-            <Alert variant="destructive">
-              <ShieldOff className="h-4 w-4" />
-              <AlertTitle>Admin Access Required</AlertTitle>
-              <AlertDescription>
-                {adminRoleError ? (
-                  <>
-                    <p>
-                      A permission error occurred while checking your admin status. This is almost always caused by Firestore Security Rules.
-                    </p>
-                    <p className="mt-2 font-mono text-xs bg-black/30 p-2 rounded">
-                      Error: {adminRoleError.message}
-                    </p>
-                  </>
-                ) : (
-                  'You do not have permission to perform this action.'
-                )}
-              </AlertDescription>
-            </Alert>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="normal-case">How to become an Admin</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm font-medium">
-                <p>
-                  To use these tools, you need to be an administrator. To
-                  grant yourself admin rights, follow these steps:
-                </p>
-                <Alert variant="destructive" className="text-left">
-                  <ShieldAlert className="h-4 w-4" />
-                  <AlertTitle>Important!</AlertTitle>
-                  <AlertDescription>
-                    The collection name must be exactly{' '}
-                    <code className="bg-primary/20 text-primary-foreground p-1 rounded">
-                      roles_admin
-                    </code>
-                    .
-                  </AlertDescription>
-                </Alert>
-                <ol className="list-decimal list-inside space-y-2">
-                  <li>
-                    Go to your Firebase Firestore Console.
-                  </li>
-                  <li>
-                    Click 'Start collection' and create a new collection
-                    named{' '}
-                    <code className="bg-muted px-1 py-0.5 rounded font-black">
-                      roles_admin
-                    </code>
-                    .
-                  </li>
-                  <li>
-                    Click 'Add document'. For the 'Document ID', paste your
-                    User ID.
-                  </li>
-                  <li className="p-2 bg-muted rounded-md">
-                    <p className="font-semibold text-[10px] uppercase tracking-widest opacity-60">Your User ID:</p>
-                    <code className="block break-all mt-1 font-black text-primary">
-                      {user.uid}
-                    </code>
-                  </li>
-                  <li>
-                    You can add a field, e.g., `isAdmin: true`, but the existence of the document is enough. Click 'Save'.
-                  </li>
-                  <li>
-                    Refresh this page. The admin tools should become
-                    available.
-                  </li>
-                </ol>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
+        
         {!isLoading && user && isAdmin && (
           <div className="space-y-8 animate-in fade-in duration-500">
             <Alert
@@ -360,28 +275,28 @@ export default function SeedDataPage() {
                 Admin Access Granted
               </AlertTitle>
               <AlertDescription className="font-medium">
-                You are authorized to perform administrative actions.
+                You are authorized to manage the data registry.
               </AlertDescription>
             </Alert>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-3 normal-case"><Sparkles className="text-primary"/>AI Data Tools</CardTitle>
-                    <CardDescription>Use AI to enrich and update your database with real-world information.</CardDescription>
+                    <CardTitle className="flex items-center gap-3 normal-case"><Sparkles className="text-primary"/>Intelligence Operations</CardTitle>
+                    <CardDescription>Automated AI protocols for database enrichment.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="p-4 rounded-lg bg-background/50 border">
-                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><RefreshCcw className="text-blue-400 size-4" /> Cost of Living Data</h3>
-                        <p className="text-sm text-muted-foreground mb-4 font-medium">The initial cost of living data is from mock files. Use this tool to fetch fresh, real-world estimates from public sources like Numbeo. This is the best way to address excessive or outdated rental estimates.</p>
+                    <div className="p-4 rounded-lg bg-background/50 border border-white/5">
+                        <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><RefreshCcw className="text-blue-400 size-4" /> Sync Cost of Living</h3>
+                        <p className="text-sm text-muted-foreground mb-4 font-medium">Use AI to refresh local cost estimates for a specific city. This draws fresh data from global hubs.</p>
                         <Button asChild variant="outline" size="sm">
                             <Link href="/admin/update-col">
-                                <RefreshCcw className="mr-2 size-4" /> Update CoL Data
+                                <RefreshCcw className="mr-2 size-4" /> Open Update Tool
                             </Link>
                         </Button>
                     </div>
-                    <div className="p-4 rounded-lg bg-background/50 border">
+                    <div className="p-4 rounded-lg bg-background/50 border border-white/5">
                         <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><Sparkles className="text-green-400 size-4" /> Bulk School Enrichment</h3>
-                        <p className="text-sm text-muted-foreground mb-4 font-medium">Automatically find and fill in missing information (like descriptions and curriculum details) for all incomplete school records in your database.</p>
+                        <p className="text-sm text-muted-foreground mb-4 font-medium">Identify incomplete school dossiers and use AI to find missing descriptions and curriculum details.</p>
                         <form action={enrichFormAction}>
                           <BulkEnrichSubmitButton />
                         </form>
@@ -390,66 +305,23 @@ export default function SeedDataPage() {
             </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-3 normal-case"><FilePlus className="text-primary"/>Content Management</CardTitle>
-                    <CardDescription>
-                    Add new documents or view existing collection data.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button asChild variant="outline">
-                        <Link href="/admin/add-school" className="w-full">
-                            <Plus className="mr-2 size-4" /> Add School
-                        </Link>
-                    </Button>
-                    <Button asChild variant="outline">
-                    <Link href="/admin/data-table" className="w-full">
-                            <TableIcon className="mr-2 size-4" /> View School Data
-                        </Link>
-                    </Button>
-                    <Button asChild variant="outline" className="md:col-span-2">
-                        <Link href="/admin/cost-of-living-table" className="w-full text-center">
-                            <TableIcon className="mr-2 size-4" /> View Cost of Living Registry
-                        </Link>
-                    </Button>
-                </CardContent>
-            </Card>
-
-            <Card className="bg-card/70 backdrop-blur-sm border-border">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 normal-case"><DatabaseZap className="text-primary"/>Database Operations</CardTitle>
+                <CardTitle className="flex items-center gap-3 normal-case"><DatabaseZap className="text-primary"/>Registry Synchronization</CardTitle>
                 <CardDescription>
-                  Seed, import, or export entire collections.
+                  Import or export your Google Sheets data. Ensure your ID fields match across sheets to maintain links.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8">
-                <div className="p-4 rounded-lg bg-background/50 border">
-                    <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><DatabaseZap className="text-amber-400 size-4" /> Seed Mock Data</h3>
-                    <p className="text-sm text-muted-foreground mb-4 font-medium">Populate collections with a set of mock data. This will add or overwrite existing documents.</p>
-                    <div className="flex flex-wrap gap-4">
-                        <Button onClick={() => handleSeedData('schools')} disabled={isSeeding}>
-                            {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Seed School Data
-                        </Button>
-                        <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} variant="outline">
-                            {isSeedingCoL ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                            Seed CoL Data
-                        </Button>
-                    </div>
-                </div>
-                
-                <Separator />
-
+              <CardContent className="space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileDown className="text-green-400 size-4" /> Export Collection</h3>
+                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileDown className="text-green-400 size-4" /> Export Registry</h3>
                          <Select value={exportSelection} onValueChange={setExportSelection}>
                             <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
                                 <SelectValue placeholder="Select a collection" />
                             </SelectTrigger>
                             <SelectContent className="glass">
                                 {collectionOptions.map(col => (
-                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                    <SelectItem key={col.value} value={col.value}>{col.label}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -459,26 +331,56 @@ export default function SeedDataPage() {
                         </Button>
                     </div>
                     <div className="space-y-4">
-                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileUp className="text-blue-400 size-4" /> Import Collection</h3>
+                        <h3 className="font-semibold flex items-center gap-2 normal-case"><FileUp className="text-blue-400 size-4" /> Import Sheet</h3>
                          <Select value={importSelection} onValueChange={setImportSelection}>
                             <SelectTrigger className="bg-background/50 border-white/10 rounded-sm">
-                                <SelectValue placeholder="Select a collection" />
+                                <SelectValue placeholder="Select target registry" />
                             </SelectTrigger>
                             <SelectContent className="glass">
                                 {collectionOptions.map(col => (
-                                    <SelectItem key={col} value={col}>{col}</SelectItem>
+                                    <SelectItem key={col.value} value={col.value}>{col.label}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                          <Input id="json-upload" type="file" accept=".json" onChange={(e) => setImportFile(e.target.files ? e.target.files[0] : null)} className="bg-background/50 border-white/10" />
                         <Button onClick={handleImportData} disabled={isImporting || !importFile} className="w-full">
                           {isImporting ? <Loader2 className="animate-spin size-4" /> : <Upload className="size-4 mr-2" />}
-                          Import from JSON
+                          Sync with Database
+                        </Button>
+                    </div>
+                </div>
+
+                <Separator className="bg-white/5" />
+
+                <div className="p-4 rounded-lg bg-black/30 border border-white/5">
+                    <h3 className="font-semibold flex items-center gap-2 mb-2 normal-case"><DatabaseZap className="text-amber-400 size-4" /> Factory Reset (Seed)</h3>
+                    <p className="text-xs text-muted-foreground mb-4 font-medium">Wipe and restore the local mock dataset. Useful for initial system calibration.</p>
+                    <div className="flex flex-wrap gap-4">
+                        <Button onClick={() => handleSeedData('schools')} disabled={isSeeding} size="sm" variant="ghost" className="hover:bg-amber-500/10 hover:text-amber-400">
+                            {isSeeding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Reset Schools
+                        </Button>
+                        <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} size="sm" variant="ghost" className="hover:bg-amber-500/10 hover:text-amber-400">
+                            {isSeedingCoL ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Reset CoL Index
                         </Button>
                     </div>
                 </div>
               </CardContent>
             </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button asChild variant="outline" className="border-white/5">
+                    <Link href="/admin/data-table" className="w-full">
+                        <TableIcon className="mr-2 size-4" /> Audit School Registry
+                    </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-white/5">
+                    <Link href="/admin/cost-of-living-table" className="w-full">
+                        <TableIcon className="mr-2 size-4" /> Audit CoL Index
+                    </Link>
+                </Button>
+            </div>
           </div>
         )}
       </div>

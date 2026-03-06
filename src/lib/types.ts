@@ -22,7 +22,6 @@ export type StabilityMetrics = {
   stabilityTier: 'Fortress' | 'Stable' | 'Volatile' | 'High Risk';
   redFlagAlert: boolean;
   redFlagReasoning?: string;
-  // Legacy fields preserved for background scoring
   fiveYearAnchorRate?: number;
   leadershipTenure?: number;
 };
@@ -34,6 +33,7 @@ export type School = {
   websiteUrl?: string;
   location: string;
   country: string;
+  locationId: string; // The link to the locations_costOfLiving collection
   imageUrl: string;
   imageHint: string;
   videoUrl?: string;
@@ -54,6 +54,7 @@ export type School = {
     nonContactTime?: number;
     technologyEcosystem?: string;
   };
+  // Snapshot of CoL data for performance, can be updated via the locationId link
   costOfLiving: {
     monthlyRent1BR?: number;
     monthlyRent2BR?: number;
@@ -66,7 +67,6 @@ export type School = {
     diningSocial?: number;
     vehicleInsuranceMaint?: number;
     uncoveredMedical?: number;
-    apartment?: number; // For backward compatibility
   };
   stabilityMetrics?: StabilityMetrics;
 };
@@ -75,7 +75,7 @@ export type LocationCostOfLiving = {
   id: string;
   locationName: string;
   locationType: string;
-  countryName?: string;
+  countryName: string;
   currencyCode: string;
   averageMealCost: number;
   monthlyRent1BR: number;
