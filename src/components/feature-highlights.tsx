@@ -60,26 +60,26 @@ export function FeatureHighlights() {
   ];
 
   return (
-    <section className="py-16 bg-black/40 border-t border-white/5">
+    <section className="py-8 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="max-w-5xl mx-auto space-y-12">
+        <div className="max-w-5xl mx-auto space-y-8">
           <div className="flex items-center gap-4">
             <Zap className="w-10 h-10 text-primary" />
             <div>
-              <h2 className="text-3xl md:text-4xl text-white normal-case">Tactical capabilities</h2>
-              <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Intelligence grade features</p>
+              <h2 className="text-3xl md:text-4xl text-white normal-case leading-none">Tactical capabilities</h2>
+              <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-1">Intelligence grade features</p>
             </div>
           </div>
 
           <Card className={cn("glass rounded-sm overflow-hidden border-primary/20 shadow-2xl")}>
-            <CardContent className="p-8 md:p-12 space-y-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
+            <CardContent className="p-6 md:p-10 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
                 {capabilities.map((cap, i) => (
-                  <div key={i} className="flex flex-col gap-4 group">
-                    <div className="p-2.5 bg-white/5 rounded-sm w-fit group-hover:bg-primary/10 transition-colors">
+                  <div key={i} className="flex flex-col gap-3 group">
+                    <div className="p-2 bg-white/5 rounded-sm w-fit group-hover:bg-primary/10 transition-colors">
                       {cap.icon}
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <h4 className="text-sm font-bold text-white leading-tight uppercase tracking-tight">{cap.title}</h4>
                       <p className="text-xs text-muted-foreground leading-relaxed font-medium opacity-80">
                         {cap.desc}
@@ -89,14 +89,14 @@ export function FeatureHighlights() {
                 ))}
               </div>
 
-              <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                <p className="text-sm text-muted-foreground italic font-medium">Verify your next move with field-grade financial and institutional data.</p>
-                <div className="flex gap-4">
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
+              <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                <p className="text-xs text-muted-foreground italic font-medium">Verify your next move with field-grade financial and institutional data.</p>
+                <div className="flex gap-3">
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
                         <Link href="/directory">Browse Schools</Link>
                     </Button>
-                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-8 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
-                        <Link href="/discover">Find my fit <ArrowRight className="ml-2 size-4" /></Link>
+                    <Button className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-sm shadow-lg shadow-primary/10 border-0" asChild>
+                        <Link href="/discover">Find my fit <ArrowRight className="ml-2 size-3" /></Link>
                     </Button>
                 </div>
               </div>

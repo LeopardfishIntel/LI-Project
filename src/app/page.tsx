@@ -69,7 +69,7 @@ export default function Home() {
           data-ai-hint={heroImage.imageHint}
         />
         
-        {/* Centered Content Overlay - Removed blur to allow image clarity */}
+        {/* Centered Content Overlay */}
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/30">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
@@ -106,20 +106,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Counter Section */}
-      <section className="py-8 border-b border-white/5 bg-background">
+      {/* Stats Counter Section - Minimum Padding */}
+      <section className="py-4 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Mission Section: Centered Briefing */}
-      <section className="py-16 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-10">
+      {/* Mission Section - Compacted */}
+      <section className="py-10 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-white">
             Know before you go
           </h2>
-          <div className="space-y-8 text-base md:text-xl text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
             <p>
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
@@ -130,12 +130,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey */}
-      <section className="py-20 bg-background">
+      {/* Zig-Zag Insider Journey - Minimal Spacing */}
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-24">
+          <div className="space-y-12">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-12 lg:gap-32 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-8 lg:gap-24 items-center">
                 <div className={cn(
                   "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -155,11 +155,11 @@ export default function Home() {
                   )}>{step.id}</div>
                 </div>
                 <div className={cn(
-                  "space-y-8 flex flex-col",
+                  "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter leading-none">{step.title}</h3>
-                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <p className="text-muted-foreground text-base leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-10 rounded-sm border-0 shadow-lg shadow-primary/10" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
