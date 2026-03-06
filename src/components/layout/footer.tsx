@@ -1,4 +1,3 @@
-
 import { Linkedin, Facebook } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,7 +9,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 gap-12">
             <div className="flex flex-col items-center md:items-start space-y-4">
                 <div className="flex items-center gap-3">
-                    <div className="relative h-9 w-9">
+                    <div className="relative h-7 w-7">
                       <Image 
                         src="/assets/logo.png" 
                         alt="Leopardfish Intel Logo" 

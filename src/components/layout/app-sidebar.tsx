@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -35,7 +34,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarHeader className="p-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-9 w-9 flex-shrink-0">
+            <div className="relative h-7 w-7 flex-shrink-0">
               <Image 
                 src="/assets/logo.png" 
                 alt="Leopardfish Intel Logo" 

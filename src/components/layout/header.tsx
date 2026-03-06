@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -116,7 +115,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-9 w-9 transition-transform group-hover:scale-110">
+            <div className="relative h-7 w-7 transition-transform group-hover:scale-110">
               <Image 
                 src="/assets/logo.png" 
                 alt="Leopardfish Intel Logo" 
