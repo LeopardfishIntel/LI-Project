@@ -27,19 +27,19 @@ export type StabilityMetrics = {
 };
 
 export type School = {
-  // Primary Keys & Registry
+  // Primary Keys & Registry (Matching your Google Sheet exactly)
   id: string; // Maps to 'ID'
   name: string; // Maps to 'School Name'
-  locationId: string; // The link to the locations_costOfLiving collection
+  locationId?: string; // Optional link to locations_costOfLiving collection
   
-  // Tactical Analysis (User Google Sheet Fields)
+  // Tactical Analysis (Your Specific Google Sheet Fields)
   academic?: string; // Maps to 'Academic'
   finance?: string; // Maps to 'Finance'
   ncCs?: string; // Maps to 'NC CS'
   tech?: string; // Maps to 'Tech'
   score?: number; // Maps to 'Score'
   confidence?: number; // Maps to 'Confidence'
-  summary?: string; // Maps to 'Summary' (description)
+  summary?: string; // Maps to 'Summary' (used as primary description)
   numericalRating?: string; // Maps to 'Numerical Rating (G/B)'
   websiteUrl?: string; // Maps to 'Official Website'
   housingProvision?: string; // Maps to 'Housing Provision'
@@ -61,7 +61,7 @@ export type School = {
   videoUrl?: string;
   spotlight?: boolean;
 
-  // Legacy/Nested Compatibility (Maintained for logic)
+  // Internal Logic compatibility
   intel: {
     salary: { value: string; score: 'good' | 'neutral' | 'bad'; isTaxFree?: boolean; };
     housing: { value: string; provided: boolean };

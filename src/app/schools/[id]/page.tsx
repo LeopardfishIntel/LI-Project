@@ -34,6 +34,7 @@ import { cn, categorizeInsurance, getTacticalColor } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 const intelIcons = {
   salary: <DollarSign className="w-5 h-5 text-green-400" />,
@@ -154,10 +155,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
+  // Tactical Intel Mapping from your Google Sheet fields
   const schoolIntel = [
     {
       key: 'salary',
-      label: 'Salary profile',
+      label: 'Finance dossier',
       value: school.finance || school.intel.salary.value,
       score: school.numericalRating || school.intel.salary.score,
     },
@@ -173,13 +175,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       score: school.intel.savingsPotential.score,
     },
     {
-      key: 'benefitsSummary',
-      label: 'Benefits summary',
-      value: school.intel.benefitsSummary,
-    },
-    {
       key: 'nonContactTime',
-      label: 'Non-contact time',
+      label: 'NC Time',
       value: school.ncTime ? `${school.ncTime}%` : school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : undefined,
     },
     {
@@ -194,34 +191,28 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     },
     {
       key: 'accreditation',
-      label: 'Accreditation',
+      label: 'Approvals',
       value: school.approvals || school.intel.accreditation,
     },
     {
       key: 'studentTeacherRatio',
-      label: 'Student-teacher ratio',
+      label: 'Ratio',
       value: school.ratio || school.intel.studentTeacherRatio,
     },
     {
       key: 'classSize',
-      label: 'Average class size',
+      label: 'Class size',
       value: school.classSize || school.intel.classSize,
     },
     {
       key: 'healthInsurance',
-      label: 'Health insurance',
+      label: 'Health coverage',
       value: categorizeInsurance(school.healthCoverage || school.intel.healthInsurance),
     },
-    { key: 'jobsPortal', label: 'Jobs portal', value: school.intel.jobsPortal },
-    {
-      key: 'minQualifications',
-      label: 'Min. qualifications',
-      value: school.intel.minQualifications,
-    },
-    {
-      key: 'visaRestrictions',
-      label: 'Visa restrictions',
-      value: school.intel.visaRestrictions,
+    { 
+      key: 'minQualifications', 
+      label: 'Staff HC', 
+      value: school.staffNo || school.numericalStaff || undefined 
     },
   ];
 
@@ -229,7 +220,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     <div className="min-h-screen">
       <section className="relative h-64 md:h-[50vh] w-full">
         <Image
-          src={school.imageUrl}
+          src={school.imageUrl || 'https://picsum.photos/seed/school/1920/1080'}
           alt={`Hero image for ${school.name}`}
           fill
           style={{ objectFit: 'cover' }}
@@ -241,9 +232,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Badge className="bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-sm py-1">Verified Dossier</Badge>
+                <Badge className="bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-sm py-1">Tactical Dossier</Badge>
                 {school.score && (
-                    <Badge variant="outline" className="border-primary/50 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm py-1 bg-primary/5">Score: {school.score}</Badge>
+                    <Badge variant="outline" className="border-primary/50 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm py-1 bg-primary/5">Intelligence Score: {school.score}</Badge>
                 )}
               </div>
               <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">
@@ -253,7 +244,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                 <div className="flex items-center text-sm font-bold uppercase tracking-widest">
                   <MapPin className="w-4 h-4 mr-2 text-primary" />
                   <span>
-                    {school.city || school.location}, {school.country}
+                    {school.city}, {school.country}
                   </span>
                 </div>
               </div>
@@ -275,18 +266,18 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">
             
-            {/* Academic Briefing */}
+            {/* Academic & Mission Briefing */}
             <Card className="glass border-white/5 rounded-sm">
                 <CardHeader className="border-b border-white/5">
                     <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                        <BookOpen className="size-4" /> Academic Briefing
+                        <BookOpen className="size-4" /> Academic & Mission Briefing
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6 space-y-6">
                     <p className="text-muted-foreground leading-relaxed font-medium">{(school.summary || school.description)}</p>
                     {school.academic && (
                         <div className="p-4 bg-primary/5 border border-primary/20 rounded-sm">
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Curriculum Strategy</h4>
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Institutional context</h4>
                             <p className="text-sm text-white/90 font-medium leading-relaxed">{school.academic}</p>
                         </div>
                     )}
@@ -296,7 +287,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             <Card className="glass border-white/5 rounded-sm shadow-xl">
               <CardHeader className="border-b border-white/5">
                 <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                    <ShieldCheck className="size-4" /> Operational Intel
+                    <ShieldCheck className="size-4" /> Tactical Data Matrix
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">

@@ -33,7 +33,6 @@ import {
   Loader2,
   ShieldCheck,
   ShieldOff,
-  ShieldAlert,
   Download,
   Upload,
   Table as TableIcon,
@@ -44,6 +43,9 @@ import {
   FileUp,
   RefreshCcw,
   Sparkles,
+  Link as LinkIcon,
+  Copy,
+  Check
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -90,6 +92,7 @@ export default function SeedDataPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const [exportSelection, setExportSelection] = useState('schools');
   const [importSelection, setImportSelection] = useState('schools');
@@ -117,6 +120,47 @@ export default function SeedDataPage() {
     error: adminRoleError,
   } = useDoc(adminRoleRef);
   const isAdmin = !!adminRole && !adminRoleError;
+
+  const handleCopyScript = () => {
+    const script = `/**
+ * Leopardfish Intel: Google Sheets Sync Script
+ * Instructions: 
+ * 1. Open your Google Sheet.
+ * 2. Go to Extensions > Apps Script.
+ * 3. Paste this code and update your FIREBASE_PROJECT_ID.
+ * 4. Run the 'onOpen' function to create the custom menu.
+ */
+
+const FIREBASE_PROJECT_ID = "${firebaseConfig.projectId}";
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('L.F.I. Sync')
+    .addItem('Push to Registry', 'pushToFirestore')
+    .addToUi();
+}
+
+function pushToFirestore() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const schools = [];
+
+  for (let i = 1; i < data.length; i++) {
+    let school = {};
+    headers.forEach((header, index) => {
+      school[header] = data[i][index];
+    });
+    schools.push(school);
+  }
+
+  // Tactical logic to batch send would go here.
+  SpreadsheetApp.getUi().alert('Ready for transmission. Export as JSON and upload via Data Hub.');
+}`;
+    navigator.clipboard.writeText(script);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSeedData = async (collectionName: 'schools' | 'locations_costOfLiving') => {
     if (!firestore) {
@@ -278,6 +322,40 @@ export default function SeedDataPage() {
                 You are authorized to manage the data registry.
               </AlertDescription>
             </Alert>
+
+            <Card className="bg-card/70 backdrop-blur-sm border-border">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-3 normal-case"><LinkIcon className="text-primary size-5"/>Google Sheets Uplink Protocol</CardTitle>
+                    <CardDescription>Follow these steps to link your spreadsheet to the L.F.I. Registry.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="p-4 rounded-lg bg-background/50 border border-white/5 space-y-4">
+                        <div className="flex items-start gap-3">
+                            <div className="h-5 w-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-black mt-0.5">1</div>
+                            <p className="text-sm font-medium text-muted-foreground">Download your Google Sheet as a <strong>JSON file</strong>. Use an extension like "Export Sheet Data" if needed.</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <div className="h-5 w-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-black mt-0.5">2</div>
+                            <p className="text-sm font-medium text-muted-foreground">Ensure your header row exactly matches the fields in your dossier (ID, School Name, Finance, etc.).</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <div className="h-5 w-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-black mt-0.5">3</div>
+                            <p className="text-sm font-medium text-muted-foreground">Upload the JSON file using the <strong>Import Collection</strong> tool below.</p>
+                        </div>
+                        
+                        <Separator className="bg-white/5" />
+                        
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-black uppercase text-primary tracking-widest">Automation Script (Advanced)</h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed">Copy this script into your Google Sheet's Apps Script editor to prepare your data for transmission.</p>
+                            <Button variant="outline" size="sm" onClick={handleCopyScript} className="h-8 text-[10px] font-black uppercase border-white/10">
+                                {copied ? <Check className="size-3 mr-2" /> : <Copy className="size-3 mr-2" />}
+                                Copy Apps Script
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
 
             <Card className="bg-card/70 backdrop-blur-sm border-border">
                 <CardHeader>
