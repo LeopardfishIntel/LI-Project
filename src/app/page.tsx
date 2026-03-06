@@ -82,7 +82,7 @@ export default function Home() {
               </div>
               
               <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight">
-                <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
+                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
               </h1>
               
               <p className="text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">

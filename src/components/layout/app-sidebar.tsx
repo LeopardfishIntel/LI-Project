@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -36,7 +37,7 @@ export function AppSidebar() {
           <Link href="/" className="flex items-center gap-2">
             <Binoculars className="size-6 text-primary" />
             <span className="font-bold font-headline text-lg tracking-tighter uppercase group-data-[collapsible=icon]:hidden whitespace-nowrap">
-              <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
+              <span className="text-primary">LEOPARD</span><span className="text-accent">FISH INTEL</span>
             </span>
           </Link>
         </SidebarHeader>
