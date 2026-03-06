@@ -39,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: <ArrowRight className="w-8 h-8 text-primary" />,
       desc: "The comparison matrix. Select up to 3 school offers to view True Net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -57,7 +56,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Intelligence Grade Hero */}
+      {/* Intelligence Grade Hero with Integrated Stats */}
       <section className="relative w-full h-[85vh] min-h-[600px] flex flex-col justify-between overflow-hidden">
         <Image
           src={heroImage.imageUrl}
@@ -69,13 +68,11 @@ export default function Home() {
           data-ai-hint={heroImage.imageHint}
         />
         
-        {/* Animated Scan Lines */}
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-scan opacity-20"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-background"></div>
         </div>
 
-        {/* Centered Content Overlay */}
         <div className="relative z-20 flex-grow flex items-center justify-center pt-16">
           <div className="container mx-auto px-4 md:px-6 text-center">
             <div className="max-w-4xl mx-auto space-y-8 flex flex-col items-center">
@@ -87,11 +84,9 @@ export default function Home() {
                 <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
               </h1>
               
-              <div className="space-y-4">
-                <p className="text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
-                  Move with certainty, not just hope.
-                </p>
-              </div>
+              <p className="text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
+                Move with certainty, not just hope.
+              </p>
 
               <div className="flex flex-wrap justify-center gap-4 pt-4">
                 <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm border-0" asChild>
@@ -105,13 +100,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stats Counter - Integrated into Hero Bottom */}
+        {/* Integrated Stats Bar */}
         <div className="relative z-30 container mx-auto px-4 md:px-6 pb-8">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Tagline Section */}
       <section className="py-12 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 text-center">
             <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
@@ -120,8 +114,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="py-12 md:py-20 border-b border-white/5 bg-background">
+      <section className="py-16 md:py-24 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
@@ -137,8 +130,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey */}
-      <section className="py-12 md:py-20 bg-background">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-16 md:space-y-24">
             {steps.map((step, index) => (

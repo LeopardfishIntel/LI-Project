@@ -29,8 +29,8 @@ export function FeatureHighlights() {
     },
     {
       icon: <Globe className="size-5 text-accent" />,
-      title: "CoL registry",
-      desc: "Access field-reported data on rent, utilities, and lifestyle expenses in global hubs."
+      title: "Cost of Living Index",
+      desc: "Review primary data on housing, utilities, and essential spending in international locations."
     },
     {
       icon: <PencilLine className="size-5 text-primary" />,
@@ -60,7 +60,7 @@ export function FeatureHighlights() {
   ];
 
   return (
-    <section className="py-8 bg-black/40 border-t border-white/5">
+    <section className="py-16 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex items-center gap-4">
