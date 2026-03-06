@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { User, LogOut, Search } from "lucide-react";
+import { User, LogOut, Search, Binoculars, Menu } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -27,7 +26,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
@@ -114,16 +112,8 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-7 w-7 transition-transform group-hover:scale-110">
-              <Image 
-                src="/assets/logo.png" 
-                alt="Leopardfish Intel Logo" 
-                fill
-                style={{ objectFit: 'contain' }}
-                priority
-              />
-            </div>
+          <Link href="/" className="flex items-center gap-2 group">
+            <Binoculars className="size-6 text-primary group-hover:scale-110 transition-transform" />
             <span className="hidden sm:inline-block font-bold font-headline text-lg tracking-tighter text-white">
               <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
             </span>

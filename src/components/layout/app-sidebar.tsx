@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   Sidebar,
@@ -17,6 +16,7 @@ import {
   Calculator,
   GitCompare,
   PackageCheck,
+  Binoculars,
 } from 'lucide-react';
 
 const navLinks = [
@@ -33,15 +33,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-white/5 bg-background">
       <SidebarContent>
         <SidebarHeader className="p-4">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative h-7 w-7 flex-shrink-0">
-              <Image 
-                src="/assets/logo.png" 
-                alt="Leopardfish Intel Logo" 
-                fill
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
+          <Link href="/" className="flex items-center gap-2">
+            <Binoculars className="size-6 text-primary" />
             <span className="font-bold font-headline text-lg tracking-tighter uppercase group-data-[collapsible=icon]:hidden whitespace-nowrap">
               <span className="text-primary">LEOPARD</span><span className="text-accent italic">FISH INTEL</span>
             </span>

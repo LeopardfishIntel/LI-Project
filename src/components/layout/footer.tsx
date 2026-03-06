@@ -1,6 +1,5 @@
-import { Linkedin, Facebook } from "lucide-react";
+import { Linkedin, Facebook, Binoculars } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -8,15 +7,8 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-12">
             <div className="flex flex-col items-center md:items-start space-y-4">
-                <div className="flex items-center gap-3">
-                    <div className="relative h-7 w-7">
-                      <Image 
-                        src="/assets/logo.png" 
-                        alt="Leopardfish Intel Logo" 
-                        fill
-                        style={{ objectFit: 'contain' }}
-                      />
-                    </div>
+                <div className="flex items-center">
+                    <Binoculars className="h-6 w-6 mr-2 text-primary" />
                     <span className="font-bold font-headline text-lg tracking-tighter text-white">
                       <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
                     </span>
