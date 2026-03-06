@@ -1,9 +1,11 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FeatureHighlights } from '@/components/feature-highlights';
+import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -56,8 +58,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      {/* Intelligence Grade Hero with Integrated Stats */}
-      <section className="relative w-full h-[85vh] min-h-[600px] flex flex-col justify-between overflow-hidden">
+      {/* Intelligence Grade Hero with Integrated Full-Width Stats */}
+      <section className="relative w-full h-[85vh] min-h-[650px] flex flex-col justify-between overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -81,7 +83,7 @@ export default function Home() {
               </div>
               
               <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight">
-                <span className="text-primary">Leopard</span><span className="text-accent">fish Intel</span>
+                <span className="text-primary">Leopard</span><span className="text-accent italic">fish Intel</span>
               </h1>
               
               <p className="text-xl md:text-3xl text-white font-bold tracking-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
@@ -90,18 +92,18 @@ export default function Home() {
 
               <div className="flex flex-wrap justify-center gap-4 pt-4">
                 <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm border-0" asChild>
-                  <Link href="/discover">Discover</Link>
+                  <Link href="/discover">Initialize journey</Link>
                 </Button>
                 <Button size="lg" className="h-12 md:h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm border-0" asChild>
-                  <Link href="/financial-forecaster">Evaluate</Link>
+                  <Link href="/financial-forecaster">Evaluate offer</Link>
                 </Button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Integrated Stats Bar */}
-        <div className="relative z-30 container mx-auto px-4 md:px-6 pb-8">
+        {/* Integrated Stats Bar - Full Width at Bottom */}
+        <div className="relative z-30 w-full">
           <KeyFactsSection />
         </div>
       </section>
@@ -114,7 +116,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 border-b border-white/5 bg-background">
+      <section className="py-20 md:py-32 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
@@ -130,11 +132,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-16 md:space-y-24">
+          <div className="space-y-20 md:space-y-32">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 lg:gap-24 items-center">
+              <div key={step.id} className={cn(
+                "grid md:grid-cols-2 gap-12 lg:gap-24 items-center",
+                index % 2 === 1 && "md:flex-row-reverse"
+              )}>
                 <div className={cn(
                   "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -170,6 +175,7 @@ export default function Home() {
       </section>
 
       <FeatureHighlights />
+      <RedFlagRegistry />
     </div>
   );
 }
