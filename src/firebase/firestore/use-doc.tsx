@@ -79,9 +79,10 @@ export function useDoc<T = any>(
     return () => unsubscribe();
   }, [memoizedDocRef]);
 
-  // Tactical Safety: Ensure the document reference is stable to prevent infinite render loops.
+  // Defensive check to prevent infinite render loops in production.
   if (memoizedDocRef && !isMemoized(memoizedDocRef)) {
-    throw new Error('Mission Abort: useDoc reference must be stabilized using useMemoFirebase.');
+    console.error('L.F.I. Memory Leak Prevention: Document Ref not stabilized.', memoizedDocRef);
+    throw new Error('Intelligence Access Denied: useDoc reference must be stabilized using useMemoFirebase.');
   }
 
   return { data, isLoading, error };

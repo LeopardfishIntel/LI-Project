@@ -15,10 +15,10 @@ export type TeacherProfile = {
 };
 
 export type StabilityMetrics = {
-  previousHeadcount: number; // Year T-1
-  currentHeadcount: number;  // Year T
-  totalVacancies: number;    // Unique subject vacancies
-  adjustedChurnRate: number; // (Vacancies - Growth) / Prev Headcount
+  previousHeadcount: number;
+  currentHeadcount: number;
+  totalVacancies: number;
+  adjustedChurnRate: number;
   stabilityTier: 'Fortress' | 'Stable' | 'Volatile' | 'High Risk';
   redFlagAlert: boolean;
   redFlagReasoning?: string;
@@ -27,33 +27,44 @@ export type StabilityMetrics = {
 };
 
 export type School = {
-  // Primary Keys & Registry (Matching your Google Sheet exactly)
-  id: string; // Maps to 'ID'
-  name: string; // Maps to 'School Name'
-  locationId?: string; // Optional link to locations_costOfLiving collection
+  // Primary Keys
+  id: string;
+  name?: string;
+  locationId?: string;
   
-  // Tactical Analysis (Your Specific Google Sheet Fields)
-  academic?: string; // Maps to 'Academic'
-  finance?: string; // Maps to 'Finance'
-  ncCs?: string; // Maps to 'NC CS'
-  tech?: string; // Maps to 'Tech'
-  score?: number; // Maps to 'Score'
-  confidence?: number; // Maps to 'Confidence'
-  summary?: string; // Maps to 'Summary' (used as primary description)
-  numericalRating?: string; // Maps to 'Numerical Rating (G/B)'
-  websiteUrl?: string; // Maps to 'Official Website'
-  housingProvision?: string; // Maps to 'Housing Provision'
-  healthCoverage?: string; // Maps to 'Health Coverage'
-  country: string; // Maps to 'Country'
-  city: string; // Maps to 'City'
-  techEcosystem?: string; // Maps to 'Tech Ecosystem'
-  ratio?: string; // Maps to 'Ratio' (student-teacher)
-  ncTime?: string | number; // Maps to 'NC Time'
-  numericalStaff?: number; // Maps to 'Numerical Staff'
-  curriculum?: string; // Maps to 'Curriculum'
-  approvals?: string; // Maps to 'Approvals' (accreditations)
-  classSize?: number; // Maps to 'Class size'
-  staffNo?: number; // Maps to 'Staff No'
+  // Flat Field Support (Matching your Google Sheet exactly)
+  schoolname?: string;
+  academicscore?: string | number;
+  financescore?: string | number;
+  worklifescore?: string | number;
+  techscore?: string | number;
+  totalscore?: string | number;
+  score?: string | number;
+  confidence?: string | number;
+  summary?: string;
+  description?: string;
+  rating?: string;
+  numericalrating?: string;
+  website?: string;
+  websiteUrl?: string;
+  housingprovision?: string;
+  healthcoverage?: string;
+  country: string;
+  city: string;
+  techecosystem?: string;
+  staffstudentratio?: string;
+  noncontacttime?: string | number;
+  numericalstaff?: string | number;
+  curriculum?: string;
+  approvals?: string;
+  classsize?: string | number;
+  staffcount?: string | number;
+
+  // Analysis & Legacy Mapping
+  academic?: string;
+  finance?: string;
+  ncCs?: string;
+  tech?: string;
 
   // Assets & Media
   imageUrl: string;
@@ -61,7 +72,7 @@ export type School = {
   videoUrl?: string;
   spotlight?: boolean;
 
-  // Internal Logic compatibility
+  // Internal Logic compatibility (Nested objects)
   intel: {
     salary: { value: string; score: 'good' | 'neutral' | 'bad'; isTaxFree?: boolean; };
     housing: { value: string; provided: boolean };
@@ -112,5 +123,5 @@ export type LocationCostOfLiving = {
   localPurchasingPowerIndex: number;
   groceriesIndex: number;
   restaurantPriceIndex: number;
-  lastUpdated: any; // Firestore timestamp
+  lastUpdated: any;
 };

@@ -8,22 +8,27 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Formats a number as currency and appends the ISO currency code.
- * Rule: Only have a currency sign OR the three letters, never both.
- * Rule: Always add currency letters after the number (ISO suffix).
+ * Robust to string inputs and ranges (e.g. "18-20").
  */
-export function formatCurrency(amount: number, currency = 'USD') {
+export function formatCurrency(amount: any, currency = 'USD') {
+  if (typeof amount === 'string' && amount.includes('-')) {
+    return `${amount} ${currency}`;
+  }
+  
+  const numericAmount = parseFloat(amount);
+  if (isNaN(numericAmount)) return `0 ${currency}`;
+
   const formattedNumber = new Intl.NumberFormat('en-US', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(numericAmount);
 
   return `${formattedNumber} ${currency}`;
 }
 
 /**
  * Normalizes institutional health insurance data into three tactical categories.
- * Elite, Comp, State. Supports standard and user-defined fields.
  */
 export function categorizeInsurance(val: string | undefined): string {
   const low = val?.toLowerCase() || '';
@@ -33,8 +38,7 @@ export function categorizeInsurance(val: string | undefined): string {
 }
 
 /**
- * Tactical Rating Parser: Maps user's 'Numerical Rating (G/B)' or 'score' 
- * to UI color classes.
+ * Tactical Rating Parser: Maps ratings to UI color classes.
  */
 export function getTacticalColor(rating: string | undefined): string {
     const low = rating?.toLowerCase() || '';

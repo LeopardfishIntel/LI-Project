@@ -92,9 +92,10 @@ export function useCollection<T = any>(
     return () => unsubscribe();
   }, [memoizedTargetRefOrQuery]);
 
-  // Tactical Safety: Ensure the query reference is stable to prevent infinite render loops.
+  // Defensive check to prevent infinite render loops in production.
   if (memoizedTargetRefOrQuery && !isMemoized(memoizedTargetRefOrQuery)) {
-    throw new Error('Mission Abort: useCollection query must be stabilized using useMemoFirebase.');
+    console.error('L.F.I. Memory Leak Prevention: Query not stabilized.', memoizedTargetRefOrQuery);
+    throw new Error('Intelligence Access Denied: useCollection query must be stabilized using useMemoFirebase.');
   }
 
   return { data, isLoading, error };

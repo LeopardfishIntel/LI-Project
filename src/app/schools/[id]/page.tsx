@@ -19,21 +19,13 @@ import {
   Sparkles,
   Home,
   Award,
-  Briefcase,
-  UserCheck,
-  Ban,
-  Gift,
-  Clock,
   Laptop,
   ExternalLink,
   ShieldCheck,
-  Info
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn, categorizeInsurance, getTacticalColor } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 
 const intelIcons = {
@@ -41,46 +33,12 @@ const intelIcons = {
   housing: <Home className="w-5 h-5 text-blue-400" />,
   savingsPotential: <Sparkles className="w-5 h-5 text-amber-400" />,
   curriculum: <BookOpen className="w-5 h-5 text-purple-400" />,
-  studentTeacherRatio: <Users className="w-5 h-5 text-rose-400" />,
+  ratio: <Users className="w-5 h-5 text-rose-400" />,
   classSize: <Building className="w-5 h-5 text-sky-400" />,
-  healthInsurance: <HeartPulse className="w-5 h-5 text-red-400" />,
-  accreditation: <Award className="w-5 h-5 text-yellow-500" />,
-  jobsPortal: <Briefcase className="w-5 h-5 text-primary" />,
-  minQualifications: <UserCheck className="w-5 h-5 text-green-400" />,
-  visaRestrictions: <Ban className="w-5 h-5 text-red-400" />,
-  benefitsSummary: <Gift className="w-5 h-5 text-pink-400" />,
-  nonContactTime: <Clock className="w-5 h-5 text-indigo-400" />,
-  technologyEcosystem: <Laptop className="w-5 h-5 text-gray-400" />,
+  health: <HeartPulse className="w-5 h-5 text-red-400" />,
+  approvals: <Award className="w-5 h-5 text-yellow-500" />,
+  tech: <Laptop className="w-5 h-5 text-gray-400" />,
 };
-
-type IntelKey = keyof typeof intelIcons;
-
-const HealthInsuranceHelp = () => (
-    <div className="space-y-3 p-1">
-        <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Insurance classification</h4>
-        <div className="border border-white/10 rounded-sm overflow-hidden bg-background/50">
-            <Table>
-                <TableBody>
-                    <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Elite</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">VIP access and proactive wellness.</TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-transparent border-b-white/5">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">Comp</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">Total peace of mind for daily life.</TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-transparent border-0">
-                        <TableCell className="py-2 text-[11px] font-bold px-3 text-white/90">State</TableCell>
-                        <TableCell className="py-2 text-[10px] px-3 leading-tight text-muted-foreground">The "Just in case" safety net.</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </div>
-        <p className="text-[10px] text-muted-foreground leading-tight italic px-1">
-            Always check with your school for full details of the health provision before signing the contract.
-        </p>
-    </div>
-);
 
 function SchoolProfileSkeleton() {
   return (
@@ -96,34 +54,7 @@ function SchoolProfileSkeleton() {
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <Card>
-              <CardHeader>
-                <Skeleton className="h-8 w-40" />
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <Skeleton className="w-6 h-6 rounded" />
-                    <div className="space-y-1">
-                      <Skeleton className="h-5 w-32" />
-                      <Skeleton className="h-6 w-24" />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-          <div className="space-y-8">
-            <Card>
-              <CardHeader>
-                <Skeleton className="h-8 w-1/2" />
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-              </CardContent>
-            </Card>
+            <Card><CardHeader><Skeleton className="h-8 w-40" /></CardHeader><CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></CardContent></Card>
           </div>
         </div>
       </div>
@@ -141,79 +72,38 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   );
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(schoolRef);
 
+  const locationId = school?.locationId || (school?.city && school?.country ? `${school.city.toLowerCase()}-${school.country.toLowerCase()}` : null);
   const locationRef = useMemoFirebase(
-    () => (firestore && school?.locationId ? doc(firestore, 'locations_costOfLiving', school.locationId) : null),
-    [firestore, school?.locationId]
+    () => (firestore && locationId ? doc(firestore, 'locations_costOfLiving', locationId) : null),
+    [firestore, locationId]
   );
   const { data: locationData } = useDoc<LocationCostOfLiving>(locationRef);
 
-  if (isSchoolLoading) {
-    return <SchoolProfileSkeleton />;
-  }
+  if (isSchoolLoading) return <SchoolProfileSkeleton />;
+  if (!school) notFound();
 
-  if (!school) {
-    notFound();
-  }
+  const name = school.schoolname || school.name || 'Unknown School';
+  const summary = school.summary || school.description || '';
+  const finance = school.finance || (school.intel && school.intel.salary.value);
+  const rating = school.rating || school.numericalrating || (school.intel && school.intel.salary.score);
+  const housing = school.housingprovision || (school.intel && school.intel.housing.value);
+  const health = school.healthcoverage || (school.intel && school.intel.healthInsurance);
+  const curriculum = school.curriculum || (school.intel && school.intel.curriculum);
+  const approvals = school.approvals || (school.intel && school.intel.accreditation);
+  const ratio = school.staffstudentratio || (school.intel && school.intel.studentTeacherRatio);
+  const classSize = school.classsize || (school.intel && school.intel.classSize);
+  const tech = school.techecosystem || (school.intel && school.intel.technologyEcosystem);
+  const website = school.website || school.websiteUrl;
 
-  // Tactical Intel Mapping from your Google Sheet fields
-  const schoolIntel = [
-    {
-      key: 'salary',
-      label: 'Finance dossier',
-      value: school.finance || school.intel.salary.value,
-      score: school.numericalRating || school.intel.salary.score,
-    },
-    { 
-      key: 'housing', 
-      label: 'Housing provision', 
-      value: school.housingProvision || school.intel.housing.value 
-    },
-    {
-      key: 'savingsPotential',
-      label: 'Savings potential',
-      value: school.intel.savingsPotential.value,
-      score: school.intel.savingsPotential.score,
-    },
-    {
-      key: 'nonContactTime',
-      label: 'NC Time',
-      value: school.ncTime ? `${school.ncTime}%` : school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : undefined,
-    },
-    {
-      key: 'technologyEcosystem',
-      label: 'Tech ecosystem',
-      value: school.techEcosystem || school.intel.technologyEcosystem,
-    },
-    {
-      key: 'curriculum',
-      label: 'Curriculum',
-      value: school.curriculum || school.intel.curriculum,
-    },
-    {
-      key: 'accreditation',
-      label: 'Approvals',
-      value: school.approvals || school.intel.accreditation,
-    },
-    {
-      key: 'studentTeacherRatio',
-      label: 'Ratio',
-      value: school.ratio || school.intel.studentTeacherRatio,
-    },
-    {
-      key: 'classSize',
-      label: 'Class size',
-      value: school.classSize || school.intel.classSize,
-    },
-    {
-      key: 'healthInsurance',
-      label: 'Health coverage',
-      value: categorizeInsurance(school.healthCoverage || school.intel.healthInsurance),
-    },
-    { 
-      key: 'minQualifications', 
-      label: 'Staff HC', 
-      value: school.staffNo || school.numericalStaff || undefined 
-    },
+  const matrixItems = [
+    { key: 'salary', label: 'Finance Dossier', value: finance, score: rating },
+    { key: 'housing', label: 'Housing Provision', value: housing },
+    { key: 'health', label: 'Health Coverage', value: categorizeInsurance(health as string) },
+    { key: 'curriculum', label: 'Curriculum', value: curriculum },
+    { key: 'approvals', label: 'Approvals', value: approvals },
+    { key: 'ratio', label: 'Ratio', value: ratio },
+    { key: 'classSize', label: 'Class Size', value: classSize },
+    { key: 'tech', label: 'Tech Ecosystem', value: tech },
   ];
 
   return (
@@ -221,42 +111,28 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       <section className="relative h-64 md:h-[50vh] w-full">
         <Image
           src={school.imageUrl || 'https://picsum.photos/seed/school/1920/1080'}
-          alt={`Hero image for ${school.name}`}
+          alt={`Hero image for ${name}`}
           fill
           style={{ objectFit: 'cover' }}
           className="brightness-50"
-          data-ai-hint={school.imageHint}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         <div className="absolute bottom-0 left-0 p-4 md:p-12 container mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Badge className="bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-sm py-1">Tactical Dossier</Badge>
-                {school.score && (
-                    <Badge variant="outline" className="border-primary/50 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm py-1 bg-primary/5">Intelligence Score: {school.score}</Badge>
-                )}
-              </div>
-              <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">
-                {school.name}
-              </h1>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <div className="flex items-center text-sm font-bold uppercase tracking-widest">
-                  <MapPin className="w-4 h-4 mr-2 text-primary" />
-                  <span>
-                    {school.city}, {school.country}
-                  </span>
-                </div>
+              <Badge className="bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-sm py-1">Tactical Dossier</Badge>
+              <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">{name}</h1>
+              <div className="flex items-center text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                <MapPin className="w-4 h-4 mr-2 text-primary" />
+                <span>{school.city}, {school.country}</span>
               </div>
             </div>
-            {school.websiteUrl && (
-              <div className="mt-4 md:mt-0">
-                <Button asChild variant="outline" className="border-white/20 hover:bg-white/5 text-white font-bold h-12 px-8 rounded-sm">
-                  <a href={school.websiteUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-4 w-4" /> Visit Website
-                  </a>
-                </Button>
-              </div>
+            {website && (
+              <Button asChild variant="outline" className="border-white/20 hover:bg-white/5 text-white font-bold h-12 px-8 rounded-sm">
+                <a href={website.startsWith('http') ? website : `https://${website}`} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 h-4 w-4" /> Visit Website
+                </a>
+              </Button>
             )}
           </div>
         </div>
@@ -265,66 +141,30 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       <div className="container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">
-            
-            {/* Academic & Mission Briefing */}
             <Card className="glass border-white/5 rounded-sm">
                 <CardHeader className="border-b border-white/5">
-                    <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                        <BookOpen className="size-4" /> Academic & Mission Briefing
-                    </CardTitle>
+                    <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2"><BookOpen className="size-4" /> Briefing</CardTitle>
                 </CardHeader>
-                <CardContent className="pt-6 space-y-6">
-                    <p className="text-muted-foreground leading-relaxed font-medium">{(school.summary || school.description)}</p>
-                    {school.academic && (
-                        <div className="p-4 bg-primary/5 border border-primary/20 rounded-sm">
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Institutional context</h4>
-                            <p className="text-sm text-white/90 font-medium leading-relaxed">{school.academic}</p>
-                        </div>
-                    )}
+                <CardContent className="pt-6">
+                    <p className="text-muted-foreground leading-relaxed font-medium">{summary}</p>
                 </CardContent>
             </Card>
 
-            <Card className="glass border-white/5 rounded-sm shadow-xl">
+            <Card className="glass border-white/5 rounded-sm">
               <CardHeader className="border-b border-white/5">
-                <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                    <ShieldCheck className="size-4" /> Tactical Data Matrix
-                </CardTitle>
+                <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2"><ShieldCheck className="size-4" /> Data Matrix</CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-                  {schoolIntel.map(item =>
+                  {matrixItems.map(item =>
                     item.value ? (
-                      <li key={item.key} className="flex items-start group">
-                        <div className="mr-4 mt-1 transition-transform group-hover:scale-110">
-                          {intelIcons[item.key as IntelKey]}
-                        </div>
+                      <li key={item.key} className="flex items-start">
+                        <div className="mr-4 mt-1 text-primary">{(intelIcons as any)[item.key]}</div>
                         <div className="space-y-1">
-                          {item.key === 'healthInsurance' ? (
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <button className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-b border-dotted border-muted-foreground/30 cursor-help hover:text-primary transition-colors text-left">
-                                        {item.label}
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-80 glass border-primary/20 shadow-2xl" side="top">
-                                    <HealthInsuranceHelp />
-                                </PopoverContent>
-                            </Popover>
-                          ) : (
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-                                {item.label}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-2">
-                            <p
-                              className={cn(
-                                'text-sm md:text-base font-bold text-white',
-                                item.score && getTacticalColor(item.score as string)
-                              )}
-                            >
-                              {item.value.toString()}
-                            </p>
-                          </div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">{item.label}</p>
+                          <p className={cn('text-sm md:text-base font-bold text-white', item.score && getTacticalColor(item.score as string))}>
+                            {item.value.toString()}
+                          </p>
                         </div>
                       </li>
                     ) : null
@@ -336,25 +176,6 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
           <div className="space-y-12">
             <CostOfLivingCalculator school={school} overrideLocationData={locationData || undefined} />
-            
-            {school.confidence && (
-                <Card className="glass border-accent/20 bg-accent/5 rounded-sm">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-[10px] font-black uppercase tracking-widest text-accent flex items-center gap-2">
-                            <Info className="size-3" /> Data confidence
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-end gap-2 mb-2">
-                            <span className="text-3xl font-black text-white">{school.confidence}%</span>
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Signal strength</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-accent transition-all duration-1000" style={{ width: `${school.confidence}%` }} />
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
           </div>
         </div>
       </div>
