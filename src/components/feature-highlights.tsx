@@ -62,7 +62,7 @@ export function FeatureHighlights() {
     <section className="py-16 md:py-24 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
         <div className="space-y-12">
-          <div className="text-center md:text-left">
+          <div className="text-center">
             <h2 className="text-3xl md:text-5xl font-black stamped-dossier text-white leading-none">Analysis in action</h2>
             <p className="text-muted-foreground text-[10px] md:text-xs font-black uppercase tracking-[0.3em] mt-2 opacity-60">Core examples of our decision-led analysis</p>
           </div>
