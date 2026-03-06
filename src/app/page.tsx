@@ -5,7 +5,6 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FeatureHighlights } from '@/components/feature-highlights';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -108,7 +107,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 md:py-32 border-b border-white/5 bg-background">
+      <section className="py-12 md:py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
@@ -124,9 +123,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 md:py-32 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-20 md:space-y-32">
+          <div className="space-y-12 md:space-y-16">
             {steps.map((step, index) => (
               <div key={step.id} className={cn(
                 "grid md:grid-cols-2 gap-12 lg:gap-24 items-center",
@@ -167,7 +166,6 @@ export default function Home() {
       </section>
 
       <FeatureHighlights />
-      <RedFlagRegistry />
     </div>
   );
 }

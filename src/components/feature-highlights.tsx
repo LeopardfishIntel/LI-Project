@@ -1,3 +1,4 @@
+
 import { 
   PiggyBank, 
   Users, 
@@ -7,8 +8,7 @@ import {
   Sparkles, 
   FileCheck, 
   ShieldAlert, 
-  ArrowRight,
-  Zap
+  ArrowRight
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,13 +62,10 @@ export function FeatureHighlights() {
   return (
     <section className="py-16 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="flex items-center gap-4">
-            <Zap className="w-10 h-10 text-primary" />
-            <div>
-              <h2 className="text-3xl md:text-4xl text-white normal-case leading-none">Analysis in action</h2>
-              <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-1">Core examples of our decision-led analysis</p>
-            </div>
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-3xl md:text-4xl text-white normal-case leading-none">Analysis in action</h2>
+            <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-1">Core examples of our decision-led analysis</p>
           </div>
 
           <Card className={cn("glass rounded-sm overflow-hidden border-primary/20 shadow-2xl")}>
