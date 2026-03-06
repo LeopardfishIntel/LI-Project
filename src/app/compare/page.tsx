@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -20,7 +21,8 @@ type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yo
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
-    const { costOfLiving, intel } = school;
+    const costOfLiving = school.costOfLiving || {};
+    const intel = school.intel || { housing: { provided: false } };
     
     let adults = 1;
     let children = 0;
@@ -45,22 +47,24 @@ const calculateMonthlyCost = (school: School): number => {
             break;
     }
 
-    const foodCost = (costOfLiving.food ?? 0) * adults + (costOfLiving.food ?? 0) * 0.5 * children;
-    const transportCost = (costOfLiving.transport ?? 0) * adults + (costOfLiving.transport ?? 0) * 0.3 * children;
-    const mobileCost = (costOfLiving.mobile ?? 0) * adults;
-    const diningSocialCost = (costOfLiving.diningSocial ?? 0) * adults;
-    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical ?? 0) * adults + (costOfLiving.uncoveredMedical ?? 0) * 0.5 * children;
-    const apartmentCost = intel.housing.provided ? 0 : (costOfLiving.monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0);
+    const foodCost = ((costOfLiving as any).food ?? 0) * adults + ((costOfLiving as any).food ?? 0) * 0.5 * children;
+    const transportCost = ((costOfLiving as any).transport ?? 0) * adults + ((costOfLiving as any).transport ?? 0) * 0.3 * children;
+    const mobileCost = ((costOfLiving as any).mobile ?? 0) * adults;
+    const diningSocialCost = ((costOfLiving as any).diningSocial ?? 0) * adults;
+    const uncoveredMedicalCost = ((costOfLiving as any).uncoveredMedical ?? 0) * adults + ((costOfLiving as any).uncoveredMedical ?? 0) * 0.5 * children;
+    
+    const isProvided = school.housingprovision?.toLowerCase().includes('provided') || (intel.housing && intel.housing.provided);
+    const apartmentCost = isProvided ? 0 : ((costOfLiving as any).monthlyRent1BR ?? (costOfLiving as any).apartment ?? 0);
 
     return (
       apartmentCost +
       foodCost +
       transportCost +
-      (costOfLiving.utilities ?? 0) +
-      (costOfLiving.internet ?? 0) +
+      ((costOfLiving as any).utilities ?? 0) +
+      ((costOfLiving as any).internet ?? 0) +
       mobileCost +
       diningSocialCost +
-      (costOfLiving.vehicleInsuranceMaint ?? 0) +
+      ((costOfLiving as any).vehicleInsuranceMaint ?? 0) +
       uncoveredMedicalCost
     );
 };
@@ -154,16 +158,18 @@ export default function ComparePage() {
     };
     
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
+        const salaryText = (school.finance || (school.intel && school.intel.salary.value)) || '';
         switch (metric) {
             case 'salary':
-                return parseInt(school.intel.salary.value.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
+                return parseInt(salaryText.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
             case 'savings':
-                if (school.intel.savingsPotential.value === 'V High') return 3;
-                if (school.intel.savingsPotential.value === 'High') return 2;
-                if (school.intel.savingsPotential.value === 'Moderate') return 1;
+                const savingsVal = (school as any).savingspotential || (school.intel && school.intel.savingsPotential.value);
+                if (savingsVal === 'V High') return 3;
+                if (savingsVal === 'High') return 2;
+                if (savingsVal === 'Moderate') return 1;
                 return 0;
             case 'classSize':
-                return school.intel.classSize;
+                return Number(school.classsize || (school.intel && school.intel.classSize)) || 0;
             case 'monthlyCost':
                 return calculateMonthlyCost(school);
             case 'yourSavings':
@@ -222,6 +228,17 @@ export default function ComparePage() {
             return (parsedSalary / 12) - calculateMonthlyCost(school);
         }, [netSalary, school]);
 
+        const name = school.schoolname || school.name || 'Unknown School';
+        const city = school.city || school.location || '';
+        const country = school.country || '';
+        const finance = school.finance || (school.intel && school.intel.salary.value);
+        const savings = (school as any).savingspotential || (school.intel && school.intel.savingsPotential.value);
+        const housing = school.housingprovision || (school.intel && school.intel.housing.value);
+        const health = school.healthcoverage || (school.intel && school.intel.healthInsurance);
+        const curriculum = school.curriculum || (school.intel && school.intel.curriculum);
+        const classSize = school.classsize || (school.intel && school.intel.classSize);
+        const ratio = school.staffstudentratio || (school.intel && school.intel.studentTeacherRatio);
+
         return (
             <div className="flex flex-col gap-4 items-center">
                 <div className="w-full max-w-sm">
@@ -232,7 +249,7 @@ export default function ComparePage() {
                         <SelectContent className="glass">
                             {schools?.map(s => (
                                 <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
-                                    {s.name}
+                                    {s.schoolname || s.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -256,20 +273,20 @@ export default function ComparePage() {
                 <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm shadow-2xl">
                     <Link href={`/schools/${school.id}`} className="block">
                         <div className="relative aspect-video">
-                            <Image src={school.imageUrl} alt={school.name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
+                            <Image src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'} alt={name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                         </div>
                         <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 text-white">{school.name}</CardTitle>
+                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 text-white">{name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-sm pt-1">
                                 <MapPin className="w-4 h-4 mr-1.5" />
-                                <span>{school.location}, {school.country}</span>
+                                <span>{city}, {country}</span>
                             </div>
                         </CardHeader>
                     </Link>
                     <CardContent className="p-4 md:p-6 pt-0 divide-y divide-border/50">
                         <div className="pt-4">
-                             <MetricRow label="Salary Range" value={school.intel.salary.value} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                             <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                             <MetricRow label="Salary Range" value={finance} result={comparisonResults.salary} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                             <MetricRow label="Savings Potential" value={savings} result={comparisonResults.savings} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                              {yourMonthlySavings !== null && (
                                 <MetricRow
                                     label="Your Est. Monthly Savings"
@@ -286,18 +303,18 @@ export default function ComparePage() {
                                 format={(v) => formatCurrency(v, 'USD')}
                                 icon={<DollarSign className="w-4 h-4 text-red-400" />}
                             />
-                             <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
+                             <MetricRow label="Housing" value={housing} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
                              <MetricRow 
                                 label="Health Insurance" 
-                                value={school.intel.healthInsurance} 
+                                value={health} 
                                 result={'neutral'} 
                                 icon={<HeartPulse className="w-4 h-4 text-red-400" />} 
                             />
                         </div>
                          <div className="pt-4">
-                             <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                             <MetricRow label="Average Class Size" value={school.intel.classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
-                             <MetricRow label="Student-Teacher Ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
+                             <MetricRow label="Curriculum" value={curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                             <MetricRow label="Average Class Size" value={classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                             <MetricRow label="Student-Teacher Ratio" value={ratio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
                         </div>
                     </CardContent>
                 </Card>

@@ -30,20 +30,23 @@ export function CostOfLivingCalculator({ school, overrideLocationData }: CostOfL
 
   const convert = (amount: number) => amount * conversionRates[currency];
 
-  // Use the master location data if provided (linked Sheet model), 
-  // otherwise fallback to the school's local snapshot.
-  const activeCoL = overrideLocationData || school.costOfLiving;
+  // Tactical Fallback: Ensure activeCoL is never undefined to prevent runtime crashes.
+  const activeCoL = overrideLocationData || school.costOfLiving || {};
   const familyStatus = getFamilyStatusFromCounts(adults, children);
 
   const calculateTotal = () => {
-    const foodCost = (activeCoL.food ?? 0) * adults + (activeCoL.food ?? 0) * 0.5 * children;
-    const transportCost = (activeCoL.transport ?? 0) * adults + (activeCoL.transport ?? 0) * 0.3 * children;
-    const mobileCost = (activeCoL.mobile ?? 0) * adults;
-    const diningSocialCost = (activeCoL.diningSocial ?? 0) * adults;
-    const uncoveredMedicalCost = (activeCoL.uncoveredMedical ?? 0) * adults + (activeCoL.uncoveredMedical ?? 0) * 0.5 * children;
+    // Accessing properties on a fallback object is safe (returns undefined, then 0 via ??)
+    const foodCost = ((activeCoL as any).food ?? 0) * adults + ((activeCoL as any).food ?? 0) * 0.5 * children;
+    const transportCost = ((activeCoL as any).transport ?? 0) * adults + ((activeCoL as any).transport ?? 0) * 0.3 * children;
+    const mobileCost = ((activeCoL as any).mobile ?? 0) * adults;
+    const diningSocialCost = ((activeCoL as any).diningSocial ?? 0) * adults;
+    const uncoveredMedicalCost = ((activeCoL as any).uncoveredMedical ?? 0) * adults + ((activeCoL as any).uncoveredMedical ?? 0) * 0.5 * children;
     
     let rentCost = 0;
-    if (!school.intel.housing.provided) {
+    // Robust check for housing provision (spreadsheet flat field or nested object)
+    const isProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+    
+    if (!isProvided) {
         rentCost = getRentForFamily(activeCoL as any, familyStatus).rent;
     }
     
@@ -51,11 +54,11 @@ export function CostOfLivingCalculator({ school, overrideLocationData }: CostOfL
       rentCost +
       foodCost +
       transportCost +
-      (activeCoL.utilities ?? 0) +
-      (activeCoL.internet ?? 0) +
+      ((activeCoL as any).utilities ?? 0) +
+      ((activeCoL as any).internet ?? 0) +
       mobileCost +
       diningSocialCost +
-      (activeCoL.vehicleInsuranceMaint ?? 0) +
+      ((activeCoL as any).vehicleInsuranceMaint ?? 0) +
       uncoveredMedicalCost;
       
     return total;
@@ -63,7 +66,7 @@ export function CostOfLivingCalculator({ school, overrideLocationData }: CostOfL
 
   const totalCost = calculateTotal();
   const { rent: rentToShow, label: rentLabel } = getRentForFamily(activeCoL as any, familyStatus);
-
+  const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
 
   return (
     <Card className="bg-card/70 backdrop-blur-sm border-border">
@@ -121,39 +124,39 @@ export function CostOfLivingCalculator({ school, overrideLocationData }: CostOfL
         <div className="space-y-3 text-sm text-muted-foreground font-medium">
           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Home className="w-4 h-4 text-sky-400" /> {rentLabel}</span>
-            <span className="text-white font-bold">{school.intel.housing.provided ? 'Provided' : formatCurrency(convert(rentToShow), currency)}</span>
+            <span className="text-white font-bold">{isHousingProvided ? 'Provided' : formatCurrency(convert(rentToShow), currency)}</span>
           </div>
            <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-green-400" /> Utilities (Water/Elec/Gas)</span>
-            <span className="text-white font-bold">{formatCurrency(convert(activeCoL.utilities ?? 0), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert((activeCoL as any).utilities ?? 0), currency)}</span>
           </div>
           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Wifi className="w-4 h-4 text-indigo-400" /> High-Speed Internet</span>
-            <span className="text-white font-bold">{formatCurrency(convert(activeCoL.internet ?? 0), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert((activeCoL as any).internet ?? 0), currency)}</span>
           </div>
            <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-pink-400" /> Mobile data</span>
-            <span className="text-white font-bold">{formatCurrency(convert((activeCoL.mobile ?? 0) * adults), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert(((activeCoL as any).mobile ?? 0) * adults), currency)}</span>
           </div>
            <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Utensils className="w-4 h-4 text-amber-400" /> Monthly Groceries</span>
-            <span className="text-white font-bold">{formatCurrency(convert((activeCoL.food ?? 0) * adults + (activeCoL.food ?? 0) * 0.5 * children), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert(((activeCoL as any).food ?? 0) * adults + ((activeCoL as any).food ?? 0) * 0.5 * children), currency)}</span>
           </div>
            <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><Coffee className="w-4 h-4 text-orange-400" /> Dining & social</span>
-            <span className="text-white font-bold">{formatCurrency(convert((activeCoL.diningSocial ?? 0) * adults), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert(((activeCoL as any).diningSocial ?? 0) * adults), currency)}</span>
           </div>
           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
             <span className="flex items-center gap-2"><TramFront className="w-4 h-4 text-rose-400" /> Public transport / fuel</span>
-            <span className="text-white font-bold">{formatCurrency(convert((activeCoL.transport ?? 0) * adults + (activeCoL.transport ?? 0) * 0.3 * children), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert(((activeCoL as any).transport ?? 0) * adults + ((activeCoL as any).transport ?? 0) * 0.3 * children), currency)}</span>
           </div>
-          {(activeCoL.vehicleInsuranceMaint ?? 0) > 0 && <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          {((activeCoL as any).vehicleInsuranceMaint ?? 0) > 0 && <div className="flex justify-between items-center py-1.5 border-b border-white/5">
               <span className="flex items-center gap-2"><Car className="w-4 h-4 text-neutral-400" /> Vehicle maintenance</span>
-              <span className="text-white font-bold">{formatCurrency(convert(activeCoL.vehicleInsuranceMaint!), currency)}</span>
+              <span className="text-white font-bold">{formatCurrency(convert((activeCoL as any).vehicleInsuranceMaint!), currency)}</span>
           </div>}
            <div className="flex justify-between items-center py-1.5">
             <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4 text-red-400" /> Medical gaps (e.g. Dental)</span>
-            <span className="text-white font-bold">{formatCurrency(convert((activeCoL.uncoveredMedical ?? 0) * adults + (activeCoL.uncoveredMedical ?? 0) * 0.5 * children), currency)}</span>
+            <span className="text-white font-bold">{formatCurrency(convert(((activeCoL as any).uncoveredMedical ?? 0) * adults + ((activeCoL as any).uncoveredMedical ?? 0) * 0.5 * children), currency)}</span>
           </div>
         </div>
         
