@@ -101,8 +101,8 @@ export default function PreparePage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body">
-      <div className="mb-12 text-center space-y-3">
+    <div className="container mx-auto px-4 md:px-6 py-0 text-white font-body">
+      <div className="mb-8 text-center space-y-3 pt-4">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
           4. Are you prepared?
         </h1>
@@ -111,10 +111,10 @@ export default function PreparePage() {
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-16">
+      <div className="max-w-5xl mx-auto space-y-12">
         
-        <section className="space-y-8">
-          <div className="space-y-4">
+        <section className="space-y-6">
+          <div className="space-y-3">
             <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material risks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
               International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If any deal-breakers emerge, seek professional consultation before signing.

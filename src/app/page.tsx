@@ -107,19 +107,19 @@ export default function Home() {
       </section>
 
       {/* Stats Counter Section - Minimum Padding */}
-      <section className="py-4 border-b border-white/5 bg-background">
+      <section className="py-2 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
       {/* Mission Section - Compacted */}
-      <section className="py-10 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-white">
+      <section className="py-6 border-b border-white/5 bg-background">
+        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-4">
+          <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
             Know before you go
           </h2>
-          <div className="space-y-6 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+          <div className="space-y-4 text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
             <p>
               In an industry where the full story is often hidden, our mission is to give you an independent advantage. We bridge the information gap by creating a joined-up view of international experiences, drawing from a range of sources including field-reported facts, economic trends, and wider research.
             </p>
@@ -130,12 +130,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey - Minimal Spacing */}
-      <section className="py-12 bg-background">
+      {/* Zig-Zag Insider Journey - No Section Padding */}
+      <section className="py-0 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-12">
+          <div className="space-y-4">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-8 lg:gap-24 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-6 lg:gap-16 items-center">
                 <div className={cn(
                   "relative aspect-video rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -155,13 +155,13 @@ export default function Home() {
                   )}>{step.id}</div>
                 </div>
                 <div className={cn(
-                  "space-y-6 flex flex-col",
+                  "space-y-4 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <h3 className="text-3xl md:text-5xl stamped-dossier text-white tracking-tighter leading-none">{step.title}</h3>
-                  <p className="text-muted-foreground text-base leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-12 px-10 rounded-sm border-0 shadow-lg shadow-primary/10" asChild>
-                    <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                  <h3 className="text-2xl md:text-4xl stamped-dossier text-white tracking-tighter leading-none">{step.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] h-10 px-8 rounded-sm border-0 shadow-lg shadow-primary/10" asChild>
+                    <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-3.5 h-3.5" /></Link>
                   </Button>
                 </div>
               </div>

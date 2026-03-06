@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -315,9 +314,11 @@ export default function ComparePage() {
     }
 
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-center normal-case text-white">3. Compare schools</h1>
-            <p className="text-muted-foreground mb-12 text-center max-w-2xl mx-auto font-medium text-sm leading-relaxed">Select up to three schools for a side-by-side comparison of key data.</p>
+        <div className="container mx-auto px-4 md:px-6 py-0">
+            <div className="pt-4 mb-6 text-center">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-white normal-case">3. Compare schools</h1>
+              <p className="text-muted-foreground text-center max-w-2xl mx-auto font-medium text-sm leading-relaxed">Select up to three schools for a side-by-side comparison of key data.</p>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
                 {selectedSchools.map((school, index) => (

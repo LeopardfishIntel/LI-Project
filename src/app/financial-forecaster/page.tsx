@@ -33,7 +33,8 @@ import {
   TrendingDown,
   Compass,
   AlertTriangle,
-  Coffee
+  Coffee,
+  Trophy
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -212,7 +213,7 @@ function ContractDecoderContent() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4 pb-12">
         <div className="lg:col-span-4 space-y-6">
           <Card className="glass border-primary/20 bg-background/40">
             <CardHeader><CardTitle className="text-sm font-bold text-primary/70">Operational settings</CardTitle></CardHeader>
@@ -422,63 +423,63 @@ function ContractDecoderContent() {
                                     <p className="text-xl font-bold text-white/90">{formatCurrency(conv, ccy)}</p>
                                 </div>
                             )
-                        })}
-                    </div>
+                          })}
+                      </div>
 
-                    <div className="pt-8 border-t border-white/5 space-y-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                            <h3 className="text-base text-primary flex items-center gap-2 font-bold">
-                                <Sparkles className="size-4" /> Leopardfish Intel evaluation
-                            </h3>
-                            {dateStamp && (
-                                <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
-                                    Date stamp: {dateStamp}
-                                </span>
-                            )}
-                            {!verdict && !isVerdictLoading && (
-                                <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    onClick={handleGenerateVerdict}
-                                    className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
-                                >
-                                    <Sparkles className="size-3 mr-2" />
-                                    Run SWOT protocol
-                                </Button>
-                            )}
-                            {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
-                        </div>
+                      <div className="pt-8 border-t border-white/5 space-y-6">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                              <h3 className="text-base text-primary flex items-center gap-2 font-bold">
+                                  <Sparkles className="size-4" /> Leopardfish Intel evaluation
+                              </h3>
+                              {dateStamp && (
+                                  <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest border border-white/5 px-2 py-0.5 rounded-sm w-fit">
+                                      Date stamp: {dateStamp}
+                                  </span>
+                              )}
+                              {!verdict && !isVerdictLoading && (
+                                  <Button 
+                                      size="sm" 
+                                      variant="outline" 
+                                      onClick={handleGenerateVerdict}
+                                      className="h-8 text-[10px] font-black uppercase tracking-widest border-primary/30 text-primary hover:bg-primary/10"
+                                  >
+                                      <Sparkles className="size-3 mr-2" />
+                                      Run SWOT protocol
+                                  </Button>
+                              )}
+                              {isVerdictLoading && <Loader2 className="size-3 animate-spin text-primary" />}
+                          </div>
 
-                        {verdictError && (
-                            <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
-                                <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
-                                <div className="space-y-1">
-                                    <p className="text-xs font-bold text-destructive">Uplink failure</p>
-                                    <p className="text-xs text-muted-foreground">{verdictError}</p>
-                                </div>
-                            </div>
-                        )}
+                          {verdictError && (
+                              <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
+                                  <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
+                                  <div className="space-y-1">
+                                      <p className="text-xs font-bold text-destructive">Uplink failure</p>
+                                      <p className="text-xs text-muted-foreground">{verdictError}</p>
+                                  </div>
+                              </div>
+                          )}
 
-                        {verdict ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
-                                <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                                <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
-                                <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
-                            </div>
-                        ) : isVerdictLoading ? (
-                            <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
-                                <Loader2 className="size-8 animate-spin text-primary" />
-                                <p className="text-sm font-bold">Uplinking to tactical engine...</p>
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
-              </Card>
-            </>
-          )}
-        </div>
-    </div>
+                          {verdict ? (
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                  <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                  <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                  <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
+                                  <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
+                              </div>
+                          ) : isVerdictLoading ? (
+                              <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 opacity-30">
+                                  <Loader2 className="size-8 animate-spin text-primary" />
+                                  <p className="text-sm font-bold">Uplinking to tactical engine...</p>
+                              </div>
+                          ) : null}
+                      </div>
+                  </div>
+                </Card>
+              </>
+            )}
+          </div>
+      </div>
   );
 }
 
@@ -501,8 +502,8 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
 
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="mb-16 text-center print:hidden">
+    <div className="container mx-auto px-4 md:px-6 py-0">
+      <div className="mb-8 text-center pt-4 print:hidden">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-white normal-case text-center">
           2. Contract decoder
         </h1>

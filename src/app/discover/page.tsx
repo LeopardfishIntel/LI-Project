@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useActionState } from "react";
@@ -53,12 +52,12 @@ export default function FindYourFitPage() {
   const { data: schools } = useCollection<School>(schoolsQuery);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12">
-      <div className="max-w-3xl mx-auto">
+    <div className="container mx-auto px-4 md:px-6 py-0">
+      <div className="max-w-3xl mx-auto pt-4 pb-12">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white mb-4">
           1. Find your fit
         </h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
+        <p className="text-muted-foreground text-center mt-4 mb-6 max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
 
         <Card className="bg-card/70 backdrop-blur-sm border-border">
           <form action={formAction}>
