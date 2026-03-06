@@ -108,14 +108,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 border-b border-white/5 bg-background">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-            <p className="text-[10px] sm:text-xs font-black text-white tracking-[0.4em] uppercase">
-              Teach Overseas: Know Before You Go
-            </p>
-        </div>
-      </section>
-
       <section className="py-20 md:py-32 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-6">
           <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white">
