@@ -5,8 +5,8 @@ import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import {
   useUser,
-  useFirestore,
   useDoc,
+  useFirestore,
   useMemoFirebase,
   setDocumentNonBlocking,
 } from '@/firebase';
@@ -44,7 +44,6 @@ import {
   Link as LinkIcon,
   Copy,
   Check,
-  AlertTriangle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -369,11 +368,9 @@ function pushToFirestore() {
                             </div>
                         </div>
                         
-                        <Separator className="bg-white/5" />
-                        
                         <div className="space-y-3">
                             <h4 className="text-xs font-black uppercase text-primary tracking-widest">Automation script</h4>
-                            <p className="text-xs text-muted-foreground leading-relaxed font-medium italic">Advanced: Copy this into Extensions > Apps Script to prepare your Sheet for transmission.</p>
+                            <p className="text-xs text-muted-foreground leading-relaxed font-medium italic">Advanced: Copy this into Extensions &gt; Apps Script to prepare your Sheet for transmission.</p>
                             <Button variant="outline" size="sm" onClick={handleCopyScript} className="h-8 text-[10px] font-black uppercase border-white/10">
                                 {copied ? <Check className="size-3 mr-2" /> : <Copy className="size-3 mr-2" />}
                                 Copy script
@@ -466,10 +463,10 @@ function pushToFirestore() {
                             <p className="text-[10px] font-black uppercase text-amber-400 mb-2">Factory reset (Seed)</p>
                             <p className="text-xs text-muted-foreground mb-4 font-medium leading-relaxed">Restore local mock datasets. This will overwrite existing dossiers.</p>
                             <div className="flex gap-2">
-                                <Button onClick={() => handleSeedData('schools')} disabled={isSeeding} size="xs" variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-amber-500/10 hover:text-amber-400 px-2">
+                                <Button onClick={() => handleSeedData('schools')} disabled={isSeeding} variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-amber-500/10 hover:text-amber-400 px-2">
                                     Schools
                                 </Button>
-                                <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} size="xs" variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-amber-500/10 hover:text-amber-400 px-2">
+                                <Button onClick={() => handleSeedData('locations_costOfLiving')} disabled={isSeedingCoL} variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-amber-500/10 hover:text-amber-400 px-2">
                                     City index
                                 </Button>
                             </div>
@@ -477,7 +474,7 @@ function pushToFirestore() {
                         <div className="p-4 rounded-lg bg-black/30 border border-white/5">
                             <p className="text-[10px] font-black uppercase text-primary mb-2">Calculator calibration</p>
                             <p className="text-xs text-muted-foreground mb-4 font-medium leading-relaxed">Update global tax and student loan thresholds for 2026/27.</p>
-                            <Button onClick={handleSeedConfig} disabled={isSeedingConfig} size="xs" variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-primary/10 hover:text-primary px-2">
+                            <Button onClick={handleSeedConfig} disabled={isSeedingConfig} variant="ghost" className="h-7 text-[9px] font-black uppercase hover:bg-primary/10 hover:text-primary px-2">
                                 Sync 2026 Config
                             </Button>
                         </div>
