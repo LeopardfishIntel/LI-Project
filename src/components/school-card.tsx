@@ -1,38 +1,28 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Briefcase, UserCheck, Ban } from 'lucide-react';
+import { MapPin, Briefcase, UserCheck, Ban, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { School } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, getTacticalColor } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
 interface SchoolCardProps {
   school: School;
 }
 
-const scoreColorClasses = {
-  good: 'bg-green-500/20 text-green-400 border-green-500/30',
-  neutral: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-  bad: 'bg-red-500/20 text-red-400 border-red-500/30',
-};
-
-const InfoRow = ({ icon, text }: { icon: React.ReactNode, text?: string }) => {
-    if (!text) return null;
-    return (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {icon}
-            <span>{text}</span>
-        </div>
-    );
-};
-
-
 export function SchoolCard({ school }: SchoolCardProps) {
+  // Prefer User's Google Sheet fields, fallback to legacy intel
+  const displaySummary = school.summary || school.description;
+  const displayCurriculum = school.curriculum || school.intel.curriculum;
+  const displayApprovals = school.approvals || school.intel.accreditation;
+  const displayCity = school.city || school.location;
+  const displayRatingColor = getTacticalColor(school.numericalRating || school.intel.salary.score);
+
   return (
-    <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden flex flex-col h-full shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
+    <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden flex flex-col h-full shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
       <CardHeader className="p-0">
         <div className="relative">
           <Image
@@ -41,46 +31,56 @@ export function SchoolCard({ school }: SchoolCardProps) {
             width={600}
             height={400}
             data-ai-hint={school.imageHint}
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           />
-           <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/80 px-2 py-1 rounded-full text-sm font-bold">
-            {school.intel.accreditation}
+           <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/90 px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest border border-white/10 text-white">
+            {displayApprovals}
           </div>
+          {school.score && (
+            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-primary px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+              <ShieldCheck className="size-3" /> Score: {school.score}
+            </div>
+          )}
         </div>
       </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <CardTitle className="text-xl mb-2 tracking-tight normal-case">
-          <Link href={`/schools/${school.id}`} className="hover:text-primary transition-colors">
-            {school.name}
-          </Link>
-        </CardTitle>
-        <div className="flex items-center text-muted-foreground text-sm">
-          <MapPin className="w-4 h-4 mr-1" />
-          <span>{school.location}, {school.country}</span>
+      <CardContent className="p-5 flex-grow space-y-4">
+        <div>
+            <CardTitle className="text-xl mb-1.5 tracking-tight normal-case text-white leading-tight">
+            <Link href={`/schools/${school.id}`} className="hover:text-primary transition-colors">
+                {school.name}
+            </Link>
+            </CardTitle>
+            <div className="flex items-center text-muted-foreground text-xs font-bold uppercase tracking-widest">
+            <MapPin className="w-3 h-3 mr-1.5 text-primary" />
+            <span>{displayCity}, {school.country}</span>
+            </div>
         </div>
-        <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{school.description}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Badge variant="outline" className={cn(scoreColorClasses[school.intel.salary.score])}>
-            Salary: {school.intel.salary.value}
+
+        <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed font-medium">{displaySummary}</p>
+        
+        <div className="flex flex-wrap gap-2">
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5", displayRatingColor)}>
+            Rating: {school.numericalRating || school.intel.salary.score}
           </Badge>
-          <Badge variant="outline" className={cn(scoreColorClasses[school.intel.savingsPotential.score])}>
-            Savings: {school.intel.savingsPotential.value}
+          <Badge variant="outline" className="text-[9px] font-black uppercase rounded-sm bg-white/5 text-primary">
+            {displayCurriculum}
           </Badge>
         </div>
-        <Separator className="my-4" />
-         <div className="space-y-2">
-            <InfoRow icon={<Briefcase className="w-4 h-4 text-primary" />} text={school.intel.jobsPortal} />
-            <InfoRow icon={<UserCheck className="w-4 h-4 text-green-400" />} text={school.intel.minQualifications} />
-            <InfoRow icon={<Ban className="w-4 h-4 text-red-400" />} text={school.intel.visaRestrictions} />
+
+        <Separator className="bg-white/5" />
+        
+        <div className="grid grid-cols-2 gap-y-2">
+            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class size: <span className="text-white">{school.classSize || school.intel.classSize}</span></div>
+            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">NC Time: <span className="text-white">{school.ncTime || school.intel.nonContactTime}%</span></div>
         </div>
 
       </CardContent>
-      <CardFooter className="p-4 pt-0 mt-auto">
-        <Link href={`/schools/${school.id}`} className="w-full">
-          <Button className="w-full" variant="outline">
-            View Profile
-          </Button>
-        </Link>
+      <CardFooter className="p-5 pt-0 mt-auto">
+        <Button className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-11 rounded-sm" asChild>
+            <Link href={`/schools/${school.id}`}>
+                View dossier
+            </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

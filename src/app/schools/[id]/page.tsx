@@ -25,11 +25,12 @@ import {
   Gift,
   Clock,
   Laptop,
-  Loader2,
   ExternalLink,
+  ShieldCheck,
+  Info
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
-import { cn, categorizeInsurance } from '@/lib/utils';
+import { cn, categorizeInsurance, getTacticalColor } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
@@ -52,12 +53,6 @@ const intelIcons = {
 };
 
 type IntelKey = keyof typeof intelIcons;
-
-const scoreColorClasses = {
-  good: 'text-green-400',
-  neutral: 'text-slate-400',
-  bad: 'text-red-400',
-};
 
 const HealthInsuranceHelp = () => (
     <div className="space-y-3 p-1">
@@ -145,12 +140,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   );
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(schoolRef);
 
-  // Fetch linked location data
   const locationRef = useMemoFirebase(
     () => (firestore && school?.locationId ? doc(firestore, 'locations_costOfLiving', school.locationId) : null),
     [firestore, school?.locationId]
   );
-  const { data: locationData, isLoading: isLocationLoading } = useDoc<LocationCostOfLiving>(locationRef);
+  const { data: locationData } = useDoc<LocationCostOfLiving>(locationRef);
 
   if (isSchoolLoading) {
     return <SchoolProfileSkeleton />;
@@ -163,11 +157,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const schoolIntel = [
     {
       key: 'salary',
-      label: 'Salary',
-      value: school.intel.salary.value,
-      score: school.intel.salary.score,
+      label: 'Salary profile',
+      value: school.finance || school.intel.salary.value,
+      score: school.numericalRating || school.intel.salary.score,
     },
-    { key: 'housing', label: 'Housing', value: school.intel.housing.value },
+    { 
+      key: 'housing', 
+      label: 'Housing provision', 
+      value: school.housingProvision || school.intel.housing.value 
+    },
     {
       key: 'savingsPotential',
       label: 'Savings potential',
@@ -182,39 +180,37 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     {
       key: 'nonContactTime',
       label: 'Non-contact time',
-      value: school.intel.nonContactTime
-        ? `${school.intel.nonContactTime}%`
-        : undefined,
+      value: school.ncTime ? `${school.ncTime}%` : school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : undefined,
     },
     {
       key: 'technologyEcosystem',
       label: 'Tech ecosystem',
-      value: school.intel.technologyEcosystem,
+      value: school.techEcosystem || school.intel.technologyEcosystem,
     },
     {
       key: 'curriculum',
       label: 'Curriculum',
-      value: school.intel.curriculum,
+      value: school.curriculum || school.intel.curriculum,
     },
     {
       key: 'accreditation',
       label: 'Accreditation',
-      value: school.intel.accreditation,
+      value: school.approvals || school.intel.accreditation,
     },
     {
       key: 'studentTeacherRatio',
       label: 'Student-teacher ratio',
-      value: school.intel.studentTeacherRatio,
+      value: school.ratio || school.intel.studentTeacherRatio,
     },
     {
       key: 'classSize',
       label: 'Average class size',
-      value: school.intel.classSize,
+      value: school.classSize || school.intel.classSize,
     },
     {
       key: 'healthInsurance',
       label: 'Health insurance',
-      value: categorizeInsurance(school.intel.healthInsurance),
+      value: categorizeInsurance(school.healthCoverage || school.intel.healthInsurance),
     },
     { key: 'jobsPortal', label: 'Jobs portal', value: school.intel.jobsPortal },
     {
@@ -231,7 +227,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen">
-      <section className="relative h-64 md:h-96 w-full">
+      <section className="relative h-64 md:h-[50vh] w-full">
         <Image
           src={school.imageUrl}
           alt={`Hero image for ${school.name}`}
@@ -240,25 +236,31 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           className="brightness-50"
           data-ai-hint={school.imageHint}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 p-4 md:p-8 container mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between">
-            <div>
-              <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-primary-foreground">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 p-4 md:p-12 container mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Badge className="bg-primary hover:bg-primary text-white font-black uppercase tracking-widest text-[10px] rounded-sm py-1">Verified Dossier</Badge>
+                {school.score && (
+                    <Badge variant="outline" className="border-primary/50 text-primary font-black uppercase tracking-widest text-[10px] rounded-sm py-1 bg-primary/5">Score: {school.score}</Badge>
+                )}
+              </div>
+              <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">
                 {school.name}
               </h1>
-              <div className="flex items-center gap-4 mt-2 text-muted-foreground">
-                <div className="flex items-center text-lg">
-                  <MapPin className="w-5 h-5 mr-2" />
+              <div className="flex items-center gap-4 text-muted-foreground">
+                <div className="flex items-center text-sm font-bold uppercase tracking-widest">
+                  <MapPin className="w-4 h-4 mr-2 text-primary" />
                   <span>
-                    {school.location}, {school.country}
+                    {school.city || school.location}, {school.country}
                   </span>
                 </div>
               </div>
             </div>
             {school.websiteUrl && (
               <div className="mt-4 md:mt-0">
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="border-white/20 hover:bg-white/5 text-white font-bold h-12 px-8 rounded-sm">
                   <a href={school.websiteUrl} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" /> Visit Website
                   </a>
@@ -270,36 +272,46 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       </section>
 
       <div className="container mx-auto px-4 md:px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            {school.description && (
-                <Card className="bg-card/70 backdrop-blur-sm border-border shadow-lg">
-                <CardHeader>
-                    <CardTitle>About {school.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground leading-relaxed">{school.description}</p>
-                </CardContent>
-                </Card>
-            )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2 space-y-12">
             
-            <Card className="bg-card/70 backdrop-blur-sm border-border shadow-lg">
-              <CardHeader>
-                <CardTitle>Core intel</CardTitle>
+            {/* Academic Briefing */}
+            <Card className="glass border-white/5 rounded-sm">
+                <CardHeader className="border-b border-white/5">
+                    <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                        <BookOpen className="size-4" /> Academic Briefing
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-6">
+                    <p className="text-muted-foreground leading-relaxed font-medium">{(school.summary || school.description)}</p>
+                    {school.academic && (
+                        <div className="p-4 bg-primary/5 border border-primary/20 rounded-sm">
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Curriculum Strategy</h4>
+                            <p className="text-sm text-white/90 font-medium leading-relaxed">{school.academic}</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card className="glass border-white/5 rounded-sm shadow-xl">
+              <CardHeader className="border-b border-white/5">
+                <CardTitle className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                    <ShieldCheck className="size-4" /> Operational Intel
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+              <CardContent className="pt-6">
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                   {schoolIntel.map(item =>
                     item.value ? (
-                      <li key={item.key} className="flex items-start">
-                        <div className="mr-3 mt-1">
+                      <li key={item.key} className="flex items-start group">
+                        <div className="mr-4 mt-1 transition-transform group-hover:scale-110">
                           {intelIcons[item.key as IntelKey]}
                         </div>
-                        <div>
+                        <div className="space-y-1">
                           {item.key === 'healthInsurance' ? (
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <button className="font-semibold text-muted-foreground border-b border-dotted border-muted-foreground/50 cursor-help hover:text-primary transition-colors text-left">
+                                    <button className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-b border-dotted border-muted-foreground/30 cursor-help hover:text-primary transition-colors text-left">
                                         {item.label}
                                     </button>
                                 </PopoverTrigger>
@@ -308,15 +320,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                 </PopoverContent>
                             </Popover>
                           ) : (
-                            <p className="font-semibold text-muted-foreground">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
                                 {item.label}
                             </p>
                           )}
                           <div className="flex items-center gap-2">
                             <p
                               className={cn(
-                                'text-lg font-bold',
-                                item.score && scoreColorClasses[item.score]
+                                'text-sm md:text-base font-bold text-white',
+                                item.score && getTacticalColor(item.score as string)
                               )}
                             >
                               {item.value.toString()}
@@ -331,9 +343,27 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             </Card>
           </div>
 
-          <div className="space-y-8">
-            {/* If locationData is linked, use it. Fallback to school snapshot if link is pending. */}
+          <div className="space-y-12">
             <CostOfLivingCalculator school={school} overrideLocationData={locationData || undefined} />
+            
+            {school.confidence && (
+                <Card className="glass border-accent/20 bg-accent/5 rounded-sm">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-[10px] font-black uppercase tracking-widest text-accent flex items-center gap-2">
+                            <Info className="size-3" /> Data confidence
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-end gap-2 mb-2">
+                            <span className="text-3xl font-black text-white">{school.confidence}%</span>
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Signal strength</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-accent transition-all duration-1000" style={{ width: `${school.confidence}%` }} />
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
           </div>
         </div>
       </div>
