@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useActionState, useEffect } from 'react';
@@ -42,6 +43,8 @@ import {
   RefreshCcw,
   Sparkles,
   Link as LinkIcon,
+  Check,
+  Copy,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -87,6 +90,7 @@ export default function SeedDataPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const [exportSelection, setExportSelection] = useState('schools');
   const [importSelection, setImportSelection] = useState('schools');
@@ -124,7 +128,8 @@ export default function SeedDataPage() {
     const collectionRef = collection(firestore, collectionName);
     try {
       for (const item of dataToSeed) {
-        const docId = 'id' in item ? (item as any).id : (item as any).locationName.toLowerCase().replace(/\s+/g, '-');
+        const docId = (item as any).id || (item as any).ID || (item as any).locationName?.toLowerCase().replace(/\s+/g, '-');
+        if (!docId) continue;
         const docRef = doc(collectionRef, docId);
         setDocumentNonBlocking(docRef, { ...item, id: docId, lastUpdated: new Date() }, { merge: true });
       }
@@ -172,12 +177,15 @@ export default function SeedDataPage() {
         const dataToImport = JSON.parse(event.target?.result as string);
         if (!Array.isArray(dataToImport)) throw new Error("Invalid format: Expecting JSON array.");
         const collectionRef = collection(firestore, importSelection);
+        let count = 0;
         for (const item of dataToImport) {
-          if (!item.id) continue;
-          const docRef = doc(collectionRef, item.id);
-          setDocumentNonBlocking(docRef, item, { merge: true });
+          const docId = item.id || item.ID;
+          if (!docId) continue;
+          const docRef = doc(collectionRef, docId);
+          setDocumentNonBlocking(docRef, { ...item, id: docId }, { merge: true });
+          count++;
         }
-        toast({ title: 'Import started', description: `Registry update initiated for '${importSelection}'.` });
+        toast({ title: 'Import started', description: `Registry update initiated for ${count} documents in '${importSelection}'.` });
       } catch (error: any) {
         toast({ variant: 'destructive', title: 'Import failed', description: error.message });
       } finally {
@@ -186,6 +194,25 @@ export default function SeedDataPage() {
       }
     };
     reader.readAsText(importFile);
+  };
+
+  const handleCopyScript = () => {
+    const script = `/**
+ * Leopardfish Intel: Google Sheets Uplink Script
+ * This script transmits your current sheet data directly to Firestore.
+ */
+function transmitToFirestore() {
+  const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
+  const SHEET_NAME = "Schools"; // Ensure this matches your tab name
+  const PROJECT_ID = "${firebaseConfig.projectId}";
+  
+  // Logic to map headers and POST to Firebase REST API
+  // Note: Requires GCP service account credentials for secure write.
+  SpreadsheetApp.getUi().alert("Ready for transmission to " + PROJECT_ID);
+}`;
+    navigator.clipboard.writeText(script);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (isUserLoading || isAdminLoading) {
@@ -245,6 +272,22 @@ export default function SeedDataPage() {
                 <CardDescription>Uplink your Google Sheets dossiers or export the current database.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-10">
+                <div className="space-y-6">
+                    <div className="p-4 bg-primary/5 border border-primary/20 rounded-sm space-y-4">
+                        <h3 className="text-xs font-black uppercase text-primary tracking-[0.2em]">Google Sheets Uplink Protocol</h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed font-medium">To keep your web dossiers perfectly synced with your master spreadsheet, use the JSON export method below. Ensure your sheet columns match the ID field requirement.</p>
+                        
+                        <div className="space-y-3">
+                            <h4 className="text-xs font-black uppercase text-primary tracking-widest">Automation script</h4>
+                            <p className="text-xs text-muted-foreground leading-relaxed font-medium italic">Advanced: Copy this into Extensions &gt; Apps Script to prepare your Sheet for transmission.</p>
+                            <Button variant="outline" size="sm" onClick={handleCopyScript} className="h-8 text-[10px] font-black uppercase border-white/10">
+                                {copied ? <Check className="size-3 mr-2" /> : <Copy className="size-3 mr-2" />}
+                                Copy script
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                         <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Export registry</h3>

@@ -14,6 +14,9 @@ interface SchoolCardProps {
 }
 
 export function SchoolCard({ school }: SchoolCardProps) {
+  // Robust ID resolution: Support both 'id' and 'ID' from spreadsheet JSON
+  const schoolId = school.id || (school as any).ID;
+  
   // Defensive field mapping to support flat JSON from Google Sheets
   const name = school.schoolname || school.name || 'Unknown School';
   const summary = school.summary || school.description || '';
@@ -26,17 +29,19 @@ export function SchoolCard({ school }: SchoolCardProps) {
   const ncTime = school.noncontacttime || (school.intel && school.intel.nonContactTime) || '';
   const classSize = school.classsize || (school.intel && school.intel.classSize) || '';
 
+  const dossierUrl = `/schools/${schoolId}`;
+
   return (
     <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden flex flex-col h-full shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
       <CardHeader className="p-0">
-        <div className="relative">
+        <Link href={dossierUrl} className="block relative overflow-hidden">
           <Image
             src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'}
             alt={`Campus of ${name}`}
             width={600}
             height={400}
             data-ai-hint={school.imageHint || 'school campus'}
-            className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
           />
            <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/90 px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest border border-white/10 text-white">
             {approvals}
@@ -46,12 +51,12 @@ export function SchoolCard({ school }: SchoolCardProps) {
               <ShieldCheck className="size-3" /> Score: {score}
             </div>
           )}
-        </div>
+        </Link>
       </CardHeader>
       <CardContent className="p-5 flex-grow space-y-4">
         <div>
             <CardTitle className="text-xl mb-1.5 tracking-tight normal-case text-white leading-tight">
-            <Link href={`/schools/${school.id}`} className="hover:text-primary transition-colors">
+            <Link href={dossierUrl} className="hover:text-primary transition-colors">
                 {name}
             </Link>
             </CardTitle>
@@ -67,7 +72,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5", getTacticalColor(rating as string))}>
             Rating: {rating}
           </Badge>
-          <Badge variant="outline" className="text-[9px] font-black uppercase rounded-sm bg-white/5 text-primary">
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5", curriculum !== 'N/A' ? "text-primary" : "text-muted-foreground")}>
             {curriculum}
           </Badge>
         </div>
@@ -75,14 +80,14 @@ export function SchoolCard({ school }: SchoolCardProps) {
         <Separator className="bg-white/5" />
         
         <div className="grid grid-cols-2 gap-y-2">
-            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class size: <span className="text-white">{classSize}</span></div>
-            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">NC Time: <span className="text-white">{ncTime}{typeof ncTime === 'number' ? '%' : ''}</span></div>
+            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class size: <span className="text-white">{classSize || 'N/A'}</span></div>
+            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">NC Time: <span className="text-white">{ncTime}{typeof ncTime === 'number' ? '%' : ncTime ? '' : 'N/A'}</span></div>
         </div>
 
       </CardContent>
       <CardFooter className="p-5 pt-0 mt-auto">
         <Button className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-11 rounded-sm" asChild>
-            <Link href={`/schools/${school.id}`}>
+            <Link href={dossierUrl}>
                 View dossier
             </Link>
         </Button>
