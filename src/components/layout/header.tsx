@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -68,7 +69,7 @@ function UserNav() {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-white/10">
                     <Avatar className="h-10 w-10">
                         <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
-                        <AvatarFallback className="bg-primary/20 text-primary font-bold">
+                        <AvatarFallback>
                             {user.displayName ? user.displayName.charAt(0).toUpperCase() : <User />}
                         </AvatarFallback>
                     </Avatar>
@@ -115,11 +116,12 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative size-8 transition-transform group-hover:scale-110">
+            <div className="relative h-9 w-9 transition-transform group-hover:scale-110">
               <Image 
-                src="/assets/logo.svg" 
+                src="/assets/logo.png" 
                 alt="Leopardfish Intel Logo" 
                 fill
+                style={{ objectFit: 'contain' }}
                 priority
               />
             </div>
