@@ -60,7 +60,7 @@ export function FeatureHighlights() {
   ];
 
   return (
-    <section className="py-24 bg-black/40 border-t border-white/5">
+    <section className="py-16 bg-black/40 border-t border-white/5">
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-5xl mx-auto space-y-12">
           <div className="flex items-center gap-4">

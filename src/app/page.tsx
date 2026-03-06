@@ -107,14 +107,14 @@ export default function Home() {
       </section>
 
       {/* Stats Counter Section */}
-      <section className="py-10 border-b border-white/5 bg-background">
+      <section className="py-8 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
       {/* Mission Section: Centered Briefing */}
-      <section className="py-24 border-b border-white/5 bg-background">
+      <section className="py-16 border-b border-white/5 bg-background">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center space-y-10">
           <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-white">
             Know before you go
@@ -131,9 +131,9 @@ export default function Home() {
       </section>
 
       {/* Zig-Zag Insider Journey */}
-      <section className="py-32 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-40">
+          <div className="space-y-24">
             {steps.map((step, index) => (
               <div key={step.id} className="grid md:grid-cols-2 gap-12 lg:gap-32 items-center">
                 <div className={cn(
