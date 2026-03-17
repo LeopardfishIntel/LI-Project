@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -102,7 +103,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#020617]">
       <section className="relative h-64 md:h-[50vh] w-full">
         <Image
           src={school.imageUrl || 'https://picsum.photos/seed/school/1920/1080'}

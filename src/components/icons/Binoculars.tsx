@@ -1,8 +1,10 @@
+
 import React from 'react';
 
 /**
  * 🛰️ TACTICAL OPTICS ICON
  * Stable inline SVG representation of the Binoculars signature.
+ * Prevents build resolution failures from external icon libraries.
  */
 export function Binoculars({ className }: { className?: string }) {
   return (

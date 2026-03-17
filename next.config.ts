@@ -1,11 +1,15 @@
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 🛰️ FIREBASE APP HOSTING PROTOCOLS
   trailingSlash: true,
   images: {
     unoptimized: true,
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
@@ -20,7 +24,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    // 🛡️ CSRF PROTECTION FOR PRODUCTION DOMAINS
     serverActions: {
       allowedOrigins: [
         "*.web.app",

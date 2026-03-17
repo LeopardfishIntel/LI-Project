@@ -1,8 +1,10 @@
+
 import { DependencyList, useMemo } from 'react';
 
 /**
  * 🛡️ TACTICAL STABILITY REGISTRY
  * Tracks stabilized references without mutating core SDK objects.
+ * Essential for preventing infinite render loops in useCollection and useDoc.
  */
 const memoizedRefs = new WeakSet<object>();
 
