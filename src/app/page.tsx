@@ -202,7 +202,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Analysis in Action */}
+      {/* Analysis in Action Grid */}
       <section className="py-12 bg-black/40 border-t border-white/5">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
           <div className="space-y-12">
@@ -226,12 +226,21 @@ export default function Home() {
               ))}
             </div>
 
+            {/* Standardized CTA Cluster */}
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="outline" size="lg" className="h-14 px-10 border-white/20 hover:bg-white/5 text-white font-bold rounded-sm w-full sm:w-auto" asChild>
+              <Button 
+                size="lg" 
+                className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold rounded-sm w-full sm:w-auto min-w-[200px] shadow-lg shadow-[#f97316]/20 transition-all hover:scale-[1.02] border-0" 
+                asChild
+              >
                 <Link href="/directory">Browse schools</Link>
               </Button>
-              <Button size="lg" className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold rounded-sm w-full sm:w-auto shadow-lg shadow-[#f97316]/20" asChild>
-                <Link href="/discover">Find my fit <ArrowRight className="ml-2 size-4" /></Link>
+              <Button 
+                size="lg" 
+                className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold rounded-sm w-full sm:w-auto min-w-[200px] shadow-lg shadow-[#f97316]/20 transition-all hover:scale-[1.02] border-0" 
+                asChild
+              >
+                <Link href="/discover">Discover</Link>
               </Button>
             </div>
           </div>
