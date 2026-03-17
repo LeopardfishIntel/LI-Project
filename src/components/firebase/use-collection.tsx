@@ -38,7 +38,7 @@ export function useCollection<T = any>(query: Query<DocumentData> | null | undef
         
         errorEmitter.emit('permission-error', contextualError);
         
-        // Safety Bypass: Set empty results to allow UI to continue rendering
+        // Safety Bypass: Set null to allow UI to continue rendering with fallbacks
         setData(null);
         setIsLoading(false);
       }

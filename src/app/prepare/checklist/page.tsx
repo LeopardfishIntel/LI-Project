@@ -1,10 +1,10 @@
-
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Printer, Binoculars, CheckCircle2, Flag } from 'lucide-react';
+import { ArrowLeft, Printer, CheckCircle2, Flag } from 'lucide-react';
+import { Binoculars } from '@/components/icons/Binoculars';
 
 export default function StrategicChecksheetPage() {
   const sections = [

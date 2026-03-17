@@ -1,5 +1,8 @@
-
 {
+  "apphosting": {
+    "framework": "nextjs",
+    "root": "/"
+  },
   "hosting": {
     "public": "public",
     "ignore": [

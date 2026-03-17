@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { 
   ArrowLeft, 
   Printer, 
-  Binoculars, 
   CheckCircle2, 
   ShieldAlert, 
   Banknote, 
@@ -16,6 +15,7 @@ import {
   Globe,
   ArrowRight
 } from 'lucide-react';
+import { Binoculars } from '@/components/icons/Binoculars';
 
 export default function BudgetBriefingPage() {
   const handlePrint = () => {
@@ -26,7 +26,6 @@ export default function BudgetBriefingPage() {
 
   return (
     <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-primary/20">
-      {/* Action Bar */}
       <div className="max-w-4xl mx-auto flex justify-between items-center gap-4 mb-12 print:hidden">
         <Button variant="outline" asChild className="border-black/20 hover:bg-black/5 text-black rounded-sm px-6">
           <Link href="/prepare">
@@ -38,14 +37,11 @@ export default function BudgetBriefingPage() {
         </Button>
       </div>
 
-      {/* Main Dossier Container */}
       <div className="max-w-4xl mx-auto border-[4px] border-black p-8 md:p-16 space-y-12 relative overflow-hidden bg-white shadow-2xl print:shadow-none print:border-[2px]">
-        {/* Background Watermark */}
         <div className="absolute top-0 right-0 p-6 opacity-10 rotate-[15deg] pointer-events-none">
           <Binoculars className="size-48 text-black" />
         </div>
 
-        {/* Header */}
         <header className="border-b-[6px] border-black pb-8">
           <div className="flex items-center gap-3 mb-2">
             <ShieldAlert className="size-8 text-black" />
@@ -58,9 +54,7 @@ export default function BudgetBriefingPage() {
           </div>
         </header>
 
-        {/* Content Body */}
         <div className="space-y-12">
-          {/* Introduction */}
           <section className="space-y-4">
             <p className="text-lg leading-relaxed font-bold">
               As with most other industries, international schools pay you in arrears. In reality, this means you may face a significant cash shortfall during your first six weeks in-country.
@@ -70,7 +64,6 @@ export default function BudgetBriefingPage() {
             </p>
           </section>
 
-          {/* Section: Visas and Documentation */}
           <section className="space-y-4">
             <div className="flex items-center gap-3 border-b-2 border-black pb-2">
               <Banknote className="size-5" />
@@ -81,7 +74,6 @@ export default function BudgetBriefingPage() {
             </p>
           </section>
 
-          {/* Section: Rent and Deposits */}
           <section className="space-y-4">
             <div className="flex items-center gap-3 border-b-2 border-black pb-2">
               <Home className="size-5" />
@@ -92,7 +84,6 @@ export default function BudgetBriefingPage() {
             </p>
           </section>
 
-          {/* Section: Your Six-Week Living Costs */}
           <section className="space-y-4">
             <div className="flex items-center gap-3 border-b-2 border-black pb-2">
               <Clock className="size-5" />
@@ -103,7 +94,6 @@ export default function BudgetBriefingPage() {
             </p>
           </section>
 
-          {/* Section: The 'Empty Flat' Reality */}
           <section className="space-y-4">
             <div className="flex items-center gap-3 border-b-2 border-black pb-2">
               <ShoppingCart className="size-5" />
@@ -114,7 +104,6 @@ export default function BudgetBriefingPage() {
             </p>
           </section>
 
-          {/* Section: Proactive Financial Planning */}
           <section className="space-y-6">
             <div className="flex items-center gap-3 border-b-2 border-black pb-2">
               <Globe className="size-5" />
@@ -136,7 +125,6 @@ export default function BudgetBriefingPage() {
             </div>
           </section>
 
-          {/* Section: Next Step */}
           <section className="pt-8 border-t-[4px] border-black space-y-6">
             <h2 className="text-2xl font-black uppercase tracking-tight">Your Next Step: Run the Numbers</h2>
             <p className="text-sm text-gray-600 leading-relaxed font-medium">
@@ -152,7 +140,6 @@ export default function BudgetBriefingPage() {
           </section>
         </div>
 
-        {/* Footer */}
         <footer className="mt-16 pt-8 border-t-2 border-gray-200 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60">
           <div className="flex items-center gap-3">
             <CheckCircle2 className="size-10 text-black" />
@@ -167,7 +154,6 @@ export default function BudgetBriefingPage() {
         </footer>
       </div>
       
-      {/* Background for non-print */}
       <div className="fixed inset-0 -z-10 bg-[#080c18] print:hidden"></div>
     </div>
   );
