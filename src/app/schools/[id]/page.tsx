@@ -41,20 +41,15 @@ const intelIcons = {
 
 function SchoolProfileSkeleton() {
   return (
-    <div>
-      <section className="relative h-64 md:h-96 w-full">
-        <Skeleton className="h-full w-full" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 p-4 md:p-8 container mx-auto space-y-2">
-          <Skeleton className="h-12 w-3/4" />
-          <Skeleton className="h-6 w-1/2" />
-        </div>
-      </section>
-      <div className="container mx-auto px-4 md:px-6 py-12">
+    <div className="container mx-auto px-4 md:px-6 py-12">
+      <div className="space-y-8">
+        <Skeleton className="h-[40vh] w-full rounded-sm" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <Card><CardHeader><Skeleton className="h-8 w-40" /></CardHeader><CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></CardContent></Card>
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-96 w-full" />
           </div>
+          <Skeleton className="h-96 w-full" />
         </div>
       </div>
     </div>
@@ -62,6 +57,7 @@ function SchoolProfileSkeleton() {
 }
 
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  // 🛰️ NEXT.JS 15 ASYNC PARAMS UNWRAPPING
   const { id } = React.use(params);
   const firestore = useFirestore();
   
@@ -113,7 +109,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           alt={`Hero image for ${name}`}
           fill
           style={{ objectFit: 'cover' }}
-          className="brightness-50"
+          className="brightness-[0.4]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
         <div className="absolute bottom-0 left-0 p-4 md:p-12 container mx-auto">
@@ -123,7 +119,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
               <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">{name}</h1>
               <div className="flex items-center text-sm font-bold uppercase tracking-widest text-muted-foreground">
                 <MapPin className="w-4 h-4 mr-2 text-primary" />
-                <span>{school.city}, {school.country}</span>
+                <span>{school.city || school.location}, {school.country}</span>
               </div>
             </div>
             {website && (
