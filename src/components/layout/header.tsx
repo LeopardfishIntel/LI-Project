@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Binoculars } from "@/components/icons/Binoculars";
+import BrandLogo from "@/components/branding/BrandLogo";
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
@@ -24,11 +24,8 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[#020617]/95 backdrop-blur print:hidden">
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 group">
-            <Binoculars className="size-6 text-[#f97316] group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-bold text-lg tracking-tighter text-white">
-              <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
-            </span>
+          <Link href="/" className="group">
+            <BrandLogo className="group-hover:scale-105 transition-transform duration-300" />
           </Link>
           
           <nav className="hidden md:flex items-center gap-1">
@@ -52,12 +49,12 @@ export default function Header() {
         <div className="flex items-center gap-4">
             {user && (
                 <Button variant="ghost" onClick={() => auth.signOut()} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-white">
-                    <LogOut className="size-3 mr-2" /> Log out
+                    <LogOut className="size-3 mr-2 text-[#f97316]" /> Log out
                 </Button>
             )}
             {!user && (
                 <Link href="/login">
-                    <Button variant="outline" size="sm" className="border-white/10 text-white font-bold text-[10px] uppercase tracking-widest rounded-sm h-9 px-4">Log in</Button>
+                    <Button variant="outline" size="sm" className="border-white/10 text-white font-bold text-[10px] uppercase tracking-widest rounded-sm h-9 px-4 hover:bg-white/5">Log in</Button>
                 </Link>
             )}
         </div>

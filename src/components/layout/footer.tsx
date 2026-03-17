@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Linkedin, Facebook } from "lucide-react";
-import { Binoculars } from "@/components/icons/Binoculars";
+import BrandLogo from "@/components/branding/BrandLogo";
 
 export default function Footer() {
   return (
@@ -8,14 +8,11 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           
-          {/* Left Column: Brand & Social (1/3) */}
+          {/* Left Column: Brand & Social */}
           <div className="md:col-span-1 flex flex-col items-start gap-6">
-            <div className="flex items-center">
-              <Binoculars className="h-6 w-6 mr-2 text-[#f97316]" />
-              <span className="font-bold text-lg tracking-tighter text-white">
-                <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
-              </span>
-            </div>
+            <Link href="/">
+              <BrandLogo />
+            </Link>
             
             <div className="flex gap-5">
               <Link 
@@ -39,8 +36,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Right Column: Disclosure (2/3) */}
-          <div className="md:col-span-2 border-l border-[#d6a65d] pl-6 py-1">
+          {/* Right Column: Disclosure */}
+          <div className="md:col-span-2 border-l border-[#d6a65d]/40 pl-6 py-1">
             <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-medium antialiased">
               Leopardfish Intel provides data-driven insights for informational purposes only and does not offer financial, legal, or immigration advice. Final decisions and due diligence are the responsibility of each teacher. International postings carry risks; teachers should ensure adequate personal financial reserves before relocating.
             </p>
