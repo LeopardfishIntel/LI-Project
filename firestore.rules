@@ -102,9 +102,27 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    /**
+     * @description Application-wide metrics and telemetry.
+     * @path /app_metrics/{metricId}
+     * @allow (get) Publicly readable for global stats display.
+     * @allow (update) Restricted increment logic for telemetry signatures.
+     */
     match /app_metrics/{metricId} {
       allow get: if true;
-      allow write: if metricId == 'page_views';
+      allow list: if true;
+      
+      // Allow pulse transmission for page_views dossier
+      allow create: if metricId == 'page_views' && isSignedIn();
+      
+      allow update: if metricId == 'page_views' 
+                    && isSignedIn() 
+                    // Verify that only the comparisons_made field is being modified
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['comparisons_made'])
+                    // Verify that the operation is strictly an increment
+                    && request.resource.data.comparisons_made > resource.data.comparisons_made;
+      
+      allow delete: if isAdmin();
     }
 
     // =====================================================================
