@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { 
   ArrowRight, 
   ShieldCheck, 
@@ -17,6 +16,7 @@ import {
   ShieldAlert 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Binoculars } from '@/components/icons/Binoculars';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages?.find(img => img.id === id);
@@ -67,51 +67,51 @@ export default function Home() {
 
   const capabilities = [
     {
-      icon: <PiggyBank className="size-5 text-[#f97316]" />,
-      title: "True net savings",
-      desc: "Calculate genuine disposable income by mapping real-world costs against net offers."
+      icon: <PiggyBank className="size-5 text-[#f97316]/80" />,
+      title: "Clear financial position",
+      desc: "Establish your genuine disposable income by setting the net offer against realistic day-to-day living costs."
     },
     {
-      icon: <Users className="size-5 text-[#f97316]" />,
-      title: "Family scalability",
-      desc: "Adjust all projections with bespoke multipliers for units up to 2.5x scaling."
+      icon: <Users className="size-5 text-[#f97316]/80" />,
+      title: "Family scaling",
+      desc: "Adjust projections to reflect family circumstances, with tailored modelling for households up to 2.5× the base structure."
     },
     {
-      icon: <Globe className="size-5 text-[#f97316]" />,
-      title: "Cost of living index",
-      desc: "Review primary data on housing, utilities, and essential spending in international locations."
+      icon: <Globe className="size-5 text-[#f97316]/80" />,
+      title: "Cost of living overview",
+      desc: "Review core expenditure data covering housing, utilities, and essential living costs across international locations."
     },
     {
-      icon: <PencilLine className="size-5 text-[#f97316]" />,
+      icon: <PencilLine className="size-5 text-[#f97316]/80" />,
       title: "Live offer input",
-      desc: "Input your confirmed contract details to see immediate regional financial impact."
+      desc: "Enter confirmed contract details to assess the immediate financial implications of each regional posting."
     },
     {
-      icon: <GitCompare className="size-5 text-[#f97316]" />,
-      title: "Comparison matrix",
-      desc: "Analyse up to 3 school offers side-by-side with verified institutional benchmarks."
+      icon: <GitCompare className="size-5 text-[#f97316]/80" />,
+      title: "Side-by-side comparison",
+      desc: "Evaluate up to three school offers simultaneously against verified institutional benchmarks."
     },
     {
-      icon: <Sparkles className="size-5 text-[#f97316]" />,
-      title: "Key findings",
-      desc: "Receive curated analytical reports identifying strengths and institutional risks."
+      icon: <Sparkles className="size-5 text-[#f97316]/80" />,
+      title: "Key insights",
+      desc: "Receive a structured summary outlining the strengths of each opportunity alongside any notable institutional risks."
     },
     {
-      icon: <FileCheck className="size-5 text-[#f97316]" />,
-      title: "Final plan",
-      desc: "Comprehensive readiness protocol covering documentation, visa medicals, and tactical reserves."
+      icon: <FileCheck className="size-5 text-[#f97316]/80" />,
+      title: "Final preparation plan",
+      desc: "A comprehensive readiness guide covering documentation, visa medical requirements, and prudent financial reserves."
     },
     {
-      icon: <ShieldAlert className="size-5 text-[#f97316]" />,
-      title: "Contract flags",
-      desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses."
+      icon: <ShieldAlert className="size-5 text-[#f97316]/80" />,
+      title: "Contract review flags",
+      desc: "Highlight early renewal clauses, potential deductions, and ambiguous provisions within school handbooks."
     }
   ];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-20">
+      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -166,7 +166,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Compressed Zig-Zag Journey */}
+      {/* Zig-Zag Sections */}
       <section className="bg-[#020617]">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
           <div className="space-y-0">
@@ -203,16 +203,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Analysis in Action - Feature Matrix */}
-      <section className="py-24 bg-black/40 border-t border-white/5">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-16">
+      {/* Analysis in Action - Refactored Grid */}
+      <section className="py-12 bg-black/40 border-t border-white/5">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+          <div className="space-y-12">
             <div className="text-center">
               <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Analysis in action</h2>
               <p className="text-muted-foreground text-sm uppercase font-black tracking-widest mt-4 opacity-60">High-density decision support</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {capabilities.map((cap, i) => (
                 <div key={i} className="p-6 rounded-sm bg-white/[0.02] border border-white/5 hover:border-[#f97316]/30 transition-all group">
                   <div className="flex items-center gap-3 mb-4">
@@ -228,7 +228,7 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="pt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="outline" size="lg" className="h-14 px-10 border-white/20 hover:bg-white/5 text-white font-bold rounded-sm w-full sm:w-auto" asChild>
                 <Link href="/directory">Browse schools</Link>
               </Button>
