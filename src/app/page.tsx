@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import ContractFlags from '@/components/sections/ContractFlags';
 import { ArrowRight, ShieldCheck, Scan, PiggyBank, Users, Globe, PencilLine, GitCompare, Sparkles, FileCheck, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -240,9 +239,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Contract Flags Briefing */}
-      <ContractFlags />
     </div>
   );
 }
