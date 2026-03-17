@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Scan } from 'lucide-react';
+import { Binoculars } from '@/components/icons/Binoculars';
 import { cn } from '@/lib/utils';
 
 /**
- * 🛡️ INTEL SCAN BRAND SIGNATURE
- * Optimized for Next.js 15 SSR with hydration guards.
- * Uses hard-coded HEX values to prevent CSS bundle drift on Firebase.
+ * 🛡️ INTEL SIGNATURE LOGO
+ * Reinstated to match reference image: Binoculars icon + Orange/Blue split.
  */
 export default function BrandLogo({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
@@ -20,14 +19,14 @@ export default function BrandLogo({ className }: { className?: string }) {
     <div className={cn("flex items-center gap-2", className)}>
       <div className="relative">
         {mounted ? (
-          <Scan className="size-6 text-[#f97316]" />
+          <Binoculars className="size-6 text-[#f97316]" />
         ) : (
           <div className="size-6" />
         )}
       </div>
       <span className="font-black text-xl tracking-tighter uppercase">
-        <span className="text-[#f97316]">Leopardfish</span>{" "}
-        <span className="text-[#007FFF]">Intel</span>
+        <span className="text-[#f97316]">Leopard</span>
+        <span className="text-[#007FFF]">fish Intel</span>
       </span>
     </div>
   );

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, ShieldCheck, Scan, Target, GitCompare, Calculator } from 'lucide-react';
+import { ArrowRight, Target, GitCompare, Calculator, Target as TargetIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -59,7 +59,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
       {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[85vh] flex items-center justify-center overflow-hidden">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -74,30 +74,38 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-[10px] font-black uppercase tracking-widest">
-              {mounted ? <Scan className="w-3.5 h-3.5 animate-pulse" /> : <ShieldCheck className="w-3.5 h-3.5" />}
-              Intelligence Grade Protocol
+            
+            {/* Reinstated Badge */}
+            <div className="inline-flex items-center gap-2 border border-[#f97316]/40 px-3 py-1.5 rounded-sm bg-[#f97316]/5">
+              <TargetIcon className="size-3.5 text-[#f97316]" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#f97316]">Actionable Intelligence</span>
             </div>
-            <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-tight text-white uppercase">
-              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF] italic">fish Intel</span>
+
+            {/* Reinstated Heading split */}
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-white uppercase drop-shadow-2xl">
+              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
             </h1>
-            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
+            
+            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
               Move with certainty, not just hope.
             </p>
-            <div className="flex flex-wrap justify-center gap-6 pt-4">
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#E68A4D] border-2 border-[#E68A4D] text-[#020617] font-black tracking-tighter rounded-sm hover:bg-[#E68A4D]/90 transition-all shadow-lg" asChild>
-                <Link href="/discover">Discover</Link>
+
+            {/* Reinstated Button Cluster */}
+            <div className="flex flex-wrap justify-center gap-6 pt-8">
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black uppercase tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
+                <Link href="/discover">Start Journey</Link>
               </Button>
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#E68A4D] border-2 border-[#E68A4D] text-[#020617] font-black tracking-tighter rounded-sm hover:bg-[#E68A4D]/90 transition-all shadow-lg" asChild>
-                <Link href="/financial-forecaster">Evaluate</Link>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black uppercase tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
+                <Link href="/compare">Compare Offers</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-12 border-b border-white/5 bg-[#020617]">
-        <div className="container mx-auto px-4 md:px-6">
+      {/* Stats counter positioned exactly at the hero break */}
+      <section className="relative z-40 -mt-12 container mx-auto px-4 md:px-6">
+        <div className="glass border-white/10 rounded-sm py-10 px-4 md:px-12 bg-[#020617]/80">
           <KeyFactsSection />
         </div>
       </section>

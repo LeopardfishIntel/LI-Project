@@ -4,10 +4,11 @@ import { ClientShield } from "@/components/ClientShield";
 import { FirebaseClientProvider } from "@/components/firebase/client-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { FloatingIntelButton } from "@/components/floating-intel-button";
 import "./globals.css";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-montserrat' });
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['700', '800', '900'], variable: '--font-montserrat' });
 
 export const metadata: Metadata = {
   title: 'Leopardfish Intel | Tactical Educator Intelligence',
@@ -28,6 +29,7 @@ export default function RootLayout({
               <Header />
               <main className="flex-1">{children}</main>
               <Footer />
+              <FloatingIntelButton />
             </div>
           </ClientShield>
         </FirebaseClientProvider>
