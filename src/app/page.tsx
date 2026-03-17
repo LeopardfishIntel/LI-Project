@@ -82,11 +82,11 @@ export default function Home() {
             {/* Actionable Intelligence Badge */}
             <div className="inline-flex items-center gap-2 border border-[#f97316]/40 px-3 py-1.5 rounded-sm bg-[#f97316]/5">
               <Scan className="size-3.5 text-[#f97316]" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#f97316]">Actionable Intelligence</span>
+              <span className="text-[10px] font-black tracking-[0.3em] text-[#f97316] uppercase">Actionable Intelligence</span>
             </div>
 
             {/* Split Heading */}
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-white uppercase drop-shadow-2xl">
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none text-white drop-shadow-2xl">
               <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
             </h1>
             
@@ -96,10 +96,10 @@ export default function Home() {
 
             {/* Tactical Button Cluster */}
             <div className="flex flex-wrap justify-center gap-6 pt-8">
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black uppercase tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
                 <Link href="/discover">Start journey</Link>
               </Button>
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black uppercase tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
                 <Link href="/compare">Compare offers</Link>
               </Button>
             </div>
@@ -142,7 +142,7 @@ export default function Home() {
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <div className="p-4 bg-[#f97316]/10 rounded-sm w-fit border border-[#f97316]/20">{step.icon}</div>
-                  <h3 className="text-3xl md:text-5xl text-white tracking-tighter font-bold uppercase">{step.title}</h3>
+                  <h3 className="text-3xl md:text-5xl text-white tracking-tighter font-bold">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>

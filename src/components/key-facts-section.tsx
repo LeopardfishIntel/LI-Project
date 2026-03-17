@@ -115,7 +115,7 @@ export function KeyFactsSection() {
           <div key={index} className="flex flex-col items-center">
             <div className="mb-1">{stat.icon}</div>
             <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-            <p className="text-[9px] uppercase font-black tracking-widest text-white/60 mt-1 drop-shadow-sm">{stat.label}</p>
+            <p className="text-[9px] font-black tracking-widest text-white/60 mt-1 drop-shadow-sm">{stat.label}</p>
           </div>
         ))}
       </div>

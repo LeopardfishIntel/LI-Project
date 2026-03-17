@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
  * 🛡️ TACTICAL BRAND IDENTITY NODE
  * Optimized for zero-doubt deployment on Firebase.
  * Uses hard-coded HEX values and a hydration guard.
+ * Casing: Sentence Case (No All Caps).
  */
 export default function BrandLogo({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
@@ -25,7 +26,7 @@ export default function BrandLogo({ className }: { className?: string }) {
           <div className="size-6" />
         )}
       </div>
-      <span className="font-black text-xl tracking-tighter uppercase leading-none">
+      <span className="font-black text-xl tracking-tighter leading-none">
         <span className="text-[#f97316]">Leopardfish</span>
         <span className="ml-1 text-[#007FFF]">Intel</span>
       </span>
