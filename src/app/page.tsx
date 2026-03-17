@@ -3,8 +3,18 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { 
+  ArrowRight, 
+  ShieldCheck, 
+  PiggyBank, 
+  Users, 
+  Globe, 
+  PencilLine, 
+  GitCompare, 
+  Sparkles, 
+  FileCheck, 
+  ShieldAlert 
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -51,6 +61,49 @@ export default function Home() {
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Get ready'
+    }
+  ];
+
+  const capabilities = [
+    {
+      icon: <PiggyBank className="size-5 text-[#f97316]" />,
+      title: "True net savings",
+      desc: "Calculate genuine disposable income by mapping real-world costs against net offers."
+    },
+    {
+      icon: <Users className="size-5 text-[#f97316]" />,
+      title: "Family scalability",
+      desc: "Adjust all projections with bespoke multipliers for units up to 2.5x scaling."
+    },
+    {
+      icon: <Globe className="size-5 text-[#f97316]" />,
+      title: "Cost of living index",
+      desc: "Review primary data on housing, utilities, and essential spending in international locations."
+    },
+    {
+      icon: <PencilLine className="size-5 text-[#f97316]" />,
+      title: "Live offer input",
+      desc: "Input your confirmed contract details to see immediate regional financial impact."
+    },
+    {
+      icon: <GitCompare className="size-5 text-[#f97316]" />,
+      title: "Comparison matrix",
+      desc: "Analyse up to 3 school offers side-by-side with verified institutional benchmarks."
+    },
+    {
+      icon: <Sparkles className="size-5 text-[#f97316]" />,
+      title: "Key findings",
+      desc: "Receive curated analytical reports identifying strengths and institutional risks."
+    },
+    {
+      icon: <FileCheck className="size-5 text-[#f97316]" />,
+      title: "Final plan",
+      desc: "Comprehensive readiness protocol covering documentation, visa medicals, and tactical reserves."
+    },
+    {
+      icon: <ShieldAlert className="size-5 text-[#f97316]" />,
+      title: "Contract flags",
+      desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses."
     }
   ];
 
@@ -149,7 +202,42 @@ export default function Home() {
         </div>
       </section>
 
-      <RedFlagRegistry />
+      {/* Analysis in Action - Feature Matrix */}
+      <section className="py-24 bg-black/40 border-t border-white/5">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="space-y-16">
+            <div className="text-center">
+              <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Analysis in action</h2>
+              <p className="text-muted-foreground text-sm uppercase font-black tracking-widest mt-4 opacity-60">High-density decision support</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {capabilities.map((cap, i) => (
+                <div key={i} className="p-6 rounded-sm bg-white/[0.02] border border-white/5 hover:border-[#f97316]/30 transition-all group">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-white/5 rounded-sm group-hover:bg-[#f97316]/10 transition-colors">
+                      {cap.icon}
+                    </div>
+                    <h4 className="text-base font-bold text-white tracking-tight">{cap.title}</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+                    {cap.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button variant="outline" size="lg" className="h-14 px-10 border-white/20 hover:bg-white/5 text-white font-bold rounded-sm w-full sm:w-auto" asChild>
+                <Link href="/directory">Browse schools</Link>
+              </Button>
+              <Button size="lg" className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold rounded-sm w-full sm:w-auto shadow-lg shadow-[#f97316]/20" asChild>
+                <Link href="/discover">Find my fit <ArrowRight className="ml-2 size-4" /></Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
