@@ -85,11 +85,11 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-6 pt-4">
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-tighter rounded-sm hover:bg-[#f97316]/10 transition-all shadow-lg" asChild>
-                <Link href="/discover">Start Journey</Link>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#E68A4D] border-2 border-[#E68A4D] text-[#020617] font-black tracking-tighter rounded-sm hover:bg-[#E68A4D]/90 transition-all shadow-lg" asChild>
+                <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-tighter rounded-sm hover:bg-[#f97316]/10 transition-all shadow-lg" asChild>
-                <Link href="/compare">Compare Offers</Link>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#E68A4D] border-2 border-[#E68A4D] text-[#020617] font-black tracking-tighter rounded-sm hover:bg-[#E68A4D]/90 transition-all shadow-lg" asChild>
+                <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
           </div>
