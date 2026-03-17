@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
@@ -68,21 +67,21 @@ export default function Home() {
         </div>
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse">
-              <ShieldCheck className="w-3.5 h-3.5" /> Intelligence Grade Protocol
+            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse uppercase">
+              <ShieldCheck className="w-3.5 h-3.5" /> Actionable Intelligence
             </div>
-            <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight text-white uppercase">
-              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF] italic">fish Intel</span>
+            <h1 className="text-4xl md:text-7xl font-normal tracking-tighter leading-tight text-white">
+              <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
             </h1>
             <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg" asChild>
-                <Link href="/discover">Start Journey</Link>
+              <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
+                <Link href="/discover">Discover</Link>
               </Button>
-              <Button size="lg" className="h-14 px-10 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg" asChild>
-                <Link href="/compare">Compare Offers</Link>
+              <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
+                <Link href="/financial-forecaster">Evaluate</Link>
               </Button>
             </div>
           </div>
@@ -123,7 +122,7 @@ export default function Home() {
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
                   <div className="p-4 bg-[#f97316]/10 rounded-sm w-fit border border-[#f97316]/20">{step.icon}</div>
-                  <h3 className="text-3xl md:text-5xl text-white font-black tracking-tighter uppercase leading-none">{step.title}</h3>
+                  <h3 className="text-3xl md:text-5xl text-white font-bold tracking-tighter leading-none">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>

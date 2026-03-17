@@ -26,8 +26,8 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
             <Binoculars className="size-6 text-[#f97316] group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block font-black text-lg tracking-tighter text-white uppercase">
-              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+            <span className="hidden sm:inline-block font-bold text-lg tracking-tighter text-white">
+              <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
             </span>
           </Link>
           
@@ -37,7 +37,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-xs font-black uppercase tracking-widest transition-colors rounded-sm",
+                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
                     ? "text-[#f97316] bg-[#f97316]/5" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"
@@ -57,7 +57,7 @@ export default function Header() {
             )}
             {!user && (
                 <Link href="/login">
-                    <Button variant="outline" size="sm" className="border-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-sm h-9 px-4">Log in</Button>
+                    <Button variant="outline" size="sm" className="border-white/10 text-white font-bold text-[10px] uppercase tracking-widest rounded-sm h-9 px-4">Log in</Button>
                 </Link>
             )}
         </div>

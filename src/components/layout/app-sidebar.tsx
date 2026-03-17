@@ -35,8 +35,8 @@ export function AppSidebar() {
         <SidebarHeader className="p-4">
           <Link href="/" className="flex items-center gap-2">
             <Binoculars className="size-6 text-primary" />
-            <span className="font-bold font-headline text-lg tracking-tighter uppercase group-data-[collapsible=icon]:hidden whitespace-nowrap">
-              <span className="text-primary">LEOPARD</span><span className="text-accent">FISH INTEL</span>
+            <span className="font-bold font-headline text-lg tracking-tighter group-data-[collapsible=icon]:hidden whitespace-nowrap">
+              <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
             </span>
           </Link>
         </SidebarHeader>
@@ -50,7 +50,7 @@ export function AppSidebar() {
             >
               <Link href="/">
                 <Home />
-                <span className="font-bold uppercase tracking-wider text-xs">Home</span>
+                <span className="font-bold text-xs">Home</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -64,7 +64,7 @@ export function AppSidebar() {
               >
                 <Link href={link.href}>
                   <link.icon />
-                  <span className="font-bold uppercase tracking-wider text-xs">{link.label}</span>
+                  <span className="font-bold text-xs">{link.label}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

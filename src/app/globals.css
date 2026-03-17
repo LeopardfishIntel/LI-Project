@@ -33,13 +33,14 @@
   }
   body {
     background-color: #020617;
-    /* Direct variable mapping to prevent font resolution failures */
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     @apply text-white antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-    @apply uppercase font-black tracking-tighter;
+    @apply font-bold tracking-tighter;
+    /* uppercase removed globally per Senior UX directive */
+    font-style: normal !important;
   }
 }
 
@@ -49,6 +50,6 @@
     @apply backdrop-blur-[10px] border border-white/10 shadow-xl;
   }
   .stamped-dossier {
-    @apply uppercase tracking-widest font-black;
+    @apply tracking-widest font-black uppercase;
   }
 }
