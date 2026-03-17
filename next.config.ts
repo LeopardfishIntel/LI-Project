@@ -1,7 +1,8 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -9,6 +10,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -29,25 +31,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  },
-  async redirects() {
-    return [
-      {
-        source: '/tax-calculator',
-        destination: '/financial-forecaster',
-        permanent: true,
-      },
-      {
-        source: '/true-costs',
-        destination: '/financial-forecaster',
-        permanent: true,
-      },
-      {
-        source: '/evaluate',
-        destination: '/financial-forecaster',
-        permanent: true,
-      },
-    ];
   },
 };
 

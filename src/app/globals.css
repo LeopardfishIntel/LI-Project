@@ -2,63 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    /* Design System: Tactical Ember */
-    --background: 222 47% 8%; /* Deep Void */
-    --foreground: 210 40% 98%;
-    --card: 217 33% 17%; /* Gunmetal */
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 25 95% 53%; /* Signal Orange - Core Primary */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 16% 47%;
-    --muted-foreground: 215 16% 78%;
-    --accent: 199 90% 55%; /* Azure Blue - Core Secondary/Accent */
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 20% 25%;
-    --input: 215 20% 25%;
-    --ring: 25 95% 53%;
-    --radius: 0.25rem;
-
-    --chart-1: 160 84% 39%;
-    --chart-2: 25 95% 53%;
-    --chart-3: 215 14% 47%;
-    --chart-4: 45 96% 56%;
-    --chart-5: 199 90% 55%;
-  }
+:root {
+  --background: #020617;
+  --foreground: #ffffff;
+  --primary: #f97316;
+  --azure: #007FFF;
+  --border-dim: rgba(255, 255, 255, 0.1);
 }
 
-@layer base {
-  * {
-    @apply border-border;
-    text-transform: none !important;
-  }
-  body {
-    @apply bg-background text-foreground font-body;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-headline tracking-wider font-bold;
-    text-transform: none !important;
-  }
-}
-
-@layer components {
-  .glass {
-    @apply bg-card/70 backdrop-blur-[10px] border border-white/10;
-  }
-  .stamped-dossier {
-    @apply tracking-widest font-black;
-    text-transform: none !important;
-  }
-  /* Searchlight overlay effect */
-  .searchlight-overlay {
-    background: radial-gradient(circle 300px at var(--x, 50%) var(--y, 50%), transparent 0%, rgba(0,0,0,0.8) 100%);
-    pointer-events: none;
-  }
+body {
+  background: var(--background);
+  color: var(--foreground);
 }
