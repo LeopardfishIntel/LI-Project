@@ -6,8 +6,8 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Scan } from 'lucide-react';
+import ContractFlags from '@/components/sections/ContractFlags';
+import { ArrowRight, ShieldCheck, Scan, PiggyBank, Users, Globe, PencilLine, GitCompare, Sparkles, FileCheck, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -59,6 +59,49 @@ export default function Home() {
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Get ready'
+    }
+  ];
+
+  const capabilities = [
+    {
+      icon: <PiggyBank className="size-5 text-[#f97316]/80" />,
+      title: "Clear financial position",
+      desc: "Establish your genuine disposable income by setting the net offer against realistic day-to-day living costs."
+    },
+    {
+      icon: <Users className="size-5 text-[#f97316]/80" />,
+      title: "Family scaling",
+      desc: "Adjust projections to reflect family circumstances, with tailored modelling for households up to 2.5× the base structure."
+    },
+    {
+      icon: <Globe className="size-5 text-[#f97316]/80" />,
+      title: "Cost of living overview",
+      desc: "Review core expenditure data covering housing, utilities, and essential living costs across international locations."
+    },
+    {
+      icon: <PencilLine className="size-5 text-[#f97316]/80" />,
+      title: "Live offer input",
+      desc: "Enter confirmed contract details to assess the immediate financial implications of each regional posting."
+    },
+    {
+      icon: <GitCompare className="size-5 text-[#f97316]/80" />,
+      title: "Side-by-side comparison",
+      desc: "Evaluate up to three school offers simultaneously against verified institutional benchmarks."
+    },
+    {
+      icon: <Sparkles className="size-5 text-[#f97316]/80" />,
+      title: "Key insights",
+      desc: "Receive a structured summary outlining the strengths of each opportunity alongside any notable institutional risks."
+    },
+    {
+      icon: <FileCheck className="size-5 text-[#f97316]/80" />,
+      title: "Final preparation plan",
+      desc: "A comprehensive readiness guide covering documentation, visa medical requirements, and prudent financial reserves."
+    },
+    {
+      icon: <ShieldAlert className="size-5 text-[#f97316]/80" />,
+      title: "Contract review flags",
+      desc: "Highlight early renewal clauses, potential deductions, and ambiguous provisions within school handbooks."
     }
   ];
 
@@ -156,7 +199,50 @@ export default function Home() {
         </div>
       </section>
 
-      <RedFlagRegistry />
+      {/* Analysis in Action Grid */}
+      <section className="py-16 md:py-24 bg-[#020617] border-t border-white/5">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+          <div className="space-y-12">
+            <div className="text-center">
+              <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-none">Analysis in action</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {capabilities.map((cap, i) => (
+                <div key={i} className="flex flex-col gap-4 p-6 bg-white/[0.02] border border-white/5 rounded-sm hover:border-[#f97316]/20 transition-all duration-500 group">
+                  <div className="transition-transform group-hover:scale-110 duration-300">
+                    {cap.icon}
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-base font-bold text-white tracking-tight">{cap.title}</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed font-medium opacity-80">
+                      {cap.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-10 flex flex-wrap justify-center gap-4">
+                <Button 
+                  className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold uppercase tracking-widest text-xs h-12 px-10 rounded-sm min-w-[200px] shadow-lg shadow-[#f97316]/10 transition-all hover:scale-[1.02] border-0" 
+                  asChild
+                >
+                    <Link href="/directory">Browse schools</Link>
+                </Button>
+                <Button 
+                  className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold uppercase tracking-widest text-xs h-12 px-10 rounded-sm min-w-[200px] shadow-lg shadow-[#f97316]/10 transition-all hover:scale-[1.02] border-0" 
+                  asChild
+                >
+                    <Link href="/discover">Discover</Link>
+                </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contract Flags Briefing */}
+      <ContractFlags />
     </div>
   );
 }
