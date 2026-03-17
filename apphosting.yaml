@@ -1,16 +1,2 @@
-# 🛰️ LEOPARDFISH TACTICAL RUNTIME CONFIGURATION
-# Optimized for Iron Shell Rollout 5339603
-
-env:
-  - variable: NEXT_PUBLIC_BRAND_PRIMARY
-    value: "#f97316"
-  - variable: NEXT_PUBLIC_BRAND_BACKGROUND
-    value: "#020617"
-
-runConfig:
-  # Maintain high-availability while preventing cold-start drift
-  minInstances: 0
-  maxInstances: 2
-  concurrency: 80
-  cpu: 1
-  memoryMiB: 512
+kind: "AppStack"
+schemaVersion: "v1"
