@@ -2,15 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #020617;
-  --foreground: #ffffff;
-  --primary: #f97316;
-  --azure: #007FFF;
-  --border-dim: rgba(255, 255, 255, 0.1);
+@layer base {
+  :root {
+    /* Tactical Ember Design System */
+    --background: 222 47% 8%; /* #020617 - Deep Void */
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%; /* Gunmetal */
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 25 95% 53%; /* #f97316 - Signal Orange */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 16% 47%;
+    --muted-foreground: 215 16% 78%;
+    --accent: 199 90% 55%; /* #007FFF - Azure Blue */
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 20% 25%;
+    --input: 215 20% 25%;
+    --ring: 25 95% 53%;
+    --radius: 0.25rem;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  body {
+    @apply bg-[#020617] text-white antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold uppercase tracking-wider;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-[#111827]/70 backdrop-blur-[10px] border border-white/10 shadow-xl;
+  }
+  .stamped-dossier {
+    @apply uppercase tracking-widest font-black;
+  }
 }

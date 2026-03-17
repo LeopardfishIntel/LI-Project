@@ -3,18 +3,17 @@
 import React, { useEffect, useState } from "react";
 
 /**
- * @description Leopardfish Tactical Hydration Guard
- * Prevents TypeError: (reading 'call') by deferring 
- * client-specific logic until the component is mounted.
+ * 🛡️ LEOPARDFISH TACTICAL HYDRATION GUARD
+ * Blocks pre-rendering drift by deferring client-only logic until mount.
  */
 export function ClientShield({ children }: { children: React.ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setMounted(true);
   }, []);
 
-  if (!isMounted) {
+  if (!mounted) {
     return null;
   }
 

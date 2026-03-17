@@ -15,12 +15,11 @@ let services: FirebaseServices | null = null;
 
 /**
  * 🛰️ ISOMORPHIC FIREBASE INITIALIZER
- * Singleton pattern ensuring a single authoritative uplink to Firebase services.
+ * Consolidates all services into a single authoritative singleton.
  */
 export async function initializeFirebase(): Promise<FirebaseServices> {
   if (services) return services;
 
-  // Initialize via Firebase App Hosting or Fallback
   let app: FirebaseApp;
   try {
     app = getApps().length ? getApp() : initializeApp();
@@ -32,7 +31,6 @@ export async function initializeFirebase(): Promise<FirebaseServices> {
   const firestore = getFirestore(app);
   const storage = getStorage(app);
 
-  // Enable persistence on client terminals
   if (typeof window !== 'undefined') {
     try {
       await enableIndexedDbPersistence(firestore);

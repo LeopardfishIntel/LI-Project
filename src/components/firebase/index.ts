@@ -1,10 +1,5 @@
 'use client';
 
-/**
- * 🛰️ LEOPARDFISH TACTICAL REGISTRY (CONSOLIDATED)
- * Authoritative export terminal for the unified Firebase command sector.
- */
-
 export * from './init';
 export * from './config';
 export * from './provider';
