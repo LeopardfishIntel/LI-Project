@@ -25,10 +25,10 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold rounded-sm shadow-lg shadow-[#f97316]/20" asChild>
+              <Button size="lg" className="h-14 px-10 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest rounded-sm shadow-lg shadow-[#f97316]/20 border-0" asChild>
                 <Link href="/discover">Initialize Journey</Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 font-bold border-white/20 hover:bg-white/5 rounded-sm" asChild>
+              <Button size="lg" variant="outline" className="h-14 px-10 font-black uppercase tracking-widest border-white/20 hover:bg-white/5 rounded-sm text-white" asChild>
                 <Link href="/directory">Browse dossiers</Link>
               </Button>
             </div>
@@ -36,14 +36,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 border-b border-white/5">
+      <section className="py-12 border-b border-white/5 bg-[#020617]">
         <div className="container mx-auto px-4 md:px-6">
           <KeyFactsSection />
         </div>
       </section>
 
       {/* Strategic Steps */}
-      <section className="py-24">
+      <section className="py-24 bg-[#020617]">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="glass p-8 space-y-6 rounded-sm border-white/5 hover:border-[#f97316]/30 transition-all duration-500 group">
@@ -51,9 +51,9 @@ export default function Home() {
                     <div className="p-3 bg-[#f97316]/10 rounded-sm"><Target className="size-8 text-[#f97316]" /></div>
                     <span className="text-4xl font-black text-white/5 group-hover:text-[#f97316]/20 transition-colors">01</span>
                 </div>
-                <h3 className="text-2xl stamped-dossier text-white">Discover</h3>
+                <h3 className="text-2xl font-black tracking-tighter text-white uppercase">Discover</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm font-medium">The Fit Finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context.</p>
-                <Link href="/discover" className="inline-flex items-center text-[#f97316] font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                <Link href="/discover" className="inline-flex items-center text-[#f97316] font-black text-[10px] uppercase tracking-[0.2em] group-hover:translate-x-2 transition-transform">
                     Find your nook <ArrowRight className="ml-2 size-4" />
                 </Link>
             </div>
@@ -63,9 +63,9 @@ export default function Home() {
                     <div className="p-3 bg-[#f97316]/10 rounded-sm"><Calculator className="size-8 text-[#f97316]" /></div>
                     <span className="text-4xl font-black text-white/5 group-hover:text-[#f97316]/20 transition-colors">02</span>
                 </div>
-                <h3 className="text-2xl stamped-dossier text-white">Evaluate</h3>
+                <h3 className="text-2xl font-black tracking-tighter text-white uppercase">Evaluate</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm font-medium">The Contract Decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers.</p>
-                <Link href="/financial-forecaster" className="inline-flex items-center text-[#f97316] font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                <Link href="/financial-forecaster" className="inline-flex items-center text-[#f97316] font-black text-[10px] uppercase tracking-[0.2em] group-hover:translate-x-2 transition-transform">
                     Decode offer <ArrowRight className="ml-2 size-4" />
                 </Link>
             </div>
@@ -75,9 +75,9 @@ export default function Home() {
                     <div className="p-3 bg-[#f97316]/10 rounded-sm"><GitCompare className="size-8 text-[#f97316]" /></div>
                     <span className="text-4xl font-black text-white/5 group-hover:text-[#f97316]/20 transition-colors">03</span>
                 </div>
-                <h3 className="text-2xl stamped-dossier text-white">Decide</h3>
+                <h3 className="text-2xl font-black tracking-tighter text-white uppercase">Decide</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm font-medium">The Comparison Matrix. Select school offers to view True Net savings side-by-side. Weigh allowances with absolute mission certainty.</p>
-                <Link href="/compare" className="inline-flex items-center text-[#f97316] font-bold text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                <Link href="/compare" className="inline-flex items-center text-[#f97316] font-black text-[10px] uppercase tracking-[0.2em] group-hover:translate-x-2 transition-transform">
                     Final verdict <ArrowRight className="ml-2 size-4" />
                 </Link>
             </div>

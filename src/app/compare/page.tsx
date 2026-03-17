@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -92,7 +91,7 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
         <div className="flex justify-between items-center py-3">
             <div className="flex items-center gap-2">
                 {icon}
-                <span className="text-[10px] text-muted-foreground font-black tracking-tighter uppercase">{label}</span>
+                <span className="text-[10px] text-muted-foreground font-black tracking-[0.1em] uppercase">{label}</span>
             </div>
             <div className={cn("flex items-center gap-2 text-sm font-black tracking-tighter text-right whitespace-nowrap", resultColor(result))}>
                 <span>{format ? (value !== null ? format(value) : '—') : (value?.toString() ?? '—')}</span>
@@ -250,12 +249,12 @@ export default function ComparePage() {
             <div className="flex flex-col gap-4 items-center">
                 <div className="w-full max-w-sm">
                      <Select value={school.id} onValueChange={onSelect}>
-                        <SelectTrigger className="bg-background/50 border-white/10 h-11 rounded-sm">
+                        <SelectTrigger className="bg-[#020617]/50 border-white/10 h-11 rounded-sm text-white font-black uppercase text-[10px] tracking-widest">
                             <SelectValue placeholder="Select a school" />
                         </SelectTrigger>
                         <SelectContent className="glass">
                             {schools?.map(s => (
-                                <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id}>
+                                <SelectItem key={s.id} value={s.id} disabled={selectedIds.includes(s.id) && s.id !== school.id} className="font-bold text-xs uppercase">
                                     {s.schoolname || s.name}
                                 </SelectItem>
                             ))}
@@ -273,17 +272,17 @@ export default function ComparePage() {
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
-                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-black text-white"
+                        className="bg-[#020617]/50 border-white/10 rounded-sm h-11 text-right font-black text-white selection:bg-[#f97316]/30"
                     />
                 </div>
 
-                <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden group w-full max-w-sm shadow-2xl">
+                <Card className="glass border-white/5 overflow-hidden group w-full max-w-sm shadow-2xl">
                     <Link href={`/schools/${school.id}`} className="block">
                         <div className="relative aspect-video">
                             <Image src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'} alt={name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                         </div>
-                        <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter">{name}</CardTitle>
+                        <CardHeader className="min-h-[8rem] border-b border-white/5">
+                            <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter uppercase">{name}</CardTitle>
                              <div className="flex items-center text-muted-foreground text-[10px] font-black uppercase tracking-widest pt-1">
                                 <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
                                 <span>{city}, {country}</span>
@@ -331,17 +330,17 @@ export default function ComparePage() {
 
     if (isLoadingSchools || !schools) {
         return (
-          <div className="container mx-auto flex justify-center items-center h-screen">
+          <div className="container mx-auto flex justify-center items-center h-screen bg-[#020617]">
             <Loader2 className="h-8 w-8 animate-spin text-[#f97316]" />
           </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 md:px-6 py-0">
-            <div className="pt-4 mb-12 text-center">
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2 text-white normal-case">3. Compare schools</h1>
-              <p className="text-muted-foreground text-center max-w-2xl mx-auto font-black uppercase text-[10px] tracking-widest opacity-60 leading-relaxed">Select up to three schools for a side-by-side comparison of key tactical data.</p>
+        <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617]">
+            <div className="pt-4 mb-16 text-center">
+              <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-white uppercase leading-none">3. Compare schools</h1>
+              <p className="text-muted-foreground text-center max-w-2xl mx-auto font-black uppercase text-[10px] tracking-[0.3em] opacity-60 leading-relaxed">Select up to three schools for a side-by-side comparison of key tactical data.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">

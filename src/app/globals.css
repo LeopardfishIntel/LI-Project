@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    /* Tactical Ember Design System */
-    --background: 222 47% 8%; /* #020617 - Deep Void */
+    /* Tactical Ember HSL Mappings for ShadCN compatibility */
+    --background: 229 84% 5%; /* #020617 */
     --foreground: 210 40% 98%;
     --card: 217 33% 17%; /* Gunmetal */
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
-    --primary: 25 95% 53%; /* #f97316 - Signal Orange */
+    --primary: 25 95% 53%; /* #f97316 */
     --primary-foreground: 210 40% 98%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 215 16% 47%;
     --muted-foreground: 215 16% 78%;
-    --accent: 199 90% 55%; /* #007FFF - Azure Blue */
+    --accent: 199 90% 55%; /* #007FFF */
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 215 20% 25%;
+    --border: 0 0% 100% / 0.1;
     --input: 215 20% 25%;
     --ring: 25 95% 53%;
     --radius: 0.25rem;
@@ -33,16 +33,20 @@
     border-color: rgba(255, 255, 255, 0.1);
   }
   body {
-    @apply bg-[#020617] text-white antialiased;
+    background-color: #020617;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    @apply text-white antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold uppercase tracking-wider;
+    font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+    @apply uppercase font-black tracking-tighter;
   }
 }
 
 @layer components {
   .glass {
-    @apply bg-[#111827]/70 backdrop-blur-[10px] border border-white/10 shadow-xl;
+    background-color: rgba(31, 41, 55, 0.7);
+    @apply backdrop-blur-[10px] border border-white/10 shadow-xl;
   }
   .stamped-dossier {
     @apply uppercase tracking-widest font-black;

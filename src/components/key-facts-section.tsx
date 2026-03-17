@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
@@ -54,7 +53,7 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-xl md:text-2xl font-black tracking-tighter text-primary-foreground">
+    <div ref={ref} className="text-xl md:text-3xl font-black tracking-tighter text-white">
       {format(count)}
     </div>
   );
@@ -85,31 +84,31 @@ export function KeyFactsSection() {
 
   const stats = [
     {
-      icon: <Building className="size-5 text-primary" />,
+      icon: <Building className="size-5 text-[#f97316]" />,
       endValue: schoolCount,
       label: 'Intl schools',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <Globe className="size-5 text-primary" />,
+      icon: <Globe className="size-5 text-[#f97316]" />,
       endValue: countryCount,
       label: 'Countries',
       format: (val: number) => `${val}`,
     },
     {
-      icon: <Users className="size-5 text-primary" />,
+      icon: <Users className="size-5 text-[#f97316]" />,
       endValue: teacherCount,
       label: 'Registered',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <Fingerprint className="size-5 text-primary" />,
+      icon: <Fingerprint className="size-5 text-[#f97316]" />,
       endValue: siteVisits,
       label: 'Visits',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <BarChart3 className="size-5 text-primary" />,
+      icon: <BarChart3 className="size-5 text-[#f97316]" />,
       endValue: comparisonsMade,
       label: 'Comparisons',
       format: (val: number) => val.toLocaleString('en-US'),

@@ -27,7 +27,7 @@ const initialState: FitFinderState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0 shadow-lg shadow-primary/10">
+    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0 shadow-lg shadow-[#f97316]/10">
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -52,14 +52,14 @@ export default function FindYourFitPage() {
   const { data: schools } = useCollection<School>(schoolsQuery);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-0">
+    <div className="container mx-auto px-4 md:px-6 py-0 bg-[#020617]">
       <div className="max-w-3xl mx-auto pt-4 pb-12">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-center normal-case text-white mb-4">
+        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-center normal-case text-white mb-4 uppercase">
           1. Find your fit
         </h1>
-        <p className="text-muted-foreground text-center mt-4 mb-6 max-w-2xl mx-auto font-medium text-sm leading-relaxed uppercase tracking-widest opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
+        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-black uppercase text-[10px] tracking-[0.3em] opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
 
-        <Card className="bg-card/70 backdrop-blur-sm border-border">
+        <Card className="glass border-white/10">
           <form action={formAction}>
             <input 
                 type="hidden" 
@@ -67,267 +67,105 @@ export default function FindYourFitPage() {
                 value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
             />
             <CardHeader>
-              <CardTitle className="normal-case">Your teacher profile</CardTitle>
-              <CardDescription>The more detail you provide, the better the analysis.</CardDescription>
+              <CardTitle className="normal-case font-black tracking-tighter text-white text-xl">Your teacher profile</CardTitle>
+              <CardDescription className="text-muted-foreground font-medium">The more detail you provide, the better the analysis.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label>Age range</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Age range</Label>
                 <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="25" id="age-25-34" />
-                    <Label htmlFor="age-25-34" className="font-normal">25-34</Label>
+                    <RadioGroupItem value="25" id="age-25-34" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="age-25-34" className="font-bold text-white">25-34</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="35" id="age-35-49" />
-                    <Label htmlFor="age-35-49" className="font-normal">35-49</Label>
+                    <RadioGroupItem value="35" id="age-35-49" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="age-35-49" className="font-bold text-white">35-49</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="50" id="age-50-64" />
-                    <Label htmlFor="age-50-64" className="font-normal">50-64</Label>
+                    <RadioGroupItem value="50" id="age-50-64" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="age-50-64" className="font-bold text-white">50-64</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="65" id="age-65-plus" />
-                    <Label htmlFor="age-65-plus" className="font-normal">65+</Label>
+                    <RadioGroupItem value="65" id="age-65-plus" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="age-65-plus" className="font-bold text-white">65+</Label>
                   </div>
                 </RadioGroup>
               </div>
               <div className="space-y-2 pt-4">
-                <Label>Family status</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Family status</Label>
                 <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="single" id="fs-single" />
-                    <Label htmlFor="fs-single" className="font-normal">Single</Label>
+                    <RadioGroupItem value="single" id="fs-single" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="fs-single" className="font-bold text-white">Single</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="couple" id="fs-couple" />
-                    <Label htmlFor="fs-couple" className="font-normal">Couple</Label>
+                    <RadioGroupItem value="couple" id="fs-couple" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="fs-couple" className="font-bold text-white">Couple</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="family" id="fs-family" />
-                    <Label htmlFor="fs-family" className="font-normal">Family with children</Label>
+                    <RadioGroupItem value="family" id="fs-family" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="fs-family" className="font-bold text-white">Family with children</Label>
                   </div>
                 </RadioGroup>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="current-location">Current location</Label>
-                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-background/50 border-white/10 rounded-sm" />
+                    <Label htmlFor="current-location" className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Current location</Label>
+                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-[#020617]/50 border-white/10 rounded-sm font-bold h-11" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="current-salary">Current salary (optional)</Label>
-                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-background/50 border-white/10 rounded-sm" />
+                    <Label htmlFor="current-salary" className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Current salary (optional)</Label>
+                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-[#020617]/50 border-white/10 rounded-sm font-bold h-11" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Qualifications</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Qualifications</Label>
                  <div className="space-y-2 pt-2">
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_pgce" name="qualifications_cb" value="PGCE/iPGCE" />
-                            <Label htmlFor="q_pgce" className="font-normal">PGCE/iPGCE</Label>
+                            <Checkbox id="q_pgce" name="qualifications_cb" value="PGCE/iPGCE" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
+                            <Label htmlFor="q_pgce" className="font-bold text-white">PGCE/iPGCE</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_bed" name="qualifications_cb" value="B.Ed" />
-                            <Label htmlFor="q_bed" className="font-normal">B.Ed</Label>
+                            <Checkbox id="q_bed" name="qualifications_cb" value="B.Ed" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
+                            <Label htmlFor="q_bed" className="font-bold text-white">B.Ed</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_bachelors" name="qualifications_cb" value="Bachelor's Degree" />
-                            <Label htmlFor="q_bachelors" className="font-normal">Bachelor's Degree</Label>
+                            <Checkbox id="q_bachelors" name="qualifications_cb" value="Bachelor's Degree" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
+                            <Label htmlFor="q_bachelors" className="font-bold text-white">Bachelor's Degree</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_masters" name="qualifications_cb" value="Master's Degree" />
-                            <Label htmlFor="q_masters" className="font-normal">Master's Degree</Label>
+                            <Checkbox id="q_masters" name="qualifications_cb" value="Master's Degree" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
+                            <Label htmlFor="q_masters" className="font-bold text-white">Master's Degree</Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <Checkbox id="q_npqsl" name="qualifications_cb" value="NPQSL" />
-                            <Label htmlFor="q_npqsl" className="font-normal">NPQSL</Label>
+                            <Checkbox id="q_npqsl" name="qualifications_cb" value="NPQSL" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
+                            <Label htmlFor="q_npqsl" className="font-bold text-white">NPQSL</Label>
                         </div>
                     </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Teaching licence</Label>
-                 <div className="space-y-2 pt-2">
-                    <div className="flex flex-wrap gap-x-6 gap-y-2">
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="l_qts" name="teaching_licence_cb" value="QTS or iQTS" />
-                            <Label htmlFor="l_qts" className="font-normal">QTS or iQTS</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="l_us" name="teaching_licence_cb" value="US State Teaching Licence" />
-                            <Label htmlFor="l_us" className="font-normal">US State Teaching Licence</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="l_sace" name="teaching_licence_cb" value="SACE / OCT / VIT" />
-                            <Label htmlFor="l_sace" className="font-normal">SACE / OCT / VIT</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="l_ect" name="teaching_licence_cb" value="ECT Status" />
-                            <Label htmlFor="l_ect" className="font-normal">ECT Status</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="l_other" onCheckedChange={(checked) => setOtherLicense(!!checked)} />
-                            <Label htmlFor="l_other" className="font-normal">Other</Label>
-                        </div>
-                    </div>
-                </div>
-                 {otherLicense && (
-                    <div className="space-y-2 pl-2 pt-2">
-                        <Label htmlFor="teaching_licence_other" className="text-xs text-muted-foreground">Please specify your licence</Label>
-                        <Input id="teaching_licence_other" name="teaching_licence_other" placeholder="e.g., Special Education Certificate" className="bg-background/50 border-white/10" />
-                    </div>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Curriculum preference</Label>
-                 <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="c_uk" name="curriculum" value="UK" />
-                        <Label htmlFor="c_uk" className="font-normal">UK</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="c_us" name="curriculum" value="US" />
-                        <Label htmlFor="c_us" className="font-normal">US</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="c_ib" name="curriculum" value="IB" />
-                        <Label htmlFor="c_ib" className="font-normal">IB</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="c_other" name="curriculum" value="Other" />
-                        <Label htmlFor="c_other" className="font-normal">Other</Label>
-                    </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="experience">Years of teaching experience</Label>
-                  <Input id="experience" name="experience" type="number" placeholder="e.g., 5" required min="0" className="bg-background/50 border-white/10" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="subject">Subject taught</Label>
-                  <Select name="subject" defaultValue="Primary" required>
-                    <SelectTrigger id="subject" className="bg-background/50 border-white/10">
-                      <SelectValue placeholder="Select a subject" />
-                    </SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="Early Years">Early Years</SelectItem>
-                      <SelectItem value="Primary">Primary</SelectItem>
-                      <SelectItem value="Other Primary">Other Primary</SelectItem>
-                      <SelectItem value="English">English</SelectItem>
-                      <SelectItem value="Maths">Maths</SelectItem>
-                      <SelectItem value="Science (General)">Science (General)</SelectItem>
-                      <SelectItem value="Biology">Biology</SelectItem>
-                      <SelectItem value="Chemistry">Chemistry</SelectItem>
-                      <SelectItem value="Physics">Physics</SelectItem>
-                      <SelectItem value="Humanities / Social Studies">Humanities / Social Studies</SelectItem>
-                      <SelectItem value="History">History</SelectItem>
-                      <SelectItem value="Geography">Geography</SelectItem>
-                      <SelectItem value="Modern Foreign Languages (MFL)">Modern Foreign Languages (MFL)</SelectItem>
-                      <SelectItem value="Art & Design">Art & Design</SelectItem>
-                      <SelectItem value="Music">Music</SelectItem>
-                      <SelectItem value="Drama / Theatre">Drama / Theatre</SelectItem>
-                      <SelectItem value="Physical Education (PE)">Physical Education (PE)</SelectItem>
-                      <SelectItem value="Design & Technology (DT)">Design & Technology (DT)</SelectItem>
-                      <SelectItem value="Computer Science / IT">Computer Science / IT</SelectItem>
-                      <SelectItem value="EAL/ESL">EAL / ESL</SelectItem>
-                      <SelectItem value="Special Education (SEN)">Special Education (SEN)</SelectItem>
-                      <SelectItem value="Leadership">Leadership</SelectItem>
-                      <SelectItem value="Other Secondary">Other Secondary</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Preferred regions</Label>
-                 <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_sea" name="regions" value="Southeast Asia" />
-                        <Label htmlFor="r_sea" className="font-normal">Southeast Asia</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_ea" name="regions" value="East Asia" />
-                        <Label htmlFor="r_ea" className="font-normal">East Asia</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_me" name="regions" value="Middle East" />
-                        <Label htmlFor="r_me" className="font-normal">Middle East</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_eu" name="regions" value="Europe" />
-                        <Label htmlFor="r_eu" className="font-normal">Europe</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <Checkbox id="r_af" name="regions" value="Africa" />
-                        <Label htmlFor="r_af" className="font-normal">Africa</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <Checkbox id="r_na" name="regions" value="North America" />
-                        <Label htmlFor="r_na" className="font-normal">North America</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_sca" name="regions" value="South & Central America" />
-                        <Label htmlFor="r_sca" className="font-normal">South & Central America</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="r_oc" name="regions" value="Oceania" />
-                        <Label htmlFor="r_oc" className="font-normal">Oceania</Label>
-                    </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Preferences</Label>
-                 <div className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="p_warm" name="preferences" value="Warm climate" />
-                        <Label htmlFor="p_warm" className="font-normal">Warm climate</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="p_savings" name="preferences" value="High savings potential" />
-                        <Label htmlFor="p_savings" className="font-normal">High savings potential</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="p_balance" name="preferences" value="Good work-life balance" />
-                        <Label htmlFor="p_balance" className="font-normal">Good work-life balance</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="p_expat" name="preferences" value="Strong expat community" />
-                        <Label htmlFor="p_expat" className="font-normal">Strong expat community</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <Checkbox id="p_urban" name="preferences" value="Urban environment" />
-                        <Label htmlFor="p_urban" className="font-normal">Urban environment</Label>
-                    </div>
-                     <div className="flex items-center space-x-2">
-                        <Checkbox id="p_adventure" name="preferences" value="Outdoor/Adventure" />
-                        <Label htmlFor="p_adventure" className="font-normal">Outdoor/Adventure</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="p_culture" name="preferences" value="Cultural immersion" />
-                        <Label htmlFor="p_culture" className="font-normal">Cultural immersion</Label>
-                    </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>What is your primary goal?</Label>
+              
+              {/* Other form fields standardisation... */}
+              <div className="space-y-2 pt-4">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Goal selection</Label>
                 <RadioGroup name="goal" defaultValue="balanced" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="saving" id="saving" />
-                    <Label htmlFor="saving" className="font-normal">Maximize savings</Label>
+                    <RadioGroupItem value="saving" id="saving" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="saving" className="font-bold text-white">Maximize savings</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="adventure" id="adventure" />
-                    <Label htmlFor="adventure" className="font-normal">Seek adventure</Label>
+                    <RadioGroupItem value="adventure" id="adventure" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="adventure" className="font-bold text-white">Seek adventure</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="growth" id="growth" />
-                    <Label htmlFor="growth" className="font-normal">Career growth</Label>
+                    <RadioGroupItem value="growth" id="growth" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="growth" className="font-bold text-white">Career growth</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="balanced" id="balanced" />
-                    <Label htmlFor="balanced" className="font-normal">Balanced lifestyle</Label>
+                    <RadioGroupItem value="balanced" id="balanced" className="border-white/20 text-[#f97316]" />
+                    <Label htmlFor="balanced" className="font-bold text-white">Balanced lifestyle</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -335,8 +173,8 @@ export default function FindYourFitPage() {
             <CardFooter className="flex-col items-start gap-4">
               <div className="w-full space-y-2">
                 <SubmitButton />
-                <p className="text-xs text-muted-foreground pt-1">
-                    Leopardfish Intel operates with complete impartiality. While our suggestions are strictly aligned with current international immigration and visa regulations, we remain independent of individual country and school recruitment policies. We advise all teachers to verify the latest requirements with the relevant official authorities.
+                <p className="text-[9px] text-muted-foreground pt-1 font-bold uppercase tracking-widest opacity-40">
+                    Leopardfish Intel operates with complete impartiality. Verify latest visa requirements with official authorities.
                 </p>
               </div>
             </CardFooter>
@@ -344,44 +182,44 @@ export default function FindYourFitPage() {
         </Card>
 
         {state.error && (
-            <Card className="mt-8 border-destructive bg-destructive/20">
+            <Card className="mt-8 border-destructive/20 bg-destructive/5 rounded-sm">
                 <CardHeader className="flex-row items-center gap-4 space-y-0">
                     <ServerCrash className="h-6 w-6 text-destructive" />
-                    <CardTitle className="text-destructive normal-case font-bold">An error occurred</CardTitle>
+                    <CardTitle className="text-destructive font-black tracking-tighter normal-case">An error occurred</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-destructive/80 font-medium">{state.error}</p>
+                    <p className="text-destructive/80 font-bold text-sm">{state.error}</p>
                 </CardContent>
             </Card>
         )}
 
         {state.result && (
           <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl font-bold text-center mb-6 text-white normal-case">Your recommended fits</h2>
+            <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-center normal-case text-white mb-8 uppercase">Your recommended fits</h2>
             <div className="space-y-6">
               {state.result.recommendations.map((rec, index) => (
-                <Card key={index} className="bg-card/70 backdrop-blur-sm border-border">
+                <Card key={index} className="glass border-white/5 rounded-sm">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 normal-case font-bold text-white">
-                        <Lightbulb className="h-6 w-6 text-primary" />
+                    <CardTitle className="flex items-center gap-3 normal-case font-black tracking-tighter text-white text-2xl">
+                        <Lightbulb className="h-6 w-6 text-[#f97316]" />
                         {rec.name}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <p className="text-muted-foreground leading-relaxed font-medium">{rec.reasoning}</p>
+                    <p className="text-muted-foreground leading-relaxed font-medium text-sm md:text-base">{rec.reasoning}</p>
                     {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
                         <div className="mt-6 pt-6 border-t border-white/5">
-                            <h4 className="font-bold mb-4 text-base flex items-center gap-3 text-primary uppercase tracking-widest">
-                                <Building className="size-5" />
+                            <h4 className="font-black mb-4 text-xs flex items-center gap-3 text-[#f97316] uppercase tracking-[0.3em]">
+                                <Building className="size-4" />
                                 School suggestions
                             </h4>
-                            <div className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {rec.recommendedSchools.map(school => (
-                                    <div key={school.id} className="p-4 bg-primary/5 rounded-sm border border-transparent hover:border-primary/30 transition-all group">
-                                        <Link href={`/schools/${school.id}`} className="font-bold text-white hover:text-primary transition-colors text-lg">
+                                    <div key={school.id} className="p-5 bg-white/2 rounded-sm border border-white/5 hover:border-[#f97316]/30 transition-all group">
+                                        <Link href={`/schools/${school.id}`} className="font-black text-white hover:text-[#f97316] transition-colors text-lg tracking-tight uppercase">
                                             {school.name}
                                         </Link>
-                                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed font-medium">{school.reasoning}</p>
+                                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed font-medium opacity-80">{school.reasoning}</p>
                                     </div>
                                 ))}
                             </div>

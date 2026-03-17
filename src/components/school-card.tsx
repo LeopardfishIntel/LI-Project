@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, ShieldCheck } from 'lucide-react';
@@ -14,10 +13,10 @@ interface SchoolCardProps {
 }
 
 export function SchoolCard({ school }: SchoolCardProps) {
-  // Robust ID resolution: Support both 'id' and 'ID' from spreadsheet JSON
+  // Robust ID resolution
   const schoolId = school.id || (school as any).ID;
   
-  // Defensive field mapping to support flat JSON from Google Sheets
+  // Defensive field mapping
   const name = school.schoolname || school.name || 'Unknown School';
   const summary = school.summary || school.description || '';
   const curriculum = school.curriculum || (school.intel && school.intel.curriculum) || 'N/A';
@@ -32,7 +31,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
   const dossierUrl = `/schools/${schoolId}`;
 
   return (
-    <Card className="bg-card/70 backdrop-blur-sm border-border overflow-hidden flex flex-col h-full shadow-lg hover:shadow-primary/20 transition-all duration-300 group">
+    <Card className="glass border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#f97316]/20 transition-all duration-300 group">
       <CardHeader className="p-0">
         <Link href={dossierUrl} className="block relative overflow-hidden">
           <Image
@@ -43,11 +42,11 @@ export function SchoolCard({ school }: SchoolCardProps) {
             data-ai-hint={school.imageHint || 'school campus'}
             className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
           />
-           <div className="absolute top-2 right-2 flex items-center gap-1 bg-background/90 px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest border border-white/10 text-white">
+           <div className="absolute top-2 right-2 flex items-center gap-1 bg-[#020617]/90 px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest border border-white/10 text-white">
             {approvals}
           </div>
           {score && (
-            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-primary px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-[#f97316] px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
               <ShieldCheck className="size-3" /> Score: {score}
             </div>
           )}
@@ -55,13 +54,13 @@ export function SchoolCard({ school }: SchoolCardProps) {
       </CardHeader>
       <CardContent className="p-5 flex-grow space-y-4">
         <div>
-            <CardTitle className="text-xl mb-1.5 tracking-tight normal-case text-white leading-tight">
-            <Link href={dossierUrl} className="hover:text-primary transition-colors">
+            <CardTitle className="text-xl mb-1.5 font-black tracking-tighter normal-case text-white leading-tight uppercase">
+            <Link href={dossierUrl} className="hover:text-[#f97316] transition-colors">
                 {name}
             </Link>
             </CardTitle>
-            <div className="flex items-center text-muted-foreground text-xs font-bold uppercase tracking-widest">
-            <MapPin className="w-3 h-3 mr-1.5 text-primary" />
+            <div className="flex items-center text-muted-foreground text-[10px] font-black uppercase tracking-widest">
+            <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
             <span>{city}, {country}</span>
             </div>
         </div>
@@ -69,10 +68,10 @@ export function SchoolCard({ school }: SchoolCardProps) {
         <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed font-medium">{summary}</p>
         
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5", getTacticalColor(rating as string))}>
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", getTacticalColor(rating as string))}>
             Rating: {rating}
           </Badge>
-          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5", curriculum !== 'N/A' ? "text-primary" : "text-muted-foreground")}>
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", curriculum !== 'N/A' ? "text-[#f97316]" : "text-muted-foreground")}>
             {curriculum}
           </Badge>
         </div>
@@ -86,7 +85,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
 
       </CardContent>
       <CardFooter className="p-5 pt-0 mt-auto">
-        <Button className="w-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-11 rounded-sm" asChild>
+        <Button className="w-full bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-sm border-0" asChild>
             <Link href={dossierUrl}>
                 View dossier
             </Link>
