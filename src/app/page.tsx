@@ -94,13 +94,13 @@ export default function Home() {
               Move with certainty, not just hope.
             </p>
 
-            {/* Tactical Button Cluster */}
+            {/* Tactical Button Cluster: Tinted Glass Aesthetic */}
             <div className="flex flex-wrap justify-center gap-6 pt-8">
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
-                <Link href="/discover">Start journey</Link>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all backdrop-blur-sm" asChild>
+                <Link href="/discover">Start Journey</Link>
               </Button>
-              <Button size="lg" className="h-14 min-w-[280px] bg-[#020617] border-2 border-[#f97316] text-white font-black tracking-widest rounded-sm hover:bg-white/5 transition-all shadow-xl" asChild>
-                <Link href="/compare">Compare offers</Link>
+              <Button size="lg" className="h-14 min-w-[280px] bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all backdrop-blur-sm" asChild>
+                <Link href="/compare">Compare Offers</Link>
               </Button>
             </div>
           </div>
