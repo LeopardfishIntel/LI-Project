@@ -140,7 +140,10 @@ export default function ComparePage() {
 
     const selectedSchools = useMemo(() => {
         if (!schools || selectedSchoolIds.length === 0) return [];
-        return selectedSchoolIds.map(id => schools.find(s => s.id === id)).filter(Boolean) as School[];
+        // Added final layer of Dossier Resilience via strict ID filtering
+        return selectedSchoolIds
+            .map(id => schools.find(s => s.id === id))
+            .filter((s): s is School => !!s?.id);
     }, [selectedSchoolIds, schools]);
 
     const handleSelectSchool = (index: number, newSchoolId: string) => {
@@ -194,8 +197,11 @@ export default function ComparePage() {
     const yourSavingsComp = useMemo(() => compareThree('yourSavings', true), [selectedSchools, netSalaries]);
 
     function compareThree(metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] {
-        if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
-        const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
+        // Added final layer of Dossier Resilience via strict ID filtering
+        const validSchools = selectedSchools.filter(s => !!s?.id);
+        if (validSchools.length < 2) return selectedSchools.map(() => 'neutral');
+        
+        const values = validSchools.map((school, i) => getNumericValue(school, metric, i));
         
         if (values.every(v => v === values[0])) return selectedSchools.map(() => 'neutral');
 
@@ -237,7 +243,7 @@ export default function ComparePage() {
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1f2937]/90 backdrop-blur-md border-white/10">
                                     {schools?.map(s => (
-                                        <SelectItem key={s.id} value={s.id} disabled={selectedSchoolIds.includes(s.id) && s.id !== school.id} className="font-bold text-xs uppercase">
+                                        <SelectItem key={s.id} value={s.id} disabled={selectedSchoolIds.includes(s.id) && s.id !== school.id} className="font-bold text-xs uppercase text-white">
                                             {s.name}
                                         </SelectItem>
                                     ))}
@@ -261,13 +267,13 @@ export default function ComparePage() {
                         <Card className="bg-[#1f2937]/70 backdrop-blur-md border-white/10 overflow-hidden group w-full max-w-sm shadow-2xl">
                             <Link href={`/schools/${school.id}`} className="block">
                                 <div className="relative aspect-video">
-                                    <Image src={school.imageUrl} alt={school.name || 'School'} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
+                                    <Image src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'} alt={school.name || 'School'} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint || 'school building'} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                                 </div>
                                 <CardHeader className="min-h-[8rem] border-b border-white/5">
-                                    <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter uppercase">{school.name}</CardTitle>
+                                    <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter uppercase leading-tight">{school.name}</CardTitle>
                                      <div className="flex items-center text-[#94a3b8] text-[10px] font-black uppercase tracking-widest pt-1">
                                         <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
-                                        <span>{school.location}, {school.country}</span>
+                                        <span>{school.location || school.city}, {school.country}</span>
                                     </div>
                                 </CardHeader>
                             </Link>
