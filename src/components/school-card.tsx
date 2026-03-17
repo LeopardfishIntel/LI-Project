@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, ShieldCheck } from 'lucide-react';
@@ -13,25 +14,23 @@ interface SchoolCardProps {
 }
 
 export function SchoolCard({ school }: SchoolCardProps) {
-  // Robust ID resolution
   const schoolId = school.id || (school as any).ID;
   
-  // Defensive field mapping
-  const name = school.schoolname || school.name || 'Unknown School';
+  const name = school.schoolname || school.name || 'Unknown school';
   const summary = school.summary || school.description || '';
-  const curriculum = school.curriculum || (school.intel && school.intel.curriculum) || 'N/A';
-  const approvals = school.approvals || (school.intel && school.intel.accreditation) || 'N/A';
-  const city = school.city || school.location || '';
-  const country = school.country || '';
-  const rating = school.rating || school.numericalrating || (school.intel && school.intel.salary.score) || 'neutral';
+  const curriculum = school.curriculum || school.intel?.curriculum || '—';
+  const approvals = school.approvals || school.intel?.accreditation || '—';
+  const city = school.city || school.location || '—';
+  const country = school.country || '—';
+  const rating = school.rating || school.numericalrating || school.intel?.salary?.score || 'neutral';
   const score = school.totalscore || school.score || '';
-  const ncTime = school.noncontacttime || (school.intel && school.intel.nonContactTime) || '';
-  const classSize = school.classsize || (school.intel && school.intel.classSize) || '';
+  const salaryVal = school.intel?.salary?.value ?? '—';
+  const savingsVal = school.intel?.savingsPotential?.value ?? '—';
 
   const dossierUrl = `/schools/${schoolId}`;
 
   return (
-    <Card className="glass border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#f97316]/20 transition-all duration-300 group">
+    <Card className="glass bg-[#1f2937]/70 border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#f97316]/20 transition-all duration-300 group rounded-sm">
       <CardHeader className="p-0">
         <Link href={dossierUrl} className="block relative overflow-hidden">
           <Image
@@ -59,7 +58,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
                 {name}
             </Link>
             </CardTitle>
-            <div className="flex items-center text-muted-foreground text-[10px] font-black uppercase tracking-widest">
+            <div className="flex items-center text-[#94a3b8] text-[10px] font-black uppercase tracking-widest">
             <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
             <span>{city}, {country}</span>
             </div>
@@ -71,16 +70,16 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", getTacticalColor(rating as string))}>
             Rating: {rating}
           </Badge>
-          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", curriculum !== 'N/A' ? "text-[#f97316]" : "text-muted-foreground")}>
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", curriculum !== '—' ? "text-[#f97316]" : "text-muted-foreground")}>
             {curriculum}
           </Badge>
         </div>
 
         <Separator className="bg-white/5" />
         
-        <div className="grid grid-cols-2 gap-y-2">
-            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Class size: <span className="text-white">{classSize || 'N/A'}</span></div>
-            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">NC Time: <span className="text-white">{ncTime}{typeof ncTime === 'number' ? '%' : ncTime ? '' : 'N/A'}</span></div>
+        <div className="space-y-1.5">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Finance: <span className="text-white">{salaryVal}</span></p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Savings: <span className="text-white">{savingsVal}</span></p>
         </div>
 
       </CardContent>

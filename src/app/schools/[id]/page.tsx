@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -66,7 +67,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   );
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(schoolRef);
 
-  const locationId = school?.locationId || (school?.city && school?.country ? `${school.city.toLowerCase()}-${school.country.toLowerCase()}` : null);
+  const locationId = school?.locationId || ( (school?.city && school?.country) ? `${school.city.toLowerCase()}-${school.country.toLowerCase()}` : null);
   const locationRef = useMemoFirebase(
     () => (firestore && locationId ? doc(firestore, 'locations_costOfLiving', locationId) : null),
     [firestore, locationId]
@@ -77,17 +78,17 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   if (!school) notFound();
 
   const name = school.schoolname || school.name || 'Unknown School';
-  const summary = school.summary || school.description || '';
-  const finance = school.finance || (school.intel && school.intel.salary.value);
-  const rating = school.rating || school.numericalrating || (school.intel && school.intel.salary.score);
-  const housing = school.housingprovision || (school.intel && school.intel.housing.value);
-  const health = school.healthcoverage || (school.intel && school.intel.healthInsurance);
-  const curriculum = school.curriculum || (school.intel && school.intel.curriculum);
-  const approvals = school.approvals || (school.intel && school.intel.accreditation);
-  const ratio = school.staffstudentratio || (school.intel && school.intel.studentTeacherRatio);
-  const classSize = school.classsize || (school.intel && school.intel.classSize);
-  const tech = school.techecosystem || (school.intel && school.intel.technologyEcosystem);
-  const website = school.website || school.websiteUrl;
+  const summary = school.summary || school.description || '—';
+  const finance = school.intel?.salary?.value || school.finance || '—';
+  const rating = school.intel?.salary?.score || school.rating || 'neutral';
+  const housing = school.intel?.housing?.value || school.housingprovision || '—';
+  const health = school.intel?.healthInsurance || school.healthcoverage || '—';
+  const curriculum = school.intel?.curriculum || school.curriculum || '—';
+  const approvals = school.intel?.accreditation || school.approvals || '—';
+  const ratio = school.intel?.studentTeacherRatio || school.staffstudentratio || '—';
+  const classSize = school.intel?.classSize || school.classsize || '—';
+  const tech = school.intel?.technologyEcosystem || school.techecosystem || '—';
+  const website = school.websiteUrl || school.website;
 
   const matrixItems = [
     { key: 'salary', label: 'Finance Dossier', value: finance, score: rating },
@@ -150,7 +151,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
               </CardHeader>
               <CardContent className="pt-6">
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                  {matrixItems.map(item =>
+                  {matrixItems?.map(item =>
                     item.value ? (
                       <li key={item.key} className="flex items-start group">
                         <div className="mr-4 mt-1 transition-transform group-hover:scale-110">{(intelIcons as any)[item.key]}</div>
@@ -162,7 +163,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         </div>
                       </li>
                     ) : null
-                  )}
+                  ) ?? []}
                 </ul>
               </CardContent>
             </Card>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
@@ -87,7 +88,7 @@ const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.Re
         <span className="text-muted-foreground font-medium">{label}</span>
       </div>
       <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "Covered" : formatCurrency(value, currency)}
+        {isFree ? "Covered" : formatCurrency(value || 0, currency)}
       </span>
     </div>
 );
@@ -113,6 +114,7 @@ function ContractDecoderContent() {
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
   const [verdictError, setVerdictError] = useState<string | null>(null);
+  const [dateStamp, setDateStamp] = useState('');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -128,11 +130,15 @@ function ContractDecoderContent() {
     }
   }, [selectedSchool]);
 
+  useEffect(() => {
+    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
+  }, []);
+
   const rate = CONVERSION_RATES[currency] || 1;
 
   const suggestedMonthlyLocal = useMemo(() => {
     if (!selectedSchool) return 0;
-    const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel.salary.value);
+    const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel?.salary?.value);
     const estNetMonthlyUSD = (avgAnnualUSD * 0.8) / 12;
     return estNetMonthlyUSD * rate;
   }, [selectedSchool, rate]);
@@ -142,21 +148,21 @@ function ContractDecoderContent() {
     const col = selectedSchool.costOfLiving || {};
     const { intel } = selectedSchool;
     const multiplier = familyStatus === 'single' ? 1 : 1.6;
-    const rentVal = Number((col as any).monthlyRent1BR || (col as any).apartment || 0);
-    const food = (Number((col as any).food) || 0) * multiplier * rate;
-    const transport = (Number((col as any).transport) || 0) * multiplier * rate;
-    const utilities = (Number((col as any).utilities) || 0) * multiplier * rate;
-    const internet = (Number((col as any).internet) || 0) * rate;
-    const mobile = (Number((col as any).mobile) || 0) * multiplier * rate;
+    const rentVal = (Number(col.monthlyRent1BR) || Number((col as any).apartment) || 0);
+    const food = (Number(col.food) || 0) * multiplier * rate;
+    const transport = (Number(col.transport) || 0) * multiplier * rate;
+    const utilities = (Number(col.utilities) || 0) * multiplier * rate;
+    const internet = (Number(col.internet) || 0) * rate;
+    const mobile = (Number(col.mobile) || 0) * multiplier * rate;
     const manualHome = (parseFloat(homeCountryCommitment) || 0) * rate;
     const manualLoan = (parseFloat(studentLoan) || 0) * rate;
     const contingencyVal = (parseFloat(contingency) || 0) * rate;
     
-    const totalCosts = (intel.housing.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + manualHome + manualLoan + contingencyVal;
+    const totalCosts = (intel?.housing?.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + manualHome + manualLoan + contingencyVal;
     return { rent: rentVal * rate, food, transport, utilities, internet, mobile, totalCosts, manualHome, manualLoan, contingencyVal };
   }, [selectedSchool, familyStatus, contingency, homeCountryCommitment, studentLoan, rate]);
 
-  const monthlySalaryToUse = offeredSalary ? parseFloat(offeredSalary) : suggestedMonthlyLocal;
+  const monthlySalaryToUse = offeredSalary ? (parseFloat(offeredSalary) || 0) : suggestedMonthlyLocal;
   const responsibilityAllowanceNum = parseFloat(responsibilityAllowance) || 0;
   const partnerSalaryNum = parseFloat(partnerSalary) || 0;
   const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
@@ -170,10 +176,10 @@ function ContractDecoderContent() {
 
     try {
       const result = await getOfferTacticalVerdict({
-          schoolName: selectedSchool.name,
-          location: selectedSchool.location,
-          country: selectedSchool.country,
-          monthlySavings: Math.round(savingsPotential),
+          schoolName: selectedSchool.name || 'Unknown',
+          location: selectedSchool.location || 'Unknown',
+          country: selectedSchool.country || 'Unknown',
+          monthlySavings: Math.round(savingsPotential || 0),
           currency: currency,
           familyStatus: familyStatus
       });
@@ -201,7 +207,7 @@ function ContractDecoderContent() {
                   <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Select school</Label>
                   <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
                     <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
-                    <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                    <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>) ?? []}</SelectContent>
                   </Select>
                 </div>
 
@@ -308,7 +314,7 @@ function ContractDecoderContent() {
                           <span className="text-base text-muted-foreground font-medium">Monthly net salary</span>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
+                          <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse || 0, currency)}</p>
                           {!offeredSalary && <p className="text-[10px] font-bold text-[#007FFF] uppercase">Benchmark applied</p>}
                         </div>
                       </div>
@@ -317,7 +323,7 @@ function ContractDecoderContent() {
                           <Home className="size-4 text-[#007FFF]" />
                           <span className="text-base text-muted-foreground font-medium">Housing arrangement</span>
                         </div>
-                        <span className="font-bold text-white text-base">{selectedSchool.intel.housing.provided ? "School provided" : "Teacher pays"}</span>
+                        <span className="font-bold text-white text-base">{selectedSchool.intel?.housing?.provided ? "School provided" : "Teacher pays"}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -325,15 +331,12 @@ function ContractDecoderContent() {
                   <Card className="glass border-white/5 bg-[#020617]/40">
                     <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black text-[#f97316] uppercase tracking-widest flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
                     <CardContent className="space-y-1 pt-4">
-                      <DecodedItem icon={<Home className="size-4 text-[#007FFF]" />} label="Monthly rent (1BR)" value={decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
+                      <DecodedItem icon={<Home className="size-4 text-[#007FFF]" />} label="Monthly rent (1BR)" value={selectedSchool.intel?.housing?.provided ? 0 : decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel?.housing?.provided} />
                       <DecodedItem icon={<Utensils className="size-4 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
                       <DecodedItem icon={<TramFront className="size-4 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
                       <DecodedItem icon={<Zap className="size-4 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                       
-                      <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-white">Burn rate</span>
-                        <span className="text-3xl font-black text-[#f97316] tracking-tighter">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
-                      </div>
+                      <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10"><span className="text-[11px] font-bold uppercase tracking-widest text-white">Burn rate</span><span className="text-3xl font-black text-[#f97316] tracking-tighter">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span></div>
                     </CardContent>
                   </Card>
                 </div>
@@ -345,13 +348,25 @@ function ContractDecoderContent() {
                               <h4 className="text-sm font-black text-muted-foreground uppercase tracking-widest">True net savings</h4>
                               <div className="flex items-baseline gap-1">
                                   <span className={cn("text-6xl font-black tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
-                                    {formatCurrency(savingsPotential, currency)}
+                                    {formatCurrency(savingsPotential || 0, currency)}
                                   </span>
                                   <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
                               </div>
                           </div>
                           <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
                           <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
+                          {['GBP', 'USD', 'EUR', 'AUD'].map(ccy => {
+                              const conv = ( (savingsPotential || 0) / rate) * (CONVERSION_RATES[ccy] || 1);
+                              return (
+                                  <div key={ccy} className="space-y-1">
+                                      <p className="text-[11px] font-bold text-muted-foreground/60 uppercase">{ccy}</p>
+                                      <p className="text-xl font-bold text-white/90">{formatCurrency(conv || 0, ccy)}</p>
+                                  </div>
+                              )
+                          }) ?? []}
                       </div>
 
                       <div className="pt-8 border-t border-white/5 space-y-6">
@@ -380,10 +395,10 @@ function ContractDecoderContent() {
 
                           {verdict && (
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                  <SWOTCard type="Strengths" content={verdict.strengths} icon={<TrendingUp className="size-3.5" />} color="green" />
-                                  <SWOTCard type="Weaknesses" content={verdict.weaknesses} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                                  <SWOTCard type="Opportunities" content={verdict.opportunities} icon={<Compass className="size-3.5" />} color="accent" />
-                                  <SWOTCard type="Threats" content={verdict.threats} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
+                                  <SWOTCard type="Strengths" content={verdict.strengths ?? '—'} icon={<TrendingUp className="size-3.5" />} color="green" />
+                                  <SWOTCard type="Weaknesses" content={verdict.weaknesses ?? '—'} icon={<TrendingDown className="size-3.5" />} color="amber" />
+                                  <SWOTCard type="Opportunities" content={verdict.opportunities ?? '—'} icon={<Compass className="size-3.5" />} color="accent" />
+                                  <SWOTCard type="Threats" content={verdict.threats ?? '—'} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
                               </div>
                           )}
                       </div>
@@ -422,7 +437,7 @@ const SWOTCard = ({ type, content, icon, color }: { type: string, content: strin
     };
     return (
         <div className={cn("glass p-6 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
-            <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+            <h4 className="text-sm font-bold flex items-center gap-2 text-white uppercase tracking-wider">
                 {icon} {type}
             </h4>
             <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">{content}</p>

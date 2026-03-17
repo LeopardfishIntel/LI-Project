@@ -45,14 +45,14 @@ const calculateMonthlyCost = (school: School): number => {
             break;
     }
 
-    const foodCost = (costOfLiving.food || 0) * adults + (costOfLiving.food || 0) * 0.5 * children;
-    const transportCost = (costOfLiving.transport || 0) * adults + (costOfLiving.transport || 0) * 0.3 * children;
+    const foodCost = ( (costOfLiving.food || 0) * adults) + ( (costOfLiving.food || 0) * 0.5 * children);
+    const transportCost = ( (costOfLiving.transport || 0) * adults) + ( (costOfLiving.transport || 0) * 0.3 * children);
     const mobileCost = (costOfLiving.mobile || 0) * adults;
     const diningSocialCost = (costOfLiving.diningSocial || 0) * adults;
-    const uncoveredMedicalCost = (costOfLiving.uncoveredMedical || 0) * adults + (costOfLiving.uncoveredMedical || 0) * 0.5 * children;
+    const uncoveredMedicalCost = ( (costOfLiving.uncoveredMedical || 0) * adults) + ( (costOfLiving.uncoveredMedical || 0) * 0.5 * children);
     
     const isProvided = intel.housing?.provided || false;
-    const apartmentCost = isProvided ? 0 : (costOfLiving.monthlyRent1BR || (costOfLiving as any).apartment || 0);
+    const apartmentCost = isProvided ? 0 : ( (costOfLiving.monthlyRent1BR || (costOfLiving as any).apartment || 0) );
 
     return (
       apartmentCost +
@@ -128,8 +128,8 @@ export default function ComparePage() {
     useEffect(() => {
         if (schools && schools.length > 0 && selectedSchoolIds.length === 0) {
             const preferredSchools = schools
-                .filter(school => teacherProfile.preferredCountries.includes(school.country));
-            const otherSchools = schools.filter(school => !teacherProfile.preferredCountries.includes(school.country));
+                .filter(school => (teacherProfile.preferredCountries || []).includes(school.country));
+            const otherSchools = schools.filter(school => !(teacherProfile.preferredCountries || []).includes(school.country));
             const initialSchoolIds = [...new Set([...preferredSchools, ...otherSchools].map(s => s.id))].slice(0, 3);
             
             if (initialSchoolIds.length > 0) {
@@ -140,7 +140,6 @@ export default function ComparePage() {
 
     const selectedSchools = useMemo(() => {
         if (!schools || selectedSchoolIds.length === 0) return [];
-        // Added final layer of Dossier Resilience via strict ID filtering
         return selectedSchoolIds
             .map(id => schools.find(s => s.id === id))
             .filter((s): s is School => !!s?.id);
@@ -172,7 +171,7 @@ export default function ComparePage() {
                 const salaryStr = school.intel?.salary?.value || '0 - 0';
                 return parseInt(salaryStr.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
             case 'savings':
-                const savingsVal = school.intel?.savingsPotential?.value;
+                const savingsVal = school.intel?.savingsPotential?.value ?? '—';
                 if (savingsVal === 'V High') return 3;
                 if (savingsVal === 'High') return 2;
                 if (savingsVal === 'Moderate') return 1;
@@ -180,7 +179,7 @@ export default function ComparePage() {
             case 'classSize':
                 return school.intel?.classSize || 0;
             case 'monthlyCost':
-                return calculateMonthlyCost(school);
+                return calculateMonthlyCost(school) || 0;
             case 'yourSavings':
                 const netSalary = parseFloat(netSalaries[index]) || 0;
                 if (netSalary <= 0) return -Infinity; 
@@ -197,7 +196,6 @@ export default function ComparePage() {
     const yourSavingsComp = useMemo(() => compareThree('yourSavings', true), [selectedSchools, netSalaries]);
 
     function compareThree(metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] {
-        // Added final layer of Dossier Resilience via strict ID filtering
         const validSchools = selectedSchools.filter(s => !!s?.id);
         if (validSchools.length < 2) return selectedSchools.map(() => 'neutral');
         
@@ -234,7 +232,7 @@ export default function ComparePage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
-                {selectedSchools.map((school, index) => (
+                {selectedSchools?.map((school, index) => (
                      <div key={school.id} className="flex flex-col gap-4 items-center">
                         <div className="w-full max-w-sm">
                              <Select value={school.id} onValueChange={(val) => handleSelectSchool(index, val)}>
@@ -246,7 +244,7 @@ export default function ComparePage() {
                                         <SelectItem key={s.id} value={s.id} disabled={selectedSchoolIds.includes(s.id) && s.id !== school.id} className="font-bold text-xs uppercase text-white">
                                             {s.name}
                                         </SelectItem>
-                                    ))}
+                                    )) ?? []}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -279,35 +277,35 @@ export default function ComparePage() {
                             </Link>
                             <CardContent className="p-4 md:p-6 pt-0 divide-y divide-white/10">
                                 <div className="pt-4">
-                                     <MetricRow label="Salary Range" value={school.intel?.salary?.value} result={salaryComp[index]} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                                     <MetricRow label="Savings Potential" value={school.intel?.savingsPotential?.value} result={savingsComp[index]} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                                     <MetricRow label="Salary Range" value={school.intel?.salary?.value ?? '—'} result={salaryComp[index]} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                                     <MetricRow label="Savings Potential" value={school.intel?.savingsPotential?.value ?? '—'} result={savingsComp[index]} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                                      <MetricRow
                                         label="Your Est. Monthly Savings"
-                                        value={(parseFloat(netSalaries[index]) / 12) - calculateMonthlyCost(school)}
+                                        value={( (parseFloat(netSalaries[index]) || 0) / 12) - calculateMonthlyCost(school)}
                                         result={yourSavingsComp[index]}
-                                        format={(v) => v > -Infinity ? formatCurrency(v, 'USD') : '—'}
+                                        format={(v) => v > -Infinity ? formatCurrency(v || 0, 'USD') : '—'}
                                         icon={<PiggyBank className="w-4 h-4 text-green-500" />}
                                     />
                                      <MetricRow
                                         label={`Est. Monthly Costs`}
-                                        value={calculateMonthlyCost(school)}
+                                        value={calculateMonthlyCost(school) || 0}
                                         result={monthlyCostComp[index]}
-                                        format={(v) => formatCurrency(v, 'USD')}
+                                        format={(v) => formatCurrency(v || 0, 'USD')}
                                         icon={<DollarSign className="w-4 h-4 text-red-400" />}
                                         link={{ href: '/prepare', ariaLabel: 'View preparation briefing' }}
                                     />
-                                     <MetricRow label="Housing" value={school.intel?.housing?.value} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
-                                     <MetricRow label="Health Insurance" value={school.intel?.healthInsurance} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
+                                     <MetricRow label="Housing" value={school.intel?.housing?.value ?? '—'} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
+                                     <MetricRow label="Health Insurance" value={school.intel?.healthInsurance ?? '—'} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
                                 </div>
                                  <div className="pt-4">
-                                     <MetricRow label="Curriculum" value={school.intel?.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                                     <MetricRow label="Average Class Size" value={school.intel?.classSize} result={classSizeComp[index]} icon={<Building className="w-4 h-4 text-[#007FFF]" />} />
-                                     <MetricRow label="Student-Teacher Ratio" value={school.intel?.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
+                                     <MetricRow label="Curriculum" value={school.intel?.curriculum ?? '—'} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                                     <MetricRow label="Average Class Size" value={school.intel?.classSize ?? '—'} result={classSizeComp[index]} icon={<Building className="w-4 h-4 text-[#007FFF]" />} />
+                                     <MetricRow label="Student-Teacher Ratio" value={school.intel?.studentTeacherRatio ?? '—'} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
-                ))}
+                )) ?? []}
             </div>
 
             <div className="mt-16 flex justify-center w-full">
