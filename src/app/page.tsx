@@ -51,8 +51,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section with Embedded Stats */}
+      <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-20">
         <Image
           src={heroImage.imageUrl}
           alt={heroImage.description}
@@ -65,37 +65,39 @@ export default function Home() {
           <div className="absolute w-[800px] h-[800px] bg-white/5 blur-[120px] rounded-full animate-pulse opacity-30"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/20 via-[#020617]/40 to-[#020617]"></div>
         </div>
+        
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-3xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse uppercase">
-              <ShieldCheck className="w-3.5 h-3.5" /> Actionable Intelligence
+          <div className="max-w-4xl mx-auto space-y-12 flex flex-col items-center">
+            <div className="space-y-6 flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse uppercase">
+                <ShieldCheck className="w-3.5 h-3.5" /> Actionable Intelligence
+              </div>
+              <h1 className="text-4xl md:text-7xl font-normal tracking-tighter leading-tight text-white">
+                <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
+              </h1>
+              <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
+                Move with certainty, not just hope.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 pt-4">
+                <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
+                  <Link href="/discover">Discover</Link>
+                </Button>
+                <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
+                  <Link href="/financial-forecaster">Evaluate</Link>
+                </Button>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-7xl font-normal tracking-tighter leading-tight text-white">
-              <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
-            </h1>
-            <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
-              Move with certainty, not just hope.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
-                <Link href="/discover">Discover</Link>
-              </Button>
-              <Button size="lg" className="h-14 px-12 bg-[#f97316]/20 hover:bg-[#f97316]/30 text-white font-bold rounded-sm border border-[#f97316]/30 shadow-lg transition-all" asChild>
-                <Link href="/financial-forecaster">Evaluate</Link>
-              </Button>
+
+            {/* Merged Stats Module */}
+            <div className="w-full">
+              <KeyFactsSection />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-12 border-b border-white/5 bg-[#020617]">
-        <div className="container mx-auto px-4 md:px-6">
-          <KeyFactsSection />
-        </div>
-      </section>
-
       {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-[#020617]">
+      <section className="py-12 bg-[#020617]">
         <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-32">
             {steps?.map((step, index) => (
