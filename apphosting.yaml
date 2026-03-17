@@ -1,13 +1,16 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
+# 🛰️ LEOPARDFISH TACTICAL RUNTIME CONFIGURATION
+# Optimized for Iron Shell Rollout 5339603
 
-# This file tells Firebase App Hosting how to build and run your Next.js application.
-# The presence of this file, along with package.json, allows for automatic builds and deployments.
+env:
+  - variable: NEXT_PUBLIC_BRAND_PRIMARY
+    value: "#f97316"
+  - variable: NEXT_PUBLIC_BRAND_BACKGROUND
+    value: "#020617"
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
-
-# By default, App Hosting will detect your Next.js framework and run `npm run build`.
-# No further build configuration is needed for a standard setup.
+  # Maintain high-availability while preventing cold-start drift
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512

@@ -3,13 +3,16 @@ import type { NextConfig } from "next";
 /**
  * 🛰️ LEOPARDFISH TACTICAL BUILD CONFIGURATION
  * Optimized for Next.js 15.5.9 and Firebase App Hosting.
+ * Stabilized for Iron Shell Rollout.
  */
 const nextConfig: NextConfig = {
-  // Required for stable routing on Firebase Hosting
+  // 🛡️ REDIRECT STABILIZATION
+  // Forced to true to match Firebase Hosting's default directory behavior.
+  // Prevents the 855 redirect spikes and "too many redirects" runtime errors.
   trailingSlash: true,
   
   images: {
-    // Required for static export / App Hosting compatibility
+    // Required for static stability / App Hosting compatibility
     unoptimized: true,
     remotePatterns: [
       {
