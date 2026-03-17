@@ -1,11 +1,11 @@
-
 'use client';
 
-import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore, enableIndexedDbPersistence } from 'firebase/firestore';
-import { getStorage, FirebaseStorage } from 'firebase/storage';
-import { firebaseConfig } from './config';
+import { getFirebaseInstance } from '@/lib/firebase';
+import { enableIndexedDbPersistence } from 'firebase/firestore';
+import type { FirebaseApp } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
+import type { Firestore } from 'firebase/firestore';
+import type { FirebaseStorage } from 'firebase/storage';
 
 export type FirebaseServices = {
   firebaseApp: FirebaseApp;
@@ -14,32 +14,20 @@ export type FirebaseServices = {
   storage: FirebaseStorage;
 };
 
-let services: FirebaseServices | null = null;
-
 /**
  * 🛰️ ISOMORPHIC FIREBASE INITIALIZER
- * Optimized for Firebase App Hosting. Strictly avoids browser-only APIs 
- * during the pre-rendering / Node.js build phase.
+ * Optimized for Firebase App Hosting. Delegates to the @/lib/firebase singleton.
  */
 export async function initializeFirebase(): Promise<FirebaseServices> {
-  if (services) return services;
+  const { firebaseApp, firestore, auth, storage } = getFirebaseInstance();
 
-  let app: FirebaseApp;
-  
-  try {
-    // Attempt initialization via App Hosting environment variables
-    app = getApps().length ? getApp() : initializeApp();
-  } catch (e) {
-    // Fallback to static config for development
-    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  if (!firebaseApp || !firestore || !auth || !storage) {
+    // If the singleton returned null (e.g. during SSR build phase), 
+    // we return a proxy or handle it in the provider.
+    throw new Error("L.F.I. Critical: Firebase environment not initialized.");
   }
 
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
-  const storage = getStorage(app);
-
   // Persistence is a browser-only protocol.
-  // Must be guarded to prevent build-time crashes in Node.js.
   if (typeof window !== 'undefined') {
     try {
       await enableIndexedDbPersistence(firestore);
@@ -50,6 +38,5 @@ export async function initializeFirebase(): Promise<FirebaseServices> {
     }
   }
 
-  services = { firebaseApp: app, auth, firestore, storage };
-  return services;
+  return { firebaseApp, auth, firestore, storage };
 }

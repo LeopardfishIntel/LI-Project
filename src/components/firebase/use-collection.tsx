@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,6 +8,10 @@ import { isMemoized } from './stability';
 
 export type WithId<T> = T & { id: string };
 
+/**
+ * 🛡️ NULL-PARITY COLLECTION HOOK
+ * Returns an empty array or null on error to prevent UI rendering crashes.
+ */
 export function useCollection<T = any>(query: Query<DocumentData> | null | undefined) {
   const [data, setData] = useState<WithId<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,11 +30,16 @@ export function useCollection<T = any>(query: Query<DocumentData> | null | undef
         setIsLoading(false);
       },
       (err) => {
+        console.warn("L.F.I. Registry Access Interrupted: Applying null-parity.");
         const contextualError = new FirestorePermissionError({
           operation: 'list',
           path: (query as any).path || 'unknown_collection',
         });
+        
         errorEmitter.emit('permission-error', contextualError);
+        
+        // Safety Bypass: Set empty results to allow UI to continue rendering
+        setData(null);
         setIsLoading(false);
       }
     );

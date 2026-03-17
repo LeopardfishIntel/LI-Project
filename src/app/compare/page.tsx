@@ -20,6 +20,7 @@ type ComparisonMetric = 'salary' | 'savings' | 'classSize' | 'monthlyCost' | 'yo
 type ComparisonResult = 'best' | 'worst' | 'neutral';
 
 const calculateMonthlyCost = (school: School): number => {
+    if (!school) return 0;
     const costOfLiving = school.costOfLiving || {};
     const intel = school.intel || { housing: { provided: false } };
     
@@ -94,7 +95,7 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
                 <span className="text-[10px] text-muted-foreground font-black tracking-[0.1em] uppercase">{label}</span>
             </div>
             <div className={cn("flex items-center gap-2 text-sm font-black tracking-tighter text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? (value !== null ? format(value) : '—') : (value?.toString() ?? '—')}</span>
+                <span>{format ? (value !== null && value !== undefined ? format(value) : '—') : (value?.toString() ?? '—')}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
                         <Info className="w-4 h-4 text-[#007FFF] hover:text-sky-300" />
@@ -120,7 +121,7 @@ export default function ComparePage() {
     useEffect(() => {
         if (firestore) {
             const counterRef = doc(firestore, 'app_metrics', 'page_views');
-            setDocumentNonBlocking(counterRef, { comparisons_made: increment(1) }, { merge: true });
+            setDocumentNonBlocking(counterRef, { comparisons_made: increment(1) }, { merge: true }, { merge: true });
         }
     }, [firestore]);
     
@@ -162,6 +163,7 @@ export default function ComparePage() {
     };
     
     const getNumericValue = (school: School, metric: ComparisonMetric, index: number) => {
+        if (!school) return 0;
         const salaryText = (school.finance || (school.intel && school.intel.salary.value)) || '';
         switch (metric) {
             case 'salary':
