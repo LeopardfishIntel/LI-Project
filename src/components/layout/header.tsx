@@ -34,10 +34,10 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "px-4 py-2 text-sm font-bold transition-colors rounded-sm",
+                  "px-4 py-2 text-xs font-black uppercase tracking-widest transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
                     ? "text-[#f97316] bg-[#f97316]/5" 
-                    : "text-muted-foreground hover:text-white hover:bg-white/5"
+                    : "text-gray-500 hover:text-white hover:bg-white/5"
                 )}
               >
                 {link.label}
@@ -48,13 +48,13 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
             {user && (
-                <Button variant="ghost" onClick={() => auth.signOut()} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-white">
+                <Button variant="ghost" onClick={() => auth.signOut()} className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white">
                     <LogOut className="size-3 mr-2 text-[#f97316]" /> Log out
                 </Button>
             )}
             {!user && (
                 <Link href="/login">
-                    <Button variant="outline" size="sm" className="border-white/10 text-white font-bold text-[10px] uppercase tracking-widest rounded-sm h-9 px-4 hover:bg-white/5">Log in</Button>
+                    <Button variant="outline" size="sm" className="border-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-sm h-9 px-4 hover:bg-white/5">Log in</Button>
                 </Link>
             )}
         </div>

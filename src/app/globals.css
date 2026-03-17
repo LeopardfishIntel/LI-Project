@@ -33,14 +33,10 @@
   }
   body {
     background-color: #020617;
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-    @apply text-white antialiased;
+    @apply text-white antialiased font-sans;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-    @apply font-bold tracking-tighter;
-    /* uppercase removed globally per Senior UX directive */
-    font-style: normal !important;
+    @apply font-headline font-bold tracking-tighter;
   }
 }
 
