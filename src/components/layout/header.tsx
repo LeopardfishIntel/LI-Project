@@ -2,21 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogOut, User, Menu } from "lucide-react";
 import { useAuth, useUser } from "@/firebase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-/**
- * 🛰️ TACTICAL OPTICS ICON
- */
-function BinocularsIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M21 16v3a2 2 0 0 1-2 2h-3" /><path d="M12 8v8" /><circle cx="7" cy="12" r="3" /><circle cx="17" cy="12" r="3" />
-    </svg>
-  );
-}
+import { Binoculars } from "@/components/icons/Binoculars";
 
 const navLinks = [
   { href: "/discover", label: "Discover" },
@@ -35,7 +25,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
-            <BinocularsIcon className="size-6 text-[#f97316] group-hover:scale-110 transition-transform" />
+            <Binoculars className="size-6 text-[#f97316] group-hover:scale-110 transition-transform" />
             <span className="hidden sm:inline-block font-bold text-lg tracking-tighter text-white uppercase">
               <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
             </span>

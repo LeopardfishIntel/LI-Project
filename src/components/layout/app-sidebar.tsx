@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -17,8 +16,8 @@ import {
   Calculator,
   GitCompare,
   PackageCheck,
-  Binoculars,
 } from 'lucide-react';
+import { Binoculars } from '@/components/icons/Binoculars';
 
 const navLinks = [
     { href: '/discover', label: 'Discover', icon: Wand2 },

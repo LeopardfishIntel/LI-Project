@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Binoculars } from 'lucide-react';
+import { Binoculars } from '@/components/icons/Binoculars';
 import { cn } from '@/lib/utils';
 
 /**
@@ -18,13 +18,13 @@ export function FloatingIntelButton() {
   return (
     <div className="fixed bottom-8 right-8 z-[100] group print:hidden">
       {/* Tactical Glow / Pulse Effect */}
-      <div className="absolute inset-0 bg-primary/20 rounded-full animate-ping opacity-75 group-hover:opacity-0 transition-opacity"></div>
+      <div className="absolute inset-0 bg-[#f97316]/20 rounded-full animate-ping opacity-75 group-hover:opacity-0 transition-opacity"></div>
       
       <div className="relative">
         <Button 
           onClick={handleTrigger}
           className={cn(
-            "h-14 w-14 md:h-16 md:w-16 rounded-full bg-primary hover:bg-primary/90 text-white shadow-[0_0_30px_rgba(249,115,22,0.4)] border-2 border-white/10",
+            "h-14 w-14 md:h-16 md:w-16 rounded-full bg-[#f97316] hover:bg-[#f97316]/90 text-white shadow-[0_0_30px_rgba(249,115,22,0.4)] border-2 border-white/10",
             "flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
           )}
         >
@@ -34,8 +34,8 @@ export function FloatingIntelButton() {
 
         {/* Tactical Hover Label */}
         <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 pointer-events-none">
-          <div className="glass px-4 py-2 rounded-sm border-primary/30 whitespace-nowrap">
-            <p className="text-[10px] font-black text-primary tracking-[0.2em]">Transmit intel</p>
+          <div className="glass px-4 py-2 rounded-sm border-[#f97316]/30 whitespace-nowrap">
+            <p className="text-[10px] font-black text-[#f97316] tracking-[0.2em]">Transmit intel</p>
           </div>
         </div>
       </div>
