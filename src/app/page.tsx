@@ -16,7 +16,6 @@ import {
   ShieldAlert 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Binoculars } from '@/components/icons/Binoculars';
 
 const getImage = (id: string) => {
   const image = PlaceHolderImages?.find(img => img.id === id);
@@ -203,13 +202,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Analysis in Action - Refactored Grid */}
+      {/* Analysis in Action */}
       <section className="py-12 bg-black/40 border-t border-white/5">
         <div className="container mx-auto px-4 md:px-6 max-w-6xl">
           <div className="space-y-12">
-            <div className="text-center">
+            <div className="text-center mb-12">
               <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Analysis in action</h2>
-              <p className="text-muted-foreground text-sm uppercase font-black tracking-widest mt-4 opacity-60">High-density decision support</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
