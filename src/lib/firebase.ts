@@ -1,7 +1,12 @@
 'use client';
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { 
+  initializeFirestore, 
+  Firestore, 
+  persistentLocalCache, 
+  persistentMultipleTabManager 
+} from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { firebaseConfig } from '@/components/firebase/config';
@@ -15,6 +20,7 @@ let storage: FirebaseStorage;
  * 🛡️ TACTICAL FIREBASE SINGLETON
  * Ensures a single instance across the Next.js 15 app lifecycle.
  * Ingests the authoritative config and handles SSR/Client boundaries.
+ * Implements modern persistentLocalCache with multi-tab support.
  */
 export function getFirebaseInstance() {
   // Guard for Node.js build environment
@@ -32,9 +38,18 @@ export function getFirebaseInstance() {
     firebaseApp = getApp();
   }
 
-  if (!firestore) firestore = getFirestore(firebaseApp);
   if (!auth) auth = getAuth(firebaseApp);
   if (!storage) storage = getStorage(firebaseApp);
+
+  if (!firestore) {
+    // 🛰️ MODERN CACHE PROTOCOL
+    // Resolves deprecation warning for enableIndexedDbPersistence
+    firestore = initializeFirestore(firebaseApp, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    });
+  }
 
   return { firebaseApp, firestore, auth, storage };
 }

@@ -33,6 +33,7 @@
   }
   body {
     background-color: #020617;
+    /* Direct variable mapping to prevent font resolution failures */
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     @apply text-white antialiased;
   }

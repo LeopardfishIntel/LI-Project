@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -30,7 +29,6 @@ const calculateMonthlyCost = (school: School): number => {
     switch (teacherProfile.familyStatus) {
         case 'Couple':
             adults = 2;
-            children = 0;
             break;
         case 'Family (2+1)':
             adults = 2;
@@ -43,7 +41,6 @@ const calculateMonthlyCost = (school: School): number => {
         case 'Single':
         default:
             adults = 1;
-            children = 0;
             break;
     }
 
@@ -224,8 +221,8 @@ export default function ComparePage() {
     return (
         <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617]">
             <div className="mb-16 text-center space-y-4">
-                <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none text-center">3. Compare schools</h1>
-                <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.3em] opacity-60 text-center">Selection matrix for multiple offers.</p>
+                <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">3. Compare schools</h1>
+                <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.3em] opacity-60">Selection matrix for multiple offers.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">

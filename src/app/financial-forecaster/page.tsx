@@ -33,8 +33,7 @@ import {
   TrendingDown,
   Compass,
   AlertTriangle,
-  Trophy,
-  Calculator
+  Trophy
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -50,22 +49,13 @@ const CONVERSION_RATES: Record<string, number> = {
   GBP: 0.78,
   EUR: 0.92,
   AED: 3.67,
-  QAR: 3.64,
-  SAR: 3.75,
   SGD: 1.34,
   CHF: 0.88,
   JPY: 150,
   THB: 35,
   CNY: 7.2,
   KRW: 1350,
-  HKD: 7.8,
-  MYR: 4.7,
-  VND: 25000,
-  CZK: 23.5,
   AUD: 1.52,
-  CAD: 1.36,
-  ZAR: 18.4,
-  NZD: 1.66,
 };
 
 const COUNTRY_TO_CURRENCY: Record<string, string> = {
@@ -123,7 +113,6 @@ function ContractDecoderContent() {
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
   const [verdictError, setVerdictError] = useState<string | null>(null);
-  const [dateStamp, setDateStamp] = useState('');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -138,10 +127,6 @@ function ContractDecoderContent() {
       setVerdictError(null);
     }
   }, [selectedSchool]);
-
-  useEffect(() => {
-    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
-  }, []);
 
   const rate = CONVERSION_RATES[currency] || 1;
 
@@ -365,7 +350,7 @@ function ContractDecoderContent() {
                                   <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
                               </div>
                           </div>
-                          <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                          <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
                           <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                       </div>
 
