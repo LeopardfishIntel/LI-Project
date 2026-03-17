@@ -7,13 +7,11 @@ import Link from 'next/link';
 /**
  * 🛡️ CONTRACT FLAGS DOSSIER
  * Reconstructed mission-critical briefing module.
- * Optimized for high-stakes due diligence cycles and zero-doubt deployments.
+ * Optimized for high-stakes due diligence cycles and zero-doubt deployments on Firebase.
  */
 export default function ContractFlags() {
   const [mounted, setMounted] = useState(false);
 
-  // 🛰️ HYDRATION GUARD
-  // Ensures Lucide icons match between SSR and Client resolution
   useEffect(() => {
     setMounted(true);
   }, []);

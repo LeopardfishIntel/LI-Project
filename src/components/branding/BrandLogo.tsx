@@ -7,13 +7,11 @@ import { cn } from '@/lib/utils';
 /**
  * 🛡️ INTEL SCAN BRAND SIGNATURE
  * Optimized for Next.js 15 SSR with hydration guards.
- * Uses hard-coded HEX values to prevent CSS bundle drift.
+ * Uses hard-coded HEX values to prevent CSS bundle drift on Firebase.
  */
 export default function BrandLogo({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
 
-  // 🛰️ HYDRATION GUARD
-  // Prevents mismatch between Server HTML and Client interactive state
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -24,7 +22,7 @@ export default function BrandLogo({ className }: { className?: string }) {
         {mounted ? (
           <Scan className="size-6 text-[#f97316]" />
         ) : (
-          <div className="size-6" /> // Maintain layout stability during hydration
+          <div className="size-6" />
         )}
       </div>
       <span className="font-black text-xl tracking-tighter uppercase">
