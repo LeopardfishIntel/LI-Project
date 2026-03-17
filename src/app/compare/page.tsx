@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useMemo } from 'react';
@@ -165,15 +166,16 @@ export default function ComparePage() {
         if (!school) return 0;
         switch (metric) {
             case 'salary':
-                return parseInt(school.intel.salary.value.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
+                const salaryStr = school.intel?.salary?.value || '0 - 0';
+                return parseInt(salaryStr.split(' - ')[1]?.replace('k', '000').replace('$', '') || '0') || 0;
             case 'savings':
-                const savingsVal = school.intel.savingsPotential.value;
+                const savingsVal = school.intel?.savingsPotential?.value;
                 if (savingsVal === 'V High') return 3;
                 if (savingsVal === 'High') return 2;
                 if (savingsVal === 'Moderate') return 1;
                 return 0;
             case 'classSize':
-                return school.intel.classSize || 0;
+                return school.intel?.classSize || 0;
             case 'monthlyCost':
                 return calculateMonthlyCost(school);
             case 'yourSavings':
@@ -185,7 +187,13 @@ export default function ComparePage() {
         }
     };
     
-    const compareThree = (metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] => {
+    const salaryComp = useMemo(() => compareThree('salary', true), [selectedSchools, netSalaries]);
+    const savingsComp = useMemo(() => compareThree('savings', true), [selectedSchools, netSalaries]);
+    const monthlyCostComp = useMemo(() => compareThree('monthlyCost', false), [selectedSchools, netSalaries]);
+    const classSizeComp = useMemo(() => compareThree('classSize', false), [selectedSchools, netSalaries]);
+    const yourSavingsComp = useMemo(() => compareThree('yourSavings', true), [selectedSchools, netSalaries]);
+
+    function compareThree(metric: ComparisonMetric, higherIsBetter: boolean): ComparisonResult[] {
         if (selectedSchools.length < 2) return selectedSchools.map(() => 'neutral');
         const values = selectedSchools.map((school, i) => getNumericValue(school, metric, i));
         
@@ -202,13 +210,7 @@ export default function ComparePage() {
             if (val === worstValue) return 'worst';
             return 'neutral';
         });
-    };
-    
-    const salaryComp = compareThree('salary', true);
-    const savingsComp = compareThree('savings', true);
-    const monthlyCostComp = compareThree('monthlyCost', false);
-    const classSizeComp = compareThree('classSize', false);
-    const yourSavingsComp = compareThree('yourSavings', true);
+    }
 
     if (isLoadingSchools || !schools) {
         return (
@@ -259,7 +261,7 @@ export default function ComparePage() {
                         <Card className="bg-[#1f2937]/70 backdrop-blur-md border-white/10 overflow-hidden group w-full max-w-sm shadow-2xl">
                             <Link href={`/schools/${school.id}`} className="block">
                                 <div className="relative aspect-video">
-                                    <Image src={school.imageUrl} alt={school.name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
+                                    <Image src={school.imageUrl} alt={school.name || 'School'} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                                 </div>
                                 <CardHeader className="min-h-[8rem] border-b border-white/5">
                                     <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter uppercase">{school.name}</CardTitle>
@@ -271,8 +273,8 @@ export default function ComparePage() {
                             </Link>
                             <CardContent className="p-4 md:p-6 pt-0 divide-y divide-white/10">
                                 <div className="pt-4">
-                                     <MetricRow label="Salary Range" value={school.intel.salary.value} result={salaryComp[index]} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
-                                     <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={savingsComp[index]} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
+                                     <MetricRow label="Salary Range" value={school.intel?.salary?.value} result={salaryComp[index]} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
+                                     <MetricRow label="Savings Potential" value={school.intel?.savingsPotential?.value} result={savingsComp[index]} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
                                      <MetricRow
                                         label="Your Est. Monthly Savings"
                                         value={(parseFloat(netSalaries[index]) / 12) - calculateMonthlyCost(school)}
@@ -288,13 +290,13 @@ export default function ComparePage() {
                                         icon={<DollarSign className="w-4 h-4 text-red-400" />}
                                         link={{ href: '/prepare', ariaLabel: 'View preparation briefing' }}
                                     />
-                                     <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
-                                     <MetricRow label="Health Insurance" value={school.intel.healthInsurance} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
+                                     <MetricRow label="Housing" value={school.intel?.housing?.value} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
+                                     <MetricRow label="Health Insurance" value={school.intel?.healthInsurance} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
                                 </div>
                                  <div className="pt-4">
-                                     <MetricRow label="Curriculum" value={school.intel.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                                     <MetricRow label="Average Class Size" value={school.intel.classSize} result={classSizeComp[index]} icon={<Building className="w-4 h-4 text-[#007FFF]" />} />
-                                     <MetricRow label="Student-Teacher Ratio" value={school.intel.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
+                                     <MetricRow label="Curriculum" value={school.intel?.curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
+                                     <MetricRow label="Average Class Size" value={school.intel?.classSize} result={classSizeComp[index]} icon={<Building className="w-4 h-4 text-[#007FFF]" />} />
+                                     <MetricRow label="Student-Teacher Ratio" value={school.intel?.studentTeacherRatio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
                                 </div>
                             </CardContent>
                         </Card>
