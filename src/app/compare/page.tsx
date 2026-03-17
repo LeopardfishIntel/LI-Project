@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { teacherProfile } from '@/lib/mock-data';
 import type { School } from '@/lib/types';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Star, MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
+import { MapPin, DollarSign, Sparkles, Home, HeartPulse, BookOpen, Building, Users, PiggyBank, Info, Loader2 } from 'lucide-react';
 import { LeopardfishComparisonInsights } from '@/components/leopardfish-comparison-insights';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, increment, collection } from 'firebase/firestore';
@@ -77,23 +77,28 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
     icon: React.ReactNode;
     link?: { href: string; ariaLabel: string; };
 }) => {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
+    if (!mounted) return <div className="h-12 w-full animate-pulse bg-white/5 rounded-sm mb-2" />;
+
     const resultColor = (result: ComparisonResult) => {
         if (result === 'best') return 'text-green-400';
         if (result === 'worst') return 'text-red-400';
-        return 'text-primary-foreground';
+        return 'text-white';
     };
 
     return (
         <div className="flex justify-between items-center py-3">
             <div className="flex items-center gap-2">
                 {icon}
-                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-[10px] text-muted-foreground font-black tracking-tighter uppercase">{label}</span>
             </div>
-            <div className={cn("flex items-center gap-2 text-sm font-semibold text-right whitespace-nowrap", resultColor(result))}>
-                <span>{format ? format(value) : (value.toString())}</span>
+            <div className={cn("flex items-center gap-2 text-sm font-black tracking-tighter text-right whitespace-nowrap", resultColor(result))}>
+                <span>{format ? (value !== null ? format(value) : '—') : (value?.toString() ?? '—')}</span>
                  {link && (
                     <Link href={link.href} aria-label={link.ariaLabel}>
-                        <Info className="w-4 h-4 text-sky-400 hover:text-sky-300" />
+                        <Info className="w-4 h-4 text-[#007FFF] hover:text-sky-300" />
                     </Link>
                 )}
             </div>
@@ -214,6 +219,8 @@ export default function ComparePage() {
         netSalary: string;
         onNetSalaryChange: (value: string) => void;
     }) => {
+        if (!school) return null;
+
         const comparisonResults = {
             salary: salaryComp[index],
             savings: savingsComp[index],
@@ -229,15 +236,15 @@ export default function ComparePage() {
         }, [netSalary, school]);
 
         const name = school.schoolname || school.name || 'Unknown School';
-        const city = school.city || school.location || '';
-        const country = school.country || '';
-        const finance = school.finance || (school.intel && school.intel.salary.value);
-        const savings = (school as any).savingspotential || (school.intel && school.intel.savingsPotential.value);
-        const housing = school.housingprovision || (school.intel && school.intel.housing.value);
-        const health = school.healthcoverage || (school.intel && school.intel.healthInsurance);
-        const curriculum = school.curriculum || (school.intel && school.intel.curriculum);
-        const classSize = school.classsize || (school.intel && school.intel.classSize);
-        const ratio = school.staffstudentratio || (school.intel && school.intel.studentTeacherRatio);
+        const city = school.city || school.location || null;
+        const country = school.country || null;
+        const finance = (school.finance || (school.intel && school.intel.salary.value)) || null;
+        const savings = ((school as any).savingspotential || (school.intel && school.intel.savingsPotential.value)) || null;
+        const housing = (school.housingprovision || (school.intel && school.intel.housing.value)) || null;
+        const health = (school.healthcoverage || (school.intel && school.intel.healthInsurance)) || null;
+        const curriculum = (school.curriculum || (school.intel && school.intel.curriculum)) || null;
+        const classSizeValue = (school.classsize || (school.intel && school.intel.classSize)) || null;
+        const ratio = (school.staffstudentratio || (school.intel && school.intel.studentTeacherRatio)) || null;
 
         return (
             <div className="flex flex-col gap-4 items-center">
@@ -266,7 +273,7 @@ export default function ComparePage() {
                         placeholder="e.g., 55000"
                         value={netSalary}
                         onChange={(e) => onNetSalaryChange(e.target.value)}
-                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold text-white"
+                        className="bg-background/50 border-white/10 rounded-sm h-11 text-right font-black text-white"
                     />
                 </div>
 
@@ -276,9 +283,9 @@ export default function ComparePage() {
                             <Image src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'} alt={name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                         </div>
                         <CardHeader className="min-h-[8rem]">
-                            <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 text-white">{name}</CardTitle>
-                             <div className="flex items-center text-muted-foreground text-sm pt-1">
-                                <MapPin className="w-4 h-4 mr-1.5" />
+                            <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter">{name}</CardTitle>
+                             <div className="flex items-center text-muted-foreground text-[10px] font-black uppercase tracking-widest pt-1">
+                                <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
                                 <span>{city}, {country}</span>
                             </div>
                         </CardHeader>
@@ -303,7 +310,7 @@ export default function ComparePage() {
                                 format={(v) => formatCurrency(v, 'USD')}
                                 icon={<DollarSign className="w-4 h-4 text-red-400" />}
                             />
-                             <MetricRow label="Housing" value={housing} result={'neutral'} icon={<Home className="w-4 h-4 text-blue-400" />} />
+                             <MetricRow label="Housing" value={housing} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
                              <MetricRow 
                                 label="Health Insurance" 
                                 value={health} 
@@ -313,7 +320,7 @@ export default function ComparePage() {
                         </div>
                          <div className="pt-4">
                              <MetricRow label="Curriculum" value={curriculum} result={'neutral'} icon={<BookOpen className="w-4 h-4 text-purple-400" />} />
-                             <MetricRow label="Average Class Size" value={classSize} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-sky-400" />} />
+                             <MetricRow label="Average Class Size" value={classSizeValue} result={comparisonResults.classSize} icon={<Building className="w-4 h-4 text-[#007FFF]" />} />
                              <MetricRow label="Student-Teacher Ratio" value={ratio} result={'neutral'} icon={<Users className="w-4 h-4 text-rose-400" />} />
                         </div>
                     </CardContent>
@@ -325,22 +332,22 @@ export default function ComparePage() {
     if (isLoadingSchools || !schools) {
         return (
           <div className="container mx-auto flex justify-center items-center h-screen">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#f97316]" />
           </div>
         );
     }
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-0">
-            <div className="pt-4 mb-6 text-center">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 text-white normal-case">3. Compare schools</h1>
-              <p className="text-muted-foreground text-center max-w-2xl mx-auto font-medium text-sm leading-relaxed">Select up to three schools for a side-by-side comparison of key data.</p>
+            <div className="pt-4 mb-12 text-center">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2 text-white normal-case">3. Compare schools</h1>
+              <p className="text-muted-foreground text-center max-w-2xl mx-auto font-black uppercase text-[10px] tracking-widest opacity-60 leading-relaxed">Select up to three schools for a side-by-side comparison of key tactical data.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
                 {selectedSchools.map((school, index) => (
                      <SchoolComparisonColumn 
-                        key={school.id} 
+                        key={school?.id || index} 
                         school={school} 
                         index={index}
                         onSelect={(id) => handleSelectSchool(index, id)} 
