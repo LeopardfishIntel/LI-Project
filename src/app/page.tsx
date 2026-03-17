@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { RedFlagRegistry } from '@/components/red-flag-registry';
 import { 
   ArrowRight, 
   ShieldCheck, 
@@ -33,7 +34,7 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
-      desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
+      desc: "Find the right schools for you. Our matching engine identifies opportunities that align with your experience, subject specialism, and preferred locations. We also account for school context and visa eligibility, helping you focus only on realistic options.",
       link: '/discover',
       imageId: 'discover-step',
       label: 'Find your fit'
@@ -41,7 +42,7 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
+      desc: "Understand your real take-home pay. Our contract decoder breaks down salary packages so you can see what you’ll actually earn. We factor in tax, cost of living, family considerations, and typical allowances to estimate your true disposable income.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
       label: 'Decode offer'
@@ -49,7 +50,7 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
+      desc: "Compare offers with confidence. Review up to three school offers side-by-side to understand the real value of each package. Compare salary, benefits, housing, and allowances so you can choose the best fit for your career and lifestyle.",
       link: '/compare',
       imageId: 'decide-step',
       label: 'Final verdict'
@@ -57,7 +58,7 @@ export default function Home() {
     {
       id: '04',
       title: 'Prepare',
-      desc: "The readiness protocol. Forensic guidance on visa medicals, document legalisation, and mapping the tactical reserve required for a successful transition.",
+      desc: "Get ready for your move abroad. Receive practical guidance on visas, medical checks, and document legalisation. We also help you plan the financial buffer needed for a smooth relocation.",
       link: '/prepare',
       imageId: 'prepare-step',
       label: 'Get ready'
@@ -165,12 +166,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-[#020617]">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-32">
-            {steps?.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center">
+      {/* Compressed Zig-Zag Journey */}
+      <section className="bg-[#020617]">
+        <div className="container mx-auto px-4 md:px-6 max-w-6xl">
+          <div className="space-y-0">
+            {steps.map((step, index) => (
+              <div key={step.id} className="grid md:grid-cols-2 gap-12 md:gap-24 items-center py-14 border-b border-white/5 last:border-0">
                 <div className={cn(
                   "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl",
                   index % 2 === 1 && "md:order-last"
@@ -184,20 +185,20 @@ export default function Home() {
                     priority={index === 0}
                     loading={index === 0 ? undefined : "lazy"}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/40 via-transparent to-transparent"></div>
                 </div>
                 <div className={cn(
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <h3 className="text-3xl md:text-5xl text-white font-bold tracking-tighter leading-none">{step.title}</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                  <Button size="lg" className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
+                  <h3 className="text-3xl md:text-4xl text-[#f97316] font-bold tracking-tight leading-none">{step.title}</h3>
+                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                  <Button size="lg" variant="link" className="text-[#f97316] p-0 h-auto font-bold text-sm uppercase tracking-widest hover:text-white transition-colors" asChild>
                     <Link href={step.link}>{step.label} <ArrowRight className="ml-2 w-4 h-4" /></Link>
                   </Button>
                 </div>
               </div>
-            )) ?? []}
+            ))}
           </div>
         </div>
       </section>
