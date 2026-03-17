@@ -4,7 +4,7 @@ import { KeyFactsSection } from '@/components/key-facts-section';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { RedFlagRegistry } from '@/components/red-flag-registry';
-import { ArrowRight, ShieldCheck, Target, Calculator, GitCompare } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const getImage = (id: string) => {
@@ -23,7 +23,6 @@ export default function Home() {
     {
       id: '01',
       title: 'Discover',
-      icon: <Target className="w-8 h-8 text-[#f97316]" />,
       desc: "The fit finder matching engine. We look for the intersection of your profile and local realities, filtering for institutional context and visa feasibility.",
       link: '/discover',
       imageId: 'discover-step',
@@ -32,7 +31,6 @@ export default function Home() {
     {
       id: '02',
       title: 'Evaluate',
-      icon: <Calculator className="w-8 h-8 text-[#f97316]" />,
       desc: "The contract decoder. Calculate your actual take-home pay and map genuine disposable income with bespoke family scaling multipliers and cost buffers.",
       link: '/financial-forecaster',
       imageId: 'evaluate-step',
@@ -41,12 +39,20 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: <GitCompare className="w-8 h-8 text-[#f97316]" />,
+      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
       label: 'Final verdict'
     },
+    {
+      id: '04',
+      title: 'Prepare',
+      desc: "The readiness protocol. Forensic guidance on visa medicals, document legalisation, and mapping the tactical reserve required for a successful transition.",
+      link: '/prepare',
+      imageId: 'prepare-step',
+      label: 'Get ready'
+    }
   ];
 
   return (
@@ -88,7 +94,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Transparent Stats Layer - mt-12 gap as requested */}
             <div className="mt-12 w-full max-w-4xl">
               <KeyFactsSection />
             </div>
@@ -112,6 +117,8 @@ export default function Home() {
                     fill
                     className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
                     data-ai-hint={getImage(step.imageId).imageHint}
+                    priority={index === 0}
+                    loading={index === 0 ? undefined : "lazy"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent"></div>
                   <div className={cn(
@@ -123,7 +130,7 @@ export default function Home() {
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <div className="p-4 bg-[#f97316]/10 rounded-sm w-fit border border-[#f97316]/20">{step.icon}</div>
+                  <span className="text-sm font-black text-[#f97316] tracking-[0.3em]">{step.id}.</span>
                   <h3 className="text-3xl md:text-5xl text-white font-bold tracking-tighter leading-none">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
