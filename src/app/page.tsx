@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
-      {/* Hero Section with Embedded Stats */}
+      {/* Hero Section with Minimalist Transparent Stats */}
       <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-20">
         <Image
           src={heroImage.imageUrl}
@@ -67,7 +67,7 @@ export default function Home() {
         </div>
         
         <div className="relative z-30 container mx-auto px-4 md:px-6 text-center">
-          <div className="max-w-4xl mx-auto space-y-12 flex flex-col items-center">
+          <div className="max-w-4xl mx-auto flex flex-col items-center">
             <div className="space-y-6 flex flex-col items-center">
               <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse uppercase">
                 <ShieldCheck className="w-3.5 h-3.5" /> Actionable Intelligence
@@ -88,8 +88,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Merged Stats Module */}
-            <div className="w-full">
+            {/* Transparent Stats Layer - mt-12 gap as requested */}
+            <div className="mt-12 w-full max-w-4xl">
               <KeyFactsSection />
             </div>
           </div>

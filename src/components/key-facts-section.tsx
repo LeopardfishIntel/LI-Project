@@ -53,7 +53,7 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-xl md:text-2xl font-black tracking-tighter text-white">
+    <div ref={ref} className="text-xl md:text-2xl font-black tracking-tighter text-white drop-shadow-md">
       {format(count)}
     </div>
   );
@@ -83,25 +83,25 @@ export function KeyFactsSection() {
 
   const stats = [
     {
-      icon: <Building className="size-4 text-[#f97316]" />,
+      icon: <Building className="size-4 text-[#f97316] drop-shadow-md" />,
       endValue: schoolCount,
       label: 'Intl schools',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <Globe className="size-4 text-[#f97316]" />,
+      icon: <Globe className="size-4 text-[#f97316] drop-shadow-md" />,
       endValue: countryCount,
       label: 'Countries',
       format: (val: number) => `${val}`,
     },
     {
-      icon: <Fingerprint className="size-4 text-[#f97316]" />,
+      icon: <Fingerprint className="size-4 text-[#f97316] drop-shadow-md" />,
       endValue: siteVisits,
       label: 'Visits',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <BarChart3 className="size-4 text-[#f97316]" />,
+      icon: <BarChart3 className="size-4 text-[#f97316] drop-shadow-md" />,
       endValue: comparisonsMade,
       label: 'Comparisons',
       format: (val: number) => val.toLocaleString('en-US'),
@@ -109,13 +109,13 @@ export function KeyFactsSection() {
   ];
   
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 md:p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
+    <div className="w-full py-0 bg-transparent">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center">
         {stats.map((stat, index) => (
           <div key={index} className="flex flex-col items-center">
             <div className="mb-1">{stat.icon}</div>
             <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-            <p className="text-[9px] uppercase font-black tracking-widest text-muted-foreground/60 mt-1">{stat.label}</p>
+            <p className="text-[9px] uppercase font-black tracking-widest text-white/60 mt-1 drop-shadow-sm">{stat.label}</p>
           </div>
         ))}
       </div>
