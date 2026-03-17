@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -34,7 +33,7 @@ const intelIcons = {
   savingsPotential: <Sparkles className="w-5 h-5 text-amber-400" />,
   curriculum: <BookOpen className="w-5 h-5 text-purple-400" />,
   ratio: <Users className="w-5 h-5 text-rose-400" />,
-  classSize: <Building className="w-5 h-5 text-sky-400" />,
+  classSize: <Building className="size-5 text-sky-400" />,
   health: <HeartPulse className="w-5 h-5 text-red-400" />,
   approvals: <Award className="w-5 h-5 text-yellow-500" />,
   tech: <Laptop className="w-5 h-5 text-gray-400" />,
