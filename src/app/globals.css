@@ -4,10 +4,9 @@
 
 @layer base {
   :root {
-    /* Tactical Ember HSL Mappings for ShadCN compatibility */
     --background: 229 84% 5%; /* #020617 */
     --foreground: 210 40% 98%;
-    --card: 217 33% 17%; /* Gunmetal */
+    --card: 217 33% 17%;
     --card-foreground: 210 40% 98%;
     --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;

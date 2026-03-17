@@ -97,7 +97,7 @@ const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.Re
         <span className="text-muted-foreground font-medium">{label}</span>
       </div>
       <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "COVERED" : formatCurrency(value, currency)}
+        {isFree ? "Covered" : formatCurrency(value, currency)}
       </span>
     </div>
 );
@@ -123,6 +123,7 @@ function ContractDecoderContent() {
   const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
   const [isVerdictLoading, setIsVerdictLoading] = useState(false);
   const [verdictError, setVerdictError] = useState<string | null>(null);
+  const [dateStamp, setDateStamp] = useState('');
 
   const selectedSchool = useMemo(() => {
       if (!selectedSchoolId || !schools) return null;
@@ -137,6 +138,10 @@ function ContractDecoderContent() {
       setVerdictError(null);
     }
   }, [selectedSchool]);
+
+  useEffect(() => {
+    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
+  }, []);
 
   const rate = CONVERSION_RATES[currency] || 1;
 
@@ -205,20 +210,20 @@ function ContractDecoderContent() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-4 space-y-6">
             <Card className="glass border-[#f97316]/20 bg-[#020617]/40">
-              <CardHeader><CardTitle className="text-sm font-black stamped-dossier text-[#f97316]/70">Operational settings</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-sm font-bold text-[#f97316]/70">Operational settings</CardTitle></CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Select school dossier</Label>
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Select school</Label>
                   <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
+                    <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
                     <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Family scaling</Label>
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
                   <Select value={familyStatus} onValueChange={setFamilyStatus}>
-                    <SelectTrigger className="bg-background/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
                     <SelectContent className="glass">
                       <SelectItem value="single">Single</SelectItem>
                       <SelectItem value="couple">Couple</SelectItem>
@@ -229,38 +234,38 @@ function ContractDecoderContent() {
                 </div>
 
                 <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
-                  <div className="text-xs text-white font-medium leading-relaxed">
-                    <span className="font-bold text-destructive uppercase tracking-tighter flex items-center gap-1 mb-1.5 text-xs"><ShieldAlert className="size-3.5" /> Due diligence</span>
-                    Important! Enter net not gross pay. Check if the deduction total accounts for Social Security, pension, and all health, dental, and optical costs.
+                  <div className="text-[11px] text-white font-medium leading-relaxed">
+                    <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 uppercase tracking-tighter"><ShieldAlert className="size-3.5" /> Financial due diligence</span>
+                    Enter net pay figures. Ensure totals include social security, pension contributions, and all healthcare premiums.
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between items-end">
-                    <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Net monthly salary offer</Label>
-                    {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-black text-[#007FFF] uppercase animate-pulse">Suggested benchmark</span>}
+                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Net monthly salary offer</Label>
+                    {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-[#007FFF] uppercase animate-pulse">Suggested benchmark</span>}
                   </div>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input 
-                        className={cn("pl-10 bg-background/50 border-white/10 rounded-sm h-11 text-right font-bold text-white", noSpinners)} 
+                        className={cn("pl-10 bg-[#020617]/50 border-white/10 rounded-sm h-11 text-right font-bold text-white", noSpinners)} 
                         type="number" 
                         placeholder={suggestedMonthlyLocal > 0 ? `${Math.round(suggestedMonthlyLocal)}` : "0"} 
                         value={offeredSalary} 
                         onChange={(e) => setOfferedSalary(e.target.value)} 
                       />
                     </div>
-                    <div className="w-24 px-3 flex items-center justify-center bg-background/50 border border-white/10 rounded-sm font-bold text-sm">{currency}</div>
+                    <div className="w-24 px-3 flex items-center justify-center bg-[#020617]/50 border border-white/10 rounded-sm font-bold text-sm">{currency}</div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Responsibilities allowance</Label>
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Responsibilities allowance</Label>
                   <div className="relative">
                     <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
                       type="number" 
                       placeholder="0" 
                       value={responsibilityAllowance} 
@@ -270,11 +275,11 @@ function ContractDecoderContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Partner monthly salary</Label>
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Partner income</Label>
                   <div className="relative">
                     <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
                       type="number" 
                       placeholder="0" 
                       value={partnerSalary} 
@@ -284,11 +289,11 @@ function ContractDecoderContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Contingency buffer</Label>
+                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Contingency buffer</Label>
                   <div className="relative">
                     <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input 
-                      className={cn("pl-10 bg-background/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
+                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
                       type="number" 
                       placeholder="200" 
                       value={contingency} 
@@ -304,14 +309,14 @@ function ContractDecoderContent() {
             {!selectedSchool ? (
               <div className="h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm text-muted-foreground bg-card/20">
                 <LineChart className="w-16 h-16 mb-4 opacity-10" />
-                <p className="stamped-dossier text-base text-white/30 tracking-[0.2em]">Initialise school dossier to begin decoding</p>
+                <p className="text-base text-white/30 font-bold uppercase tracking-widest">Initialise school dossier to begin decoding</p>
               </div>
             ) : (
               <>
                 <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="glass border-white/5 bg-background/40">
-                    <CardHeader className="pb-4"><CardTitle className="text-xs font-black stamped-dossier text-[#f97316] flex items-center gap-2"><Award className="size-4" /> Income & Benefits</CardTitle></CardHeader>
-                    <CardContent className="space-y-4">
+                  <Card className="glass border-white/5 bg-[#020617]/40">
+                    <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black text-[#f97316] uppercase tracking-widest flex items-center gap-2"><Award className="size-4" /> Income & benefits</CardTitle></CardHeader>
+                    <CardContent className="space-y-4 pt-4">
                       <div className="flex justify-between items-center py-2 border-b border-white/5">
                         <div className="flex items-center gap-3">
                           <Banknote className="size-4 text-green-400" />
@@ -319,7 +324,7 @@ function ContractDecoderContent() {
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse, currency)}</p>
-                          {!offeredSalary && <p className="text-[10px] font-bold text-[#007FFF] uppercase tracking-tighter">Benchmark applied</p>}
+                          {!offeredSalary && <p className="text-[10px] font-bold text-[#007FFF] uppercase">Benchmark applied</p>}
                         </div>
                       </div>
                       <div className="flex justify-between items-center py-2">
@@ -332,17 +337,17 @@ function ContractDecoderContent() {
                     </CardContent>
                   </Card>
 
-                  <Card className="glass border-white/5 bg-background/40">
-                    <CardHeader className="pb-4"><CardTitle className="text-xs font-black stamped-dossier text-[#f97316] flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
-                    <CardContent className="space-y-1">
+                  <Card className="glass border-white/5 bg-[#020617]/40">
+                    <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black text-[#f97316] uppercase tracking-widest flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
+                    <CardContent className="space-y-1 pt-4">
                       <DecodedItem icon={<Home className="size-4 text-[#007FFF]" />} label="Monthly rent (1BR)" value={decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel.housing.provided} />
                       <DecodedItem icon={<Utensils className="size-4 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
                       <DecodedItem icon={<TramFront className="size-4 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
                       <DecodedItem icon={<Zap className="size-4 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
                       
                       <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10">
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Burn rate</span>
-                        <span className="text-3xl font-black text-[#f97316]">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-white">Burn rate</span>
+                        <span className="text-3xl font-black text-[#f97316] tracking-tighter">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -352,7 +357,7 @@ function ContractDecoderContent() {
                   <div className="space-y-8">
                       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                           <div className="space-y-1 text-center md:text-left">
-                              <h4 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">True net savings</h4>
+                              <h4 className="text-sm font-black text-muted-foreground uppercase tracking-widest">True net savings</h4>
                               <div className="flex items-baseline gap-1">
                                   <span className={cn("text-6xl font-black tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
                                     {formatCurrency(savingsPotential, currency)}
@@ -360,13 +365,13 @@ function ContractDecoderContent() {
                                   <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
                               </div>
                           </div>
-                          <div className="flex-1 max-w-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
+                          <div className="flex-1 max-w-sm text-sm text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
                           <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
                       </div>
 
                       <div className="pt-8 border-t border-white/5 space-y-6">
                           <div className="flex items-center justify-between">
-                              <h3 className="text-base font-black stamped-dossier text-[#f97316] flex items-center gap-2">
+                              <h3 className="text-base font-black text-[#f97316] uppercase tracking-tighter flex items-center gap-2">
                                   <Sparkles className="size-4" /> Tactical SWOT verdict
                               </h3>
                               {!verdict && (
@@ -404,7 +409,6 @@ function ContractDecoderContent() {
           </div>
       </div>
 
-      {/* Gold Standard Section Integrated */}
       <section className="max-w-5xl mx-auto space-y-8 pt-12 border-t border-white/5">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter border-l-4 border-[#f97316] pl-4">The gold standard</h2>
@@ -445,7 +449,9 @@ export default function EvaluatePage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617]">
       <div className="mb-16 text-center print:hidden">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-white uppercase leading-none">2. Contract decoder</h1>
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-white uppercase leading-none text-center">
+          2. Contract decoder
+        </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto font-black text-[10px] leading-relaxed tracking-[0.3em] opacity-60 uppercase">Field-grade financial intelligence for your next move.</p>
       </div>
       <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-[#f97316]" /></div>}>
