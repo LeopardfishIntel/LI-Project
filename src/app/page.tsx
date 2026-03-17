@@ -39,7 +39,6 @@ export default function Home() {
     {
       id: '03',
       title: 'Decide',
-      icon: null,
       desc: "The comparison matrix. Select up to 3 school offers to view true net savings side-by-side. Weigh allowances and benefits with absolute mission certainty.",
       link: '/compare',
       imageId: 'decide-step',
@@ -57,7 +56,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
-      {/* Hero Section with Minimalist Transparent Stats */}
+      {/* Hero Section */}
       <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden py-20">
         <Image
           src={heroImage.imageUrl}
@@ -78,7 +77,7 @@ export default function Home() {
               <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-xs font-bold tracking-widest animate-pulse uppercase">
                 <ShieldCheck className="w-3.5 h-3.5" /> Actionable Intelligence
               </div>
-              <h1 className="text-4xl md:text-7xl font-normal tracking-tighter leading-tight text-white">
+              <h1 className="text-4xl md:text-7xl font-bold tracking-tighter leading-tight text-white">
                 <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
               </h1>
               <p className="text-xl md:text-3xl text-white font-medium max-w-2xl leading-tight">
@@ -101,8 +100,20 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Mission Bridge */}
+      <section className="py-20 bg-[#020617] border-b border-white/5">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Know before you go</h2>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
+              Don’t fly blind. International teaching looks like a dream on Instagram, but the contract is where the reality lives. Leopardfish Intel strips away the gloss, mapping the true financial and institutional signature of your next move. No recruitment spin. Just field-grade data for educators who move with intent.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Zig-Zag Insider Journey */}
-      <section className="py-12 bg-[#020617]">
+      <section className="py-24 bg-[#020617]">
         <div className="container mx-auto px-4 md:px-6">
           <div className="space-y-32">
             {steps?.map((step, index) => (
@@ -121,16 +132,11 @@ export default function Home() {
                     loading={index === 0 ? undefined : "lazy"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent"></div>
-                  <div className={cn(
-                    "absolute bottom-4 text-[#f97316] text-6xl opacity-10 font-black",
-                    index % 2 === 1 ? "right-4" : "left-4"
-                  )}>{step.id}</div>
                 </div>
                 <div className={cn(
                   "space-y-6 flex flex-col",
                   index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start"
                 )}>
-                  <span className="text-sm font-black text-[#f97316] tracking-[0.3em]">{step.id}.</span>
                   <h3 className="text-3xl md:text-5xl text-white font-bold tracking-tighter leading-none">{step.title}</h3>
                   <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
                   <Button size="lg" className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-bold text-sm h-12 px-8 rounded-sm" asChild>
