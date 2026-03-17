@@ -94,12 +94,12 @@ const MetricRow = ({ label, value, result, format, icon, link }: {
         <div className="flex justify-between items-center py-3">
             <div className="flex items-center gap-2">
                 {icon}
-                <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">{label}</span>
+                <span className="text-[10px] font-black uppercase text-[#94a3b8] tracking-widest">{label}</span>
             </div>
             <div className={cn("flex items-center gap-2 text-sm font-black tracking-tighter text-right whitespace-nowrap", resultColor(result))}>
                 <span>{format ? format(value) : (value?.toString() ?? '—')}</span>
                  {link && (
-                    <Link href={link.href} aria-label={link.ariaLabel}>
+                    <Link href={link.href} aria-label={link.ariaLabel} className="transition-transform hover:scale-110">
                         <Info className="w-4 h-4 text-[#007FFF] hover:text-sky-300" />
                     </Link>
                 )}
@@ -225,7 +225,7 @@ export default function ComparePage() {
         <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617]">
             <div className="mb-16 text-center space-y-4">
                 <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none text-center">3. Compare schools</h1>
-                <p className="text-muted-foreground font-black uppercase text-[10px] tracking-[0.3em] opacity-60 text-center">Selection matrix for multiple offers.</p>
+                <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.3em] opacity-60 text-center">Selection matrix for multiple offers.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start mb-12">
@@ -236,7 +236,7 @@ export default function ComparePage() {
                                 <SelectTrigger className="bg-[#020617]/50 border-white/10 h-11 rounded-sm text-white font-black uppercase text-[10px] tracking-widest">
                                     <SelectValue placeholder="Select a school" />
                                 </SelectTrigger>
-                                <SelectContent className="glass">
+                                <SelectContent className="bg-[#1f2937]/90 backdrop-blur-md border-white/10">
                                     {schools?.map(s => (
                                         <SelectItem key={s.id} value={s.id} disabled={selectedSchoolIds.includes(s.id) && s.id !== school.id} className="font-bold text-xs uppercase">
                                             {s.name}
@@ -247,7 +247,7 @@ export default function ComparePage() {
                         </div>
 
                         <div className="w-full max-w-sm space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Offered Net Salary (Annual)</Label>
+                            <Label className="text-[10px] font-black uppercase text-[#94a3b8] tracking-widest">Offered Net Salary (Annual)</Label>
                             <Input
                                 type="text"
                                 inputMode="numeric"
@@ -259,20 +259,20 @@ export default function ComparePage() {
                             />
                         </div>
 
-                        <Card className="glass border-white/5 overflow-hidden group w-full max-w-sm shadow-2xl">
+                        <Card className="bg-[#1f2937]/70 backdrop-blur-md border-white/10 overflow-hidden group w-full max-w-sm shadow-2xl">
                             <Link href={`/schools/${school.id}`} className="block">
                                 <div className="relative aspect-video">
                                     <Image src={school.imageUrl} alt={school.name} fill style={{ objectFit: 'cover' }} data-ai-hint={school.imageHint} className="group-hover:scale-105 transition-transform duration-300 opacity-60" />
                                 </div>
                                 <CardHeader className="min-h-[8rem] border-b border-white/5">
                                     <CardTitle className="text-xl group-hover:text-[#f97316] transition-colors line-clamp-2 text-white font-black tracking-tighter uppercase">{school.name}</CardTitle>
-                                     <div className="flex items-center text-muted-foreground text-[10px] font-black uppercase tracking-widest pt-1">
+                                     <div className="flex items-center text-[#94a3b8] text-[10px] font-black uppercase tracking-widest pt-1">
                                         <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
                                         <span>{school.location}, {school.country}</span>
                                     </div>
                                 </CardHeader>
                             </Link>
-                            <CardContent className="p-4 md:p-6 pt-0 divide-y divide-border/50">
+                            <CardContent className="p-4 md:p-6 pt-0 divide-y divide-white/10">
                                 <div className="pt-4">
                                      <MetricRow label="Salary Range" value={school.intel.salary.value} result={salaryComp[index]} icon={<DollarSign className="w-4 h-4 text-green-400" />} />
                                      <MetricRow label="Savings Potential" value={school.intel.savingsPotential.value} result={savingsComp[index]} icon={<Sparkles className="w-4 h-4 text-amber-400" />} />
@@ -289,6 +289,7 @@ export default function ComparePage() {
                                         result={monthlyCostComp[index]}
                                         format={(v) => formatCurrency(v, 'USD')}
                                         icon={<DollarSign className="w-4 h-4 text-red-400" />}
+                                        link={{ href: '/prepare', ariaLabel: 'View preparation briefing' }}
                                     />
                                      <MetricRow label="Housing" value={school.intel.housing.value} result={'neutral'} icon={<Home className="w-4 h-4 text-[#007FFF]" />} />
                                      <MetricRow label="Health Insurance" value={school.intel.healthInsurance} result={'neutral'} icon={<HeartPulse className="w-4 h-4 text-red-400" />} />
