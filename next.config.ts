@@ -7,7 +7,7 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   // 🚀 STANDALONE ENGINE: Critical for Firebase App Hosting stability.
-  // This prevents "ChunkLoadError" by bundling all dependencies.
+  // This bundles all dependencies to prevent "ChunkLoadError" in production.
   output: 'standalone',
 
   // 🛡️ REDIRECT STABILIZATION
@@ -18,25 +18,36 @@ const nextConfig: NextConfig = {
     // Required for static stability / App Hosting compatibility
     unoptimized: true,
     remotePatterns: [
-      { protocol: 'https', hostname: 'placehold.co' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'picsum.photos' }
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        pathname: '/**',
+      }
     ],
   },
 
-  // Suppress build-blocking warnings for tactical velocity
+  // ⚡ TACTICAL VELOCITY: Prevent non-critical errors from blocking the build
   typescript: {
     ignoreBuildErrors: true,
   },
-  
-  // Ensure Tailwind and PostCSS don't crash on build
   eslint: {
     ignoreDuringBuilds: true,
   },
 
   experimental: {
     serverActions: {
-      // Authorised origins for Firebase domains
+      // 💎 MISSION CRITICAL: Authorised origins for Firebase and custom domains.
+      // This prevents the "Security Violation" error when calling fit analysis.
       allowedOrigins: [
         "*.web.app",
         "*.firebaseapp.com",
