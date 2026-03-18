@@ -24,7 +24,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[#020617]/95 backdrop-blur print:hidden">
       <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" className="group">
+          <Link href="/" className="group" prefetch={false}>
             <BrandLogo className="group-hover:scale-105 transition-transform duration-300" />
           </Link>
           
@@ -33,6 +33,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                prefetch={false}
                 className={cn(
                   "px-4 py-2 text-xs font-black tracking-widest transition-colors rounded-sm",
                   pathname.startsWith(link.href) 
@@ -53,7 +54,7 @@ export default function Header() {
                 </Button>
             )}
             {!user && (
-                <Link href="/login">
+                <Link href="/login" prefetch={false}>
                     <Button variant="outline" size="sm" className="border-white/10 text-white font-black text-[10px] tracking-widest rounded-sm h-9 px-4 hover:bg-white/5">Log in</Button>
                 </Link>
             )}

@@ -10,7 +10,7 @@ export default function Footer() {
           
           {/* Left Column: Brand & Social */}
           <div className="md:col-span-1 flex flex-col items-start gap-6">
-            <Link href="/">
+            <Link href="/" prefetch={false}>
               <BrandLogo />
             </Link>
             
@@ -19,6 +19,7 @@ export default function Footer() {
                 href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                prefetch={false}
                 className="text-gray-500 hover:text-[#f97316] transition-colors"
                 aria-label="Visit our LinkedIn"
               >
@@ -28,6 +29,7 @@ export default function Footer() {
                 href="https://www.facebook.com/leopardfish" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                prefetch={false}
                 className="text-gray-500 hover:text-[#f97316] transition-colors"
                 aria-label="Visit our Facebook"
               >
@@ -47,11 +49,11 @@ export default function Footer() {
         {/* Bottom Bar: Horizontal Legal Nodes */}
         <div className="mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-wrap justify-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-600">
-            <Link href="#" className="hover:text-white transition-colors">Privacy policy</Link>
+            <Link href="#" prefetch={false} className="hover:text-white transition-colors">Privacy policy</Link>
             <span className="text-gray-800/40 select-none">•</span>
-            <Link href="#" className="hover:text-white transition-colors">Terms of service</Link>
+            <Link href="#" prefetch={false} className="hover:text-white transition-colors">Terms of service</Link>
             <span className="text-gray-800/40 select-none">•</span>
-            <Link href="/admin/seed-data" className="hover:text-white transition-colors">Data hub</Link>
+            <Link href="/admin/seed-data" prefetch={false} className="hover:text-white transition-colors">Data hub</Link>
           </div>
           
           <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">

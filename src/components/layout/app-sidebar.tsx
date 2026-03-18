@@ -33,7 +33,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-white/5 bg-background">
       <SidebarContent>
         <SidebarHeader className="p-4">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2" prefetch={false}>
             <Binoculars className="size-6 text-primary" />
             <span className="font-bold font-headline text-lg tracking-tighter group-data-[collapsible=icon]:hidden whitespace-nowrap">
               <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
@@ -48,7 +48,7 @@ export function AppSidebar() {
               tooltip={{ children: 'Home' }}
               className="hover:bg-primary/10 hover:text-primary transition-colors"
             >
-              <Link href="/">
+              <Link href="/" prefetch={false}>
                 <Home />
                 <span className="font-bold text-xs">Home</span>
               </Link>
@@ -62,7 +62,7 @@ export function AppSidebar() {
                 tooltip={{ children: link.label }}
                 className="hover:bg-primary/10 hover:text-primary transition-colors"
               >
-                <Link href={link.href}>
+                <Link href={link.href} prefetch={false}>
                   <link.icon />
                   <span className="font-bold text-xs">{link.label}</span>
                 </Link>

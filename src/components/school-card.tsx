@@ -1,4 +1,3 @@
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, ShieldCheck } from 'lucide-react';
@@ -32,7 +31,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
   return (
     <Card className="glass bg-[#1f2937]/70 border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#f97316]/20 transition-all duration-300 group rounded-sm">
       <CardHeader className="p-0">
-        <Link href={dossierUrl} className="block relative overflow-hidden">
+        <Link href={dossierUrl} prefetch={false} className="block relative overflow-hidden">
           <Image
             src={school.imageUrl || 'https://picsum.photos/seed/school/600/400'}
             alt={`Campus of ${name}`}
@@ -54,7 +53,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
       <CardContent className="p-5 flex-grow space-y-4">
         <div>
             <CardTitle className="text-xl mb-1.5 font-black tracking-tighter normal-case text-white leading-tight uppercase">
-            <Link href={dossierUrl} className="hover:text-[#f97316] transition-colors">
+            <Link href={dossierUrl} prefetch={false} className="hover:text-[#f97316] transition-colors">
                 {name}
             </Link>
             </CardTitle>
@@ -85,7 +84,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
       </CardContent>
       <CardFooter className="p-5 pt-0 mt-auto">
         <Button className="w-full bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-sm border-0" asChild>
-            <Link href={dossierUrl}>
+            <Link href={dossierUrl} prefetch={false}>
                 View dossier
             </Link>
         </Button>
