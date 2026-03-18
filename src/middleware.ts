@@ -1,26 +1,20 @@
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * 🛡️ LEOPARDFISH EDGE SHIELD
- * Middleware logic strictly isolated from @/firebase client SDKs.
- * Prevents runtime resolution failures in the Next.js edge environment.
+ * 🛡️ LEOPARDFISH EDGE SHIELD v2
+ * Optimized to prevent Port 3000 lag and 429 errors.
  */
 export function middleware(request: NextRequest) {
-  // Core routing logic remains clean of browser-only SDKs
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * ⚡ TACTICAL MATCHER REPAIR:
+     * Excludes everything that isn't a "Page" request.
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|images|assets|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
