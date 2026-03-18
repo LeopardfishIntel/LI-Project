@@ -1,1 +1,0 @@
-This is a fresh diagnostic test to find the correct project folder. If you can see this message in the README.md file inside 'Desktop/leopardfish-project', then this is the active directory. Please let me know. Update timestamp: 2024-07-26 14:00:00 UTC.

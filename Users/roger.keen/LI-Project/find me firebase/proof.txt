@@ -1,1 +1,0 @@
-If you can see this file, it proves I have write access to the 'find me firebase' folder. We can now fix the homepage.
