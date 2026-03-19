@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import type { School } from '@/lib/types';
-import { getSchoolComparisonInsights } from '@/app/compare/actions';
+import { getSchoolComparisonInsights } from '@/app/(portal)/search/compare/actions';
 import type { AiSchoolComparisonOutput } from '@/ai/flows/ai-school-comparison-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

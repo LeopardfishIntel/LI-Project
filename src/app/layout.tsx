@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from 'next/font/google';
 import { ClientShield } from "@/components/ClientShield";
-import { FirebaseClientProvider } from "@/components/firebase/client-provider";
+// ✅ CORRECTED: Pulling from the unified firebase alias
+import { FirebaseClientProvider } from "@firebase/index"; 
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FloatingIntelButton } from "@/components/floating-intel-button";

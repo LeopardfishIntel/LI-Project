@@ -1,47 +1,43 @@
 'use client';
 
 import React, { useState, useEffect, type ReactNode } from 'react';
-import { FirebaseProvider } from '@/firebase/provider';
-import { initializeFirebase } from '@/firebase';
-import type { FirebaseApp } from 'firebase/app';
-import type { Auth } from 'firebase/auth';
-import type { Firestore } from 'firebase/firestore';
-import type { FirebaseStorage } from 'firebase/storage';
+import { FirebaseProvider } from './provider';
+import { initializeFirebase, type FirebaseServices } from './init';
 
-
-interface FirebaseClientProviderProps {
-  children: ReactNode;
-}
-
-type FirebaseServices = {
-  firebaseApp: FirebaseApp;
-  auth: Auth;
-  firestore: Firestore;
-  storage: FirebaseStorage;
-} | null;
-
-export function FirebaseClientProvider({ children }: FirebaseClientProviderProps) {
-  const [firebaseServices, setFirebaseServices] = useState<FirebaseServices>(null);
+/**
+ * 🛰️ CLIENT-SIDE SERVICE COORDINATOR
+ * Manages the transition from SSR to interactive Firebase environment.
+ */
+export function FirebaseClientProvider({ children }: { children: ReactNode }) {
+  const [services, setServices] = useState<FirebaseServices | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const init = async () => {
-      const services = await initializeFirebase();
-      setFirebaseServices(services);
+      const s = await initializeFirebase();
+      setServices(s);
     };
-
     init();
   }, []);
 
-  if (!firebaseServices) {
-    return null; // or a loading component
+  if (!mounted || !services) {
+    return (
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="animate-pulse space-y-4 text-center">
+          <div className="h-1 w-48 bg-[#f97316]/20 rounded-full mx-auto" />
+          <p className="text-[10px] font-black text-[#f97316]/40 uppercase tracking-[0.4em]">Establishing Uplink...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <FirebaseProvider
-      firebaseApp={firebaseServices.firebaseApp}
-      auth={firebaseServices.auth}
-      firestore={firebaseServices.firestore}
-      storage={firebaseServices.storage}
+      firebaseApp={services.firebaseApp}
+      auth={services.auth}
+      firestore={services.firestore}
+      storage={services.storage}
     >
       {children}
     </FirebaseProvider>

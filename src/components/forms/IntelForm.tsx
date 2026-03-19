@@ -1,322 +1,223 @@
+ 'use client';
 
-'use client';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, ArrowLeft, Globe, MapPin, Wallet, ShieldCheck, Award } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
-import { 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormControl, 
-  FormMessage, 
-  FormDescription 
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+const CURRICULUMS = ['British', 'US (American)', 'IB', 'Other'];
+const REGIONS = ['Middle East', 'Southeast Asia', 'East Asia', 'Europe', 'Africa', 'Latin America'];
 
-const curriculumOptions = ["IB", "AP", "British", "US", "Other"];
+export default function IntelForm() {
+  const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
 
-export function IntelForm({ form }: { form: UseFormReturn<any> }) {
+  const [formData, setFormData] = useState({
+    age: '25-34', 
+    family: 'Single', 
+    location: '', 
+    salary: '',
+    qualifications: [] as string[], 
+    curriculum: [] as string[],
+    experience: '2', 
+    subject: '',
+    regions: [] as string[], 
+    preferences: [] as string[], 
+    goal: 'Maximize savings'
+  });
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // 🛡️ TACTICAL STATE HELPER
+  const toggleArrayItem = (key: 'qualifications' | 'curriculum' | 'regions', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter(item => item !== value)
+        : [...prev[key], value]
+    }));
+  };
+
+  const handleExecuteAnalysis = async () => {
+    setIsLoading(true);
+    try {
+      // Tactical Optional Chaining on the response
+      const response = await fetch('/api/analyze-fit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) throw new Error('Network response was not ok');
+      
+      const data = await response.json();
+      if (data?.status === 'success') {
+        setResults(data);
+      }
+    } catch (err) {
+      console.error("Link Lost (API Error):", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const TogglePill = ({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) => (
+    <button 
+      type="button" 
+      onClick={(e) => {
+        e.preventDefault(); // Stop any bubbling
+        onClick();
+      }} 
+      className={cn(
+        "px-4 py-2 text-[10px] font-black tracking-widest rounded-sm border transition-all uppercase whitespace-nowrap", 
+        active 
+          ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]" 
+          : "bg-white/5 border-white/10 text-gray-500 hover:text-white hover:bg-white/10"
+      )}
+    >
+      {label}
+    </button>
+  );
+
+  if (!mounted) return null;
+
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center py-32 space-y-6">
+      <div className="size-12 border-2 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+      <div className="text-center animate-pulse">
+        <h3 className="text-sm font-black text-white tracking-[0.4em] uppercase font-headline">Compiling Intelligence</h3>
+        <p className="text-gray-500 text-[10px] mt-2 uppercase tracking-widest font-bold font-sans">Querying Global Databases</p>
+      </div>
+    </div>
+  );
+
+  if (results) return (
+    <div className="space-y-6 animate-in fade-in duration-700">
+      <div className="glass border-leopard p-8 rounded-sm">
+        <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-4">Intelligence Report Generated</h2>
+        {/* Render your results mapping here */}
+        <Button onClick={() => setResults(null)} variant="outline" className="border-white/10 text-white uppercase text-[10px] font-black">
+          ← New Mission
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-        <FormField
-          control={form.control}
-          name="intel.salary.value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Salary range</FormLabel>
-              <FormControl>
-                <Input placeholder="$60k - $80k" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.salary.score"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Salary score</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-background/50 border-white/10">
-                    <SelectValue placeholder="Select score" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="glass">
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="neutral">Neutral</SelectItem>
-                  <SelectItem value="bad">Bad</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.salary.isTaxFree"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-white/10 p-4 md:col-span-2">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Tax-free salary</FormLabel>
-                <FormDescription>Is the salary tax-free in the host country?</FormDescription>
+    <div className="w-full max-w-4xl mx-auto bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl overflow-hidden">
+      {/* STEP HEADER */}
+      <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
+        <div className="space-y-2">
+          <p className="text-[#f97316] text-[10px] font-black uppercase tracking-[0.3em]">Step {step} of 2</p>
+          <h2 className="text-3xl md:text-5xl font-normal text-white tracking-tighter font-headline">
+            {step === 1 ? 'The Asset' : 'The Mission'}
+          </h2>
+        </div>
+        <div className="flex gap-1 mb-2">
+          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 1 ? "bg-[#f97316]" : "bg-white/20")}></div>
+          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 2 ? "bg-[#f97316]" : "bg-white/10")}></div>
+        </div>
+      </div>
+
+      {step === 1 ? (
+        <div key="step-1" className="space-y-10 animate-in fade-in slide-in-from-left-4 duration-500">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Age Range</label>
+              <div className="flex flex-wrap gap-2">
+                {['25-34', '35-49', '50-64', '65+'].map(age => (
+                  <TogglePill key={age} label={age} active={formData.age === age} onClick={() => setFormData({...formData, age})} />
+                ))}
               </div>
-            </FormItem>
-          )}
-        />
-      </div>
+            </div>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Experience (Years)</label>
+              <input 
+                type="number" 
+                value={formData.experience} 
+                onChange={(e) => setFormData({...formData, experience: e.target.value})} 
+                className="w-full bg-white/5 border border-white/10 px-4 py-3 rounded-sm text-white focus:border-[#f97316] outline-none font-mono transition-colors" 
+              />
+            </div>
+          </div>
 
-      <Separator className="bg-white/5" />
+          <div className="space-y-4">
+            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Current Qualifications</label>
+            <div className="flex flex-wrap gap-2">
+              {['PGCE', 'B.Ed', 'Bachelors', 'Masters', 'QTS'].map(q => (
+                <TogglePill 
+                  key={q} 
+                  label={q} 
+                  active={formData.qualifications.includes(q)} 
+                  onClick={() => toggleArrayItem('qualifications', q)} 
+                />
+              ))}
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-        <FormField
-          control={form.control}
-          name="intel.housing.value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Housing</FormLabel>
-              <FormControl>
-                <Input placeholder="Allowance" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.housing.provided"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-3 space-y-0 pt-8">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <FormLabel className="!mt-0">Housing provided</FormLabel>
-            </FormItem>
-          )}
-        />
-      </div>
+          <div className="space-y-4 pt-4 border-t border-white/5">
+            <label className="text-[10px] font-black text-[#f97316] uppercase tracking-widest">Curriculum Experience</label>
+            <div className="flex flex-wrap gap-2">
+              {CURRICULUMS.map(c => (
+                <TogglePill 
+                  key={c} 
+                  label={c} 
+                  active={formData.curriculum.includes(c)} 
+                  onClick={() => toggleArrayItem('curriculum', c)} 
+                />
+              ))}
+            </div>
+          </div>
 
-      <Separator className="bg-white/5" />
+          <Button 
+            onClick={() => setStep(2)} 
+            className="w-full bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black h-14 tracking-[0.2em] uppercase hover:bg-[#f97316]/20 transition-all active:scale-[0.98]"
+          >
+            Establish Mission <ArrowRight className="size-4 ml-2" />
+          </Button>
+        </div>
+      ) : (
+        <div key="step-2" className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+          <div className="space-y-4">
+            <label className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest flex items-center gap-2">
+              <Globe className="size-3" /> Target Intelligence Regions
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {REGIONS.map(r => (
+                <TogglePill 
+                  key={r} 
+                  label={r} 
+                  active={formData.regions.includes(r)} 
+                  onClick={() => toggleArrayItem('regions', r)} 
+                />
+              ))}
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-        <FormField
-          control={form.control}
-          name="intel.savingsPotential.value"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Savings potential</FormLabel>
-              <FormControl>
-                <Input placeholder="High" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.savingsPotential.score"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Savings score</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-background/50 border-white/10">
-                    <SelectValue placeholder="Select score" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="glass">
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="neutral">Neutral</SelectItem>
-                  <SelectItem value="bad">Bad</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+          <div className="space-y-4">
+            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Primary Objective</label>
+            <div className="grid grid-cols-2 gap-2">
+              {['Maximize savings', 'Seek adventure', 'Career growth', 'Lifestyle'].map(g => (
+                <TogglePill key={g} label={g} active={formData.goal === g} onClick={() => setFormData({...formData, goal: g})} />
+              ))}
+            </div>
+          </div>
 
-      <Separator className="bg-white/5" />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <FormField
-          control={form.control}
-          name="intel.curriculum"
-          render={({ field }) => (
-            <FormItem className="md:col-span-2 lg:col-span-3">
-              <FormLabel>Curriculum</FormLabel>
-              <FormControl>
-                <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
-                  {curriculumOptions.map((item) => {
-                    const selectedValues = field.value ? field.value.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
-                    return (
-                      <div key={item} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`curriculum-${item}`}
-                          checked={selectedValues.includes(item)}
-                          onCheckedChange={(checked) => {
-                            const currentValues = field.value ? field.value.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
-                            let newValues;
-                            if (checked) {
-                              newValues = [...currentValues, item];
-                            } else {
-                              newValues = currentValues.filter((value: string) => value !== item);
-                            }
-                            const sortedValues = curriculumOptions.filter(option => newValues.includes(option));
-                            field.onChange(sortedValues.join(', '));
-                          }}
-                        />
-                        <Label htmlFor={`curriculum-${item}`} className="font-normal">{item}</Label>
-                      </div>
-                    );
-                  })}
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.accreditation"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Accreditation</FormLabel>
-              <FormControl>
-                <Input placeholder="CIS, WASC" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.studentTeacherRatio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Student-teacher ratio</FormLabel>
-              <FormControl>
-                <Input placeholder="10:1" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.classSize"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Average class size</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.nonContactTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Non-contact time (%)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="intel.healthInsurance"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Health insurance</FormLabel>
-              <FormControl>
-                <Input placeholder="Premium" {...field} className="bg-background/50 border-white/10" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-      <FormField
-        control={form.control}
-        name="intel.technologyEcosystem"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Tech ecosystem</FormLabel>
-            <FormControl>
-              <Input placeholder="1:1 iPads, Google Workspace" {...field} className="bg-background/50 border-white/10" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="intel.benefitsSummary"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Benefits summary</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Full medical, annual flights..." {...field} className="bg-background/50 border-white/10" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="intel.jobsPortal"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Jobs portal</FormLabel>
-            <FormControl>
-              <Input placeholder="TES, Search Associates" {...field} className="bg-background/50 border-white/10" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="intel.minQualifications"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Min. qualifications</FormLabel>
-            <FormControl>
-              <Input placeholder="Teaching License + 2 Yrs Exp" {...field} className="bg-background/50 border-white/10" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="intel.visaRestrictions"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Visa restrictions</FormLabel>
-            <FormControl>
-              <Input placeholder="Under 60" {...field} className="bg-background/50 border-white/10" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </>
+          <div className="flex gap-4">
+            <Button onClick={() => setStep(1)} variant="ghost" className="text-gray-500 font-bold uppercase tracking-widest text-[10px] hover:text-white">
+              <ArrowLeft className="size-4 mr-2" /> Back
+            </Button>
+            <Button 
+              onClick={handleExecuteAnalysis} 
+              className="flex-1 bg-[#f97316] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
+            >
+              Execute Analysis
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

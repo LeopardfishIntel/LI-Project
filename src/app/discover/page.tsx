@@ -1,22 +1,18 @@
-"use client";
+ "use client";
 
-import { useActionState } from "react";
+import React, { useState, useEffect, useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { useState } from "react";
 import { findFitAction, FitFinderState } from "./actions";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Wand2, Loader2, ServerCrash, Lightbulb, Building } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { Loader2, ServerCrash, Lightbulb, ArrowRight, ArrowLeft, Globe, Award } from "lucide-react";
+
+import { useCollection } from '@/firebase'; 
 import type { School } from '@/lib/types';
-import { collection } from 'firebase/firestore';
 
 const initialState: FitFinderState = {
   result: null,
@@ -24,213 +20,180 @@ const initialState: FitFinderState = {
   pending: false,
 };
 
+const CURRICULUMS = ['British', 'US (American)', 'IB', 'Other'];
+const REGIONS = ['Middle East', 'Southeast Asia', 'East Asia', 'Europe', 'Africa', 'Latin America'];
+const QUALIFICATIONS = ["PGCE/iPGCE", "B.Ed", "Bachelor's Degree", "Master's Degree", "NPQSL"];
+const GOALS = ['Maximize savings', 'Seek adventure', 'Career growth', 'Balanced lifestyle'];
+
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full md:w-auto bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest h-12 px-10 rounded-sm border-0 shadow-lg shadow-[#f97316]/10">
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Analyzing...
-        </>
-      ) : (
-        "Find my fit"
-      )}
+    <Button 
+      type="submit" 
+      disabled={pending} 
+      className="flex-1 bg-[#f97316] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
+    >
+      {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> ANALYZING...</> : "EXECUTE FIT ANALYSIS"}
     </Button>
   );
 }
 
 export default function FindYourFitPage() {
+  const [mounted, setMounted] = useState(false);
+  const [step, setStep] = useState(1);
   const [state, formAction] = useActionState(findFitAction, initialState);
-  const [otherLicense, setOtherLicense] = useState(false);
 
-  const firestore = useFirestore();
-  const schoolsQuery = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'schools') : null),
-    [firestore]
+  const [formData, setFormData] = useState({
+    age: '35',
+    familyStatus: 'single',
+    currentLocation: '',
+    currentSalary: '',
+    qualifications: [] as string[],
+    curriculum: [] as string[],
+    regions: [] as string[],
+    experience: '2',
+    goal: 'Maximize savings'
+  });
+
+  useEffect(() => { setMounted(true); }, []);
+  const { data: schools } = useCollection<School>(mounted ? 'schools' : undefined);
+
+  const toggleArrayItem = (key: 'qualifications' | 'curriculum' | 'regions', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [key]: prev[key].includes(value) ? prev[key].filter(i => i !== value) : [...prev[key], value]
+    }));
+  };
+
+  const TogglePill = ({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) => (
+    <button 
+      type="button" 
+      onClick={(e) => { e.preventDefault(); onClick(); }}
+      className={cn(
+        "px-4 py-2 text-[10px] font-black tracking-widest rounded-sm border transition-all uppercase whitespace-nowrap", 
+        active ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]" : "bg-white/5 border-white/10 text-gray-500 hover:text-white hover:bg-white/10"
+      )}
+    >
+      {label}
+    </button>
   );
-  const { data: schools } = useCollection<School>(schoolsQuery);
+
+  if (!mounted) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#f97316]" /></div>;
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-0 bg-[#020617]">
-      <div className="max-w-3xl mx-auto pt-4 pb-12">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-center normal-case text-white mb-4 uppercase">
-          1. Find your fit
-        </h1>
-        <p className="text-muted-foreground text-center mt-4 mb-12 max-w-2xl mx-auto font-black uppercase text-[10px] tracking-[0.3em] opacity-60">Your profile, our direction. We’ve replaced guesswork with data-driven insights.</p>
+    <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617] min-h-screen">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
+          <div className="space-y-2">
+            <p className="text-[#f97316] text-[10px] font-black uppercase tracking-[0.3em]">Phase {step} of 2</p>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase font-headline">
+              {step === 1 ? '1. The Asset' : '2. The Mission'}
+            </h1>
+          </div>
+          <div className="flex gap-1 mb-2">
+            <div className={cn("h-1 w-8 rounded-full", step === 1 ? "bg-[#f97316]" : "bg-white/20")}></div>
+            <div className={cn("h-1 w-8 rounded-full", step === 2 ? "bg-[#f97316]" : "bg-white/10")}></div>
+          </div>
+        </div>
 
-        <Card className="glass border-white/10">
-          <form action={formAction}>
-            <input 
-                type="hidden" 
-                name="availableSchools" 
-                value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'}
-            />
-            <CardHeader>
-              <CardTitle className="normal-case font-black tracking-tighter text-white text-xl">Your teacher profile</CardTitle>
-              <CardDescription className="text-muted-foreground font-medium">The more detail you provide, the better the analysis.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Age range</Label>
-                <RadioGroup name="age" defaultValue="35" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="25" id="age-25-34" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="age-25-34" className="font-bold text-white">25-34</Label>
+        <form action={formAction}>
+          {/* --- ANCHORED HIDDEN INPUTS (Always present) --- */}
+          <input type="hidden" name="availableSchools" value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'} />
+          <input type="hidden" name="age" value={formData.age} />
+          <input type="hidden" name="familyStatus" value={formData.familyStatus} />
+          <input type="hidden" name="experience" value={formData.experience} />
+          <input type="hidden" name="goal" value={formData.goal} />
+          {formData.qualifications.map(q => <input key={q} type="hidden" name="qualifications_cb" value={q} />)}
+          {formData.curriculum.map(c => <input key={c} type="hidden" name="curriculum_cb" value={c} />)}
+          {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}
+
+          {step === 1 ? (
+            <div key="step-1" className="space-y-10 animate-in fade-in slide-in-from-left-4 duration-500">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Age Range</label>
+                  <div className="flex flex-wrap gap-2">
+                    {["25", "35", "50", "65"].map((val) => (
+                      <TogglePill key={val} label={val === "65" ? "65+" : `${val}-${parseInt(val)+9}`} active={formData.age === val} onClick={() => setFormData({...formData, age: val})} />
+                    ))}
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="35" id="age-35-49" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="age-35-49" className="font-bold text-white">35-49</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="50" id="age-50-64" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="age-50-64" className="font-bold text-white">50-64</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="65" id="age-65-plus" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="age-65-plus" className="font-bold text-white">65+</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-              <div className="space-y-2 pt-4">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Family status</Label>
-                <RadioGroup name="familyStatus" defaultValue="single" className="flex flex-wrap gap-x-6 gap-y-4 pt-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="single" id="fs-single" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="fs-single" className="font-bold text-white">Single</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="couple" id="fs-couple" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="fs-couple" className="font-bold text-white">Couple</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="family" id="fs-family" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="fs-family" className="font-bold text-white">Family with children</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <Label htmlFor="current-location" className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Current location</Label>
-                    <Input id="current-location" name="currentLocation" placeholder="e.g., London, UK" className="bg-[#020617]/50 border-white/10 rounded-sm font-bold h-11" />
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="current-salary" className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Current salary (optional)</Label>
-                    <Input id="current-salary" name="currentSalary" placeholder="e.g., $55,000 USD" className="bg-[#020617]/50 border-white/10 rounded-sm font-bold h-11" />
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Family Status</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['single', 'couple', 'family'].map(fs => (
+                      <TogglePill key={fs} label={fs} active={formData.familyStatus === fs} onClick={() => setFormData({...formData, familyStatus: fs})} />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Qualifications</Label>
-                 <div className="space-y-2 pt-2">
-                    <div className="flex flex-wrap gap-x-6 gap-y-2">
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="q_pgce" name="qualifications_cb" value="PGCE/iPGCE" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
-                            <Label htmlFor="q_pgce" className="font-bold text-white">PGCE/iPGCE</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="q_bed" name="qualifications_cb" value="B.Ed" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
-                            <Label htmlFor="q_bed" className="font-bold text-white">B.Ed</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="q_bachelors" name="qualifications_cb" value="Bachelor's Degree" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
-                            <Label htmlFor="q_bachelors" className="font-bold text-white">Bachelor's Degree</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="q_masters" name="qualifications_cb" value="Master's Degree" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
-                            <Label htmlFor="q_masters" className="font-bold text-white">Master's Degree</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Checkbox id="q_npqsl" name="qualifications_cb" value="NPQSL" className="border-white/20 data-[state=checked]:bg-[#f97316]" />
-                            <Label htmlFor="q_npqsl" className="font-bold text-white">NPQSL</Label>
-                        </div>
-                    </div>
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Qualifications</label>
+                <div className="flex flex-wrap gap-2">
+                  {QUALIFICATIONS.map(q => <TogglePill key={q} label={q} active={formData.qualifications.includes(q)} onClick={() => toggleArrayItem('qualifications', q)} />)}
                 </div>
               </div>
-              
-              {/* Other form fields standardisation... */}
-              <div className="space-y-2 pt-4">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Goal selection</Label>
-                <RadioGroup name="goal" defaultValue="balanced" className="flex flex-col sm:flex-row sm:flex-wrap gap-4 pt-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="saving" id="saving" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="saving" className="font-bold text-white">Maximize savings</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="adventure" id="adventure" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="adventure" className="font-bold text-white">Seek adventure</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="growth" id="growth" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="growth" className="font-bold text-white">Career growth</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="balanced" id="balanced" className="border-white/20 text-[#f97316]" />
-                    <Label htmlFor="balanced" className="font-bold text-white">Balanced lifestyle</Label>
-                  </div>
-                </RadioGroup>
+
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                <label className="text-[10px] font-black text-[#f97316] uppercase tracking-widest">Curriculum Experience</label>
+                <div className="flex flex-wrap gap-2">
+                  {CURRICULUMS.map(c => <TogglePill key={c} label={c} active={formData.curriculum.includes(c)} onClick={() => toggleArrayItem('curriculum', c)} />)}
+                </div>
               </div>
-            </CardContent>
-            <CardFooter className="flex-col items-start gap-4">
-              <div className="w-full space-y-2">
+
+              <Button type="button" onClick={() => setStep(2)} className="w-full bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black h-14 tracking-[0.2em] uppercase hover:bg-[#f97316]/20">
+                Establish Mission <ArrowRight className="size-4 ml-2" />
+              </Button>
+            </div>
+          ) : (
+            <div key="step-2" className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest flex items-center gap-2"><Globe className="size-3" /> Target Regions</label>
+                <div className="flex flex-wrap gap-2">
+                  {REGIONS.map(r => <TogglePill key={r} label={r} active={formData.regions.includes(r)} onClick={() => toggleArrayItem('regions', r)} />)}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Primary Objective</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {GOALS.map(g => <TogglePill key={g} label={g} active={formData.goal === g} onClick={() => setFormData({...formData, goal: g})} />)}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Current Location</label>
+                  <Input name="currentLocation" value={formData.currentLocation} onChange={(e) => setFormData({...formData, currentLocation: e.target.value})} placeholder="e.g. London, UK" className="bg-white/5 border-white/10 rounded-sm font-bold h-11 text-white" />
+                </div>
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Experience (Years)</label>
+                  <Input type="number" name="experience" value={formData.experience} onChange={(e) => setFormData({...formData, experience: e.target.value})} className="bg-white/5 border-white/10 rounded-sm font-bold h-11 text-white" />
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button type="button" onClick={() => setStep(1)} variant="ghost" className="text-gray-500 font-bold uppercase tracking-widest text-[10px] hover:text-white"><ArrowLeft className="size-4 mr-2" /> Back</Button>
                 <SubmitButton />
-                <p className="text-[9px] text-muted-foreground pt-1 font-bold uppercase tracking-widest opacity-40">
-                    Leopardfish Intel operates with complete impartiality. Verify latest visa requirements with official authorities.
-                </p>
               </div>
-            </CardFooter>
-          </form>
-        </Card>
-
-        {state.error && (
-            <Card className="mt-8 border-destructive/20 bg-destructive/5 rounded-sm">
-                <CardHeader className="flex-row items-center gap-4 space-y-0">
-                    <ServerCrash className="h-6 w-6 text-destructive" />
-                    <CardTitle className="text-destructive font-black tracking-tighter normal-case">An error occurred</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-destructive/80 font-bold text-sm">{state.error}</p>
-                </CardContent>
-            </Card>
-        )}
+            </div>
+          )}
+        </form>
 
         {state.result && (
-          <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-center normal-case text-white mb-8 uppercase">Your recommended fits</h2>
-            <div className="space-y-6">
-              {state.result.recommendations.map((rec, index) => (
-                <Card key={index} className="glass border-white/5 rounded-sm">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 normal-case font-black tracking-tighter text-white text-2xl">
-                        <Lightbulb className="h-6 w-6 text-[#f97316]" />
-                        {rec.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <p className="text-muted-foreground leading-relaxed font-medium text-sm md:text-base">{rec.reasoning}</p>
-                    {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
-                        <div className="mt-6 pt-6 border-t border-white/5">
-                            <h4 className="font-black mb-4 text-xs flex items-center gap-3 text-[#f97316] uppercase tracking-[0.3em]">
-                                <Building className="size-4" />
-                                School suggestions
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {rec.recommendedSchools.map(school => (
-                                    <div key={school.id} className="p-5 bg-white/2 rounded-sm border border-white/5 hover:border-[#f97316]/30 transition-all group">
-                                        <Link href={`/schools/${school.id}`} className="font-black text-white hover:text-[#f97316] transition-colors text-lg tracking-tight uppercase">
-                                            {school.name}
-                                        </Link>
-                                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed font-medium opacity-80">{school.reasoning}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+            <h2 className="text-4xl font-black tracking-tighter text-white uppercase text-center font-headline">Recommended Fits</h2>
+            {state.result.recommendations.map((rec, i) => (
+              <Card key={i} className="glass border-white/5 bg-white/5 rounded-sm overflow-hidden p-8">
+                 <h3 className="text-3xl font-black text-white tracking-tight flex items-center gap-3 font-headline"><Lightbulb className="text-[#f97316]" /> {rec.name}</h3>
+                 <p className="mt-4 text-muted-foreground leading-relaxed italic">"{rec.reasoning}"</p>
+              </Card>
+            ))}
           </div>
         )}
+
+        {state.error && <div className="mt-8 p-6 border border-destructive/20 bg-destructive/5 text-destructive font-black uppercase text-sm flex items-center gap-3"><ServerCrash /> {state.error}</div>}
       </div>
     </div>
   );

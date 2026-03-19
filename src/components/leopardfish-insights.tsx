@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { School } from '@/lib/types';
-import { getSchoolInsights } from '@/app/compare/actions';
+import { getSchoolInsights } from '@/app/(portal)/search/compare/actions';
 import type { AiSchoolInsightsSummaryOutput } from '@/ai/flows/ai-school-insights-summary-flow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
