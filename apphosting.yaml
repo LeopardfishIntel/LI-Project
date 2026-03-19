@@ -1,6 +1,7 @@
  kind: "AppHostingYaml"
 schemaVersion: "v1"
 
+# 🛰️ RUNTIME TOPOLOGY
 runConfig:
   cpu: 2
   memoryMiB: 2048
@@ -8,12 +9,13 @@ runConfig:
   maxInstances: 10
   concurrency: 80
 
+# 🛡️ ENVIRONMENT & SECRET MAPPING
 environmentVariables:
   - variable: NEXT_TELEMETRY_DISABLED
     value: "1"
   - variable: NODE_ENV
     value: "production"
   
-  # 💎 THE AI LINK: Mapping the Secret Manager Vault to the App
+  # 💎 THE AI LINK: Mapping the Secret Manager Vault to the App Runtime
   - variable: GOOGLE_API_KEY
     secret: "GOOGLE_GENERATIVE_AI_API_KEY"
