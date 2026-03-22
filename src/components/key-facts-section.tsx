@@ -1,58 +1,46 @@
  "use client";
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Building, Globe, Fingerprint, BarChart3 } from 'lucide-react';
-import { useFirestore, useDoc, useMemoFirebase, useCollection } from '@/firebase';
-import { doc, collection } from 'firebase/firestore';
-import type { School } from '@/lib/types';
+import { useFirestore, useDoc, useCollection } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import type { School, AppMetrics } from '@/lib/types';
 
 /**
  * 🛰️ TACTICAL UTILITY: AnimatedCounter
- * Handles the visual "ticker" effect for mission metrics.
  */
 const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val: number) => string; }) => {
   const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const currentRef = ref.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { 
+        setInView(true); 
+        observer.disconnect(); 
+      }
+    }, { threshold: 0.1 });
+    
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (inView) {
-      const duration = 2000;
-      let startTimestamp: number | null = null;
-      const step = (timestamp: number) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        setCount(Math.floor(progress * endValue));
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        } else {
-          setCount(endValue);
-        }
-      };
-      window.requestAnimationFrame(step);
-    }
+    if (!inView) return;
+    const duration = 1500;
+    let start: number;
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      setCount(Math.floor(progress * endValue));
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
   }, [inView, endValue]);
   
   return (
-    <div ref={ref} className="text-xl md:text-2xl font-black tracking-tighter text-white drop-shadow-md">
+    <div ref={ref} className="text-3xl md:text-5xl font-black tracking-tighter text-white tabular-nums drop-shadow-sm">
       {format(count)}
     </div>
   );
@@ -60,59 +48,67 @@ const AnimatedCounter = ({ endValue, format }: { endValue: number; format: (val:
 
 /**
  * 🛡️ LEOPARDFISH KEY FACTS
- * Optimized for lazy-loading to prevent Port 3000 compilation lag.
  */
 export function KeyFactsSection() {
   const firestore = useFirestore();
-  
-  const metricsRef = useMemoFirebase(() => {
-      if (!firestore) return null;
-      return doc(firestore, 'app_metrics', 'page_views');
-  }, [firestore]);
-  
-  const schoolsQuery = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'schools') : null),
-    [firestore]
-  );
 
-  const { data: metrics } = useDoc<{ comparisons_made: number; site_visits: number }>(metricsRef);
-  const { data: schools } = useCollection<School>(schoolsQuery);
+  // Guard Document Reference
+  const metricsRef = useMemo(() => 
+    firestore ? doc(firestore, 'app_metrics', 'page_views') : undefined, 
+  [firestore]);
+
+  const { data: metrics } = useDoc<AppMetrics>(metricsRef);
+  
+  // TACTICAL FIX: Use an empty string fallback to satisfy the 'string' requirement
+  // and ensure useCollection doesn't see 'undefined'
+  const schoolsPath = firestore ? 'schools' : '';
+  const { data: schools } = useCollection<School>(schoolsPath);
+
+  const countryCount = useMemo(() => {
+    if (!schools || !Array.isArray(schools)) return 0;
+    const countries = schools.map(s => s.country).filter(Boolean);
+    return new Set(countries).size;
+  }, [schools]);
 
   const stats = [
     {
-      icon: <Building className="size-4 text-[#f97316] drop-shadow-md" />,
+      icon: <Building className="size-6 text-[#f97316]" />,
       endValue: schools?.length || 0,
-      label: 'Intl schools',
+      label: 'Intelligence Nodes',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <Globe className="size-4 text-[#f97316] drop-shadow-md" />,
-      endValue: schools ? new Set(schools.map(school => school.country)).size : 0,
-      label: 'Countries',
+      icon: <Globe className="size-6 text-[#007FFF]" />,
+      endValue: countryCount,
+      label: 'Global Sectors',
       format: (val: number) => `${val}`,
     },
     {
-      icon: <Fingerprint className="size-4 text-[#f97316] drop-shadow-md" />,
+      icon: <Fingerprint className="size-6 text-[#f97316]" />,
       endValue: metrics?.site_visits || 0,
-      label: 'Visits',
+      label: 'Active Intel Recruits',
       format: (val: number) => val.toLocaleString(),
     },
     {
-      icon: <BarChart3 className="size-4 text-[#f97316] drop-shadow-md" />,
+      icon: <BarChart3 className="size-6 text-[#007FFF]" />,
       endValue: metrics?.comparisons_made || 0,
-      label: 'Comparisons',
-      format: (val: number) => val.toLocaleString('en-US'),
+      label: 'Tactical Comparisons',
+      format: (val: number) => val.toLocaleString(),
     },
   ];
   
   return (
-    <div className="w-full py-0 bg-transparent">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center">
+    <div className="w-full">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
         {stats.map((stat, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="mb-1">{stat.icon}</div>
+          <div key={index} className="flex flex-col items-center lg:items-start group">
+            <div className="mb-4 p-3 bg-white/5 border border-white/10 rounded-sm group-hover:border-[#f97316]/50 transition-all duration-300">
+              {stat.icon}
+            </div>
             <AnimatedCounter endValue={stat.endValue} format={stat.format} />
-            <p className="text-[9px] font-black tracking-widest text-white/60 mt-1 uppercase">{stat.label}</p>
+            <p className="text-[11px] font-black tracking-[0.2em] text-slate-500 mt-2 uppercase">
+              {stat.label}
+            </p>
           </div>
         ))}
       </div>

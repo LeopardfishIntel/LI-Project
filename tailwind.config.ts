@@ -8,24 +8,24 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        // Defining 'headline' so 'font-headline' becomes a valid class
-        headline: ['Inter', 'sans-serif'], 
-      },
       colors: {
-        primary: "#f97316",    // Leopardfish Orange
+        // Leopardfish Tactical Palette
+        primary: "#f97316",    // Orange
         background: "#020617", // Deep Navy
         azure: "#007FFF",      // Intel Blue
-        border: "rgba(255, 255, 255, 0.1)", // Hard-coded Border Fix
+        foreground: "#ffffff",
+        // The Border Fix: Critical for Firebase App Hosting stability
+        border: "rgba(255, 255, 255, 0.1)",
       },
       fontWeight: {
-        black: "900",
+        black: '900',
       },
       letterSpacing: {
-        tighter: "-0.05em",
+        tighter: '-0.05em',
       },
     },
   },
   plugins: [],
 };
+
 export default config;

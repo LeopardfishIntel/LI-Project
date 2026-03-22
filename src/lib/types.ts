@@ -1,127 +1,116 @@
+export type Rating = 'good' | 'neutral' | 'bad' | 'unknown';
 
-export type TeacherProfile = {
+export interface IntelMetric {
+  value?: string | number | null;
+  score?: Rating;
+  isTaxFree?: boolean; 
+}
+
+export interface SchoolIntel {
+  salary?: IntelMetric;
+  savingsPotential?: IntelMetric;
+  housing?: {
+    provided?: boolean;
+    value?: string | null;
+  };
+  healthInsurance?: string | null;
+  curriculum?: string | null;
+  classSize?: number | null;
+  studentTeacherRatio?: string | null;
+  benefitsSummary?: string | null;
+  nonContactTime?: number | null;
+  technologyEcosystem?: string | null;
+  accreditation?: string | null;
+  jobsPortal?: string; 
+  minQualifications?: string;
+  visaRestrictions?: string;
+}
+
+export interface LocationCostOfLiving {
+  id?: string;
+  locationName?: string;
+  locationType?: string;
+  countryName?: string;
+  currencyCode?: string;
+  monthlyRent1BR?: number | null;
+  monthlyRent2BR?: number | null;
+  monthlyRent3BR?: number | null;
+  averageMealCost?: number | null;
+  transportPassCost?: number | null;
+  utilitiesMonthly?: number | null;
+  internetMonthly?: number | null;
+  groceriesIndex?: number | null;
+  restaurantPriceIndex?: number | null; // 🛰️ ADDED TO MATCH MOCK DATA
+  localPurchasingPowerIndex?: number | null;
+  childcareMonthly?: number | null;
+  food?: number | null; 
+  mobile?: number | null;
+  internet?: number | null;
+  utilities?: number | null;
+  transport?: number | null;
+  entertainment?: number | null;
+  diningSocial?: number | null;
+  vehicleInsuranceMaint?: number | null;
+  uncoveredMedical?: number | null;
+  lastUpdated?: any;
+}
+
+export interface School {
   id: string;
-  fullName: string;
-  avatarUrl: string;
-  isVerifiedTeacher: boolean;
-  familyStatus: string;
-  ageGroup: string;
-  memberSince: Date;
-  yearsOfExperience: number;
-  qualifications: string[];
-  linkedInProfileUrl: string;
-  preferredRegions: string[];
-  preferredCountries: string[];
-};
-
-export type StabilityMetrics = {
-  previousHeadcount: number;
-  currentHeadcount: number;
-  totalVacancies: number;
-  adjustedChurnRate: number;
-  stabilityTier: 'Fortress' | 'Stable' | 'Volatile' | 'High Risk';
-  redFlagAlert: boolean;
-  redFlagReasoning?: string;
-  fiveYearAnchorRate?: number;
-  leadershipTenure?: number;
-};
-
-export type School = {
-  // Primary Keys
-  id: string;
-  name?: string;
+  name: string;
+  schoolname?: string; 
+  city?: string;
+  location?: string;   
   locationId?: string;
-  
-  // Flat Field Support (Matching your Google Sheet exactly)
-  schoolname?: string;
-  academicscore?: string | number;
-  financescore?: string | number;
-  worklifescore?: string | number;
-  techscore?: string | number;
-  totalscore?: string | number;
-  score?: string | number;
-  confidence?: string | number;
+  country: string; 
+  curriculum?: string;
   summary?: string;
   description?: string;
-  rating?: string;
-  numericalrating?: string;
-  website?: string;
-  websiteUrl?: string;
+  imageUrl?: string | null;
+  imageHint?: string | null;
+  videoUrl?: string | null;
+  websiteUrl?: string | null;
+  website?: string | null;
+  intel?: SchoolIntel;
+  costOfLiving?: LocationCostOfLiving;
+  rating?: Rating;
+  totalscore?: string | number;
+  score?: string | number;
+  approvals?: string;
+  numericalrating?: string | number;
   housingprovision?: string;
   healthcoverage?: string;
-  country: string;
-  city: string;
-  techecosystem?: string;
   staffstudentratio?: string;
-  noncontacttime?: string | number;
-  numericalstaff?: string | number;
-  curriculum?: string;
-  approvals?: string;
   classsize?: string | number;
-  staffcount?: string | number;
-
-  // Analysis & Legacy Mapping
-  academic?: string;
+  techecosystem?: string;
   finance?: string;
-  ncCs?: string;
-  tech?: string;
+}
 
-  // Assets & Media
-  imageUrl: string;
-  imageHint: string;
-  videoUrl?: string;
-  spotlight?: boolean;
+export interface TeacherProfile {
+  uid: string;
+  email: string;
+  id?: string; 
+  displayName?: string;
+  fullName?: string;
+  avatarUrl?: string;
+  isVerifiedTeacher?: boolean;
+  qualifications?: string[];
+  experience?: string;
+  yearsOfExperience?: string | number; 
+  subject?: string;
+  preferredRegions?: string[];
+  preferredCountries?: string[];
+  goal?: "saving" | "adventure" | "growth" | "balanced";
+  familyStatus?: string;
+  linkedInProfileUrl?: string;
+  ageGroup?: string;
+  memberSince?: any;
+  isUSCitizen?: boolean;
+  claimsFEIE?: boolean; 
+}
 
-  // Internal Logic compatibility (Nested objects)
-  intel: {
-    salary: { value: string; score: 'good' | 'neutral' | 'bad'; isTaxFree?: boolean; };
-    housing: { value: string; provided: boolean };
-    savingsPotential: { value: string; score: 'good' | 'neutral' | 'bad' };
-    curriculum: string;
-    studentTeacherRatio: string;
-    classSize: number;
-    healthInsurance: string;
-    accreditation: string;
-    jobsPortal?: string;
-    minQualifications?: string;
-    visaRestrictions?: string;
-    benefitsSummary?: string;
-    nonContactTime?: number;
-    technologyEcosystem?: string;
-  };
-  
-  costOfLiving: {
-    monthlyRent1BR?: number;
-    monthlyRent2BR?: number;
-    monthlyRent3BR?: number;
-    food?: number;
-    transport?: number;
-    utilities?: number;
-    internet?: number;
-    mobile?: number;
-    diningSocial?: number;
-    vehicleInsuranceMaint?: number;
-    uncoveredMedical?: number;
-  };
-  stabilityMetrics?: StabilityMetrics;
-};
-
-export type LocationCostOfLiving = {
-  id: string;
-  locationName: string;
-  locationType: string;
-  countryName: string;
-  currencyCode: string;
-  averageMealCost: number;
-  monthlyRent1BR: number;
-  monthlyRent2BR: number;
-  monthlyRent3BR: number;
-  transportPassCost: number;
-  utilitiesMonthly: number;
-  internetMonthly: number;
-  childcareMonthly?: number;
-  localPurchasingPowerIndex: number;
-  groceriesIndex: number;
-  restaurantPriceIndex: number;
-  lastUpdated: any;
-};
+export interface AppMetrics {
+  site_visits?: number;
+  comparisons_made?: number;
+  lastSync?: any;
+}

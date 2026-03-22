@@ -1,460 +1,226 @@
-
-"use client";
+ "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useFormStatus } from "react-dom";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { 
-  Award, 
-  Pencil, 
-  Users, 
-  Loader2, 
-  ShieldAlert, 
-  LineChart, 
-  Globe, 
-  GraduationCap, 
-  Home, 
-  Utensils, 
-  TramFront, 
-  Zap, 
-  Smartphone, 
-  Wifi, 
-  Medal, 
-  Plus, 
-  Banknote, 
-  Milestone,
-  Sparkles,
-  ServerCrash,
-  TrendingUp,
-  TrendingDown,
-  Compass,
-  AlertTriangle,
-  Trophy
+  Loader2, LineChart, Globe, Briefcase, MapPin, Lock, Coins, TrendingUp 
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import type { School } from '@/lib/types';
-import { Separator } from '@/components/ui/separator';
-import { getOfferTacticalVerdict } from './actions';
-import type { EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
+// 💱 TACTICAL CURRENCY ENGINE
 const CONVERSION_RATES: Record<string, number> = {
-  USD: 1,
-  GBP: 0.78,
-  EUR: 0.92,
-  AED: 3.67,
-  SGD: 1.34,
-  CHF: 0.88,
-  JPY: 150,
-  THB: 35,
-  CNY: 7.2,
-  KRW: 1350,
-  AUD: 1.52,
+  USD: 1, GBP: 0.78, EUR: 0.92, AED: 3.67, SGD: 1.34, HKD: 7.82, JPY: 150
 };
 
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  'Japan': 'JPY',
-  'UAE': 'AED',
-  'Switzerland': 'CHF',
-  'Singapore': 'SGD',
-  'South Korea': 'KRW',
-  'United Kingdom': 'GBP',
-  'Netherlands': 'EUR',
-  'USA': 'USD',
-};
-
-const getAverageAnnualSalary = (salaryRange?: string): number => {
-    if (!salaryRange) return 0;
-    const cleanedRange = salaryRange.replace(/[\$,]/gi, '').trim();
-    const numbers = cleanedRange.match(/\d+/g)?.map(Number);
-    if (!numbers) return 0;
-    const scale = cleanedRange.includes('k') ? 1000 : 1;
-    if (numbers.length >= 2) return ((numbers[0] + numbers[1]) / 2) * scale;
-    if (numbers.length === 1) return numbers[0] * scale;
-    return 0;
-};
-
-const DecodedItem = ({ icon, label, value, currency, isFree }: { icon?: React.ReactNode, label: string, value: number, currency: string, isFree?: boolean }) => (
-    <div className="flex justify-between items-center text-base py-2 border-b border-white/5 last:border-0">
-      <div className="flex items-center gap-3">
-        {icon}
-        <span className="text-muted-foreground font-medium">{label}</span>
-      </div>
-      <span className={cn("font-bold", isFree ? "text-green-400" : "text-white")}>
-        {isFree ? "Covered" : formatCurrency(value || 0, currency)}
-      </span>
-    </div>
-);
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending} className="w-full bg-[#f97316] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] transition-all active:scale-95 mt-6 shadow-lg">
+      {pending ? <Loader2 className="animate-spin mx-auto" /> : "EXECUTE ANALYSIS"}
+    </button>
+  );
+}
 
 function ContractDecoderContent() {
+  const [mounted, setMounted] = useState(false);
   const firestore = useFirestore();
-  const schoolsQuery = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'schools') : null),
-    [firestore]
-  );
-  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
 
+  // 🛰️ DATABASE UPLINK
+  const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
+  const { data: allSchools, isLoading } = useCollection<any>(schoolsQuery);
+  
+  const reqsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'teacher_requirements') : null), [firestore, mounted]);
+  const { data: requirements } = useCollection<any>(reqsQuery);
+
+  // OPERATIONAL STATE
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [familyStatus, setFamilyStatus] = useState<string>('single');
-  const [currency, setCurrency] = useState('USD');
   const [offeredSalary, setOfferedSalary] = useState('');
-  const [responsibilityAllowance, setResponsibilityAllowance] = useState('');
-  const [partnerSalary, setPartnerSalary] = useState('');
-  const [homeCountryCommitment, setHomeCountryCommitment] = useState('');
-  const [studentLoan, setStudentLoan] = useState('');
-  const [contingency, setContingency] = useState('200');
+  const [liabilities, setLiabilities] = useState('');
 
-  const [verdict, setVerdict] = useState<EvaluateOfferOutput | null>(null);
-  const [isVerdictLoading, setIsVerdictLoading] = useState(false);
-  const [verdictError, setVerdictError] = useState<string | null>(null);
-  const [dateStamp, setDateStamp] = useState('');
+  useEffect(() => { setMounted(true); }, []);
+
+  // 🌍 DERIVE UNIQUE COUNTRIES
+  const availableCountries = useMemo(() => {
+    if (!allSchools) return [];
+    const countries = allSchools.map((s: any) => s.country).filter(Boolean);
+    return Array.from(new Set(countries)).sort() as string[];
+  }, [allSchools]);
+
+  // 🏫 FILTER SCHOOLS BY SELECTED COUNTRY
+  const filteredSchools = useMemo(() => {
+    if (!selectedCountry || !allSchools) return [];
+    return allSchools.filter((s: any) => s.country === selectedCountry);
+  }, [selectedCountry, allSchools]);
 
   const selectedSchool = useMemo(() => {
-      if (!selectedSchoolId || !schools) return null;
-      return schools.find(s => s.id === selectedSchoolId);
-  }, [selectedSchoolId, schools]);
+    return allSchools?.find((s: any) => s.id === selectedSchoolId) || null;
+  }, [selectedSchoolId, allSchools]);
 
-  useEffect(() => {
-    if (selectedSchool) {
-      const autoCurrency = COUNTRY_TO_CURRENCY[selectedSchool.country];
-      if (autoCurrency) setCurrency(autoCurrency);
-      setVerdict(null); 
-      setVerdictError(null);
-    }
-  }, [selectedSchool]);
-
-  useEffect(() => {
-    setDateStamp(new Date().toLocaleDateString('en-GB').replace(/\//g, '.'));
-  }, []);
-
-  const rate = CONVERSION_RATES[currency] || 1;
-
-  const suggestedMonthlyLocal = useMemo(() => {
+  // 📊 CALCULATION ENGINE
+  const savingsPotential = useMemo(() => {
     if (!selectedSchool) return 0;
-    const avgAnnualUSD = getAverageAnnualSalary(selectedSchool.intel?.salary?.value);
-    const estNetMonthlyUSD = (avgAnnualUSD * 0.8) / 12;
-    return estNetMonthlyUSD * rate;
-  }, [selectedSchool, rate]);
-
-  const decodedCosts = useMemo(() => {
-    if (!selectedSchool) return null;
-    const col = selectedSchool.costOfLiving || {};
-    const { intel } = selectedSchool;
-    const multiplier = familyStatus === 'single' ? 1 : 1.6;
-    const rentVal = (Number(col.monthlyRent1BR) || Number((col as any).apartment) || 0);
-    const food = (Number(col.food) || 0) * multiplier * rate;
-    const transport = (Number(col.transport) || 0) * multiplier * rate;
-    const utilities = (Number(col.utilities) || 0) * multiplier * rate;
-    const internet = (Number(col.internet) || 0) * rate;
-    const mobile = (Number(col.mobile) || 0) * multiplier * rate;
-    const manualHome = (parseFloat(homeCountryCommitment) || 0) * rate;
-    const manualLoan = (parseFloat(studentLoan) || 0) * rate;
-    const contingencyVal = (parseFloat(contingency) || 0) * rate;
+    const salary = offeredSalary ? parseFloat(offeredSalary) : parseFloat(selectedSchool.salaryRange?.replace(/[$,]/g, '')) || 0;
+    const debt = parseFloat(liabilities) || 0;
     
-    const totalCosts = (intel?.housing?.provided ? 0 : rentVal * rate) + food + transport + utilities + internet + mobile + manualHome + manualLoan + contingencyVal;
-    return { rent: rentVal * rate, food, transport, utilities, internet, mobile, totalCosts, manualHome, manualLoan, contingencyVal };
-  }, [selectedSchool, familyStatus, contingency, homeCountryCommitment, studentLoan, rate]);
+    // Simple burn rate estimation for UI demo
+    const estBurn = familyStatus === 'single' ? 1500 : 2500;
+    return salary - estBurn - debt;
+  }, [selectedSchool, offeredSalary, liabilities, familyStatus]);
 
-  const monthlySalaryToUse = offeredSalary ? (parseFloat(offeredSalary) || 0) : suggestedMonthlyLocal;
-  const responsibilityAllowanceNum = parseFloat(responsibilityAllowance) || 0;
-  const partnerSalaryNum = parseFloat(partnerSalary) || 0;
-  const totalIncome = (monthlySalaryToUse || 0) + responsibilityAllowanceNum + partnerSalaryNum;
-  const savingsPotential = totalIncome - (decodedCosts?.totalCosts || 0);
-
-  const handleGenerateVerdict = async () => {
-    if (!selectedSchool || totalIncome <= 0) return;
-    setIsVerdictLoading(true);
-    setVerdictError(null);
-    setVerdict(null);
-
-    try {
-      const result = await getOfferTacticalVerdict({
-          schoolName: selectedSchool.name || 'Unknown',
-          location: selectedSchool.location || 'Unknown',
-          country: selectedSchool.country || 'Unknown',
-          monthlySavings: Math.round(savingsPotential || 0),
-          currency: currency,
-          familyStatus: familyStatus
-      });
-      
-      if (result.error) {
-        setVerdictError(result.error);
-      } else if (result.data) {
-        setVerdict(result.data);
-      }
-    } catch (e: any) {
-      setVerdictError("Engine timeout. Please re-run protocol.");
-    } finally {
-      setIsVerdictLoading(false);
-    }
-  };
+  if (!mounted) return null;
 
   return (
-    <div className="space-y-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-4 space-y-6">
-            <Card className="glass border-[#f97316]/20 bg-[#020617]/40">
-              <CardHeader><CardTitle className="text-sm font-bold text-[#f97316]/70">Operational settings</CardTitle></CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Select school</Label>
-                  <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                    <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue placeholder="Search schools..." /></SelectTrigger>
-                    <SelectContent className="glass">{schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>) ?? []}</SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Family scaling</Label>
-                  <Select value={familyStatus} onValueChange={setFamilyStatus}>
-                    <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-11"><SelectValue /></SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="single">Single</SelectItem>
-                      <SelectItem value="couple">Couple</SelectItem>
-                      <SelectItem value="family">Family (2+1)</SelectItem>
-                      <SelectItem value="family2">Family (2+2)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-sm">
-                  <div className="text-[11px] text-white font-medium leading-relaxed">
-                    <span className="font-bold text-destructive flex items-center gap-1 mb-1.5 uppercase tracking-tighter"><ShieldAlert className="size-3.5" /> Financial due diligence</span>
-                    Enter net pay figures. Ensure totals include social security, pension contributions, and all healthcare premiums.
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-end">
-                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Net monthly salary offer</Label>
-                    {suggestedMonthlyLocal > 0 && !offeredSalary && <span className="text-[11px] font-bold text-[#007FFF] uppercase animate-pulse">Suggested benchmark</span>}
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                      <Input 
-                        className={cn("pl-10 bg-[#020617]/50 border-white/10 rounded-sm h-11 text-right font-bold text-white", noSpinners)} 
-                        type="number" 
-                        placeholder={suggestedMonthlyLocal > 0 ? `${Math.round(suggestedMonthlyLocal)}` : "0"} 
-                        value={offeredSalary} 
-                        onChange={(e) => setOfferedSalary(e.target.value)} 
-                      />
-                    </div>
-                    <div className="w-24 px-3 flex items-center justify-center bg-[#020617]/50 border border-white/10 rounded-sm font-bold text-sm">{currency}</div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Responsibilities allowance</Label>
-                  <div className="relative">
-                    <Medal className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="0" 
-                      value={responsibilityAllowance} 
-                      onChange={(e) => setResponsibilityAllowance(e.target.value)} 
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Partner income</Label>
-                  <div className="relative">
-                    <Plus className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="0" 
-                      value={partnerSalary} 
-                      onChange={(e) => setPartnerSalary(e.target.value)} 
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Contingency buffer</Label>
-                  <div className="relative">
-                    <Milestone className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                    <Input 
-                      className={cn("pl-10 bg-[#020617]/50 border-white/10 h-11 rounded-sm text-right font-bold text-white", noSpinners)} 
-                      type="number" 
-                      placeholder="200" 
-                      value={contingency} 
-                      onChange={(e) => setContingency(e.target.value)} 
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="lg:col-span-8 space-y-8">
-            {!selectedSchool ? (
-              <div className="h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm text-muted-foreground bg-card/20">
-                <LineChart className="w-16 h-16 mb-4 opacity-10" />
-                <p className="text-base text-white/30 font-bold uppercase tracking-widest">Initialise school dossier to begin decoding</p>
-              </div>
-            ) : (
-              <>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="glass border-white/5 bg-[#020617]/40">
-                    <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black text-[#f97316] uppercase tracking-widest flex items-center gap-2"><Award className="size-4" /> Income & benefits</CardTitle></CardHeader>
-                    <CardContent className="space-y-4 pt-4">
-                      <div className="flex justify-between items-center py-2 border-b border-white/5">
-                        <div className="flex items-center gap-3">
-                          <Banknote className="size-4 text-green-400" />
-                          <span className="text-base text-muted-foreground font-medium">Monthly net salary</span>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-xl text-white">{formatCurrency(monthlySalaryToUse || 0, currency)}</p>
-                          {!offeredSalary && <p className="text-[10px] font-bold text-[#007FFF] uppercase">Benchmark applied</p>}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <div className="flex items-center gap-3">
-                          <Home className="size-4 text-[#007FFF]" />
-                          <span className="text-base text-muted-foreground font-medium">Housing arrangement</span>
-                        </div>
-                        <span className="font-bold text-white text-base">{selectedSchool.intel?.housing?.provided ? "School provided" : "Teacher pays"}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="glass border-white/5 bg-[#020617]/40">
-                    <CardHeader className="pb-4 border-b border-white/5"><CardTitle className="text-xs font-black text-[#f97316] uppercase tracking-widest flex items-center gap-2"><Users className="size-4" /> Estimated costs</CardTitle></CardHeader>
-                    <CardContent className="space-y-1 pt-4">
-                      <DecodedItem icon={<Home className="size-4 text-[#007FFF]" />} label="Monthly rent (1BR)" value={selectedSchool.intel?.housing?.provided ? 0 : decodedCosts?.rent || 0} currency={currency} isFree={selectedSchool.intel?.housing?.provided} />
-                      <DecodedItem icon={<Utensils className="size-4 text-amber-400" />} label="Groceries (Scaled)" value={decodedCosts?.food || 0} currency={currency} />
-                      <DecodedItem icon={<TramFront className="size-4 text-rose-400" />} label="Transport (Scaled)" value={decodedCosts?.transport || 0} currency={currency} />
-                      <DecodedItem icon={<Zap className="size-4 text-yellow-400" />} label="Utilities (Scaled)" value={decodedCosts?.utilities || 0} currency={currency} />
-                      
-                      <div className="flex justify-between items-center pt-6 mt-4 border-t border-white/10"><span className="text-[11px] font-bold uppercase tracking-widest text-white">Burn rate</span><span className="text-3xl font-black text-[#f97316] tracking-tighter">{formatCurrency(decodedCosts?.totalCosts || 0, currency)}</span></div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card className={cn("glass border-2 rounded-sm p-8 shadow-2xl relative overflow-hidden transition-all duration-500", savingsPotential > 0 ? "border-green-500/30" : "border-destructive/30")}>
-                  <div className="space-y-8">
-                      <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                          <div className="space-y-1 text-center md:text-left">
-                              <h4 className="text-sm font-black text-muted-foreground uppercase tracking-widest">True net savings</h4>
-                              <div className="flex items-baseline gap-1">
-                                  <span className={cn("text-6xl font-black tracking-tighter transition-all duration-500", savingsPotential > 0 ? "text-green-400" : "text-destructive")}>
-                                    {formatCurrency(savingsPotential || 0, currency)}
-                                  </span>
-                                  <span className="text-2xl font-bold text-muted-foreground/50">/mo</span>
-                              </div>
-                          </div>
-                          <div className="flex-1 max-sm text-base text-muted-foreground leading-relaxed text-center md:text-left font-medium">The gap between your income and your cost of living.</div>
-                          <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest px-10 py-8 h-auto rounded-sm transition-all shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:scale-105 active:scale-95 text-sm" asChild><Link href="/compare">Compare offers</Link></Button>
-                      </div>
-
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/5">
-                          {['GBP', 'USD', 'EUR', 'AUD'].map(ccy => {
-                              const conv = ( (savingsPotential || 0) / rate) * (CONVERSION_RATES[ccy] || 1);
-                              return (
-                                  <div key={ccy} className="space-y-1">
-                                      <p className="text-[11px] font-bold text-muted-foreground/60 uppercase">{ccy}</p>
-                                      <p className="text-xl font-bold text-white/90">{formatCurrency(conv || 0, ccy)}</p>
-                                  </div>
-                              )
-                          }) ?? []}
-                      </div>
-
-                      <div className="pt-8 border-t border-white/5 space-y-6">
-                          <div className="flex items-center justify-between">
-                              <h3 className="text-base font-black text-[#f97316] uppercase tracking-tighter flex items-center gap-2">
-                                  <Sparkles className="size-4" /> Tactical SWOT verdict
-                              </h3>
-                              {!verdict && (
-                                <Button 
-                                  onClick={handleGenerateVerdict} 
-                                  disabled={isVerdictLoading}
-                                  className="h-9 px-6 bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest text-[10px] rounded-sm"
-                                >
-                                  {isVerdictLoading ? <Loader2 className="size-3 animate-spin mr-2" /> : <Sparkles className="size-3 mr-2" />}
-                                  Run Analysis
-                                </Button>
-                              )}
-                          </div>
-
-                          {verdictError && (
-                              <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-sm flex items-start gap-3">
-                                  <ServerCrash className="size-4 text-destructive shrink-0 mt-0.5" />
-                                  <p className="text-xs text-muted-foreground font-bold">{verdictError}</p>
-                              </div>
-                          )}
-
-                          {verdict && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                  <SWOTCard type="Strengths" content={verdict.strengths ?? '—'} icon={<TrendingUp className="size-3.5" />} color="green" />
-                                  <SWOTCard type="Weaknesses" content={verdict.weaknesses ?? '—'} icon={<TrendingDown className="size-3.5" />} color="amber" />
-                                  <SWOTCard type="Opportunities" content={verdict.opportunities ?? '—'} icon={<Compass className="size-3.5" />} color="accent" />
-                                  <SWOTCard type="Threats" content={verdict.threats ?? '—'} icon={<AlertTriangle className="size-3.5" />} color="destructive" />
-                              </div>
-                          )}
-                      </div>
-                  </div>
-                </Card>
-              </>
-            )}
-          </div>
-      </div>
-
-      <section className="max-w-5xl mx-auto space-y-8 pt-12 border-t border-white/5">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter border-l-4 border-[#f97316] pl-4">The gold standard</h2>
-        </div>
-        <Card className="glass border-[#f97316]/20 bg-[#f97316]/5">
-          <CardContent className="pt-8">
-            <div className="flex flex-col md:flex-row gap-6 items-start">
-              <Trophy className="size-12 text-[#f97316] shrink-0" />
-              <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
-                "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
-              </p>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start max-w-6xl mx-auto">
+      
+      {/* LEFT COLUMN: CONTROL PANEL */}
+      <div className="lg:col-span-4 space-y-6">
+        <Card className="glass border-[#f97316]/20 bg-[#020617]/60 shadow-2xl">
+          <CardHeader className="border-b border-white/5 pb-4">
+            <CardTitle className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em]">Operational Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            
+            {/* COUNTRY SELECTOR */}
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">1. Target Country</Label>
+              <Select value={selectedCountry || ''} onValueChange={(val) => { setSelectedCountry(val); setSelectedSchoolId(null); }}>
+                <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-12">
+                  <SelectValue placeholder={isLoading ? "Syncing..." : "Select Country"} />
+                </SelectTrigger>
+                <SelectContent className="glass bg-[#020617] border-white/10 text-white">
+                  {availableCountries.map(c => <SelectItem key={c} value={c} className="font-bold">{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
+
+            {/* SCHOOL SELECTOR */}
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">2. Select Asset</Label>
+              <Select value={selectedSchoolId || ''} onValueChange={setSelectedSchoolId} disabled={!selectedCountry}>
+                <SelectTrigger className="bg-[#020617]/50 border-white/10 rounded-sm text-white font-bold h-12">
+                  <SelectValue placeholder={!selectedCountry ? "Awaiting Country..." : "Choose School"} />
+                </SelectTrigger>
+                <SelectContent className="glass bg-[#020617] border-white/10 text-white">
+                  {filteredSchools.map((s: any) => (
+                    <SelectItem key={s.id} value={s.id} className="font-bold border-b border-white/5 last:border-0">
+                      {s.schoolname}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* FINANCIAL INPUTS */}
+            <div className="pt-4 border-t border-white/5 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Monthly Net Salary (USD)</Label>
+                <Input 
+                  className={cn("bg-[#020617]/50 border-white/10 h-12 text-xl font-black", noSpinners)} 
+                  type="number" 
+                  value={offeredSalary}
+                  onChange={(e) => setOfferedSalary(e.target.value)}
+                  placeholder={selectedSchool?.salaryRange || "0"} 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Monthly Liabilities</Label>
+                <Input 
+                  className="bg-[#020617]/30 border-white/5 h-10 text-xs font-bold" 
+                  type="number" 
+                  value={liabilities}
+                  onChange={(e) => setLiabilities(e.target.value)}
+                  placeholder="Loans, commitments, etc." 
+                />
+              </div>
+            </div>
+
+            <SubmitButton />
           </CardContent>
         </Card>
-      </section>
+      </div>
+
+      {/* RIGHT COLUMN: ANALYSIS DOSSIER */}
+      <div className="lg:col-span-8">
+        {!selectedSchool ? (
+          <div className="h-[600px] flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-sm bg-card/10 text-center p-10">
+            <TrendingUp className="w-16 h-16 mb-4 opacity-5 text-[#f97316]" />
+            <p className="text-sm text-white/20 font-black uppercase tracking-[0.4em]">Initialize Analysis Protocol</p>
+          </div>
+        ) : (
+          <div className="space-y-8 animate-in fade-in duration-1000 slide-in-from-bottom-4">
+            <Card className="glass border-white/10 bg-[#020617]/40 p-12 relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1.5 h-full bg-[#f97316] transition-all group-hover:w-3"></div>
+              <div className="flex justify-between items-end">
+                <div>
+                  <h4 className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.3em] mb-2">Savings Potential</h4>
+                  <div className={cn("text-8xl font-black tracking-tighter leading-none", savingsPotential > 0 ? "text-green-400" : "text-red-500")}>
+                    ${Math.round(savingsPotential).toLocaleString()}
+                  </div>
+                  <p className="text-xs font-bold text-slate-500 uppercase mt-4 tracking-widest">Estimated Monthly Surplus</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-slate-500 uppercase mb-1">Target Asset</p>
+                  <p className="text-2xl font-black text-white uppercase leading-tight">{selectedSchool.schoolname}</p>
+                  <p className="text-xs font-bold text-[#007FFF] uppercase mt-1">{selectedSchool.city}, {selectedSchool.country}</p>
+                </div>
+              </div>
+            </Card>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="bg-white/5 border-white/10 p-8">
+                <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Financial Specs</h5>
+                <div className="space-y-4">
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase">Housing</span>
+                    <span className="text-sm font-black text-white uppercase">{selectedSchool.housingprovision}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-white/5 pb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase">Healthcare</span>
+                    <span className="text-sm font-black text-white uppercase">{selectedSchool.healthcoverage}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs font-bold text-slate-400 uppercase">Non-Contact</span>
+                    <span className="text-sm font-black text-white">{selectedSchool.noncontacttime}</span>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="bg-[#007FFF]/5 border-[#007FFF]/20 p-8 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-6">
+                  <Lock className="size-3 text-[#007FFF]" />
+                  <h5 className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest">Work/Life Score</h5>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-7xl font-black text-white">{selectedSchool.worklifescore}</span>
+                  <span className="text-xl font-black text-slate-600">/ 10</span>
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-const SWOTCard = ({ type, content, icon, color }: { type: string, content: string, icon: React.ReactNode, color: string }) => {
-    const colorMap: Record<string, string> = {
-        green: "border-l-green-500/50 text-green-400",
-        amber: "border-l-amber-500/50 text-amber-400",
-        accent: "border-l-[#007FFF]/50 text-[#007FFF]",
-        destructive: "border-l-destructive/50 text-destructive"
-    };
-    return (
-        <div className={cn("glass p-6 rounded-sm border-l-4 space-y-3 bg-white/2 hover:bg-white/5 transition-colors", colorMap[color])}>
-            <h4 className="text-sm font-bold flex items-center gap-2 text-white uppercase tracking-wider">
-                {icon} {type}
-            </h4>
-            <p className="text-[13px] text-muted-foreground leading-relaxed font-medium">{content}</p>
-        </div>
-    );
-};
-
 export default function EvaluatePage() {
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617]">
-      <div className="mb-16 text-center print:hidden">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-white uppercase leading-none text-center">
-          2. Contract decoder
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-black text-[10px] leading-relaxed tracking-[0.3em] opacity-60 uppercase">Field-grade financial intelligence for your next move.</p>
+    <div className="container mx-auto px-4 py-20 bg-[#020617] min-h-screen">
+      <div className="mb-20 text-center">
+        <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white uppercase leading-none">2. Contract <span className="text-[#f97316]">Decoder</span></h1>
+        <p className="text-muted-foreground font-black text-[10px] tracking-[0.4em] uppercase opacity-60 mt-6 border-y border-white/5 py-3 inline-block px-10">Field-grade financial intelligence</p>
       </div>
-      <Suspense fallback={<div className="flex justify-center items-center py-24"><Loader2 className="h-12 w-12 animate-spin text-[#f97316]" /></div>}>
+      <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader2 className="h-12 w-12 animate-spin text-[#f97316]" /></div>}>
         <ContractDecoderContent />
       </Suspense>
     </div>

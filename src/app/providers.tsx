@@ -1,7 +1,7 @@
 'use client';
 
 import { Toaster } from '@/components/ui/toaster';
-import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { FirebaseClientProvider } from "@/firebase";
 import React from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 

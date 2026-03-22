@@ -204,7 +204,7 @@ export default function SeedDataPage() {
 function transmitToFirestore() {
   const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
   const SHEET_NAME = "Schools"; // Ensure this matches your tab name
-  const PROJECT_ID = "${firebaseConfig.projectId}";
+  const PROJECT_ID = "${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}";
   
   // Logic to map headers and POST to Firebase REST API
   // Note: Requires GCP service account credentials for secure write.

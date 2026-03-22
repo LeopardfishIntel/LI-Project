@@ -1,14 +1,14 @@
  'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic'; // ⚡ TACTICAL REQUIREMENT
+import dynamic from 'next/dynamic'; 
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Target, Calculator, GitCompare, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// 🛡️ TACTICAL LAZY LOAD: Defer heavy Firebase-dependent components
+// 🛡️ TACTICAL LAZY LOAD
 const KeyFactsSection = dynamic(
   () => import('@/components/key-facts-section').then((mod) => mod.KeyFactsSection),
   { ssr: false, loading: () => <div className="h-20 w-full animate-pulse bg-white/5 rounded-sm" /> }
@@ -19,16 +19,12 @@ const RedFlagRegistry = dynamic(
   { ssr: false }
 );
 
-/**
- * 🛰️ TACTICAL GLASS BUTTON
- * Standardized: #E68A4D 20% opacity + backdrop-blur.
- */
 function TacticalButton({ href, label, className, icon: Icon }: { href: string; label: string; className?: string; icon?: React.ElementType }) {
   return (
     <Link href={href} prefetch={false}>
       <Button 
         className={cn(
-          "bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-sm h-12 px-8 transition-all hover:bg-[#E68A4D]/30 shadow-lg shadow-black/20 uppercase tracking-tighter",
+          "bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-black rounded-none h-14 px-10 transition-all hover:bg-[#E68A4D]/40 shadow-xl uppercase tracking-tighter",
           className
         )}
       >
@@ -71,64 +67,61 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617]">
-      {/* Hero Section */}
-      <section className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full h-[85vh] flex items-center justify-center overflow-hidden border-b border-white/5">
         <Image
           src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop"
-          alt="Tactical intelligence background"
+          alt="Intelligence background"
           fill
           priority
-          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#020617]/60 to-[#020617]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/20 via-[#020617]/80 to-[#020617]"></div>
         
         <div className="relative z-30 container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-3 py-1 rounded text-[#f97316] text-[10px] font-black uppercase tracking-[0.3em]">
+          <div className="max-w-5xl mx-auto space-y-8 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/30 px-4 py-1.5 rounded-full text-[#f97316] text-[10px] font-black uppercase tracking-[0.4em]">
               <ShieldCheck className="w-3.5 h-3.5" /> Actionable intelligence
             </div>
 
-            {/* HEADER FIX: Non-Bold branding per tactical request */}
-            <h1 className="text-5xl md:text-8xl tracking-tighter leading-none text-white font-normal drop-shadow-2xl">
-              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+            <h1 className="text-6xl md:text-9xl tracking-tighter leading-[0.85] text-white font-normal">
+              <span className="text-[#f97316] block md:inline">LEOPARD</span>
+              <span className="text-[#007FFF] block md:inline italic">FISH</span>
             </h1>
             
-            <p className="text-xl md:text-3xl text-white/80 font-medium max-w-2xl leading-tight [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]">
-              Move with certainty, not just hope.
+            <p className="text-xl md:text-2xl text-slate-400 font-medium max-w-2xl leading-tight uppercase tracking-tight">
+              Move with certainty, <span className="text-white">not just hope.</span>
             </p>
 
-            <div className="flex flex-wrap justify-center gap-6 pt-8">
-              <TacticalButton href="/discover" label="Discover" className="min-w-[240px]" />
-              <TacticalButton href="/financial-forecaster" label="Evaluate" className="min-w-[240px]" />
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-10">
+              <TacticalButton href="/discover" label="Launch Discover" className="w-full sm:w-64" />
+              <TacticalButton href="/financial-forecaster" label="Analyze Offer" className="w-full sm:w-64" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section - Dynamic */}
-      <section className="relative z-40 -mt-12 container mx-auto px-4 md:px-6">
-        <div className="glass border-white/10 rounded-sm py-10 px-4 md:px-12 bg-[#020617]/80 backdrop-blur-md">
+      <section className="relative z-40 -mt-16 container mx-auto px-4">
+        <div className="border border-white/10 rounded-none py-12 px-6 md:px-12 bg-[#020617]/90 backdrop-blur-xl shadow-2xl">
           <KeyFactsSection />
         </div>
       </section>
 
-      {/* Zig-Zag Insider Journey */}
-      <section className="py-24 bg-[#020617]">
+      <section className="py-32 bg-[#020617]">
         <div className="container mx-auto px-4">
-          <div className="space-y-32">
+          <div className="space-y-40">
             {steps.map((step, index) => (
-              <div key={step.id} className="grid md:grid-cols-2 gap-12 items-center">
+              <div key={step.id} className="grid md:grid-cols-2 gap-16 items-center">
                 <div className={cn(
-                  "relative aspect-[4/3] rounded-sm overflow-hidden border border-white/10 group shadow-2xl bg-white/5",
+                  "relative aspect-video overflow-hidden border border-white/10 group shadow-2xl bg-white/5",
                   index % 2 === 1 && "md:order-last"
                 )}>
-                  <Image src={step.imageUrl} alt={step.title} fill className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent"></div>
+                  <Image src={step.imageUrl} alt={step.title} fill className="object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#020617] via-transparent to-transparent"></div>
                 </div>
-                <div className={cn("space-y-6 flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
-                  <div className="p-4 bg-[#f97316]/10 rounded-sm w-fit border border-[#f97316]/20">{step.icon}</div>
-                  <h3 className="text-3xl md:text-5xl text-white tracking-tighter font-bold">{step.title}</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed max-w-lg font-medium">{step.desc}</p>
+                <div className={cn("space-y-8 flex flex-col", index % 2 === 1 ? "md:items-end md:text-right" : "md:items-start")}>
+                  <div className="text-[#f97316] text-6xl font-black opacity-20">{step.id}</div>
+                  <h3 className="text-4xl md:text-6xl text-white tracking-tighter font-black uppercase">{step.title}</h3>
+                  <p className="text-slate-400 text-lg leading-relaxed max-w-md">{step.desc}</p>
                   <TacticalButton href={step.link} label={step.label} icon={ArrowRight} />
                 </div>
               </div>

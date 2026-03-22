@@ -1,0 +1,7 @@
+LEOPARDFISH ARCHITECT RESTORE:
+- Next.js 15 / Firebase App Hosting
+- Hard-coded primary: #f97316
+- Hard-coded background: #020617
+- Asset Protocol: trailingSlash: true, unoptimized: true
+- Hydration Guard: useEffect mounted state check
+- TeacherProfile Type: src/lib/types.ts

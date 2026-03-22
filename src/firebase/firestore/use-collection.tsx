@@ -1,102 +1,51 @@
-
-'use client';
-
 import { useState, useEffect } from 'react';
-import {
-  Query,
-  onSnapshot,
-  DocumentData,
-  FirestoreError,
-  QuerySnapshot,
+import { 
+  collection, 
+  onSnapshot, 
+  query, 
+  Query, 
+  CollectionReference,
+  DocumentData 
 } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { isMemoized } from '@/firebase/provider';
+import { db } from '../index';
 
-/** Utility type to add an 'id' field to a given type T. */
-export type WithId<T> = T & { id: string };
-
-/**
- * Interface for the return value of the useCollection hook.
- * @template T Type of the document data.
- */
-export interface UseCollectionResult<T> {
-  data: WithId<T>[] | null; // Document data with ID, or null.
-  isLoading: boolean;       // True if loading.
-  error: FirestoreError | Error | null; // Error object, or null.
-}
-
-/**
- * React hook to subscribe to a Firestore collection or query in real-time.
- * 
- * IMPORTANT: The query must be stabilized using useMemoFirebase.
- */
-export function useCollection<T = any>(
-    memoizedTargetRefOrQuery: Query<DocumentData> | null | undefined,
-): UseCollectionResult<T> {
-  type ResultItemType = WithId<T>;
-  type StateDataType = ResultItemType[] | null;
-
-  const [data, setData] = useState<StateDataType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<FirestoreError | Error | null>(null);
+export function useCollection<T = DocumentData>(
+  pathOrQuery: string | Query<DocumentData> | null | undefined
+) {
+  const [data, setData] = useState<T[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!memoizedTargetRefOrQuery) {
-      setData(null);
+    if (!pathOrQuery) {
       setIsLoading(false);
-      setError(null);
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    // Protocol: Determine if we were handed a string path or a pre-built Query
+    const finalQuery = typeof pathOrQuery === 'string' 
+      ? collection(db, pathOrQuery) 
+      : pathOrQuery;
 
     const unsubscribe = onSnapshot(
-      memoizedTargetRefOrQuery,
-      (snapshot: QuerySnapshot<DocumentData>) => {
-        const results: ResultItemType[] = [];
-        for (const doc of snapshot.docs) {
-          results.push({ ...(doc.data() as T), id: doc.id });
-        }
-        setData(results);
-        setError(null);
+      finalQuery,
+      (snapshot) => {
+        const docs = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as T[];
+        setData(docs);
         setIsLoading(false);
       },
-      (err: FirestoreError) => {
-        let path = 'unknown';
-        try {
-          if ('path' in memoizedTargetRefOrQuery) {
-            path = (memoizedTargetRefOrQuery as any).path;
-          } else if ((memoizedTargetRefOrQuery as any)._query?.path) {
-            path = (memoizedTargetRefOrQuery as any)._query.path.canonicalString();
-          }
-        } catch (e) {
-          // Path extraction failed - safe fallback
-        }
-
-        const contextualError = new FirestorePermissionError({
-          operation: 'list',
-          path,
-        });
-
-        setError(contextualError);
-        setData(null);
+      (err) => {
+        console.error("Firestore Collection Error:", err);
+        setError(err);
         setIsLoading(false);
-
-        // trigger global error propagation
-        errorEmitter.emit('permission-error', contextualError);
       }
     );
 
     return () => unsubscribe();
-  }, [memoizedTargetRefOrQuery]);
-
-  // Defensive check to prevent infinite render loops in production.
-  if (memoizedTargetRefOrQuery && !isMemoized(memoizedTargetRefOrQuery)) {
-    console.error('L.F.I. Memory Leak Prevention: Query not stabilized.', memoizedTargetRefOrQuery);
-    throw new Error('Intelligence Access Denied: useCollection query must be stabilized using useMemoFirebase.');
-  }
+  }, [pathOrQuery]);
 
   return { data, isLoading, error };
 }

@@ -43,7 +43,7 @@ export default function SearchPage() {
     return schools.filter(
       school =>
         school.name.toLowerCase().includes(lowerCaseQuery) ||
-        school.location.toLowerCase().includes(lowerCaseQuery) ||
+        school.location?.toLowerCase().includes(lowerCaseQuery) ||
         school.country.toLowerCase().includes(lowerCaseQuery)
     );
   }, [schools, query]);

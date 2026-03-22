@@ -1,40 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { matchmaker } from "@lib/matchmaker"; 
-import { generateIntelBriefing } from "@ai/flows/generate-intel-briefing";
-import { db } from "@firebase/config";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { NextResponse } from 'next/server';
+import { generateIntelBriefing } from '@/ai/flows/generate-intel-briefing';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { userId, fitnessData } = body;
-
-    if (!userId || !fitnessData) {
-      return NextResponse.json({ error: "Missing payload" }, { status: 400 });
+    
+    if (!body || !body.matchResults) {
+      return NextResponse.json(
+        { success: false, error: "Missing matchResults in tactical payload" },
+        { status: 400 }
+      );
     }
 
-    // Process Matchmaker Logic
-    const matchResults = await matchmaker(fitnessData);
+    const briefingResult = await generateIntelBriefing(JSON.stringify(body.matchResults));
 
-    // Generate AI Briefing
-    let aiBriefing;
-    try {
-      aiBriefing = await generateIntelBriefing(matchResults);
-    } catch (e) {
-      aiBriefing = "Tactical Intel Offline.";
+    // 🛡️ TACTICAL FIX: Safe property access to satisfy TypeScript
+    if (!briefingResult.success) {
+      const errorMessage = (briefingResult as any).error || "Intelligence synthesis failed";
+      throw new Error(errorMessage);
     }
 
-    // Save to Firestore
-    const reportRef = doc(db, "analyses", `${userId}_${Date.now()}`);
-    await setDoc(reportRef, {
-      userId,
-      matchResults,
-      briefing: aiBriefing,
-      createdAt: serverTimestamp(),
+    return NextResponse.json({ 
+      success: true, 
+      data: briefingResult.data 
     });
 
-    return NextResponse.json({ status: "success", data: matchResults });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("ROUTE_LOG_ANALYSIS_FIT_FAILURE:", error);
+    return NextResponse.json(
+      { success: false, error: error?.message || "Internal Tactical Link Failure" }, 
+      { status: 500 }
+    );
   }
 }

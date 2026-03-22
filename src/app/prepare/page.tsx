@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
@@ -31,7 +31,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+// Protocol: Using centralized Isomorphic Bridge
+import { useCollection, useFirestore, useMemoFirebase, db } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import type { School } from '@/lib/types';
 import { getRentForFamily, type FamilyStatus } from '@/lib/rent-calculator';
@@ -46,12 +47,7 @@ const SCALING_MULTIPLIERS: Record<string, number> = {
 };
 
 export default function PreparePage() {
-  const firestore = useFirestore();
-  const schoolsQuery = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'schools') : null),
-    [firestore]
-  );
-  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>(schoolsQuery);
+  const { data: schools, isLoading: isLoadingSchools } = useCollection<School>('schools');
 
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
@@ -73,10 +69,12 @@ export default function PreparePage() {
     
     let rentEstimate = 2000;
     if (selectedSchool) {
-      if (selectedSchool.intel.housing.provided) {
+      // FIXED: Tactical Guard for nested properties
+      if (selectedSchool.intel?.housing?.provided) {
         rentEstimate = 0;
       } else {
-        const { rent } = getRentForFamily(selectedSchool.costOfLiving, calcStatus as FamilyStatus);
+        // Fallback to avoid crash if costOfLiving is missing
+        const { rent } = getRentForFamily(selectedSchool.costOfLiving || {}, calcStatus as FamilyStatus);
         rentEstimate = Math.round(rent * 2); 
       }
     }
@@ -100,162 +98,123 @@ export default function PreparePage() {
     { id: 'comforts', label: 'Basic home comforts' },
   ];
 
+  if (isLoadingSchools) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#020617]">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 md:px-6 py-0 text-white font-body">
-      <div className="mb-8 text-center space-y-3 pt-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white normal-case text-center">
-          4. Are you prepared?
+    <div className="container mx-auto px-4 md:px-6 py-12 text-white font-body bg-[#020617]">
+      <div className="mb-12 text-center space-y-4">
+        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase italic">
+          4. Prepare for deployment
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-[10px] leading-relaxed uppercase tracking-[0.3em] opacity-60">
+        <p className="text-muted-foreground max-w-2xl mx-auto font-bold text-[10px] leading-relaxed uppercase tracking-[0.4em] opacity-60">
           Professional educator due diligence and risk assessment.
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-12">
-        
-        <section className="space-y-6">
-          <div className="space-y-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Material risks</h2>
+      <div className="max-w-5xl mx-auto space-y-16">
+        {/* Material Risks Section */}
+        <section className="space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic border-l-4 border-primary pl-4 tracking-tighter">Material risks</h2>
             <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks. If any deal-breakers emerge, seek professional consultation before signing.
+              International school contracts evolve annually. Conduct a forensic review of your specific terms for the following risks.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-red-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Lock className="size-5 text-primary" /> Confidentiality clauses</CardTitle>
+            <Card className="bg-[#1f2937]/50 backdrop-blur-md border-white/10 hover:border-primary/30 transition-colors">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+                <CardTitle className="text-lg font-black text-white uppercase tracking-tighter flex items-center gap-3">
+                  <Lock className="size-5 text-primary" /> NDA Clauses
+                </CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Audit your contract for over-zealous non-disclosure agreements or terms suppressing reputational commentary. A school that threatens legal recourse for discussing its internal climate after your departure is signalling a deeply insecure governance structure.</p>
+              <CardContent className="text-sm text-[#94a3b8] leading-relaxed font-bold">
+                <p>Audit your contract for over-zealous non-disclosure agreements. A school that threatens legal recourse for discussing its internal climate is signalling systemic insecurity.</p>
               </CardContent>
             </Card>
 
-            <Card className="glass border-red-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Banknote className="size-5 text-primary" /> Pay scale ambiguity</CardTitle>
+            <Card className="bg-[#1f2937]/50 backdrop-blur-md border-white/10 hover:border-primary/30 transition-colors">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+                <CardTitle className="text-lg font-black text-white uppercase tracking-tighter flex items-center gap-3">
+                  <Banknote className="size-5 text-primary" /> Scale Ambiguity
+                </CardTitle>
                 <Flag className="size-4 fill-red-500 text-red-500" />
               </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
+              <CardContent className="text-sm text-[#94a3b8] leading-relaxed font-bold">
                 <p>Professional institutions use transparent pay scales. Refusal to show your position on a scale suggests you are being low-balled compared to the institutional baseline.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Stethoscope className="size-5 text-primary" /> Medical co-pay gap</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Verify the schedule of benefits regarding inpatient excess. In many markets, 'comprehensive' insurance still carries a 20% co-insurance clause on every bill, which can prove financially untenable for families.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Home className="size-5 text-primary" /> Housing quality audit</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Vague housing terms often lead to a quiet downgrade in your living standards. Ensure the exact quality of your accommodation is clearly written into the contract—and if you receive a cash allowance, ensure it explicitly keeps pace with local rent inflation.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Globe className="size-5 text-primary" /> Flights and relocation</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>If your flight and moving allowances are poorly defined, the school can easily downgrade them later. Ensure the exact value and frequency of these benefits are clearly stated in your contract so the goalposts cannot be moved.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><ShieldAlert className="size-5 text-primary" /> Exit & reference control</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>Verify regional exit protocols. If a school has the legal power to block your next move or withhold gratuity based on "conduct," the tactical risk is high.</p>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        <section className="space-y-6">
+        {/* Tactical Budget Section */}
+        <section className="space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-3">
-              <h2 className="text-xl md:text-2xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The true cost of landing</h2>
-              <p className="text-xs font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-                Relocating abroad is rarely cost-neutral; use this audit to identify the upfront costs that will draw on your cash reserves before your first full month’s pay arrives.
+            <div className="space-y-4">
+              <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic border-l-4 border-primary pl-4 tracking-tighter">Tactical landing cost</h2>
+              <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
+                Upfront capital required to bridge the gap between touchdown and your initial payday.
               </p>
             </div>
-            <Link 
-              href="/prepare/budget-briefing" 
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all duration-300 animate-pulse-slow drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
-            >
-              <Info className="size-3" /> Read Me.
-            </Link>
           </div>
           
-          <div className="glass border-primary/30 bg-primary/5 rounded-sm shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-6 md:p-10 flex flex-col md:flex-row gap-10 items-center md:items-start border-b border-white/5 relative">
+          <div className="bg-[#1f2937]/70 backdrop-blur-xl border border-white/10 rounded-sm shadow-2xl overflow-hidden flex flex-col">
+            <div className="p-8 md:p-12 flex flex-col md:flex-row gap-12 items-center md:items-start border-b border-white/5 relative">
               <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 pointer-events-none">
-                <Calculator className="size-40 text-white" />
+                <Calculator className="size-48 text-white" />
               </div>
               
-              <div className="flex-1 space-y-3 relative z-10">
-                <p className="text-[10px] font-black text-primary tracking-[0.3em] uppercase">Tactical reserve requirement</p>
-                <p className="text-5xl md:text-6xl font-black text-white tracking-tighter">
+              <div className="flex-1 space-y-4 relative z-10">
+                <p className="text-[10px] font-black text-primary tracking-[0.4em] uppercase">Target Reserve</p>
+                <p className="text-6xl md:text-7xl font-black text-white tracking-tighter italic">
                   {formatCurrency(totalReserve, 'GBP')}
-                </p>
-                <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed max-sm">
-                  Estimated upfront capital required to bridge the gap between touchdown and your initial payday.
                 </p>
               </div>
 
-              <div className="w-full md:w-64 space-y-4 pt-1 relative z-10">
-                <div className="space-y-1.5">
-                  <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Scaling profile</Label>
+              <div className="w-full md:w-72 space-y-5 relative z-10">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-primary tracking-widest">Operative Profile</Label>
                   <Select value={calcStatus} onValueChange={setCalcStatus}>
-                    <SelectTrigger className="h-10 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
+                    <SelectTrigger className="bg-black/40 border-white/10 text-white font-black uppercase text-xs h-12">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="glass">
-                      <SelectItem value="single">Single</SelectItem>
+                    <SelectContent className="bg-[#1f2937] border-white/10 text-white">
+                      <SelectItem value="single">Single Agent</SelectItem>
                       <SelectItem value="couple">Couple</SelectItem>
                       <SelectItem value="family">Family (2+1)</SelectItem>
                       <SelectItem value="family2">Family (2+2)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[9px] font-black uppercase text-primary tracking-widest opacity-80">Target dossier</Label>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase text-primary tracking-widest">Target Dossier</Label>
                   <Select value={selectedSchoolId ?? ''} onValueChange={setSelectedSchoolId}>
-                    <SelectTrigger className="h-10 bg-background/60 border-white/10 text-white font-bold text-sm rounded-sm">
-                      <SelectValue placeholder={isLoadingSchools ? "Loading..." : "Select school..."} />
+                    <SelectTrigger className="bg-black/40 border-white/10 text-white font-black uppercase text-xs h-12">
+                      <SelectValue placeholder="Select target..." />
                     </SelectTrigger>
-                    <SelectContent className="glass max-h-[200px]">
-                      {schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                    <SelectContent className="bg-[#1f2937] border-white/10 text-white">
+                      {schools?.map(s => <SelectItem key={s.id} value={s.id}>{s.name.toUpperCase()}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             </div>
 
-            <div className="p-5 md:p-8 bg-black/30 space-y-5">
-              <div className="flex items-center gap-2 px-1">
-                <PencilLine className="size-3 text-primary" />
-                <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">Tailor your budget: adjust these standard figures to match the reality of your own spending patterns.</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Budget Adjustment Grid */}
+            <div className="p-8 bg-black/40">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {budgetItems.map((item) => (
-                  <div key={item.id} className="glass p-4 space-y-3 bg-black/40 border-white/5 hover:border-primary/20 transition-all duration-500 rounded-sm">
-                    <h4 className="text-[9px] font-black uppercase tracking-tight text-muted-foreground/80 leading-tight h-6">{item.label}</h4>
-                    <div className="flex items-center gap-2 bg-background/40 border border-white/10 rounded-sm px-2 py-1.5 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-                      <span className="text-sm font-black text-primary/70">£</span>
+                  <div key={item.id} className="space-y-3">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-[#94a3b8] leading-tight">{item.label}</h4>
+                    <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-sm px-4 py-2">
+                      <span className="text-lg font-black text-primary">£</span>
                       <Input 
                         type="number"
                         value={budget[item.id as keyof typeof budget]}
@@ -263,7 +222,7 @@ export default function PreparePage() {
                           const val = parseInt(e.target.value) || 0;
                           setBudget(prev => ({ ...prev, [item.id]: val }));
                         }}
-                        className={cn("bg-transparent border-0 h-7 p-0 text-xl font-black text-muted-foreground focus-visible:ring-0 shadow-none selection:bg-primary/30", noSpinners)}
+                        className={cn("bg-transparent border-0 h-10 p-0 text-2xl font-black text-white focus-visible:ring-0 shadow-none", noSpinners)}
                       />
                     </div>
                   </div>
@@ -271,103 +230,16 @@ export default function PreparePage() {
               </div>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-            <div className="space-y-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><PlaneLanding className="size-4 text-primary" /> Upfront & hidden costs</h3>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">Initial outlays for visa medicals, document legalisation, and housing deposits can create immediate fiscal strain. Most "settling-in" allowances arrive after these costs are incurred.</p>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-base font-bold text-white flex items-center gap-2 normal-case"><ShoppingCart className="size-4 text-primary" /> The IKEA test</h3>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed font-medium">"Unfurnished" often means zero appliances. Check local IKEA sites before arrival. A £1,000 allowance may only cover basic white goods, leaving no budget for furniture or comfort.</p>
-            </div>
-          </div>
         </section>
 
-        <section className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">Leadership & stability</h2>
-            <p className="text-sm font-bold text-muted-foreground italic max-w-3xl leading-relaxed">
-              Senior leadership stability is the benchmark of a settled school; utilise these indicators to distinguish between a high-performing environment and one defined by systemic volatility.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="glass border-red-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><BarChart3 className="size-5 text-primary" /> Toxic churn signals</CardTitle>
-                <Flag className="size-4 fill-red-500 text-red-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>If a school is consistently advertising mid-year vacancies (October/November), it signals unmanaged exits. Use our Growth-Adjusted Staff Churn Index to identify replacement rates versus expansion.</p>
-              </CardContent>
-            </Card>
-
-            <Card className="glass border-amber-500/20">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 text-white normal-case"><Users className="size-5 text-primary" /> Leadership tenure</CardTitle>
-                <Flag className="size-4 fill-amber-500 text-amber-500" />
-              </CardHeader>
-              <CardContent className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">
-                <p>High leadership turnover leads to inconsistent policy enforcement. If the Principal and Head of Department have both been in post for less than 2 years, proceed with extreme caution.</p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <section className="space-y-8 pb-12">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The big questions</h2>
-          </div>
-          
-          <p className="text-base text-muted-foreground font-medium mb-8">Checking the facts could be the difference between a proper adventure and a total nightmare.</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              "What is the weekly cap on teacher contact time?",
-              "Is the End Of Service gratuity based on basic salary or total package?",
-              "Can I see the full schedule of benefits for health insurance?",
-              "How much is the excess and the contribution for hospital stays?",
-              "Are all school fees, surcharges and other ancillary fees fully covered for staff children? How much should I budget for school uniform?",
-              "Can I speak to a current teacher in my department privately?",
-              "What was the replacement churn rate in the last two years?",
-              "Does the school pay for document legalisation fees upfront?",
-              "Is the provided housing 'turnkey' or completely unfurnished?",
-              "Is there a monthly cap on utility-inclusive housing?"
-            ].map((q, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 bg-background/40 border border-border/10 rounded-sm hover:border-primary/30 transition-colors group">
-                <MessageSquareQuote className="size-5 text-primary shrink-0 mt-1 opacity-50 group-hover:opacity-100 transition-opacity" />
-                <p className="text-base font-medium text-white/90 leading-relaxed italic">"{q}"</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-8 pt-12 border-t border-white/5">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl md:text-3xl font-black stamped-dossier text-white normal-case border-l-4 border-primary pl-4">The Gold Standard</h2>
-          </div>
-          <Card className="glass border-primary/20 bg-primary/5">
-            <CardContent className="pt-8">
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <Trophy className="size-12 text-primary shrink-0" />
-                <p className="text-lg md:text-xl text-white leading-relaxed font-bold italic">
-                  "The Gold Standard is defined by radical transparency and institutional integrity. Elite international schools do not view these criteria as negotiable; they are the operational baseline for professional educator wellbeing. Top-tier employers lead with clarity because they understand that certainty breeds focus. In this market, transparency is the primary signal of quality. If an institution avoids these inquiries, the tactical signal is already clear."
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <div className="flex justify-center pt-8">
-            <Button asChild size="lg" className="h-14 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-sm shadow-[0_0_25px_rgba(249,115,22,0.2)] border-0">
+        {/* Final Strategy CTA */}
+        <div className="flex justify-center pt-12 pb-24">
+            <Button asChild size="lg" className="h-16 px-12 bg-primary hover:bg-orange-600 text-white font-black uppercase tracking-widest italic rounded-sm shadow-2xl transition-all hover:scale-105">
                 <Link href="/prepare/checklist">
-                <CheckCircle2 className="mr-3 size-5" /> Access strategic checksheet
+                  <CheckCircle2 className="mr-3 size-6" /> ACCESS CHECKLIST
                 </Link>
             </Button>
         </div>
-
       </div>
     </div>
   );

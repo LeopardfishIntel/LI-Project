@@ -1,199 +1,224 @@
  "use client";
 
-import React, { useState, useEffect, useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import Link from "next/link";
-import { findFitAction, FitFinderState } from "./actions";
+import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from "@/lib/utils";
+import { 
+  User, GraduationCap, Users, BookOpen, MapPin, Wallet, Compass, Target, Check, Zap, Loader2 
+} from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from '@/components/ui/input';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Loader2, ServerCrash, Lightbulb, ArrowRight, ArrowLeft, Globe, Award } from "lucide-react";
-
-import { useCollection } from '@/firebase'; 
-import type { School } from '@/lib/types';
-
-const initialState: FitFinderState = {
-  result: null,
-  error: null,
-  pending: false,
-};
-
-const CURRICULUMS = ['British', 'US (American)', 'IB', 'Other'];
-const REGIONS = ['Middle East', 'Southeast Asia', 'East Asia', 'Europe', 'Africa', 'Latin America'];
-const QUALIFICATIONS = ["PGCE/iPGCE", "B.Ed", "Bachelor's Degree", "Master's Degree", "NPQSL"];
-const GOALS = ['Maximize savings', 'Seek adventure', 'Career growth', 'Balanced lifestyle'];
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button 
-      type="submit" 
-      disabled={pending} 
-      className="flex-1 bg-[#f97316] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
-    >
-      {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> ANALYZING...</> : "EXECUTE FIT ANALYSIS"}
-    </Button>
-  );
-}
-
-export default function FindYourFitPage() {
+export default function FindYourFitGate() {
+  const router = useRouter();
+  const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
-  const [step, setStep] = useState(1);
-  const [state, formAction] = useActionState(findFitAction, initialState);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const [formData, setFormData] = useState({
-    age: '35',
-    familyStatus: 'single',
-    currentLocation: '',
-    currentSalary: '',
+  const [profile, setProfile] = useState({
+    age: "35+",
     qualifications: [] as string[],
+    familyStatus: "",
     curriculum: [] as string[],
-    regions: [] as string[],
-    experience: '2',
-    goal: 'Maximize savings'
+    location: "",
+    salary: "",
+    currency: "USD",
+    goals: [] as string[],
+    regions: [] as string[]
   });
 
-  useEffect(() => { setMounted(true); }, []);
-  const { data: schools } = useCollection<School>(mounted ? 'schools' : undefined);
+  // 🛰️ PERSISTENCE: Restore previous data on mount
+  useEffect(() => {
+    setMounted(true);
+    const savedProfile = localStorage.getItem('lf_profile');
+    if (savedProfile) setProfile(JSON.parse(savedProfile));
+  }, []);
 
-  const toggleArrayItem = (key: 'qualifications' | 'curriculum' | 'regions', value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [key]: prev[key].includes(value) ? prev[key].filter(i => i !== value) : [...prev[key], value]
-    }));
+  const regionsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]);
+  const { data: costOfLivingData } = useCollection<any>(regionsQuery);
+
+  const availableRegions = useMemo(() => {
+    if (costOfLivingData && costOfLivingData.length > 0) {
+      return Array.from(new Set(costOfLivingData.map((d: any) => d.region))).filter(Boolean).sort() as string[];
+    }
+    return ["Africa", "Americas", "East Asia", "Europe", "Middle East", "South Asia", "Southeast Asia"];
+  }, [costOfLivingData]);
+
+  const toggleArrayItem = (field: 'qualifications' | 'curriculum' | 'goals' | 'regions', value: string, max?: number) => {
+    setProfile(prev => {
+      const current = prev[field] as string[];
+      if (current.includes(value)) return { ...prev, [field]: current.filter(i => i !== value) };
+      if (max && current.length >= max) return prev;
+      return { ...prev, [field]: [...current, value] };
+    });
   };
 
-  const TogglePill = ({ active, onClick, label }: { active: boolean, onClick: () => void, label: string }) => (
-    <button 
-      type="button" 
-      onClick={(e) => { e.preventDefault(); onClick(); }}
-      className={cn(
-        "px-4 py-2 text-[10px] font-black tracking-widest rounded-sm border transition-all uppercase whitespace-nowrap", 
-        active ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]" : "bg-white/5 border-white/10 text-gray-500 hover:text-white hover:bg-white/10"
-      )}
-    >
-      {label}
-    </button>
-  );
+  const handleLaunch = () => {
+    if (profile.regions.length === 0) return;
+    setIsGenerating(true);
+    
+    // Remember choices for next time
+    localStorage.setItem('lf_profile', JSON.stringify(profile));
 
-  if (!mounted) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-[#f97316]" /></div>;
+    const params = new URLSearchParams({
+      age: profile.age,
+      qualifications: profile.qualifications.join(','),
+      familyStatus: profile.familyStatus,
+      curriculum: profile.curriculum.join(','),
+      location: profile.location,
+      salary: `${profile.currency} ${profile.salary}`,
+      goals: profile.goals.join(','),
+      regions: profile.regions.join(',')
+    });
+
+    const primaryRegion = profile.regions[0].toLowerCase().replace(/\s+/g, '-');
+    
+    setTimeout(() => {
+      router.push(`/discover/${primaryRegion}?${params.toString()}`);
+    }, 1500);
+  };
+
+  if (!mounted) return null;
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617] min-h-screen">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
-          <div className="space-y-2">
-            <p className="text-[#f97316] text-[10px] font-black uppercase tracking-[0.3em]">Phase {step} of 2</p>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase font-headline">
-              {step === 1 ? '1. The Asset' : '2. The Mission'}
-            </h1>
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-8 lg:p-12 font-sans selection:bg-[#f97316]">
+      <div className="max-w-5xl w-full space-y-12 animate-in fade-in duration-500">
+        
+        <div className="text-center space-y-4">
+          <h1 className="text-7xl font-black text-white uppercase tracking-tighter leading-none">Find your Fit.</h1>
+          <p className="text-slate-500 font-bold uppercase tracking-widest text-sm max-w-xl mx-auto italic leading-relaxed">
+            Your profile, our direction. We've replaced the guesswork with data driven insights.
+          </p>
+        </div>
+        
+        <div className="bg-[#0b1224]/50 border border-white/5 p-8 lg:p-16 rounded-sm shadow-2xl relative backdrop-blur-md">
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#f97316]/20" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16 text-left">
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><User className="size-3" /> Age</label>
+              <Select defaultValue={profile.age} onValueChange={(v) => setProfile({...profile, age: v})}>
+                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 font-bold text-lg px-6"><SelectValue placeholder="Select Age" /></SelectTrigger>
+                <SelectContent className="bg-[#0b1224] border-white/10 text-white">
+                  {["25+", "35+", "50+", "60+", "65+"].map(a => <SelectItem key={a} value={a} className="font-bold">{a}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                <GraduationCap className="size-3" /> Qualifications <span className="text-[9px] text-[#f97316] lowercase opacity-60">(reselect to add)</span>
+              </label>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none font-bold text-lg">
+                  <span className="truncate">{profile.qualifications.length > 0 ? profile.qualifications.join(", ") : "Select All"}</span>
+                  <Check className="size-3 opacity-30" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[300px]">
+                  {["B.Ed", "PGCE", "MA Education", "PhD", "QTS", "iPGCE"].map(q => (
+                    <DropdownMenuCheckboxItem key={q} checked={profile.qualifications.includes(q)} onCheckedChange={() => toggleArrayItem('qualifications', q)} className="font-bold py-3">{q}</DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Users className="size-3" /> Family Status</label>
+              <Select defaultValue={profile.familyStatus} onValueChange={(v) => setProfile({...profile, familyStatus: v})}>
+                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 font-bold text-lg px-6"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent className="bg-[#0b1224] border-white/10 text-white">
+                  {["Single", "Married (Sole Earner)", "Family (1 Child)", "Family (2 Children)", "Family (3 or More)"].map(s => <SelectItem key={s} value={s} className="font-bold">{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                <BookOpen className="size-3" /> Curriculum Experience <span className="text-[9px] text-[#f97316] lowercase opacity-60">(reselect to add)</span>
+              </label>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none font-bold text-lg">
+                  <span className="truncate">{profile.curriculum.length > 0 ? profile.curriculum.join(", ") : "Select All"}</span>
+                  <Check className="size-3 opacity-30" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[300px]">
+                  {["British", "IB", "American", "Australian", "Canadian", "Montessori"].map(c => (
+                    <DropdownMenuCheckboxItem key={c} checked={profile.curriculum.includes(c)} onCheckedChange={() => toggleArrayItem('curriculum', c)} className="font-bold py-3">{c}</DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><MapPin className="size-3" /> Current Location</label>
+              <Input value={profile.location} placeholder="City, Country" className="bg-black/40 border-white/10 h-14 text-white text-lg font-bold px-6 placeholder:text-slate-700" onChange={(e) => setProfile({...profile, location: e.target.value})} />
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Wallet className="size-3" /> Current Salary</label>
+              <div className="flex gap-2">
+                <div className="w-28">
+                  <Select defaultValue={profile.currency} onValueChange={(v) => setProfile({...profile, currency: v})}>
+                    <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 font-bold text-lg"><SelectValue placeholder="USD" /></SelectTrigger>
+                    <SelectContent className="bg-[#0b1224] border-white/10 text-white">
+                      {["USD", "GBP", "EUR", "AED", "SAR", "QAR", "SGD", "AUD", "THB"].map(curr => <SelectItem key={curr} value={curr}>{curr}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Input value={profile.salary} placeholder="Annual Amount" className="bg-black/40 border-white/10 h-14 text-white text-lg font-bold px-6 flex-1 placeholder:text-slate-700" onChange={(e) => setProfile({...profile, salary: e.target.value})} />
+              </div>
+            </div>
           </div>
-          <div className="flex gap-1 mb-2">
-            <div className={cn("h-1 w-8 rounded-full", step === 1 ? "bg-[#f97316]" : "bg-white/20")}></div>
-            <div className={cn("h-1 w-8 rounded-full", step === 2 ? "bg-[#f97316]" : "bg-white/10")}></div>
+
+          {/* 🎯 OPERATIONAL GOALS */}
+          <div className="mb-12 text-left space-y-6 pt-10 border-t border-white/5">
+            <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Target className="size-3" /> Operational Goals (Max 2)</label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {["Savings", "Career Growth", "Adventure", "Balanced"].map((goal) => (
+                    <button key={goal} onClick={() => toggleArrayItem('goals', goal, 2)} className={cn("h-16 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-sm border", profile.goals.includes(goal) ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-500 hover:border-white/20")}>{goal}</button>
+                ))}
+            </div>
+          </div>
+
+          {/* 🌍 TARGET REGIONS (RE-ADDED) */}
+          <div className="mb-16 text-left space-y-6 pt-10 border-t border-white/5">
+            <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"><Compass className="size-3" /> Target Regions</label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {availableRegions.map((region) => (
+                    <button key={region} onClick={() => toggleArrayItem('regions', region)} className={cn("h-16 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-sm border flex items-center justify-between group", profile.regions.includes(region) ? "bg-white/10 border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-500 hover:border-white/20")}>
+                      <span className="truncate">{region}</span>
+                      {profile.regions.includes(region) && <Check className="size-3 text-[#f97316]" />}
+                    </button>
+                ))}
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-white/5 mt-12">
+            <button 
+              onClick={handleLaunch} 
+              disabled={profile.regions.length === 0 || isGenerating} 
+              className={cn(
+                "w-full h-24 font-black uppercase tracking-[0.5em] text-2xl transition-all flex items-center justify-center gap-4 group border", 
+                profile.regions.length > 0 && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white shadow-2xl border-white" : "bg-white/5 text-slate-700 border border-white/5 cursor-not-allowed"
+              )}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="size-6 animate-spin text-[#f97316]" />
+                  Initialising Profile...
+                </>
+              ) : (
+                <>
+                  <Zap className="size-6 transition-transform group-hover:scale-110" /> 
+                  Generate Intelligence Dossier
+                </>
+              )}
+            </button>
           </div>
         </div>
-
-        <form action={formAction}>
-          {/* --- ANCHORED HIDDEN INPUTS (Always present) --- */}
-          <input type="hidden" name="availableSchools" value={schools ? JSON.stringify(schools.map(({ id, name, country, curriculum }) => ({ id, name, country, curriculum }))) : '[]'} />
-          <input type="hidden" name="age" value={formData.age} />
-          <input type="hidden" name="familyStatus" value={formData.familyStatus} />
-          <input type="hidden" name="experience" value={formData.experience} />
-          <input type="hidden" name="goal" value={formData.goal} />
-          {formData.qualifications.map(q => <input key={q} type="hidden" name="qualifications_cb" value={q} />)}
-          {formData.curriculum.map(c => <input key={c} type="hidden" name="curriculum_cb" value={c} />)}
-          {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}
-
-          {step === 1 ? (
-            <div key="step-1" className="space-y-10 animate-in fade-in slide-in-from-left-4 duration-500">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Age Range</label>
-                  <div className="flex flex-wrap gap-2">
-                    {["25", "35", "50", "65"].map((val) => (
-                      <TogglePill key={val} label={val === "65" ? "65+" : `${val}-${parseInt(val)+9}`} active={formData.age === val} onClick={() => setFormData({...formData, age: val})} />
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Family Status</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['single', 'couple', 'family'].map(fs => (
-                      <TogglePill key={fs} label={fs} active={formData.familyStatus === fs} onClick={() => setFormData({...formData, familyStatus: fs})} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Qualifications</label>
-                <div className="flex flex-wrap gap-2">
-                  {QUALIFICATIONS.map(q => <TogglePill key={q} label={q} active={formData.qualifications.includes(q)} onClick={() => toggleArrayItem('qualifications', q)} />)}
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-4 border-t border-white/5">
-                <label className="text-[10px] font-black text-[#f97316] uppercase tracking-widest">Curriculum Experience</label>
-                <div className="flex flex-wrap gap-2">
-                  {CURRICULUMS.map(c => <TogglePill key={c} label={c} active={formData.curriculum.includes(c)} onClick={() => toggleArrayItem('curriculum', c)} />)}
-                </div>
-              </div>
-
-              <Button type="button" onClick={() => setStep(2)} className="w-full bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black h-14 tracking-[0.2em] uppercase hover:bg-[#f97316]/20">
-                Establish Mission <ArrowRight className="size-4 ml-2" />
-              </Button>
-            </div>
-          ) : (
-            <div key="step-2" className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest flex items-center gap-2"><Globe className="size-3" /> Target Regions</label>
-                <div className="flex flex-wrap gap-2">
-                  {REGIONS.map(r => <TogglePill key={r} label={r} active={formData.regions.includes(r)} onClick={() => toggleArrayItem('regions', r)} />)}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Primary Objective</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {GOALS.map(g => <TogglePill key={g} label={g} active={formData.goal === g} onClick={() => setFormData({...formData, goal: g})} />)}
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Current Location</label>
-                  <Input name="currentLocation" value={formData.currentLocation} onChange={(e) => setFormData({...formData, currentLocation: e.target.value})} placeholder="e.g. London, UK" className="bg-white/5 border-white/10 rounded-sm font-bold h-11 text-white" />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Experience (Years)</label>
-                  <Input type="number" name="experience" value={formData.experience} onChange={(e) => setFormData({...formData, experience: e.target.value})} className="bg-white/5 border-white/10 rounded-sm font-bold h-11 text-white" />
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button type="button" onClick={() => setStep(1)} variant="ghost" className="text-gray-500 font-bold uppercase tracking-widest text-[10px] hover:text-white"><ArrowLeft className="size-4 mr-2" /> Back</Button>
-                <SubmitButton />
-              </div>
-            </div>
-          )}
-        </form>
-
-        {state.result && (
-          <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
-            <h2 className="text-4xl font-black tracking-tighter text-white uppercase text-center font-headline">Recommended Fits</h2>
-            {state.result.recommendations.map((rec, i) => (
-              <Card key={i} className="glass border-white/5 bg-white/5 rounded-sm overflow-hidden p-8">
-                 <h3 className="text-3xl font-black text-white tracking-tight flex items-center gap-3 font-headline"><Lightbulb className="text-[#f97316]" /> {rec.name}</h3>
-                 <p className="mt-4 text-muted-foreground leading-relaxed italic">"{rec.reasoning}"</p>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {state.error && <div className="mt-8 p-6 border border-destructive/20 bg-destructive/5 text-destructive font-black uppercase text-sm flex items-center gap-3"><ServerCrash /> {state.error}</div>}
       </div>
     </div>
   );

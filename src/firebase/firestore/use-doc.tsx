@@ -1,89 +1,42 @@
-
-'use client';
-    
 import { useState, useEffect } from 'react';
-import {
-  DocumentReference,
-  onSnapshot,
-  DocumentData,
-  FirestoreError,
-  DocumentSnapshot,
-} from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { isMemoized } from '@/firebase/provider';
+import { doc, onSnapshot, DocumentReference, DocumentData } from 'firebase/firestore';
+import { db } from '../index';
 
-/** Utility type to add an 'id' field to a given type T. */
-type WithId<T> = T & { id: string };
-
-/**
- * Interface for the return value of the useDoc hook.
- * @template T Type of the document data.
- */
-export interface UseDocResult<T> {
-  data: WithId<T> | null; // Document data with ID, or null.
-  isLoading: boolean;       // True if loading.
-  error: FirestoreError | Error | null; // Error object, or null.
-}
-
-/**
- * React hook to subscribe to a single Firestore document in real-time.
- * 
- * IMPORTANT: The reference must be stabilized using useMemoFirebase.
- */
-export function useDoc<T = any>(
-  memoizedDocRef: DocumentReference<DocumentData> | null | undefined,
-): UseDocResult<T> {
-  type StateDataType = WithId<T> | null;
-
-  const [data, setData] = useState<StateDataType>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<FirestoreError | Error | null>(null);
+export function useDoc<T = DocumentData>(
+  pathOrRef: string | DocumentReference<DocumentData> | null | undefined
+) {
+  const [data, setData] = useState<T | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!memoizedDocRef) {
-      setData(null);
+    if (!pathOrRef) {
       setIsLoading(false);
-      setError(null);
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    const finalRef = typeof pathOrRef === 'string' 
+      ? doc(db, pathOrRef) 
+      : pathOrRef;
 
     const unsubscribe = onSnapshot(
-      memoizedDocRef,
-      (snapshot: DocumentSnapshot<DocumentData>) => {
+      finalRef,
+      (snapshot) => {
         if (snapshot.exists()) {
-          setData({ ...(snapshot.data() as T), id: snapshot.id });
+          setData({ id: snapshot.id, ...snapshot.data() } as T);
         } else {
           setData(null);
         }
-        setError(null); 
         setIsLoading(false);
       },
-      (err: FirestoreError) => {
-        const contextualError = new FirestorePermissionError({
-          operation: 'get',
-          path: memoizedDocRef.path,
-        });
-
-        setError(contextualError);
-        setData(null);
+      (err) => {
+        setError(err);
         setIsLoading(false);
-
-        errorEmitter.emit('permission-error', contextualError);
       }
     );
 
     return () => unsubscribe();
-  }, [memoizedDocRef]);
-
-  // Defensive check to prevent infinite render loops in production.
-  if (memoizedDocRef && !isMemoized(memoizedDocRef)) {
-    console.error('L.F.I. Memory Leak Prevention: Document Ref not stabilized.', memoizedDocRef);
-    throw new Error('Intelligence Access Denied: useDoc reference must be stabilized using useMemoFirebase.');
-  }
+  }, [pathOrRef]);
 
   return { data, isLoading, error };
 }

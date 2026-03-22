@@ -1,51 +1,19 @@
+ "use server";
+import { School, TeacherProfile } from "@/lib/types";
 
-"use server";
-
-import { aiSchoolComparison, AiSchoolComparisonInput } from '@/ai/flows/ai-school-comparison-flow';
-import type { School } from '@/lib/types';
-import { teacherProfile } from '@/lib/mock-data';
-
-/**
- * Generates a comparative analysis of selected schools.
- * Now accepts specific net salaries to provide a more accurate tactical verdict.
- */
-export async function getSchoolComparisonInsights(schools: School[], salaries: string[]) {
-    try {
-        const schoolData = schools.map((school, idx) => {
-            const coreSchoolData = JSON.stringify({
-                offeredMonthlyNetSalary: salaries[idx],
-                baseSalaryRange: school.intel.salary.value,
-                taxFree: school.intel.salary.isTaxFree ? 'Yes' : 'No',
-                housing: school.intel.housing.value,
-                savingsPotential: school.intel.savingsPotential.value,
-                curriculum: school.intel.curriculum,
-                studentTeacherRatio: school.intel.studentTeacherRatio,
-                classSize: school.intel.classSize,
-                benefitsSummary: school.intel.benefitsSummary,
-                nonContactTime: school.intel.nonContactTime ? `${school.intel.nonContactTime}%` : 'N/A',
-                technologyEcosystem: school.intel.technologyEcosystem,
-            });
-
-            return { schoolName: school.name, coreSchoolData };
-        });
-
-        const teacherProfileSummary = `Family Status: ${teacherProfile.familyStatus}, Experience: ${teacherProfile.yearsOfExperience} years, Qualifications: ${teacherProfile.qualifications.join(', ')}, Prefers: ${[...teacherProfile.preferredRegions, ...teacherProfile.preferredCountries].join(', ')}.`;
-
-        const input: AiSchoolComparisonInput = {
-            schools: schoolData,
-            teacherProfile: teacherProfileSummary
-        };
-
-        if (input.schools.length < 2) {
-             return { comparison: null, error: "Please provide salary data for at least two schools to generate a comparison." };
-        }
-
-        const comparison = await aiSchoolComparison(input);
-        return { comparison };
-
-    } catch (error) {
-        console.error("Comparison Generation Failed:", error);
-        const err = error as Error;
-        return { comparison: null, error: err.message || 'Failed to establish uplink with the analysis engine.' };
-    }
+export async function generateComparisonIntel(schools: School[], teacherProfile: TeacherProfile) {
+  return schools.map(school => ({
+    name: school.name,
+    // Protocol 2: Optional Chaining Guard
+    baseSalaryRange: school.intel?.salary?.value || "N/A",
+    taxFree: school.intel?.salary?.isTaxFree ? 'Yes' : 'No',
+    housing: school.intel?.housing?.value || "N/A",
+    savingsPotential: school.intel?.savingsPotential?.value || "N/A",
+    curriculum: school.intel?.curriculum || school.curriculum || "N/A",
+    studentTeacherRatio: school.intel?.studentTeacherRatio || "N/A",
+    classSize: school.intel?.classSize || "N/A",
+    benefitsSummary: school.intel?.benefitsSummary || "N/A",
+    nonContactTime: school.intel?.nonContactTime ? `${school.intel.nonContactTime}%` : 'N/A',
+    technologyEcosystem: school.intel?.technologyEcosystem || "N/A",
+  }));
 }
