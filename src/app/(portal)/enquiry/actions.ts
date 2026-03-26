@@ -1,4 +1,7 @@
-'use server';
+ 'use server';
+
+import { db } from "@/firebase"; // 🛰️ Pointing to your unified Mission Control
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export type InquiryState = {
   message: string | null;
@@ -10,38 +13,45 @@ export async function submitInquiry(
   prevState: InquiryState,
   formData: FormData
 ): Promise<InquiryState> {
-  const name = formData.get('name');
-  const email = formData.get('email');
-  const subject = formData.get('subject');
-  const message = formData.get('message');
+  const name = formData.get('name')?.toString();
+  const email = formData.get('email')?.toString();
+  const subject = formData.get('subject')?.toString();
+  const message = formData.get('message')?.toString();
 
+  // 1. Validation Guard
   if (!name || !email || !subject || !message) {
     return {
       message: null,
-      error: 'Please fill out all fields.',
+      error: 'Tactical Error: All intelligence fields must be populated.',
       success: false,
     };
   }
 
-  const emailSubject = `New Enquiry: ${subject}`;
-  const emailBody = `Name: ${name}
-Email: ${email}
-Subject: ${subject}
+  try {
+    // 2. Persistence Layer: Ensure data is logged in Firestore
+    await addDoc(collection(db, "enquiries"), {
+      name,
+      email,
+      subject,
+      message,
+      status: 'pending',
+      receivedAt: serverTimestamp(),
+    });
 
-Message:
-${message}`;
+    // 3. Simulated/Internal Log
+    console.log(`--- Intelligence Logged: Enquiry from ${name} ---`);
 
-  // In a real application, you would send an email here.
-  // For now, we'll just log it to the console.
-  console.log('--- Sending General Inquiry Email ---');
-  console.log(`To: admin@leopardfishintel.com`);
-  console.log(`Subject: ${emailSubject}`);
-  console.log(`Body:\n${emailBody}`);
-  console.log('-----------------------------');
-
-  return {
-    message: 'Thank you for your enquiry. We will get back to you shortly.',
-    error: null,
-    success: true,
-  };
+    return {
+      message: 'Intelligence received. Our agents will respond shortly.',
+      error: null,
+      success: true,
+    };
+  } catch (err) {
+    console.error("🎯 Persistence Failure:", err);
+    return {
+      message: null,
+      error: 'Operational Failure: Database write rejected. Please check your connection.',
+      success: false,
+    };
+  }
 }

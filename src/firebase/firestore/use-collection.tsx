@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   collection, 
   onSnapshot, 
-  query, 
   Query, 
-  CollectionReference,
-  DocumentData 
+  DocumentData,
+  CollectionReference
 } from 'firebase/firestore';
 import { db } from '../index';
 
+/**
+ * 🛰️ TACTICAL DATA RETRIEVAL (STABILIZED)
+ * Prevents infinite re-subscription loops in Next.js 15.
+ */
 export function useCollection<T = DocumentData>(
   pathOrQuery: string | Query<DocumentData> | null | undefined
 ) {
@@ -16,36 +19,51 @@ export function useCollection<T = DocumentData>(
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // 🛡️ MEMOIZATION SHIELD: 
+  // We extract a stable key from the query to prevent re-running on every render.
+  const queryMemoKey = typeof pathOrQuery === 'string' 
+    ? pathOrQuery 
+    : (pathOrQuery as any)?._query?.path?.toString() || 'static-query';
+
   useEffect(() => {
+    // 1. Initial State Guard
     if (!pathOrQuery) {
       setIsLoading(false);
+      setData([]);
       return;
     }
 
-    // Protocol: Determine if we were handed a string path or a pre-built Query
+    setIsLoading(true);
+
+    // 2. Protocol Resolution: Handle string path or complex Query object
     const finalQuery = typeof pathOrQuery === 'string' 
       ? collection(db, pathOrQuery) 
       : pathOrQuery;
 
+    // 3. Real-time Subscription with Error Handling
     const unsubscribe = onSnapshot(
       finalQuery,
       (snapshot) => {
         const docs = snapshot.docs.map((doc) => ({
-          id: doc.id,
           ...doc.data(),
-        })) as T[];
+          id: doc.id, // Ensure ID is always appended
+        })) as (T & { id: string })[];
+        
         setData(docs);
         setIsLoading(false);
+        setError(null);
       },
       (err) => {
-        console.error("Firestore Collection Error:", err);
-        setError(err);
+        // 🎯 LOG: Critical for debugging Firebase App Hosting environment issues
+        console.error("🎯 Leopardfish Firestore Intel Error:", err);
+        setError(err instanceof Error ? err : new Error(String(err)));
         setIsLoading(false);
       }
     );
 
+    // 4. Cleanup: Prevents memory leaks and duplicate listeners
     return () => unsubscribe();
-  }, [pathOrQuery]);
+  }, [queryMemoKey]); // Dependency is the stable path, NOT the volatile object
 
   return { data, isLoading, error };
 }

@@ -22,6 +22,15 @@ const BONUS_REGISTRY: Record<string, number> = {
   "Japan": 0.166, "Peru": 0.166, "Italy": 0.083, "Germany": 0.083, "China": 0.083
 };
 
+const STATUS_MULTIPLIERS: Record<string, number> = {
+  "single": 1.0,
+  "married-sole": 1.5,
+  "married-dual": 1.6, 
+  "family-1": 1.9,
+  "family-2": 2.3,
+  "family-3": 3.0
+};
+
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
 const MetricRow = ({ label, value, result, icon }: {
@@ -84,6 +93,7 @@ export default function ComparePage() {
             const school = schools?.find((s: any) => s.id === id);
             if (!school) return null;
 
+            // FIXED: Removed the self-referencing 'col' typo
             const col = costOfLiving?.find((c: any) => c.city?.toLowerCase().trim() === school.city?.toLowerCase().trim()) ||
                         costOfLiving?.find((c: any) => c.country?.toLowerCase().trim() === school.country?.toLowerCase().trim());
             
@@ -91,10 +101,9 @@ export default function ComparePage() {
             const rate = RATES[currency] || 1.0;
             const usdToLocal = (usd: number) => (usd / (RATES['USD'] || 1.27)) * rate;
 
-            const status = familyStatuses[index];
-            const familyMult = status === 'single' ? 1 : status === 'couple' ? 1.6 : 2.2;
+            const statusKey = familyStatuses[index];
+            const multiplier = STATUS_MULTIPLIERS[statusKey] || 1.0;
 
-            // Bridge Database (USD) to Local
             const rawSalary = school.salaryRange || "0";
             const usdSalary = parseFloat(rawSalary.toString().replace(/[^0-9.]/g, '')) || 0;
             const autoLocalSalary = Math.round(usdToLocal(usdSalary));
@@ -102,14 +111,14 @@ export default function ComparePage() {
             const amortisedBonus = autoLocalSalary * bonusMult;
 
             const housingProvided = school.housingprovision?.toLowerCase().includes('provided');
-            const rent = housingProvided ? 0 : usdToLocal(col?.rent1br || 0) * (status === 'single' ? 1 : 1.4);
+            const rent = housingProvided ? 0 : usdToLocal(col?.rent1br || 0) * (statusKey === 'single' ? 1 : 1.5);
             
             const totalOut = (
-                usdToLocal(col?.groceries || 0) * familyMult + 
-                usdToLocal(col?.utilities || 0) * (familyMult * 0.8) + 
+                usdToLocal(col?.groceries || 0) * multiplier + 
+                usdToLocal(col?.utilities || 0) * (multiplier * 0.7) + 
                 usdToLocal(col?.internet || 0) + 
-                usdToLocal(col?.transport || 0) * (familyMult * 0.7) + 
-                usdToLocal(col?.diningSocial || 0) * familyMult
+                usdToLocal(col?.transport || 0) * (multiplier * 0.6) + 
+                usdToLocal(col?.diningSocial || 0) * multiplier
             ) + rent;
 
             const baseInput = parseFloat(netSalaries[index]) || autoLocalSalary;
@@ -120,9 +129,8 @@ export default function ComparePage() {
             const tags = [];
             if (surplus <= 0) tags.push({ label: 'LOSS', icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-500/20' });
             else if (rateOfSaving >= 35) tags.push({ label: 'ELITE', icon: Coins, color: 'text-emerald-500', bg: 'bg-emerald-500/10' });
-            if (bonusMult > 0) tags.push({ label: '13TH/14TH', icon: Gift, color: 'text-sky-400', bg: 'bg-sky-400/10' });
 
-            return { school, surplus, rateOfSaving, currency, tags, currentSalary, amortisedBonus };
+            return { school, surplus, rateOfSaving, currency, tags, currentSalary };
         });
     }, [selectedSchoolIds, schools, costOfLiving, netSalaries, extraIncomes, familyStatuses]);
 
@@ -134,13 +142,13 @@ export default function ComparePage() {
         <div className="container mx-auto px-4 py-12 bg-[#020617] min-h-screen font-sans selection:bg-[#f97316]">
             <div className="mb-12 text-center space-y-2">
                 <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase italic leading-none">Triple <span className="text-[#f97316]">Shootout</span></h1>
-                <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.4em] opacity-60">Comparative side-by-side selection matrix.</p>
+                <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.4em] opacity-60">Side-by-side selection contrast.</p>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                 {activeData.map((data, index) => (
                      <div key={index} className="flex flex-col gap-3">
-                        <div className="space-y-3 bg-[#0b1224] p-5 border border-white/5 rounded-sm shadow-xl">
+                        <div className="space-y-4 bg-[#0b1224] p-6 border border-white/5 rounded-sm shadow-xl">
                              <Select value={data?.school?.id} onValueChange={(val) => {
                                  const next = [...selectedSchoolIds];
                                  next[index] = val;
@@ -154,7 +162,7 @@ export default function ComparePage() {
                                 </SelectContent>
                              </Select>
 
-                             <div className="grid grid-cols-1 gap-3">
+                             <div className="space-y-4">
                                 <div className="space-y-1">
                                     <Label className="text-[9px] font-black uppercase text-sky-400 tracking-widest italic leading-none">Monthly Net ({data?.currency})</Label>
                                     <Input type="number" value={netSalaries[index]} placeholder={data?.currentSalary?.toString()} onChange={(e) => {
@@ -173,6 +181,7 @@ export default function ComparePage() {
                                         }} className={cn("bg-black/40 border-white/10 rounded-sm h-10 text-right font-black text-emerald-400 text-xs", noSpinners)}
                                     />
                                 </div>
+                                
                                 <div className="space-y-1">
                                     <Label className="text-[9px] font-black uppercase text-slate-500 tracking-widest italic leading-none">Operative Profile</Label>
                                     <Select value={familyStatuses[index]} onValueChange={(val) => {
@@ -184,9 +193,12 @@ export default function ComparePage() {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold uppercase text-[10px]">
-                                            <SelectItem value="single">Single Agent</SelectItem>
-                                            <SelectItem value="couple">Couple</SelectItem>
-                                            <SelectItem value="family">Family (2+1)</SelectItem>
+                                            <SelectItem value="single">single</SelectItem>
+                                            <SelectItem value="married-sole">married (sole earner)</SelectItem>
+                                            <SelectItem value="married-dual">married (dual income)</SelectItem>
+                                            <SelectItem value="family-1">family (1 child)</SelectItem>
+                                            <SelectItem value="family-2">family (2 children)</SelectItem>
+                                            <SelectItem value="family-3">family (3 or more)</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -222,15 +234,6 @@ export default function ComparePage() {
                         )}
                     </div>
                 ))}
-            </div>
-
-            <div className="mt-16 bg-[#0b1224] border border-white/5 p-6">
-                 <div className="flex gap-3 items-start">
-                    <Info className="size-4 text-sky-400 shrink-0 mt-0.5" />
-                    <p className="text-[11px] font-bold text-slate-400 leading-snug uppercase tracking-tight">
-                        Triple Shootout logic is synchronized with 2026 tactical exchange rates and amortised bonus structures. <span className="text-sky-400 font-black italic">Disposable Surplus</span> accounts for individual family profiles.
-                    </p>
-                 </div>
             </div>
         </div>
     );
