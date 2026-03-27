@@ -16,14 +16,12 @@ environmentVariables:
   - variable: NODE_ENV
     value: "production"
   
-  # 🛰️ FIREBASE PUBLIC CONFIG (Ensures production JS can talk to Firebase)
+  # 🛰️ FIREBASE PUBLIC CONFIG
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: "AIzaSyCsXjVXsRxZerNaYj7kFWTyxdMlR6kLK9U"
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
     value: "studio-2840117705-12faa"
-  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: "studio-2840117705-12faa.firebaseapp.com"
 
-  # 💎 THE AI LINK: Mapping the Secret Manager Vault to the App Runtime
-  - variable: GOOGLE_API_KEY
-    secret: "AIzaSyBpbzldS7RugR-eh2CyBvgM72gYpoadBMU"
+  # 💎 THE AI LINK: This must match your process.env name in genkit.ts
+  - variable: GOOGLE_GENERATIVE_AI_API_KEY
+    secret: GOOGLE_GENERATIVE_AI_API_KEY
