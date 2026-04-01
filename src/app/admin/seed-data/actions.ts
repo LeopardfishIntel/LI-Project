@@ -1,112 +1,105 @@
 'use server';
 
-import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, doc, writeBatch, updateDoc } from 'firebase/firestore/lite';
 import { initializeApp, getApp, getApps } from 'firebase/app';
-import { firebaseConfig } from '@/firebase/config';
 import { enrichSchoolData } from '@/ai/flows/enrich-school-data-flow';
-import type { School } from '@/lib/types';
 
-// The state for the bulk enrichment action
+const cfg = {
+  apiKey: "AIzaSyCsXjVXsRxZerNaYj7kFWTyxdMlR6kLK9U",
+  authDomain: "studio-2840117705-12faa.firebaseapp.com",
+  projectId: "studio-2840117705-12faa",
+  storageBucket: "studio-2840117705-12faa.firebasestorage.app",
+  messagingSenderId: "342003687950",
+  appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
+};
+
+const app = getApps().length ? getApp() : initializeApp(cfg);
+const db = getFirestore(app);
+
 export type BulkEnrichState = {
   message: string | null;
   error: string | null;
-  summary: {
-    total: number;
-    enriched: number;
-    skipped: number;
-    failed: number;
-    errors: string[];
-  } | null;
+  summary: { total: number; enriched: number; failed: number } | null;
 };
 
-// Initialize Firebase for server-side actions
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const firestore = getFirestore(app);
-
-/**
- * Iterates through all schools in the registry. 
- * If a school is missing a description or image, it triggers the AI Research Flow.
- */
-export async function enrichAllSchoolsAction(
-  prevState: BulkEnrichState,
-  formData: FormData
-): Promise<BulkEnrichState> {
-  const summary = {
-    total: 0,
-    enriched: 0,
-    skipped: 0,
-    failed: 0,
-    errors: [] as string[],
-  };
-
+export async function uploadRegistryJsonAction(data: any[]) {
   try {
-    const schoolsRef = collection(firestore, 'schools');
-    const querySnapshot = await getDocs(schoolsRef);
-    const schools = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() })) as (School & {id: string})[];
-    summary.total = schools.length;
+    const batch = writeBatch(db);
+    const col = 'locations_costOfLiving';
+    if (!data?.length) return { success: false, error: "Empty Data" };
 
-    for (const school of schools) {
-      // Tactical Check: Only enrich if data is actually missing or minimal
-      const needsDescription = !school.summary && (!school.description || school.description.length < 50);
-      const needsImage = !school.imageUrl || school.imageUrl.includes('picsum.photos') || school.imageUrl === '';
+    const isT = 'carHire' in data[0] || 'transport' in data[0];
+    const isL = 'lifestyle' in data[0] || 'ikea' in data[0];
 
-      if (needsDescription || needsImage) {
-        try {
-          console.log(`Researching dossier for: ${school.schoolname || school.name}...`);
-          
-          const enrichedData = await enrichSchoolData({
-            name: school.schoolname || school.name || 'Unknown',
-            location: school.city || school.location || 'Unknown',
-            country: school.country || 'Unknown',
-          });
+    if (isT || isL) {
+      const snap = await getDocs(collection(db, col));
+      let count = 0;
+      data.forEach(intel => {
+        const refs = intel.id ? [doc(db, col, intel.id)] : 
+          snap.docs.filter(d => d.data().country?.toLowerCase() === intel.country?.toLowerCase()).map(d => doc(db, col, d.id));
 
-          const schoolDocRef = doc(firestore, 'schools', school.id);
-          
-          // Map AI results back to the dossier fields
-          const updatePayload: any = {
-            summary: enrichedData.description,
-            description: enrichedData.description,
-            websiteUrl: enrichedData.websiteUrl || school.websiteUrl || school.website,
-            imageUrl: enrichedData.imageUrl || school.imageUrl,
-            imageHint: enrichedData.imageHint || school.imageHint,
-            videoUrl: enrichedData.videoUrl || school.videoUrl,
-          };
-
-          // Update tactical intel if missing
-          if (enrichedData.costOfLiving) {
-            updatePayload.costOfLiving = {
-                ...school.costOfLiving,
-                ...enrichedData.costOfLiving,
-            };
+        refs.forEach(ref => {
+          const up: any = {};
+          if (isT) {
+            up.transport = intel.transport || intel;
+            up.lastTransportSync = new Date().toISOString();
           }
+          if (isL) {
+            up.ikea = intel.ikea; 
+            up.lifestyle = intel.lifestyle;
+            up.lastLifestyleSync = new Date().toISOString();
+            ['rent1br', 'rent2br', 'rent3br', 'groceries', 'utilities', 'mobilePhone', 'internet'].forEach(f => {
+              if (intel[f]) up[f] = Number(intel[f]);
+            });
+          }
+          batch.set(ref, up, { merge: true });
+          count++;
+        });
+      });
+      await batch.commit();
+      return { success: true, count };
+    }
 
-          await updateDoc(schoolDocRef, updatePayload);
-          summary.enriched++;
-        } catch (e: any) {
-          summary.failed++;
-          const errorMessage = `Failed for ${school.schoolname || school.name}: ${e.message}`;
-          console.error(errorMessage);
-          summary.errors.push(errorMessage);
+    const isS = 'schoolname' in data[0];
+    const targetCol = isS ? 'schools' : col;
+
+    data.forEach(item => {
+      const id = item.id || (item.schoolname || item.city || 'entry').toLowerCase().replace(/\s+/g, '-');
+      batch.set(doc(db, targetCol, String(id)), { ...item, lastSync: new Date().toISOString() }, { merge: true });
+    });
+
+    await batch.commit();
+    return { success: true, count: data.length };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function enrichAllSchoolsAction(prevState: BulkEnrichState): Promise<BulkEnrichState> {
+  const sum = { total: 0, enriched: 0, failed: 0 };
+  try {
+    const snap = await getDocs(collection(db, 'schools'));
+    const schools = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    sum.total = schools.length;
+
+    for (const s of schools as any) {
+      if (!s.summary || !s.imageUrl) {
+        try {
+          const res = await enrichSchoolData({ name: s.schoolname || s.name, location: s.city, country: s.country });
+          await updateDoc(doc(db, 'schools', s.id), { 
+            summary: res.description, 
+            description: res.description, 
+            imageUrl: res.imageUrl || s.imageUrl, 
+            websiteUrl: res.websiteUrl || s.website 
+          });
+          sum.enriched++;
+        } catch {
+          sum.failed++;
         }
-      } else {
-        summary.skipped++;
       }
     }
-    
-    const message = `Enrichment complete. Enriched: ${summary.enriched}, Skipped: ${summary.skipped}, Failed: ${summary.failed}.`;
-
-    return {
-      message,
-      error: summary.failed > 0 ? `${summary.failed} dossiers failed to update.` : null,
-      summary,
-    };
-
+    return { message: "Enrichment Complete", error: null, summary: sum };
   } catch (e: any) {
-    console.error("Dossier access failure:", e);
-    return {
-      message: null,
-      error: e.message || 'Transmission error while accessing registry.',
-      summary: null,
-    };
+    return { message: null, error: e.message, summary: sum };
   }
 }

@@ -1,6 +1,6 @@
  "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic'; 
@@ -38,6 +38,9 @@ function TacticalButton({ href, label, className }: { href: string; label: strin
 }
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const steps = [
     { 
       id: '01', 
@@ -51,7 +54,7 @@ export default function Home() {
       id: '02', 
       title: 'Evaluate', 
       desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid. Calculate your expected take-home pay and see how much you’ll have left to spend after local living costs.", 
-      link: '/financial-forecaster', 
+      link: '/discover', // Updated to match your 'Evaluate' flow
       imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', 
       label: 'Calculate Pay' 
     },
@@ -73,56 +76,57 @@ export default function Home() {
     },
   ];
 
+  if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#020617] text-white/90">
+    <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#f97316]">
       
       {/* 🏔️ HERO SECTION */}
       <section className="relative w-full h-[88vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
-      <Image 
-  src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" 
-  alt="Intelligence background" 
-  fill 
-  priority={false} // 🏎️ Set to false to stop the server from waiting on it
-  className="absolute inset-0 w-full h-full object-cover opacity-90" 
-/>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-[#020617]"></div>
+        <Image 
+          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" 
+          alt="Intelligence background" 
+          fill 
+          priority={true} // 🏎️ PRIORITY ENABLED: Fixed LCP warning for above-the-fold content
+          className="absolute inset-0 w-full h-full object-cover opacity-60" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-[#020617]/40 to-[#020617]"></div>
         
         <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center">
-           <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#f97316]/30 bg-[#f97316]/5 text-[#f97316] text-[10px] font-bold uppercase tracking-[0.3em] mb-8 animate-pulse">
+           <div className="inline-flex items-center gap-2 px-4 py-1 border border-[#f97316]/30 bg-[#f97316]/5 text-[#f97316] text-[10px] font-black uppercase tracking-[0.4em] mb-8 animate-pulse">
              Actionable Intelligence
            </div>
 
-           <h1 className="text-6xl md:text-8xl tracking-tighter text-white font-bold mb-6 leading-none italic drop-shadow-2xl">
+           <h1 className="text-6xl md:text-8xl tracking-tighter text-white font-black mb-6 leading-none italic drop-shadow-2xl">
              <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
            </h1>
            
-           <p className="text-xl md:text-2xl text-white font-medium max-w-2xl opacity-90 mb-10 tracking-tight leading-relaxed italic">
-             Move with certainty, not just hope.
+           <p className="text-xl md:text-2xl text-white font-bold max-w-2xl opacity-90 mb-10 tracking-tight leading-relaxed italic uppercase">
+             Move with certainty<span className="text-[#f97316]">,</span> not just hope.
            </p>
            
            <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <TacticalButton href="/discover" label="Find Your Fit" className="w-56" />
-              <TacticalButton href="/compare" label="Check Your Offer" className="w-56" />
+              <TacticalButton href="/discover" label="Find Your Fit" className="w-60 h-16 text-base" />
+              <TacticalButton href="/compare" label="Check Your Offer" className="w-60 h-16 text-base" />
            </div>
            
-           <div className="opacity-90">
+           <div className="opacity-100">
              <KeyFactsSection />
            </div>
         </div>
       </section>
 
-      {/* 🎯 MISSION STATEMENT: COMPACT & PROMINENT */}
-      <section className="py-8 md:py-12 bg-[#020617] border-b border-white/5">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          {/* Header upgraded: bigger, brighter, more tracking */}
-          <h2 className="text-2xl md:text-4xl uppercase tracking-[0.2em] text-white font-black italic mb-4 leading-none">
-            Know before you go
+      {/* 🎯 MISSION STATEMENT */}
+      <section className="py-16 md:py-24 bg-[#020617] border-y border-white/5">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-5xl uppercase tracking-[0.1em] text-white font-black italic mb-8 leading-none">
+            Know <span className="text-[#f97316]">before</span> you go
           </h2>
-          <div className="space-y-3">
-            <p className="text-white/70 text-lg md:text-xl leading-relaxed font-medium">
+          <div className="space-y-6">
+            <p className="text-white/80 text-xl md:text-2xl leading-relaxed font-bold tracking-tight">
               Don’t fly blind. International teaching looks like a dream on Instagram, but the contract is where the reality lives. We strip away the gloss to show you the cold, hard facts.
             </p>
-            <p className="text-white/70 text-lg md:text-xl leading-relaxed font-medium italic">
+            <p className="text-[#007FFF] text-lg md:text-xl leading-relaxed font-black uppercase italic tracking-widest">
               Every international teaching offer hides trade-offs. We make them visible.
             </p>
           </div>
@@ -130,33 +134,38 @@ export default function Home() {
       </section>
 
       {/* 🧭 ZIG-ZAG PROTOCOLS */}
-      <section className="py-12 bg-[#020617]">
-        <div className="container mx-auto px-4 space-y-20">
+      <section className="py-20 bg-[#020617]">
+        <div className="container mx-auto px-4 space-y-32">
           {steps.map((step, index) => (
-            <div key={step.id} className="grid md:grid-cols-12 gap-10 md:gap-16 items-center max-w-5xl mx-auto border-b border-white/5 pb-16 last:border-0">
+            <div key={step.id} className="grid md:grid-cols-12 gap-12 md:gap-20 items-center max-w-6xl mx-auto border-b border-white/5 pb-24 last:border-0">
               
               <div className={cn(
-                "md:col-span-5 relative aspect-video border border-white/10 overflow-hidden group shadow-2xl", 
+                "md:col-span-5 relative aspect-video border border-white/10 overflow-hidden group shadow-[0_0_50px_rgba(0,127,255,0.1)]", 
                 index % 2 === 1 && "md:order-last"
               )}>
                 <Image 
                   src={step.imageUrl} 
                   alt={step.title} 
                   fill 
-                  className="object-cover opacity-100 transition-transform group-hover:scale-110 duration-700" 
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover opacity-80 transition-transform group-hover:scale-105 duration-700 group-hover:opacity-100" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60"></div>
               </div>
 
               <div className={cn(
-                "md:col-span-7 flex flex-col space-y-3", 
+                "md:col-span-7 flex flex-col space-y-4", 
                 index % 2 === 1 ? "md:items-end md:text-right" : "items-start"
               )}>
-                <span className="text-5xl font-black text-[#f97316] opacity-10 leading-none tracking-tighter">{step.id}</span>
-                <h3 className="text-4xl md:text-5xl text-white font-black uppercase italic tracking-tighter leading-none">{step.title}</h3>
-                <p className="text-slate-400 text-base leading-relaxed max-w-lg font-medium">{step.desc}</p>
-                <Link href={step.link} className="text-[#f97316] text-[10px] font-black tracking-[0.3em] uppercase flex items-center group pt-2">
-                  {step.label} <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
+                <span className="text-6xl font-black text-[#f97316] opacity-20 leading-none tracking-tighter italic">{step.id}</span>
+                <h3 className="text-5xl md:text-6xl text-white font-black uppercase italic tracking-tighter leading-none">
+                    {step.title}<span className="text-[#007FFF]">.</span>
+                </h3>
+                <p className="text-slate-400 text-lg leading-relaxed max-w-lg font-bold">
+                    {step.desc}
+                </p>
+                <Link href={step.link} className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-4 border-b-2 border-transparent hover:border-[#f97316] transition-all">
+                  {step.label} <ArrowRight className="ml-3 size-5 group-hover:translate-x-2 transition-transform" />
                 </Link>
               </div>
 
@@ -165,7 +174,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="pb-16">
+      <div className="pb-24">
         <AnalysisInAction />
       </div>
       

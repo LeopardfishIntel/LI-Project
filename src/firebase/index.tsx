@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
@@ -15,7 +15,7 @@ export const firebaseConfig = {
   appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
 };
 
-// 🛡️ SAFE INITIALIZATION (Bridges Server/Client Gap)
+// 🛡️ SAFE INITIALIZATION
 const isBrowser = typeof window !== "undefined";
 
 let app: FirebaseApp;
@@ -31,7 +31,6 @@ if (isBrowser) {
   }
   auth = getAuth(app);
 } else {
-  // 🛰️ Server-side Fallbacks (Prevents "undefined" crashes during build)
   app = null as any;
   db = null as any;
   auth = null as any;
@@ -41,7 +40,7 @@ if (isBrowser) {
  * 🛡️ THE PUNCH-THROUGH (RECOVERY)
  */
 export async function setDocumentNonBlocking(collectionName: string, docId: string, data: any) {
-  if (!db) return; // Guard for server-side execution
+  if (!db) return; 
   const docRef = doc(db, collectionName, docId);
   return setDoc(docRef, data, { merge: true });
 }
@@ -58,10 +57,24 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!auth) return;
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       setUser(u);
+      
+      // 🛰️ TACTICAL HANDSHAKE: Bridge to Middleware
+      if (u) {
+        // Get the JWT token from Firebase
+        const token = await u.getIdToken();
+        // MUST be named '__session' for Firebase App Hosting to pass it to Middleware
+        document.cookie = `__session=${token}; path=/; SameSite=Lax; Secure`;
+      } else {
+        // Clear cookie on logout
+        document.cookie = "__session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+      
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -76,15 +89,24 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within FirebaseClientProvider");
-  return { ...context, signOut: () => (auth ? firebaseSignOut(auth) : Promise.resolve()) };
+  return { 
+    ...context, 
+    signOut: async () => {
+      if (auth) {
+        await firebaseSignOut(auth);
+        document.cookie = "__session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
+    } 
+  };
 };
 
 export const useUser = () => {
   const context = useContext(AuthContext);
+  // Intelligence: isAdmin is hardcoded false here; you may need to check custom claims later
   return { ...context, isUserLoading: context.loading, isAdmin: false };
 };
 
-// --- DATA HOOKS (Bridging to your .tsx files) ---
+// --- DATA HOOKS ---
 import { useCollection as useCollectionHook } from "./firestore/use-collection";
 import { useDoc as useDocHook } from "./firestore/use-doc";
 

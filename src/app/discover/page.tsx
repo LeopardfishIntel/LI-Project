@@ -30,7 +30,6 @@ export default function FindYourFitGate() {
     regions: [] as string[]
   });
 
-  // 🛰️ Persistence: Restore previous data on mount
   useEffect(() => {
     setMounted(true);
     const savedProfile = localStorage.getItem('lf_profile');
@@ -57,7 +56,11 @@ export default function FindYourFitGate() {
       if (exists) {
         return { ...prev, [field]: current.filter(i => i.toLowerCase() !== value.toLowerCase()) };
       }
-      if (max && current.length >= max) return prev;
+      
+      // 🛡️ Continent selection limit (Max 2) or generic max
+      const limit = field === 'regions' ? 2 : max;
+      if (limit && current.length >= limit) return prev;
+      
       return { ...prev, [field]: [...current, value] };
     });
   };
@@ -73,7 +76,8 @@ export default function FindYourFitGate() {
       salary: `${profile.currency} ${profile.salary}`,
       status: profile.familyStatus,
       qualifications: profile.qualifications.join(','),
-      curriculum: profile.curriculum.join(',')
+      curriculum: profile.curriculum.join(','),
+      goals: profile.goals.join(',')
     });
 
     const primarySlug = profile.regions[0].toLowerCase().replace(/\s+/g, '-').replace('&', 'and');
@@ -89,14 +93,14 @@ export default function FindYourFitGate() {
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-8 lg:p-12 font-sans selection:bg-[#f97316]">
       <div className="max-w-5xl w-full space-y-12 animate-in fade-in duration-500">
         
-        {/* Header section */}
+        {/* Header section: 25% Reduction & Orange Branding */}
         <div className="text-center space-y-4">
-          <h1 className="text-7xl font-black text-[#f97316] tracking-tighter leading-none italic">
+          <h1 className="text-5xl font-black text-[#f97316] tracking-tighter leading-none italic uppercase">
             Find your fit
           </h1>
           <p className="text-lg max-w-2xl mx-auto leading-relaxed">
-            <span className="text-[#f1f5f9] font-bold border-b border-[#f97316]/30 pb-1">Your profile, our direction.</span> 
-            <span className="text-slate-400 ml-2 italic">We've replaced the guesswork with data driven insights.</span>
+            <span className="text-[#f1f5f9] font-bold border-b border-[#f97316]/30 pb-1 uppercase">Your profile, our direction.</span> 
+            <span className="text-slate-400 ml-2 italic">Intelligence-driven matching for the international educator.</span>
           </p>
         </div>
         
@@ -106,11 +110,11 @@ export default function FindYourFitGate() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16 text-left">
             {/* Age */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
                 <User className="size-4" /> Age
               </label>
               <Select value={profile.age} onValueChange={(v) => setProfile({...profile, age: v})}>
-                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 px-6 text-[18px]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 px-6 text-[18px] font-black"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold font-sans">
                   {["25+", "35+", "50+", "60+", "65+"].map(a => <SelectItem key={a} value={a}>{a}</SelectItem>)}
                 </SelectContent>
@@ -119,17 +123,17 @@ export default function FindYourFitGate() {
 
             {/* Qualifications */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
                 <GraduationCap className="size-4" /> Qualifications
               </label>
               <DropdownMenu>
-                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none text-[18px]">
-                  <span className="truncate font-bold">{profile.qualifications.length > 0 ? profile.qualifications.join(", ") : "Select all"}</span>
-                  <Check className="size-4 opacity-30" />
+                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none text-[18px] font-black">
+                  <span className="truncate">{profile.qualifications.length > 0 ? profile.qualifications.join(", ").toUpperCase() : "SELECT ALL"}</span>
+                  <Check className="size-4 text-[#007FFF] opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[280px]">
                   {["b.ed", "pgce", "ma education", "phd", "qts", "ipgce"].map(q => (
-                    <DropdownMenuCheckboxItem key={q} checked={profile.qualifications.some(item => item.toLowerCase() === q.toLowerCase())} onCheckedChange={() => toggleArrayItem('qualifications', q)} className="font-bold">{q}</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem key={q} checked={profile.qualifications.some(item => item.toLowerCase() === q.toLowerCase())} onCheckedChange={() => toggleArrayItem('qualifications', q)} className="font-bold uppercase">{q}</DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -137,30 +141,30 @@ export default function FindYourFitGate() {
 
             {/* Status */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
                 <Users className="size-4" /> Status
               </label>
               <Select value={profile.familyStatus} onValueChange={(v) => setProfile({...profile, familyStatus: v})}>
-                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 px-6 text-[18px] font-bold"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 px-6 text-[18px] font-black uppercase"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold font-sans">
-                  {["single", "married (sole earner)", "married (dual income)", "family (1 child)", "family (2 children)", "family (3 or more)"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  {["single", "married (sole earner)", "married (dual income)", "family (1 child)", "family (2 children)", "family (3 or more)"].map(s => <SelectItem key={s} value={s}>{s.toUpperCase()}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
 
             {/* Curriculum */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
-                <BookOpen className="size-4" /> Curriculum experience
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
+                <BookOpen className="size-4" /> Curriculum
               </label>
               <DropdownMenu>
-                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none text-[18px]">
-                  <span className="truncate font-bold">{profile.curriculum.length > 0 ? profile.curriculum.join(", ") : "Select all"}</span>
-                  <Check className="size-4 opacity-30" />
+                <DropdownMenuTrigger className="w-full bg-black/40 border border-white/10 text-white h-14 px-6 rounded-md text-left flex justify-between items-center outline-none text-[18px] font-black">
+                  <span className="truncate">{profile.curriculum.length > 0 ? profile.curriculum.join(", ").toUpperCase() : "SELECT ALL"}</span>
+                  <Check className="size-4 text-[#007FFF] opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[280px]">
                   {["british", "ib", "american", "australian", "canadian", "montessori"].map(c => (
-                    <DropdownMenuCheckboxItem key={c} checked={profile.curriculum.some(item => item.toLowerCase() === c.toLowerCase())} onCheckedChange={() => toggleArrayItem('curriculum', c)} className="font-bold">{c}</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem key={c} checked={profile.curriculum.some(item => item.toLowerCase() === c.toLowerCase())} onCheckedChange={() => toggleArrayItem('curriculum', c)} className="font-bold uppercase">{c}</DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -168,32 +172,32 @@ export default function FindYourFitGate() {
 
             {/* Location */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
                 <MapPin className="size-4" /> Current location
               </label>
-              <Input value={profile.location} placeholder="City, Country" className="bg-black/40 border-white/10 h-14 text-white px-6 text-[18px] font-bold" onChange={(e) => setProfile({...profile, location: e.target.value})} />
+              <Input value={profile.location} placeholder="CITY, COUNTRY" className="bg-black/40 border-white/10 h-14 text-white px-6 text-[18px] font-black uppercase" onChange={(e) => setProfile({...profile, location: e.target.value})} />
             </div>
 
             {/* Salary */}
             <div className="space-y-3">
-              <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+              <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
                 <Wallet className="size-4" /> Current salary
               </label>
               <div className="flex gap-2">
                 <Select value={profile.currency} onValueChange={(v) => setProfile({...profile, currency: v})}>
-                  <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 w-28 px-4 text-[18px] font-bold"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="bg-black/40 border-white/10 text-white h-14 w-28 px-4 text-[18px] font-black"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold font-sans">
                     {["USD", "GBP", "EUR", "AED", "SAR", "QAR", "SGD", "AUD", "THB"].map(curr => <SelectItem key={curr} value={curr}>{curr}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                <Input value={profile.salary} placeholder="Annual amount" className="bg-black/40 border-white/10 h-14 text-white px-6 flex-1 text-[18px] font-bold" onChange={(e) => setProfile({...profile, salary: e.target.value})} />
+                <Input value={profile.salary} placeholder="ANNUAL AMOUNT" className="bg-black/40 border-white/10 h-14 text-white px-6 flex-1 text-[18px] font-black uppercase" onChange={(e) => setProfile({...profile, salary: e.target.value})} />
               </div>
             </div>
           </div>
 
           {/* Operational goals */}
           <div className="mb-12 text-left space-y-6 pt-10 border-t border-white/5">
-            <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
+            <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
               <Target className="size-4" /> Operational goals (Max 2)
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -208,7 +212,7 @@ export default function FindYourFitGate() {
                           "h-16 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border uppercase", 
                           isActive 
                             ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
-                            : "bg-white/5 border-white/10 text-slate-500 hover:border-white/20"
+                            : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
                         )}
                       >
                         {goal}
@@ -218,14 +222,15 @@ export default function FindYourFitGate() {
             </div>
           </div>
 
-          {/* Target regions */}
+          {/* Target regions: Continent selection limit (Max 2) */}
           <div className="mb-16 text-left space-y-6 pt-10 border-t border-white/5">
-            <label className="text-[14px] font-bold text-sky-400 tracking-wide flex items-center gap-2">
-              <Compass className="size-4" /> Target regions
+            <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
+              <Compass className="size-4" /> Target regions (Max 2)
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {availableRegions.map((region) => {
                     const isActive = profile.regions.some(r => r.toLowerCase() === region.toLowerCase());
+                    const isDisabled = !isActive && profile.regions.length >= 2;
                     return (
                       <button 
                         key={region} 
@@ -235,11 +240,11 @@ export default function FindYourFitGate() {
                           "h-16 px-6 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border flex items-center justify-between group uppercase", 
                           isActive 
                             ? "bg-white/10 border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.1)]" 
-                            : "bg-white/5 border-white/10 text-slate-500 hover:border-white/20"
+                            : isDisabled ? "bg-white/5 border-white/5 text-slate-700 cursor-not-allowed" : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
                         )}
                       >
                         <span className="truncate">{region}</span>
-                        {isActive && <Check className="size-4 text-[#f97316]" />}
+                        {isActive && <Check className="size-4 text-[#007FFF]" />}
                       </button>
                     );
                 })}
@@ -254,7 +259,7 @@ export default function FindYourFitGate() {
               profile.regions.length > 0 && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
-            {isGenerating ? <Loader2 className="size-8 animate-spin text-orange-500" /> : <><Zap className="size-6" /> Generate intelligence dossier</>}
+            {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Generate intelligence dossier</>}
           </button>
         </div>
       </div>

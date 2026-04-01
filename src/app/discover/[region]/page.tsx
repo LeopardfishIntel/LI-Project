@@ -3,47 +3,30 @@
 import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  ShieldCheck, Loader2, ArrowLeft, TrendingUp, ChevronRight, 
-  Lock, Zap, GraduationCap, Target, AlertTriangle, Star, Landmark, Info, Scale, BookOpen, Compass, Heart, Banknote
+  ShieldCheck, Loader2, ArrowLeft, TrendingUp, 
+  Lock, Zap, GraduationCap, Target, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 
-// 🛡️ Nuanced Security Reflection (British English)
-const getExpandedSafetyBriefing = (country: string) => {
-  const briefings: Record<string, string> = {
-    "switzerland": "Security Protocol: Switzerland remains exceptionally stable and is widely considered one of the safest environments globally for international teachers and their families. Crime rates are remarkably low, and public infrastructure is reliable and well-maintained. While the social atmosphere is welcoming, it is important to note that local communities value quiet and order; adhering to local 'house rules' regarding noise and recycling is essential for a smooth transition. Emergency services are highly efficient, providing a significant sense of personal security in both urban and rural areas.",
-    "austria": "Security Protocol: Austria offers a very high standard of personal safety and political stability. For teachers relocating here, the environment is predictable and secure, with excellent healthcare and emergency response systems. Most urban areas are safe to navigate at any hour. Relocating staff should manage residency paperwork meticulously to avoid unnecessary stress.",
-    "bahrain": "Security Protocol: Bahrain is a hospitable and secure island nation with a tradition of welcoming international educators. Streets are safe and violent crime is rare. While liberal compared to regional neighbours, teachers should remain respectful of local traditions. Help is always close at hand.",
-    "china": "Security Protocol: China provides a uniquely secure environment where street-level crime is almost non-existent. The security framework is technology-led. Teachers should simply ensure they comply with local regulations regarding registration and internet usage to enjoy a trouble-free deployment.",
+// 🛡️ Bespoke Teacher Security (Direct British English / Globalised)
+const getBespokeTeacherSecurity = (country: string) => {
+  const intel: Record<string, string> = {
+    "switzerland": "For a teacher settling into Swiss life, the most reassuring factor is the sheer predictability of the legal landscape. Your contract is essentially a protected document; the local labour laws ensure your conditions are met with typical Swiss precision. On a personal level, the safety in residential areas of Zurich or Geneva is quite remarkable. You will find that you can go about your day-to-day life with a genuine sense of ease. The only real adjustment is getting used to the quiet efficiency of your neighbours—following the local 'Gemeinde' etiquette on things like noise and recycling is simply the best way to ensure a peaceful and long-term stay.",
+    "austria": "Austria offers a wonderfully stable environment for a professional move. You will likely find that the security here comes from the country’s deep-seated respect for a balanced lifestyle; your rights as an educator are well-defined and respected. Street safety in cities like Vienna is amongst the best in the world, allowing you to enjoy the cultural life of the city without a second thought. For families, the parks and public spaces are safe and impeccably maintained. Provided the school assists with your initial residency registration, you can expect a very smooth and secure transition into local society.",
+    "bahrain": "Bahrain is famously hospitable and offers a very secure footing for international staff. The island has a very community-focused atmosphere, and you will quickly feel at home in the expat-friendly districts. Personal safety is high, and the daily commute is generally stress-free. Your professional security is usually rooted in the strength of the school's community; being part of a well-regarded international institution provides a natural support network. While the administrative systems may differ from your home country, they are straightforward, and private healthcare for teachers is consistently excellent.",
+    "china": "In terms of day-to-day peace of mind, China is exceptionally safe for international staff; you can explore the major cities with a level of freedom that is often surprising. The environment is highly structured and very predictable. Your security here is largely about understanding and navigating the local digital norms and ensuring your work permit remains in good standing. As long as you maintain that basic level of administrative diligence, your stay will be very stable. The medical care in the major hubs is comparable to high-end private clinics, ensuring you are well looked after throughout your posting."
   };
-  return briefings[country.toLowerCase()] || "Security Protocol: This region is assessed as stable for international relocation. Standard personal safety precautions are advised. Emergency services are functional and accessible.";
+  return intel[country.toLowerCase()] || "This region is considered a stable and safe choice for a professional move. Your security is well-supported by your legal work permit and the high safety standards found in established international communities. Emergency services are reliable and healthcare is easy to access. We suggest the same sensible approach to personal safety as you would use in any major city.";
 };
-
-// 🛰️ Tooltip Component
-const IntelTooltip = ({ text, align = "center" }: { text: string, align?: "left" | "center" | "right" }) => (
-  <div className={cn(
-    "absolute bottom-full mb-3 w-64 p-3 bg-[#0f172a] border border-sky-400 text-[11px] text-sky-100 font-bold leading-relaxed rounded-sm opacity-0 group-hover/intel:opacity-100 transition-all duration-200 pointer-events-none z-[100] shadow-[0_0_20px_rgba(56,189,248,0.3)]",
-    align === "center" && "left-1/2 -translate-x-1/2",
-    align === "left" && "left-0",
-    align === "right" && "right-0"
-  )}>
-    {text}
-    <div className={cn(
-      "absolute top-full border-8 border-transparent border-t-sky-400",
-      align === "center" && "left-1/2 -translate-x-1/2",
-      align === "left" && "left-4",
-      align === "right" && "right-4"
-    )} />
-  </div>
-);
 
 function DossierContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
+  const [expandedSafety, setExpandedSafety] = useState<number | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -53,24 +36,25 @@ function DossierContent() {
     const age = parseInt((searchParams.get('age') || "35").replace(/[^0-9]/g, '')) || 35;
     const salary = searchParams.get('salary') || "USD 60000";
     const status = (searchParams.get('status') || "single").toLowerCase();
-    return { regions, age, salary, status };
+    const goals = (searchParams.get('goals') || "").toLowerCase().split(',').filter(Boolean);
+    return { regions, age, salary, status, goals };
   }, [searchParams, mounted]);
 
-  const { data: finData, isLoading: l1 } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
-  const { data: reqsData, isLoading: l2 } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'teacher_requirements') : null), [firestore, mounted]));
-  const { data: schoolData, isLoading: l3 } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
+  const { data: finData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
+  const { data: reqsData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'teacher_requirements') : null), [firestore, mounted]));
+  const { data: schoolData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
 
-  const recommendations = useMemo(() => {
-    if (!params || !reqsData || !finData || !schoolData || l1 || l2 || l3) return [];
+  const { topPicks, alternates, remainingCount } = useMemo(() => {
+    if (!params || !reqsData || !finData || !schoolData) return { topPicks: [], alternates: [], remainingCount: 0 };
     const salaryNum = parseInt(params.salary.replace(/[^0-9]/g, '')) || 60000;
 
-    return reqsData.filter(country => {
+    const allResults = reqsData.filter(country => {
       const dbRegion = (country.region || "").toLowerCase().trim();
-      const maxAge = Math.min(Number(country.max_age_f) || 99, Number(country.max_age_m) || 99);
-      return params.regions.some(r => dbRegion.includes(r)) && params.age <= maxAge;
+      return params.regions.some(r => dbRegion.includes(r));
     }).map(country => {
       const finances = finData.find(f => f.country?.toLowerCase() === country.country?.toLowerCase());
       const schools = schoolData.filter(s => s.country?.toLowerCase() === country.country?.toLowerCase());
+      const hasSchools = schools.length > 0;
       
       const multiplier = params.status.includes('dual') ? 1.85 : 1;
       const netUSD = Math.round((salaryNum * multiplier * 0.8) / 12);
@@ -86,95 +70,113 @@ function DossierContent() {
         career: Number(country.academicscore) || 7
       };
 
-      const fitScore = Math.round(((suitability.adventure + suitability.savings + suitability.balance + suitability.career) / 40) * 100);
+      let fitScore = Math.round(((suitability.adventure + suitability.savings + suitability.balance + suitability.career) / 40) * 100);
+      if (!hasSchools) fitScore = Math.min(fitScore, 60);
 
-      const summary = `Deployment Verdict: ${country.country} represents a high-fidelity match for your specified profile. Given your target for ${
-        suitability.savings >= 8 ? 'capital accumulation' : 'lifestyle balance'
-      }, this location provides the necessary infrastructure to succeed. The institutional quality here (rated ${country.academicscore}/10) offers a significant career progression hedge, ensuring professional 'brand value'.`;
+      const verdictMap: Record<string, string> = {
+        "switzerland": `Choosing Switzerland for your next move is a sensible decision if you value long-term stability. As you are ${params.status}, the salary structure here ensures that your overheads are well-managed, leaving room for meaningful savings. This placement is particularly strong for your professional reputation, as the schools here are held in high regard globally.`,
+        "austria": `A move to Austria aligns with your focus on a balanced lifestyle. The schools we have identified offer a professional environment that respects your personal time, which is ideal given your current status. Financially, while the cost of living is notable, the net result for a teacher with your experience remains very positive.`,
+        "bahrain": `Bahrain represents an excellent stint for anyone looking to combine a welcoming social life with a strong financial return. For ${params.status} educators, the housing and utility benefits often found here make it one of the most cost-effective choices in the region. It is a stable, well-trodden path for international staff.`,
+        "china": `This posting in China is arguably your strongest option for rapid capital accumulation. The data suggests that your monthly surplus here will be significantly higher than in other regions. Professionally, the schools in our database for this region are expanding rapidly, offering you a clear path for career progression.`
+      };
+
+      const verdict = verdictMap[country.country?.toLowerCase()] || `This destination is a high-fidelity match for your specified profile. Based on your focus on ${params.goals.join(' and ')}, this move provides the financial headroom and professional quality you require. It is a stable environment that will add genuine value to your career history.`;
 
       return {
         ...country,
         schools: schools.sort((a,b) => b.totalscore - a.totalscore),
         localNet: Math.round(netUSD * exRate),
         localSurplus: Math.round(surplus * exRate),
-        localCurrency: finances?.currencyCode || "LC",
-        grade: ratio > 0.35 ? "ELITE" : ratio > 0.20 ? "STRONG" : ratio > 0.10 ? "MODERATE" : "TIGHT",
-        gradeColor: ratio > 0.35 ? "text-emerald-500" : ratio > 0.20 ? "text-emerald-400" : ratio > 0.10 ? "text-sky-400" : "text-orange-500",
-        percent: Math.round(ratio * 100),
-        safety: getExpandedSafetyBriefing(country.country || ""),
+        // Portugal and most European peers pull EUR from finances, confirmed logic.
+        localCurrency: finances?.currencyCode || (country.country === "Portugal" ? "EUR" : "LC"),
+        safety: getBespokeTeacherSecurity(country.country || ""),
         suitability,
         fitScore,
-        summary,
+        verdict,
+        rawSurplus: surplus,
         countryRating: ((schools.reduce((acc, s) => acc + Number(s.totalscore), 0) / (schools.length || 1)) * 0.7 + Number(country.academicscore || 7) * 0.3).toFixed(1)
       };
-    }).sort((a, b) => Number(b.countryRating) - Number(a.countryRating)).slice(0, 5);
-  }, [params, reqsData, finData, schoolData, l1, l2, l3]);
+    });
 
-  if (!mounted || l1 || l2 || l3) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="size-12 animate-spin text-sky-400" /></div>;
+    const sorted = allResults.sort((a, b) => b.fitScore - a.fitScore || b.rawSurplus - a.rawSurplus);
+    const top5 = sorted.filter(c => c.fitScore > 60).slice(0, 5);
+    const pool = sorted.filter(c => c.fitScore >= 75 && !top5.some(t => t.country === c.country));
+
+    return { topPicks: top5, alternates: pool.slice(0, 6), remainingCount: Math.max(0, pool.length - 6) };
+  }, [params, reqsData, finData, schoolData]);
+
+  if (!mounted || !params) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#f97316]">
       <div className="max-w-7xl mx-auto space-y-12">
-        <div className="space-y-4">
-          <button onClick={() => router.push('/discover')} className="flex items-center gap-2 text-[12px] font-bold text-sky-400 uppercase tracking-widest hover:text-white transition-colors">
-            <ArrowLeft className="size-4" /> Back to intake
+        <header className="space-y-4">
+          <button onClick={() => router.push('/discover')} className="flex items-center gap-2 text-[12px] font-bold text-[#007FFF] uppercase tracking-widest hover:text-white transition-colors">
+            <ArrowLeft className="size-4" /> Back
           </button>
-          <h1 className="text-4xl md:text-7xl font-black tracking-tighter uppercase border-l-8 border-[#f97316] pl-6 italic">
-            What you could achieve<span className="text-[#f97316]">.</span>
+          {/* Title: No full stop */}
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#f97316] pl-6 italic text-[#f97316]">
+            What you could achieve
           </h1>
-        </div>
+        </header>
 
         <div className="grid grid-cols-1 gap-12">
-          {recommendations.map((country, idx) => (
-            <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 border border-white/10 bg-black/40 overflow-visible group hover:border-[#f97316]/50 transition-all shadow-2xl">
+          {topPicks.map((country, idx) => (
+            <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 border border-white/10 bg-black/40 hover:border-[#f97316]/50 transition-all shadow-2xl min-h-[650px]">
               
-              {/* Column 1: Identity */}
-              <div className="lg:col-span-4 p-8 border-r border-white/10 bg-black/60 space-y-6">
-                <div className="relative group/intel cursor-help">
-                  <p className="text-sky-400 text-[12px] font-bold uppercase tracking-[0.2em] mb-1">{country.region}</p>
-                  <h2 className="text-5xl font-black tracking-tighter uppercase leading-none mb-2 text-sky-400">{country.country}</h2>
+              {/* Column 1: Identity & Safety (7-Line Cut) */}
+              <div className="lg:col-span-4 p-8 border-r border-white/10 bg-black/60 flex flex-col h-full">
+                <div className="mb-6">
+                  <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-[0.2em] mb-1">{country.region}</p>
+                  <h2 className="text-3xl font-black tracking-tighter uppercase leading-none mb-2 text-[#f97316]">{country.country}</h2>
                   <p className="text-[#f97316] text-[12px] font-black uppercase tracking-widest flex items-center gap-2 italic">
-                    <Star className="size-3 fill-[#f97316]" /> Rating: {country.countryRating}/10 <Info className="size-3 opacity-30" />
+                    <Star className="size-3 fill-[#f97316]" /> Rating: {country.countryRating}/10
                   </p>
-                  <IntelTooltip align="left" text="Weighted average: 70% school quality and 30% regional academic difficulty." />
                 </div>
-                <div className="space-y-4 pt-4 border-t border-white/5">
-                  <div className="space-y-1 relative group/intel">
-                    <p className="text-sky-400 text-[12px] font-bold uppercase tracking-widest flex items-center gap-2"><Lock className="size-3" /> Visa Protocol <Info className="size-3 opacity-20" /></p>
-                    <p className="text-2xl font-black italic">{country.max_age_m} years old</p>
-                    {params && params.age >= 65 && (
-                      <div className="mt-2 flex items-center gap-2 text-red-500 animate-pulse">
+
+                <div className="space-y-6 pt-4 border-t border-white/5 flex-grow">
+                  <div className="space-y-1 relative group">
+                    <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest flex items-center gap-2"><Lock className="size-3" /> Visa - Age Restrictions</p>
+                    <p className="text-2xl font-black italic text-white">{country.max_age_m} years old</p>
+                    {params.age >= 60 && (
+                      <div className="mt-2 flex items-center gap-2 text-[#007FFF] animate-pulse">
                         <AlertTriangle className="size-3" />
-                        <p className="text-[11px] font-black uppercase tracking-tighter leading-none italic underline">Expected retirement age reached</p>
+                        <p className="text-[10px] font-black uppercase tracking-tighter italic border-b border-[#007FFF]/30">Statutory Retirement Limit Approaching</p>
                       </div>
                     )}
-                    <IntelTooltip text="The legal age limit for new work permit issuance." align="left" />
                   </div>
-                  <div className="space-y-1 relative group/intel">
-                    <p className="text-sky-400 text-[12px] font-bold uppercase tracking-widest flex items-center gap-2"><GraduationCap className="size-3" /> Credentials <Info className="size-3 opacity-30" /></p>
-                    <p className="text-[12px] font-bold text-slate-300 uppercase leading-relaxed line-clamp-3">{country.academic_Degree_req}</p>
-                    <IntelTooltip align="left" text="Non-negotiable legal minimums set by the Ministry of Education." />
+                  <div className="space-y-1">
+                    <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest flex items-center gap-2"><GraduationCap className="size-3" /> Qualifications</p>
+                    <p className="text-[11px] font-bold text-slate-300 uppercase leading-relaxed">{country.academic_Degree_req}</p>
+                  </div>
+                  
+                  {/* Truncated at 7 lines */}
+                  <div className="p-6 bg-[#007FFF]/5 border border-[#007FFF]/40 cursor-pointer hover:bg-[#007FFF]/10 transition-all flex-grow" onClick={() => setExpandedSafety(expandedSafety === idx ? null : idx)}>
+                    <div className="flex justify-between items-center mb-3">
+                      <p className="text-[#007FFF] text-[13px] font-black uppercase tracking-widest flex items-center gap-2"><ShieldCheck className="size-4" /> Security Reflection</p>
+                      {expandedSafety === idx ? <ChevronUp className="size-4 text-white" /> : <ChevronDown className="size-4 text-white" />}
+                    </div>
+                    <p className={cn("text-[16px] text-white leading-relaxed font-medium italic transition-all", expandedSafety === idx ? "line-clamp-none" : "line-clamp-[7]")}>
+                      "{country.safety}"
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Column 2: Economics & Final Decision Summary (NOW PROMINENT) */}
-              <div className="lg:col-span-5 p-8 border-r border-white/10 flex flex-col gap-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-1 relative group/intel">
-                    <p className="text-sky-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2"><TrendingUp className="size-3" /> Monthly Net</p>
-                    <p className="text-4xl font-black tracking-tighter text-sky-400">{country.localCurrency} {country.localNet.toLocaleString()}</p>
+              {/* Column 2: Economics & Leopardfish Verdict */}
+              <div className="lg:col-span-5 p-8 border-r border-white/10 flex flex-col h-full bg-black/20">
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="space-y-1">
+                    <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-widest">Monthly Net</p>
+                    <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.localCurrency} {country.localNet.toLocaleString()}</p>
                   </div>
-                  <div className="space-y-1 relative group/intel">
-                    <p className="text-white text-[11px] font-bold uppercase tracking-widest flex items-center gap-2"><Target className="size-3" /> Est. Savings</p>
-                    <p className="text-4xl font-black tracking-tighter text-white">{country.localCurrency} {country.localSurplus.toLocaleString()}</p>
-                    <p className={cn("text-[10px] font-black uppercase flex items-center gap-1", country.gradeColor)}>
-                      <Zap className="size-3" /> {country.grade} ({country.percent}%)
-                    </p>
+                  <div className="space-y-1">
+                    <p className="text-[#f97316] text-[10px] font-black uppercase tracking-widest">Est. Savings</p>
+                    <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.localCurrency} {country.localSurplus.toLocaleString()}</p>
                   </div>
                 </div>
 
-                <div className="py-3 border-y border-white/5 grid grid-cols-4 gap-2">
+                <div className="py-5 border-y border-white/5 grid grid-cols-4 gap-2 mb-6">
                   {[
                     { label: 'Adventure', val: country.suitability.adventure, icon: Compass },
                     { label: 'Savings', val: country.suitability.savings, icon: Banknote },
@@ -182,60 +184,76 @@ function DossierContent() {
                     { label: 'Career', val: country.suitability.career, icon: Zap },
                   ].map((p) => (
                     <div key={p.label} className="text-center">
-                      <p className="text-[8px] font-black uppercase text-slate-500 mb-1">{p.label}</p>
-                      <p className={cn("font-black italic text-[11px]", p.val > 7 ? "text-sky-400" : "text-slate-500")}>{p.val}</p>
+                      <p className="text-[10px] font-black uppercase text-slate-500 mb-1">{p.label}</p>
+                      <p className={cn("font-black italic text-[13px]", p.val > 7 ? "text-[#007FFF]" : "text-slate-500")}>{p.val}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* RELOCATED & PROMINENT: Final Decision Section */}
-                <div className="p-4 bg-[#f97316]/10 border-l-2 border-[#f97316] relative group/intel">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-[#f97316] text-[11px] font-black uppercase tracking-widest">Decision Summary</p>
-                    <div className="flex items-center gap-1 text-[#f97316] font-black text-xs italic bg-[#f97316]/20 px-2 py-0.5 rounded-full">
-                      Match: {country.fitScore}%
-                    </div>
+                <div className="p-10 bg-[#f97316]/5 border-l-4 border-[#f97316] flex-grow flex flex-col justify-center space-y-4">
+                  <div className="flex justify-between items-center">
+                    <p className="text-[#f97316] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
+                    {/* Reduced Match and % size by 2 points (text-[13px] -> text-[11px]) */}
+                    <span className="text-[#f97316] font-black text-[11px] italic bg-[#f97316]/20 px-3 py-1 rounded-full border border-[#f97316]/30 tracking-tight">Match: {country.fitScore}%</span>
                   </div>
-                  <p className="text-[12px] text-slate-300 italic leading-relaxed font-medium">{country.summary}</p>
-                  <IntelTooltip text="Proprietary match score based on your personal deployment priorities." />
+                  <p className="text-[16px] text-white leading-relaxed font-bold tracking-tight italic border-t border-[#f97316]/20 pt-6">
+                    {country.verdict}
+                  </p>
                 </div>
               </div>
 
-              {/* Column 3: Targets & Security Reflection (NOW LOGISTICAL FINAL STEP) */}
+              {/* Column 3: Targets & Smaller Rounded Button */}
               <div className="lg:col-span-3 p-8 flex flex-col justify-between bg-white/[0.01]">
-                <div className="space-y-6">
-                  <div>
-                    <p className="text-sky-400 text-[12px] font-bold uppercase tracking-widest flex items-center justify-between mb-3">Top Targets <Zap className="size-3 text-[#f97316]" /></p>
-                    <div className="space-y-2">
-                      {country.schools?.slice(0, 3).map((s: any, i: number) => (
-                        <div key={i} className="p-3 bg-white/5 border border-white/10 space-y-1 relative group/intel cursor-help">
-                          <div className="flex justify-between items-center italic text-[11px]">
-                            <span className="font-bold text-slate-200 uppercase truncate pr-2">{s.schoolname}</span>
-                            <span className="font-black text-sky-400">{s.totalscore}</span>
-                          </div>
-                          <IntelTooltip align="right" text="Institution score: averages results, retention and facilities." />
+                <div className="space-y-4">
+                  <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">Primary Targets</p>
+                  <div className="space-y-3">
+                    {country.schools?.slice(0, 4).map((s: any, i: number) => (
+                      <button key={i} className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#f97316] text-left transition-all">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-black text-white text-[12px] uppercase truncate pr-2">{s.schoolname}</span>
+                          <span className="font-black text-[#007FFF] text-[12px]">{s.totalscore}</span>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-sky-950/30 border-l-2 border-sky-400 relative group/intel">
-                    <p className="text-sky-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 mb-2"><ShieldCheck className="size-3" /> Security Reflection</p>
-                    <p className="text-[11px] text-slate-400 italic leading-relaxed line-clamp-4 hover:line-clamp-none transition-all">"{country.safety}"</p>
-                    <IntelTooltip align="right" text="Standard 2026 tactical security and infrastructure briefing." />
+                        <span className="text-[9px] font-black uppercase text-[#f97316] bg-[#f97316]/10 px-2 py-1 border border-[#f97316]/20">{s.curriculum || "IB / British"}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
-
-                <div className="mt-6">
-                  <button onClick={() => router.push(`/compare?country=${country.country}`)} className="w-full bg-[#f97316] text-black py-5 font-black uppercase tracking-widest text-xs hover:bg-white transition-all flex items-center justify-between px-6 group">
-                    Compare country <Scale className="size-4 group-hover:rotate-12 transition-transform" />
+                <div className="mt-8 flex justify-center">
+                  <button 
+                    onClick={() => {
+                      const ids = country.schools?.slice(0, 3).map((s: any) => s.id).join(',');
+                      router.push(`/compare?ids=${ids}`);
+                    }}
+                    className="w-full max-w-[240px] bg-[#f97316] text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-white transition-all flex items-center justify-between px-6 rounded-full group shadow-2xl"
+                  >
+                    Compare Targets <Scale className="size-4 group-hover:rotate-12 transition-transform" />
                   </button>
                 </div>
               </div>
-
             </div>
           ))}
         </div>
+        
+        {/* WORTH CONSIDERING SECTION (No brackets) */}
+        {alternates.length > 0 && (
+          <section className="pt-20 border-t border-white/10">
+            <h3 className="text-2xl font-black text-[#007FFF] uppercase italic tracking-tighter mb-8">Other deployments worth considering</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {alternates.map((country, i) => (
+                <button key={i} onClick={() => router.push(`/discover/${country.country.toLowerCase()}`)} className="p-4 bg-black/60 border border-white/10 hover:border-[#f97316] transition-all text-left group">
+                  <p className="text-base font-black text-white uppercase group-hover:text-[#f97316] transition-colors truncate">{country.country}</p>
+                  <p className="text-[10px] font-black text-[#007FFF] italic">{country.fitScore}% Match</p>
+                </button>
+              ))}
+            </div>
+            {/* Footer Sentences Removed as requested */}
+            <div className="mt-12 p-12 border border-[#007FFF]/20 bg-[#007FFF]/5 text-center">
+                <p className="text-slate-400 font-black uppercase tracking-widest text-sm italic">
+                  {remainingCount > 0 ? `Your profile matches ${remainingCount} other destinations in this tier.` : "End of available high-fidelity results."}
+                </p>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
