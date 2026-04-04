@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
   },
   // 🚀 PERFORMANCE OPTIMIZATION:
   // Reduces module processing time for high-density pages by pruning unused exports.
+  // This addresses the "2322 modules" bloat seen in server logs.
   experimental: {
     optimizePackageImports: [
       "lucide-react", 
@@ -44,7 +45,17 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-dialog",
       "@radix-ui/react-dropdown-menu",
       "@radix-ui/react-accordion",
-      "@radix-ui/react-tabs"
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-label",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-switch",
+      "@radix-ui/react-radio-group",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-progress"
     ],
   },
 };
