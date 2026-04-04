@@ -79,12 +79,12 @@ export default function Home() {
            {mounted && (
              <div className="flex flex-col sm:flex-row gap-6 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 <Link href="/find-your-fit" prefetch={false}>
-                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D]/40 text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
+                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
                     Discover
                   </Button>
                 </Link>
                 <Link href="/financial-forecaster" prefetch={false}>
-                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D]/40 text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
+                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
                     Evaluate
                   </Button>
                 </Link>
