@@ -6,8 +6,10 @@ const KEY = "AIzaSyDPvJMAUkAbwhbCtA-oHluqN5I7pkI7MBg";
 
 export const ai = genkit({
   plugins: [
-    googleAI({ apiKey: KEY })
+    googleAI({ 
+      apiKey: KEY,
+    })
   ],
-  // 🚀 GLOBAL OVERRIDE: Force Genkit's internal systems to use 2.0-flash
-  model: 'googleai/gemini-2.0-flash', 
+  // 🚀 2026 STANDARD: Using Gemini 3.1 Flash-Lite
+  model: 'googleai/gemini-3.1-flash-lite-preview', 
 });

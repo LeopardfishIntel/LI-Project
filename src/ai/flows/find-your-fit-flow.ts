@@ -5,10 +5,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-// 🌟 THE BEST PRACTICE: Import the evergreen model pointer directly
-import { gemini15Flash } from '@genkit-ai/googleai';
 
-// 1. Define the Input Schema (Matches your UI fields)
+// 1. Define the Input Schema
 const FindYourFitInputSchema = z.object({
   age: z.any().describe("User age bracket."),
   qualifications: z.any().describe('Teaching qualifications (e.g. PGCE, QTS).'),
@@ -26,7 +24,7 @@ const FindYourFitInputSchema = z.object({
 
 export type FindYourFitInput = z.infer<typeof FindYourFitInputSchema>;
 
-// 2. Define the Output Schema (What the Dossier displays)
+// 2. Define the Output Schema
 const FindYourFitOutputSchema = z.object({
   recommendations: z.array(
     z.object({
@@ -46,8 +44,8 @@ export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 // 3. The System Prompt
 const findYourFitPrompt = ai.definePrompt({
   name: 'findYourFitPrompt',
-  // 🌟 Assign the object directly. No strings, no guesses.
-  model: gemini15Flash, 
+  // 🚀 EXPLICIT MODEL OVERRIDE
+  model: 'googleai/gemini-3.1-flash-lite-preview', 
   input: { schema: FindYourFitInputSchema },
   output: { schema: FindYourFitOutputSchema },
   prompt: `You are an expert career adviser specialising in international teaching opportunities. 
@@ -57,7 +55,6 @@ const findYourFitPrompt = ai.definePrompt({
   CONSTRAINTS:
   - If the "Current Location" is Japan, you MUST NOT recommend Japan.
   - Use descriptive British English (e.g., 'considerable experience', 'suitable honours') rather than just numbers.
-  - Pay close attention to 'familyStatus' when suggesting benefits.
   - Recommendations must be formatted as bullet points in the reasoning section.
   
   User Profile:
@@ -67,10 +64,8 @@ const findYourFitPrompt = ai.definePrompt({
   - Experience: {{{experience}}} Years
   - Subject: {{{subject}}}
   - Current Location: {{{currentLocation}}}
-  - Current Salary: {{{currentSalary}}}
   - Target Regions: {{{preferredRegions}}}
   - Objectives: {{{preferences}}}
-  - Primary Goal: {{{goal}}}
 
   Available Schools:
   {{{availableSchools}}}`,
