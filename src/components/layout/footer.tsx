@@ -53,7 +53,7 @@ export default function Footer() {
             <span className="text-gray-800/40 select-none">•</span>
             <Link href="#" prefetch={false} className="hover:text-white transition-colors">Terms of service</Link>
             <span className="text-gray-800/40 select-none">•</span>
-            <Link href="/admin/seed-data" prefetch={false} className="hover:text-white transition-colors">Data hub</Link>
+            <Link href="/admin" prefetch={false} className="hover:text-white transition-colors">Data hub</Link>
           </div>
           
           <p className="text-[10px] font-black text-gray-700 uppercase tracking-widest">

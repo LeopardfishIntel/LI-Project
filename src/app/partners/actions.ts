@@ -1,5 +1,12 @@
 'use server';
 
+import { db } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { Resend } from 'resend';
+
+// Initialize Resend (Ensure RESEND_API_KEY is in your .env)
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export type InquiryState = {
   message: string | null;
   error: string | null;
@@ -10,78 +17,79 @@ export async function submitInquiry(
   prevState: InquiryState,
   formData: FormData
 ): Promise<InquiryState> {
-  const inquiryType = formData.get('inquiryType');
-  const name = formData.get('name');
-  const email = formData.get('email');
-  const organization = formData.get('organization');
-  const message = formData.get('message');
+  const inquiryType = formData.get('inquiryType') as string;
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+  const organisation = formData.get('organisation') as string;
+  const message = formData.get('message') as string;
 
-  if (!inquiryType || !name || !email || !organization || !message) {
+  // 🛡️ Validation
+  if (!inquiryType || !name || !email || !organisation || !message) {
     return {
       message: null,
-      error: 'Please fill out all fields.',
+      error: 'All intelligence parameters are required for transmission.',
       success: false,
     };
   }
 
-  let emailSubject = '';
-  let emailBody = '';
+  try {
+    // 1. DATABASE LOGGING (Firestore Backup)
+    await addDoc(collection(db, "inquiries"), {
+      name,
+      email,
+      organisation,
+      type: inquiryType,
+      message,
+      status: "new",
+      timestamp: serverTimestamp(),
+    });
 
-  if (inquiryType === 'school') {
-    emailSubject = 'Your Verified School Profile is Now Live 🐾';
-    emailBody = `Hello ${name},
+    // 2. DEFINE NEUTRAL RESPONSES
+    let emailSubject = '';
+    let emailBody = '';
 
-Your Leopardfish Intel Verified School Profile is now live.
+    if (inquiryType === 'teacher') {
+      emailSubject = 'Intelligence Request Acknowledged | Leopardfish Intel';
+      emailBody = `Hello ${name},\n\nYour request for independent teacher intelligence has been received. \n\nLeopardfish Intel operates as a neutral data resource for the international community. Our team will review your inquiry and contact you shortly regarding your requirements.\n\nRegards,\n\nThe Leopardfish Intel Team`;
+    } else if (inquiryType === 'school') {
+      emailSubject = 'Verification Inquiry Received | Leopardfish Intel';
+      emailBody = `Hello ${name},\n\nWe have received your inquiry regarding the Leopardfish Verified School Profile for ${organisation}.\n\nOur team maintains strict, independent verification standards. We will review your provided data and contact you shortly to discuss the next steps in the verification process.\n\nRegards,\n\nThe Leopardfish Intel Team`;
+    } else {
+      emailSubject = 'Service Provider Inquiry | Leopardfish Intel';
+      emailBody = `Hello ${name},\n\nYour inquiry regarding service provider integration has been logged. \n\nWe focus exclusively on high-utility services that provide verified value to the international community. A member of our team will contact you to discuss your support for educators.\n\nRegards,\n\nThe Leopardfish Intel Team`;
+    }
 
-Our team has completed the final review of your data and your school is now visible to our global teaching community. You can view your live profile here: [Link to Profile]
+    // 3. LIVE TRANSMISSION
+    if (process.env.RESEND_API_KEY) {
+      // Send confirmation to the user
+      await resend.emails.send({
+        from: 'Leopardfish Intel <system@leopardfishintel.com>',
+        to: [email],
+        subject: emailSubject,
+        text: emailBody,
+      });
 
-Next Steps:
+      // Send notification to Roger
+      await resend.emails.send({
+        from: 'Intelligence Desk <system@leopardfishintel.com>',
+        to: ['roger@leopardfishintel.com'],
+        subject: `🚨 NEW INQUIRY: ${inquiryType.toUpperCase()} - ${organisation}`,
+        text: `Source: ${name}\nEmail: ${email}\nOrganisation: ${organisation}\n\nMessage Detail:\n${message}`,
+      });
+    }
 
-Review: Please take a moment to ensure all links and information are correct.
+    return {
+      message: 'Transmission Successful. Your request has been logged and our team will contact you shortly.',
+      error: null,
+      success: true,
+    };
 
-Updates: You can update your profile, vacancy links, or media at any time via your [Dashboard Link].
-
-Verified Status: Your profile now carries the Leopardfish Verified badge, confirming your commitment to the international teaching community.
-
-Thank you for joining our network.
-
-Regards,
-
-The Leopardfish Intel Team`;
-  } else {
-    emailSubject = 'Your Service Provider Profile is Now Live';
-    emailBody = `Hello ${name},
-
-Your Service Provider Profile is now live on Leopardfish Intel.
-
-Your services are now visible to our network of international schools and educators. You can view your listing here: [Link to Profile]
-
-Next Steps:
-
-Check Your Listing: Ensure your contact details and links are functioning correctly.
-
-Manage Content: To make changes to your description or branding, please log in to your [Account Dashboard].
-
-Enquiries: Any enquiries generated through your profile will be sent directly to the email address provided in your setup.
-
-We look forward to a successful partnership.
-
-Regards,
-
-The Leopardfish Intel Team`;
+  } catch (err) {
+    console.error('Transmission Error:', err);
+    return {
+      message: null,
+      error: 'Critical transmission failure. Please verify your connection or contact roger@leopardfishintel.com directly.',
+      success: false,
+    };
   }
-
-  // In a real application, you would send an email here.
-  // For now, we'll just log it to the console.
-  console.log('--- Sending Inquiry Email ---');
-  console.log(`To: ${email}`);
-  console.log(`Subject: ${emailSubject}`);
-  console.log(`Body:\n${emailBody}`);
-  console.log('-----------------------------');
-
-  return {
-    message: 'Success! Your profile is now live. Please check your email for details.',
-    error: null,
-    success: true,
-  };
 }

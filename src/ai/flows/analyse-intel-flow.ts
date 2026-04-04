@@ -1,4 +1,4 @@
- 'use server';
+'use server';
 
 /**
  * @fileOverview An AI flow to analyse and validate user-submitted field intelligence.
@@ -24,7 +24,8 @@ export async function analyseIntelStream(rawInput: { category: string; content: 
 
   // 🛰️ STREAMING GENERATION
   const { stream } = ai.generateStream({
-    model: 'googleai/gemini-1.5-flash', 
+    // 🚀 YOUR TACTICAL FIX RE-ENGAGED: Upgraded to active 2.0 model
+    model: 'googleai/gemini-2.0-flash', 
     system: `You are a high-level intelligence officer for Leopardfish Intel. 
     Your task is to provide real-time analysis of a field report submitted by an educator. 
     Evaluate the strategic importance, check for red flags, and provide a short tactical summary. 

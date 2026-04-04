@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -32,10 +32,11 @@ export default function Navbar() {
     }
   };
 
+  // 🛡️ PATHS UPDATED TO MATCH YOUR WORKING FOLDERS
   const links = [
-    { name: "Discover", href: "/discover" },
+    { name: "Discover", href: "/find-your-fit" },
     { name: "Evaluate", href: "/financial-forecaster" },
-    { name: "Decide", href: "/compare" },
+    { name: "Decide", href: "/dashboard" },
     { name: "Prepare", href: "/prepare" },
     { name: "Directory", href: "/directory" },
     { name: "Partners", href: "/partners" },
@@ -88,7 +89,6 @@ export default function Navbar() {
 
         {user ? (
           <div className="flex items-center gap-4">
-            {/* Re-adding the "Account" Label from your old code */}
             <div className="hidden xl:flex flex-col items-end">
               <span className="text-slate-500 text-[8px] uppercase font-bold tracking-tighter">Account</span>
               <span className="text-white text-[10px] font-medium">{user.email}</span>

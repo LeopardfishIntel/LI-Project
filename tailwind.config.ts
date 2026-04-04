@@ -8,13 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // 🛰️ Mapping the variables from layout.tsx
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+        display: ["var(--font-montserrat)", "sans-serif"],
+      },
       colors: {
-        // Leopardfish Tactical Palette
         primary: "#f97316",    // Orange
         background: "#020617", // Deep Navy
         azure: "#007FFF",      // Intel Blue
         foreground: "#ffffff",
-        // The Border Fix: Critical for Firebase App Hosting stability
         border: "rgba(255, 255, 255, 0.1)",
       },
       fontWeight: {

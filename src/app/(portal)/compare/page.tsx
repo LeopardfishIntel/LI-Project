@@ -1,14 +1,15 @@
 "use client";
-"use client";
 
 import { useEffect, useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
   MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap, 
   BookOpen, Activity, Wallet, Receipt, Globe2, Users, AlertTriangle, 
-  ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle
+  ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle,
+  ShieldCheck, Fingerprint // 🛰️ Added Intel Icons
 } from 'lucide-react';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+// 🛰️ Added useUser to the import
+import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -111,6 +112,9 @@ function DecideContent() {
     const router = useRouter();
     const firestore = useFirestore();
     const searchParams = useSearchParams();
+    
+    // 🎯 TACTICAL IDENTITY GRAB
+    const { customId, isAdmin } = useUser();
 
     const [mounted, setMounted] = useState(false);
     
@@ -231,6 +235,24 @@ function DecideContent() {
     return (
         <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#f97316]">
             <div className="max-w-7xl mx-auto space-y-4">
+                
+                {/* 🕵️ AGENT IDENTITY BAR INJECTION */}
+                {customId && (
+                    <div className="mb-4 flex flex-col md:flex-row items-center justify-between border border-white/10 bg-black/40 p-4 rounded-sm">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-[#f97316]/10 border border-[#f97316]/30 rounded-full">
+                                {isAdmin ? <ShieldCheck className="text-[#f97316] size-6" /> : <Fingerprint className="text-[#007FFF] size-6" />}
+                            </div>
+                            <div>
+                                <h2 className="text-white font-black uppercase text-xs tracking-[0.2em]">Intel Calculator Synced</h2>
+                                <p className="text-[#f97316] text-xl font-black italic tracking-tighter">
+                                    Operative — {customId}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/5 pb-4 gap-6">
                     <div className="space-y-1">
                         <button onClick={() => router.back()} className="flex items-center gap-2 text-[11px] font-black text-[#007FFF] uppercase tracking-widest hover:text-white mb-2 transition-colors"><ArrowLeft className="size-3" /> Back</button>

@@ -1,6 +1,11 @@
- "use server";
+"use server";
 
-import { findYourFit, FindYourFitInput, FindYourFitOutput } from "@/ai/flows/find-your-niche-flow";
+/**
+ * 🛡️ THE FIX: Using the absolute alias '@/' ensures the compiler finds the AI flow.
+ * Note: Ensure the file in 'src/ai/flows/' is named 'find-your-fit-flow.ts' 
+ * (If it is named 'find-your-niche-flow', change the string below to match).
+ */
+import { findYourFit, FindYourFitInput, FindYourFitOutput } from "@/ai/flows/find-your-fit-flow";
 
 export type FitFinderState = {
   result: FindYourFitOutput | null;
@@ -29,7 +34,6 @@ export async function findFitAction(
       experience: `${formData.get("experience") || "0"} years`,
       subject: String(formData.get("subject") || "General"),
       preferredRegions: formData.getAll("regions_cb").join(", "),
-      // 🎯 THE DIRECTIVE: ONLY HEADERS AND RATINGS
       preferences: `STRICT MISSION: 
       1. Return 5 countries. 
       2. START reasoning with [RATING: X.X/10].
@@ -44,6 +48,7 @@ export async function findFitAction(
     const result = await findYourFit(input);
     return { result: JSON.parse(JSON.stringify(result)), error: null, pending: false };
   } catch (e: any) {
+    console.error("AI Flow Execution Error:", e);
     return { result: null, error: e.message || "Intel Failure", pending: false };
   }
 }

@@ -6,16 +6,18 @@ import Footer from "@/components/layout/footer";
 import { FloatingIntelButton } from "@/components/floating-intel-button";
 import "./globals.css";
 
-// 🛠️ Typography: Force font-black and tracking-tighter via CSS variables
+// Inter is a variable font, so it handles weights 100-900 automatically
 const inter = Inter({ 
   subsets: ['latin'], 
   variable: '--font-inter', 
   display: 'swap' 
 });
 
+// SURGICAL FIX: Unlocked the full range of weights for Montserrat 
+// to allow the "unbolding" in page.tsx to actually render.
 const montserrat = Montserrat({ 
   subsets: ['latin'], 
-  weight: ['700', '800', '900'], 
+  weight: ['300', '400', '500', '600', '700', '800', '900'], 
   variable: '--font-montserrat', 
   display: 'swap' 
 });
@@ -29,21 +31,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
       <body 
-        className={`
-          ${inter.variable} 
-          ${montserrat.variable} 
-          font-sans antialiased min-h-screen 
-          bg-background text-white 
-          selection:bg-primary selection:text-white
-          overflow-x-hidden
-        `}
+        className={`${inter.variable} ${montserrat.variable} font-sans antialiased min-h-screen bg-background text-white selection:bg-primary selection:text-white overflow-x-hidden`}
       >
         <Providers>
           <div className="relative flex min-h-screen flex-col">
             <Header />
             
-            {/* 🛰️ Main Content Area: flex-1 keeps footer at bottom */}
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* 🛰️ PROTOCOL CHANGE: Removed max-w-7xl and px-8 to allow Full-Width Hero Sections */}
+            <main className="flex-1 w-full">
               {children}
             </main>
             

@@ -1,1 +1,49 @@
-@tailwind base; @tailwind components; @tailwind utilities; @layer base { body { @apply bg-[#020617] text-white antialiased; } h1, h2, h3 { @apply font-black tracking-tighter text-[#f97316] normal-case; } p { @apply normal-case leading-relaxed; } }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Hard-Coded Tactical Tokens */
+    --background: #020617;
+    --foreground: #ffffff;
+    --primary: #f97316;
+    --azure: #007FFF;
+    --border: rgba(255, 255, 255, 0.1);
+    
+    /* Shadcn/UI Compatibility Map */
+    --card: #020617;
+    --popover: #020617;
+    --muted: 217.2 32.6% 17.5%;
+    --accent: 217.2 32.6% 17.5%;
+    --ring: #f97316;
+  }
+
+  body {
+    @apply bg-background text-white antialiased;
+    font-family: var(--font-inter), ui-sans-serif, system-ui;
+    background-color: var(--background);
+  }
+
+  /* 🎯 Leopardfish Headline Shield */
+  h1, h2, h3 {
+    @apply font-black tracking-tighter text-primary normal-case !important;
+    font-family: var(--font-montserrat), sans-serif;
+  }
+
+  p {
+    @apply normal-case leading-relaxed text-white/80;
+  }
+
+  /* 🛠️ Border Fix Protocol */
+  * {
+    border-color: var(--border);
+  }
+}
+
+@layer components {
+  /* Tactical Glassmorphism for Buttons/Cards */
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl;
+  }
+}

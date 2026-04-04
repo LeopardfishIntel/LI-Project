@@ -1,182 +1,143 @@
- "use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import dynamic from 'next/dynamic'; 
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Zap, Target, Calculator } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// 🛰️ 1. STATIC ASSET IMPORT
-import goldfishImg from '@/assets/goldfish.jpg';
-
-// 📡 2. DYNAMIC COMPONENT IMPORTS
-const KeyFactsSection = dynamic(
-  () => import('@/components/key-facts-section').then((mod) => mod.KeyFactsSection),
-  { ssr: false }
-);
-
-const AnalysisInAction = dynamic(
-  () => import('@/components/sections/analysis-in-action').then((mod) => mod.AnalysisInAction),
-  { ssr: false }
-);
-
-function TacticalButton({ href, label, className }: { href: string; label: string; className?: string }) {
-  return (
-    <Link href={href} prefetch={false}>
-      <Button 
-        className={cn(
-          "bg-[#f97316]/10 backdrop-blur-md border border-[#f97316]/40 text-white font-bold rounded-none h-14 px-10 transition-all hover:bg-[#f97316]/30 shadow-xl text-sm whitespace-nowrap",
-          className
-        )}
-      >
-        {label}
-      </Button>
-    </Link>
-  );
-}
-
+/**
+ * 🛡️ LEOPARDFISH TACTICAL HOMEPAGE
+ * Logic: Hard-coded HEX values and Tactical Glass signatures.
+ */
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const steps = [
     { 
-      id: '01', 
       title: 'Discover', 
-      desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle. We match your personal profile with the real-world conditions of each location.", 
-      link: '/discover', 
+      desc: "Find the right role for you. See which destinations suit your lifestyle.", 
+      link: '/find-your-fit', 
       imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', 
       label: 'Explore Roles' 
     },
     { 
-      id: '02', 
       title: 'Evaluate', 
-      desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid. Calculate your expected take-home pay and see how much you’ll have left to spend after local living costs.", 
-      link: '/discover', // Updated to match your 'Evaluate' flow
+      desc: "Understand exactly what you’ll be paid. Calculate expected take-home pay.", 
+      link: '/financial-forecaster', 
       imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', 
       label: 'Calculate Pay' 
     },
     { 
-      id: '03', 
       title: 'Decide', 
-      desc: "Compare your options. View your choices side-by-side. Compare your potential costs, income and savings to help you make the best decision for your future.", 
+      desc: "Compare potential costs, income and savings to help you make the best decision.", 
       link: '/compare', 
       imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', 
       label: 'View Matrix' 
     },
     { 
-      id: '04', 
       title: 'Prepare', 
-      desc: "Get ready to move. Everything you need to do before you head off. Access simple, step-by-step checklists and clear timelines to manage your move with ease.", 
+      desc: "Access step-by-step checklists and clear timelines to manage your move.", 
       link: '/prepare', 
-      imageUrl: goldfishImg, 
+      imageUrl: 'https://images.unsplash.com/photo-1638202947561-e372255007b3?q=80&w=1080&auto=format&fit=crop', 
       label: 'Start Checklist' 
     },
   ];
 
-  if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
-
   return (
-    <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#f97316]">
+    <div className="flex flex-col min-h-screen bg-[#020617] text-white selection:bg-[#f97316]">
       
       {/* 🏔️ HERO SECTION */}
-      <section className="relative w-full h-[88vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
+      <section className="relative w-full h-[85vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/10 px-4 text-center">
         <Image 
           src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" 
           alt="Intelligence background" 
-          fill 
-          priority={true} // 🏎️ PRIORITY ENABLED: Fixed LCP warning for above-the-fold content
-          className="absolute inset-0 w-full h-full object-cover opacity-60" 
+          fill priority unoptimized
+          className="absolute inset-0 w-full h-full object-cover opacity-40" 
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-[#020617]/40 to-[#020617]"></div>
         
         <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center">
-           <div className="inline-flex items-center gap-2 px-4 py-1 border border-[#f97316]/30 bg-[#f97316]/5 text-[#f97316] text-[10px] font-black uppercase tracking-[0.4em] mb-8 animate-pulse">
-             Actionable Intelligence
-           </div>
+           {/* 🛡️ Hydration-Guarded Interactive Node */}
+           {mounted && (
+             <div className="inline-flex items-center gap-2 px-4 py-1 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[10px] font-bold uppercase tracking-[0.4em] mb-8 animate-in fade-in duration-700">
+               ⦿ Actionable Intelligence
+             </div>
+           )}
 
-           <h1 className="text-6xl md:text-8xl tracking-tighter text-white font-black mb-6 leading-none italic drop-shadow-2xl">
-             <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+           <h1 className="text-6xl md:text-8xl tracking-tighter text-white antialiased mb-4 leading-none font-extrabold">
+              <span className="text-[#f97316]">Leopard</span>fish <span className="text-[#007FFF]">Intel</span>
            </h1>
            
-           <p className="text-xl md:text-2xl text-white font-bold max-w-2xl opacity-90 mb-10 tracking-tight leading-relaxed italic uppercase">
-             Move with certainty<span className="text-[#f97316]">,</span> not just hope.
+           <p className="text-xl md:text-2xl text-slate-300 font-medium max-w-2xl mb-12 tracking-tight italic">
+             "Move with certainty, not just hope."
            </p>
            
-           <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <TacticalButton href="/discover" label="Find Your Fit" className="w-60 h-16 text-base" />
-              <TacticalButton href="/compare" label="Check Your Offer" className="w-60 h-16 text-base" />
-           </div>
-           
-           <div className="opacity-100">
-             <KeyFactsSection />
+           <div className="flex flex-col sm:flex-row gap-6 mb-8">
+              <Link href="/find-your-fit" prefetch={false}>
+                <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 w-64 transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest uppercase">
+                  Discover
+                </Button>
+              </Link>
+              <Link href="/financial-forecaster" prefetch={false}>
+                <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 w-64 transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest uppercase">
+                  Evaluate
+                </Button>
+              </Link>
            </div>
         </div>
       </section>
 
-      {/* 🎯 MISSION STATEMENT */}
-      <section className="py-16 md:py-24 bg-[#020617] border-y border-white/5">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-5xl uppercase tracking-[0.1em] text-white font-black italic mb-8 leading-none">
-            Know <span className="text-[#f97316]">before</span> you go
-          </h2>
-          <div className="space-y-6">
-            <p className="text-white/80 text-xl md:text-2xl leading-relaxed font-bold tracking-tight">
-              Don’t fly blind. International teaching looks like a dream on Instagram, but the contract is where the reality lives. We strip away the gloss to show you the cold, hard facts.
-            </p>
-            <p className="text-[#007FFF] text-lg md:text-xl leading-relaxed font-black uppercase italic tracking-widest">
-              Every international teaching offer hides trade-offs. We make them visible.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 🧭 ZIG-ZAG PROTOCOLS */}
-      <section className="py-20 bg-[#020617]">
+      {/* 🧭 ZIG-ZAG SECTIONS */}
+      <section className="py-24 bg-[#020617]">
         <div className="container mx-auto px-4 space-y-32">
           {steps.map((step, index) => (
-            <div key={step.id} className="grid md:grid-cols-12 gap-12 md:gap-20 items-center max-w-6xl mx-auto border-b border-white/5 pb-24 last:border-0">
-              
+            <div key={step.title} className="grid md:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
               <div className={cn(
-                "md:col-span-5 relative aspect-video border border-white/10 overflow-hidden group shadow-[0_0_50px_rgba(0,127,255,0.1)]", 
+                "md:col-span-5 relative aspect-[4/3] border border-white/5 overflow-hidden shadow-2xl",
                 index % 2 === 1 && "md:order-last"
               )}>
-                <Image 
-                  src={step.imageUrl} 
-                  alt={step.title} 
-                  fill 
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover opacity-80 transition-transform group-hover:scale-105 duration-700 group-hover:opacity-100" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60"></div>
+                <Image src={step.imageUrl} alt={step.title} fill unoptimized className="object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-700" />
               </div>
-
               <div className={cn(
-                "md:col-span-7 flex flex-col space-y-4", 
+                "md:col-span-7 flex flex-col space-y-4",
                 index % 2 === 1 ? "md:items-end md:text-right" : "items-start"
               )}>
-                <span className="text-6xl font-black text-[#f97316] opacity-20 leading-none tracking-tighter italic">{step.id}</span>
-                <h3 className="text-5xl md:text-6xl text-white font-black uppercase italic tracking-tighter leading-none">
-                    {step.title}<span className="text-[#007FFF]">.</span>
-                </h3>
-                <p className="text-slate-400 text-lg leading-relaxed max-w-lg font-bold">
-                    {step.desc}
-                </p>
-                <Link href={step.link} className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-4 border-b-2 border-transparent hover:border-[#f97316] transition-all">
-                  {step.label} <ArrowRight className="ml-3 size-5 group-hover:translate-x-2 transition-transform" />
+                <span className="text-[#f97316] text-[10px] font-black tracking-[0.5em] uppercase opacity-50">Protocol 0{index + 1}</span>
+                <h3 className="text-5xl md:text-6xl text-white font-black uppercase tracking-tighter leading-none">{step.title}</h3>
+                <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed max-w-xl">{step.desc}</p>
+                <Link href={step.link} prefetch={false} className="inline-flex items-center gap-3 text-[#f97316] text-xs font-bold tracking-[0.3em] uppercase group pt-6">
+                  {step.label} <ArrowRight className="size-4 group-hover:translate-x-2 transition-transform" />
                 </Link>
               </div>
-
             </div>
           ))}
         </div>
       </section>
 
-      <div className="pb-24">
-        <AnalysisInAction />
-      </div>
+      {/* 🏁 FINAL CTA */}
+      <section className="py-32 border-t border-white/5 bg-[#0b1224]/30">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase italic leading-none">
+            Know <span className="text-[#f97316]">before</span> you go
+          </h2>
+          <p className="text-slate-400 text-lg md:text-xl font-medium italic">
+            "International teaching looks like a dream on Instagram, but reality lives in the contract."
+          </p>
+          <div className="pt-8 flex justify-center">
+            <Link href="/find-your-fit" prefetch={false}>
+              <Button className="bg-[#f97316] hover:bg-white hover:text-[#f97316] text-white font-black h-16 px-12 rounded-none transition-all uppercase tracking-widest text-sm shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                Initialize Intel Scan
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
       
     </div>
   );
