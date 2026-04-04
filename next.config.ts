@@ -39,7 +39,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
       "lucide-react", 
-      "@/firebase", 
       "recharts",
       "@radix-ui/react-select",
       "@radix-ui/react-dialog",
