@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 /**
  * 🛰️ TACTICAL CONFIGURATION v15.1
  * Logic: Optimised for Firebase App Hosting & Cloud Workstation stability.
+ * Resolution: Disables Webpack cache to prevent ENOENT filesystem corruption errors.
  */
 const nextConfig: NextConfig = {
   trailingSlash: true,
@@ -33,9 +34,18 @@ const nextConfig: NextConfig = {
     return config;
   },
   // 🚀 PERFORMANCE OPTIMIZATION:
-  // Reduces module processing time for high-density pages.
+  // Reduces module processing time for high-density pages by pruning unused exports.
   experimental: {
-    optimizePackageImports: ["lucide-react", "@/firebase"],
+    optimizePackageImports: [
+      "lucide-react", 
+      "@/firebase", 
+      "recharts",
+      "@radix-ui/react-select",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-tabs"
+    ],
   },
 };
 
