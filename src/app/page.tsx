@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Target, Calculator } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
  * 🛡️ LEOPARDFISH TACTICAL HOMEPAGE
  * Logic: Hard-coded HEX values and Tactical Glass signatures.
+ * Hydration Guard: Only wraps interactive nodes to prevent blank-screen delays.
  */
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -24,28 +25,28 @@ export default function Home() {
       desc: "Find the right role for you. See which destinations suit your lifestyle.", 
       link: '/find-your-fit', 
       imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', 
-      label: 'Explore Roles' 
+      label: 'Explore roles' 
     },
     { 
       title: 'Evaluate', 
       desc: "Understand exactly what you’ll be paid. Calculate expected take-home pay.", 
       link: '/financial-forecaster', 
       imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', 
-      label: 'Calculate Pay' 
+      label: 'Calculate pay' 
     },
     { 
       title: 'Decide', 
       desc: "Compare potential costs, income and savings to help you make the best decision.", 
       link: '/compare', 
       imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', 
-      label: 'View Matrix' 
+      label: 'View matrix' 
     },
     { 
       title: 'Prepare', 
       desc: "Access step-by-step checklists and clear timelines to manage your move.", 
       link: '/prepare', 
       imageUrl: 'https://images.unsplash.com/photo-1638202947561-e372255007b3?q=80&w=1080&auto=format&fit=crop', 
-      label: 'Start Checklist' 
+      label: 'Start checklist' 
     },
   ];
 
@@ -63,12 +64,9 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-[#020617]/40 to-[#020617]"></div>
         
         <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center">
-           {/* 🛡️ Hydration-Guarded Interactive Node */}
-           {mounted && (
-             <div className="inline-flex items-center gap-2 px-4 py-1 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[10px] font-bold uppercase tracking-[0.4em] mb-8 animate-in fade-in duration-700">
-               ⦿ Actionable Intelligence
-             </div>
-           )}
+           <div className="inline-flex items-center gap-2 px-4 py-1 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[10px] font-bold uppercase tracking-[0.4em] mb-8">
+             ⦿ Actionable intelligence
+           </div>
 
            <h1 className="text-6xl md:text-8xl tracking-tighter text-white antialiased mb-4 leading-none font-extrabold">
               <span className="text-[#f97316]">Leopard</span>fish <span className="text-[#007FFF]">Intel</span>
@@ -78,18 +76,20 @@ export default function Home() {
              "Move with certainty, not just hope."
            </p>
            
-           <div className="flex flex-col sm:flex-row gap-6 mb-8">
-              <Link href="/find-your-fit" prefetch={false}>
-                <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 w-64 transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest uppercase">
-                  Discover
-                </Button>
-              </Link>
-              <Link href="/financial-forecaster" prefetch={false}>
-                <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D] text-white font-bold rounded-none h-14 w-64 transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest uppercase">
-                  Evaluate
-                </Button>
-              </Link>
-           </div>
+           {mounted && (
+             <div className="flex flex-col sm:flex-row gap-6 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <Link href="/find-your-fit" prefetch={false}>
+                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D]/40 text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
+                    Discover
+                  </Button>
+                </Link>
+                <Link href="/financial-forecaster" prefetch={false}>
+                  <Button className="bg-[#E68A4D]/20 backdrop-blur-md border border-[#E68A4D]/40 text-white font-bold rounded-none h-14 min-w-[200px] transition-all hover:bg-[#E68A4D]/40 shadow-xl text-xs tracking-widest">
+                    Evaluate
+                  </Button>
+                </Link>
+             </div>
+           )}
         </div>
       </section>
 
@@ -130,11 +130,13 @@ export default function Home() {
             "International teaching looks like a dream on Instagram, but reality lives in the contract."
           </p>
           <div className="pt-8 flex justify-center">
-            <Link href="/find-your-fit" prefetch={false}>
-              <Button className="bg-[#f97316] hover:bg-white hover:text-[#f97316] text-white font-black h-16 px-12 rounded-none transition-all uppercase tracking-widest text-sm shadow-[0_0_30px_rgba(249,115,22,0.3)]">
-                Initialize Intel Scan
-              </Button>
-            </Link>
+            {mounted && (
+              <Link href="/find-your-fit" prefetch={false}>
+                <Button className="bg-[#f97316] hover:bg-white hover:text-[#f97316] text-white font-black h-16 px-12 rounded-none transition-all uppercase tracking-widest text-sm shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                  Initialize intel scan
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>
