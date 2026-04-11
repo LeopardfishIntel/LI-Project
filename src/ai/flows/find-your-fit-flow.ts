@@ -45,7 +45,7 @@ export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 const findYourFitPrompt = ai.definePrompt({
   name: 'findYourFitPrompt',
   // 🚀 EXPLICIT MODEL OVERRIDE
-  model: 'googleai/gemini-3.1-flash-lite-preview', 
+  model: 'googleai/gemini-2.5-flash',
   input: { schema: FindYourFitInputSchema },
   output: { schema: FindYourFitOutputSchema },
   prompt: `You are an expert career adviser specialising in international teaching opportunities. 

@@ -1,4 +1,4 @@
- kind: "AppHostingConfig"
+kind: "AppHostingConfig"
 schemaVersion: "v1"
 
 # 🛰️ RUNTIME TOPOLOGY
@@ -17,11 +17,11 @@ environmentVariables:
     value: "production"
   
   # 🛰️ FIREBASE PUBLIC CONFIG
-  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyCsXjVXsRxZerNaYj7kFWTyxdMlR6kLK9U"
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
     value: "studio-2840117705-12faa"
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    secret: NEXT_PUBLIC_FIREBASE_API_KEY # 🛡️ Safe mapping
 
-  # 💎 THE AI LINK: This must match your process.env name in genkit.ts
+  # 💎 THE AI LINK
   - variable: GOOGLE_GENERATIVE_AI_API_KEY
     secret: GOOGLE_GENERATIVE_AI_API_KEY

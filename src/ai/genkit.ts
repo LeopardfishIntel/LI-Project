@@ -1,8 +1,8 @@
 import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
-// 🛡️ TACTICAL BYPASS: Hardcoded valid key
-const KEY = "AIzaSyDPvJMAUkAbwhbCtA-oHluqN5I7pkI7MBg"; 
+// 🛡️ Safe: Pulls from .env.local only
+const KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
 export const ai = genkit({
   plugins: [
@@ -10,6 +10,6 @@ export const ai = genkit({
       apiKey: KEY,
     })
   ],
-  // 🚀 2026 STANDARD: Using Gemini 3.1 Flash-Lite
-  model: 'googleai/gemini-3.1-flash-lite-preview', 
+  // 🚀 2026 Stable Standard
+  model: 'googleai/gemini-2.5-flash',
 });

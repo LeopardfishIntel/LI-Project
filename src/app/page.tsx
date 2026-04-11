@@ -73,8 +73,12 @@ export default function Home() {
              ⦿ Actionable intelligence
            </div>
 
-           <h1 className="text-6xl md:text-8xl tracking-[0.08em] text-white font-normal mb-2 leading-none italic drop-shadow-2xl">
-             <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+           {/* 🛡️ NEEDLE-THIN HERO: Inter 100, High Tracking, Zero Shadow, Light Bleed Fix */}
+           <h1 
+           className="text-6xl md:text-8xl tracking-[0.2em] mb-4 leading-none font-sans antialiased opacity-90"
+           style={{ fontWeight: 100, textShadow: 'none' }}
+           >
+           <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
            </h1>
            
            <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
