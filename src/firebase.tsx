@@ -21,8 +21,9 @@ let app: FirebaseApp;
 let db: Firestore;
 let auth: Auth;
 
+// Isomorphic Initialization Protocol
+app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 if (isBrowser) {
-  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   try {
     db = getFirestore(app);
   } catch (e) {
@@ -30,16 +31,19 @@ if (isBrowser) {
   }
   auth = getAuth(app);
 } else {
-  // Prerender Safety
-  app = null as any;
-  db = null as any;
+  db = getFirestore(app);
   auth = null as any;
 }
 
+// ✅ FIXED: Explicit Export for Build Engine
 export async function setDocumentNonBlocking(collectionName: string, docId: string, data: any) {
-  if (!db) return; 
-  const docRef = doc(db, collectionName, docId);
-  return setDoc(docRef, data, { merge: true });
+  try {
+    const docRef = doc(db, collectionName, docId);
+    return await setDoc(docRef, data, { merge: true });
+  } catch (error) {
+    console.error("Firebase write error:", error);
+    return null;
+  }
 }
 
 // --- AUTH CONTEXT ---
@@ -51,8 +55,10 @@ const AuthContext = createContext<{ user: User | null; loading: boolean }>({
 export function FirebaseClientProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!auth) {
         setLoading(false);
         return;
@@ -71,6 +77,9 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
 
     return () => unsubscribe();
   }, []);
+
+  // 🛡️ Hydration Guard
+  if (!mounted) return null;
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
@@ -96,11 +105,10 @@ export const useAuth = () => {
 
 export const useUser = () => {
   const context = useContext(AuthContext);
-  return { ...context, isUserLoading: context.loading, isAdmin: false };
+  return { ...context, isUserLoading: context?.loading ?? true, isAdmin: false };
 };
 
-// --- DATA HOOKS: Tactical Pathing to Subfolder ---
-// We target the folder specifically to avoid importing the file itself
+// --- DATA HOOKS ---
 import { useCollection as useCollectionHook } from "./firebase/firestore/use-collection";
 import { useDoc as useDocHook } from "./firebase/firestore/use-doc";
 
