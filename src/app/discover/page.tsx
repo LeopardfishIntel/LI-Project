@@ -42,7 +42,12 @@ export default function FindYourFitGate() {
   const availableRegions = useMemo(() => {
     const masterList = ["africa", "americas", "east asia", "europe", "middle east", "south asia", "southeast asia"];
     if (costOfLivingData && costOfLivingData.length > 0) {
-      const dbRegions = costOfLivingData.map((d: any) => d.region.toLowerCase()).filter(Boolean);
+      // 🛡️ ZERO-DOUBT SHIELD: Prevents 'toLowerCase' error on null/undefined regions
+      const dbRegions = costOfLivingData
+        .filter((d: any) => d && typeof d.region === 'string') 
+        .map((d: any) => d.region.toLowerCase())
+        .filter(Boolean);
+      
       return Array.from(new Set([...masterList, ...dbRegions])).sort();
     }
     return masterList;
@@ -57,7 +62,6 @@ export default function FindYourFitGate() {
         return { ...prev, [field]: current.filter(i => i.toLowerCase() !== value.toLowerCase()) };
       }
       
-      // 🛡️ Continent selection limit (Max 2) or generic max
       const limit = field === 'regions' ? 2 : max;
       if (limit && current.length >= limit) return prev;
       
@@ -93,8 +97,11 @@ export default function FindYourFitGate() {
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-8 lg:p-12 font-sans selection:bg-[#f97316]">
       <div className="max-w-5xl w-full space-y-12 animate-in fade-in duration-500">
         
-        {/* Header section: 25% Reduction & Orange Branding */}
+        {/* 🛡️ Header section: 25% Reduction & Orange Branding */}
         <div className="text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-2 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] mx-auto">
+             ⦿ Actionable intelligence
+          </div>
           <h1 className="text-5xl font-black text-[#f97316] tracking-tighter leading-none italic uppercase">
             Find your fit
           </h1>
@@ -222,7 +229,7 @@ export default function FindYourFitGate() {
             </div>
           </div>
 
-          {/* Target regions: Continent selection limit (Max 2) */}
+          {/* Target regions */}
           <div className="mb-16 text-left space-y-6 pt-10 border-t border-white/5">
             <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
               <Compass className="size-4" /> Target regions (Max 2)

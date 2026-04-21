@@ -1,11 +1,21 @@
 'use server';
 
-import { getFirestore, collection, getDocs, doc, writeBatch, updateDoc } from 'firebase/firestore/lite';
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  writeBatch, 
+  updateDoc, 
+  QueryDocumentSnapshot,
+  DocumentData
+} from 'firebase/firestore/lite';
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { enrichSchoolData } from '@/ai/flows/enrich-school-data-flow';
 import { updateCostOfLiving } from '@/ai/flows/update-cost-of-living-flow';
 
-const cfg = {
+// 🛡️ Tactical Config Sync
+const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "studio-2840117705-12faa.firebaseapp.com",
   projectId: "studio-2840117705-12faa",
@@ -14,96 +24,136 @@ const cfg = {
   appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
 };
 
-const app = getApps().length ? getApp() : initializeApp(cfg);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ✅ EXPORTED: For page.tsx consumption
+// 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
   message: string | null;
   error: string | null;
   summary: { total: number; enriched: number; failed: number } | null;
 };
 
-// ✅ EXPORTED: For page.tsx consumption
 export type EcoActionState = {
   message: string | null;
   error: string | null;
   success: boolean;
-  data: {
-    averageMealCost: number;
-    monthlyRent1BR: number;
-    transportPassCost: number;
-  } | null;
+  data: any | null;
 };
 
+/**
+ * 🛰️ Action: Update Location Cost of Living
+ * Triggers the AI Drone to scan and update city-level telemetry.
+ */
 export async function updateLocationCostOfLivingAction(prevState: any, formData: FormData): Promise<EcoActionState> {
   try {
     const locationName = formData.get('locationName') as string;
     const countryName = formData.get('countryName') as string;
     
-    if (!locationName) return { error: "Location Name is required", success: false, message: null, data: null };
+    if (!locationName) {
+      return { error: "Location Name is required", success: false, message: null, data: null };
+    }
 
     const res = await updateCostOfLiving({ locationName, countryName } as any);
-    
     return { 
-      message: `Updated ${locationName} successfully`, 
-      success: true,
-      error: null,
-      data: res
+      message: `Updated telemetry for ${locationName} successfully`, 
+      success: true, 
+      error: null, 
+      data: res 
     };
   } catch (e: any) {
-    return { error: e.message || "AI Flow Failed", success: false, message: null, data: null };
+    return { 
+      error: e.message || "AI Operational Flow Failed", 
+      success: false, 
+      message: null, 
+      data: null 
+    };
   }
 }
 
+/**
+ * 🛰️ Action: Get Telemetry Data
+ * Pulls the raw node data for the Admin Dashboard.
+ */
 export async function getTelemetryData() {
   try {
     const snap = await getDocs(collection(db, 'telemetry'));
-    const data = snap.docs.reduce((acc: any, d) => ({ ...acc, ...d.data() }), {});
+    // ✅ Zero-Doubt Typing for Document Snapshot
+    const data = snap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({ 
+      ...acc, 
+      ...d.data() 
+    }), {});
+    
     return { success: true, data };
   } catch (e) {
-    console.error("Telemetry fetch failed:", e);
+    console.error("Telemetry uplink failed:", e);
     return { success: false, data: null };
   }
 }
 
+/**
+ * 🛰️ Action: Upload Registry JSON
+ * Handles bulk injection of School or Cost of Living data.
+ */
 export async function uploadRegistryJsonAction(data: any[]) {
   try {
     const batch = writeBatch(db);
     const col = 'locations_costOfLiving';
-    if (!data?.length) return { success: false, error: "Empty Data" };
     
-    const isT = 'carHire' in data[0] || 'transport' in data[0];
-    const isL = 'lifestyle' in data[0] || 'ikea' in data[0];
+    if (!data?.length) return { success: false, error: "Zero records detected in payload" };
+    
+    const isTransport = 'carHire' in data[0] || 'transport' in data[0] || 'publicTransport' in data[0];
+    const isLifestyle = 'lifestyle' in data[0] || 'ikea' in data[0];
 
-    if (isT || isL) {
+    if (isTransport || isLifestyle) {
       const snap = await getDocs(collection(db, col));
+      
       data.forEach(intel => {
-        const refs = snap.docs
-          .filter(d => d.data().country?.toLowerCase() === intel.country?.toLowerCase())
-          .map(d => doc(db, col, d.id));
+        // ✅ Zero-Doubt Filter Logic
+        const targetDocs = snap.docs.filter((d: QueryDocumentSnapshot<DocumentData>) => 
+          d.data().country?.toLowerCase() === intel.country?.toLowerCase()
+        );
+
+        targetDocs.forEach((d) => {
+          const ref = doc(db, col, d.id);
+          const update: any = {};
           
-        refs.forEach(ref => {
-          const up: any = {};
-          if (isT) { up.transport = intel.transport || intel; up.lastTransportSync = new Date().toISOString(); }
-          if (isL) {
-            up.ikea = intel.ikea; up.lifestyle = intel.lifestyle; up.lastLifestyleSync = new Date().toISOString();
-            ['rent1br', 'rent2br', 'rent3br', 'groceries', 'utilities', 'mobilePhone', 'internet'].forEach(f => {
-              if (intel[f]) up[f] = Number(intel[f]);
+          if (isTransport) {
+            update.transport = intel.transport || null;
+            update.publicTransport = intel.publicTransport || null;
+            update.carHire = intel.carHire || null;
+            update.lastTransportSync = new Date().toISOString();
+          }
+          
+          if (isLifestyle) {
+            update.ikea = intel.ikea || null;
+            update.lifestyle = intel.lifestyle || null;
+            update.lastLifestyleSync = new Date().toISOString();
+            
+            // Map common scalar fields
+            ['rent1br', 'rent2br', 'rent3br', 'groceries', 'utilities', 'mobilePhone', 'internet', 'diningSocial'].forEach(field => {
+              if (intel[field]) update[field] = Number(intel[field]);
             });
           }
-          batch.set(ref, up, { merge: true });
+          
+          batch.set(ref, update, { merge: true });
         });
       });
+      
       await batch.commit(); 
       return { success: true, count: data.length };
     }
 
+    // Default: Simple document set for schools or locations
     const targetCol = 'schoolname' in data[0] ? 'schools' : col;
     data.forEach(item => {
       const id = item.id || (item.schoolname || item.city || 'entry').toLowerCase().replace(/\s+/g, '-');
-      batch.set(doc(db, targetCol, String(id)), { ...item, lastSync: new Date().toISOString() }, { merge: true });
+      batch.set(doc(db, targetCol, String(id)), { 
+        ...item, 
+        lastSync: new Date().toISOString() 
+      }, { merge: true });
     });
+
     await batch.commit(); 
     return { success: true, count: data.length };
   } catch (e: any) { 
@@ -111,26 +161,44 @@ export async function uploadRegistryJsonAction(data: any[]) {
   }
 }
 
+/**
+ * 🛰️ Action: Enrich All Schools
+ * Triggers the AI to populate missing descriptions and imagery for the registry.
+ */
 export async function enrichAllSchoolsAction(prevState: any): Promise<BulkEnrichState> {
-  const sum = { total: 0, enriched: 0, failed: 0 };
+  const summary = { total: 0, enriched: 0, failed: 0 };
   try {
     const snap = await getDocs(collection(db, 'schools'));
-    const schools = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    sum.total = schools.length;
-    for (const s of schools as any) {
-      if (!s.summary || !s.imageUrl) {
+    const schools = snap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => ({ 
+      id: d.id, 
+      ...d.data() 
+    }));
+    
+    summary.total = schools.length;
+
+    for (const school of schools as any) {
+      if (!school.summary || !school.imageUrl) {
         try {
-          const res = await enrichSchoolData({ name: s.schoolname || s.name, location: s.city, country: s.country });
-          await updateDoc(doc(db, 'schools', s.id), { 
-            summary: res.description, description: res.description, 
-            imageUrl: res.imageUrl || s.imageUrl, websiteUrl: res.websiteUrl || s.website 
+          const res = await enrichSchoolData({ 
+            name: school.schoolname || school.name, 
+            location: school.city, 
+            country: school.country 
           });
-          sum.enriched++;
-        } catch { sum.failed++; }
+          
+          await updateDoc(doc(db, 'schools', school.id), { 
+            summary: res.description, 
+            description: res.description, 
+            imageUrl: res.imageUrl || school.imageUrl, 
+            websiteUrl: res.websiteUrl || school.website 
+          });
+          summary.enriched++;
+        } catch { 
+          summary.failed++; 
+        }
       }
     }
-    return { message: "Enrichment Complete", error: null, summary: sum };
+    return { message: "Tactical enrichment complete", error: null, summary };
   } catch (e: any) { 
-    return { message: null, error: e.message, summary: sum }; 
+    return { message: null, error: e.message, summary }; 
   }
 }

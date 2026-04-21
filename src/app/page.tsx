@@ -51,10 +51,10 @@ export default function Home() {
   useEffect(() => { setMounted(true); }, []);
 
   const steps = [
-    { title: 'Discover', desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle.", link: '/discover', imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', label: 'Explore Roles' },
-    { title: 'Evaluate', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid.", link: '/discover', imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', label: 'Calculate Pay' },
-    { title: 'Decide', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: '/compare', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'View Matrix' },
-    { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare', imageUrl: goldfishImg, label: 'Start Checklist' },
+    { title: 'Discover', desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle.", link: '/find-your-fit/', imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', label: 'Find Your Fit' },
+    { title: 'Evaluate', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid.", link: '/financial-forecaster/', imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', label: 'Financial Forecast' },
+    { title: 'Decide', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: 'https://www.leopardfishintel.com/compare/', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'Compare Offers' },
+    { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare/', imageUrl: goldfishImg, label: 'Get Ready' },
   ];
 
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
@@ -86,8 +86,8 @@ export default function Home() {
            </p>
            
            <div className="flex flex-col sm:flex-row gap-4 mb-10">
-              <TacticalButton href="/discover" label="Find Your Fit" className="w-60 h-16" />
-              <TacticalButton href="/compare" label="Check Your Offer" className="w-60 h-16" />
+              <TacticalButton href="/find-your-fit/" label="Find Your Fit" className="w-60 h-16" />
+              <TacticalButton href="https://www.leopardfishintel.com/compare/" label="Check Your Offer" className="w-60 h-16" />
            </div>
 
            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 w-full border-t border-white/10 pt-6">
@@ -130,7 +130,11 @@ export default function Home() {
               <div className={cn("md:col-span-7 flex flex-col space-y-2", index % 2 === 1 ? "md:items-end md:text-right" : "items-start")}>
                 <h3 className="text-4xl md:text-5xl text-white font-black uppercase italic tracking-tighter leading-none">{step.title}</h3>
                 <p className="text-slate-400 text-lg leading-relaxed max-w-lg font-bold">{step.desc}</p>
-                <Link href={step.link} className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-1 border-b border-transparent hover:border-[#f97316] transition-all">
+                <Link 
+                  href={step.link} 
+                  prefetch={false}
+                  className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-1 border-b border-transparent hover:border-[#f97316] transition-all"
+                >
                   {step.label} <ArrowRight className="ml-3 size-4 group-hover:translate-x-2 transition-transform" />
                 </Link>
               </div>
@@ -167,22 +171,10 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
-            <p className="text-sm italic text-slate-400 font-medium tracking-tight">
+          <div className="pt-8 border-t border-white/5 text-center">
+            <p className="text-base italic text-slate-400 font-medium tracking-tight">
               Make informed decisions with verified financial and school data.
             </p>
-            <div className="flex gap-4">
-              <Link href="/directory">
-                <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
-                  BROWSE SCHOOLS <ArrowRight className="ml-2 size-4" />
-                </Button>
-              </Link>
-              <Link href="/discover">
-                <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
-                  FIND MY FIT <ArrowRight className="ml-2 size-4" />
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </section>

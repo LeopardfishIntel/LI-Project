@@ -1,24 +1,55 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useUser, useDoc } from '@/firebase';
+import { useUser, useDoc, setDocumentNonBlocking } from '@/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Fingerprint, MapPin, Calendar, Users, ShieldCheck } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { 
+  Loader2, Fingerprint, MapPin, Calendar, 
+  Users, ShieldCheck, Edit3, Save, X 
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
+const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
+const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas", "Oceania"];
 
 export default function ProfilePage() {
     const { customId, isAdmin, loading: authLoading } = useUser();
     const [mounted, setMounted] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editBuffer, setEditBuffer] = useState<any>(null);
 
-    useEffect(() => { setMounted(true); }, []);
-
-    // 🕵️ FETCH THE ACTUAL 007 DATA
-    const { data: agent, isLoading: dataLoading } = useDoc<any>(
-        mounted && customId ? `teachers/${customId}` : null
+    // 🕵️ TARGETING: Fetching from teachers/FLI007 directly
+    const { data: teacher, isLoading: dataLoading } = useDoc<any>(
+        customId ? `teachers/${customId}` : null
     );
 
+    useEffect(() => { 
+        setMounted(true); 
+        if (teacher) {
+            setEditBuffer(teacher);
+        }
+    }, [teacher]);
+
+    const handleSave = async () => {
+        if (!customId) return;
+        setIsSaving(true);
+        // Committing changes to teachers/FLI007
+        await setDocumentNonBlocking('teachers', customId, editBuffer);
+        setIsEditing(false);
+        setIsSaving(false);
+    };
+
     if (authLoading || !mounted) {
-        return <div className="h-screen flex items-center justify-center bg-[#020617]"><Loader2 className="animate-spin text-[#f97316] size-10" /></div>;
+        return (
+            <div className="h-screen flex items-center justify-center bg-[#020617]">
+                <Loader2 className="animate-spin text-[#f97316] size-10" />
+            </div>
+        );
     }
 
     return (
@@ -28,60 +59,124 @@ export default function ProfilePage() {
                 {/* 🛡️ DOSSIER HEADER */}
                 <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between border-b border-white/10 pb-8">
                     <div className="flex items-center gap-6">
-                        <div className="size-24 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border-2 border-[#f97316]/50 rounded-full flex items-center justify-center shadow-2xl">
+                        <div className="size-24 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border-2 border-[#f97316]/50 rounded-full flex items-center justify-center shadow-2xl relative">
                            {isAdmin ? <ShieldCheck className="size-12 text-[#f97316]" /> : <Fingerprint className="size-12 text-[#007FFF]" />}
                         </div>
                         <div>
-                            <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none">
-                                {agent?.fullName || "Unidentified Operative"}
-                            </h1>
-                            <div className="flex items-center gap-3 mt-2">
-                                <Badge variant="outline" className="border-[#f97316] text-[#f97316] font-black italic">
-                                    {customId || "AWAITING ID"}
+                            {isEditing ? (
+                                <Input 
+                                    value={editBuffer?.fullName || ""} 
+                                    onChange={(e) => setEditBuffer({...editBuffer, fullName: e.target.value})}
+                                    className="bg-black/40 border-[#f97316]/50 text-2xl font-black italic uppercase rounded-none h-12 w-full md:w-96"
+                                    placeholder="OPERATIVE NAME"
+                                />
+                            ) : (
+                                <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none">
+                                    {teacher?.fullName || "Unidentified Operative"}
+                                </h1>
+                            )}
+                            <div className="flex items-center gap-3 mt-3">
+                                <Badge variant="outline" className="border-[#f97316] text-[#f97316] font-black italic px-4 py-1">
+                                    {customId || "AWAITING DESIGNATION"}
                                 </Badge>
-                                {isAdmin && <Badge className="bg-[#f97316] text-white">Level 4 Admin</Badge>}
-                                {agent?.isVerifiedTeacher && <Badge className="bg-[#007FFF]">Verified Agent</Badge>}
+                                {isAdmin && <Badge className="bg-[#f97316] text-white font-black uppercase text-[10px] tracking-widest px-3 py-0.5">Level 4 Admin</Badge>}
                             </div>
                         </div>
                     </div>
+
+                    <div className="flex gap-2">
+                        {isEditing ? (
+                            <>
+                                <Button onClick={() => setIsEditing(false)} variant="ghost" className="text-slate-500 hover:text-white uppercase font-black text-xs tracking-widest"><X className="mr-2 size-4" /> Abort</Button>
+                                <Button onClick={handleSave} disabled={isSaving} className="bg-[#f97316] hover:bg-white hover:text-black rounded-none font-black uppercase text-xs tracking-widest h-10 px-6">
+                                    {isSaving ? <Loader2 className="animate-spin size-4" /> : <><Save className="mr-2 size-4" /> Commit Changes</>}
+                                </Button>
+                            </>
+                        ) : (
+                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 hover:border-[#f97316] hover:text-[#f97316] bg-transparent rounded-none uppercase font-black text-[10px] tracking-[0.2em] h-10 px-6">
+                                <Edit3 className="mr-2 size-3" /> Modify Dossier
+                            </Button>
+                        )}
+                    </div>
                 </div>
 
-                {/* 📊 CORE INTELLIGENCE */}
+                {/* 📊 CORE INTELLIGENCE GRID */}
                 {dataLoading ? (
                     <div className="flex justify-center py-12"><Loader2 className="animate-spin text-slate-500" /></div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Card className="bg-[#0b1224] border-white/5">
+                        
+                        {/* STATUS CARD */}
+                        <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden group">
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <Users className="size-4 text-sky-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Status</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-xl font-black italic">{agent?.familyStatus || "N/A"}</p>
+                                {isEditing ? (
+                                    <div className="grid grid-cols-2 gap-1 mt-2">
+                                        {FAMILY_STATUS.map(v => (
+                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, familyStatus: v})} className={cn("py-2 text-[8px] font-bold border transition-all uppercase", editBuffer?.familyStatus === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v.replace('Family ', '')}</button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-xl font-black italic">{teacher?.familyStatus || "N/A"}</p>
+                                )}
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-[#0b1224] border-white/5">
+                        {/* AGE GROUP CARD */}
+                        <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden">
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <Calendar className="size-4 text-emerald-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Age Group</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-xl font-black italic">{agent?.ageGroup || "N/A"}</p>
+                                {isEditing ? (
+                                    <div className="grid grid-cols-3 gap-1 mt-2">
+                                        {AGE_RANGES.map(v => (
+                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, age: v})} className={cn("py-2 text-[8px] font-bold border transition-all", editBuffer?.age === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v}</button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-xl font-black italic">{teacher?.age || teacher?.ageGroup || "N/A"}</p>
+                                )}
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-[#0b1224] border-white/5">
+                        {/* TARGET ZONES CARD */}
+                        <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden">
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <MapPin className="size-4 text-rose-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Target Zones</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {agent?.preferredCountries?.length > 0 ? agent.preferredCountries.map((c: string) => (
-                                        <span key={c} className="text-xs font-bold text-white/80">{c}</span>
-                                    )) : <span className="text-xs italic text-slate-500">No zones specified</span>}
-                                </div>
+                                {isEditing ? (
+                                    <div className="grid grid-cols-2 gap-1 mt-2">
+                                        {REGIONS.map(r => (
+                                            <button 
+                                                key={r} 
+                                                onClick={() => {
+                                                    const current = editBuffer?.preferredCountries || editBuffer?.regions || [];
+                                                    const next = current.includes(r) ? current.filter((i: string) => i !== r) : [...current, r].slice(-2);
+                                                    setEditBuffer({...editBuffer, preferredCountries: next});
+                                                }} 
+                                                className={cn("py-2 text-[8px] font-bold border transition-all uppercase", (editBuffer?.preferredCountries || editBuffer?.regions || []).includes(r) ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}
+                                            >
+                                                {r}
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-wrap gap-2">
+                                        {(teacher?.preferredCountries || teacher?.regions)?.length > 0 ? (teacher.preferredCountries || teacher.regions).map((c: string) => (
+                                            <span key={c} className="text-xs font-bold text-white/80 italic">{c}</span>
+                                        )) : <span className="text-xs italic text-slate-500">No zones specified</span>}
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>

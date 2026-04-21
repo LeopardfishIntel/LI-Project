@@ -1,13 +1,40 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
-import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { getFirestore, doc, setDoc, Firestore, initializeFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut, Auth } from "firebase/auth";
+import { 
+  createContext, 
+  useContext, 
+  useEffect, 
+  useState, 
+  ReactNode, 
+  useMemo 
+} from "react";
+import { 
+  initializeApp, 
+  getApps, 
+  getApp, 
+  FirebaseApp 
+} from "firebase/app";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  Firestore, 
+  collection,
+  onSnapshot,
+  Query,
+  DocumentData
+} from "firebase/firestore";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  User, 
+  signOut as firebaseSignOut, 
+  Auth 
+} from "firebase/auth";
 
-// 🛰️ TACTICAL COORDINATES: Verified 2026 Project SDK
+// 🛡️ Zero-Doubt Config Sync
 export const firebaseConfig = {
-  apiKey: "AIzaSyCsXjVXsRxZerNaYj7kFWTyxdMlR6kLK9U",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "studio-2840117705-12faa.firebaseapp.com",
   projectId: "studio-2840117705-12faa",
   storageBucket: "studio-2840117705-12faa.firebasestorage.app",
@@ -17,26 +44,93 @@ export const firebaseConfig = {
 
 const isBrowser = typeof window !== "undefined";
 
-let app: FirebaseApp;
-let db: Firestore;
-let auth: Auth;
+// 🛰️ Isomorphic Initialization
+const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const db: Firestore = isBrowser ? getFirestore(app) : null as any;
+const auth: Auth = isBrowser ? getAuth(app) : null as any;
 
-// Isomorphic Initialization Protocol
-app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-if (isBrowser) {
-  try {
-    db = getFirestore(app);
-  } catch (e) {
-    db = initializeFirestore(app, { experimentalForceLongPolling: true });
-  }
-  auth = getAuth(app);
-} else {
-  db = getFirestore(app);
-  auth = null as any;
+export const useFirestore = () => db;
+
+/**
+ * 🛠️ Utility: useMemoFirebase
+ * Memoization helper for Firebase queries.
+ */
+export function useMemoFirebase<T>(fn: () => T, deps: any[]): T {
+  return useMemo(fn, deps);
 }
 
-// ✅ FIXED: Explicit Export for Build Engine
+/**
+ * 🛰️ Hook: useCollection
+ * Real-time listener for Firestore collections.
+ */
+export function useCollection<T = DocumentData>(query: Query | null) {
+  const [data, setData] = useState<T[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!query) {
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = onSnapshot(query, 
+      (snap) => {
+        const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as T));
+        setData(items);
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Collection sync error:", err);
+        setError(err);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [query]);
+
+  return { data, loading, error };
+}
+
+/**
+ * 🛰️ Hook: useDoc
+ * Real-time listener for a single Firestore document.
+ */
+export function useDoc<T = DocumentData>(path: string | null) {
+  const [data, setData] = useState<T | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!path || !db) {
+      setIsLoading(false);
+      return;
+    }
+
+    const docRef = doc(db, path);
+    const unsubscribe = onSnapshot(docRef, 
+      (snap) => {
+        if (snap.exists()) {
+          setData({ id: snap.id, ...snap.data() } as T);
+        } else {
+          setData(null);
+        }
+        setIsLoading(false);
+      },
+      () => setIsLoading(false)
+    );
+
+    return () => unsubscribe();
+  }, [path]);
+
+  return { data, isLoading };
+}
+
+/**
+ * 🛠️ Utility: Non-blocking Document Update
+ */
 export async function setDocumentNonBlocking(collectionName: string, docId: string, data: any) {
+  if (!db) return null;
   try {
     const docRef = doc(db, collectionName, docId);
     return await setDoc(docRef, data, { merge: true });
@@ -46,12 +140,20 @@ export async function setDocumentNonBlocking(collectionName: string, docId: stri
   }
 }
 
-// --- AUTH CONTEXT ---
-const AuthContext = createContext<{ user: User | null; loading: boolean }>({ 
+// 🛡️ Auth Context Type Definitions
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType>({ 
   user: null, 
   loading: true 
 });
 
+/**
+ * 🛰️ Provider: Firebase Client Intelligence
+ */
 export function FirebaseClientProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +166,7 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
         return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u: User | null) => {
       setUser(u);
       if (u) {
         const token = await u.getIdToken();
@@ -78,7 +180,6 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  // 🛡️ Hydration Guard
   if (!mounted) return null;
 
   return (
@@ -88,10 +189,29 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// --- TACTICAL HOOKS ---
+/**
+ * 🛰️ Updated Hook: useUser
+ * Retrieves core metadata (customId, isAdmin) from users/{uid}
+ */
+export const useUser = () => {
+  const { user, loading: authLoading } = useContext(AuthContext);
+  
+  const { data: meta, isLoading: metaLoading } = useDoc<any>(
+    user ? `users/${user.uid}` : null
+  );
+
+  return { 
+    user, 
+    uid: user?.uid ?? null,
+    customId: meta?.customId ?? null,
+    isAdmin: meta?.isAdmin ?? false,
+    loading: authLoading || metaLoading
+  };
+};
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within FirebaseClientProvider");
+  if (!context) throw new Error("useAuth must be used within a FirebaseClientProvider");
   return { 
     ...context, 
     signOut: async () => {
@@ -102,19 +222,5 @@ export const useAuth = () => {
     } 
   };
 };
-
-export const useUser = () => {
-  const context = useContext(AuthContext);
-  return { ...context, isUserLoading: context?.loading ?? true, isAdmin: false };
-};
-
-// --- DATA HOOKS ---
-import { useCollection as useCollectionHook } from "./firebase/firestore/use-collection";
-import { useDoc as useDocHook } from "./firebase/firestore/use-doc";
-
-export const useCollection = useCollectionHook;
-export const useDoc = useDocHook;
-export const useFirestore = () => db;
-export const useMemoFirebase = <T,>(fn: () => T, deps: any[]): T => useMemo(fn, deps);
 
 export { app, db, auth };
