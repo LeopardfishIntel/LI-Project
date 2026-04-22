@@ -68,17 +68,26 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#020617] z-10"></div>
         
         <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center w-full pt-4">
-           {/* 🛡️ BADGE: 900 weight, Sentence case, Shadow, No Outline */}
+           {/* 🛡️ BADGE */}
            <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-6 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
              ⦿ Actionable intelligence
            </div>
 
-           {/* 🛡️ NEEDLE-THIN HERO: Inter 100, High Tracking, Zero Shadow, Light Bleed Fix */}
+           {/* 🛡️ SURGICAL UPDATE: Applied Sharpening, Shadow, and Stroke to your existing H1 */}
            <h1 
-           className="text-6xl md:text-8xl tracking-[0.2em] mb-4 leading-none font-sans antialiased opacity-90"
-           style={{ fontWeight: 100, textShadow: 'none' }}
+            className="text-6xl md:text-8xl tracking-[0.2em] mb-4 leading-none font-sans antialiased opacity-90"
+            style={{ 
+              fontWeight: 100, 
+              // 1. Tactical Lift (Shadow) + 4. Edge Definition (Stroke)
+              textShadow: '0 2px 4px rgba(0,0,0,0.6), 0 0 1px rgba(0,0,0,1)',
+              WebkitTextStroke: '0.5px rgba(0,0,0,0.25)',
+              // 3. Sub-Pixel Sharpening
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textRendering: 'optimizeLegibility'
+            }}
            >
-           <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+             <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
            </h1>
            
            <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
@@ -102,7 +111,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🎯 MISSION STATEMENT: Slate-400 (Off-white) and py-8 */}
+      {/* 🎯 MISSION STATEMENT */}
       <section className="py-8 bg-[#020617] border-y border-white/5">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h1 className="text-4xl md:text-6xl uppercase tracking-tighter text-white font-black mb-4 leading-none">
@@ -119,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🧭 ZIG-ZAG PROTOCOLS: Tightened padding */}
+      {/* 🧭 ZIG-ZAG PROTOCOLS */}
       <section className="py-8 bg-[#020617]">
         <div className="container mx-auto px-4 space-y-12">
           {steps.map((step, index) => (
@@ -143,7 +152,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 📊 ANALYSIS IN ACTION: Tightened padding and Off-white subtitle */}
+      {/* 📊 ANALYSIS IN ACTION */}
       <section className="py-12 bg-[#020617] border-t border-white/5">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16 space-y-2">
