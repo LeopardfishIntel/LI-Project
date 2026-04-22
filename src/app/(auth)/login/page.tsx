@@ -5,23 +5,27 @@ import Link from "next/link";
 import { 
   signInWithEmailAndPassword, 
   GoogleAuthProvider, 
-  signInWithPopup 
+  signInWithPopup,
+  sendPasswordResetEmail // 🛰️ Added for reset protocol
 } from "firebase/auth";
 import { auth } from "@/firebase/utils/memo";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react"; // 🛡️ Added for visibility toggle
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👁️ Visibility state
   const [loading, setLoading] = useState(false);
+  const [resetMessage, setResetMessage] = useState(""); // 📩 Feedback message
   const router = useRouter();
 
-  // Email/Password Login Handler
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setResetMessage("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/"); 
@@ -33,7 +37,6 @@ export default function LoginPage() {
     }
   };
 
-  // Google SSO Login Handler
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -41,6 +44,20 @@ export default function LoginPage() {
       router.push("/");
     } catch (error: any) {
       console.error("Google Auth Error:", error.message);
+    }
+  };
+
+  // 🛰️ PASSWORD RESET HANDLER
+  const handleResetPassword = async () => {
+    if (!email) {
+      alert("Please enter your email address first to receive a reset link.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetMessage("RECOVERY LINK DISPATCHED. CHECK YOUR INBOX.");
+    } catch (error: any) {
+      alert("Reset Failed: " + error.message);
     }
   };
 
@@ -74,16 +91,43 @@ export default function LoginPage() {
           </div>
           
           <div className="space-y-1">
-            <label className="text-[9px] text-slate-500 font-bold uppercase tracking-widest ml-1">Security Key</label>
-            <Input 
-              type="password" 
-              placeholder="PASSWORD" 
-              className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#f97316] transition-all"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="flex justify-between items-center pr-1">
+              <label className="text-[9px] text-slate-500 font-bold uppercase tracking-widest ml-1">Security Key</label>
+              {/* 🛰️ RESET TRIGGER */}
+              <button 
+                type="button" 
+                onClick={handleResetPassword}
+                className="text-[8px] text-[#007FFF] hover:text-white uppercase font-black tracking-tighter transition-colors"
+              >
+                Forgot Key?
+              </button>
+            </div>
+            <div className="relative">
+              <Input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="PASSWORD" 
+                className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#f97316] transition-all pr-12"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              {/* 👁️ VISIBILITY TOGGLE */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
+
+          {/* RESET SUCCESS FEEDBACK */}
+          {resetMessage && (
+            <p className="text-[8px] text-[#f97316] font-black text-center tracking-[0.2em] animate-pulse">
+              {resetMessage}
+            </p>
+          )}
 
           <Button 
             type="submit" 
