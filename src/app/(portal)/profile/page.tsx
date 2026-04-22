@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useUser, useDoc, setDocumentNonBlocking } from '@/firebase';
+import { auth } from "@/firebase/utils/memo"; // 🛰️ Added for reset protocol
+import { sendPasswordResetEmail } from "firebase/auth"; // 🛰️ Added for reset protocol
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
   Loader2, Fingerprint, MapPin, Calendar, 
-  Users, ShieldCheck, Edit3, Save, X 
+  Users, ShieldCheck, Edit3, Save, X,
+  KeyRound, Mail, CheckCircle2, AlertCircle // 🛡️ Tactical icons added
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +25,10 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [editBuffer, setEditBuffer] = useState<any>(null);
+    
+    // 🛰️ Reset Protocol States
+    const [resetLoading, setResetLoading] = useState(false);
+    const [resetStatus, setResetStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
 
     // 🕵️ TARGETING: Fetching from teachers/FLI007 directly
     const { data: teacher, isLoading: dataLoading } = useDoc<any>(
@@ -38,10 +45,26 @@ export default function ProfilePage() {
     const handleSave = async () => {
         if (!customId) return;
         setIsSaving(true);
-        // Committing changes to teachers/FLI007
         await setDocumentNonBlocking('teachers', customId, editBuffer);
         setIsEditing(false);
         setIsSaving(false);
+    };
+
+    // 🛰️ SECURITY PROTOCOL: Dispatching the encrypted reset link
+    const handleResetPassword = async () => {
+        const userEmail = auth.currentUser?.email;
+        if (!userEmail) return;
+
+        setResetLoading(true);
+        setResetStatus(null);
+        try {
+            await sendPasswordResetEmail(auth, userEmail);
+            setResetStatus({ type: 'success', msg: "RECOVERY LINK DISPATCHED TO SECURE INBOX" });
+        } catch (error) {
+            setResetStatus({ type: 'error', msg: "DISPATCH FAILED. CHECK UPLINK" });
+        } finally {
+            setResetLoading(false);
+        }
     };
 
     if (authLoading || !mounted) {
@@ -181,6 +204,48 @@ export default function ProfilePage() {
                         </Card>
                     </div>
                 )}
+
+                {/* 🔐 SECURITY PROTOCOLS SECTION */}
+                <div className="mt-12 pt-8 border-t border-white/10">
+                    <div className="bg-white/5 border border-white/5 p-8 shadow-2xl">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-[#f97316]/10 border border-[#f97316]/20">
+                                    <KeyRound className="size-6 text-[#f97316]" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black uppercase italic tracking-tight text-white leading-none">Security Protocols</h3>
+                                    <p className="text-[10px] text-slate-500 uppercase font-bold tracking-[0.2em] mt-2 flex items-center gap-2">
+                                        <Mail className="size-3" /> {auth.currentUser?.email || "Uplink Secure"}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="w-full md:w-auto">
+                                <Button 
+                                    onClick={handleResetPassword}
+                                    disabled={resetLoading}
+                                    className="w-full md:w-auto bg-[#007FFF] hover:bg-white hover:text-black rounded-none font-black uppercase text-[10px] tracking-[0.2em] h-12 px-8 transition-all"
+                                >
+                                    {resetLoading ? <Loader2 className="animate-spin size-4" /> : "Request Password Reset"}
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Status Feedback Banner */}
+                        {resetStatus && (
+                            <div className={cn(
+                                "mt-6 p-4 border-l-4 text-[10px] font-black tracking-widest uppercase animate-in fade-in slide-in-from-top-2",
+                                resetStatus.type === 'success' ? "bg-emerald-500/10 border-emerald-500 text-emerald-500" : "bg-rose-500/10 border-rose-500 text-rose-500"
+                            )}>
+                                <div className="flex items-center gap-3">
+                                    {resetStatus.type === 'success' ? <CheckCircle2 className="size-4" /> : <AlertCircle className="size-4" />}
+                                    {resetStatus.msg}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
