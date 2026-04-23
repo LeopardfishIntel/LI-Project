@@ -39,7 +39,7 @@ export const firebaseConfig = {
   projectId: "studio-2840117705-12faa",
   storageBucket: "studio-2840117705-12faa.firebasestorage.app",
   messagingSenderId: "342003687950",
-  appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
+  appId: "1:342003687950:web:fd1a0fc72ace91cf1c125f"
 };
 
 const isBrowser = typeof window !== "undefined";
