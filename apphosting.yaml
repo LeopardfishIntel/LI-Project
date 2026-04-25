@@ -20,4 +20,4 @@ environmentVariables:
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
     value: "studio-2840117705-12faa"
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyCBkLcrX-IleqkhMPPI0-imaRLbDloa8BE"
+    value: "AIzaSyAf2QHay947IJzBTr5C5_gJNqShCv9FcPE"
