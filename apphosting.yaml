@@ -13,11 +13,25 @@ runConfig:
 environmentVariables:
   - variable: NEXT_TELEMETRY_DISABLED
     value: "1"
+    availability: [BUILD, RUNTIME]
   - variable: NODE_ENV
     value: "production"
+    availability: [BUILD, RUNTIME]
   
   # 🛰️ FIREBASE PUBLIC CONFIG
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
     value: "studio-2840117705-12faa"
+    availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: "AIzaSyAf2QHay947IJzBTr5C5_gJNqShCv9FcPE"
+    availability: [BUILD, RUNTIME]
+
+  # 💎 THE AI LINK
+  - variable: GOOGLE_API_KEY
+    secret: GOOGLE_API_KEY
+    availability: [BUILD, RUNTIME]
+  
+  # 🛰️ LIVE TRANSMISSION
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+    availability: [BUILD, RUNTIME]
