@@ -23,5 +23,9 @@ environmentVariables:
     secret: NEXT_PUBLIC_FIREBASE_API_KEY # 🛡️ Safe mapping
 
   # 💎 THE AI LINK
-  - variable: GOOGLE_GENERATIVE_AI_API_KEY
-    secret: GOOGLE_GENERATIVE_AI_API_KEY
+  - variable: GOOGLE_API_KEY
+    secret: GOOGLE_API_KEY
+  
+  # 🛰️ LIVE TRANSMISSION
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
