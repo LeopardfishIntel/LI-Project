@@ -2,8 +2,11 @@ import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
 // 🛡️ Safe: Pulls from .env.local only
-// 🛡️ Safe: Checks multiple standard names to ensure live site compatibility
-const KEY = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
+// 🛡️ Safe: Checks multiple standard names ONLY on the server to prevent leakage
+const isServer = typeof window === 'undefined';
+const KEY = isServer 
+  ? (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY) 
+  : undefined;
 
 export const ai = genkit({
   plugins: [
