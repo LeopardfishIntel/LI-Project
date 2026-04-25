@@ -10,22 +10,9 @@ import {
   QueryDocumentSnapshot,
   DocumentData
 } from 'firebase/firestore/lite';
-import { initializeApp, getApp, getApps } from 'firebase/app';
+import { db } from '@/firebase';
 import { enrichSchoolData } from '@/ai/flows/enrich-school-data-flow';
 import { updateCostOfLiving } from '@/ai/flows/update-cost-of-living-flow';
-
-// 🛡️ Tactical Config Sync
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "studio-2840117705-12faa.firebaseapp.com",
-  projectId: "studio-2840117705-12faa",
-  storageBucket: "studio-2840117705-12faa.firebasestorage.app",
-  messagingSenderId: "342003687950",
-  appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
-};
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {

@@ -5,14 +5,14 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, doc, onSnapshot } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
 
-// 🚀 TACTICAL CONFIG (Hardcoded for App Hosting Stability)
+// 🚀 TACTICAL CONFIG (Consolidated from .env.local)
 export const firebaseConfig = {
-  apiKey: "AIzaSyCsXjVXsRxZerNaYj7kFWTyxdMlR6kLK9U",
-  authDomain: "studio-2840117705-12faa.firebaseapp.com",
-  projectId: "studio-2840117705-12faa",
-  storageBucket: "studio-2840117705-12faa.firebasestorage.app",
-  messagingSenderId: "342003687950",
-  appId: "1:342003687950:web:a88b8ff24c82f67c1c125f"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 // 🛡️ INITIALIZATION
@@ -117,6 +117,21 @@ export const useUser = () => useContext(AuthContext);
  * TypeScript logic, not a JSX tag.
  */
 export const useMemoFirebase = <T,>(fn: () => T, deps: any[]) => useMemo(fn, deps);
+
+/**
+ * 🛠️ Utility: Non-blocking Document Update
+ */
+export async function setDocumentNonBlocking(collectionName: string, docId: string, data: any) {
+  if (!db) return null;
+  try {
+    const docRef = doc(db, collectionName, docId);
+    const { setDoc } = await import("firebase/firestore");
+    return await setDoc(docRef, data, { merge: true });
+  } catch (error) {
+    console.error("Firebase write error:", error);
+    return null;
+  }
+}
 
 // --- SHARED DATA SENSORS ---
 export { useCollection } from "./firestore/use-collection";
