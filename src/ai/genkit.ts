@@ -23,7 +23,7 @@ export function getAI() {
           location: 'us-central1' 
         })
       ],
-      model: vertexModel, 
+      model: 'vertexai/gemini-1.5-flash-001', 
     });
   }
 

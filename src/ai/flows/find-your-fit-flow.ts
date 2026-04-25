@@ -48,8 +48,8 @@ export async function findYourFit(input: FindYourFitInput) {
   const ai = getAI();
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // 🛰️ PRECISE MODEL OBJECT INJECTION
-  const MODEL = isProduction ? vertexModel : googleModel;
+  // 🛰️ PRECISE MODEL INJECTION WITH EXACT VERSION
+  const MODEL = isProduction ? 'vertexai/gemini-1.5-flash-001' : googleModel;
 
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({
