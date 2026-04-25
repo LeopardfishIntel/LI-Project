@@ -21,11 +21,3 @@ environmentVariables:
     value: "studio-2840117705-12faa"
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     secret: NEXT_PUBLIC_FIREBASE_API_KEY # 🛡️ Safe mapping
-
-  # 💎 THE AI LINK
-  - variable: GOOGLE_API_KEY
-    secret: GOOGLE_API_KEY
-  
-  # 🛰️ LIVE TRANSMISSION
-  - variable: RESEND_API_KEY
-    secret: RESEND_API_KEY
