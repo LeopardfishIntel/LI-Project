@@ -47,7 +47,7 @@ export async function findYourFit(input: FindYourFitInput) {
   const isProduction = process.env.NODE_ENV === 'production';
   
   // 🛰️ DYNAMIC MODEL SELECTION
-  const MODEL = isProduction ? 'vertexai/gemini-2.0-flash' : 'googleai/gemini-2.0-flash';
+  const MODEL = isProduction ? 'vertexai/gemini-1.5-flash' : 'googleai/gemini-1.5-flash';
 
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({

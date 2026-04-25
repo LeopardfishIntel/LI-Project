@@ -20,10 +20,10 @@ export function getAI() {
     return genkit({
       plugins: [
         vertexAI({ 
-          location: 'us-central1' // Syncs with your App Hosting region
+          location: 'us-central1' 
         })
       ],
-      model: 'vertexai/gemini-2.0-flash', 
+      model: 'vertexai/gemini-1.5-flash', 
     });
   }
 
@@ -34,7 +34,7 @@ export function getAI() {
         apiKey: googleKey,
       })
     ],
-    model: 'googleai/gemini-2.0-flash',
+    model: 'googleai/gemini-1.5-flash',
   });
 }
 
