@@ -1,28 +1,48 @@
 import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
+import { vertexAI } from '@genkit-ai/vertexai';
 
 /**
- * 🛰️ MISSION-CRITICAL: LIVE GETTER PATTERN
- * This function creates a fresh AI instance with the latest 
- * environment variables every time it is called.
+ * 🛰️ MISSION-CRITICAL: HYBRID AI ENGINE
+ * Local Dev: Uses Google AI (API Key)
+ * Live Site: Uses Vertex AI (Identity-based, no API key needed!)
  */
 export function getAI() {
   const isServer = typeof window === 'undefined';
-  const KEY = isServer 
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  const googleKey = isServer 
     ? (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY) 
-    : 'CLIENT_SIDE_STUB';
+    : undefined;
 
+  // 🛡️ Live Site: Use Vertex AI (Bulletproof)
+  if (isProduction && isServer) {
+    return genkit({
+      plugins: [
+        vertexAI({ 
+          location: 'us-central1' // Syncs with your App Hosting region
+        })
+      ],
+      model: 'vertexai/gemini-2.0-flash', 
+    });
+  }
+
+  // 🛠️ Local Dev: Use Google AI (API Key)
   return genkit({
     plugins: [
       googleAI({ 
-        apiKey: KEY,
+        apiKey: googleKey,
       })
     ],
-    // 🚀 2026 Stable Standard
-    model: 'googleai/gemini-2.5-flash',
+    model: 'googleai/gemini-2.0-flash',
   });
 }
 
-// ⚠️ DEPRECATED: Use getAI() instead. 
-// Keeping this for a few minutes while we migrate flows.
-export const ai = getAI();
+// Export a proxy for backward compatibility
+export const ai = new Proxy({} as any, {
+  get(_, prop) {
+    const instance = getAI();
+    const value = instance[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  }
+});

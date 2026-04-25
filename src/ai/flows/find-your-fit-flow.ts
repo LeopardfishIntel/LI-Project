@@ -44,11 +44,15 @@ export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 // 4. The Flow Execution
 export async function findYourFit(input: FindYourFitInput) {
   const ai = getAI();
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // 🛰️ DYNAMIC MODEL SELECTION
+  const MODEL = isProduction ? 'vertexai/gemini-2.0-flash' : 'googleai/gemini-2.0-flash';
 
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({
     name: 'findYourFitPrompt',
-    model: 'googleai/gemini-2.5-flash',
+    model: MODEL,
     input: { schema: FindYourFitInputSchema },
     output: { schema: FindYourFitOutputSchema },
     prompt: `You are an expert career adviser specialising in international teaching opportunities. 
