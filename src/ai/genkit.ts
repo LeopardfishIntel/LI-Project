@@ -1,48 +1,27 @@
 import { genkit } from 'genkit';
-import { googleAI, gemini15Flash as googleModel } from '@genkit-ai/googleai';
-import { vertexAI, gemini15Flash as vertexModel } from '@genkit-ai/vertexai';
+import { googleAI } from '@genkit-ai/googleai';
 
 /**
- * 🛰️ MISSION-CRITICAL: HYBRID AI ENGINE
- * Local Dev: Uses Google AI (API Key)
- * Live Site: Uses Vertex AI (Identity-based, no API key needed!)
+ * 🛰️ MISSION-CRITICAL: DYNAMIC GOOGLE AI ENGINE
+ * We are using the standard API Key method for everything.
+ * Because this is a function, it waits until the exact moment of
+ * execution to grab the key, bypassing the early-boot failures!
  */
 export function getAI() {
   const isServer = typeof window === 'undefined';
-  const isProduction = process.env.NODE_ENV === 'production';
   
-  const googleKey = isServer 
+  // 🛡️ SECURITY: Only attempt to pull keys on the server
+  const KEY = isServer 
     ? (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY) 
-    : undefined;
+    : 'CLIENT_SIDE_STUB';
 
-  // 🛡️ Live Site: Use Vertex AI (Bulletproof)
-  if (isProduction && isServer) {
-    return genkit({
-      plugins: [
-        vertexAI({ 
-          location: 'us-central1' 
-        })
-      ],
-      model: 'vertexai/gemini-1.5-flash-001', 
-    });
-  }
-
-  // 🛠️ Local Dev: Use Google AI (API Key)
   return genkit({
     plugins: [
       googleAI({ 
-        apiKey: googleKey,
+        apiKey: KEY,
       })
     ],
-    model: googleModel,
+    // 🚀 2026 Stable Standard
+    model: 'googleai/gemini-2.5-flash',
   });
 }
-
-// Export a proxy for backward compatibility
-export const ai = new Proxy({} as any, {
-  get(_, prop) {
-    const instance = getAI();
-    const value = instance[prop];
-    return typeof value === 'function' ? value.bind(instance) : value;
-  }
-});

@@ -4,8 +4,6 @@
  */
 
 import { getAI } from '@/ai/genkit';
-import { gemini15Flash as vertexModel } from '@genkit-ai/vertexai';
-import { gemini15Flash as googleModel } from '@genkit-ai/googleai';
 import { z } from 'zod';
 
 // 1. Define the Input Schema
@@ -46,15 +44,11 @@ export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 // 4. The Flow Execution
 export async function findYourFit(input: FindYourFitInput) {
   const ai = getAI();
-  const isProduction = process.env.NODE_ENV === 'production';
-  
-  // 🛰️ PRECISE MODEL INJECTION WITH EXACT VERSION
-  const MODEL = isProduction ? 'vertexai/gemini-1.5-flash-001' : googleModel;
 
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({
     name: 'findYourFitPrompt',
-    model: MODEL,
+    model: 'googleai/gemini-2.5-flash',
     input: { schema: FindYourFitInputSchema },
     output: { schema: FindYourFitOutputSchema },
     prompt: `You are an expert career adviser specialising in international teaching opportunities. 
