@@ -4,6 +4,8 @@
  */
 
 import { getAI } from '@/ai/genkit';
+import { gemini15Flash as vertexModel } from '@genkit-ai/vertexai';
+import { gemini15Flash as googleModel } from '@genkit-ai/googleai';
 import { z } from 'zod';
 
 // 1. Define the Input Schema
@@ -46,8 +48,8 @@ export async function findYourFit(input: FindYourFitInput) {
   const ai = getAI();
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // 🛰️ DYNAMIC MODEL SELECTION
-  const MODEL = isProduction ? 'vertexai/gemini-1.5-flash' : 'googleai/gemini-1.5-flash';
+  // 🛰️ PRECISE MODEL OBJECT INJECTION
+  const MODEL = isProduction ? vertexModel : googleModel;
 
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({

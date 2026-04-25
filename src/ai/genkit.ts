@@ -1,6 +1,6 @@
 import { genkit } from 'genkit';
-import { googleAI } from '@genkit-ai/googleai';
-import { vertexAI } from '@genkit-ai/vertexai';
+import { googleAI, gemini15Flash as googleModel } from '@genkit-ai/googleai';
+import { vertexAI, gemini15Flash as vertexModel } from '@genkit-ai/vertexai';
 
 /**
  * 🛰️ MISSION-CRITICAL: HYBRID AI ENGINE
@@ -23,7 +23,7 @@ export function getAI() {
           location: 'us-central1' 
         })
       ],
-      model: 'vertexai/gemini-1.5-flash', 
+      model: vertexModel, 
     });
   }
 
@@ -34,7 +34,7 @@ export function getAI() {
         apiKey: googleKey,
       })
     ],
-    model: 'googleai/gemini-1.5-flash',
+    model: googleModel,
   });
 }
 
