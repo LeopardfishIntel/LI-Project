@@ -3,7 +3,7 @@
  * @fileOverview Intelligence flow for Teacher-Location matching.
  */
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 
 // 1. Define the Input Schema
@@ -41,46 +41,40 @@ const FindYourFitOutputSchema = z.object({
 
 export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 
-// 3. The System Prompt
-const findYourFitPrompt = ai.definePrompt({
-  name: 'findYourFitPrompt',
-  // 🚀 EXPLICIT MODEL OVERRIDE
-  model: 'googleai/gemini-2.5-flash',
-  input: { schema: FindYourFitInputSchema },
-  output: { schema: FindYourFitOutputSchema },
-  prompt: `You are an expert career adviser specialising in international teaching opportunities. 
-  
-  TASK: Analyse the teacher's profile and recommend 5 suitable countries.
-  
-  CONSTRAINTS:
-  - If the "Current Location" is Japan, you MUST NOT recommend Japan.
-  - Use descriptive British English (e.g., 'considerable experience', 'suitable honours') rather than just numbers.
-  - Recommendations must be formatted as bullet points in the reasoning section.
-  
-  User Profile:
-  - Age: {{{age}}}
-  - Family Status: {{{familyStatus}}}
-  - Qualifications: {{{qualifications}}}
-  - Experience: {{{experience}}} Years
-  - Subject: {{{subject}}}
-  - Current Location: {{{currentLocation}}}
-  - Target Regions: {{{preferredRegions}}}
-  - Objectives: {{{preferences}}}
-
-  Available Schools:
-  {{{availableSchools}}}`,
-});
-
 // 4. The Flow Execution
-export const findYourFit = ai.defineFlow(
-  {
-    name: 'findYourFitFlow',
-    inputSchema: FindYourFitInputSchema,
-    outputSchema: FindYourFitOutputSchema,
-  },
-  async (input) => {
-    const { output } = await findYourFitPrompt(input);
-    if (!output) throw new Error("Dossier generation failed: Empty AI response.");
-    return output;
-  }
-);
+export async function findYourFit(input: FindYourFitInput) {
+  const ai = getAI();
+
+  // Define the prompt dynamically inside the function
+  const findYourFitPrompt = ai.definePrompt({
+    name: 'findYourFitPrompt',
+    model: 'googleai/gemini-2.5-flash',
+    input: { schema: FindYourFitInputSchema },
+    output: { schema: FindYourFitOutputSchema },
+    prompt: `You are an expert career adviser specialising in international teaching opportunities. 
+    
+    TASK: Analyse the teacher's profile and recommend 5 suitable countries.
+    
+    CONSTRAINTS:
+    - If the "Current Location" is Japan, you MUST NOT recommend Japan.
+    - Use descriptive British English (e.g., 'considerable experience', 'suitable honours') rather than just numbers.
+    - Recommendations must be formatted as bullet points in the reasoning section.
+    
+    User Profile:
+    - Age: {{{age}}}
+    - Family Status: {{{familyStatus}}}
+    - Qualifications: {{{qualifications}}}
+    - Experience: {{{experience}}} Years
+    - Subject: {{{subject}}}
+    - Current Location: {{{currentLocation}}}
+    - Target Regions: {{{preferredRegions}}}
+    - Objectives: {{{preferences}}}
+
+    Available Schools:
+    {{{availableSchools}}}`,
+  });
+
+  const { output } = await findYourFitPrompt(input);
+  if (!output) throw new Error("Dossier generation failed: Empty AI response.");
+  return output;
+}
