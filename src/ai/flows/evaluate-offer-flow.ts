@@ -7,7 +7,7 @@
  * - EvaluateOfferOutput - The return type for the evaluateOffer function.
  */
 
-import {ai} from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import {z} from 'zod';
 
 const EvaluateOfferInputSchema = z.object({
@@ -33,7 +33,7 @@ export async function evaluateOffer(input: EvaluateOfferInput): Promise<Evaluate
   return evaluateOfferFlow(input);
 }
 
-const evaluateOfferPrompt = ai.definePrompt({
+const evaluateOfferPrompt = getAI().definePrompt({
   name: 'evaluateOfferPrompt',
   input: {schema: EvaluateOfferInputSchema},
   output: {schema: EvaluateOfferOutputSchema},
@@ -60,7 +60,7 @@ Instructions:
 Tone: Professional, direct, and authoritative. Use British English.`,
 });
 
-const evaluateOfferFlow = ai.defineFlow(
+const evaluateOfferFlow = getAI().defineFlow(
   {
     name: 'evaluateOfferFlow',
     inputSchema: EvaluateOfferInputSchema,

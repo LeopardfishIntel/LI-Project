@@ -22,6 +22,6 @@ export function getAI() {
       })
     ],
     // 🚀 2026 Stable Standard
-    model: 'googleai/gemini-2.5-flash',
+    model: 'googleai/gemini-2.0-flash',
   });
 }

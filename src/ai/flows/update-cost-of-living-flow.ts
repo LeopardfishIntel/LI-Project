@@ -7,7 +7,7 @@
  * - UpdateCostOfLivingOutput - Output for the function.
  */
 
-import {ai} from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import {z} from 'zod';
 
 const UpdateCostOfLivingInputSchema = z.object({
@@ -20,15 +20,17 @@ export type UpdateCostOfLivingInput = z.infer<
 
 // This schema is based on the LocationCostOfLiving entity in backend.json
 const UpdateCostOfLivingOutputSchema = z.object({
-    averageMealCost: z.coerce.number().describe("Estimated average cost of a meal at a mid-range restaurant in USD."),
-    monthlyRent1BR: z.coerce.number().describe("Estimated average monthly rent for a 1-bedroom apartment in the city center in USD."),
-    transportPassCost: z.coerce.number().describe("Estimated monthly cost for a public transport pass in USD."),
-    utilitiesMonthly: z.coerce.number().describe("Estimated average monthly cost for basic utilities (electricity, heating, cooling, water, garbage) in USD."),
-    internetMonthly: z.coerce.number().describe("Estimated average monthly cost for internet service in USD."),
-    childcareMonthly: z.coerce.number().describe("Estimated average monthly cost for childcare (e.g., kindergarten or preschool) in USD.").optional(),
+    diningSocial: z.coerce.number().describe("Estimated average cost of a meal at a mid-range restaurant in USD."),
+    rent1br: z.coerce.number().describe("Estimated average monthly rent for a 1-bedroom apartment in the city center in USD."),
+    publicTransport: z.coerce.number().describe("Estimated monthly cost for a public transport pass (Bus/Metro) in USD."),
+    carPurchase: z.coerce.number().describe("Estimated monthly cost for car ownership (fuel, insurance, maintenance) in USD."),
+    utilities: z.coerce.number().describe("Estimated average monthly cost for basic utilities (electricity, heating, cooling, water, garbage) in USD."),
+    internet: z.coerce.number().describe("Estimated average monthly cost for internet service in USD."),
+    mobilePhone: z.coerce.number().describe("Estimated average monthly cost for a single mobile phone plan in USD."),
+    childcare: z.coerce.number().describe("Estimated average monthly cost for childcare (e.g., kindergarten or preschool) in USD.").optional(),
+    groceries: z.coerce.number().describe("An index comparing grocery prices to a reference city, converted to a monthly USD estimate (approx $400 base)."),
     localPurchasingPowerIndex: z.coerce.number().describe("An index indicating the relative purchasing power of residents in the location."),
-    groceriesIndex: z.coerce.number().describe("An index comparing grocery prices to a reference city."),
-    restaurantPriceIndex: z.coerce.number().describe("An index comparing restaurant prices to a reference city."),
+    dataReliabilityScore: z.coerce.number().describe("A score from 1-10 on how confident we are in this data.").default(8),
 });
 export type UpdateCostOfLivingOutput = z.infer<typeof UpdateCostOfLivingOutputSchema>;
 
@@ -38,7 +40,7 @@ export async function updateCostOfLiving(
   return updateCostOfLivingFlow(input);
 }
 
-const updateCostOfLivingPrompt = ai.definePrompt({
+const updateCostOfLivingPrompt = getAI().definePrompt({
   name: 'updateCostOfLivingPrompt',
   input: {schema: UpdateCostOfLivingInputSchema},
   output: {schema: UpdateCostOfLivingOutputSchema},
@@ -50,19 +52,21 @@ When researching, prioritize information from the following reputable websites: 
 
 Please research online and provide the most recent estimates for the following data points, in USD.
 
-- Average Meal Cost (mid-range restaurant)
-- Monthly Rent (1-bedroom apartment, city center)
-- Monthly Transport Pass
-- Monthly Utilities (basic)
-- Monthly Internet
-- Monthly Childcare (optional)
+- Average Meal Cost (mid-range restaurant - map to 'diningSocial')
+- Monthly Rent (1-bedroom apartment, city center - map to 'rent1br')
+- Monthly Public Transport Pass (Bus/Metro - map to 'publicTransport')
+- Monthly Car Ownership Cost (Fuel, Insurance, Basic maintenance - map to 'carPurchase')
+- Monthly Utilities (basic - map to 'utilities')
+- Monthly Internet (map to 'internet')
+- Monthly Mobile Phone Plan (map to 'mobilePhone')
+- Monthly Childcare (optional - map to 'childcare')
+- Monthly Groceries Estimate (approx $400 base - map to 'groceries')
 - Local Purchasing Power Index
-- Groceries Index
-- Restaurant Price Index
+- Restaurant Price Index (map to 'diningSocial' fallback)
 `,
 });
 
-const updateCostOfLivingFlow = ai.defineFlow(
+const updateCostOfLivingFlow = getAI().defineFlow(
   {
     name: 'updateCostOfLivingFlow',
     inputSchema: UpdateCostOfLivingInputSchema,

@@ -1,0 +1,729 @@
+"use client";
+
+import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { 
+  MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap, 
+  BookOpen, Activity, Wallet, Receipt, Globe2, Users, AlertTriangle, 
+  ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle,
+  ShieldCheck, Fingerprint, Lock // 🛰️ Added Lock
+} from 'lucide-react';
+// 🛰️ Added useUser to the import
+import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import { cn } from '@/lib/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const RATES: Record<string, number> = {
+  USD: 1.0, CZK: 23.45, AED: 3.67, EUR: 0.92, GBP: 0.79, SAR: 3.75, QAR: 3.64, CHF: 0.88, DKK: 6.85, AZN: 1.70, HKD: 7.82, JPY: 150.2, SGD: 1.34, MYR: 4.7, THB: 35.8, CNY: 7.2
+};
+
+const getCurrencyForCity = (city: string, country: string, colCode?: string) => {
+    const c = (city || "").toLowerCase();
+    const co = (country || "").toLowerCase();
+    if (colCode && colCode !== 'USD') return colCode.toUpperCase();
+    if (c.includes("prague") || co.includes("czech")) return "CZK";
+    if (c.includes("dubai") || c.includes("abu dhabi") || co.includes("emirates")) return "AED";
+    if (c.includes("london") || co.includes("united kingdom")) return "GBP";
+    if (co.includes("saudi")) return "SAR";
+    if (c.includes("doha") || co.includes("qatar")) return "QAR";
+    if (co.includes("hong kong")) return "HKD";
+    if (co.includes("singapore")) return "SGD";
+    if (co.includes("china")) return "CNY";
+    if (co.includes("thailand")) return "THB";
+    if (co.includes("malaysia")) return "MYR";
+    return colCode?.toUpperCase() || "USD";
+};
+
+
+
+
+const HOUSEHOLD_OPTIONS = ["Single", "Married (sole earner)", "Married (dual income)", "Family (1 child)", "Family (2 children)", "Family (3 or more)"];
+const ESSENTIALS_MAP: Record<string, number> = { "Single": 650, "Married (sole earner)": 1100, "Married (dual income)": 1100, "Family (1 child)": 1450, "Family (2 children)": 1800, "Family (3 or more)": 2200 };
+const BONUS_REGISTRY: Record<string, number> = { "austria": 0.166, "germany": 0.083, "china": 0.083, "spain": 0.166, "japan": 0.166 };
+const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+
+// --- UI COMPONENTS ---
+
+const Tooltip = ({ text, children }: { text: string, children: React.ReactNode }) => (
+    <div className="group relative inline-block">
+        {children}
+        <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 hidden group-hover:block z-[100] w-64 p-3 bg-slate-900 border border-white/20 text-[11px] text-slate-100 rounded-md shadow-2xl pointer-events-none leading-relaxed">
+            {text}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900" />
+        </div>
+    </div>
+);
+
+const ScoreBadge = ({ label, score, color = "#007FFF" }: { label: string, score: string | number, color?: string }) => (
+    <div className="flex flex-col border-l border-white/10 pl-3">
+        <span className="font-bold text-slate-500 leading-none mb-1 text-[9px]">{label}</span>
+        <span className="font-black italic tracking-tighter leading-none text-lg" style={{ color }}>{score}</span>
+    </div>
+);
+
+// --- STAFFROOM REALITY ENGINE ---
+
+const getStaffroomBrief = (country: string) => {
+    const c = country.toLowerCase();
+    // Regional Unrest Logic
+    const isAlert = c.includes("jordan") || c.includes("lebanon") || c.includes("israel") || c.includes("palestine") || c.includes("ukraine") || c.includes("qatar") || c.includes("uae") || c.includes("saudi arabia");
+    
+    if (c.includes("qatar") || c.includes("uae") || c.includes("saudi arabia")) return {
+        isAlert,
+        text: "The Gulf remains safe for staff, but you'll feel the regional tension as a definite 'background hum' at the moment. Daily life is seamless, but it's a bubble—you'll find the social dynamics strictly managed and the local political landscape is something you keep an eye on, even if it rarely affects your front door."
+    };
+    if (c.includes("jordan")) return {
+        isAlert,
+        text: "You'll feel the regional tension here more than most. It's safe enough, but protests are regular and the social atmosphere is quite closed-off compared to Europe. Don't expect things to work like they do back home—a massive amount of patience with the local systems is a requirement here."
+    };
+    if (c.includes("hong kong")) return {
+        isAlert,
+        text: "Schools are elite, but you're trading space and quiet for an intense, transactional urban life. You will notice the political shifts in the city vibe, and it is becoming increasingly expensive. It's a high-pressure bubble that doesn't slow down for anyone."
+    };
+    if (c.includes("greece")) return {
+        isAlert: false,
+        text: "Athens is fantastic for the culture, but the bureaucracy is a daily grind. You'll have to deal with occasional strikes or economic hiccups that make simple banking or transport a headache. It's a move you make for the human pace of life, not for logistical efficiency."
+    };
+
+    return {
+        isAlert: false,
+        text: "Safe enough for a secure routine, provided you keep your wits about you in the busy areas. Most staff find the transition is a bit of a grind logistically at first, but it settles into a predictable day-to-day work environment once the initial paperwork is sorted."
+    };
+};
+
+const getLifestyleVibe = (city: string, workload: number) => {
+    if (workload > 52) return `Intensity alert: This is a high-performance campus. Expect to be very busy during term.`;
+    if (workload < 44) return `Lifestyle focus: A more human pace here; plenty of energy left for ${city} on weekends.`;
+    return `Balanced vibe: A typical international setup where work is heavy but manageable.`;
+};
+
+const calculateWorkload = (school: any) => {
+    let hours = 42;
+    const prestige = parseFloat(school.academicscore || "7.0");
+    const contact = parseInt(school.noncontacttime || "20");
+    if (prestige > 9.0) hours += 8;
+    if ((school.curriculum || "").toLowerCase().includes('ib')) hours += 5;
+    if (contact < 18) hours += 5;
+    return hours;
+};
+
+const generateDetailedConclusion = (ranked: any[]) => {
+    return [
+        `Strategic comparison requires active targets to generate a final analytical briefing.`
+    ];
+};
+
+import { generateDecideBriefing } from '@/ai/flows/decide-briefing-flow';
+
+function DecideContent() {
+    const router = useRouter();
+    const firestore = useFirestore();
+    const searchParams = useSearchParams();
+    
+    // 🎯 TACTICAL IDENTITY GRAB
+    const { customId, isAdmin } = useUser();
+
+    const [mounted, setMounted] = useState(false);
+    
+    const { data: schools, isLoading: sLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
+    const { data: colData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
+    
+    const [selectedIds, setSelectedIds] = useState<string[]>(['', '', '']);
+    const [selectedCountries, setSelectedCountries] = useState<string[]>(['', '', '']);
+    const [familyStatus, setFamilyStatus] = useState("Single");
+    const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
+    const [manualSalaries, setManualSalaries] = useState<boolean[]>([false, false, false]);
+    const [adjustments, setAdjustments] = useState(Array(3).fill({ second: '0', other: '0', home: '0' }));
+    const [benchmark, setBenchmark] = useState("GBP");
+    const [cardLifestyles, setCardLifestyles] = useState<("Budget" | "Balanced" | "Luxury")[]>(["Balanced", "Balanced", "Balanced"]);
+    
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const [aiBriefing, setAiBriefing] = useState<any>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
+
+    // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData arrival)
+    useEffect(() => {
+        if (!schools || !colData || !mounted) return;
+        
+        let changed = false;
+        const nextSalaries = [...netSalaries];
+        const nextCountries = [...selectedCountries];
+
+        selectedIds.forEach((id, index) => {
+            if (!id || manualSalaries[index]) return;
+            
+            const school = schools.find((s: any) => s.id === id);
+            if (!school) return;
+
+            const col = colData.find((c: any) => 
+                normalize(c.city || c.city_name) === normalize(school.city) || 
+                normalize(c.country || c.country_name) === normalize(school.country) ||
+                normalize(c.id) === normalize(school.city)
+            );
+            
+            const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
+            const rate = RATES[cCode] || 1.0;
+            
+            const cleanRange = (school.salaryRange || "").replace(/,/g, '');
+            const range = cleanRange.match(/\d+/g);
+            const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
+            
+            const localSalary = Math.round(usdMed * rate).toString();
+            if (nextSalaries[index] !== localSalary) {
+                nextSalaries[index] = localSalary;
+                changed = true;
+            }
+            if (nextCountries[index] !== school.country) {
+                nextCountries[index] = school.country;
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            setNetSalaries(nextSalaries);
+            setSelectedCountries(nextCountries);
+        }
+    }, [schools, colData, selectedIds, manualSalaries, mounted]);
+
+    useEffect(() => { setMounted(true); }, []);
+
+    const availableCountries = useMemo(() => (!schools ? [] : Array.from(new Set(schools.map((s: any) => s.country))).filter(Boolean).sort()), [schools]);
+
+    // --- WORKSPACE LOGIC (Memory + Dubai Shift) ---
+    useEffect(() => {
+        if (mounted && (schools?.length ?? 0) > 0 && colData) {
+            const urlIds = searchParams.get('ids')?.split(',').filter(Boolean) || [];
+            const savedIds = JSON.parse(localStorage.getItem('lf_ids_v15') || '["", "", ""]');
+            
+            let finalIds = [...savedIds];
+            if (urlIds.length > 0) {
+                const uniqueNew = urlIds.filter(id => !savedIds.includes(id));
+                finalIds = [...uniqueNew, ...savedIds].slice(0, 3);
+                
+                // 🕵️ RIVAL AUTO-LOAD: If only one target provided, find a rival in the same city
+                if (urlIds.length === 1) {
+                    const primary = schools.find((s: any) => s.id === urlIds[0]);
+                    if (primary) {
+                        const rival = schools.find((s: any) => s.city === primary.city && s.id !== primary.id);
+                        if (rival && !finalIds.includes(rival.id)) {
+                            finalIds[1] = rival.id;
+                        }
+                    }
+                }
+            }
+
+            setSelectedIds(finalIds);
+            setSelectedCountries(finalIds.map(id => schools.find((s: any) => s.id === id)?.country || ''));
+
+            const savedNet = JSON.parse(localStorage.getItem('lf_net_v15') || '["", "", ""]');
+            const savedManual = JSON.parse(localStorage.getItem('lf_manual_v15') || '[false, false, false]');
+            const savedAdj = localStorage.getItem('lf_adj_v15');
+            const savedFam = localStorage.getItem('lf_fam_v15');
+            
+            if (savedFam) setFamilyStatus(savedFam);
+            if (savedAdj) setAdjustments(JSON.parse(savedAdj));
+            setManualSalaries(savedManual);
+
+            const finalSalaries = [...savedNet];
+            finalIds.forEach((id, idx) => {
+                if (id && !savedManual[idx]) {
+                    const s = schools.find((item: any) => item.id === id);
+                    if (!s) return;
+                    const col = colData.find((c: any) => 
+                        normalize(c.city || c.city_name) === normalize(s.city) || 
+                        normalize(c.country || c.country_name) === normalize(s.country) ||
+                        normalize(c.id) === normalize(s.city)
+                    );
+                    const cCode = getCurrencyForCity(s.city, s.country, col?.currencyCode);
+                    const rate = RATES[cCode] || 1.0;
+                    
+                    const cleanRange = (s.salaryRange || "").replace(/,/g, '');
+                    const range = cleanRange.match(/\d+/g);
+                    const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
+                    
+                    finalSalaries[idx] = Math.round(usdMed * rate).toString();
+                }
+            });
+            setNetSalaries(finalSalaries);
+        }
+    }, [mounted, schools, colData, searchParams]);
+
+    useEffect(() => {
+        if (mounted && selectedIds.some(id => id !== '')) {
+            localStorage.setItem('lf_net_v15', JSON.stringify(netSalaries));
+            localStorage.setItem('lf_manual_v15', JSON.stringify(manualSalaries));
+            localStorage.setItem('lf_adj_v15', JSON.stringify(adjustments));
+            localStorage.setItem('lf_fam_v15', familyStatus);
+            localStorage.setItem('lf_ids_v15', JSON.stringify(selectedIds));
+        }
+    }, [netSalaries, manualSalaries, adjustments, familyStatus, selectedIds, mounted]);
+
+    const handleSchoolSelect = (val: string, index: number) => {
+        const nextIds = [...selectedIds]; nextIds[index] = val; setSelectedIds(nextIds);
+        const school = schools?.find((s: any) => s.id === val);
+        if (school) {
+            const col = colData?.find((c: any) => 
+                normalize(c.city || c.city_name) === normalize(school.city) || 
+                normalize(c.country || c.country_name) === normalize(school.country) ||
+                normalize(c.id) === normalize(school.city)
+            );
+            const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
+            const rate = RATES[cCode] || 1.0;
+            
+            // 🎯 MEDIAN SALARY LOGIC (Midpoint of Range)
+            const cleanRange = (school.salaryRange || "").replace(/,/g, '');
+            const range = cleanRange.match(/\d+/g);
+            const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
+            
+            // Reset manual flag on new selection to allow median auto-fill
+            const nextM = [...manualSalaries]; 
+            nextM[index] = false; 
+            setManualSalaries(nextM);
+
+            const nextSalaries = [...netSalaries]; 
+            // Ensure we are actually multiplying by the rate for the correct currency
+            nextSalaries[index] = Math.round(usdMed * rate).toString(); 
+            setNetSalaries(nextSalaries);
+            
+            const nextCountries = [...selectedCountries]; nextCountries[index] = school.country; setSelectedCountries(nextCountries);
+        }
+        setIsUnlocked(false); // Relock on school change
+    };
+
+    const handleUnlockIntelligence = async () => {
+        const activeData = shootoutMatrix.filter((d): d is NonNullable<typeof d> => d !== null);
+        if (activeData.length < 2) return;
+        
+        setIsGenerating(true);
+        try {
+            const briefing = await generateDecideBriefing({
+                familyStatus,
+                benchmarkCurrency: benchmark,
+                schools: activeData.map(d => ({
+                    id: d.school.id,
+                    name: d.school.schoolname,
+                    country: d.school.country,
+                    city: d.school.city,
+                    salary: `${d.currency} ${Math.round(d.totalLocalIn).toLocaleString()}`,
+                    surplus: `${d.currency} ${Math.round(d.surplusLocal).toLocaleString()}`,
+                    savingsRate: d.savingsRate,
+                    workload: d.workload,
+                    curriculum: d.school.curriculum || "International",
+                    academicScore: d.schoolScore,
+                    housing: d.school.housingprovision || "Standard",
+                }))
+            });
+            setAiBriefing(briefing);
+            setIsUnlocked(true);
+        } catch (e) {
+            console.error("AI Briefing failed:", e);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const shootoutMatrix = useMemo(() => {
+        if (!schools || !colData) return [];
+        
+        // 🛠️ INTELLIGENT SCALING UTILITY
+        const getVal = (data: any, key: string, mult: number) => {
+            if (!data) return 0;
+            if (typeof data === 'object') {
+                if (data[key]) return parseFloat(data[key]) || 0;
+                return (parseFloat(data.single || data.base || 0) || 0) * mult;
+            }
+            return (parseFloat(data) || 0) * mult;
+        };
+
+        return selectedIds.map((id, index) => {
+            const school = schools.find((s: any) => s?.id === id);
+            if (!school) return null;
+            
+            // 🛡️ REGIONAL AVERAGE FALLBACK
+            let col = colData.find((c: any) => normalize(c.city || c.city_name) === normalize(school.city));
+            if (!col) col = colData.find((c: any) => normalize(c.city || c.city_name) === "regional average" && normalize(c.country || c.country_name) === normalize(school.country));
+            if (!col) col = colData.find((c: any) => normalize(c.country || c.country_name) === normalize(school.country));
+            
+            const currency = getCurrencyForCity(school.city, school.country, col?.currencyCode);
+            const rate = RATES[currency] || 1.0;
+            const salaryIn = parseFloat(netSalaries[index]) || 0;
+            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[school.country?.toLowerCase()] ?? 0)) + (parseFloat(adjustments[index].second) || 0) + (parseFloat(adjustments[index].other) || 0);
+            
+            // 🏠 DYNAMIC HOUSING ENGINE
+            const provision = (school.housingprovision || "").toLowerCase();
+            const rentKey = familyStatus === "Single" ? 'rent1br' : (familyStatus.includes("Family") ? 'rent3br' : 'rent2br');
+            const rawRentUSD = parseFloat(col?.[rentKey] || col?.rent1br || "1450");
+            
+            let finalRentUSD = rawRentUSD;
+            let housingNote = "Housing is not included in this package"; 
+            if (provision.includes("provided")) { finalRentUSD = 0; housingNote = "Housing provided by school"; }
+            else if (provision.includes("subsidised")) { finalRentUSD = rawRentUSD * 0.5; housingNote = "Subsidised housing applied"; }
+
+            // 📊 GRANULAR COST SCALING
+            const mode = cardLifestyles[index] || "Balanced";
+            const rentMult = mode === "Budget" ? 0.8 : (mode === "Luxury" ? 1.3 : 1.0);
+            if (finalRentUSD > 0) finalRentUSD *= rentMult;
+
+            const pKey = familyStatus.includes("Family") ? (familyStatus.includes("1") ? "family1Child" : familyStatus.includes("2") ? "family2Children" : "family3PlusChildren") : (familyStatus === "Single" ? "single" : "marriedDualIncome");
+            const scalar = familyStatus === "Single" ? 1 : (familyStatus.includes("Married") ? 1.8 : 2.5);
+            const personCount = familyStatus === "Single" ? 1 : (familyStatus.includes("Married") ? 2 : (familyStatus.includes("1") ? 3 : familyStatus.includes("2") ? 4 : 5));
+
+            const rentLocal = finalRentUSD * rate;
+            const groceryLocal = getVal(col?.groceries, pKey, scalar) * rate;
+            const utilityLocal = getVal(col?.utilities, pKey, scalar * 0.8) * rate;
+            const connectivityLocal = (getVal(col?.internet, pKey, 1) + (getVal(col?.mobilePhone, pKey, 1) * personCount)) * rate;
+            
+            const transportMap = col?.transport?.publicTransport || col?.publicTransport;
+            const transportLocal = getVal(transportMap, pKey, personCount) * rate;
+            
+            const lifestyleMult = mode === "Budget" ? 0.6 : (mode === "Luxury" ? 1.8 : 1.0);
+            const socialLocal = getVal(col?.diningSocial, pKey, scalar) * rate * lifestyleMult;
+            const manualLocal = parseFloat(adjustments[index].home) || 0;
+
+            const totalLocalCost = rentLocal + groceryLocal + utilityLocal + connectivityLocal + transportLocal + socialLocal + manualLocal;
+            const surplusLocal = totalLocalIn - totalLocalCost;
+            const workload = calculateWorkload(school);
+            const rawSafety = parseFloat(school.citySafety || "7.2") * 10;
+            
+            const finW = (surplusLocal/rate / 2500 * 100 + 35) * 0.4;
+            const careerW = parseFloat(school.academicscore || "7.5") * 10 * 0.3;
+            const lifestyleW = (rawSafety * 0.2) - (workload > 50 ? (workload-50)*2 : 0);
+            const workW = (100 - workload) * 0.1;
+            
+            const matchScore = Math.round(Math.max(15, Math.min(99, finW + careerW + lifestyleW + workW)));
+
+            return { 
+                school, surplusLocal, totalLocalIn, totalLocalCost, currency, rate, matchPercentage: matchScore, workload, housingNote, provision,
+                countryScore: school.citySafety ? parseFloat(school.citySafety).toFixed(1) : "N/A", schoolScore: school.academicscore ? parseFloat(school.academicscore).toFixed(1) : "N/A",
+                surplusUSD: surplusLocal / rate, savingsRate: totalLocalIn > 0 ? Math.round((surplusLocal/totalLocalIn)*100) : 0,
+                surplusBenchmark: (surplusLocal / rate) * (RATES[benchmark] || 0.79),
+                savings3Year: surplusLocal * 36,
+                costs: {
+                    rent: rentLocal,
+                    groceries: groceryLocal,
+                    utilities: utilityLocal,
+                    connectivity: connectivityLocal,
+                    transport: transportLocal,
+                    social: socialLocal
+                },
+                benefits: {
+                    flights: school.annualflights || "Check Contract",
+                    healthcare: school.healthcare || "Standard",
+                    gratuity: school.endofservicegratuity || "Statutory"
+                },
+                purchasingPower: col?.localPurchasingPowerIndex || "N/A"
+            };
+        });
+    }, [selectedIds, schools, colData, netSalaries, adjustments, familyStatus, benchmark, cardLifestyles]);
+
+    const ranked = useMemo(() => shootoutMatrix.filter((item): item is NonNullable<typeof item> => item !== null).sort((a, b) => b.matchPercentage - a.matchPercentage), [shootoutMatrix]);
+    const topPickId = ranked[0]?.school.id;
+    const detailedConclusion = useMemo(() => generateDetailedConclusion(ranked), [ranked]);
+
+    if (!mounted || sLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#f97316] size-10" /></div>;
+
+    return (
+        <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#f97316]">
+            <div className="max-w-7xl mx-auto space-y-4">
+                
+                <header className="mb-4 border-b border-white/5 pb-3">
+                    {/* ROW 1: Title + Controls */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                        <div>
+                            <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-[#007FFF] uppercase tracking-[0.2em] hover:text-white transition-colors mb-1"><ArrowLeft className="size-3" /> Back</button>
+                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#f97316] italic uppercase leading-none">Compare & Decide</h1>
+                        </div>
+
+                        <div className="flex items-stretch gap-2">
+                            {/* 👥 HOUSEHOLD */}
+                            <div className="py-1 px-3 bg-[#f97316]/5 border border-[#f97316]/30 rounded-sm flex items-center gap-3 h-[52px]">
+                                <div className="size-7 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shrink-0">
+                                    <Users className="size-3.5 text-[#f97316]" />
+                                </div>
+                                <div className="flex flex-col justify-center min-w-[140px]">
+                                    <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-0.5">Household</Label>
+                                    <Select value={familyStatus} onValueChange={setFamilyStatus}>
+                                        <SelectTrigger className="bg-transparent border-none h-4 text-white font-black text-[13px] focus:ring-0 p-0 w-full italic leading-none"><SelectValue placeholder="Status" /></SelectTrigger>
+                                        <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{HOUSEHOLD_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            {/* ⚡ LIFESTYLE SYNC */}
+                            <div className="py-1 px-3 bg-emerald-500/5 border border-emerald-500/30 rounded-sm flex items-center gap-3 h-[52px]">
+                                <div className="size-7 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/20 shrink-0">
+                                    <Zap className="size-3.5 text-emerald-500" />
+                                </div>
+                                <div className="flex flex-col justify-center">
+                                    <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-1">Sync All Lifestyles</Label>
+                                    <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/5">
+                                        {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
+                                            <button key={mode} onClick={() => setCardLifestyles([mode, mode, mode])} className={cn("px-3 py-0.5 text-[8px] font-black uppercase tracking-wider transition-all italic leading-tight", cardLifestyles.every(l => l === mode) ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-slate-300")}>{mode}</button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ROW 2: Disclaimer */}
+                    <div className="mt-2 p-2 bg-rose-500/5 border-l-2 border-[#f97316] rounded-sm">
+                        <p className="text-[11px] font-bold text-slate-400 italic flex items-center gap-3 tracking-tight">
+                            <AlertTriangle className="size-3.5 text-[#f97316] shrink-0" /> 
+                            This analysis is only as good as the data you input! Ensure net salaries and household status are accurate for the best forecast.
+                        </p>
+                    </div>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                    {[0, 1, 2].map((i) => (
+                        <div key={i} className="space-y-3 bg-[#0b1224]/80 p-3 border border-[#007FFF]/40 rounded-sm shadow-2xl flex flex-col transition-all hover:border-[#007FFF]/60">
+                             <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Globe2 className="size-3 text-[#007FFF]"/> Country</Label>
+                                    <Select value={selectedCountries[i]} onValueChange={(val) => { const nC = [...selectedCountries]; nC[i] = val; setSelectedCountries(nC); }}>
+                                        <SelectTrigger className="bg-black/40 border-white/10 h-8 text-[#007FFF] font-black text-[11px]"><SelectValue placeholder="Location" /></SelectTrigger>
+                                        <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{availableCountries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Target className="size-3 text-[#f97316]"/> Target</Label>
+                                    <Select disabled={!selectedCountries[i]} value={selectedIds[i]} onValueChange={(val) => handleSchoolSelect(val, i)}>
+                                        <SelectTrigger className="bg-black/40 border-white/10 h-8 text-white font-black text-[11px]"><SelectValue placeholder="Institution" /></SelectTrigger>
+                                        <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{(schools || []).filter((s: any) => s.country === selectedCountries[i]).map((s: any) => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                </div>
+                             </div>
+                             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5 items-center">
+                                <div className="space-y-1">
+                                    <Label className="text-[10px] font-black text-[#007FFF] italic whitespace-nowrap flex items-center justify-between uppercase tracking-tighter">
+                                        <div className="flex flex-col gap-0.5">
+                                          <span>Monthly income ({shootoutMatrix[i]?.currency || 'Local'})</span>
+                                          {!manualSalaries[i] && selectedIds[i] && (
+                                            <span className="text-[8px] text-[#f97316] font-black uppercase tracking-widest italic leading-none">Median income applied</span>
+                                          )}
+                                        </div>
+                                    </Label>
+                                    <Input 
+                                        type="number" 
+                                        value={netSalaries[i]} 
+                                        placeholder="0" 
+                                        onChange={(e) => { 
+                                            const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next); 
+                                            const nextM = [...manualSalaries]; nextM[i] = true; setManualSalaries(nextM);
+                                        }} 
+                                        className={cn(
+                                            "bg-black/40 border-white/5 h-8 text-right font-black text-[13px] pr-2", 
+                                            !manualSalaries[i] && selectedIds[i] ? "text-slate-300" : "text-white",
+                                            noSpinners
+                                        )} 
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <Tooltip text="Including spouse salary, child benefit, or recurring family income."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">2nd income</Label></Tooltip>
+                                    <Input type="number" value={adjustments[i].second} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], second: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
+                                </div>
+                             </div>
+                             <div className="grid grid-cols-2 gap-2 items-center">
+                                <div className="space-y-1">
+                                    <Tooltip text="Including tutoring, investments, or allowances."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Other income</Label></Tooltip>
+                                    <Input type="number" value={adjustments[i].other} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], other: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <Tooltip text="Mortgages back home, student loans, or credit commitments."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Home commitment</Label></Tooltip>
+                                    <Input type="number" value={adjustments[i].home} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], home: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
+                                </div>
+                             </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* 💱 CURRENCY LENS */}
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-[0.15em] italic">Results Currency Lens</span>
+                    <div className="flex bg-black/50 p-0.5 rounded-sm border border-white/10">
+                        {(['GBP', 'USD'] as const).map((cur) => (
+                            <button key={cur} onClick={() => setBenchmark(cur)} className={cn("px-4 py-1 text-[9px] font-black uppercase tracking-wider transition-all italic", benchmark === cur ? "bg-[#007FFF] text-white shadow-[0_0_12px_rgba(0,127,255,0.3)]" : "text-slate-500 hover:text-slate-300")}>{cur}</button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                    {shootoutMatrix.map((data, idx) => (
+                        <div key={`card-${idx}`} className={cn(
+                            "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[720px]",
+                            "border-[#f97316]/40", 
+                            data?.school.id === topPickId && "border-[#f97316] ring-2 ring-[#f97316] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
+                        )}>
+                            {data ? (
+                                <>
+                                    <div className="h-16 flex flex-col justify-center">
+                                        <div className="space-y-1 flex-1">
+                                            <h2 className="text-lg md:text-3xl font-black text-[#f97316] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
+                                            <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1">
+                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]"/> ~{data.workload} hrs/wk</span>
+                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]"/> {data.school.housingprovision}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 🍃 FULL WIDTH VIBE */}
+                                    <div className="pt-2 h-12">
+                                        <p className="text-[12px] font-bold text-emerald-400/90 italic leading-tight tracking-tight border-b border-white/5 pb-2 line-clamp-2">
+                                            {getLifestyleVibe(data.school.city, data.workload)}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 h-4 uppercase tracking-widest leading-none"><MapPin className="size-3 text-[#007FFF]" /> {data.school.city}, {data.school.country}</div>
+
+                                    {/* ⚡ CARD-SPECIFIC LIFESTYLE SELECTOR */}
+                                    <div className="mt-2 p-1.5 bg-white/5 border border-white/5 rounded-sm flex items-center justify-between">
+                                        <span className="text-[9px] font-black uppercase text-slate-500 italic tracking-wider">Lifestyle Mode</span>
+                                        <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/5">
+                                            {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
+                                                <button
+                                                    key={mode}
+                                                    onClick={() => {
+                                                        const next = [...cardLifestyles];
+                                                        next[idx] = mode;
+                                                        setCardLifestyles(next);
+                                                    }}
+                                                    className={cn(
+                                                        "px-3 py-1 text-[8px] font-black uppercase tracking-wider transition-all italic",
+                                                        cardLifestyles[idx] === mode ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-slate-300"
+                                                    )}
+                                                >
+                                                    {mode}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-4 gap-1.5 py-4 h-14 mt-2 border-y border-white/5">
+                                        <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#f97316" />
+                                        <ScoreBadge label="Country" score={data.countryScore === "N/A" ? "UNRATED" : data.countryScore} color={data.countryScore === "N/A" ? "#475569" : "#007FFF"} />
+                                        <ScoreBadge label="School" score={data.schoolScore} />
+                                        <Tooltip text={`Local Purchasing Power: ${data.purchasingPower}. This measures how much a local salary buys in this city.`}>
+                                            <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
+                                                <span className="text-[7px] font-black uppercase text-slate-500 mb-0.5">Power</span>
+                                                <span className="text-[10px] font-black text-sky-400 italic">{data.purchasingPower}</span>
+                                            </div>
+                                        </Tooltip>
+                                    </div>
+
+                                    {/* 📊 GRANULAR COST BREAKDOWN */}
+                                    <div className="space-y-1.5 p-4 bg-black/40 rounded-sm border border-white/5">
+                                        <div className="flex justify-between items-center text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 border-b border-white/5 pb-2">
+                                            <span>Financial Dossier</span>
+                                            <span>{data.currency}</span>
+                                        </div>
+                                        <div className="space-y-1.5 text-[11px] font-bold">
+                                            <div className="flex justify-between items-center p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-sm mb-3">
+                                                <span className="text-emerald-400 uppercase text-[9px] font-black tracking-widest">Total Monthly Income</span>
+                                                <span className="text-emerald-400 text-base font-black italic">{Math.round(data.totalLocalIn).toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Accommodation</span><span className="text-white font-black">{Math.round(data.costs.rent).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Groceries</span><span className="text-white font-black">{Math.round(data.costs.groceries).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Utilities & Net</span><span className="text-white font-black">{Math.round(data.costs.utilities + data.costs.connectivity).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Transport</span><span className="text-white font-black">{Math.round(data.costs.transport).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1 border-b border-white/5 pb-2"><span>Social & Other</span><span className="text-white font-black">{Math.round(data.costs.social).toLocaleString()}</span></div>
+                                        </div>
+                                        <div className="pt-2 flex justify-between items-center px-1">
+                                            <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Total Monthly Outgoings</span>
+                                            <span className="text-sm font-black text-rose-400 tabular-nums">{Math.round(data.totalLocalCost).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3 pt-1 flex-grow">
+                                        <div className="flex justify-between items-center px-1">
+                                            <div className="space-y-0.5">
+                                                <span className="text-[10px] font-bold text-[#007FFF] italic">Net monthly surplus</span>
+                                                <p className="text-[9px] font-bold text-emerald-400/80 italic leading-none">{data.housingNote}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className={cn("text-sm font-black italic tracking-tighter tabular-nums whitespace-nowrap", data.surplusLocal > 0 ? "text-emerald-400" : "text-rose-400")}>
+                                                    {data.currency} {Math.round(data.surplusLocal).toLocaleString()}
+                                                </div>
+                                                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-tight">
+                                                    {benchmark} {Math.round(data.surplusBenchmark).toLocaleString()} /mo
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 💰 3-YEAR WEALTH POT */}
+                                        <div className={cn("p-3 border rounded-sm flex items-center justify-between", data.savings3Year > 0 ? "bg-[#f97316]/10 border-[#f97316]/30" : "bg-rose-500/10 border-rose-500/50")}>
+                                            <div>
+                                                <p className={cn("text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 italic", data.savings3Year > 0 ? "text-[#f97316]" : "text-rose-500")}>3-Year Bankable Pot</p>
+                                                <p className="text-[10px] font-bold text-slate-400 italic leading-tight">Projected assets at contract end.</p>
+                                            </div>
+                                            <div className="text-right leading-none">
+                                                <p className={cn("text-base font-black italic tabular-nums", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
+                                                <p className="text-[9px] font-bold text-slate-500 mt-1">{benchmark} {Math.round((data.savings3Year / data.rate) * (RATES[benchmark] || 0.79)).toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="h-full min-h-[500px] flex flex-col items-center justify-center p-12 text-center space-y-4">
+                                    <div className="p-4 bg-white/5 rounded-full border border-dashed border-white/10">
+                                        <PlusCircle className="size-8 text-slate-700" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[12px] font-black text-slate-400 uppercase tracking-widest">Target selection required</p>
+                                        <p className="text-[10px] text-slate-500 italic leading-relaxed">Choose a location to begin your financial and lifestyle analysis.</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {!isUnlocked ? (
+                    <div className="bg-[#f97316]/5 border border-dashed border-[#f97316]/30 p-12 rounded-sm flex flex-col items-center space-y-6">
+                        <div className="size-16 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
+                            <Zap className={cn("size-8 text-[#f97316]", isGenerating && "animate-pulse")} />
+                        </div>
+                        <div className="text-center space-y-2">
+                            <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">Unlock Tactical Intelligence</h3>
+                            <p className="text-slate-500 text-sm italic max-w-md mx-auto">Generate a professional comparative briefing cross-referencing workload, financial surplus, and regional career growth.</p>
+                        </div>
+                        <button 
+                            onClick={handleUnlockIntelligence}
+                            disabled={isGenerating || ranked.length < 2}
+                            className="px-10 py-4 bg-[#f97316] text-white font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-2xl disabled:opacity-50 flex items-center gap-3"
+                        >
+                            {isGenerating ? <><Loader2 className="animate-spin size-4" /> Compiling Briefing...</> : <><Fingerprint className="size-4" /> Request Final Intelligence Briefing</>}
+                        </button>
+                    </div>
+                ) : (
+                    <div className="lg:col-span-3 bg-[#f97316]/5 border border-[#f97316]/20 p-12 rounded-sm relative overflow-hidden flex flex-col items-center animate-in zoom-in-95 duration-700">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.12] pointer-events-none select-none overflow-hidden z-0">
+                            <span className="text-[60px] md:text-[80px] font-black tracking-[0.2em] rotate-[-20deg] whitespace-nowrap text-white text-center">leopardfish intel</span>
+                        </div>
+                        <div className="relative z-10 space-y-8 w-full max-w-5xl">
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-[12px] font-black text-[#f97316] uppercase tracking-[0.4em] flex items-center gap-2"><Zap className="size-4" /> Leopardfish intel conclusion</h3>
+                                <button onClick={() => setIsUnlocked(false)} className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">Relock Briefing</button>
+                            </div>
+                            <div className="text-[16px] font-medium italic tracking-tight text-slate-300 leading-relaxed space-y-6">
+                                {aiBriefing?.conclusion.map((para: string, pIdx: number) => <p key={pIdx}>{para}</p>)}
+                                <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-sm">
+                                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Strategic Pick</p>
+                                    <p className="text-white font-bold">{aiBriefing?.topPickReason}</p>
+                                </div>
+                                <p className="not-italic font-bold text-slate-500 text-[11px] mt-6 tracking-widest uppercase pt-4 border-t border-white/5">Evaluation: March 2026</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default function DecidePage() {
+    return <Suspense fallback={null}><DecideContent /></Suspense>;
+}

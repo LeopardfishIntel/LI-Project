@@ -42,6 +42,28 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
     }
 
     const res = await updateCostOfLiving({ locationName, countryName } as any);
+    
+    // 🛰️ COMMIT TO REGISTRY: Actually save the data to Firestore
+    const docId = locationName.toLowerCase().replace(/\s+/g, '-');
+    const docRef = doc(db, 'locations_costOfLiving', docId);
+    
+    await updateDoc(docRef, {
+      ...res,
+      city: locationName,
+      country: countryName,
+      lastSync: new Date().toISOString()
+    }).catch(async (e) => {
+       // If doc doesn't exist, create it
+       const { setDoc } = await import('firebase/firestore/lite');
+       await setDoc(docRef, {
+         ...res,
+         city: locationName,
+         country: countryName,
+         id: docId,
+         lastSync: new Date().toISOString()
+       });
+    });
+
     return { 
       message: `Updated telemetry for ${locationName} successfully`, 
       success: true, 

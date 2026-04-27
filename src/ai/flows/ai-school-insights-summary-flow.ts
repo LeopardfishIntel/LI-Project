@@ -8,7 +8,7 @@
  * - AiSchoolInsightsSummaryOutput - The return type for the aiSchoolInsightsSummary function.
  */
 
-import {ai} from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import {z} from 'zod';
 
 const AiSchoolInsightsSummaryInputSchema = z.object({
@@ -53,7 +53,7 @@ export async function aiSchoolInsightsSummary(
   return aiSchoolInsightsSummaryFlow(input);
 }
 
-const aiSchoolInsightsSummaryPrompt = ai.definePrompt({
+const aiSchoolInsightsSummaryPrompt = getAI().definePrompt({
   name: 'aiSchoolInsightsSummaryPrompt',
   input: {schema: AiSchoolInsightsSummaryInputSchema},
   output: {schema: AiSchoolInsightsSummaryOutputSchema},
@@ -75,7 +75,7 @@ Instructions:
 `,
 });
 
-const aiSchoolInsightsSummaryFlow = ai.defineFlow(
+const aiSchoolInsightsSummaryFlow = getAI().defineFlow(
   {
     name: 'aiSchoolInsightsSummaryFlow',
     inputSchema: AiSchoolInsightsSummaryInputSchema,

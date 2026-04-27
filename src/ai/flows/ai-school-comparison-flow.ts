@@ -9,7 +9,7 @@
  * - AiSchoolComparisonOutput - The return type for the function.
  */
 
-import {ai} from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import {z} from 'zod';
 
 const SchoolDataSchema = z.object({
@@ -52,7 +52,7 @@ export async function aiSchoolComparison(
   return aiSchoolComparisonFlow(input);
 }
 
-const comparisonPrompt = ai.definePrompt({
+const comparisonPrompt = getAI().definePrompt({
   name: 'aiSchoolComparisonPrompt',
   input: {schema: AiSchoolComparisonInputSchema},
   output: {schema: AiSchoolComparisonOutputSchema},
@@ -80,7 +80,7 @@ Tone: Professional, authoritative, and direct. Use British English spelling (e.g
 `,
 });
 
-const aiSchoolComparisonFlow = ai.defineFlow(
+const aiSchoolComparisonFlow = getAI().defineFlow(
   {
     name: 'aiSchoolComparisonFlow',
     inputSchema: AiSchoolComparisonInputSchema,

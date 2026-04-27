@@ -1,6 +1,8 @@
 "use server";
 
 import { findYourFit, FindYourFitInput, FindYourFitOutput } from "@/ai/flows/find-your-fit-flow";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/firebase/server';
 
 export type FitFinderState = {
   result: FindYourFitOutput | null;
@@ -34,30 +36,57 @@ export async function findFitAction(
     const rawAge = String(formData.get("age") || "35-49");
     const parsedAge = parseInt(rawAge.split("-")[0]) || 35;
 
-    // 🎯 FULL ALIGNMENT: Mapping all 12 required fields
+    // 🚀 PRE-FETCH GLOBAL INTELLIGENCE DATA
+    let databaseContext = "";
+    try {
+      const [reqsSnap, locsSnap, schoolsSnap] = await Promise.all([
+        getDocs(collection(db, 'teacher_requirements')),
+        getDocs(collection(db, 'locations_costOfLiving')),
+        getDocs(collection(db, 'schools'))
+      ]);
+
+      // 🚀 OPTIMIZATION: Limit total schools context to prevent prompt overflow/hangs
+      const allSchools = schoolsSnap.docs.map((d: any) => ({
+        id: d.id, // 🛰️ Crucial for the Decide link
+        country: d.data().country,
+        city: d.data().city,
+        schoolname: d.data().schoolname,
+        curriculum: d.data().curriculum,
+        summary: d.data().summary
+      }));
+
+      databaseContext = JSON.stringify({
+        teacherRequirements: reqsSnap.docs.map((d: any) => d.data()),
+        costOfLiving: locsSnap.docs.map((d: any) => d.data()),
+        schools: allSchools.slice(0, 60) // Truncate to first 60 for speed/stability
+      });
+    } catch (dbError) {
+      console.warn("Failed to fetch full Firebase intel context:", dbError);
+    }
+
+    // 🎯 FULL ALIGNMENT: Mapping all required fields
     const input: FindYourFitInput = {
       age: parsedAge,
       qualifications: qualifications || "Not specified",
       currentLocation: currentCity || "Global",
       currentSalary: String(formData.get("currentSalary") || "Not specified"),
       experience: String(formData.get("experience") || "0"),
-      subject: "General", // Required field
+      subject: "General", 
       preferredRegions: regions || "Global",
       
-      // British English Briefing & Japan Exclusion
       preferences: `STRICT MISSION PARAMETERS: 
       1. Primary Objectives: ${selectedObjectives.join(", ")}. 
       2. ${isJapanResident ? "EXCLUDE JAPAN from all recommendations (Asset is currently stationed there)." : "No regional exclusions."} 
-      3. Provide tactical reasoning using British English. 
-      4. Return exactly 5 countries.`,
+      3. Use the provided Global Intelligence Database to filter and select the exact top 5 best-fit countries based strictly on age requirements, qualifications, and curriculum matches.`,
       
-      preferredCurriculums: "British, IB, International", // Required field
-      goal: mapObjectivesToGoal(selectedObjectives), // Syncs UI to AI
-      availableSchools: "[]", // Required field
+      preferredCurriculums: "British, IB, International",
+      goal: mapObjectivesToGoal(selectedObjectives),
+      availableSchools: databaseContext || "[]",
       familyStatus: String(formData.get("familyStatus") || "Single"),
     };
 
     const result = await findYourFit(input);
+
 
     // Deep clone the result to ensure it's plain serializable data
     return { 

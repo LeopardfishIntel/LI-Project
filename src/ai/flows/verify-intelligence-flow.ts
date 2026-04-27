@@ -6,7 +6,7 @@
  * - verifyIntelligence - Polishes raw reports and extracts metadata tags.
  */
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 
 const VerifyIntelligenceInputSchema = z.object({
@@ -28,7 +28,7 @@ export async function verifyIntelligence(input: VerifyIntelligenceInput): Promis
   return verifyIntelligenceFlow(input);
 }
 
-const editorPrompt = ai.definePrompt({
+const editorPrompt = getAI().definePrompt({
   name: 'verifyIntelPrompt',
   input: { schema: VerifyIntelligenceInputSchema },
   output: { schema: VerifyIntelligenceOutputSchema },
@@ -47,7 +47,7 @@ Category: {{{category}}}
 Content: {{{content}}}`,
 });
 
-export const verifyIntelligenceFlow = ai.defineFlow(
+export const verifyIntelligenceFlow = getAI().defineFlow(
   {
     name: 'verifyIntelFlow',
     inputSchema: VerifyIntelligenceInputSchema,

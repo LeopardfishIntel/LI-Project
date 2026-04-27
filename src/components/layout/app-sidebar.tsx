@@ -28,7 +28,7 @@ import { cn } from '@/lib/utils';
 const navLinks = [
     { href: '/discover', label: 'Discover', icon: Wand2 },
     { href: '/financial-forecaster', label: 'Evaluate', icon: Calculator },
-    { href: '/compare', label: 'Decide', icon: GitCompare },
+    { href: '/decide', label: 'Decide', icon: GitCompare },
     { href: '/prepare', label: 'Prepare', icon: PackageCheck },
 ];
 

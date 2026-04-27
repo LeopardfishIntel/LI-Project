@@ -6,7 +6,7 @@
  * - disambiguateSchool - A function that handles the disambiguation process against a master registry.
  */
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 
 const DisambiguateSchoolInputSchema = z.object({
@@ -33,7 +33,7 @@ export async function disambiguateSchool(input: DisambiguateSchoolInput): Promis
   return disambiguateSchoolFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = getAI().definePrompt({
   name: 'disambiguateSchoolPrompt',
   input: { schema: DisambiguateSchoolInputSchema },
   output: { schema: DisambiguateSchoolOutputSchema },
@@ -59,7 +59,7 @@ Output Requirements:
 - If new entity: message_to_user = 'NEW_ENTITY_DETECTION: Signature not in local database. Please provide official website URL for agent verification.'`,
 });
 
-export const disambiguateSchoolFlow = ai.defineFlow(
+export const disambiguateSchoolFlow = getAI().defineFlow(
   {
     name: 'disambiguateSchoolFlow',
     inputSchema: DisambiguateSchoolInputSchema,

@@ -8,7 +8,7 @@
  * - ModerateIntelligenceOutput - The return type for the moderation function.
  */
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 
 const ModerateIntelligenceInputSchema = z.object({
@@ -30,7 +30,7 @@ export async function moderateIntelligence(input: ModerateIntelligenceInput): Pr
   return moderateIntelligenceFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const prompt = getAI().definePrompt({
   name: 'moderateIntelPrompt',
   input: { schema: ModerateIntelligenceInputSchema },
   output: { schema: ModerateIntelligenceOutputSchema },
@@ -48,7 +48,7 @@ Submission Payload:
 {{{content}}}`,
 });
 
-export const moderateIntelligenceFlow = ai.defineFlow(
+export const moderateIntelligenceFlow = getAI().defineFlow(
   {
     name: 'moderateIntelFlow',
     inputSchema: ModerateIntelligenceInputSchema,

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Printer, CheckCircle2, ShieldAlert, Banknote, Home, Clock, ShoppingCart, Globe, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Printer, ShieldAlert, Banknote, Home, ArrowRight } from 'lucide-react';
 import { Binoculars } from '@/components/icons/Binoculars';
 
 export default function BudgetBriefingPage() {

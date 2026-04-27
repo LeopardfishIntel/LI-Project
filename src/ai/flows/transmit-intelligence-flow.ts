@@ -6,7 +6,7 @@
  * - transmitIntelligence - Secure archival and receipt signal queuing in the staging area.
  */
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
@@ -31,7 +31,7 @@ export async function transmitIntelligence(input: TransmitIntelligenceInput) {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 
-export const transmitIntelligenceFlow = ai.defineFlow(
+export const transmitIntelligenceFlow = getAI().defineFlow(
   {
     name: 'transmitIntelFlow',
     inputSchema: TransmitIntelligenceInputSchema,

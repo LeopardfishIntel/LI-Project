@@ -8,7 +8,7 @@
  * - EnrichSchoolDataOutput - Output for the function.
  */
 
-import {ai} from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import {z} from 'zod';
 
 const EnrichSchoolDataInputSchema = z.object({
@@ -51,7 +51,7 @@ export async function enrichSchoolData(
   return enrichSchoolDataFlow(input);
 }
 
-const enrichSchoolDataPrompt = ai.definePrompt({
+const enrichSchoolDataPrompt = getAI().definePrompt({
   name: 'enrichSchoolDataPrompt',
   input: {schema: EnrichSchoolDataInputSchema},
   output: {schema: EnrichSchoolDataOutputSchema},
@@ -87,7 +87,7 @@ Cost of Living Details (Monthly estimates in USD for {{{location}}}):
 `,
 });
 
-const enrichSchoolDataFlow = ai.defineFlow(
+const enrichSchoolDataFlow = getAI().defineFlow(
   {
     name: 'enrichSchoolDataFlow',
     inputSchema: EnrichSchoolDataInputSchema,

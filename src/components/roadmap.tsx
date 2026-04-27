@@ -37,7 +37,7 @@ export function Roadmap() {
       title: 'Decide',
       icon: <GitCompare className="w-8 h-8 text-primary" />,
       desc: "Weighing up multiple offers can be a challenge. Our comparison tool breaks down the finer details of your potential contracts from salary to housing allowances.",
-      link: '/compare',
+      link: '/decide',
       imageId: 'decide-step',
       label: 'Final Verdict'
     },

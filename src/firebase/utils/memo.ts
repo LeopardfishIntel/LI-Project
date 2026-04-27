@@ -23,4 +23,4 @@ export function useMemoFirebase<T>(factory: () => T, deps: any[]): T {
   return useMemo(factory, deps);
 }
 
-export default app;
+// Removed undefined 'app' export

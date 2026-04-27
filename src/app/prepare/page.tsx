@@ -15,14 +15,11 @@ import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
+import { calculateBudget, canonicalCountry, RATES } from '@/lib/calculations';
+import Link from 'next/link';
+import { AlertCircle } from 'lucide-react';
 
-const PROFILE_MAP: Record<string, string> = {
-  "single": "single",
-  "married-dual": "marriedDualIncome",
-  "family-1": "family1Child",
-  "family-2": "family2Children",
-  "family-3": "family3PlusChildren"
-};
+
 
 export default function PreparePage() {
   const firestore = useFirestore();
@@ -35,7 +32,9 @@ export default function PreparePage() {
   const [doYouDrive, setDoYouDrive] = useState<boolean>(true);
   const [setupDays, setSetupDays] = useState<string>('45'); 
   const [arrivalAllowance, setArrivalAllowance] = useState<number>(0);
+  const [monthlyCommitments, setMonthlyCommitments] = useState<number>(0);
   const [hasLoadedMemory, setHasLoadedMemory] = useState(false);
+  const [currency, setCurrency] = useState<string>('GBP');
 
   // 🛰️ Data
   const { data: schools, isLoading: isLoadingSchools } = useCollection<any>(
@@ -43,6 +42,9 @@ export default function PreparePage() {
   );
   const { data: cities } = useCollection<any>(
     useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted])
+  );
+  const { data: requirements } = useCollection<any>(
+    useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'teacher_requirements') : null), [firestore, mounted])
   );
 
   // 💾 Memory
@@ -57,6 +59,7 @@ export default function PreparePage() {
       setDoYouDrive(parsed.doYouDrive ?? true);
       setSetupDays(parsed.setupDays || '45');
       setArrivalAllowance(parsed.arrivalAllowance || 0);
+      setMonthlyCommitments(parsed.monthlyCommitments || 0);
     }
     setHasLoadedMemory(true);
   }, []);
@@ -64,61 +67,61 @@ export default function PreparePage() {
   useEffect(() => {
     if (hasLoadedMemory) {
       localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
-        calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance 
+        calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments 
       }));
     }
-  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, hasLoadedMemory]);
+  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, hasLoadedMemory]);
 
-  // 🏎️ Filters
+  // 🏎️ Filters — country list driven by SCHOOLS (not cities), matching other pages
   const availableCountries = useMemo(() => {
-    if (!cities) return [];
-    return Array.from(new Set(cities.map(c => c.country))).filter(Boolean).sort();
-  }, [cities]);
+    if (!schools) return [];
+    return Array.from(new Set(schools.map((s: any) => s.country).filter(Boolean))).sort() as string[];
+  }, [schools]);
 
   const filteredSchools = useMemo(() => {
-    if (!schools || !selectedCountry || selectedCountry === 'all') return schools || [];
-    return schools.filter(s => s.country?.toLowerCase().trim().includes(selectedCountry.toLowerCase().trim()));
+    if (!schools) return [];
+    if (!selectedCountry || selectedCountry === 'all') return schools;
+    return schools.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(selectedCountry));
   }, [selectedCountry, schools]);
 
   const countryIntel = useMemo(() => {
     if (!selectedCountry || selectedCountry === 'all' || !cities) return null;
-    return cities.find(c => c.country?.toLowerCase().trim() === selectedCountry.toLowerCase().trim());
+    const canon = canonicalCountry(selectedCountry);
+    return cities.find((c: any) => canonicalCountry(c.country) === canon) || null;
   }, [selectedCountry, cities]);
 
   const selectedSchool = useMemo(() => schools?.find(s => s.id === selectedSchoolId), [selectedSchoolId, schools]);
+  
   const cityData = useMemo(() => {
     if (!selectedSchool || !cities) return null;
-    return cities.find(c => c.city === selectedSchool.city || c.id === selectedSchool.locationId);
+    const schoolCity = (selectedSchool.city || '').toLowerCase().trim();
+    return cities.find(c => (c.city || '').toLowerCase().trim() === schoolCity) || null;
   }, [selectedSchool, cities]);
 
-  // 🧮 Calculation Logic
+  // Set default commitments from DB if available and not yet set
+  useEffect(() => {
+    if (cityData?.studentLoans && monthlyCommitments === 0) {
+      setMonthlyCommitments(cityData.studentLoans);
+    }
+  }, [cityData]);
+
+  // 🧮 Calculation Logic — uses shared engine
   const budget = useMemo(() => {
-    const profileKey = PROFILE_MAP[calcStatus] || "single";
-    const targetData = cityData || countryIntel;
-    
-    let rentVal = 2000; 
-    if (targetData) {
-      const rentField = (calcStatus.includes('family-2') || calcStatus.includes('family-3')) ? 'rent3br' : (calcStatus === 'single' ? 'rent1br' : 'rent2br');
-      rentVal = (targetData[rentField] || 2000) * 2.5;
-    }
-    if (selectedSchool?.housingprovision?.toLowerCase().includes('provided')) rentVal = 0;
-
-    let monthlyLiving = 1200;
-    if (targetData) {
-      monthlyLiving = (targetData.groceries || 400) + (targetData.utilities || 150) + (targetData.mobilePhone || 50);
-    }
-    const setupMultiplier = parseInt(setupDays) / 30;
-    const livingVal = monthlyLiving * setupMultiplier;
-
-    const transportVal = doYouDrive ? (targetData?.transport?.carHire?.[profileKey] || 1200) : (targetData?.transport?.taxi?.[profileKey] || 500);
-
-    return { docs: 1200, housing: rentVal, expenditure: livingVal, transport: transportVal };
-  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays]);
+    return calculateBudget({
+      calcStatus,
+      selectedSchool,
+      cityData,
+      countryIntel,
+      doYouDrive,
+      setupDays,
+      currency,
+      monthlyCommitments
+    });
+  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments]);
 
   const totalReserve = useMemo(() => {
-    const rawTotal = budget.docs + budget.housing + budget.expenditure + budget.transport;
-    return Math.max(0, rawTotal - arrivalAllowance);
-  }, [budget, arrivalAllowance]);
+    return Math.max(0, budget.total - arrivalAllowance);
+  }, [budget.total, arrivalAllowance]);
 
   if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#f97316]" /></div>;
 
@@ -134,6 +137,17 @@ export default function PreparePage() {
       </div>
 
       <div className="max-w-7xl mx-auto space-y-5">
+        
+        {/* Tactical Warning Alert */}
+        <div className="bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-4 animate-in slide-in-from-top-4 duration-700">
+          <AlertCircle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-[11px] font-black uppercase tracking-widest text-amber-500 italic">Tactical Warning: Regional Estimates</p>
+            <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
+              Calculations are based on regional indices. School-specific benefits (like hotel stays or flight caps) can significantly shift these requirements. Verify your contract against the Field Manual below.
+            </p>
+          </div>
+        </div>
         
         {/* ROW 1: Details & Dashboard (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -173,67 +187,113 @@ export default function PreparePage() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-1.5 pt-2 border-t border-white/5">
+                  <Label className="text-[10px] font-bold text-slate-500 italic">4. Home commitments?</Label>
+                  <div className="relative">
+                    <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-sky-400" />
+                    <Input 
+                      type="number" 
+                      value={monthlyCommitments || ''} 
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setMonthlyCommitments(Number(e.target.value))}
+                      placeholder="e.g. Student loans"
+                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield]"
+                    />
+                  </div>
+                  <p className="text-[8px] font-bold text-slate-600 italic">Include student loans or property costs back home.</p>
+                </div>
               </div>
             </Card>
           </div>
 
           <div className="lg:col-span-8 flex">
             <div className="bg-[#0b1224] border border-white/10 rounded-sm overflow-hidden shadow-2xl w-full flex flex-col">
-              <div className="flex flex-col lg:flex-row justify-between items-stretch border-b border-white/5 relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-8 lg:px-10 lg:py-8 flex-grow gap-6">
-                <Zap className="absolute top-0 right-0 size-64 opacity-5 rotate-12 pointer-events-none text-white" />
-                <div className="relative z-10 flex flex-col justify-center flex-grow">
-                  <p className="text-[10px] font-black text-[#f97316] tracking-[0.4em] uppercase mb-1">Arrival & setup reserve</p>
-                  <p className={cn(
-                    "font-black italic tracking-tighter leading-none transition-all duration-300",
-                    totalReserve > 9999 ? "text-7xl xl:text-8xl" : "text-7xl xl:text-[9rem]"
-                  )}>
-                    {formatCurrency(totalReserve, 'GBP')}
-                  </p>
-                </div>
-                <div className="space-y-4 relative z-10 flex flex-col justify-center w-full lg:max-w-[200px] border-l border-white/5 lg:pl-8">
+              {/* 🏔️ DASHBOARD TOP: Primary Intelligence */}
+              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-8 lg:p-12 border-b border-white/5 overflow-hidden">
+                <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 pointer-events-none text-white" />
+                
+                {/* 🛰️ DATA HIERARCHY */}
+                <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
+                  
+                  {/* Reserve Counter */}
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-[10px] font-bold text-slate-500 italic">First payday?</Label>
-                      <div className="group relative">
-                        <Info className="size-3 text-sky-400 cursor-help" />
-                        <div className="absolute right-0 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-                          Paperwork delays often push your first pay to the 60-day mark.
+                    <div className="flex items-center gap-3">
+                      <p className="text-[11px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic">Arrival & setup reserve</p>
+                      <div className="h-px w-12 bg-[#f97316]/30 hidden sm:block"></div>
+                    </div>
+                    <p className={cn(
+                      "font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-2xl",
+                      totalReserve > 9999 ? "text-5xl lg:text-6xl" : "text-6xl lg:text-7xl"
+                    )}>
+                      {formatCurrency(totalReserve, budget.displayCurrency)}
+                    </p>
+                    
+                    {/* Tactical Currency Switcher (Moved below total) */}
+                    <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-4">
+                      {['GBP', 'USD', 'EUR', 'Local'].map((c) => (
+                        <button
+                          key={c}
+                          disabled={c === 'Local' && selectedCountry === 'all'}
+                          onClick={() => setCurrency(c)}
+                          className={cn(
+                            "px-3 py-1 text-[10px] font-black transition-all uppercase",
+                            currency === c ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
+                          )}
+                        >
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Operational Inputs */}
+                  <div className="flex flex-col gap-4 w-full lg:w-auto">
+                    <div className="space-y-2 min-w-[180px]">
+                      <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
+                        First payday? 
+                        <div className="group relative">
+                          <Info className="size-3 text-sky-400 cursor-help" />
+                          <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                            Paperwork delays often push your first pay to the 60-day mark.
+                          </div>
                         </div>
+                      </Label>
+                      <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
+                        <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316]"><SelectValue /></SelectTrigger>
+                        <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                          <SelectItem value="30">30 days (On time)</SelectItem>
+                          <SelectItem value="45">45 days (Gap likely)</SelectItem>
+                          <SelectItem value="60">60 days (Safety)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2 min-w-[180px]">
+                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
+                      <div className="relative">
+                        <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#f97316]" />
+                        <Input 
+                          type="number" 
+                          value={arrivalAllowance || ''} 
+                          onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
+                          placeholder="e.g. 1500"
+                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield]"
+                        />
                       </div>
                     </div>
-                    <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
-                      <SelectTrigger className="bg-black/20 border-white/10 h-10 text-[10px] font-black italic text-[#fafaf9] px-2.5"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                        <SelectItem value="30">30 days (On time)</SelectItem>
-                        <SelectItem value="45">45 days (Gap likely)</SelectItem>
-                        <SelectItem value="60">60 days (Safety)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold text-slate-500 italic">Arrival allowances?</Label>
-                    <div className="relative">
-                      <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-[#f97316]" />
-                      <Input 
-                        type="number" 
-                        value={arrivalAllowance || ''} 
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
-                        placeholder="e.g. 1500"
-                        className="bg-black/20 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield]"
-                      />
-                    </div>
                   </div>
                 </div>
+
               </div>
-              <div className="p-6 lg:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 bg-black/40">
-                <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} />
-                <StatItem label="Rent & deposit" sub="New home keys." value={budget.housing} icon={Home} />
-                <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} />
-                <StatItem label="Transport entry" sub="Commute setup." value={budget.transport} icon={Car} />
+
+              {/* 📊 DASHBOARD BOTTOM: Breakdown Stats */}
+              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 gap-10 bg-black/40">
+                <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} currency={budget.displayCurrency} />
+                <StatItem label="Rent & deposit" sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} value={budget.housing} icon={Home} currency={budget.displayCurrency} />
+                <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} currency={budget.displayCurrency} />
+                <StatItem label="Transport entry" sub="Commute setup." value={budget.transport} icon={Car} currency={budget.displayCurrency} />
               </div>
-            </div>
-          </div>
         </div>
+      </div>
+    </div>
 
         {/* ROW 2: Risks & IKEA (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -292,7 +352,26 @@ export default function PreparePage() {
             </div>
             <p className="text-[11px] font-bold text-slate-400 leading-tight italic">Essential first-week checklists and packing guides.</p>
           </div>
-          <Button className="w-full md:w-auto h-11 bg-[#f97316] text-white font-black uppercase text-[10px] italic rounded-none px-8 border-none hover:bg-white hover:text-black transition-all">Get arrival manual</Button>
+          <Button asChild className="w-full md:w-auto h-11 bg-[#f97316] text-white font-black uppercase text-[10px] italic rounded-none px-8 border-none hover:bg-white hover:text-black transition-all">
+            <Link href={{
+              pathname: '/prepare/report',
+              query: { 
+                reserve: totalReserve,
+                currency: budget.displayCurrency,
+                country: selectedCountry,
+                school: selectedSchool?.schoolname || '',
+                days: setupDays,
+                status: calcStatus,
+                docs: budget.docs,
+                rent: budget.housing,
+                living: budget.expenditure,
+                transport: budget.transport,
+                commitments: budget.commitments
+              }
+            }}>
+              Get arrival manual
+            </Link>
+          </Button>
         </Card>
         
         <div className="h-12" />
@@ -302,13 +381,13 @@ export default function PreparePage() {
 }
 
 // 📎 Helpers
-function StatItem({ label, sub, value, icon: Icon }: { label: string, sub: string, value: number, icon: any }) {
+function StatItem({ label, sub, value, icon: Icon, currency }: { label: string, sub: string, value: number, icon: any, currency: string }) {
   return (
     <div className="space-y-1 text-white">
       <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em] flex items-center gap-2 leading-none">
         <Icon className="size-3 text-sky-400" /> {label}
       </p>
-      <p className="text-2xl font-black italic leading-none py-1">{formatCurrency(value, 'GBP')}</p>
+      <p className="text-2xl font-black italic leading-none py-1">{formatCurrency(value, currency)}</p>
       <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
     </div>
   );

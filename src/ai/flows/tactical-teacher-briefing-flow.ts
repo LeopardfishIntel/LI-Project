@@ -1,6 +1,6 @@
 'use server';
 
-import { ai } from '@/ai/genkit';
+import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
 
 const TacticalBriefingInputSchema = z.object({
@@ -18,7 +18,7 @@ const TacticalBriefingOutputSchema = z.object({
   briefing: z.string().describe('The flowing teacher-to-teacher narrative.'),
 });
 
-const tacticalBriefingPrompt = ai.definePrompt({
+const tacticalBriefingPrompt = getAI().definePrompt({
   name: 'tacticalBriefingPrompt',
   input: { schema: TacticalBriefingInputSchema },
   output: { schema: TacticalBriefingOutputSchema },
@@ -41,7 +41,7 @@ const tacticalBriefingPrompt = ai.definePrompt({
   `,
 });
 
-export const tacticalTeacherBriefingFlow = ai.defineFlow(
+export const tacticalTeacherBriefingFlow = getAI().defineFlow(
   {
     name: 'tacticalTeacherBriefingFlow',
     inputSchema: TacticalBriefingInputSchema,
