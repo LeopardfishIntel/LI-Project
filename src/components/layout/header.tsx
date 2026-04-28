@@ -54,12 +54,12 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-white/5 bg-[#020617]/90 backdrop-blur-md px-6 py-3">
       <nav className="flex justify-between items-center max-w-7xl mx-auto">
         
-        {/* 🏔️ BRANDING */}
+        {/* BRANDING */}
         <Link href="/" className="text-xl font-bold tracking-tighter hover:opacity-80 transition-opacity">
           <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
         </Link>
 
-        {/* 🧭 NAVIGATION */}
+        {/* NAVIGATION */}
         <div className="hidden lg:flex gap-6 items-center border-r border-white/10 pr-6">
           {links.map((link) => (
             <Link 
@@ -75,7 +75,7 @@ export default function Header() {
           ))}
         </div>
 
-        {/* 🛰️ SEARCH & ELITE ACCOUNT MAN */}
+        {/* SEARCH & ACCOUNT */}
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-500" />

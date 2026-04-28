@@ -37,7 +37,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="relative flex min-h-screen flex-col">
             <Header />
 
-            {/* 🛰️ PROTOCOL CHANGE: Removed max-w-7xl and px-8 to allow Full-Width Hero Sections */}
             <main className="flex-1 w-full">
               {children}
             </main>
