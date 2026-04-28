@@ -446,22 +446,22 @@ export default function PreparePage() {
                   onOverride={(val) => setLogisticsOverride(val)}
                   info="Combined estimate for excess baggage and global shipping costs."
                 />
-                <div className="relative group/electronics">
-                  <StatItem 
-                    label="Electronics" 
-                    value={budget.electronics} 
-                    icon={Monitor} 
-                    currency={budget.displayCurrency} 
-                    overrideValue={electronicsOverride}
-                    onOverride={(val) => setElectronicsOverride(val)}
-                  />
-                  <button 
-                    onClick={() => setShowElectronicsKit(!showElectronicsKit)}
-                    className="absolute top-2 right-2 p-1 px-2 text-[8px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10"
-                  >
-                    {showElectronicsKit ? 'Close' : 'Select'}
-                  </button>
-                </div>
+                <StatItem 
+                  label="Electronics" 
+                  value={budget.electronics} 
+                  icon={Monitor} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={electronicsOverride}
+                  onOverride={(val) => setElectronicsOverride(val)}
+                  action={
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setShowElectronicsKit(!showElectronicsKit); }}
+                      className="p-1 px-2 text-[8px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10 whitespace-nowrap"
+                    >
+                      {showElectronicsKit ? 'Close' : 'Select'}
+                    </button>
+                  }
+                />
                 <StatItem 
                   label="Transport entry" 
                   value={budget.transport} 
@@ -628,26 +628,30 @@ export default function PreparePage() {
 
 // 📎 Helpers
 function StatItem({ 
-  label, value, icon: Icon, currency, info, overrideValue, onOverride 
+  label, value, icon: Icon, currency, info, overrideValue, onOverride, action 
 }: { 
   label: string, value: number, icon: any, currency: string, info?: string, 
-  overrideValue?: number | null, onOverride?: (val: number | null) => void 
+  overrideValue?: number | null, onOverride?: (val: number | null) => void,
+  action?: React.ReactNode
 }) {
   const isOverridden = overrideValue !== null && overrideValue !== undefined;
   const displayVal = isOverridden ? overrideValue : Math.round(value);
 
   return (
     <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
-      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none">
-        <Icon className="size-3 text-sky-400" /> {label}
-        {info && (
-          <div className="group/info relative">
-            <Info className="size-2.5 text-slate-600 cursor-help" />
-            <div className="absolute right-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-              {info}
+      <div className="flex items-center justify-between gap-2 min-h-[20px]">
+        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none truncate">
+          <Icon className="size-3 text-sky-400 shrink-0" /> {label}
+          {info && (
+            <div className="group/info relative">
+              <Info className="size-2.5 text-slate-600 cursor-help" />
+              <div className="absolute right-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                {info}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        {action}
       </div>
       
       <div className="space-y-2">
