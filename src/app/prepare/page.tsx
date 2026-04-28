@@ -306,9 +306,9 @@ export default function PreparePage() {
                     </div>
                   </div>
 
-                  {/* Operational Inputs (Top Tier) */}
-                  <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
-                    <div className="space-y-2 min-w-[150px]">
+                  {/* Operational Inputs (Top Tier - Vertically Stacked) */}
+                  <div className="flex flex-col gap-5 w-full lg:w-auto">
+                    <div className="space-y-1.5 min-w-[200px]">
                       <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
                         First payday? 
                         <div className="group relative">
@@ -345,11 +345,11 @@ export default function PreparePage() {
 
               </div>
 
-              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Split into 2 rows) */}
-              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-12 bg-black/40 border-t border-white/5">
+              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
+              <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-black/20 border-t border-white/5">
                 
-                {/* Secondary Inputs (Logistics) */}
-                <div className="space-y-3">
+                {/* Secondary Inputs (Logistics) - In Boxes */}
+                <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all">
                   <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Bags (£100/ea)</Label>
                   <div className="flex items-center gap-2">
                     <Select value={String(baggageCount)} onValueChange={(val: string) => setBaggageCount(Number(val))}>
@@ -370,26 +370,29 @@ export default function PreparePage() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all">
                   <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Shipping Cost</Label>
-                  <div className="relative">
-                    <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-sky-400" />
-                    <Input 
-                      type="number" 
-                      value={shippingCost || ''} 
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
-                      placeholder="Avg £2,000"
-                      className="bg-black/40 border-white/10 h-10 pl-8 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-sky-400" />
+                      <Input 
+                        type="number" 
+                        value={shippingCost || ''} 
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
+                        placeholder="Avg £2,000"
+                        className="bg-black/40 border-white/10 h-10 pl-8 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                    <p className="text-[8px] font-bold text-slate-600 italic">Global avg estimate: £2,000</p>
                   </div>
                 </div>
 
-                {/* Stat Outputs (Row 1 continued) */}
+                {/* Stat Outputs */}
                 <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} currency={budget.displayCurrency} />
                 <StatItem label="Rent & deposit" sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} value={budget.housing} icon={Home} currency={budget.displayCurrency} />
                 <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} currency={budget.displayCurrency} />
 
-                {/* Stat Outputs (Row 2) */}
+                {/* Row 2 Stats */}
                 <StatItem label="Logistics" sub="Bags & shipping." value={budget.logistics} icon={Package} currency={budget.displayCurrency} />
                 <StatItem 
                   label="Electronics" 
@@ -404,10 +407,10 @@ export default function PreparePage() {
                 {budget.family > 0 ? (
                   <StatItem label="Family setup" sub="Uniforms & docs." value={budget.family} icon={Baby} currency={budget.displayCurrency} />
                 ) : (
-                  <div className="hidden xl:block"></div> /* Spacer for alignment */
+                  <div className="hidden xl:block"></div>
                 )}
                 
-                <div className="hidden xl:block"></div> {/* Final alignment spacer */}
+                <div className="hidden xl:block"></div>
               </div>
         </div>
       </div>
@@ -501,8 +504,8 @@ export default function PreparePage() {
 // 📎 Helpers
 function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: string, sub: string, value: number, icon: any, currency: string, info?: string }) {
   return (
-    <div className="space-y-1 text-white group relative">
-      <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em] flex items-center gap-2 leading-none">
+    <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative">
+      <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none">
         <Icon className="size-3 text-sky-400" /> {label}
         {info && (
           <div className="group/info relative">
@@ -513,8 +516,10 @@ function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: st
           </div>
         )}
       </div>
-      <p className="text-2xl font-black italic leading-none py-1">{formatCurrency(value, currency)}</p>
-      <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
+      <div className="space-y-1">
+        <p className="text-2xl font-black italic leading-none">{formatCurrency(value, currency)}</p>
+        <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
+      </div>
     </div>
   );
 }
