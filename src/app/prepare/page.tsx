@@ -481,7 +481,7 @@ export default function PreparePage() {
                     currency={budget.displayCurrency} 
                     overrideValue={familyOverride}
                     onOverride={(val) => setFamilyOverride(val)}
-                    info="Estimated costs for school uniforms and initial dependent documentation."
+                    info="Estimated costs for school uniforms."
                   />
                 )}
               </div>
@@ -639,7 +639,7 @@ function StatItem({
         {info && (
           <div className="group/info relative">
             <Info className="size-2.5 text-slate-600 cursor-help" />
-            <div className="absolute left-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+            <div className="absolute right-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
               {info}
             </div>
           </div>
