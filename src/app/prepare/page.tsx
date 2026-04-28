@@ -41,6 +41,15 @@ export default function PreparePage() {
   const [shippingCost, setShippingCost] = useState<number>(2000);
   const [uniformOverride, setUniformOverride] = useState<number | null>(null);
   const [electronicsTotal, setElectronicsTotal] = useState<number>(500);
+  const [electronicsItems, setElectronicsItems] = useState([
+    { id: 'tv', name: '42" Smart TV', cost: 350, selected: true },
+    { id: 'toaster', name: 'Toaster', cost: 30, selected: true },
+    { id: 'hairdryer', name: 'Hair Dryer', cost: 40, selected: true },
+    { id: 'kettle', name: 'Kettle', cost: 30, selected: true },
+    { id: 'iron', name: 'Iron & Board', cost: 50, selected: false },
+    { id: 'microwave', name: 'Microwave', cost: 80, selected: false },
+  ]);
+  const [showElectronicsKit, setShowElectronicsKit] = useState(false);
   const [showDependents, setShowDependents] = useState(false);
 
   // Overrides
@@ -94,6 +103,14 @@ export default function PreparePage() {
       setShippingCost(parsed.shippingCost ?? 2000);
       setUniformOverride(parsed.uniformOverride ?? null);
       setElectronicsTotal(parsed.electronicsTotal ?? 500);
+      setElectronicsItems(parsed.electronicsItems ?? [
+        { id: 'tv', name: '42" Smart TV', cost: 350, selected: true },
+        { id: 'toaster', name: 'Toaster', cost: 30, selected: true },
+        { id: 'hairdryer', name: 'Hair Dryer', cost: 40, selected: true },
+        { id: 'kettle', name: 'Kettle', cost: 30, selected: true },
+        { id: 'iron', name: 'Iron & Board', cost: 50, selected: false },
+        { id: 'microwave', name: 'Microwave', cost: 80, selected: false },
+      ]);
       setDocsOverride(parsed.docsOverride ?? null);
       setHousingOverride(parsed.housingOverride ?? null);
       setExpenditureOverride(parsed.expenditureOverride ?? null);
@@ -109,11 +126,11 @@ export default function PreparePage() {
     if (hasLoadedMemory) {
       localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
         calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments,
-        baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal,
+        baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems,
         docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride
       }));
     }
-  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, hasLoadedMemory]);
+  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, hasLoadedMemory]);
 
   // 🏎️ Filters — country list driven by SCHOOLS (not cities), matching other pages
   const availableCountries = useMemo(() => {
@@ -149,6 +166,12 @@ export default function PreparePage() {
   }, [cityData]);
 
   // 🧮 Calculation Logic — uses shared engine
+  // Auto-calculate electronics total from kit
+  useEffect(() => {
+    const sum = electronicsItems.filter(i => i.selected).reduce((acc, item) => acc + item.cost, 0);
+    setElectronicsTotal(sum);
+  }, [electronicsItems]);
+
   const budget = useMemo(() => {
     return calculateBudget({
       calcStatus,
@@ -385,28 +408,6 @@ export default function PreparePage() {
               {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (4-Column Layout) */}
               <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/20 border-t border-white/5">
                 
-                {/* Bags Input (Integrated into Grid) */}
-                <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all">
-                  <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Bags (£100/ea)</Label>
-                  <div className="flex items-center gap-2">
-                    <Select value={String(baggageCount)} onValueChange={(val: string) => setBaggageCount(Number(val))}>
-                      <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316] w-16"><SelectValue /></SelectTrigger>
-                      <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                        {[0,1,2,3,4,5].map(n => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                    <div className="relative flex-1">
-                      <Input 
-                        type="number" 
-                        value={baggageOverride ?? ''} 
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setBaggageOverride(e.target.value ? Number(e.target.value) : null)}
-                        placeholder="Override..."
-                        className="bg-black/40 border-white/10 h-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 {/* Stat Outputs with Overrides */}
                 <StatItem 
                   label="Visas & docs" 
@@ -445,15 +446,23 @@ export default function PreparePage() {
                   onOverride={(val) => setLogisticsOverride(val)}
                   info="Combined estimate for excess baggage and global shipping costs."
                 />
-                <StatItem 
-                  label="Electronics" 
-                  value={budget.electronics} 
-                  icon={Monitor} 
-                  currency={budget.displayCurrency} 
-                  info="Covers: 42-inch Smart TV, Toaster, Hair Dryer, Kettle. Estimates based on regional averages."
-                  overrideValue={electronicsOverride}
-                  onOverride={(val) => setElectronicsOverride(val)}
-                />
+                <div className="relative group/electronics">
+                  <StatItem 
+                    label="Electronics" 
+                    value={budget.electronics} 
+                    icon={Monitor} 
+                    currency={budget.displayCurrency} 
+                    info="Tactical Electronics Genkit: Build your tech list below."
+                    overrideValue={electronicsOverride}
+                    onOverride={(val) => setElectronicsOverride(val)}
+                  />
+                  <button 
+                    onClick={() => setShowElectronicsKit(!showElectronicsKit)}
+                    className="absolute top-2 right-2 p-1 text-[8px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10"
+                  >
+                    {showElectronicsKit ? 'Close Kit' : 'Open Genkit'}
+                  </button>
+                </div>
                 <StatItem 
                   label="Transport entry" 
                   value={budget.transport} 
@@ -476,6 +485,44 @@ export default function PreparePage() {
                   />
                 )}
               </div>
+
+              {/* 🔌 Electronics Genkit Expandable */}
+              {showElectronicsKit && (
+                <div className="px-8 lg:px-12 pb-8 animate-in slide-in-from-top-4 duration-300">
+                  <div className="bg-sky-400/5 border border-sky-400/10 p-6">
+                    <div className="flex items-center justify-between mb-4 border-b border-sky-400/10 pb-2">
+                      <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.2em] italic flex items-center gap-2">
+                        <Monitor className="size-3" /> Electronics Generation Kit
+                      </h3>
+                      <p className="text-[10px] font-black italic text-slate-500">Live Estimate: £{electronicsTotal}</p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                      {electronicsItems.map((item, idx) => (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            const newItems = [...electronicsItems];
+                            newItems[idx].selected = !newItems[idx].selected;
+                            setElectronicsItems(newItems);
+                          }}
+                          className={cn(
+                            "p-3 border transition-all flex flex-col items-start gap-1 group/item",
+                            item.selected 
+                              ? "bg-sky-400/10 border-sky-400/30 text-white" 
+                              : "bg-black/40 border-white/5 text-slate-500 grayscale hover:grayscale-0 hover:border-white/20"
+                          )}
+                        >
+                          <span className="text-[9px] font-black uppercase tracking-wider">{item.name}</span>
+                          <span className="text-[10px] font-bold italic opacity-60">£{item.cost}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <p className="mt-4 text-[8px] font-bold text-slate-600 italic">
+                      * Costs are regional averages in GBP. These items are added to your primary mission reserve calculation.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* 🔄 Reset Row */}
               <div className="px-8 pb-8 flex justify-end">
