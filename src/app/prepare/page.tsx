@@ -585,8 +585,11 @@ function StatItem({
   label: string, sub: string, value: number, icon: any, currency: string, info?: string, 
   overrideValue?: number | null, onOverride?: (val: number | null) => void 
 }) {
+  const isOverridden = overrideValue !== null && overrideValue !== undefined;
+  const displayVal = isOverridden ? overrideValue : Math.round(value);
+
   return (
-    <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative">
+    <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
       <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none">
         <Icon className="size-3 text-sky-400" /> {label}
         {info && (
@@ -599,29 +602,25 @@ function StatItem({
         )}
       </div>
       
-      <div className="space-y-3">
-        <div className="space-y-1">
-          <p className={cn(
-            "text-2xl font-black italic leading-none transition-colors",
-            overrideValue !== null && overrideValue !== undefined ? "text-[#f97316]" : "text-white"
+      <div className="space-y-2">
+        <div className="relative">
+          <span className={cn(
+            "absolute left-3 top-1/2 -translate-y-1/2 text-lg font-black italic pointer-events-none transition-colors",
+            isOverridden ? "text-[#f97316]" : "text-slate-500"
           )}>
-            {formatCurrency(value, currency)}
-          </p>
-          <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
+            {currency === 'Local' ? budget.displayCurrency : (currency === 'GBP' ? '£' : (currency === 'USD' ? '$' : '€'))}
+          </span>
+          <Input 
+            type="number" 
+            value={displayVal || ''} 
+            onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
+            className={cn(
+              "bg-black/60 border-white/5 h-14 pl-10 text-2xl font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+              isOverridden ? "text-[#f97316] border-[#f97316]/30" : "text-white"
+            )}
+          />
         </div>
-
-        {onOverride && (
-          <div className="relative">
-            <Coins className="absolute left-2 top-1/2 -translate-y-1/2 size-2.5 text-slate-600" />
-            <Input 
-              type="number" 
-              value={overrideValue ?? ''} 
-              onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride(e.target.value ? Number(e.target.value) : null)}
-              placeholder="Override..."
-              className="bg-black/60 border-white/10 h-7 pl-6 text-[10px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            />
-          </div>
-        )}
+        <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
       </div>
     </div>
   );
