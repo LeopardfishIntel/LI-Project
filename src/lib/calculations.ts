@@ -88,6 +88,7 @@ export function calculateBudget(params: BudgetParams) {
   else if (calcStatus === 'family-3')       { personCount = 5; childrenCount = 3; scalar = 3.0; }
 
   const safeParse = (val: any) => { const n = parseFloat(String(val)); return isNaN(n) ? 0 : n; };
+  const setupMultiplier = parseInt(setupDays) / 30;
   
   const getVal = (data: any, key: string, mult: number) => {
     if (!data) return 0;
@@ -120,7 +121,6 @@ export function calculateBudget(params: BudgetParams) {
   // Base: 1.5 (Deposit) + (setupDays / 30) (Months of rent needed)
   const rentKey = calcStatus === 'single' ? 'rent1br' : (calcStatus.includes('family-2') || calcStatus.includes('family-3') ? 'rent3br' : 'rent2br');
   const rentMonthly = usdToDisplay(safeParse(targetData?.[rentKey] || targetData?.rent1br || 2000));
-  const setupMultiplier = parseInt(setupDays) / 30;
   
   let rentVal = housingOverride !== null ? housingOverride : (rentMonthly * (1.5 + setupMultiplier)); 
   
@@ -134,7 +134,6 @@ export function calculateBudget(params: BudgetParams) {
   }
 
   // 3. Living Costs (Scaled by scalar)
-  const setupMultiplier = parseInt(setupDays) / 30;
   const groceriesMonthly = usdToDisplay(getVal(targetData?.groceries, profileKey, scalar));
   const utilitiesMonthly = usdToDisplay(getVal(targetData?.utilities, profileKey, scalar * 0.8));
   const livingVal = expenditureOverride !== null ? expenditureOverride : ((groceriesMonthly + utilitiesMonthly) * setupMultiplier);
