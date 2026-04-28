@@ -116,9 +116,13 @@ export function calculateBudget(params: BudgetParams) {
   const heuristic = getVisaHeuristic(region);
   const docsVal = docsOverride !== null ? docsOverride : usdToDisplay(heuristic.base + (personCount - 1) * heuristic.perDependent);
 
-  // 2. Rent & Deposit
+  // 2. Rent & Deposit (Scales with payday gap)
+  // Base: 1.5 (Deposit) + (setupDays / 30) (Months of rent needed)
   const rentKey = calcStatus === 'single' ? 'rent1br' : (calcStatus.includes('family-2') || calcStatus.includes('family-3') ? 'rent3br' : 'rent2br');
-  let rentVal = housingOverride !== null ? housingOverride : (usdToDisplay(safeParse(targetData?.[rentKey] || targetData?.rent1br || 2000)) * 2.5); 
+  const rentMonthly = usdToDisplay(safeParse(targetData?.[rentKey] || targetData?.rent1br || 2000));
+  const setupMultiplier = parseInt(setupDays) / 30;
+  
+  let rentVal = housingOverride !== null ? housingOverride : (rentMonthly * (1.5 + setupMultiplier)); 
   
   const housingProv = selectedSchool?.housingprovision?.toLowerCase() || "";
   if (housingOverride === null) {
@@ -135,10 +139,13 @@ export function calculateBudget(params: BudgetParams) {
   const utilitiesMonthly = usdToDisplay(getVal(targetData?.utilities, profileKey, scalar * 0.8));
   const livingVal = expenditureOverride !== null ? expenditureOverride : ((groceriesMonthly + utilitiesMonthly) * setupMultiplier);
 
-  // 4. Transport (Direct map lookup from DB)
+  // 4. Transport (Scales if public transport)
   const mapType = doYouDrive ? 'carPurchase' : 'publicTransport';
   const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType];
-  const transportVal = transportOverride !== null ? transportOverride : (usdToDisplay(getVal(transportMap, profileKey, doYouDrive ? 1 : personCount)));
+  const baseTransport = usdToDisplay(getVal(transportMap, profileKey, doYouDrive ? 1 : personCount));
+  
+  // If public transport, scale by time. If car, it's a fixed entry cost.
+  const transportVal = transportOverride !== null ? transportOverride : (doYouDrive ? baseTransport : baseTransport * setupMultiplier);
 
   // 5. Monthly Commitments (Student Loans etc)
   const commitmentsVal = usdToDisplay(monthlyCommitments) * setupMultiplier;
