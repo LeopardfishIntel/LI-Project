@@ -410,44 +410,43 @@ export default function PreparePage() {
                 {/* Stat Outputs with Overrides */}
                 <StatItem 
                   label="Visas & docs" 
-                  sub="Legal fees." 
                   value={budget.docs} 
                   icon={FileText} 
                   currency={budget.displayCurrency} 
                   overrideValue={docsOverride}
                   onOverride={(val) => setDocsOverride(val)}
+                  info="Estimated legal and processing fees for your specific family profile and region."
                 />
                 <StatItem 
                   label="Rent & deposit" 
-                  sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} 
                   value={budget.housing} 
                   icon={Home} 
                   currency={budget.displayCurrency} 
                   overrideValue={housingOverride}
                   onOverride={(val) => setHousingOverride(val)}
+                  info={budget.isSubsidised ? "Subsidised (50%) rate applied. Typically covers first month rent + security deposit." : "Covers estimated first month rent plus security deposit (usually 1.5 months)."}
                 />
                 <StatItem 
                   label={`Living (${setupDays} days)`} 
-                  sub="Food & basics." 
                   value={budget.expenditure} 
                   icon={Wallet} 
                   currency={budget.displayCurrency} 
                   overrideValue={expenditureOverride}
                   onOverride={(val) => setExpenditureOverride(val)}
+                  info="Covers groceries, utilities, and basic daily essentials scaled for your family size and arrival duration."
                 />
 
                 <StatItem 
                   label="Logistics" 
-                  sub="Bags & shipping." 
                   value={budget.logistics} 
                   icon={Package} 
                   currency={budget.displayCurrency} 
                   overrideValue={logisticsOverride}
                   onOverride={(val) => setLogisticsOverride(val)}
+                  info="Combined estimate for excess baggage and global shipping costs."
                 />
                 <StatItem 
                   label="Electronics" 
-                  sub="Base setup total." 
                   value={budget.electronics} 
                   icon={Monitor} 
                   currency={budget.displayCurrency} 
@@ -457,26 +456,24 @@ export default function PreparePage() {
                 />
                 <StatItem 
                   label="Transport entry" 
-                  sub="Commute setup." 
                   value={budget.transport} 
                   icon={Car} 
                   currency={budget.displayCurrency} 
                   overrideValue={transportOverride}
                   onOverride={(val) => setTransportOverride(val)}
+                  info={doYouDrive ? "Estimated cost for a reliable second-hand car purchase and initial registration." : "Estimated cost for public transport passes and initial commute setup."}
                 />
                 
-                {budget.family > 0 ? (
+                {budget.family > 0 && (
                   <StatItem 
                     label="Family setup" 
-                    sub="Uniforms & docs." 
                     value={budget.family} 
                     icon={Baby} 
                     currency={budget.displayCurrency} 
                     overrideValue={familyOverride}
                     onOverride={(val) => setFamilyOverride(val)}
+                    info="Estimated costs for school uniforms and initial dependent documentation."
                   />
-                ) : (
-                  <div className="hidden lg:block"></div>
                 )}
               </div>
 
@@ -580,9 +577,9 @@ export default function PreparePage() {
 
 // 📎 Helpers
 function StatItem({ 
-  label, sub, value, icon: Icon, currency, info, overrideValue, onOverride 
+  label, value, icon: Icon, currency, info, overrideValue, onOverride 
 }: { 
-  label: string, sub: string, value: number, icon: any, currency: string, info?: string, 
+  label: string, value: number, icon: any, currency: string, info?: string, 
   overrideValue?: number | null, onOverride?: (val: number | null) => void 
 }) {
   const isOverridden = overrideValue !== null && overrideValue !== undefined;
@@ -620,7 +617,6 @@ function StatItem({
             )}
           />
         </div>
-        <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
       </div>
     </div>
   );
