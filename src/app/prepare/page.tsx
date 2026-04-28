@@ -405,8 +405,8 @@ export default function PreparePage() {
 
               </div>
 
-              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (4-Column Layout) */}
-              <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/20 border-t border-white/5">
+              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
+              <div className="p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5">
                 
                 {/* Stat Outputs with Overrides */}
                 <StatItem 
@@ -638,12 +638,12 @@ function StatItem({
   const displayVal = isOverridden ? overrideValue : Math.round(value);
 
   return (
-    <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
-      <div className="flex items-center justify-between gap-2 min-h-[20px]">
-        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none truncate">
+    <div className="bg-black/40 border border-white/5 p-3.5 space-y-3 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
+      <div className="flex items-center justify-between gap-1 min-h-[18px]">
+        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none truncate">
           <Icon className="size-3 text-sky-400 shrink-0" /> {label}
           {info && (
-            <div className="group/info relative">
+            <div className="group/info relative shrink-0">
               <Info className="size-2.5 text-slate-600 cursor-help" />
               <div className="absolute right-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                 {info}
