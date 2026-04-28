@@ -196,7 +196,7 @@ export default function PreparePage() {
                       value={monthlyCommitments || ''} 
                       onChange={(e: ChangeEvent<HTMLInputElement>) => setMonthlyCommitments(Number(e.target.value))}
                       placeholder="e.g. Student loans"
-                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield]"
+                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                   <p className="text-[8px] font-bold text-slate-600 italic">Include student loans or property costs back home.</p>
@@ -217,8 +217,7 @@ export default function PreparePage() {
                   {/* Reserve Counter */}
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-3">
-                      <p className="text-[11px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic">Arrival & setup reserve</p>
-                      <div className="h-px w-12 bg-[#f97316]/30 hidden sm:block"></div>
+                      <p className="text-[11px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
                     </div>
                     <p className={cn(
                       "font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-2xl",
@@ -247,7 +246,7 @@ export default function PreparePage() {
 
                   {/* Operational Inputs */}
                   <div className="flex flex-col gap-4 w-full lg:w-auto">
-                    <div className="space-y-2 min-w-[180px]">
+                    <div className="space-y-2 min-w-[150px]">
                       <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
                         First payday? 
                         <div className="group relative">
@@ -266,7 +265,7 @@ export default function PreparePage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2 min-w-[180px]">
+                    <div className="space-y-2 min-w-[150px]">
                       <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
                       <div className="relative">
                         <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#f97316]" />
@@ -275,7 +274,7 @@ export default function PreparePage() {
                           value={arrivalAllowance || ''} 
                           onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
                           placeholder="e.g. 1500"
-                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield]"
+                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                       </div>
                     </div>
