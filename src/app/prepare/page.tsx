@@ -452,7 +452,6 @@ export default function PreparePage() {
                     value={budget.electronics} 
                     icon={Monitor} 
                     currency={budget.displayCurrency} 
-                    info="Tactical Electronics Genkit: Build your tech list below."
                     overrideValue={electronicsOverride}
                     onOverride={(val) => setElectronicsOverride(val)}
                   />
@@ -488,15 +487,15 @@ export default function PreparePage() {
 
               {/* 🔌 Electronics Genkit Expandable */}
               {showElectronicsKit && (
-                <div className="px-8 lg:px-12 pb-8 animate-in slide-in-from-top-4 duration-300">
-                  <div className="bg-sky-400/5 border border-sky-400/10 p-6">
-                    <div className="flex items-center justify-between mb-4 border-b border-sky-400/10 pb-2">
-                      <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.2em] italic flex items-center gap-2">
-                        <Monitor className="size-3" /> Electronics Generation Kit
+                <div className="px-8 lg:px-12 pb-6 animate-in slide-in-from-top-4 duration-300">
+                  <div className="bg-sky-400/5 border border-sky-400/10 p-4">
+                    <div className="flex items-center justify-between mb-3 border-b border-sky-400/10 pb-2">
+                      <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.3em] italic flex items-center gap-2">
+                        <Monitor className="size-3" /> SELECT
                       </h3>
                       <p className="text-[10px] font-black italic text-slate-500">Live Estimate: £{electronicsTotal}</p>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                       {electronicsItems.map((item, idx) => (
                         <button
                           key={item.id}
@@ -506,20 +505,25 @@ export default function PreparePage() {
                             setElectronicsItems(newItems);
                           }}
                           className={cn(
-                            "p-3 border transition-all flex flex-col items-start gap-1 group/item",
+                            "p-2 border transition-all flex flex-col items-start gap-1 group/item",
                             item.selected 
                               ? "bg-sky-400/10 border-sky-400/30 text-white" 
                               : "bg-black/40 border-white/5 text-slate-500 grayscale hover:grayscale-0 hover:border-white/20"
                           )}
                         >
-                          <span className="text-[9px] font-black uppercase tracking-wider">{item.name}</span>
-                          <span className="text-[10px] font-bold italic opacity-60">£{item.cost}</span>
+                          <span className="text-[8px] font-black uppercase tracking-wider">{item.name}</span>
+                          <span className="text-[9px] font-bold italic opacity-60">£{item.cost}</span>
                         </button>
                       ))}
                     </div>
-                    <p className="mt-4 text-[8px] font-bold text-slate-600 italic">
-                      * Costs are regional averages in GBP. These items are added to your primary mission reserve calculation.
-                    </p>
+                    <div className="mt-3 flex justify-between items-center">
+                      <p className="text-[7px] font-black text-slate-600 uppercase tracking-widest italic">
+                        * Tactical Genkit build complete. Selected items accumulated in mission reserve.
+                      </p>
+                      <p className="text-[7px] font-bold text-slate-600 italic">
+                        Regional averages in GBP applied.
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
