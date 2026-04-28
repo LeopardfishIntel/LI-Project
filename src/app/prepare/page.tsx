@@ -5,7 +5,8 @@ import {
   Lock, Banknote, Loader2, Zap, ShoppingCart,
   Home, Clock, Wallet, Car, Ship, CalendarDays, 
   FileText, Landmark, MapPin, Navigation, ArrowRight,
-  Stethoscope, Download, Info, Coins
+  Stethoscope, Download, Info, Coins, Package, Monitor, Baby,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,12 @@ export default function PreparePage() {
   const [monthlyCommitments, setMonthlyCommitments] = useState<number>(0);
   const [hasLoadedMemory, setHasLoadedMemory] = useState(false);
   const [currency, setCurrency] = useState<string>('GBP');
+  const [baggageCount, setBaggageCount] = useState<number>(0);
+  const [baggageOverride, setBaggageOverride] = useState<number | null>(null);
+  const [shippingCost, setShippingCost] = useState<number>(2000);
+  const [uniformOverride, setUniformOverride] = useState<number | null>(null);
+  const [electronicsTotal, setElectronicsTotal] = useState<number>(500);
+  const [showDependents, setShowDependents] = useState(false);
 
   // 🛰️ Data
   const { data: schools, isLoading: isLoadingSchools } = useCollection<any>(
@@ -60,6 +67,11 @@ export default function PreparePage() {
       setSetupDays(parsed.setupDays || '45');
       setArrivalAllowance(parsed.arrivalAllowance || 0);
       setMonthlyCommitments(parsed.monthlyCommitments || 0);
+      setBaggageCount(parsed.baggageCount || 0);
+      setBaggageOverride(parsed.baggageOverride ?? null);
+      setShippingCost(parsed.shippingCost ?? 2000);
+      setUniformOverride(parsed.uniformOverride ?? null);
+      setElectronicsTotal(parsed.electronicsTotal ?? 500);
     }
     setHasLoadedMemory(true);
   }, []);
@@ -67,10 +79,11 @@ export default function PreparePage() {
   useEffect(() => {
     if (hasLoadedMemory) {
       localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
-        calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments 
+        calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments,
+        baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal
       }));
     }
-  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, hasLoadedMemory]);
+  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, hasLoadedMemory]);
 
   // 🏎️ Filters — country list driven by SCHOOLS (not cities), matching other pages
   const availableCountries = useMemo(() => {
@@ -115,9 +128,14 @@ export default function PreparePage() {
       doYouDrive,
       setupDays,
       currency,
-      monthlyCommitments
+      monthlyCommitments,
+      baggageCount,
+      baggageOverride,
+      shippingCost,
+      uniformOverride,
+      electronicsTotal
     });
-  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments]);
+  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal]);
 
   const totalReserve = useMemo(() => {
     return Math.max(0, budget.total - arrivalAllowance);
@@ -201,6 +219,49 @@ export default function PreparePage() {
                   </div>
                   <p className="text-[8px] font-bold text-slate-600 italic">Include student loans or property costs back home.</p>
                 </div>
+
+                {/* 👶 Dependents Expandable (Conditional) */}
+                {calcStatus !== 'single' && (
+                  <div className="pt-2 border-t border-white/5 space-y-3">
+                    <button 
+                      onClick={() => setShowDependents(!showDependents)}
+                      className="flex items-center justify-between w-full group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Baby className="size-3 text-[#f97316]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic group-hover:text-white transition-colors">Dependents costs</span>
+                      </div>
+                      {showDependents ? <ChevronUp className="size-3 text-slate-500" /> : <ChevronDown className="size-3 text-slate-500" />}
+                    </button>
+
+                    {showDependents && (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-1.5">
+                          <Label className="text-[10px] font-bold text-slate-500 italic">School uniform override?</Label>
+                          <div className="relative">
+                            <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-[#f97316]" />
+                            <Input 
+                              type="number" 
+                              value={uniformOverride ?? ''} 
+                              onChange={(e: ChangeEvent<HTMLInputElement>) => setUniformOverride(e.target.value ? Number(e.target.value) : null)}
+                              placeholder={`Estimate: £${(budget.family / (RATES[budget.displayCurrency] || 1)).toFixed(0)} total`}
+                              className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                          </div>
+                        </div>
+                        <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-sm space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Info className="size-3 text-amber-500" />
+                            <p className="text-[9px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
+                          </div>
+                          <p className="text-[8px] font-bold text-slate-400 italic leading-snug">
+                            Availability and rates vary wildly. Contact your school HR early to secure a spot and verify current subsidies.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Card>
           </div>
@@ -279,15 +340,65 @@ export default function PreparePage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* 📦 Transit Logistics (New Row) */}
+                  <div className="flex flex-col gap-4 w-full lg:w-auto pt-4 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-10">
+                    <div className="space-y-2 min-w-[150px]">
+                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Excess bags? (£100/ea)</Label>
+                      <div className="flex items-center gap-2">
+                        <Select value={String(baggageCount)} onValueChange={(val: string) => setBaggageCount(Number(val))}>
+                          <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316] w-20"><SelectValue /></SelectTrigger>
+                          <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                            {[0,1,2,3,4,5].map(n => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <div className="relative flex-1">
+                          <Input 
+                            type="number" 
+                            value={baggageOverride ?? ''} 
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBaggageOverride(e.target.value ? Number(e.target.value) : null)}
+                            placeholder="Override..."
+                            className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2 min-w-[150px]">
+                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Shipping?</Label>
+                      <div className="relative">
+                        <Package className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-sky-400" />
+                        <Input 
+                          type="number" 
+                          value={shippingCost || ''} 
+                          onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
+                          placeholder="e.g. 2000"
+                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                      </div>
+                      <p className="text-[8px] font-bold text-slate-600 italic">Global avg estimate: £2,000</p>
+                    </div>
+                  </div>
                 </div>
 
               </div>
 
               {/* 📊 DASHBOARD BOTTOM: Breakdown Stats */}
-              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 gap-10 bg-black/40">
+              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-10 bg-black/40">
                 <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} currency={budget.displayCurrency} />
                 <StatItem label="Rent & deposit" sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} value={budget.housing} icon={Home} currency={budget.displayCurrency} />
                 <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} currency={budget.displayCurrency} />
+                <StatItem label="Logistics" sub="Bags & shipping." value={budget.logistics} icon={Package} currency={budget.displayCurrency} />
+                <StatItem 
+                  label="Electronics" 
+                  sub="Base setup total." 
+                  value={budget.electronics} 
+                  icon={Monitor} 
+                  currency={budget.displayCurrency} 
+                  info="Covers: 42-inch Smart TV, Toaster, Hair Dryer, Kettle. Estimates based on regional averages."
+                />
+                {budget.family > 0 && (
+                  <StatItem label="Family setup" sub="Uniforms & docs." value={budget.family} icon={Baby} currency={budget.displayCurrency} />
+                )}
                 <StatItem label="Transport entry" sub="Commute setup." value={budget.transport} icon={Car} currency={budget.displayCurrency} />
               </div>
         </div>
@@ -380,11 +491,19 @@ export default function PreparePage() {
 }
 
 // 📎 Helpers
-function StatItem({ label, sub, value, icon: Icon, currency }: { label: string, sub: string, value: number, icon: any, currency: string }) {
+function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: string, sub: string, value: number, icon: any, currency: string, info?: string }) {
   return (
-    <div className="space-y-1 text-white">
+    <div className="space-y-1 text-white group relative">
       <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em] flex items-center gap-2 leading-none">
         <Icon className="size-3 text-sky-400" /> {label}
+        {info && (
+          <div className="group/info relative">
+            <Info className="size-2.5 text-slate-600 cursor-help" />
+            <div className="absolute left-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+              {info}
+            </div>
+          </div>
+        )}
       </p>
       <p className="text-2xl font-black italic leading-none py-1">{formatCurrency(value, currency)}</p>
       <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
