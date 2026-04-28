@@ -208,10 +208,10 @@ export default function PreparePage() {
       
       {/* Header */}
       <div className="mb-6 space-y-1">
-        <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none">
-          Sorting your <span className="text-[#f97316]">start.</span>
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
+          The ultimate <span className="text-[#f97316]">arrival plan.</span>
         </h1>
-        <p className="text-[#94a3b8] font-bold text-[11px] tracking-[0.2em] opacity-80 italic">Getting your ducks in a row before your first day in the classroom.</p>
+        <p className="text-[#94a3b8] font-bold text-[11px] tracking-[0.05em] opacity-80 italic">Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation.</p>
       </div>
 
       <div className="max-w-7xl mx-auto space-y-5">
