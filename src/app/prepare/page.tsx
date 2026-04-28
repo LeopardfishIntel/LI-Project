@@ -43,6 +43,28 @@ export default function PreparePage() {
   const [electronicsTotal, setElectronicsTotal] = useState<number>(500);
   const [showDependents, setShowDependents] = useState(false);
 
+  // Overrides
+  const [docsOverride, setDocsOverride] = useState<number | null>(null);
+  const [housingOverride, setHousingOverride] = useState<number | null>(null);
+  const [expenditureOverride, setExpenditureOverride] = useState<number | null>(null);
+  const [transportOverride, setTransportOverride] = useState<number | null>(null);
+  const [logisticsOverride, setLogisticsOverride] = useState<number | null>(null);
+  const [familyOverride, setFamilyOverride] = useState<number | null>(null);
+  const [electronicsOverride, setElectronicsOverride] = useState<number | null>(null);
+
+  const resetToDefaults = () => {
+    setDocsOverride(null);
+    setHousingOverride(null);
+    setExpenditureOverride(null);
+    setTransportOverride(null);
+    setLogisticsOverride(null);
+    setFamilyOverride(null);
+    setElectronicsOverride(null);
+    setBaggageOverride(null);
+    setBaggageCount(0);
+    setUniformOverride(null);
+  };
+
   // 🛰️ Data
   const { data: schools, isLoading: isLoadingSchools } = useCollection<any>(
     useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted])
@@ -72,6 +94,13 @@ export default function PreparePage() {
       setShippingCost(parsed.shippingCost ?? 2000);
       setUniformOverride(parsed.uniformOverride ?? null);
       setElectronicsTotal(parsed.electronicsTotal ?? 500);
+      setDocsOverride(parsed.docsOverride ?? null);
+      setHousingOverride(parsed.housingOverride ?? null);
+      setExpenditureOverride(parsed.expenditureOverride ?? null);
+      setTransportOverride(parsed.transportOverride ?? null);
+      setLogisticsOverride(parsed.logisticsOverride ?? null);
+      setFamilyOverride(parsed.familyOverride ?? null);
+      setElectronicsOverride(parsed.electronicsOverride ?? null);
     }
     setHasLoadedMemory(true);
   }, []);
@@ -80,10 +109,11 @@ export default function PreparePage() {
     if (hasLoadedMemory) {
       localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
         calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments,
-        baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal
+        baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal,
+        docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride
       }));
     }
-  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, hasLoadedMemory]);
+  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, hasLoadedMemory]);
 
   // 🏎️ Filters — country list driven by SCHOOLS (not cities), matching other pages
   const availableCountries = useMemo(() => {
@@ -133,9 +163,16 @@ export default function PreparePage() {
       baggageOverride,
       shippingCost,
       uniformOverride,
-      electronicsTotal
+      electronicsTotal,
+      docsOverride,
+      housingOverride,
+      expenditureOverride,
+      transportOverride,
+      logisticsOverride,
+      familyOverride,
+      electronicsOverride
     });
-  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal]);
+  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride]);
 
   const totalReserve = useMemo(() => {
     return Math.max(0, budget.total - arrivalAllowance);
@@ -345,10 +382,10 @@ export default function PreparePage() {
 
               </div>
 
-              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
-              <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 bg-black/20 border-t border-white/5">
+              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (4-Column Layout) */}
+              <div className="p-8 lg:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-black/20 border-t border-white/5">
                 
-                {/* Secondary Inputs (Logistics) - In Boxes */}
+                {/* Bags Input (Integrated into Grid) */}
                 <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all">
                   <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Bags (£100/ea)</Label>
                   <div className="flex items-center gap-2">
@@ -370,30 +407,44 @@ export default function PreparePage() {
                   </div>
                 </div>
 
-                <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all">
-                  <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Shipping Cost</Label>
-                  <div className="space-y-2">
-                    <div className="relative">
-                      <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-sky-400" />
-                      <Input 
-                        type="number" 
-                        value={shippingCost || ''} 
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
-                        placeholder="Avg £2,000"
-                        className="bg-black/40 border-white/10 h-10 pl-8 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
-                    <p className="text-[8px] font-bold text-slate-600 italic">Global avg estimate: £2,000</p>
-                  </div>
-                </div>
+                {/* Stat Outputs with Overrides */}
+                <StatItem 
+                  label="Visas & docs" 
+                  sub="Legal fees." 
+                  value={budget.docs} 
+                  icon={FileText} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={docsOverride}
+                  onOverride={(val) => setDocsOverride(val)}
+                />
+                <StatItem 
+                  label="Rent & deposit" 
+                  sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} 
+                  value={budget.housing} 
+                  icon={Home} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={housingOverride}
+                  onOverride={(val) => setHousingOverride(val)}
+                />
+                <StatItem 
+                  label={`Living (${setupDays} days)`} 
+                  sub="Food & basics." 
+                  value={budget.expenditure} 
+                  icon={Wallet} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={expenditureOverride}
+                  onOverride={(val) => setExpenditureOverride(val)}
+                />
 
-                {/* Stat Outputs */}
-                <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} currency={budget.displayCurrency} />
-                <StatItem label="Rent & deposit" sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} value={budget.housing} icon={Home} currency={budget.displayCurrency} />
-                <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} currency={budget.displayCurrency} />
-
-                {/* Row 2 Stats */}
-                <StatItem label="Logistics" sub="Bags & shipping." value={budget.logistics} icon={Package} currency={budget.displayCurrency} />
+                <StatItem 
+                  label="Logistics" 
+                  sub="Bags & shipping." 
+                  value={budget.logistics} 
+                  icon={Package} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={logisticsOverride}
+                  onOverride={(val) => setLogisticsOverride(val)}
+                />
                 <StatItem 
                   label="Electronics" 
                   sub="Base setup total." 
@@ -401,16 +452,42 @@ export default function PreparePage() {
                   icon={Monitor} 
                   currency={budget.displayCurrency} 
                   info="Covers: 42-inch Smart TV, Toaster, Hair Dryer, Kettle. Estimates based on regional averages."
+                  overrideValue={electronicsOverride}
+                  onOverride={(val) => setElectronicsOverride(val)}
                 />
-                <StatItem label="Transport entry" sub="Commute setup." value={budget.transport} icon={Car} currency={budget.displayCurrency} />
+                <StatItem 
+                  label="Transport entry" 
+                  sub="Commute setup." 
+                  value={budget.transport} 
+                  icon={Car} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={transportOverride}
+                  onOverride={(val) => setTransportOverride(val)}
+                />
                 
                 {budget.family > 0 ? (
-                  <StatItem label="Family setup" sub="Uniforms & docs." value={budget.family} icon={Baby} currency={budget.displayCurrency} />
+                  <StatItem 
+                    label="Family setup" 
+                    sub="Uniforms & docs." 
+                    value={budget.family} 
+                    icon={Baby} 
+                    currency={budget.displayCurrency} 
+                    overrideValue={familyOverride}
+                    onOverride={(val) => setFamilyOverride(val)}
+                  />
                 ) : (
-                  <div className="hidden xl:block"></div>
+                  <div className="hidden lg:block"></div>
                 )}
-                
-                <div className="hidden xl:block"></div>
+              </div>
+
+              {/* 🔄 Reset Row */}
+              <div className="px-8 pb-8 flex justify-end">
+                <button 
+                  onClick={resetToDefaults}
+                  className="text-[9px] font-black text-slate-600 hover:text-sky-400 uppercase tracking-widest italic transition-colors"
+                >
+                  Reset all overrides to AI defaults
+                </button>
               </div>
         </div>
       </div>
@@ -502,7 +579,12 @@ export default function PreparePage() {
 }
 
 // 📎 Helpers
-function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: string, sub: string, value: number, icon: any, currency: string, info?: string }) {
+function StatItem({ 
+  label, sub, value, icon: Icon, currency, info, overrideValue, onOverride 
+}: { 
+  label: string, sub: string, value: number, icon: any, currency: string, info?: string, 
+  overrideValue?: number | null, onOverride?: (val: number | null) => void 
+}) {
   return (
     <div className="bg-black/40 border border-white/5 p-5 space-y-4 hover:border-[#f97316]/20 transition-all group relative">
       <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 leading-none">
@@ -516,9 +598,30 @@ function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: st
           </div>
         )}
       </div>
-      <div className="space-y-1">
-        <p className="text-2xl font-black italic leading-none">{formatCurrency(value, currency)}</p>
-        <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
+      
+      <div className="space-y-3">
+        <div className="space-y-1">
+          <p className={cn(
+            "text-2xl font-black italic leading-none transition-colors",
+            overrideValue !== null && overrideValue !== undefined ? "text-[#f97316]" : "text-white"
+          )}>
+            {formatCurrency(value, currency)}
+          </p>
+          <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
+        </div>
+
+        {onOverride && (
+          <div className="relative">
+            <Coins className="absolute left-2 top-1/2 -translate-y-1/2 size-2.5 text-slate-600" />
+            <Input 
+              type="number" 
+              value={overrideValue ?? ''} 
+              onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride(e.target.value ? Number(e.target.value) : null)}
+              placeholder="Override..."
+              className="bg-black/60 border-white/10 h-7 pl-6 text-[10px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
