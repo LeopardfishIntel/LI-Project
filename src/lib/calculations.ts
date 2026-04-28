@@ -72,7 +72,7 @@ export function calculateBudget(params: BudgetParams) {
     monthlyCommitments = 0, baggageCount = 0, baggageOverride = null, shippingCost = 2000, 
     uniformOverride = null, electronicsTotal = 500,
     docsOverride = null, housingOverride = null, expenditureOverride = null, transportOverride = null,
-    logisticsOverride = null, familyOverride = null, electronicsOverride = null
+    logisticsOverride = null, familyOverride = null, electronicsOverride = null, ikeaOverride = null
   } = params;
   
   const targetData = cityData || countryIntel;
@@ -82,10 +82,11 @@ export function calculateBudget(params: BudgetParams) {
   let personCount = 1;
   let childrenCount = 0;
   let scalar = 1.0;
-  if (calcStatus === 'married-dual')       { personCount = 2; scalar = 1.9; }
-  else if (calcStatus === 'family-1')       { personCount = 3; childrenCount = 1; scalar = 2.3; }
-  else if (calcStatus === 'family-2')       { personCount = 4; childrenCount = 2; scalar = 2.65; }
-  else if (calcStatus === 'family-3')       { personCount = 5; childrenCount = 3; scalar = 3.0; }
+  let ikeaScalar = 1.0;
+  if (calcStatus === 'married-dual')       { personCount = 2; scalar = 1.9; ikeaScalar = 1.4; }
+  else if (calcStatus === 'family-1')       { personCount = 3; childrenCount = 1; scalar = 2.3; ikeaScalar = 1.85; }
+  else if (calcStatus === 'family-2')       { personCount = 4; childrenCount = 2; scalar = 2.65; ikeaScalar = 2.2; }
+  else if (calcStatus === 'family-3')       { personCount = 5; childrenCount = 3; scalar = 3.0; ikeaScalar = 2.58; }
 
   const safeParse = (val: any) => { const n = parseFloat(String(val)); return isNaN(n) ? 0 : n; };
   const setupMultiplier = parseInt(setupDays) / 30;
@@ -160,6 +161,9 @@ export function calculateBudget(params: BudgetParams) {
   // 8. Electronics (Base Setup)
   const electronicsVal = electronicsOverride !== null ? electronicsOverride : gbpToDisplay(electronicsTotal);
 
+  // 9. IKEA Run (Furnishing)
+  const ikeaVal = ikeaOverride !== null ? ikeaOverride : usdToDisplay(1000 * ikeaScalar);
+
   return { 
     docs: docsVal, 
     housing: rentVal, 
@@ -169,7 +173,8 @@ export function calculateBudget(params: BudgetParams) {
     logistics: logisticsVal,
     family: familyVal,
     electronics: electronicsVal,
-    total: docsVal + rentVal + livingVal + transportVal + commitmentsVal + logisticsVal + familyVal + electronicsVal,
+    ikea: ikeaVal,
+    total: docsVal + rentVal + livingVal + transportVal + commitmentsVal + logisticsVal + familyVal + electronicsVal + ikeaVal,
     displayCurrency: currency === 'Local' ? localCurrency : currency,
     isSubsidised: housingProv.includes('subsidised')
   };
