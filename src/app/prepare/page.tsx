@@ -273,6 +273,7 @@ export default function PreparePage() {
                 <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 pointer-events-none text-white" />
                 
                 {/* 🛰️ DATA HIERARCHY */}
+                {/* 🛰️ ROW 1: PRIMARY INTELLIGENCE */}
                 <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
                   
                   {/* Reserve Counter */}
@@ -287,7 +288,7 @@ export default function PreparePage() {
                       {formatCurrency(totalReserve, budget.displayCurrency)}
                     </p>
                     
-                    {/* Tactical Currency Switcher (Moved below total) */}
+                    {/* Tactical Currency Switcher */}
                     <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-4">
                       {['GBP', 'USD', 'EUR', 'Local'].map((c) => (
                         <button
@@ -305,8 +306,8 @@ export default function PreparePage() {
                     </div>
                   </div>
 
-                  {/* Operational Inputs */}
-                  <div className="flex flex-col gap-4 w-full lg:w-auto">
+                  {/* Operational Inputs (Top Tier) */}
+                  <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
                     <div className="space-y-2 min-w-[150px]">
                       <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
                         First payday? 
@@ -340,53 +341,55 @@ export default function PreparePage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* 📦 Transit Logistics (New Row) */}
-                  <div className="flex flex-col gap-4 w-full lg:w-auto pt-4 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-10">
-                    <div className="space-y-2 min-w-[150px]">
-                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Excess bags? (£100/ea)</Label>
-                      <div className="flex items-center gap-2">
-                        <Select value={String(baggageCount)} onValueChange={(val: string) => setBaggageCount(Number(val))}>
-                          <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316] w-20"><SelectValue /></SelectTrigger>
-                          <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                            {[0,1,2,3,4,5].map(n => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <div className="relative flex-1">
-                          <Input 
-                            type="number" 
-                            value={baggageOverride ?? ''} 
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => setBaggageOverride(e.target.value ? Number(e.target.value) : null)}
-                            placeholder="Override..."
-                            className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="space-y-2 min-w-[150px]">
-                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Shipping?</Label>
-                      <div className="relative">
-                        <Package className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-sky-400" />
-                        <Input 
-                          type="number" 
-                          value={shippingCost || ''} 
-                          onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
-                          placeholder="e.g. 2000"
-                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                      </div>
-                      <p className="text-[8px] font-bold text-slate-600 italic">Global avg estimate: £2,000</p>
-                    </div>
-                  </div>
                 </div>
 
               </div>
 
-              {/* 📊 DASHBOARD BOTTOM: Breakdown Stats */}
-              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-10 bg-black/40">
+              {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Split into 2 rows) */}
+              <div className="p-8 lg:p-12 grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-12 bg-black/40 border-t border-white/5">
+                
+                {/* Secondary Inputs (Logistics) */}
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Bags (£100/ea)</Label>
+                  <div className="flex items-center gap-2">
+                    <Select value={String(baggageCount)} onValueChange={(val: string) => setBaggageCount(Number(val))}>
+                      <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316] w-16"><SelectValue /></SelectTrigger>
+                      <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                        {[0,1,2,3,4,5].map(n => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <div className="relative flex-1">
+                      <Input 
+                        type="number" 
+                        value={baggageOverride ?? ''} 
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setBaggageOverride(e.target.value ? Number(e.target.value) : null)}
+                        placeholder="Override..."
+                        className="bg-black/40 border-white/10 h-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black text-[#f97316] tracking-widest uppercase italic leading-none">Shipping Cost</Label>
+                  <div className="relative">
+                    <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-sky-400" />
+                    <Input 
+                      type="number" 
+                      value={shippingCost || ''} 
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => setShippingCost(Number(e.target.value))}
+                      placeholder="Avg £2,000"
+                      className="bg-black/40 border-white/10 h-10 pl-8 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Stat Outputs (Row 1 continued) */}
                 <StatItem label="Visas & docs" sub="Legal fees." value={budget.docs} icon={FileText} currency={budget.displayCurrency} />
                 <StatItem label="Rent & deposit" sub={budget.isSubsidised ? "Subsidised (50%)" : "New home keys."} value={budget.housing} icon={Home} currency={budget.displayCurrency} />
                 <StatItem label={`Living (${setupDays} days)`} sub="Food & basics." value={budget.expenditure} icon={Wallet} currency={budget.displayCurrency} />
+
+                {/* Stat Outputs (Row 2) */}
                 <StatItem label="Logistics" sub="Bags & shipping." value={budget.logistics} icon={Package} currency={budget.displayCurrency} />
                 <StatItem 
                   label="Electronics" 
@@ -396,10 +399,15 @@ export default function PreparePage() {
                   currency={budget.displayCurrency} 
                   info="Covers: 42-inch Smart TV, Toaster, Hair Dryer, Kettle. Estimates based on regional averages."
                 />
-                {budget.family > 0 && (
-                  <StatItem label="Family setup" sub="Uniforms & docs." value={budget.family} icon={Baby} currency={budget.displayCurrency} />
-                )}
                 <StatItem label="Transport entry" sub="Commute setup." value={budget.transport} icon={Car} currency={budget.displayCurrency} />
+                
+                {budget.family > 0 ? (
+                  <StatItem label="Family setup" sub="Uniforms & docs." value={budget.family} icon={Baby} currency={budget.displayCurrency} />
+                ) : (
+                  <div className="hidden xl:block"></div> /* Spacer for alignment */
+                )}
+                
+                <div className="hidden xl:block"></div> {/* Final alignment spacer */}
               </div>
         </div>
       </div>
@@ -494,7 +502,7 @@ export default function PreparePage() {
 function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: string, sub: string, value: number, icon: any, currency: string, info?: string }) {
   return (
     <div className="space-y-1 text-white group relative">
-      <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em] flex items-center gap-2 leading-none">
+      <div className="text-[9px] font-black text-slate-500 uppercase tracking-[0.1em] flex items-center gap-2 leading-none">
         <Icon className="size-3 text-sky-400" /> {label}
         {info && (
           <div className="group/info relative">
@@ -504,7 +512,7 @@ function StatItem({ label, sub, value, icon: Icon, currency, info }: { label: st
             </div>
           </div>
         )}
-      </p>
+      </div>
       <p className="text-2xl font-black italic leading-none py-1">{formatCurrency(value, currency)}</p>
       <p className="text-[9px] font-bold text-slate-500/60 leading-none italic">{sub}</p>
     </div>
