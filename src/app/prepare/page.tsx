@@ -457,9 +457,9 @@ export default function PreparePage() {
                   />
                   <button 
                     onClick={() => setShowElectronicsKit(!showElectronicsKit)}
-                    className="absolute top-2 right-2 p-1 text-[8px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10"
+                    className="absolute top-2 right-2 p-1 px-2 text-[8px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10"
                   >
-                    {showElectronicsKit ? 'Close Kit' : 'Open Genkit'}
+                    {showElectronicsKit ? 'Close' : 'Select'}
                   </button>
                 </div>
                 <StatItem 
