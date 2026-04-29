@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
@@ -10,7 +10,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
+import { useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
+import type { School, AppMetrics } from '@/lib/types';
 import goldfishImg from '@/assets/goldfish.jpg';
 
 const features = [
@@ -24,12 +26,13 @@ const features = [
   { title: "CONTRACT FLAGS", desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses.", icon: ShieldAlert, color: "text-[#f97316]" }
 ];
 
-const counters = [
-  { label: 'INTL SCHOOLS', value: '125', icon: Building2, color: 'text-[#f97316]' },
-  { label: 'COUNTRIES', value: '30', icon: Globe, color: 'text-[#007FFF]' },
-  { label: 'VISITS', value: '1,525', icon: Eye, color: 'text-[#f97316]' },
-  { label: 'COMPARISONS', value: '303', icon: BarChart3, color: 'text-[#007FFF]' },
-];
+// 🛰️ HARDCODED FALLBACKS (If DB is slow)
+const COUNTER_FALLBACKS = {
+  schools: 125,
+  countries: 30,
+  visits: 1525,
+  comparisons: 303
+};
 
 function TacticalButton({ href, label, className }: { href: string; label: string; className?: string }) {
   return (
@@ -48,13 +51,43 @@ function TacticalButton({ href, label, className }: { href: string; label: strin
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const firestore = useFirestore();
+
+  // 🛰️ DB UPLINKS
+  const { data: schoolsData, isLoading: sLoading } = useCollection<School>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
+  const { data: colData, isLoading: cLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
+  
+  const metricsRef = useMemo(() => (mounted && firestore ? doc(firestore, 'app_metrics', 'page_views') : null), [firestore, mounted]);
+  const { data: metrics, isLoading: mLoading } = useDoc<AppMetrics>(metricsRef as any);
+
   useEffect(() => { setMounted(true); }, []);
+
+  // 🌍 CALCULATED METRICS
+  const isAnyLoading = sLoading || cLoading || mLoading;
+  
+  const schoolCount = schoolsData?.length || COUNTER_FALLBACKS.schools;
+  const countryCount = useMemo(() => {
+    const fromSchools = schoolsData?.map(s => s.country).filter(Boolean) || [];
+    const fromCol = colData?.map(c => c.country || c.country_name).filter(Boolean) || [];
+    const unique = new Set([...fromSchools, ...fromCol]);
+    return unique.size || COUNTER_FALLBACKS.countries;
+  }, [schoolsData, colData]);
+
+  const visitsCount = metrics?.site_visits || COUNTER_FALLBACKS.visits;
+  const comparisonsCount = metrics?.comparisons_made || COUNTER_FALLBACKS.comparisons;
+
+  const counters = [
+    { label: 'INTL SCHOOLS', value: schoolCount.toLocaleString(), icon: Building2, color: 'text-[#f97316]', loading: isAnyLoading },
+    { label: 'COUNTRIES', value: countryCount.toLocaleString(), icon: Globe, color: 'text-[#007FFF]', loading: isAnyLoading },
+    { label: 'VISITS', value: visitsCount.toLocaleString(), icon: Eye, color: 'text-[#f97316]', loading: isAnyLoading },
+    { label: 'COMPARISONS', value: comparisonsCount.toLocaleString(), icon: BarChart3, color: 'text-[#007FFF]', loading: isAnyLoading },
+  ];
 
   const steps = [
     { title: 'Discover', desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle.", link: '/find-your-fit/', imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', label: 'Find Your Fit' },
     { title: 'Evaluate', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid.", link: '/financial-forecaster/', imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', label: 'Financial Forecast' },
     { title: 'Decide', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: 'https://www.leopardfishintel.com/compare/', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'Compare Offers' },
-    { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare/', imageUrl: goldfishImg, label: 'Get Ready' },
+    { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare/', imageUrl: (goldfishImg as any).src || goldfishImg, label: 'Get Ready' },
   ];
 
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
@@ -101,10 +134,15 @@ export default function Home() {
 
            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 w-full border-t border-white/10 pt-6">
               {counters.map((c) => (
-                <div key={c.label} className="flex flex-col items-center space-y-1">
-                  <c.icon className={cn("size-5", c.color)} />
-                  <span className="text-3xl md:text-4xl font-black tracking-tighter text-white">{c.value}</span>
-                  <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold">{c.label}</span>
+                <div key={c.label} className="flex flex-col items-center space-y-1 group">
+                  <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />
+                  <span className={cn(
+                    "text-3xl md:text-4xl font-black tracking-tighter transition-all tabular-nums",
+                    c.loading ? "text-white/20 animate-pulse" : "text-white"
+                  )}>
+                    {c.value}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold group-hover:text-[#f97316] transition-colors">{c.label}</span>
                 </div>
               ))}
            </div>
@@ -121,6 +159,11 @@ export default function Home() {
             <p className="text-slate-400 text-lg md:text-xl leading-relaxed font-bold tracking-tight">
               Don’t fly blind. International teaching looks like a dream on Instagram, but the contract is where the reality lives. Leopardfish Intel strips away the gloss to show you the cold, hard facts.
             </p>
+            <div className="py-2 border-y border-white/5">
+              <h2 className="text-xl md:text-3xl font-black italic tracking-tighter text-[#007FFF] uppercase leading-none">
+                Don't move for the salary. Move for the surplus.
+              </h2>
+            </div>
             <p className="text-slate-400 text-lg md:text-xl leading-relaxed font-bold tracking-tight">
               Every international teaching offer hides trade-offs, from medical coverage gaps to cost-of-living nuances that can drain a salary before it even hits your account. We make these invisible risks visible, ensuring your next move is a strategic advancement, not just a change of scenery.
             </p>

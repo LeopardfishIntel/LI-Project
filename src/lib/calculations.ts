@@ -47,7 +47,7 @@ export interface BudgetParams {
   selectedSchool: any;
   cityData: any;
   countryIntel: any;
-  doYouDrive: boolean;
+  transportMode: 'public' | 'drive' | 'taxi';
   setupDays: string;
   currency: string; // Target display currency
   monthlyCommitments?: number;
@@ -64,15 +64,20 @@ export interface BudgetParams {
   logisticsOverride?: number | null;
   familyOverride?: number | null;
   electronicsOverride?: number | null;
+  childcareOverride?: number | null;
+  ikeaOverride?: number | null;
+  selectedIkea?: any;
 }
 
 export function calculateBudget(params: BudgetParams) {
   const { 
-    calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, 
+    calcStatus, selectedSchool, cityData, countryIntel, transportMode, setupDays, currency, 
     monthlyCommitments = 0, baggageCount = 0, baggageOverride = null, shippingCost = 2000, 
     uniformOverride = null, electronicsTotal = 500,
     docsOverride = null, housingOverride = null, expenditureOverride = null, transportOverride = null,
-    logisticsOverride = null, familyOverride = null, electronicsOverride = null, ikeaOverride = null
+    logisticsOverride = null, familyOverride = null, electronicsOverride = null, 
+    childcareOverride = null, ikeaOverride = null,
+    selectedIkea = null
   } = params;
   
   const targetData = cityData || countryIntel;
@@ -139,13 +144,23 @@ export function calculateBudget(params: BudgetParams) {
   const utilitiesMonthly = usdToDisplay(getVal(targetData?.utilities, profileKey, scalar * 0.8));
   const livingVal = expenditureOverride !== null ? expenditureOverride : ((groceriesMonthly + utilitiesMonthly) * setupMultiplier);
 
-  // 4. Transport (Scales if public transport)
-  const mapType = doYouDrive ? 'carPurchase' : 'publicTransport';
-  const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType];
-  const baseTransport = usdToDisplay(getVal(transportMap, profileKey, doYouDrive ? 1 : personCount));
+  // 4. Transport
+  // drive = fixed car purchase
+  // public = monthly pass * time
+  // taxi = (public * 4) * time (heuristic for daily ride-share)
+  const isDriving = transportMode === 'drive';
+  const isTaxi = transportMode === 'taxi';
   
-  // If public transport, scale by time. If car, it's a fixed entry cost.
-  const transportVal = transportOverride !== null ? transportOverride : (doYouDrive ? baseTransport : baseTransport * setupMultiplier);
+  const mapType = isDriving ? 'carPurchase' : 'publicTransport';
+  const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType];
+  const baseTransport = usdToDisplay(getVal(transportMap, profileKey, isDriving ? 1 : personCount));
+  
+  let transportVal = transportOverride !== null ? transportOverride : 0;
+  if (transportOverride === null) {
+    if (isDriving) transportVal = baseTransport;
+    else if (isTaxi) transportVal = (baseTransport * 4) * setupMultiplier;
+    else transportVal = baseTransport * setupMultiplier;
+  }
 
   // 5. Monthly Commitments (Student Loans etc)
   const commitmentsVal = usdToDisplay(monthlyCommitments) * setupMultiplier;
@@ -160,9 +175,29 @@ export function calculateBudget(params: BudgetParams) {
   
   // 8. Electronics (Base Setup)
   const electronicsVal = electronicsOverride !== null ? electronicsOverride : gbpToDisplay(electronicsTotal);
+  // 9. Childcare (User defined, defaults to 0)
+  const childcareVal = childcareOverride !== null ? childcareOverride : 0;
 
-  // 9. IKEA Run (Furnishing)
-  const ikeaVal = ikeaOverride !== null ? ikeaOverride : usdToDisplay(1000 * ikeaScalar);
+  // 10. IKEA Run (Furnishing)
+  let ikeaBase = 1000;
+  let useIkeaScalar = true;
+
+  if (selectedIkea) {
+    const fieldMap: Record<string, string> = {
+      'single': 'Single',
+      'married-dual': 'Couple',
+      'family-1': 'Family +1',
+      'family-2': 'Family +2',
+      'family-3': 'Family +3'
+    };
+    const field = fieldMap[calcStatus];
+    if (field && selectedIkea[field] !== undefined && selectedIkea[field] !== null) {
+      ikeaBase = safeParse(selectedIkea[field]);
+      useIkeaScalar = false; // Use the specific status value directly
+    }
+  }
+
+  const ikeaVal = ikeaOverride !== null ? ikeaOverride : usdToDisplay(ikeaBase * (useIkeaScalar ? ikeaScalar : 1.0));
 
   return { 
     docs: docsVal, 
@@ -173,8 +208,9 @@ export function calculateBudget(params: BudgetParams) {
     logistics: logisticsVal,
     family: familyVal,
     electronics: electronicsVal,
+    childcare: childcareVal,
     ikea: ikeaVal,
-    total: docsVal + rentVal + livingVal + transportVal + commitmentsVal + logisticsVal + familyVal + electronicsVal + ikeaVal,
+    total: docsVal + rentVal + livingVal + transportVal + commitmentsVal + logisticsVal + familyVal + electronicsVal + childcareVal + ikeaVal,
     displayCurrency: currency === 'Local' ? localCurrency : currency,
     isSubsidised: housingProv.includes('subsidised')
   };

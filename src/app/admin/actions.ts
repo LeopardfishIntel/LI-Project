@@ -1,16 +1,17 @@
 'use server';
 
 import { 
-  getFirestore, 
   collection, 
   getDocs, 
   doc, 
   writeBatch, 
   updateDoc, 
   QueryDocumentSnapshot,
-  DocumentData
-} from 'firebase/firestore/lite';
-import { db } from '@/firebase';
+  DocumentData,
+  getDoc,
+  setDoc
+} from 'firebase/firestore';
+import { db } from '@/firebase/server';
 import { enrichSchoolData } from '@/ai/flows/enrich-school-data-flow';
 import { updateCostOfLiving } from '@/ai/flows/update-cost-of-living-flow';
 
@@ -54,7 +55,6 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
       lastSync: new Date().toISOString()
     }).catch(async (e) => {
        // If doc doesn't exist, create it
-       const { setDoc } = await import('firebase/firestore/lite');
        await setDoc(docRef, {
          ...res,
          city: locationName,
@@ -86,16 +86,38 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
  */
 export async function getTelemetryData() {
   try {
-    const snap = await getDocs(collection(db, 'telemetry'));
-    // ✅ Zero-Doubt Typing for Document Snapshot
-    const data = snap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({ 
+    const [telemetrySnap, pageViewsSnap, schoolsSnap, colSnap] = await Promise.all([
+      getDocs(collection(db, 'telemetry')),
+      getDocs(collection(db, 'app_metrics')),
+      getDocs(collection(db, 'schools')),
+      getDocs(collection(db, 'locations_costOfLiving'))
+    ]);
+
+    const legacyTelemetry = telemetrySnap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({ 
       ...acc, 
       ...d.data() 
     }), {});
     
+    const pageViewsDoc = pageViewsSnap.docs.find(d => d.id === 'page_views');
+    const pageViews = pageViewsDoc ? pageViewsDoc.data() : {};
+    
+    // Calculate unique countries
+    const schoolCountries = schoolsSnap.size > 0 ? schoolsSnap.docs.map((d: any) => d.data().country).filter(Boolean) : [];
+    const colCountries = colSnap.size > 0 ? colSnap.docs.map((d: any) => d.data().country || d.data().country_name).filter(Boolean) : [];
+    const uniqueCountries = new Set([...schoolCountries, ...colCountries]).size;
+
+    const data = {
+      ...legacyTelemetry,
+      totalVisits: pageViews.site_visits || 0,
+      comparisons: pageViews.comparisons_made || legacyTelemetry.comparisons || 0,
+      totalSchools: schoolsSnap.size,
+      totalLocations: colSnap.size,
+      uniqueCountries: uniqueCountries
+    };
+    
     return { success: true, data };
-  } catch (e) {
-    console.error("Telemetry uplink failed:", e);
+  } catch (e: any) {
+    console.error("Telemetry uplink failed:", e.message || e);
     return { success: false, data: null };
   }
 }
@@ -165,6 +187,73 @@ export async function uploadRegistryJsonAction(data: any[]) {
 
     await batch.commit(); 
     return { success: true, count: data.length };
+  } catch (e: any) { 
+    return { success: false, error: e.message }; 
+  }
+}
+
+/**
+ * 🛰️ Action: Upload IKEA Intel (Transposed JSON)
+ * Converts column-based JSON into country documents and saves to 'ikea_intel'.
+ */
+export async function uploadIkeaIntelAction(data: any[]) {
+  try {
+    const batch = writeBatch(db);
+    const colName = 'ikea_intel';
+    
+    if (!data?.length) return { success: false, error: "Zero records detected in payload" };
+    
+    // 🛡️ STRATEGY: Use the "Currency" row as the source of truth for valid country names.
+    // This prevents row labels from being mistaken for countries.
+    const currencyRow = data.find(row => row.Field === 'Currency');
+    if (!currencyRow) {
+      return { success: false, error: "FATAL: Could not find 'Currency' row to identify countries." };
+    }
+
+    const countries = Object.keys(currencyRow).filter(key => 
+      key !== 'Field' && key !== 'Scalars' && key !== 'Field_1'
+    );
+
+    if (countries.length === 0) {
+      return { success: false, error: "No countries detected in the Currency row." };
+    }
+
+    let count = 0;
+    for (const countryName of countries) {
+      const docId = countryName.toLowerCase().replace(/\s+/g, '-').trim();
+      if (!docId) continue;
+
+      const docData: any = { 
+        country: countryName,
+        id: docId,
+        lastSync: new Date().toISOString()
+      };
+
+      // Loop through all rows to build the country object
+      data.forEach(row => {
+        const fieldName = row.Field;
+        if (fieldName && row[countryName] !== undefined && row[countryName] !== null) {
+          let value = row[countryName];
+          
+          // Try to convert to number if it looks like a currency or pure number
+          if (typeof value === 'string') {
+            // Strip $ and commas, but keep the value if it's not a number (like "Has Ikea")
+            const cleaned = value.replace(/[\$,]/g, '').trim();
+            if (cleaned !== '' && !isNaN(Number(cleaned))) {
+              value = Number(cleaned);
+            }
+          }
+          
+          docData[fieldName] = value;
+        }
+      });
+
+      batch.set(doc(db, colName, docId), docData, { merge: true });
+      count++;
+    }
+
+    await batch.commit(); 
+    return { success: true, count };
   } catch (e: any) { 
     return { success: false, error: e.message }; 
   }

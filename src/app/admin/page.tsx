@@ -13,6 +13,8 @@ import {
   enrichAllSchoolsAction, 
   updateLocationCostOfLivingAction, 
   getTelemetryData,
+  uploadIkeaIntelAction,
+
   type BulkEnrichState,
   type EcoActionState 
 } from './actions';
@@ -40,13 +42,14 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'registry' | 'economic' | 'telemetry'>('registry');
+  const [activeTab, setActiveTab] = useState<'registry' | 'economic' | 'telemetry' | 'ikea'>('registry');
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const [jsonInput, setJsonInput] = useState('');
+  const [ikeaJsonInput, setIkeaJsonInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [enriching, setEnriching] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
@@ -81,6 +84,24 @@ export default function AdminCommandPage() {
       setLoading(false);
     }
   }
+
+  async function handleIkeaUpload() {
+    try {
+      setLoading(true); setStatus(null);
+      const res = await uploadIkeaIntelAction(JSON.parse(ikeaJsonInput));
+      if (res.success) {
+        setStatus({ type: 'success', msg: `IKEA UPLINK OK: ${res.count} country documents pivoted and synchronized.` });
+        setIkeaJsonInput('');
+      } else {
+        setStatus({ type: 'error', msg: res.error || 'IKEA Uplink failed.' });
+      }
+    } catch {
+      setStatus({ type: 'error', msg: 'SYNTAX ERROR: Invalid JSON format.' });
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   async function handleEnrich() {
     setEnriching(true);
@@ -139,6 +160,13 @@ export default function AdminCommandPage() {
             >
                 Economic AI
             </button>
+            <button 
+                onClick={() => setActiveTab('ikea')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'ikea' ? "bg-yellow-500 text-black" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                IKEA Intel
+            </button>
+
             <button 
                 onClick={() => setActiveTab('telemetry')}
                 className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'telemetry' ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
@@ -233,7 +261,48 @@ export default function AdminCommandPage() {
             </div>
         )}
 
-        {/* TAB 3: TELEMETRY */}
+        {/* TAB 3: IKEA INTEL */}
+        {activeTab === 'ikea' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="lg:col-span-8 space-y-6">
+                    <div className="bg-[#0b1224] border border-yellow-500/20 rounded-sm shadow-2xl overflow-hidden">
+                    <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                        <FileJson className="size-4 text-yellow-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Google Sheet JSON Uplink</span>
+                        </div>
+                        <Terminal className="size-4 text-slate-700" />
+                    </div>
+                    <div className="p-6 space-y-6">
+                        <div className="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-sm text-yellow-500/90 text-sm font-medium">
+                          <strong>INSTRUCTIONS:</strong> Copy your transposed Google Sheet data and convert it to JSON (e.g. using a JSON export tool). The format must have <strong>Fields as Rows</strong> and <strong>Countries as Columns</strong>. The system will automatically pivot this data into country-specific documents and clean the numbers.
+                        </div>
+                        <textarea 
+                            className="w-full h-[350px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-yellow-400 rounded-sm outline-none focus:border-yellow-500 transition-all resize-none shadow-inner"
+                            placeholder='[\n  {\n    "Field": "Currency",\n    "Norway": "NOK"\n  }\n]'
+                            value={ikeaJsonInput}
+                            onChange={(e) => setIkeaJsonInput(e.target.value)}
+                        />
+                        <button 
+                          onClick={handleIkeaUpload}
+                          disabled={loading || !ikeaJsonInput}
+                          className="w-full h-16 bg-yellow-500 text-black font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                        >
+                          {loading ? <Loader2 className="animate-spin size-5 text-black" /> : "Execute Pivot & Injection"}
+                        </button>
+                    </div>
+                    </div>
+                    {status && activeTab === 'ikea' && (
+                    <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
+                        {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
+                        <span className="tracking-widest">{status.msg}</span>
+                    </div>
+                    )}
+                </div>
+            </div>
+        )}
+
+        {/* TAB 4: TELEMETRY */}
         {activeTab === 'telemetry' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
                 <div className="flex items-center justify-between">
@@ -243,22 +312,30 @@ export default function AdminCommandPage() {
                     </button>
                 </div>
                 {telemetry && (
-                    <div className="grid grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Shootouts Executed</div>
-                            <div className="text-5xl font-black italic tracking-tighter text-white">{telemetry.comparisons || 0}</div>
+                            <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-[#f97316] mb-2">Active Targets</div>
-                            <div className="text-5xl font-black italic tracking-tighter text-white">{telemetry.totalSchools || 0}</div>
+                            <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">Economic Nodes</div>
-                            <div className="text-5xl font-black italic tracking-tighter text-white">{telemetry.totalLocations || 0}</div>
+                            <div className="text-[10px] font-black uppercase text-[#f97316] mb-2">Verified Schools</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Pending Comms</div>
-                            <div className="text-5xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries || 0}</div>
+                            <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
+                        </div>
+                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                            <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
+                        </div>
+                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                            <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
+                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
                         </div>
                     </div>
                 )}

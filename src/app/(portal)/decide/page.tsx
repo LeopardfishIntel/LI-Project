@@ -9,8 +9,8 @@ import {
   ShieldCheck, Fingerprint, Lock // 🛰️ Added Lock
 } from 'lucide-react';
 // 🛰️ Added useUser to the import
-import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase, useUser, setDocumentNonBlocking } from '@/firebase';
+import { collection, doc, increment } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -319,6 +319,12 @@ function DecideContent() {
             });
             setAiBriefing(briefing);
             setIsUnlocked(true);
+
+            // 🛰️ ANALYTICS UPLINK: Increment comparison counter
+            if (firestore) {
+                const metricsRef = doc(firestore, 'app_metrics', 'page_views');
+                setDocumentNonBlocking(metricsRef, { comparisons_made: increment(1) }, { merge: true });
+            }
         } catch (e) {
             console.error("AI Briefing failed:", e);
         } finally {

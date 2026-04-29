@@ -20,6 +20,30 @@ import { calculateBudget, canonicalCountry, RATES } from '@/lib/calculations';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
+const IKEA_KIT_ITEMS = [
+  { name: "LINANÄS 3-seat Sofa", generic: "3-seat Sofa", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 2, 'family-3': 2 } },
+  { name: "LACK Coffee Table", generic: "Coffee Table", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 2, 'family-3': 2 } },
+  { name: "TIPHEDE Rug", generic: "Floor Rug", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 2, 'family-3': 2 } },
+  { name: "SLATTUM Upholstered Bed", generic: "Double Bed Frame", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 3, 'family-3': 4 } },
+  { name: "VESTMARKA Sprung Mattress", generic: "Sprung Mattress", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 3, 'family-3': 4 } },
+  { name: "SMÅSPORRE Duvet", generic: "Duvet", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 3, 'family-3': 4 } },
+  { name: "LUNDTRAV Pillow", generic: "Pillow", q: { single: 2, 'married-dual': 4, 'family-1': 6, 'family-2': 8, 'family-3': 10 } },
+  { name: "DVALA Fitted Sheet", generic: "Fitted Sheet", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 3, 'family-3': 4 } },
+  { name: "BARLAST Floor Lamp", generic: "Floor Lamp", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 2, 'family-3': 3 } },
+  { name: "SOLHETTA LED Bulb", generic: "LED Bulb", q: { single: 2, 'married-dual': 2, 'family-1': 2, 'family-2': 2, 'family-3': 2 } },
+  { name: "MELLTORP Table", generic: "Dining Table", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 1, 'family-3': 1 } },
+  { name: "ADDE Chair", generic: "Chair", q: { single: 2, 'married-dual': 2, 'family-1': 4, 'family-2': 4, 'family-3': 6 } },
+  { name: "ANNONS Pot with Lid", generic: "Cooking Pot", q: { single: 2, 'married-dual': 2, 'family-1': 3, 'family-2': 3, 'family-3': 3 } },
+  { name: "MOPSIG Cutlery Set", generic: "Cutlery Set", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 2, 'family-3': 3 } },
+  { name: "OFTAST Plate / Bowl", generic: "Plate / Bowl", q: { single: 2, 'married-dual': 4, 'family-1': 6, 'family-2': 8, 'family-3': 10 } },
+  { name: "MULIG Clothes Rack", generic: "Clothes Rack", q: { single: 1, 'married-dual': 2, 'family-1': 3, 'family-2': 4, 'family-3': 5 } },
+  { name: "BJÄRSEN Shower Curtain", generic: "Shower Curtain", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 1, 'family-3': 1 } },
+  { name: "ENUDDEN Toilet Brush", generic: "Toilet Brush", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 2, 'family-3': 2 } },
+  { name: "PEPPRIG Broom/Dustpan", generic: "Broom / Dustpan", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 1, 'family-3': 1 } },
+  { name: "FNISS Trash Can", generic: "Waste Bin", q: { single: 1, 'married-dual': 1, 'family-1': 2, 'family-2': 2, 'family-3': 3 } },
+  { name: "Standard Delivery", generic: "Local Delivery", q: { single: 1, 'married-dual': 1, 'family-1': 1, 'family-2': 1, 'family-3': 1 } }
+];
+
 
 
 export default function PreparePage() {
@@ -30,7 +54,7 @@ export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const [selectedCountry, setSelectedCountry] = useState<string>('all');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
-  const [doYouDrive, setDoYouDrive] = useState<boolean>(true);
+  const [transportMode, setTransportMode] = useState<'public' | 'drive' | 'taxi'>('drive');
   const [setupDays, setSetupDays] = useState<string>('45'); 
   const [arrivalAllowance, setArrivalAllowance] = useState<number>(0);
   const [monthlyCommitments, setMonthlyCommitments] = useState<number>(0);
@@ -50,6 +74,7 @@ export default function PreparePage() {
     { id: 'microwave', name: 'Microwave', cost: 80, selected: false },
   ]);
   const [showElectronicsKit, setShowElectronicsKit] = useState(false);
+  const [showIkeaKit, setShowIkeaKit] = useState(false);
   const [showDependents, setShowDependents] = useState(false);
 
   // Overrides
@@ -60,6 +85,8 @@ export default function PreparePage() {
   const [logisticsOverride, setLogisticsOverride] = useState<number | null>(null);
   const [familyOverride, setFamilyOverride] = useState<number | null>(null);
   const [electronicsOverride, setElectronicsOverride] = useState<number | null>(null);
+  const [childcareOverride, setChildcareOverride] = useState<number | null>(null);
+  const [ikeaOverride, setIkeaOverride] = useState<number | null>(null);
 
   const resetToDefaults = () => {
     setDocsOverride(null);
@@ -72,6 +99,7 @@ export default function PreparePage() {
     setBaggageOverride(null);
     setBaggageCount(0);
     setUniformOverride(null);
+    setIkeaOverride(null);
   };
 
   // 🛰️ Data
@@ -84,6 +112,9 @@ export default function PreparePage() {
   const { data: requirements } = useCollection<any>(
     useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'teacher_requirements') : null), [firestore, mounted])
   );
+  const { data: ikeaIntel } = useCollection<any>(
+    useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'ikea_intel') : null), [firestore, mounted])
+  );
 
   // 💾 Memory
   useEffect(() => {
@@ -94,7 +125,7 @@ export default function PreparePage() {
       setCalcStatus(parsed.calcStatus || 'single');
       setSelectedCountry(parsed.selectedCountry || 'all');
       setSelectedSchoolId(parsed.selectedSchoolId || null);
-      setDoYouDrive(parsed.doYouDrive ?? true);
+      setTransportMode(parsed.transportMode || 'drive');
       setSetupDays(parsed.setupDays || '45');
       setArrivalAllowance(parsed.arrivalAllowance || 0);
       setMonthlyCommitments(parsed.monthlyCommitments || 0);
@@ -118,6 +149,7 @@ export default function PreparePage() {
       setLogisticsOverride(parsed.logisticsOverride ?? null);
       setFamilyOverride(parsed.familyOverride ?? null);
       setElectronicsOverride(parsed.electronicsOverride ?? null);
+      setIkeaOverride(parsed.ikeaOverride ?? null);
     }
     setHasLoadedMemory(true);
   }, []);
@@ -125,12 +157,12 @@ export default function PreparePage() {
   useEffect(() => {
     if (hasLoadedMemory) {
       localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
-        calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments,
+        calcStatus, selectedCountry, selectedSchoolId, transportMode, setupDays, arrivalAllowance, monthlyCommitments,
         baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems,
-        docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride
+        docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, ikeaOverride
       }));
     }
-  }, [calcStatus, selectedCountry, selectedSchoolId, doYouDrive, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, hasLoadedMemory]);
+  }, [calcStatus, selectedCountry, selectedSchoolId, transportMode, setupDays, arrivalAllowance, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, ikeaOverride, hasLoadedMemory]);
 
   // 🏎️ Filters — country list driven by SCHOOLS (not cities), matching other pages
   const availableCountries = useMemo(() => {
@@ -157,6 +189,13 @@ export default function PreparePage() {
     const schoolCity = (selectedSchool.city || '').toLowerCase().trim();
     return cities.find(c => (c.city || '').toLowerCase().trim() === schoolCity) || null;
   }, [selectedSchool, cities]);
+  
+  const selectedIkea = useMemo(() => {
+    if (!selectedCountry || selectedCountry === 'all' || !ikeaIntel) return null;
+    const canon = canonicalCountry(selectedCountry);
+    const docId = canon.toLowerCase().replace(/\s+/g, '-').trim();
+    return ikeaIntel.find((d: any) => d.id === docId) || null;
+  }, [selectedCountry, ikeaIntel]);
 
   // Set default commitments from DB if available and not yet set
   useEffect(() => {
@@ -178,7 +217,7 @@ export default function PreparePage() {
       selectedSchool,
       cityData,
       countryIntel,
-      doYouDrive,
+      transportMode,
       setupDays,
       currency,
       monthlyCommitments,
@@ -193,13 +232,84 @@ export default function PreparePage() {
       transportOverride,
       logisticsOverride,
       familyOverride,
-      electronicsOverride
+      electronicsOverride,
+      ikeaOverride,
+      selectedIkea
     });
-  }, [calcStatus, selectedSchool, cityData, countryIntel, doYouDrive, setupDays, currency, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride]);
+  }, [calcStatus, selectedSchool, cityData, countryIntel, transportMode, setupDays, currency, monthlyCommitments, baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, ikeaOverride, selectedIkea]);
 
   const totalReserve = useMemo(() => {
     return Math.max(0, budget.total - arrivalAllowance);
   }, [budget.total, arrivalAllowance]);
+
+  const downloadIkeaPdf = async () => {
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(0, 127, 255); // #007FFF
+    doc.text("Leopardfish Intel", 20, 25);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Field Mobilization Unit // Arrive Prepared", 20, 32);
+    
+    // Line separator
+    doc.setDrawColor(230, 230, 230);
+    doc.line(20, 38, 190, 38);
+    
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    const titlePrefix = selectedIkea ? "IKEA Shopping List" : "Startup Inventory";
+    doc.text(`${titlePrefix}: ${selectedCountry}`, 20, 50);
+    
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(11);
+    doc.setTextColor(80, 80, 80);
+    const subtext = selectedIkea 
+      ? "Basic startup essentials: Bedding, kitchenware, and core furniture."
+      : "Standard mobilization inventory: Recommended essentials for local sourcing.";
+    doc.text(subtext, 20, 58);
+    
+    // List
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    let y = 75;
+    
+    // Status label in PDF
+    const statusLabel = calcStatus.replace('-', ' ').toUpperCase();
+    doc.setFont("helvetica", "bold");
+    doc.text(`Configuration: ${statusLabel}`, 20, 68);
+    doc.setFont("helvetica", "normal");
+
+    IKEA_KIT_ITEMS.forEach((item) => {
+      const quantity = (item.q as any)[calcStatus] || 1;
+      const itemName = selectedIkea ? item.name : item.generic;
+      doc.setDrawColor(200, 200, 200);
+      doc.rect(20, y - 4, 4, 4); // Checkbox
+      doc.text(`${quantity}x`, 28, y);
+      doc.text(itemName, 40, y);
+      y += 9;
+      if (y > 270) {
+        doc.addPage();
+        y = 30;
+      }
+    });
+    
+    // Footer
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(180, 180, 180);
+    doc.text(`Generated for ${selectedSchool?.schoolname || 'International Deployment'} // Data source: Leopardfish Intel Database`, 20, 285);
+    
+    doc.save(`Leopardfish_IKEA_List_${selectedCountry.replace(/\s+/g, '_')}.pdf`);
+  };
 
   if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#f97316]" /></div>;
 
@@ -216,16 +326,7 @@ export default function PreparePage() {
 
       <div className="max-w-7xl mx-auto space-y-5">
         
-        {/* Tactical Warning Alert */}
-        <div className="bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-4 animate-in slide-in-from-top-4 duration-700">
-          <AlertCircle className="size-5 text-amber-500 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <p className="text-[11px] font-black uppercase tracking-widest text-amber-500 italic">Tactical Warning: Regional Estimates</p>
-            <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
-              Calculations are based on regional indices. School-specific benefits (like hotel stays or flight caps) can significantly shift these requirements. Verify your contract against the Field Manual below.
-            </p>
-          </div>
-        </div>
+        {/* Tactical Warning Alert Moved Down */}
         
         {/* ROW 1: Details & Dashboard (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -278,59 +379,47 @@ export default function PreparePage() {
                     />
                   </div>
                   <p className="text-[8px] font-bold text-slate-600 italic">Include student loans or property costs back home.</p>
-                </div>
-
-                {/* 👶 Dependents Expandable (Conditional) */}
-                {calcStatus !== 'single' && (
-                  <div className="pt-2 border-t border-white/5 space-y-3">
-                    <button 
-                      onClick={() => setShowDependents(!showDependents)}
-                      className="flex items-center justify-between w-full group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Baby className="size-3 text-[#f97316]" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 italic group-hover:text-white transition-colors">Dependents costs</span>
+                  
+                  <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest pt-2">
+                    Childcare cost (override?)
+                    <div className="group relative">
+                      <Info className="size-3 text-sky-400 cursor-help" />
+                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                        Enter any additional childcare expenses. If left blank, defaults to 0.
                       </div>
-                      {showDependents ? <ChevronUp className="size-3 text-slate-500" /> : <ChevronDown className="size-3 text-slate-500" />}
-                    </button>
-
-                    {showDependents && (
-                      <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <div className="space-y-1.5">
-                          <Label className="text-[10px] font-bold text-slate-500 italic">School uniform override?</Label>
-                          <div className="relative">
-                            <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-[#f97316]" />
-                            <Input 
-                              type="number" 
-                              value={uniformOverride ?? ''} 
-                              onChange={(e: ChangeEvent<HTMLInputElement>) => setUniformOverride(e.target.value ? Number(e.target.value) : null)}
-                              placeholder={`Estimate: £${(budget.family / (RATES[budget.displayCurrency] || 1)).toFixed(0)} total`}
-                              className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                          </div>
-                        </div>
-                        <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-sm space-y-1">
-                          <div className="flex items-center gap-2">
-                            <Info className="size-3 text-amber-500" />
-                            <p className="text-[9px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
-                          </div>
-                          <p className="text-[8px] font-bold text-slate-400 italic leading-snug">
-                            Availability and rates vary wildly. Contact your school HR early to secure a spot and verify current subsidies.
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                    </div>
+                  </Label>
+                  <div className="relative">
+                    <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-sky-400" />
+                    <Input
+                      type="number"
+                      value={childcareOverride ?? ''}
+                      onChange={(e) => setChildcareOverride(e.target.value ? Number(e.target.value) : null)}
+                      placeholder="e.g. 300"
+                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
                   </div>
-                )}
+                  <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-sm space-y-1 mt-2">
+                    <div className="flex items-center gap-2">
+                      <Info className="size-3 text-amber-500" />
+                      <p className="text-[9px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
+                    </div>
+                    <p className="text-[8px] font-bold text-slate-400 italic leading-snug">
+                      Availability and rates vary wildly. Contact your school HR early to secure a spot and verify current subsidies.
+                    </p>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
 
           <div className="lg:col-span-8 flex">
-            <div className="bg-[#0b1224] border border-white/10 rounded-sm overflow-hidden shadow-2xl w-full flex flex-col">
+            <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl w-full flex flex-col">
               {/* 🏔️ DASHBOARD TOP: Primary Intelligence */}
-              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-8 lg:p-12 border-b border-white/5 overflow-hidden">
-                <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 pointer-events-none text-white" />
+              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-8 lg:p-12 border-b border-white/5">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 text-white" />
+                </div>
                 
                 {/* 🛰️ DATA HIERARCHY */}
                 {/* 🛰️ ROW 1: PRIMARY INTELLIGENCE */}
@@ -463,13 +552,13 @@ export default function PreparePage() {
                   }
                 />
                 <StatItem 
-                  label="Transport entry" 
+                  label="Transport" 
                   value={budget.transport} 
                   icon={Car} 
                   currency={budget.displayCurrency} 
                   overrideValue={transportOverride}
                   onOverride={(val) => setTransportOverride(val)}
-                  info={doYouDrive ? "Estimated cost for a reliable second-hand car purchase and initial registration." : "Estimated cost for public transport passes and initial commute setup."}
+                  info={transportMode === 'drive' ? "Estimated cost for a reliable second-hand car purchase and initial registration." : (transportMode === 'taxi' ? "Estimated cost for daily ride-share/taxi trips for the duration of your setup period." : "Estimated cost for public transport passes and initial commute setup.")}
                 />
                 
                 {budget.family > 0 && (
@@ -483,6 +572,16 @@ export default function PreparePage() {
                     info="Estimated costs for school uniforms."
                   />
                 )}
+                
+                <StatItem 
+                  label="IKEA Run" 
+                  value={budget.ikea} 
+                  icon={ShoppingCart} 
+                  currency={budget.displayCurrency} 
+                  overrideValue={ikeaOverride}
+                  onOverride={(val) => setIkeaOverride(val)}
+                  info="Estimated cost for initial home essentials and furnishing based on your family profile."
+                />
               </div>
 
               {/* 🔌 Electronics Genkit Expandable */}
@@ -532,14 +631,25 @@ export default function PreparePage() {
               <div className="px-8 pb-8 flex justify-end">
                 <button 
                   onClick={resetToDefaults}
-                  className="text-[9px] font-black text-slate-600 hover:text-sky-400 uppercase tracking-widest italic transition-colors"
+                  className="text-[9px] font-black text-[#f97316] hover:text-[#00e5ff] uppercase tracking-widest italic transition-colors"
                 >
-                  Reset all overrides to AI defaults
+                  Reset all overrides to LeopardfishIntel defaults
                 </button>
               </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+
+        {/* Tactical Warning Alert (New Position) */}
+        <div className="bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-4 animate-in slide-in-from-top-4 duration-700">
+          <AlertCircle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-[11px] font-black uppercase tracking-widest text-amber-500 italic">Tactical Warning: Regional Estimates</p>
+            <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
+              Calculations are based on regional indices. School-specific benefits (like hotel stays or flight caps) can significantly shift these requirements. Verify your contract against the Field Manual below.
+            </p>
+          </div>
+        </div>
 
         {/* ROW 2: Risks & IKEA (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -549,19 +659,75 @@ export default function PreparePage() {
           </div>
 
           <div className="lg:col-span-8 flex">
-            <Card className={cn("border-white/10 p-5 flex items-center justify-between w-full shadow-lg transition-all", countryIntel ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
+            <Card className={cn("border-white/10 p-5 flex items-center justify-between w-full shadow-lg transition-all", selectedCountry !== 'all' ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
               <div className="flex items-center gap-4">
-                <div className={cn("p-3 rounded-full", countryIntel?.ikea?.hasIkea ? "bg-green-500/10 text-green-500" : "bg-rose-500/10 text-rose-500")}>
+                <div className={cn(
+                  "p-3 rounded-full", 
+                  selectedIkea?.['Has Ikea'] === 1 || selectedIkea?.['Has Ikea'] === "1"
+                    ? "bg-green-500/10 text-green-500" 
+                    : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-amber-500/10 text-amber-500")
+                )}>
                   <ShoppingCart className="size-6" />
                 </div>
                 <div>
                   <h4 className="text-[11px] font-black uppercase tracking-widest text-white italic leading-tight">
                     IKEA readiness check: <span className="text-sky-400 underline decoration-sky-400/30 underline-offset-4">{selectedCountry !== 'all' ? selectedCountry : 'Your destination'}</span>
                   </h4>
-                  <p className="text-[10px] font-bold text-slate-500 tracking-tight italic mt-1">Getting the basics—bedding and kitchen bits for week one.</p>
+                  <p className="text-[10px] font-bold text-slate-500 tracking-tight italic mt-1">
+                    {selectedIkea 
+                      ? (selectedIkea?.['Has Ikea'] === 1 || selectedIkea?.['Has Ikea'] === "1" ? "Verified IKEA presence. Using actual cost indices." : "No local IKEA verified. Using regional shipping estimates.")
+                      : "Standard furnishing estimate. Essential inventory listed below."}
+                  </p>
                 </div>
               </div>
+              {selectedCountry !== 'all' && (
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setShowIkeaKit(!showIkeaKit)}
+                    className="p-2 px-3 text-[9px] font-black uppercase italic border border-white/10 hover:bg-white hover:text-black transition-all"
+                  >
+                    {showIkeaKit ? 'Hide Items' : 'View Kit'}
+                  </button>
+                  <button 
+                    onClick={downloadIkeaPdf}
+                    className="p-2 px-3 text-[9px] font-black uppercase italic bg-sky-400 text-black hover:bg-white transition-all flex items-center gap-2"
+                  >
+                    <Download className="size-3" /> PDF
+                  </button>
+                </div>
+              )}
             </Card>
+
+            {/* IKEA COMPACT VIEW */}
+            {showIkeaKit && selectedCountry !== 'all' && (
+              <div className="mt-3 bg-[#0b1224] border border-sky-400/20 p-6 animate-in slide-in-from-top-4 duration-300">
+                <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
+                  <h5 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.3em] italic">
+                    {selectedIkea ? "Basic startup essentials (IKEA)" : "Basic startup essentials (Generic)"}
+                  </h5>
+                  <p className="text-[9px] font-bold text-slate-500 italic">Total Items: {IKEA_KIT_ITEMS.length}</p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+                  {IKEA_KIT_ITEMS.map((item, idx) => {
+                    const quantity = (item.q as any)[calcStatus] || 1;
+                    const itemName = selectedIkea ? item.name : item.generic;
+                    return (
+                      <div key={idx} className="flex items-center justify-between text-[9px] font-bold text-slate-300 italic opacity-80 border-b border-white/5 pb-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#f97316]">●</span> {itemName}
+                        </div>
+                        <span className="text-sky-400 font-black">x{quantity}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p className="mt-6 text-[8px] font-bold text-slate-600 uppercase italic tracking-widest border-t border-white/5 pt-3">
+                  {selectedIkea 
+                    ? "* Note: This is a standardized IKEA field kit. Stock levels may vary by region."
+                    : "* Note: This is a recommended essentials inventory for countries without a verified IKEA."}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -576,12 +742,13 @@ export default function PreparePage() {
                 <CardTitle className="text-[11px] font-black uppercase tracking-widest text-white">Transport</CardTitle>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setDoYouDrive(false)} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", !doYouDrive ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
-                <button onClick={() => setDoYouDrive(true)} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", doYouDrive ? "bg-[#f97316] text-white border-[#f97316]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
+                <button onClick={() => setTransportMode('public')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'public' ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
+                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#f97316] text-white border-[#f97316]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
+                <button onClick={() => setTransportMode('taxi')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'taxi' ? "bg-indigo-500 text-white border-indigo-500" : "bg-black/20 border-white/10 text-slate-500")}>Taxi</button>
               </div>
               <ul className="space-y-2 text-[10px] font-bold text-slate-400 italic">
-                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {doYouDrive ? "Driving licence" : "Metro registration"}</li>
-                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {doYouDrive ? "Hiring or buying" : "Taxi app setup"}</li>
+                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {transportMode === 'drive' ? "Driving licence" : (transportMode === 'taxi' ? "Download local taxi apps" : "Metro registration")}</li>
+                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {transportMode === 'drive' ? "Hiring or buying" : (transportMode === 'taxi' ? "International SIM card" : "Taxi app setup")}</li>
               </ul>
             </div>
           </Card>
@@ -636,16 +803,18 @@ function StatItem({
 }) {
   const isOverridden = overrideValue !== null && overrideValue !== undefined;
   const displayVal = isOverridden ? overrideValue : Math.round(value);
+  const currencySymbol = currency === 'GBP' ? '£' : (currency === 'USD' ? '$' : (currency === 'EUR' ? '€' : currency));
+  const isLongSymbol = currencySymbol.length > 1;
 
   return (
     <div className="bg-black/40 border border-white/5 p-3.5 space-y-3 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
       <div className="flex items-center justify-between gap-1 min-h-[18px]">
-        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none truncate">
+        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none">
           <Icon className="size-3 text-sky-400 shrink-0" /> {label}
           {info && (
             <div className="group/info relative shrink-0">
               <Info className="size-2.5 text-slate-600 cursor-help" />
-              <div className="absolute right-0 bottom-full mb-2 w-48 p-2 bg-black border border-white/10 rounded-sm text-[8px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                 {info}
               </div>
             </div>
@@ -657,17 +826,19 @@ function StatItem({
       <div className="space-y-2">
         <div className="relative">
           <span className={cn(
-            "absolute left-3 top-1/2 -translate-y-1/2 text-lg font-black italic pointer-events-none transition-colors",
+            "absolute left-3 top-1/2 -translate-y-1/2 font-black italic pointer-events-none transition-colors",
+            isLongSymbol ? "text-[10px] tracking-tight" : "text-lg",
             isOverridden ? "text-[#f97316]" : "text-slate-500"
           )}>
-            {currency === 'Local' ? budget.displayCurrency : (currency === 'GBP' ? '£' : (currency === 'USD' ? '$' : '€'))}
+            {currencySymbol}
           </span>
           <Input 
             type="number" 
             value={displayVal || ''} 
             onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
             className={cn(
-              "bg-black/60 border-white/5 h-14 pl-10 text-2xl font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+              "bg-black/60 border-white/5 h-14 text-2xl font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+              isLongSymbol ? "pl-14" : "pl-10",
               isOverridden ? "text-[#f97316] border-[#f97316]/30" : "text-white"
             )}
           />
