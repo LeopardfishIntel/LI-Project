@@ -27,6 +27,29 @@ const BENCHMARKS = [
 
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
+const SALARY_INTEL: Record<string, { has13th: boolean, has14th: boolean, note?: string }> = {
+  "austria": { has13th: true, has14th: true, note: "Standard 14-month cycle." },
+  "greece": { has13th: true, has14th: true, note: "Standard 14-month cycle." },
+  "portugal": { has13th: true, has14th: true, note: "Standard 14-month cycle." },
+  "spain": { has13th: true, has14th: true, note: "Standard 14-month cycle." },
+  "italy": { has13th: true, has14th: true, note: "13th is standard; 14th depends on specific school/sector." },
+  "germany": { has13th: true, has14th: false, note: "Often referred to as 'Weihnachtsgeld'." },
+  "netherlands": { has13th: true, has14th: false, note: "Often 13th month or holiday allowance." },
+  "belgium": { has13th: true, has14th: true, note: "Complex structure involving 92% of a 14th month." },
+  "argentina": { has13th: true, has14th: false, note: "Sueldo Anual Complementario (S.A.C.)." },
+  "brazil": { has13th: true, has14th: false, note: "Standard 13th month." },
+  "mexico": { has13th: true, has14th: false, note: "Statutory 13th month (Aguinaldo)." },
+  "peru": { has13th: true, has14th: true, note: "Gratification payments in July and December." },
+  "ecuador": { has13th: true, has14th: true, note: "Decimo Tercer and Cuarto payments." },
+  "bolivia": { has13th: true, has14th: false, note: "Standard 13th month." },
+  "philippines": { has13th: true, has14th: false, note: "Statutory 13th month payment." },
+  "indonesia": { has13th: true, has14th: false, note: "Tunjangan Hari Raya (Religious Holiday Allowance)." },
+  "japan": { has13th: true, has14th: true, note: "Bonus structure often equals 2 extra months." },
+  "china": { has13th: true, has14th: false, note: "Chinese New Year bonus." },
+  "angola": { has13th: true, has14th: false, note: "Standard holiday allowance." },
+  "south africa": { has13th: true, has14th: false, note: "Often paid as a Christmas bonus." }
+};
+
 const formatCountry = (c: string) => c.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
 function DecoderContent() {
@@ -47,6 +70,8 @@ function DecoderContent() {
   const [transportMode, setTransportMode] = useState<"P" | "C" | "T">("P");
   const [benchmark, setBenchmark] = useState("GBP");
   const [overrideBedrooms, setOverrideBedrooms] = useState<number | null>(null);
+  const [uplift13, setUplift13] = useState(false);
+  const [uplift14, setUplift14] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -133,7 +158,14 @@ function DecoderContent() {
     else if (status === "Family +2") { personCount = 4; scalar = 2.65; pKey = "family2Children"; }
     else if (status === "Family +3") { personCount = 5; scalar = 3.0; pKey = "family3PlusChildren"; }
 
-    const totalIn = safeParse(settings.netSalary) +
+    const sCountry = canonicalCountry(String(getSchoolField(activeSchool, ['country', 'region']) || ''));
+    const countryIntel = SALARY_INTEL[sCountry] || null;
+
+    const baseNet = safeParse(settings.netSalary);
+    const upliftFactor = (uplift13 ? 1/12 : 0) + (uplift14 ? 1/12 : 0);
+    const amortizedBase = baseNet * (1 + upliftFactor);
+
+    const totalIn = amortizedBase +
       (status !== "Single" && status !== "Married (sole earner)" ? safeParse(settings.partnerSalary) : 0) +
       safeParse(responsibilityAllowance) + safeParse(extraIncome);
 
@@ -205,9 +237,10 @@ function DecoderContent() {
     return {
       costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, transport: transportCost, social: socialCost, manual: manualCost },
       propertyLabel, canDownsize, standardRentKey,
-      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, housingStatus, currency, reliability: activeCOL?.dataReliabilityScore
+      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, housingStatus, currency, reliability: activeCOL?.dataReliabilityScore,
+      countryIntel, uplift13, uplift14
     };
-  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates]);
+  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14]);
 
   const leopardfishReview = useMemo(() => {
     if (!activeSchool || !analysis) return null;
@@ -500,6 +533,7 @@ function DecoderContent() {
                             <span className="text-xl font-black text-white/50">{currency}</span>
                             <span className={cn("text-5xl font-black tracking-tighter tabular-nums text-white", (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
                               {Math.round(analysis?.surplus || 0).toLocaleString()}
+                              {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#f97316] ml-1">*</span>}
                             </span>
                           </div>
 
@@ -508,6 +542,63 @@ function DecoderContent() {
                             <span className="text-xl font-black text-emerald-500 italic">{Math.round(analysis?.surplusBenchmark || 0).toLocaleString()}</span>
                             <span className="text-xs font-black text-emerald-400 opacity-60">({analysis?.rateOfSaving}%)</span>
                           </div>
+
+                          {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
+                          {analysis?.countryIntel && (
+                            <div className="mt-4 w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-sm">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic flex items-center gap-2">
+                                  Tactical Intel: {analysis.countryIntel.has14th ? "13th & 14th Month" : "13th Month"}
+                                </span>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button className="text-emerald-400 hover:text-white transition-colors">
+                                        <Info className="size-3" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="left" className="max-w-xs bg-slate-900 border-emerald-500/50 text-white p-4">
+                                      <p className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-tight">Market Intelligence Briefing</p>
+                                      <p className="text-[11px] leading-relaxed mb-3">
+                                        {analysis.countryIntel.note} We are amortising these payments into your monthly forecast (adding 1/12th of your base salary per payment).
+                                      </p>
+                                      <p className="text-[10px] italic text-rose-400 border-t border-white/10 pt-2 font-bold">
+                                        ⚠️ WARNING: Full net salary may not be the exact amount of the 13/14 payment as taxes and social security often vary on bonuses.
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
+
+                              <div className="flex gap-2">
+                                {analysis.countryIntel.has13th && (
+                                  <button
+                                    onClick={() => setUplift13(!uplift13)}
+                                    className={cn(
+                                      "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                      uplift13 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                    )}
+                                  >
+                                    {uplift13 ? "13th Month Active" : "Apply 13th Month"}
+                                  </button>
+                                )}
+                                {analysis.countryIntel.has14th && (
+                                  <button
+                                    onClick={() => setUplift14(!uplift14)}
+                                    className={cn(
+                                      "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                      uplift14 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                    )}
+                                  >
+                                    {uplift14 ? "14th Month Active" : "Apply 14th Month"}
+                                  </button>
+                                )}
+                              </div>
+                              <p className="mt-2 text-[8px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
+                                Please confirm your specific offer includes these payments
+                              </p>
+                            </div>
+                          )}
 
                           {/* 🛡️ TACTICAL DOWNSIZING ADVICE */}
                           {(analysis?.surplus ?? 0) < 0 && analysis?.canDownsize && (
@@ -523,12 +614,16 @@ function DecoderContent() {
                             </button>
                           )}
 
-                          {overrideBedrooms && (
+                          {(overrideBedrooms || uplift13 || uplift14) && (
                             <button
-                              onClick={() => setOverrideBedrooms(null)}
+                              onClick={() => {
+                                setOverrideBedrooms(null);
+                                setUplift13(false);
+                                setUplift14(false);
+                              }}
                               className="mt-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white underline underline-offset-4"
                             >
-                              Reset to Standard Allocation
+                              Reset to Standard Baseline
                             </button>
                           )}
                         </div>
