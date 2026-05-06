@@ -124,7 +124,7 @@ export default function Home() {
            </h1>
            
            <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
-             Move with certainty<span className="text-[#f97316]">,</span> not just hope.
+             Move with certainty, not just hope.
            </p>
            
            <div className="flex flex-col sm:flex-row gap-4 mb-10">
@@ -223,10 +223,16 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="pt-8 border-t border-white/5 text-center">
+          <div className="pt-8 border-t border-white/5 text-center space-y-8">
             <p className="text-base italic text-slate-400 font-medium tracking-tight">
-              Make informed decisions with verified financial and school data.
+              Informed decisions start with Leopardfish Intel—the gold standard for indexed school and financial data.
             </p>
+            <div className="flex flex-wrap justify-center gap-4">
+               <TacticalButton href="/find-your-fit/" label="Discover" className="w-48 h-14" />
+               <TacticalButton href="/financial-forecaster/" label="Evaluate" className="w-48 h-14" />
+               <TacticalButton href="https://www.leopardfishintel.com/compare/" label="Decide" className="w-48 h-14" />
+               <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
+            </div>
           </div>
         </div>
       </section>

@@ -1,7 +1,11 @@
  'use server';
 
-import { db } from "@/firebase"; // 🛰️ Pointing to your unified Mission Control
+import { db } from "@/firebase/server";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { Resend } from 'resend';
+
+// Initialize Resend (Ensure RESEND_API_KEY is in your .env)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export type InquiryState = {
   message: string | null;
@@ -38,8 +42,24 @@ export async function submitInquiry(
       receivedAt: serverTimestamp(),
     });
 
-    // 3. Simulated/Internal Log
-    console.log(`--- Intelligence Logged: Enquiry from ${name} ---`);
+    // 3. LIVE TRANSMISSION (Resend)
+    if (process.env.RESEND_API_KEY) {
+      // Send confirmation to the user
+      await resend.emails.send({
+        from: 'Leopardfish Intel <system@leopardfishintel.com>',
+        to: [email],
+        subject: `Enquiry Received: ${subject}`,
+        text: `Hello ${name},\n\nYour enquiry has been received and logged in our system. Our team will review the details and get back to you shortly.\n\nSubject: ${subject}\n\nMessage:\n${message}\n\nRegards,\nThe Leopardfish Intel Team`,
+      });
+
+      // Send notification to Roger
+      await resend.emails.send({
+        from: 'Intelligence Desk <system@leopardfishintel.com>',
+        to: ['roger@leopardfishintel.com'],
+        subject: `🚨 NEW ENQUIRY: ${subject}`,
+        text: `From: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+      });
+    }
 
     return {
       message: 'Intelligence received. Our agents will respond shortly.',
@@ -47,7 +67,7 @@ export async function submitInquiry(
       success: true,
     };
   } catch (err) {
-    console.error("🎯 Persistence Failure:", err);
+    console.error("🎯 Transmission Failure:", err);
     return {
       message: null,
       error: 'Operational Failure: Database write rejected. Please check your connection.',

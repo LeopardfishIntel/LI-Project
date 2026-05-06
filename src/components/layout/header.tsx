@@ -4,11 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User as UserIcon, LogOut, LogIn, Search } from "lucide-react"; 
+import { User as UserIcon, LogOut, LogIn } from "lucide-react"; 
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/firebase"; 
 import { doc, getDoc } from "firebase/firestore";
-import { Input } from "@/components/ui/input";
 
 export default function Header() {
   const pathname = usePathname();
@@ -75,15 +74,8 @@ export default function Header() {
           ))}
         </div>
 
-        {/* SEARCH & ACCOUNT */}
+        {/* ACCOUNT */}
         <div className="flex items-center gap-4">
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-500" />
-            <Input 
-              placeholder="Search Intel..." 
-              className="bg-black/40 border-white/10 h-8 w-40 pl-8 text-[10px] text-white rounded-none outline-none focus-visible:ring-1 focus-visible:ring-[#f97316]" 
-            />
-          </div>
 
           {user ? (
             <div className="flex items-center gap-3">

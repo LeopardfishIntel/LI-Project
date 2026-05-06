@@ -138,5 +138,14 @@ service cloud.firestore {
       allow get: if isOwner(userId) || isAdmin();
       allow list, write: if isAdmin();
     }
+
+    // =====================================================================
+    // Enquiries & Communications
+    // =====================================================================
+    
+    match /enquiries/{enquiryId} {
+      allow create: if true; // 🛰️ Public uplink for contact form
+      allow read, write: if isAdmin();
+    }
   }
 }
