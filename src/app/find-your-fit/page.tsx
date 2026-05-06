@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { findFitAction, FitFinderState } from "./actions";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { 
   Loader2, Zap, MapPin, Target, GraduationCap, 
@@ -10,7 +9,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const initialState: FitFinderState = { result: null, error: null, pending: false };
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const QUALS = ["PGCE/IPGCE", "B.Ed", "MA/M.Ed", "NPQSL", "QTS"];
@@ -18,36 +16,17 @@ const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Ame
 const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Balance"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
 
-function SubmitButton({ hasResult, isPending, isDirty }: { hasResult: boolean, isPending: boolean, isDirty: boolean }) {
-  const [loadingText, setLoadingText] = useState("Analysing profile...");
+function SubmitButton({ isPending, isDirty }: { isPending: boolean, isDirty: boolean }) {
+  const [loadingText, setLoadingText] = useState("Analyzing Leopardfish Intel...");
 
   useEffect(() => {
     if (isPending) {
-      setLoadingText("Analysing profile...");
-      const t1 = setTimeout(() => setLoadingText("Cross-referencing global requirements..."), 3000);
-      const t2 = setTimeout(() => setLoadingText("Evaluating safety & lifestyle data..."), 6000);
-      const t3 = setTimeout(() => setLoadingText("Compiling your personalised dossier..."), 9000);
-      const t4 = setTimeout(() => setLoadingText("Good intel takes time..."), 13000);
-      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-    } else {
-      setLoadingText("Analysing profile...");
+      setLoadingText("Analyzing Leopardfish Intel...");
+      const t1 = setTimeout(() => setLoadingText("Retrieving country averages..."), 1500);
+      const t2 = setTimeout(() => setLoadingText("Applying Family scaling factors..."), 3000);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [isPending]);
-
-  if (!isPending && hasResult && !isDirty) {
-    return (
-      <div className="space-y-3 animate-in fade-in duration-500">
-        <button 
-          type="button" 
-          disabled
-          className="w-full h-16 bg-[#007FFF]/20 text-[#007FFF] text-lg font-black tracking-widest uppercase border-2 border-[#007FFF]/50 flex items-center justify-center gap-3 shadow-xl italic"
-        >
-          <ShieldCheck className="size-5" /> Report Complete! See Below
-        </button>
-        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center italic">* Change any setting above to automatically unlock a new search.</p>
-      </div>
-    );
-  }
 
   return (
     <button 
@@ -58,15 +37,16 @@ function SubmitButton({ hasResult, isPending, isDirty }: { hasResult: boolean, i
       {isPending ? (
         <><Loader2 className="animate-spin size-5" /> {loadingText}</>
       ) : (
-        <><Zap className="size-5" /> {isDirty ? "Generate New Dossier" : "Generate my dossier"}</>
+        <><Zap className="size-5" /> {isDirty ? "Generate New Matrix" : "Leopardfish Intel Analysis"}</>
       )}
     </button>
   );
 }
 
 export default function FindYourFitPage() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [state, formAction, isPending] = useActionState(findFitAction, initialState);
+  const [isPending, setIsPending] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -79,15 +59,25 @@ export default function FindYourFitPage() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Track if user changes inputs after generating a report
-  useEffect(() => {
-    if (state.result && !isPending) setIsDirty(true);
-  }, [formData]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.regions.length === 0) return;
+    setIsPending(true);
 
-  // Reset dirty state when a new generation begins
-  useEffect(() => {
-    if (isPending) setIsDirty(false);
-  }, [isPending]);
+    const params = new URLSearchParams({
+      age: formData.age,
+      regions: formData.regions.join(','),
+      salary: formData.currentSalary, // We rely on currency being typed into the box or we just pass the raw value
+      status: formData.familyStatus,
+      qualifications: formData.qualifications.join(','),
+      goals: formData.objectives.join(','),
+      currentLocation: formData.currentCity
+    });
+
+    setTimeout(() => {
+      router.push(`/discover/matrix?${params.toString()}`);
+    }, 1200);
+  };
 
   // 🛡️ STRICT LIMIT LOGIC: Only allows 2 selections for Objectives/Regions
   const toggleArrayItem = (key: 'qualifications' | 'objectives' | 'regions', value: string, limit?: number) => {
@@ -127,7 +117,7 @@ export default function FindYourFitPage() {
           <span className="text-[#007FFF] text-[10px] font-black uppercase tracking-widest italic">Status: Ready</span>
         </div>
 
-        <form action={formAction} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
+        <form onSubmit={handleSubmit} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
           <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />
 
           {/* 1. PERSONAL PROFILE */}
@@ -207,96 +197,16 @@ export default function FindYourFitPage() {
           {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}
 
           {/* 🛡️ UI Error Display */}
-          {state.error && (
+          {formData.regions.length === 0 && isPending && (
             <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95">
               <AlertTriangle className="size-4 shrink-0" /> 
-              <span className="leading-tight">{state.error}</span>
+              <span className="leading-tight">Please select at least one Target Region.</span>
             </div>
           )}
 
-          <SubmitButton hasResult={!!state.result} isPending={isPending} isDirty={isDirty} />
+          <SubmitButton isPending={isPending} isDirty={isDirty} />
         </form>
 
-        {/* 5. DOSSIER RESULTS SECTION */}
-        {state.result && (
-          <div className="mt-20 border-t-4 border-[#f97316] pt-12 space-y-12 animate-in slide-in-from-bottom-10 duration-1000">
-            <div className="text-center space-y-2">
-              <h2 className="text-6xl font-black tracking-tighter uppercase italic leading-none">Your <span className="text-[#f97316]">Intelligence Dossier</span></h2>
-              <p className="text-slate-500 text-[10px] font-bold uppercase flex items-center justify-center gap-2 italic"><ShieldCheck className="size-4 text-[#007FFF]" /> Verified Recommendations</p>
-            </div>
-            <div className="grid gap-12 pb-20">
-              {state.result.recommendations.sort((a: any, b: any) => b.fitScore - a.fitScore).map((rec: any, i: number) => (
-                <div key={i} className="bg-[#0b1224] border border-white/5 p-8 md:p-12 hover:border-[#f97316]/40 transition-all group shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 bg-[#f97316]/10 border-b border-l border-[#f97316]/20 text-center">
-                    <p className="text-[#f97316] text-[10px] font-black uppercase tracking-widest italic mb-1">Fit Score</p>
-                    <div className="flex gap-1 justify-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg key={star} className={cn("size-5", (rec.fitScore / 2) >= star - 0.5 ? "text-[#f97316] fill-[#f97316]" : "text-white/20")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                      ))}
-                    </div>
-                    <p className="text-xs font-black text-white/50 tracking-tighter mt-1">{rec.fitScore}<span className="text-[10px]">/9.9</span></p>
-                  </div>
-                  
-                  <div className="flex justify-between items-start mb-8 pb-4 border-b-2 border-white/5">
-                    <h3 className="text-5xl font-black text-white uppercase italic group-hover:text-[#f97316] transition-colors">{rec.name}</h3>
-                  </div>
-
-                  <div className="space-y-8">
-                    {/* Executive Summary */}
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest italic flex items-center gap-2"><Target className="size-3" /> The Verdict</p>
-                      <p className="text-slate-300 text-lg leading-relaxed">{rec.executiveSummary}</p>
-                    </div>
-
-                    {/* Objective Alignment */}
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest italic flex items-center gap-2"><Trophy className="size-3" /> Mission Alignment</p>
-                      <p className="text-slate-300 text-lg leading-relaxed italic border-l-2 border-[#f97316]/50 pl-4">{rec.objectiveAlignment}</p>
-                    </div>
-
-                    {/* Visa & Age Requirements */}
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest italic flex items-center gap-2"><ShieldCheck className="size-3" /> Visa & Age Viability</p>
-                      <p className="text-slate-300 text-lg leading-relaxed">{rec.visaAndAgeRequirements}</p>
-                    </div>
-
-                    {/* Lifestyle & Safety */}
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest italic flex items-center gap-2"><Compass className="size-3" /> Lifestyle & Safety</p>
-                      <p className="text-slate-300 text-lg leading-relaxed">{rec.lifestyleAndSafety}</p>
-                    </div>
-
-                    {/* School Matches */}
-                    {rec.recommendedSchools && rec.recommendedSchools.length > 0 && (
-                      <div className="space-y-4 pt-6 border-t border-white/5">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic flex items-center gap-2"><GraduationCap className="size-3" /> Top Matching Schools ({rec.recommendedSchools.length})</p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          {rec.recommendedSchools.map((school: any, idx: number) => (
-                            <div key={idx} className="p-3 bg-black/40 border border-white/5 hover:border-slate-600 transition-colors">
-                              <p className="font-bold text-white text-sm">{school.name}</p>
-                              <p className="text-[10px] text-slate-400 italic mt-1 leading-tight">{school.reasoning}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Evaluate CTA */}
-                    <div className="pt-8">
-                      <a 
-                        href={`/decide?ids=${(rec.recommendedSchools || []).slice(0, 2).map((s: any) => s.id).join(',')}`}
-                        className="inline-flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-[#007FFF] text-[#007FFF] font-black uppercase tracking-widest text-sm hover:bg-[#007FFF] hover:text-white transition-all italic"
-                      >
-                        <Wallet className="size-4" /> Evaluate Cost of Living in {rec.name}
-                      </a>
-                      <p className="text-[9px] text-slate-500 mt-2 uppercase tracking-widest italic">* This will open the Decision Dashboard with {rec.recommendedSchools?.length > 1 ? "this school and a rival" : "this school"} pre-loaded.</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

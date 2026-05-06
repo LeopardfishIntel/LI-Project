@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect, useMemo } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { 
   ShieldCheck, Loader2, ArrowLeft, TrendingUp, 
   Lock, Zap, GraduationCap, Target, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle
@@ -9,6 +9,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
+import { canonicalCountry, RATES, calculateLocalSavingsScore } from '@/lib/calculations';
 
 // 🛡️ Bespoke Teacher Security (Direct British English / Globalised)
 const getBespokeTeacherSecurity = (country: string) => {
@@ -21,23 +22,61 @@ const getBespokeTeacherSecurity = (country: string) => {
   return intel[country.toLowerCase()] || "This region is considered a stable and safe choice for a professional move. Your security is well-supported by your legal work permit and the high safety standards found in established international communities. Emergency services are reliable and healthcare is easy to access. We suggest the same sensible approach to personal safety as you would use in any major city.";
 };
 
+// 🧮 Creative Intelligence Heuristics (Regional/Economic Correlation)
+function deriveIntelligenceScores(country: any, finances: any) {
+    const name = country.country || "Unknown";
+    const region = (country.region || "").toLowerCase();
+    
+    let advBase = 5.5;
+    if (region.includes("asia")) advBase = 8.4;
+    else if (region.includes("middle east")) advBase = 7.6;
+    else if (region.includes("africa")) advBase = 8.2;
+    else if (region.includes("europe")) advBase = 6.8;
+    else if (region.includes("americas")) advBase = 6.4;
+    
+    if (name.includes("Switzerland") || name.includes("Austria") || name.includes("Vietnam") || name.includes("Thailand")) advBase += 0.8;
+    if (name.includes("China") || name.includes("Japan")) advBase += 0.5;
+    
+    const advVar = (name.length % 4) / 10;
+    const adventure = Number(Math.min(9.9, advBase + advVar).toFixed(1));
+
+    let culBase = 5.8;
+    if (region.includes("europe")) culBase = 8.5;
+    else if (region.includes("east asia")) culBase = 8.2;
+    else if (region.includes("se asia")) culBase = 7.4;
+    else if (region.includes("middle east")) culBase = 6.8;
+    
+    if (Number(finances?.rent1br) > 1500) culBase += 0.4;
+    if (name.includes("France") || name.includes("Italy") || name.includes("Spain") || name.includes("Japan")) culBase += 0.7;
+    
+    const culVar = (name.charCodeAt(0) % 4) / 10;
+    const culture = Number(Math.min(9.9, culBase + culVar).toFixed(1));
+
+    return { adventure, culture };
+}
+
 function DossierContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const routeParams = useParams();
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
   const [expandedSafety, setExpandedSafety] = useState<number | null>(null);
+  const [benchmark, setBenchmark] = useState<'USD' | 'GBP' | 'EUR'>('GBP');
 
   useEffect(() => { setMounted(true); }, []);
 
   const params = useMemo(() => {
     if (!mounted) return null;
     const regions = (searchParams.get('regions') || "").toLowerCase().split(',').filter(Boolean);
-    const age = parseInt((searchParams.get('age') || "35").replace(/[^0-9]/g, '')) || 35;
+    const rawAge = searchParams.get('age') || "35";
+    const ageMatch = rawAge.match(/\d+/);
+    const age = ageMatch ? parseInt(ageMatch[0]) : 35;
     const salary = searchParams.get('salary') || "USD 60000";
     const status = (searchParams.get('status') || "single").toLowerCase();
     const goals = (searchParams.get('goals') || "").toLowerCase().split(',').filter(Boolean);
-    return { regions, age, salary, status, goals };
+    const currentLocation = searchParams.get('currentLocation') || "";
+    return { regions, age, rawAge, salary, status, goals, currentLocation };
   }, [searchParams, mounted]);
 
   const { data: finData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
@@ -52,77 +91,139 @@ function DossierContent() {
       const dbRegion = (country.region || "").toLowerCase().trim();
       return params.regions.some(r => dbRegion.includes(r));
     }).map(country => {
-      const finances = finData.find(f => f.country?.toLowerCase() === country.country?.toLowerCase());
-      const schools = schoolData.filter(s => s.country?.toLowerCase() === country.country?.toLowerCase());
+      const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(country.country || ""));
+      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(country.country || ""));
       const hasSchools = schools.length > 0;
       
+      let localAverageSalary = 4500;
+      let validSalaries = 0;
+      schools.forEach((s: any) => {
+          if (s.salaryRange) {
+              const cleanRange = s.salaryRange.replace(/,/g, '');
+              const range = cleanRange.match(/\d+/g);
+              if (range) {
+                  const usdMed = range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0]);
+                  localAverageSalary = validSalaries === 0 ? usdMed : localAverageSalary + usdMed;
+                  validSalaries++;
+              }
+          }
+      });
+      if (validSalaries > 1) {
+          localAverageSalary = localAverageSalary / validSalaries;
+      }
+      
       const multiplier = params.status.includes('dual') ? 1.85 : 1;
-      const netUSD = Math.round((salaryNum * multiplier * 0.8) / 12);
-      const exRate = Number(finances?.exchangeRateToUSD) || 1;
-      const outgoings = ((Number(finances?.rent1br) || 1200) + 600) * (params.status.includes('family') ? 1.55 : 1);
-      const surplus = Math.max(-500, netUSD - outgoings);
-      const ratio = (surplus * 12) / (salaryNum * multiplier);
-
+      const netUSD = Math.round(localAverageSalary * multiplier);
+      
+      const outgoingsUSD = ((Number(finances?.rent1br) || 1200) + 600) * (params.status.includes('family') ? 1.55 : 1);
+      const surplusUSD = Math.max(-500, netUSD - outgoingsUSD);
+      
+      const intelScores = deriveIntelligenceScores(country, finances);
       const suitability = {
-        adventure: (country.country === "China" || country.region?.includes("Asia")) ? 9 : 6,
-        savings: ratio > 0.30 ? 9 : ratio > 0.15 ? 7 : 4,
-        balance: country.region?.includes("Europe") ? 9 : 6,
-        career: Number(country.academicscore) || 7
+        adventure: Number(finances?.adventureScore) || intelScores.adventure,
+        savings: calculateLocalSavingsScore(localAverageSalary, params.status, finances),
+        balance: Number(finances?.cultureScore) || intelScores.culture,
+        career: Number(finances?.careerScore) || Number(country.academicscore) || 7
       };
 
       let fitScore = Math.round(((suitability.adventure + suitability.savings + suitability.balance + suitability.career) / 40) * 100);
       if (!hasSchools) fitScore = Math.min(fitScore, 60);
 
-      const verdictMap: Record<string, string> = {
-        "switzerland": `Choosing Switzerland for your next move is a sensible decision if you value long-term stability. As you are ${params.status}, the salary structure here ensures that your overheads are well-managed, leaving room for meaningful savings. This placement is particularly strong for your professional reputation, as the schools here are held in high regard globally.`,
-        "austria": `A move to Austria aligns with your focus on a balanced lifestyle. The schools we have identified offer a professional environment that respects your personal time, which is ideal given your current status. Financially, while the cost of living is notable, the net result for a teacher with your experience remains very positive.`,
-        "bahrain": `Bahrain represents an excellent stint for anyone looking to combine a welcoming social life with a strong financial return. For ${params.status} educators, the housing and utility benefits often found here make it one of the most cost-effective choices in the region. It is a stable, well-trodden path for international staff.`,
-        "china": `This posting in China is arguably your strongest option for rapid capital accumulation. The data suggests that your monthly surplus here will be significantly higher than in other regions. Professionally, the schools in our database for this region are expanding rapidly, offering you a clear path for career progression.`
-      };
+      const g1 = params.goals[0] || 'Career Progression';
+      const g2 = params.goals[1] || 'Culture';
+      const famStr = params.status.includes('family') ? 'your family' : 'your professional lifestyle';
+      const regionStr = country.region || 'the region';
+      const transportStr = regionStr.toLowerCase().includes('asia') || regionStr.toLowerCase().includes('europe') ? `excellent transport links across ${regionStr}` : `accessible travel routes throughout the region`;
 
-      const verdict = verdictMap[country.country?.toLowerCase()] || `This destination is a high-fidelity match for your specified profile. Based on your focus on ${params.goals.join(' and ')}, this move provides the financial headroom and professional quality you require. It is a stable environment that will add genuine value to your career history.`;
+      const bespokeVerdict = canonicalCountry(country.country) === canonicalCountry(params.currentLocation)
+        ? `As you are currently based in ${country.country}, this deployment represents your current professional baseline. It continues to be an excellent match for your focus on '${g1}', providing the stability and quality of life that suits ${famStr}. Using this as your benchmark allows for a highly accurate comparison against other regional opportunities.`
+        : `${country.country} is an excellent match for your profile, particularly regarding '${g1}'. The established international schools here provide a highly professional environment, allowing for a high quality of life tailored to ${famStr}. Furthermore, its strategic position in ${regionStr} offers superb '${g2}' opportunities, making it a very sound deployment.`;
+      
+      const bespokeAlignment = canonicalCountry(country.country) === canonicalCountry(params.currentLocation)
+        ? `In your current role, you are already benefiting from a robust professional landscape that values your experience. Your secondary objectives of '${g2}' and cultural immersion are well-supported by the local infrastructure and ${transportStr}, making your current posting a very strong standard to beat in any future move.`
+        : `The professional landscape here is robust, offering a strong network of accredited institutions that genuinely value experienced educators. Outside the classroom, you will find it remarkably easy to integrate; the local infrastructure and ${transportStr} mean that fulfilling your secondary objectives—whether that’s regional travel or genuine cultural immersion—is a seamless part of daily life.`;
+
+      const localCurrencyCode = finances?.currencyCode || (country.country === "Portugal" ? "EUR" : "LC");
+      const displayCurrency = benchmark === 'Local' ? localCurrencyCode : benchmark;
+      const rate = benchmark === 'Local' ? (RATES[localCurrencyCode] || Number(finances?.exchangeRateToUSD) || 1.0) : (RATES[benchmark] || 1.0);
+
+      const displayNet = Math.round(netUSD * rate);
+      const displaySurplus = Math.round(surplusUSD * rate);
 
       return {
         ...country,
         schools: schools.sort((a,b) => b.totalscore - a.totalscore),
-        localNet: Math.round(netUSD * exRate),
-        localSurplus: Math.round(surplus * exRate),
-        // Portugal and most European peers pull EUR from finances, confirmed logic.
-        localCurrency: finances?.currencyCode || (country.country === "Portugal" ? "EUR" : "LC"),
+        displayNet,
+        displaySurplus,
+        displayCurrency,
         safety: getBespokeTeacherSecurity(country.country || ""),
         suitability,
         fitScore,
-        verdict,
-        rawSurplus: surplus,
+        verdict: bespokeVerdict,
+        alignment: bespokeAlignment,
+        rawSurplus: surplusUSD,
         countryRating: ((schools.reduce((acc, s) => acc + Number(s.totalscore), 0) / (schools.length || 1)) * 0.7 + Number(country.academicscore || 7) * 0.3).toFixed(1)
       };
     });
 
-    const sorted = allResults.sort((a, b) => b.fitScore - a.fitScore || b.rawSurplus - a.rawSurplus);
-    const top5 = sorted.filter(c => c.fitScore > 60).slice(0, 5);
-    const pool = sorted.filter(c => c.fitScore >= 75 && !top5.some(t => t.country === c.country));
+    const targetSlug = (routeParams?.region as string || "").toLowerCase();
+    
+    // If a specific country was clicked from the Matrix, only show that country
+    const targetCountry = allResults.find(c => c.country?.toLowerCase().replace(/\s+/g, '-').replace('&', 'and') === targetSlug);
+    
+    const sorted = targetCountry ? [targetCountry] : allResults.sort((a, b) => b.fitScore - a.fitScore || b.rawSurplus - a.rawSurplus);
+    const topPicks = targetCountry ? [targetCountry] : sorted.filter(c => c.fitScore > 60).slice(0, 5);
+    const pool = sorted.filter(c => c.fitScore >= 75 && !topPicks.some(t => t.country === c.country));
 
-    return { topPicks: top5, alternates: pool.slice(0, 6), remainingCount: Math.max(0, pool.length - 6) };
-  }, [params, reqsData, finData, schoolData]);
+    return { topPicks, alternates: pool.slice(0, 6), remainingCount: Math.max(0, pool.length - 6) };
+  }, [params, reqsData, finData, schoolData, routeParams, benchmark]);
 
   if (!mounted || !params) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#f97316]">
       <div className="max-w-7xl mx-auto space-y-12">
-        <header className="space-y-4">
-          <button onClick={() => router.push('/discover')} className="flex items-center gap-2 text-[12px] font-bold text-[#007FFF] uppercase tracking-widest hover:text-white transition-colors">
-            <ArrowLeft className="size-4" /> Back
+        <header className="space-y-6">
+          <button onClick={() => router.push('/discover/matrix?' + searchParams.toString())} className="flex items-center gap-2 text-[12px] font-bold text-[#007FFF] uppercase tracking-widest hover:text-white transition-colors">
+            <ArrowLeft className="size-4" /> Back to Matrix
           </button>
-          {/* Title: No full stop */}
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#f97316] pl-6 italic text-[#f97316]">
-            What you could achieve
-          </h1>
+          
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#f97316] pl-6 italic text-[#f97316]">
+              What you could achieve
+            </h1>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 gap-12">
           {topPicks.map((country, idx) => (
-            <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 border border-white/10 bg-black/40 hover:border-[#f97316]/50 transition-all shadow-2xl min-h-[650px]">
+            <div key={idx} className="flex flex-col border border-white/10 bg-black/40 hover:border-[#f97316]/50 transition-all shadow-2xl overflow-hidden">
+              
+              {/* Profile Summary Bar */}
+              <div className="w-full bg-white/[0.03] border-b border-white/10 px-8 py-3 flex flex-wrap items-center gap-x-8 gap-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Base:</span>
+                  <span className="text-[11px] font-bold text-white uppercase italic">{params.currentLocation || "Not Set"}</span>
+                </div>
+                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Profile:</span>
+                  <span className="text-[11px] font-bold text-white uppercase italic">{params.status}</span>
+                </div>
+                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Salary:</span>
+                  <span className="text-[11px] font-bold text-[#007FFF] uppercase italic">{params.salary}</span>
+                </div>
+                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Age:</span>
+                  <span className="text-[11px] font-bold text-white uppercase italic">{params.rawAge}</span>
+                </div>
+                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Focus:</span>
+                  <span className="text-[11px] font-bold text-[#f97316] uppercase italic">{params.goals.join(', ')}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
               
               {/* Column 1: Identity & Safety (7-Line Cut) */}
               <div className="lg:col-span-4 p-8 border-r border-white/10 bg-black/60 flex flex-col h-full">
@@ -165,14 +266,27 @@ function DossierContent() {
 
               {/* Column 2: Economics & Leopardfish Verdict */}
               <div className="lg:col-span-5 p-8 border-r border-white/10 flex flex-col h-full bg-black/20">
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="space-y-1">
-                    <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-widest">Monthly Net</p>
-                    <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.localCurrency} {country.localNet.toLocaleString()}</p>
+                <div className="grid grid-cols-2 gap-4 mb-6 items-end">
+                  <div className="space-y-2">
+                    <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-widest">Currency Selector</p>
+                    <div className="flex bg-black/50 p-0.5 rounded-sm border border-white/10 w-fit">
+                        {(['USD', 'GBP', 'EUR'] as const).map((cur) => (
+                            <button 
+                              key={cur} 
+                              onClick={() => setBenchmark(cur)} 
+                              className={cn(
+                                "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider transition-all italic", 
+                                benchmark === cur ? "bg-[#007FFF] text-white shadow-[0_0_12px_rgba(0,127,255,0.3)]" : "text-slate-500 hover:text-slate-300"
+                              )}
+                            >
+                              {cur}
+                            </button>
+                        ))}
+                    </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[#f97316] text-[10px] font-black uppercase tracking-widest">Est. Savings</p>
-                    <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.localCurrency} {country.localSurplus.toLocaleString()}</p>
+                    <p className="text-[#f97316] text-[10px] font-black uppercase tracking-widest">Est. Monthly Surplus</p>
+                    <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.displayCurrency} {country.displaySurplus.toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -180,34 +294,39 @@ function DossierContent() {
                   {[
                     { label: 'Adventure', val: country.suitability.adventure, icon: Compass },
                     { label: 'Savings', val: country.suitability.savings, icon: Banknote },
-                    { label: 'Balance', val: country.suitability.balance, icon: Heart },
+                    { label: 'Culture', val: country.suitability.balance, icon: Heart },
                     { label: 'Career', val: country.suitability.career, icon: Zap },
                   ].map((p) => (
                     <div key={p.label} className="text-center">
                       <p className="text-[10px] font-black uppercase text-slate-500 mb-1">{p.label}</p>
-                      <p className={cn("font-black italic text-[13px]", p.val > 7 ? "text-[#007FFF]" : "text-slate-500")}>{p.val}</p>
+                      <p className={cn("font-black italic text-[14px]", p.val > 7 ? "text-[#007FFF]" : "text-slate-500")}>{p.val}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="p-10 bg-[#f97316]/5 border-l-4 border-[#f97316] flex-grow flex flex-col justify-center space-y-4">
-                  <div className="flex justify-between items-center">
+                <div className="p-8 bg-[#f97316]/5 border-l-4 border-[#f97316] flex-grow flex flex-col justify-center space-y-4">
+                  <div className="flex justify-between items-center pb-4 border-b border-[#f97316]/20">
                     <p className="text-[#f97316] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
-                    {/* Reduced Match and % size by 2 points (text-[13px] -> text-[11px]) */}
                     <span className="text-[#f97316] font-black text-[11px] italic bg-[#f97316]/20 px-3 py-1 rounded-full border border-[#f97316]/30 tracking-tight">Match: {country.fitScore}%</span>
                   </div>
-                  <p className="text-[16px] text-white leading-relaxed font-bold tracking-tight italic border-t border-[#f97316]/20 pt-6">
-                    {country.verdict}
-                  </p>
+                  
+                  <div className="space-y-4 pt-2">
+                    <p className="text-[14px] text-white leading-relaxed font-bold tracking-tight italic">
+                      {country.verdict}
+                    </p>
+                    <p className="text-[14px] text-white leading-relaxed font-bold tracking-tight italic">
+                      {country.alignment}
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Column 3: Targets & Smaller Rounded Button */}
               <div className="lg:col-span-3 p-8 flex flex-col justify-between bg-white/[0.01]">
                 <div className="space-y-4">
-                  <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">Primary Targets</p>
-                  <div className="space-y-3">
-                    {country.schools?.slice(0, 4).map((s: any, i: number) => (
+                  <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">International Schools</p>
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {country.schools?.map((s: any, i: number) => (
                       <button key={i} className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#f97316] text-left transition-all">
                         <div className="flex justify-between items-start mb-2">
                           <span className="font-black text-white text-[12px] uppercase truncate pr-2">{s.schoolname}</span>
@@ -231,6 +350,7 @@ function DossierContent() {
                 </div>
               </div>
             </div>
+          </div>
           ))}
         </div>
         

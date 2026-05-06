@@ -2,22 +2,24 @@
 
 import { useEffect, useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { 
-  MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap, 
-  BookOpen, Activity, Wallet, Receipt, Globe2, Users, AlertTriangle, 
-  ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle,
-  ShieldCheck, Fingerprint, Lock // 🛰️ Added Lock
+import {
+    MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap,
+    BookOpen, Activity, Wallet, Receipt, Globe2, Users, AlertTriangle,
+    ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle,
+    ShieldCheck, Fingerprint, Lock // 🛰️ Added Lock
 } from 'lucide-react';
 // 🛰️ Added useUser to the import
-import { useFirestore, useCollection, useMemoFirebase, useUser, setDocumentNonBlocking } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useUser, setDocumentNonBlocking, useDoc } from '@/firebase';
 import { collection, doc, increment } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { canonicalCountry } from '@/lib/calculations';
 
 const RATES: Record<string, number> = {
-  USD: 1.0, CZK: 23.45, AED: 3.67, EUR: 0.92, GBP: 0.79, SAR: 3.75, QAR: 3.64, CHF: 0.88, DKK: 6.85, AZN: 1.70, HKD: 7.82, JPY: 150.2, SGD: 1.34, MYR: 4.7, THB: 35.8, CNY: 7.2
+    USD: 1.0, CZK: 23.45, AED: 3.67, EUR: 0.92, GBP: 0.79, SAR: 3.75, QAR: 3.64, CHF: 0.88, DKK: 6.85, AZN: 1.70, HKD: 7.82, JPY: 150.2, SGD: 1.34, MYR: 4.7, THB: 35.8, CNY: 7.2, OMR: 0.385,
+    KRW: 1380, VND: 25000, IDR: 16000, KWD: 0.31, BHD: 0.38, EGP: 48, JOD: 0.71, ZAR: 19, MXN: 16.5, COP: 3900
 };
 
 const getCurrencyForCity = (city: string, country: string, colCode?: string) => {
@@ -71,7 +73,7 @@ const getStaffroomBrief = (country: string) => {
     const c = country.toLowerCase();
     // Regional Unrest Logic
     const isAlert = c.includes("jordan") || c.includes("lebanon") || c.includes("israel") || c.includes("palestine") || c.includes("ukraine") || c.includes("qatar") || c.includes("uae") || c.includes("saudi arabia");
-    
+
     if (c.includes("qatar") || c.includes("uae") || c.includes("saudi arabia")) return {
         isAlert,
         text: "The Gulf remains safe for staff, but you'll feel the regional tension as a definite 'background hum' at the moment. Daily life is seamless, but it's a bubble—you'll find the social dynamics strictly managed and the local political landscape is something you keep an eye on, even if it rarely affects your front door."
@@ -123,15 +125,19 @@ function DecideContent() {
     const router = useRouter();
     const firestore = useFirestore();
     const searchParams = useSearchParams();
-    
+
     // 🎯 TACTICAL IDENTITY GRAB
     const { customId, isAdmin } = useUser();
 
     const [mounted, setMounted] = useState(false);
-    
+
     const { data: schools, isLoading: sLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
     const { data: colData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
-    
+    const { data: transportIntel } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'transport_intel') : null), [firestore, mounted]));
+    const { data: exchangeRates } = useDoc<any>(useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'exchange_rates') : null), [firestore, mounted]));
+
+    const currentRates = useMemo(() => ({ ...RATES, ...(exchangeRates?.usdBase || {}) }), [exchangeRates]);
+
     const [selectedIds, setSelectedIds] = useState<string[]>(['', '', '']);
     const [selectedCountries, setSelectedCountries] = useState<string[]>(['', '', '']);
     const [familyStatus, setFamilyStatus] = useState("Single");
@@ -140,7 +146,7 @@ function DecideContent() {
     const [adjustments, setAdjustments] = useState(Array(3).fill({ second: '0', other: '0', home: '0' }));
     const [benchmark, setBenchmark] = useState("GBP");
     const [cardLifestyles, setCardLifestyles] = useState<("Budget" | "Balanced" | "Luxury")[]>(["Balanced", "Balanced", "Balanced"]);
-    
+
     const [isUnlocked, setIsUnlocked] = useState(false);
     const [aiBriefing, setAiBriefing] = useState<any>(null);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -148,30 +154,30 @@ function DecideContent() {
     // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData arrival)
     useEffect(() => {
         if (!schools || !colData || !mounted) return;
-        
+
         let changed = false;
         const nextSalaries = [...netSalaries];
         const nextCountries = [...selectedCountries];
 
         selectedIds.forEach((id, index) => {
             if (!id || manualSalaries[index]) return;
-            
+
             const school = schools.find((s: any) => s.id === id);
             if (!school) return;
 
-            const col = colData.find((c: any) => 
-                normalize(c.city || c.city_name) === normalize(school.city) || 
+            const col = colData.find((c: any) =>
+                normalize(c.city || c.city_name) === normalize(school.city) ||
                 normalize(c.country || c.country_name) === normalize(school.country) ||
                 normalize(c.id) === normalize(school.city)
             );
-            
+
             const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
-            const rate = RATES[cCode] || 1.0;
-            
-            const cleanRange = (school.salaryRange || "").replace(/,/g, '');
+            const rate = currentRates[cCode] || 1.0;
+
+            const cleanRange = (school.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
             const range = cleanRange.match(/\d+/g);
             const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-            
+
             const localSalary = Math.round(usdMed * rate).toString();
             if (nextSalaries[index] !== localSalary) {
                 nextSalaries[index] = localSalary;
@@ -187,7 +193,7 @@ function DecideContent() {
             setNetSalaries(nextSalaries);
             setSelectedCountries(nextCountries);
         }
-    }, [schools, colData, selectedIds, manualSalaries, mounted]);
+    }, [schools, colData, selectedIds, manualSalaries, mounted, currentRates]);
 
     useEffect(() => { setMounted(true); }, []);
 
@@ -198,12 +204,12 @@ function DecideContent() {
         if (mounted && (schools?.length ?? 0) > 0 && colData) {
             const urlIds = searchParams.get('ids')?.split(',').filter(Boolean) || [];
             const savedIds = JSON.parse(localStorage.getItem('lf_ids_v15') || '["", "", ""]');
-            
+
             let finalIds = [...savedIds];
             if (urlIds.length > 0) {
                 const uniqueNew = urlIds.filter(id => !savedIds.includes(id));
                 finalIds = [...uniqueNew, ...savedIds].slice(0, 3);
-                
+
                 // 🕵️ RIVAL AUTO-LOAD: If only one target provided, find a rival in the same city
                 if (urlIds.length === 1) {
                     const primary = schools.find((s: any) => s.id === urlIds[0]);
@@ -223,7 +229,7 @@ function DecideContent() {
             const savedManual = JSON.parse(localStorage.getItem('lf_manual_v15') || '[false, false, false]');
             const savedAdj = localStorage.getItem('lf_adj_v15');
             const savedFam = localStorage.getItem('lf_fam_v15');
-            
+
             if (savedFam) setFamilyStatus(savedFam);
             if (savedAdj) setAdjustments(JSON.parse(savedAdj));
             setManualSalaries(savedManual);
@@ -233,24 +239,24 @@ function DecideContent() {
                 if (id && !savedManual[idx]) {
                     const s = schools.find((item: any) => item.id === id);
                     if (!s) return;
-                    const col = colData.find((c: any) => 
-                        normalize(c.city || c.city_name) === normalize(s.city) || 
+                    const col = colData.find((c: any) =>
+                        normalize(c.city || c.city_name) === normalize(s.city) ||
                         normalize(c.country || c.country_name) === normalize(s.country) ||
                         normalize(c.id) === normalize(s.city)
                     );
                     const cCode = getCurrencyForCity(s.city, s.country, col?.currencyCode);
-                    const rate = RATES[cCode] || 1.0;
-                    
-                    const cleanRange = (s.salaryRange || "").replace(/,/g, '');
+                    const rate = currentRates[cCode] || 1.0;
+
+                    const cleanRange = (s.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
                     const range = cleanRange.match(/\d+/g);
                     const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-                    
+
                     finalSalaries[idx] = Math.round(usdMed * rate).toString();
                 }
             });
             setNetSalaries(finalSalaries);
         }
-    }, [mounted, schools, colData, searchParams]);
+    }, [mounted, schools, colData, searchParams, currentRates]);
 
     useEffect(() => {
         if (mounted && selectedIds.some(id => id !== '')) {
@@ -266,29 +272,29 @@ function DecideContent() {
         const nextIds = [...selectedIds]; nextIds[index] = val; setSelectedIds(nextIds);
         const school = schools?.find((s: any) => s.id === val);
         if (school) {
-            const col = colData?.find((c: any) => 
-                normalize(c.city || c.city_name) === normalize(school.city) || 
+            const col = colData?.find((c: any) =>
+                normalize(c.city || c.city_name) === normalize(school.city) ||
                 normalize(c.country || c.country_name) === normalize(school.country) ||
                 normalize(c.id) === normalize(school.city)
             );
             const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
-            const rate = RATES[cCode] || 1.0;
-            
+            const rate = currentRates[cCode] || 1.0;
+
             // 🎯 MEDIAN SALARY LOGIC (Midpoint of Range)
-            const cleanRange = (school.salaryRange || "").replace(/,/g, '');
+            const cleanRange = (school.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
             const range = cleanRange.match(/\d+/g);
             const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-            
+
             // Reset manual flag on new selection to allow median auto-fill
-            const nextM = [...manualSalaries]; 
-            nextM[index] = false; 
+            const nextM = [...manualSalaries];
+            nextM[index] = false;
             setManualSalaries(nextM);
 
-            const nextSalaries = [...netSalaries]; 
+            const nextSalaries = [...netSalaries];
             // Ensure we are actually multiplying by the rate for the correct currency
-            nextSalaries[index] = Math.round(usdMed * rate).toString(); 
+            nextSalaries[index] = Math.round(usdMed * rate).toString();
             setNetSalaries(nextSalaries);
-            
+
             const nextCountries = [...selectedCountries]; nextCountries[index] = school.country; setSelectedCountries(nextCountries);
         }
         setIsUnlocked(false); // Relock on school change
@@ -297,12 +303,13 @@ function DecideContent() {
     const handleUnlockIntelligence = async () => {
         const activeData = shootoutMatrix.filter((d): d is NonNullable<typeof d> => d !== null);
         if (activeData.length < 2) return;
-        
+
         setIsGenerating(true);
         try {
             const briefing = await generateDecideBriefing({
                 familyStatus,
                 benchmarkCurrency: benchmark,
+                topPickId,
                 schools: activeData.map(d => ({
                     id: d.school.id,
                     name: d.school.schoolname,
@@ -315,6 +322,7 @@ function DecideContent() {
                     curriculum: d.school.curriculum || "International",
                     academicScore: d.schoolScore,
                     housing: d.school.housingprovision || "Standard",
+                    matchScore: d.matchPercentage,
                 }))
             });
             setAiBriefing(briefing);
@@ -322,8 +330,7 @@ function DecideContent() {
 
             // 🛰️ ANALYTICS UPLINK: Increment comparison counter
             if (firestore) {
-                const metricsRef = doc(firestore, 'app_metrics', 'page_views');
-                setDocumentNonBlocking(metricsRef, { comparisons_made: increment(1) }, { merge: true });
+                setDocumentNonBlocking('app_metrics', 'page_views', { comparisons_made: increment(1) });
             }
         } catch (e) {
             console.error("AI Briefing failed:", e);
@@ -334,7 +341,7 @@ function DecideContent() {
 
     const shootoutMatrix = useMemo(() => {
         if (!schools || !colData) return [];
-        
+
         // 🛠️ INTELLIGENT SCALING UTILITY
         const getVal = (data: any, key: string, mult: number) => {
             if (!data) return 0;
@@ -348,24 +355,34 @@ function DecideContent() {
         return selectedIds.map((id, index) => {
             const school = schools.find((s: any) => s?.id === id);
             if (!school) return null;
-            
+
             // 🛡️ REGIONAL AVERAGE FALLBACK
-            let col = colData.find((c: any) => normalize(c.city || c.city_name) === normalize(school.city));
-            if (!col) col = colData.find((c: any) => normalize(c.city || c.city_name) === "regional average" && normalize(c.country || c.country_name) === normalize(school.country));
-            if (!col) col = colData.find((c: any) => normalize(c.country || c.country_name) === normalize(school.country));
+            const sCity = String(getSchoolField(school, ['city', 'town', 'location']) || '').toLowerCase().trim();
+            const sCountry = canonicalCountry(String(getSchoolField(school, ['country', 'region']) || ''));
+
+            const matches = colData.filter((c: any) => 
+                normalize(c.city || c.city_name) === normalize(sCity) || 
+                normalize(c.country || c.country_name) === normalize(sCountry) ||
+                normalize(c.id) === normalize(sCity) || normalize(c.id) === normalize(sCountry)
+            );
+
+            let col = matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0];
             
-            const currency = getCurrencyForCity(school.city, school.country, col?.currencyCode);
-            const rate = RATES[currency] || 1.0;
+            if (!col && sCity) col = colData.find((c: any) => normalize(c.city || c.city_name) === "regional average" && normalize(c.country || c.country_name) === normalize(sCountry));
+
+            const currency = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
+            const rate = currentRates[currency] || 1.0;
             const salaryIn = parseFloat(netSalaries[index]) || 0;
-            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[school.country?.toLowerCase()] ?? 0)) + (parseFloat(adjustments[index].second) || 0) + (parseFloat(adjustments[index].other) || 0);
-            
+            const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
+            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[bonusKey] ?? 0)) + (parseFloat(adjustments[index].second) || 0) + (parseFloat(adjustments[index].other) || 0);
+
             // 🏠 DYNAMIC HOUSING ENGINE
-            const provision = (school.housingprovision || "").toLowerCase();
+            const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
             const rentKey = familyStatus === "Single" ? 'rent1br' : (familyStatus.includes("Family") ? 'rent3br' : 'rent2br');
             const rawRentUSD = parseFloat(col?.[rentKey] || col?.rent1br || "1450");
-            
+
             let finalRentUSD = rawRentUSD;
-            let housingNote = "Housing is not included in this package"; 
+            let housingNote = "Housing is not included in this package";
             if (provision.includes("provided")) { finalRentUSD = 0; housingNote = "Housing provided by school"; }
             else if (provision.includes("subsidised")) { finalRentUSD = rawRentUSD * 0.5; housingNote = "Subsidised housing applied"; }
 
@@ -382,10 +399,27 @@ function DecideContent() {
             const groceryLocal = getVal(col?.groceries, pKey, scalar) * rate;
             const utilityLocal = getVal(col?.utilities, pKey, scalar * 0.8) * rate;
             const connectivityLocal = (getVal(col?.internet, pKey, 1) + (getVal(col?.mobilePhone, pKey, 1) * personCount)) * rate;
-            
-            const transportMap = col?.transport?.publicTransport || col?.publicTransport;
-            const transportLocal = getVal(transportMap, pKey, personCount) * rate;
-            
+
+            // 🛰️ NEW TRANSPORT INTEL REDIRECTION
+            const tIntel = transportIntel?.find((t: any) =>
+                canonicalCountry(t.country || '') === canonicalCountry(sCountry) ||
+                t.id === canonicalCountry(sCountry).replace(/\s+/g, '-')
+            );
+
+            const transportPKeyMap: Record<string, string> = {
+                "Single": "single",
+                "Married (sole earner)": "single",
+                "Married (dual income)": "marriedDualIncome",
+                "Family (1 child)": "family1Child",
+                "Family (2 children)": "family2Children",
+                "Family (3 or more)": "family3PlusChildren"
+            };
+            const transportKey = transportPKeyMap[familyStatus] || "single";
+
+            const transportMap = tIntel?.publicTransport || col?.transport?.publicTransport || col?.publicTransport || col?.transport;
+            const transportVal = (typeof transportMap === 'object' && transportMap !== null) ? (transportMap[transportKey] || 0) : (parseFloat(String(transportMap)) || 0);
+            const transportLocal = transportVal * rate;
+
             const lifestyleMult = mode === "Budget" ? 0.6 : (mode === "Luxury" ? 1.8 : 1.0);
             const socialLocal = getVal(col?.diningSocial, pKey, scalar) * rate * lifestyleMult;
             const manualLocal = parseFloat(adjustments[index].home) || 0;
@@ -393,20 +427,20 @@ function DecideContent() {
             const totalLocalCost = rentLocal + groceryLocal + utilityLocal + connectivityLocal + transportLocal + socialLocal + manualLocal;
             const surplusLocal = totalLocalIn - totalLocalCost;
             const workload = calculateWorkload(school);
-            const rawSafety = parseFloat(school.citySafety || "7.2") * 10;
-            
-            const finW = (surplusLocal/rate / 2500 * 100 + 35) * 0.4;
-            const careerW = parseFloat(school.academicscore || "7.5") * 10 * 0.3;
-            const lifestyleW = (rawSafety * 0.2) - (workload > 50 ? (workload-50)*2 : 0);
+            const rawSafety = parseFloat(String(getSchoolField(school, ['citysafety', 'safety']) || "7.2")) * 10;
+
+            const finW = (surplusLocal / rate / 2500 * 100 + 35) * 0.4;
+            const careerW = parseFloat(String(getSchoolField(school, ['academicscore', 'score']) || "7.5")) * 10 * 0.3;
+            const lifestyleW = (rawSafety * 0.2) - (workload > 50 ? (workload - 50) * 2 : 0);
             const workW = (100 - workload) * 0.1;
-            
+
             const matchScore = Math.round(Math.max(15, Math.min(99, finW + careerW + lifestyleW + workW)));
 
-            return { 
+            return {
                 school, surplusLocal, totalLocalIn, totalLocalCost, currency, rate, matchPercentage: matchScore, workload, housingNote, provision,
-                countryScore: school.citySafety ? parseFloat(school.citySafety).toFixed(1) : "N/A", schoolScore: school.academicscore ? parseFloat(school.academicscore).toFixed(1) : "N/A",
-                surplusUSD: surplusLocal / rate, savingsRate: totalLocalIn > 0 ? Math.round((surplusLocal/totalLocalIn)*100) : 0,
-                surplusBenchmark: (surplusLocal / rate) * (RATES[benchmark] || 0.79),
+                countryScore: (rawSafety / 10).toFixed(1), schoolScore: (careerW / 3).toFixed(1),
+                surplusUSD: surplusLocal / rate, savingsRate: totalLocalIn > 0 ? Math.round((surplusLocal / totalLocalIn) * 100) : 0,
+                surplusBenchmark: (surplusLocal / rate) * (currentRates[benchmark] || 0.79),
                 savings3Year: surplusLocal * 36,
                 costs: {
                     rent: rentLocal,
@@ -417,14 +451,14 @@ function DecideContent() {
                     social: socialLocal
                 },
                 benefits: {
-                    flights: school.annualflights || "Check Contract",
-                    healthcare: school.healthcare || "Standard",
-                    gratuity: school.endofservicegratuity || "Statutory"
+                    flights: getSchoolField(school, ['annualflights', 'flights']) || "Check Contract",
+                    healthcare: getSchoolField(school, ['healthcare', 'medical']) || "Standard",
+                    gratuity: getSchoolField(school, ['endofservicegratuity', 'gratuity', 'bonus']) || "Statutory"
                 },
                 purchasingPower: col?.localPurchasingPowerIndex || "N/A"
             };
         });
-    }, [selectedIds, schools, colData, netSalaries, adjustments, familyStatus, benchmark, cardLifestyles]);
+    }, [selectedIds, schools, colData, netSalaries, adjustments, familyStatus, benchmark, cardLifestyles, currentRates]);
 
     const ranked = useMemo(() => shootoutMatrix.filter((item): item is NonNullable<typeof item> => item !== null).sort((a, b) => b.matchPercentage - a.matchPercentage), [shootoutMatrix]);
     const topPickId = ranked[0]?.school.id;
@@ -435,7 +469,7 @@ function DecideContent() {
     return (
         <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#f97316]">
             <div className="max-w-7xl mx-auto space-y-4">
-                
+
                 <header className="mb-4 border-b border-white/5 pb-3">
                     {/* ROW 1: Title + Controls */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -479,7 +513,7 @@ function DecideContent() {
                     {/* ROW 2: Disclaimer */}
                     <div className="mt-2 p-2 bg-rose-500/5 border-l-2 border-[#f97316] rounded-sm">
                         <p className="text-[11px] font-bold text-slate-400 italic flex items-center gap-3 tracking-tight">
-                            <AlertTriangle className="size-3.5 text-[#f97316] shrink-0" /> 
+                            <AlertTriangle className="size-3.5 text-[#f97316] shrink-0" />
                             This analysis is only as good as the data you input! Ensure net salaries and household status are accurate for the best forecast.
                         </p>
                     </div>
@@ -488,51 +522,51 @@ function DecideContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     {[0, 1, 2].map((i) => (
                         <div key={i} className="space-y-3 bg-[#0b1224]/80 p-3 border border-[#007FFF]/40 rounded-sm shadow-2xl flex flex-col transition-all hover:border-[#007FFF]/60">
-                             <div className="grid grid-cols-2 gap-2">
-                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Globe2 className="size-3 text-[#007FFF]"/> Country</Label>
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Globe2 className="size-3 text-[#007FFF]" /> Country</Label>
                                     <Select value={selectedCountries[i]} onValueChange={(val) => { const nC = [...selectedCountries]; nC[i] = val; setSelectedCountries(nC); }}>
                                         <SelectTrigger className="bg-black/40 border-white/10 h-8 text-[#007FFF] font-black text-[11px]"><SelectValue placeholder="Location" /></SelectTrigger>
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{availableCountries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                                     </Select>
                                 </div>
-                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Target className="size-3 text-[#f97316]"/> Target</Label>
+                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Target className="size-3 text-[#f97316]" /> Target</Label>
                                     <Select disabled={!selectedCountries[i]} value={selectedIds[i]} onValueChange={(val) => handleSchoolSelect(val, i)}>
                                         <SelectTrigger className="bg-black/40 border-white/10 h-8 text-white font-black text-[11px]"><SelectValue placeholder="Institution" /></SelectTrigger>
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{(schools || []).filter((s: any) => s.country === selectedCountries[i]).map((s: any) => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}</SelectContent>
                                     </Select>
                                 </div>
-                             </div>
-                             <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5 items-center">
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5 items-center">
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-black text-[#007FFF] italic whitespace-nowrap flex items-center justify-between uppercase tracking-tighter">
                                         <div className="flex flex-col gap-0.5">
-                                          <span>Monthly income ({shootoutMatrix[i]?.currency || 'Local'})</span>
-                                          {!manualSalaries[i] && selectedIds[i] && (
-                                            <span className="text-[8px] text-[#f97316] font-black uppercase tracking-widest italic leading-none">Median income applied</span>
-                                          )}
+                                            <span>Monthly income ({shootoutMatrix[i]?.currency || 'Local'})</span>
+                                            {!manualSalaries[i] && selectedIds[i] && (
+                                                <span className="text-[8px] text-[#f97316] font-black uppercase tracking-widest italic leading-none">Median income applied</span>
+                                            )}
                                         </div>
                                     </Label>
-                                    <Input 
-                                        type="number" 
-                                        value={netSalaries[i]} 
-                                        placeholder="0" 
-                                        onChange={(e) => { 
-                                            const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next); 
+                                    <Input
+                                        type="number"
+                                        value={netSalaries[i]}
+                                        placeholder="0"
+                                        onChange={(e) => {
+                                            const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next);
                                             const nextM = [...manualSalaries]; nextM[i] = true; setManualSalaries(nextM);
-                                        }} 
+                                        }}
                                         className={cn(
-                                            "bg-black/40 border-white/5 h-8 text-right font-black text-[13px] pr-2", 
+                                            "bg-black/40 border-white/5 h-8 text-right font-black text-[13px] pr-2",
                                             !manualSalaries[i] && selectedIds[i] ? "text-slate-300" : "text-white",
                                             noSpinners
-                                        )} 
+                                        )}
                                     />
                                 </div>
                                 <div className="space-y-1">
                                     <Tooltip text="Including spouse salary, child benefit, or recurring family income."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">2nd income</Label></Tooltip>
                                     <Input type="number" value={adjustments[i].second} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], second: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
                                 </div>
-                             </div>
-                             <div className="grid grid-cols-2 gap-2 items-center">
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 items-center">
                                 <div className="space-y-1">
                                     <Tooltip text="Including tutoring, investments, or allowances."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Other income</Label></Tooltip>
                                     <Input type="number" value={adjustments[i].other} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], other: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
@@ -541,7 +575,7 @@ function DecideContent() {
                                     <Tooltip text="Mortgages back home, student loans, or credit commitments."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Home commitment</Label></Tooltip>
                                     <Input type="number" value={adjustments[i].home} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], home: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
                                 </div>
-                             </div>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -560,7 +594,7 @@ function DecideContent() {
                     {shootoutMatrix.map((data, idx) => (
                         <div key={`card-${idx}`} className={cn(
                             "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[720px]",
-                            "border-[#f97316]/40", 
+                            "border-[#f97316]/40",
                             data?.school.id === topPickId && "border-[#f97316] ring-2 ring-[#f97316] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
                         )}>
                             {data ? (
@@ -569,8 +603,8 @@ function DecideContent() {
                                         <div className="space-y-1 flex-1">
                                             <h2 className="text-lg md:text-3xl font-black text-[#f97316] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
                                             <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1">
-                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]"/> ~{data.workload} hrs/wk</span>
-                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]"/> {data.school.housingprovision}</span>
+                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
+                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]" /> {data.school.housingprovision}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -609,14 +643,20 @@ function DecideContent() {
 
                                     <div className="grid grid-cols-4 gap-1.5 py-4 h-14 mt-2 border-y border-white/5">
                                         <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#f97316" />
-                                        <ScoreBadge label="Country" score={data.countryScore === "N/A" ? "UNRATED" : data.countryScore} color={data.countryScore === "N/A" ? "#475569" : "#007FFF"} />
+                                        <ScoreBadge label="Country" score={data.countryScore} color="#007FFF" />
                                         <ScoreBadge label="School" score={data.schoolScore} />
-                                        <Tooltip text={`Local Purchasing Power: ${data.purchasingPower}. This measures how much a local salary buys in this city.`}>
-                                            <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
-                                                <span className="text-[7px] font-black uppercase text-slate-500 mb-0.5">Power</span>
-                                                <span className="text-[10px] font-black text-sky-400 italic">{data.purchasingPower}</span>
-                                            </div>
-                                        </Tooltip>
+                                        <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
+                                            <span className="text-[7px] font-black uppercase text-slate-500 mb-1 leading-none">Validation</span>
+                                            {data.school.validated === "Verified" ? (
+                                                <Tooltip text="School-Certified: The institution has formally ratified these contract provisions as accurate.">
+                                                    <ShieldCheck className="size-[14px] text-emerald-400" strokeWidth={3} />
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip text="Leopardfish Indexed: This data represents our proprietary data for this school/region.">
+                                                    <div className="px-1.5 bg-white/5 border border-white/10 rounded text-[9px] font-black text-slate-400 tracking-widest leading-relaxed">LFI</div>
+                                                </Tooltip>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* 📊 GRANULAR COST BREAKDOWN */}
@@ -666,10 +706,10 @@ function DecideContent() {
                                             </div>
                                             <div className="text-right leading-none">
                                                 <p className={cn("text-base font-black italic tabular-nums", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
-                                                <p className="text-[9px] font-bold text-slate-500 mt-1">{benchmark} {Math.round((data.savings3Year / data.rate) * (RATES[benchmark] || 0.79)).toLocaleString()}</p>
+                                                <p className="text-[9px] font-bold text-slate-500 mt-1">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || 0.79)).toLocaleString()}</p>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                                 </>
                             ) : (
@@ -687,6 +727,15 @@ function DecideContent() {
                     ))}
                 </div>
 
+                <div className="text-center mt-8 mb-8 max-w-2xl mx-auto px-4">
+                    <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-1 flex items-center justify-center gap-2">
+                        <Target className="size-3 text-[#f97316]" /> How the Top Pick is Decided
+                    </p>
+                    <p className="text-[12px] text-slate-400 leading-relaxed italic">
+                        It&apos;s not all about the savings! The winning orange highlight is awarded to the school with the highest overall Match Percentage. This algorithm strictly balances your projected bankable surplus against the school&apos;s academic reputation, city safety, and weekly workload.
+                    </p>
+                </div>
+
                 {!isUnlocked ? (
                     <div className="bg-[#f97316]/5 border border-dashed border-[#f97316]/30 p-12 rounded-sm flex flex-col items-center space-y-6">
                         <div className="size-16 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
@@ -696,7 +745,7 @@ function DecideContent() {
                             <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">Unlock Tactical Intelligence</h3>
                             <p className="text-slate-500 text-sm italic max-w-md mx-auto">Generate a professional comparative briefing cross-referencing workload, financial surplus, and regional career growth.</p>
                         </div>
-                        <button 
+                        <button
                             onClick={handleUnlockIntelligence}
                             disabled={isGenerating || ranked.length < 2}
                             className="px-10 py-4 bg-[#f97316] text-white font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-2xl disabled:opacity-50 flex items-center gap-3"
@@ -729,6 +778,12 @@ function DecideContent() {
         </div>
     );
 }
+
+const getSchoolField = (school: any, keys: string[]) => {
+    if (!school) return null;
+    const foundKey = Object.keys(school).find(k => keys.includes(k.toLowerCase().trim()));
+    return foundKey ? school[foundKey] : null;
+};
 
 export default function DecidePage() {
     return <Suspense fallback={null}><DecideContent /></Suspense>;

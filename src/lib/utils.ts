@@ -10,12 +10,21 @@ export function formatCurrency(amount: any, currency = 'USD') {
   const numericAmount = parseFloat(amount);
   if (isNaN(numericAmount)) return `0 ${currency}`;
 
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(numericAmount);
+  let validCurrency = typeof currency === 'string' && currency.length === 3 ? currency.toUpperCase() : 'USD';
+  if (validCurrency === 'LOCAL' || validCurrency === 'ALL') {
+    validCurrency = 'USD';
+  }
+
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: validCurrency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numericAmount);
+  } catch (e) {
+    return `${numericAmount.toLocaleString('en-US')} ${validCurrency}`;
+  }
 }
 
 /**

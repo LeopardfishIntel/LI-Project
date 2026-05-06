@@ -6,6 +6,7 @@ import { z } from 'zod';
 const DecideBriefingInputSchema = z.object({
   familyStatus: z.string(),
   benchmarkCurrency: z.string(),
+    topPickId: z.string(),
     schools: z.array(z.object({
       id: z.string(),
       name: z.string(),
@@ -18,6 +19,7 @@ const DecideBriefingInputSchema = z.object({
       curriculum: z.string(),
       academicScore: z.string(),
       housing: z.string(),
+      matchScore: z.number(),
     })),
   });
 
@@ -46,17 +48,19 @@ export async function generateDecideBriefing(input: z.infer<typeof DecideBriefin
     DATA PROVIDED:
     - Household: {{familyStatus}}
     - Benchmark: {{benchmarkCurrency}}
+    - MATHEMATICAL TOP PICK ID: {{topPickId}}
     - Options: 
     {{#each schools}}
-    - {{name}} ({{city}}, {{country}}): Salary {{salary}}, Surplus {{surplus}}, Savings {{savingsRate}}%, Workload {{workload}}hrs, Academic Score {{academicScore}}, Housing: {{housing}}
+    - {{name}} (ID: {{id}}, {{city}}, {{country}}): Match Score {{matchScore}}%, Salary {{salary}}, Surplus {{surplus}}, Savings {{savingsRate}}%, Workload {{workload}}hrs, Academic Score {{academicScore}}, Housing: {{housing}}
     {{/each}}
 
     INSTRUCTIONS:
-    1. Analyse the trade-offs between bankable surplus and lifestyle (workload).
+    1. Analyse the trade-offs between bankable surplus, academic score, and lifestyle (workload).
     2. Identify the "Safe Bet" vs the "High Growth" option.
     3. Use the provided benchmark currency ({{benchmarkCurrency}}) when discussing money.
     4. Provide exactly 3-5 paragraphs of deep tactical insight in the 'conclusion'.
        - IMPORTANT: Include a "Staffroom Reality" subsection for the top picks. This should simulate the "unspoken" teacher perspective (e.g., actual workload vs. contract, leadership vibe, expat social integration).
+       - CRITICAL STRATEGIC PICK: You MUST name the school matching the MATHEMATICAL TOP PICK ID ({{topPickId}}) as your absolute strategic pick. Do NOT simply pick the school with the highest savings. Justify why the top pick won based on its overall balance (e.g. higher academic score, better Match Score, lifestyle balance) despite potential differences in raw surplus.
     5. For EACH school, provide a 2-sentence "Current Context Brief" in 'perSchoolBriefs' keyed by the school's unique ID.
        - Focus on the CITY and regional intelligence.
        - This MUST be a fetch of current conditions as of 2026.

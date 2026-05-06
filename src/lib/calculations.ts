@@ -6,15 +6,18 @@
 export const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62,
   CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, JPY: 190, 
-  SGD: 1.7, MYR: 5.9, THB: 45, CNY: 9.1, BRL: 6.5, ARS: 1200
+  SGD: 1.7, MYR: 5.9, THB: 45, CNY: 9.1, BRL: 6.5, ARS: 1200, OMR: 0.49,
+  KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
 };
 
 export const canonicalCountry = (c: string) => {
   const n = c?.toLowerCase().trim() || "";
-  if (n.includes("czech")) return "czech republic";
+  if (n.includes("czech") || n.includes("czechia")) return "czechia";
   if (n.includes("uae") || n.includes("emirates")) return "united arab emirates";
   if (n.includes("uk") || n.includes("britain")) return "united kingdom";
   if (n.includes("usa") || n.includes("america")) return "united states";
+  if (n.includes("swiz") || n.includes("swit")) return "switzerland";
+  if (n.includes("viet")) return "vietnam";
   return n;
 };
 
@@ -67,6 +70,7 @@ export interface BudgetParams {
   childcareOverride?: number | null;
   ikeaOverride?: number | null;
   selectedIkea?: any;
+  ratesOverride?: Record<string, number>;
 }
 
 export function calculateBudget(params: BudgetParams) {
@@ -77,7 +81,7 @@ export function calculateBudget(params: BudgetParams) {
     docsOverride = null, housingOverride = null, expenditureOverride = null, transportOverride = null,
     logisticsOverride = null, familyOverride = null, electronicsOverride = null, 
     childcareOverride = null, ikeaOverride = null,
-    selectedIkea = null
+    selectedIkea = null, ratesOverride = null
   } = params;
   
   const targetData = cityData || countryIntel;
@@ -107,14 +111,16 @@ export function calculateBudget(params: BudgetParams) {
 
   // Convert USD → Display Currency
   const localCurrency = targetData?.currencyCode || 'USD';
+  const currentRates = ratesOverride || RATES;
+  
   const usdToDisplay = (usd: number) => {
-    const displayRate = currency === 'Local' ? (RATES[localCurrency] || 1.0) : (RATES[currency] || 1.0);
-    return (usd / (RATES['USD'] || 1.27)) * displayRate;
+    const displayRate = currency === 'Local' ? (currentRates[localCurrency] || 1.0) : (currentRates[currency] || 1.0);
+    return (usd / (currentRates['USD'] || 1.27)) * displayRate;
   };
   
   // Helper for GBP → Display Currency
   const gbpToDisplay = (gbp: number) => {
-    const displayRate = currency === 'Local' ? (RATES[localCurrency] || 1.0) : (RATES[currency] || 1.0);
+    const displayRate = currency === 'Local' ? (currentRates[localCurrency] || 1.0) : (currentRates[currency] || 1.0);
     return gbp * displayRate;
   };
 
@@ -152,7 +158,7 @@ export function calculateBudget(params: BudgetParams) {
   const isTaxi = transportMode === 'taxi';
   
   const mapType = isDriving ? 'carPurchase' : 'publicTransport';
-  const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType];
+  const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType] || targetData?.transport;
   const baseTransport = usdToDisplay(getVal(transportMap, profileKey, isDriving ? 1 : personCount));
   
   let transportVal = transportOverride !== null ? transportOverride : 0;
@@ -214,4 +220,105 @@ export function calculateBudget(params: BudgetParams) {
     displayCurrency: currency === 'Local' ? localCurrency : currency,
     isSubsidised: housingProv.includes('subsidised')
   };
+}
+
+/**
+ * 🧮 SAVINGS SCORE MATRIX NORMALIZATION
+ * Returns a 0.0 to 9.9 score based on surplus ratio.
+ */
+export function calculateSavingsScore(salaryNum: number, familyStatus: string, cityData: any): number {
+  const isFamily = familyStatus.toLowerCase().includes('family');
+  const isDual = familyStatus.toLowerCase().includes('dual');
+  const incomeMultiplier = isDual ? 1.85 : 1;
+  const colMultiplier = isFamily ? 1.4 : 1; // The Family Scale Factor
+  
+  const netUSD = Math.round((salaryNum * incomeMultiplier * 0.8) / 12);
+  
+  let rent = Number(cityData?.rent1br) || 1200;
+  if (familyStatus.includes('family-2') || familyStatus.includes('family-3')) {
+    rent = Number(cityData?.rent3br) || (rent * 1.5);
+  } else if (isFamily || isDual) {
+    rent = Number(cityData?.rent2br) || (rent * 1.2);
+  }
+  
+  const living = 600; // Base baseline heuristic
+  const outgoings = (rent + living) * colMultiplier;
+  
+  const surplus = Math.max(-500, netUSD - outgoings);
+  const ratio = (surplus * 12) / (salaryNum * incomeMultiplier); // Annual surplus vs Annual salary
+  
+  // Base 4.0 + up to 6 points based on ratio
+  // A 40% surplus ratio = 4.0 + 6.0 = 10 (capped at 9.9)
+  let rawScore = 4.0 + (ratio * 15);
+  rawScore = Math.max(0.0, Math.min(9.9, rawScore));
+  
+  return Number(rawScore.toFixed(1));
+}
+
+/**
+ * 🧮 LOCAL SAVINGS SCORE
+ * Uses local monthly net USD instead of an annual home salary.
+ * 
+ * WORLDWIDE ABSOLUTE BASELINE:
+ * $0 surplus = 4.0
+ * $1,260 surplus = 7.0
+ * $2,500+ surplus = 9.9
+ */
+export function calculateSurplus(localNetUSD: number, familyStatus: string, cityData: any): number {
+  const isFamily = familyStatus.toLowerCase().includes('family');
+  const isDual = familyStatus.toLowerCase().includes('dual') || familyStatus.toLowerCase().includes('couple');
+  
+  const status = familyStatus.toLowerCase();
+  let pKey = "single";
+  let scalar = 1.0;
+  let personCount = 1;
+
+  if (status === "single") { pKey = "single"; scalar = 1.0; personCount = 1; }
+  else if (status === "couple") { pKey = "marriedDualIncome"; scalar = 1.8; personCount = 2; }
+  else if (status.includes("family-1")) { pKey = "family1Child"; scalar = 2.2; personCount = 3; }
+  else if (status.includes("family-2")) { pKey = "family2Children"; scalar = 2.5; personCount = 4; }
+  else if (status.includes("family-3")) { pKey = "family3PlusChildren"; scalar = 2.8; personCount = 5; }
+
+  const safeParse = (val: any) => { const n = parseFloat(String(val)); return isNaN(n) ? 0 : n; };
+  const getVal = (data: any, key: string, mult: number) => {
+    if (!data) return 0;
+    if (typeof data === 'object' && data !== null) {
+      if (data[key]) return safeParse(data[key]);
+      return safeParse(data.single || data.base || 0) * mult;
+    }
+    return safeParse(data) * mult;
+  };
+
+  let rent = Number(cityData?.rent1br) || 800;
+  if (status.includes('family-2') || status.includes('family-3')) {
+    rent = Number(cityData?.rent3br) || (rent * 1.5);
+  } else if (isFamily || isDual) {
+    rent = Number(cityData?.rent2br) || (rent * 1.2);
+  }
+
+  // SUM ALL CORE OUTGOINGS (Mirroring Financial Forecaster logic with granular fallbacks)
+  const groceries = getVal(cityData?.groceries, pKey, scalar) || (250 * scalar);
+  const utilities = getVal(cityData?.utilities, pKey, scalar * 0.8) || (120 * scalar);
+  const connectivity = (getVal(cityData?.internet, pKey, 1) || 50) + ((getVal(cityData?.mobilePhone, pKey, 1) || 30) * personCount);
+  const transport = getVal(cityData?.transport?.publicTransport || cityData?.publicTransport || cityData?.transport, pKey, personCount) || (60 * personCount);
+  const social = getVal(cityData?.diningSocial, pKey, scalar) || (200 * scalar);
+
+  const totalOut = rent + groceries + utilities + connectivity + transport + social;
+  const rawSurplus = localNetUSD - totalOut;
+  
+  // 🛡️ FINANCIAL REALITY CAPS
+  const maxCap = isFamily ? 4400 : 5700;
+  
+  return Math.min(rawSurplus, maxCap);
+}
+
+export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any): number {
+  const surplus = calculateSurplus(localNetUSD, familyStatus, cityData);
+  
+  // Worldwide Absolute Formula - Stretched to create diverse 0-9.9 differentiation
+  // You now need the absolute max cap ($5700) to hit a 9.9.
+  let rawScore = 4.0 + (surplus / 960);
+  rawScore = Math.max(0.0, Math.min(9.9, rawScore));
+  
+  return Number(rawScore.toFixed(1));
 }

@@ -87,7 +87,7 @@ export default function FindYourFitGate() {
     const primarySlug = profile.regions[0].toLowerCase().replace(/\s+/g, '-').replace('&', 'and');
     
     setTimeout(() => {
-      router.push(`/discover/${primarySlug}?${params.toString()}`);
+      router.push(`/discover/matrix?${params.toString()}`);
     }, 1200);
   };
 
@@ -208,7 +208,7 @@ export default function FindYourFitGate() {
               <Target className="size-4" /> Operational goals (Max 2)
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {["savings", "career growth", "adventure", "balanced"].map((goal) => {
+                {["savings", "career growth", "adventure", "culture"].map((goal) => {
                     const isActive = profile.goals.some(g => g.toLowerCase() === goal.toLowerCase());
                     return (
                       <button 
@@ -266,7 +266,7 @@ export default function FindYourFitGate() {
               profile.regions.length > 0 && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
-            {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Generate intelligence dossier</>}
+            {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}
           </button>
         </div>
       </div>

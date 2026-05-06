@@ -6,7 +6,7 @@ import {
   Database, Zap, Loader2, CheckCircle2, AlertTriangle, 
   FileJson, Beaker, ShieldCheck, RefreshCw, Info, Terminal, 
   MapPin, Globe2, ServerCrash, Coins,
-  Activity, Target, Map, MessageSquare 
+  Activity, Target, Map, MessageSquare, Compass
 } from 'lucide-react';
 import { 
   uploadRegistryJsonAction, 
@@ -14,6 +14,9 @@ import {
   updateLocationCostOfLivingAction, 
   getTelemetryData,
   uploadIkeaIntelAction,
+  uploadTransportIntelAction,
+  updateCountryIndexesAction,
+  clearCountryIndexesAction,
 
   type BulkEnrichState,
   type EcoActionState 
@@ -42,14 +45,16 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'registry' | 'economic' | 'telemetry' | 'ikea'>('registry');
+  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'economic' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('schools-data');
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const [jsonInput, setJsonInput] = useState('');
+  const [schoolsJsonInput, setSchoolsJsonInput] = useState('');
+  const [colJsonInput, setColJsonInput] = useState('');
   const [ikeaJsonInput, setIkeaJsonInput] = useState('');
+  const [transportJsonInput, setTransportJsonInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [enriching, setEnriching] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
@@ -68,18 +73,55 @@ export default function AdminCommandPage() {
   const [telemetry, setTelemetry] = useState<any>(null);
   const [loadingTelemetry, setLoadingTelemetry] = useState(false);
 
-  async function handleUpload() {
+  // Matrix AI State
+  const [matrixCountryId, setMatrixCountryId] = useState('');
+  const [matrixCountryName, setMatrixCountryName] = useState('');
+
+  async function handleUpdateMatrix() {
+    setLoading(true); setStatus(null);
+    const res = await updateCountryIndexesAction(matrixCountryId, matrixCountryName);
+    if (res.success) setStatus({ type: 'success', msg: `Matrix Indexes updated for ${matrixCountryName}` });
+    else setStatus({ type: 'error', msg: res.error || 'Failed to update.' });
+    setLoading(false);
+  }
+
+  async function handleClearMatrix() {
+    setLoading(true); setStatus(null);
+    const res = await clearCountryIndexesAction(matrixCountryId);
+    if (res.success) setStatus({ type: 'success', msg: `Matrix Indexes cleared for ${matrixCountryId}` });
+    else setStatus({ type: 'error', msg: res.error || 'Failed to clear.' });
+    setLoading(false);
+  }
+
+  async function handleSchoolsUpload() {
     try {
       setLoading(true); setStatus(null);
-      const res = await uploadRegistryJsonAction(JSON.parse(jsonInput));
+      const res = await uploadRegistryJsonAction(JSON.parse(schoolsJsonInput));
       if (res.success) {
-        setStatus({ type: 'success', msg: `UPLINK OK: ${res.count} documents synchronized.` });
-        setJsonInput('');
+        setStatus({ type: 'success', msg: `SCHOOLS UPLINK OK: ${res.count} documents synchronized.` });
+        setSchoolsJsonInput('');
       } else {
         setStatus({ type: 'error', msg: res.error || 'Uplink failed.' });
       }
-    } catch {
-      setStatus({ type: 'error', msg: 'SYNTAX ERROR: Invalid JSON format.' });
+    } catch (e: any) {
+      setStatus({ type: 'error', msg: `SYNTAX ERROR: Invalid JSON format. ${e.message}` });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleColUpload() {
+    try {
+      setLoading(true); setStatus(null);
+      const res = await uploadRegistryJsonAction(JSON.parse(colJsonInput));
+      if (res.success) {
+        setStatus({ type: 'success', msg: `COST OF LIVING UPLINK OK: ${res.count} documents synchronized.` });
+        setColJsonInput('');
+      } else {
+        setStatus({ type: 'error', msg: res.error || 'Uplink failed.' });
+      }
+    } catch (e: any) {
+      setStatus({ type: 'error', msg: `SYNTAX ERROR: Invalid JSON format. ${e.message}` });
     } finally {
       setLoading(false);
     }
@@ -95,13 +137,29 @@ export default function AdminCommandPage() {
       } else {
         setStatus({ type: 'error', msg: res.error || 'IKEA Uplink failed.' });
       }
-    } catch {
-      setStatus({ type: 'error', msg: 'SYNTAX ERROR: Invalid JSON format.' });
+    } catch (e: any) {
+      setStatus({ type: 'error', msg: `SYNTAX ERROR: Invalid JSON format. ${e.message}` });
     } finally {
       setLoading(false);
     }
   }
 
+  async function handleTransportUpload() {
+    try {
+      setLoading(true); setStatus(null);
+      const res = await uploadTransportIntelAction(JSON.parse(transportJsonInput));
+      if (res.success) {
+        setStatus({ type: 'success', msg: `TRANSPORT UPLINK OK: ${res.count} documents synchronized.` });
+        setTransportJsonInput('');
+      } else {
+        setStatus({ type: 'error', msg: res.error || 'Transport Uplink failed.' });
+      }
+    } catch (e: any) {
+      setStatus({ type: 'error', msg: `SYNTAX ERROR: Invalid JSON format. ${e.message}` });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleEnrich() {
     setEnriching(true);
@@ -147,12 +205,18 @@ export default function AdminCommandPage() {
         </div>
 
         {/* TACTICAL TABS */}
-        <div className="flex gap-4 border-b border-white/10 pb-4">
+        <div className="flex flex-wrap gap-4 border-b border-white/10 pb-4">
             <button 
-                onClick={() => setActiveTab('registry')}
-                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'registry' ? "bg-[#f97316] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+                onClick={() => setActiveTab('schools-data')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'schools-data' ? "bg-[#f97316] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
             >
-                Registry Injection
+                Schools Data
+            </button>
+            <button 
+                onClick={() => setActiveTab('col-data')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'col-data' ? "bg-[#10b981] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                Cost of Living Data
             </button>
             <button 
                 onClick={() => setActiveTab('economic')}
@@ -166,6 +230,12 @@ export default function AdminCommandPage() {
             >
                 IKEA Intel
             </button>
+            <button 
+                onClick={() => setActiveTab('transport')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'transport' ? "bg-blue-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                Transport Intel
+            </button>
 
             <button 
                 onClick={() => setActiveTab('telemetry')}
@@ -173,32 +243,39 @@ export default function AdminCommandPage() {
             >
                 Telemetry
             </button>
+            <button 
+                onClick={() => setActiveTab('matrix')}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'matrix' ? "bg-indigo-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+            >
+                Matrix AI
+            </button>
         </div>
 
-        {/* TAB 1: REGISTRY INJECTION */}
-        {activeTab === 'registry' && (
+        {/* TAB 1: SCHOOLS DATA INJECTION */}
+        {activeTab === 'schools-data' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="lg:col-span-8 space-y-6">
                     <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                     <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                         <FileJson className="size-4 text-sky-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Registry JSON Uplink</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Schools JSON Uplink</span>
                         </div>
                         <Terminal className="size-4 text-slate-700" />
                     </div>
                     <div className="p-6 space-y-6">
                         <textarea 
                             className="w-full h-[450px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#f97316] transition-all resize-none shadow-inner"
-                            value={jsonInput}
-                            onChange={(e) => setJsonInput(e.target.value)}
+                            placeholder={`[\n  {\n    "id": "FLIS0001",\n    "schoolname": "German Swiss Int'l",\n    "academicscore": "9.8",\n    "financescore": "9.0",\n    "country": "Hong Kong",\n    "city": "Hong Kong"\n  }\n]`}
+                            value={schoolsJsonInput}
+                            onChange={(e) => setSchoolsJsonInput(e.target.value)}
                         />
                         <button 
-                          onClick={handleUpload}
-                          disabled={loading || !jsonInput}
+                          onClick={handleSchoolsUpload}
+                          disabled={loading || !schoolsJsonInput}
                           className="w-full h-16 bg-[#f97316] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
                         >
-                          {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Injection Protocol"}
+                          {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Schools Injection Protocol"}
                         </button>
                     </div>
                     </div>
@@ -230,6 +307,44 @@ export default function AdminCommandPage() {
                             </div>
                         )}
                     </div>
+                </div>
+            </div>
+        )}
+
+        {/* TAB 2: COST OF LIVING INJECTION */}
+        {activeTab === 'col-data' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="lg:col-span-8 space-y-6">
+                    <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                    <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                        <FileJson className="size-4 text-emerald-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Cost of Living JSON Uplink</span>
+                        </div>
+                        <Terminal className="size-4 text-slate-700" />
+                    </div>
+                    <div className="p-6 space-y-6">
+                        <textarea 
+                            className="w-full h-[450px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#10b981] transition-all resize-none shadow-inner"
+                            placeholder={`[\n  {\n    "id": "FLIC0001",\n    "region": "Middle East",\n    "country": "UAE",\n    "city": "Abu Dhabi",\n    "currencyCode": "AED",\n    "dataCurrency": "USD",\n    "rent1br": "2215.00"\n  }\n]`}
+                            value={colJsonInput}
+                            onChange={(e) => setColJsonInput(e.target.value)}
+                        />
+                        <button 
+                          onClick={handleColUpload}
+                          disabled={loading || !colJsonInput}
+                          className="w-full h-16 bg-[#10b981] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                        >
+                          {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Cost of Living Protocol"}
+                        </button>
+                    </div>
+                    </div>
+                    {status && (
+                    <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
+                        {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
+                        <span className="tracking-widest">{status.msg}</span>
+                    </div>
+                    )}
                 </div>
             </div>
         )}
@@ -302,7 +417,96 @@ export default function AdminCommandPage() {
             </div>
         )}
 
-        {/* TAB 4: TELEMETRY */}
+        {/* TAB 4: MATRIX AI */}
+        {activeTab === 'matrix' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="lg:col-span-8 space-y-6">
+                    <div className="bg-[#0b1224] border border-indigo-500/20 rounded-sm shadow-2xl overflow-hidden">
+                        <div className="p-4 bg-black/20 border-b border-white/5 flex items-center gap-2">
+                            <Compass className="size-4 text-indigo-400" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Adventure & Culture Indexes</span>
+                        </div>
+                        <div className="p-8 space-y-6">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Country Name (e.g. Thailand)</Label>
+                                    <Input value={matrixCountryName} onChange={(e) => setMatrixCountryName(e.target.value)} placeholder="Thailand" className="bg-black/40 border-white/10 h-12 text-white font-bold" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Document ID (e.g. thailand)</Label>
+                                    <Input value={matrixCountryId} onChange={(e) => setMatrixCountryId(e.target.value)} placeholder="thailand" className="bg-black/40 border-white/10 h-12 text-white font-bold" />
+                                </div>
+                            </div>
+                            <div className="flex gap-4">
+                                <button 
+                                    onClick={handleUpdateMatrix} 
+                                    disabled={loading || !matrixCountryId || !matrixCountryName}
+                                    className="flex-1 h-14 bg-indigo-500/10 border border-indigo-500/50 text-indigo-400 font-black uppercase italic tracking-widest hover:bg-indigo-500 hover:text-white transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-3"
+                                >
+                                    {loading ? <Loader2 className="animate-spin size-5" /> : <><RefreshCw className="size-5" /> Generate Indexes</>}
+                                </button>
+                                <button 
+                                    onClick={handleClearMatrix} 
+                                    disabled={loading || !matrixCountryId}
+                                    className="px-8 h-14 bg-red-500/10 border border-red-500/50 text-red-400 font-black uppercase italic tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                                >
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {status && activeTab === 'matrix' && (
+                        <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
+                            {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
+                            <span className="tracking-widest">{status.msg}</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )}
+
+        {/* TAB 6: TRANSPORT INTEL */}
+        {activeTab === 'transport' && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="lg:col-span-8 space-y-6">
+                    <div className="bg-[#0b1224] border border-blue-500/20 rounded-sm shadow-2xl overflow-hidden">
+                    <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                        <Map className="size-4 text-blue-400" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">LFI Transport JSON Uplink</span>
+                        </div>
+                        <Terminal className="size-4 text-slate-700" />
+                    </div>
+                    <div className="p-6 space-y-6">
+                        <div className="bg-blue-500/10 border border-blue-500/30 p-4 rounded-sm text-blue-400/90 text-sm font-medium">
+                          <strong className="text-blue-400">PIVOTED UPLINK:</strong> Paste the transposed JSON matrix (Country vs Personas). Data will be saved to the dedicated <code className="text-white">transport_intel</code> collection.
+                        </div>
+                        <textarea 
+                            className="w-full h-[350px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-blue-400 rounded-sm outline-none focus:border-blue-500 transition-all resize-none shadow-inner"
+                            placeholder='[\n  {\n    "field1": "Country",\n    "Car Hire (Monthly USD)": "Single",\n    "field3": "Married (Dual Income)",\n    "field22": "Best Option Driver",\n    "field23": "Best Option No Driver"\n  },\n  {\n    "field1": "India",\n    "Car Hire (Monthly USD)": "850",\n    "field3": "950",\n    "field22": "Driver strategy...",\n    "field23": "No-driver strategy..."\n  }\n]'
+                            value={transportJsonInput}
+                            onChange={(e) => setTransportJsonInput(e.target.value)}
+                        />
+                        <button 
+                          onClick={handleTransportUpload}
+                          disabled={loading || !transportJsonInput}
+                          className="w-full h-16 bg-blue-600 text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                        >
+                          {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Transport Uplink"}
+                        </button>
+                    </div>
+                    </div>
+                    {status && activeTab === 'transport' && (
+                    <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
+                        {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
+                        <span className="tracking-widest">{status.msg}</span>
+                    </div>
+                    )}
+                </div>
+            </div>
+        )}
+
+        {/* TAB 5: TELEMETRY */}
         {activeTab === 'telemetry' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
                 <div className="flex items-center justify-between">
