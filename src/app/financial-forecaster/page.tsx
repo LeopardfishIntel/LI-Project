@@ -212,7 +212,7 @@ function DecoderContent() {
     // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const transportPKeyMap: Record<string, string> = {
       "Single": "single",
-      "Married (sole earner)": "single",
+      "Married (sole earner)": "marriedDualIncome",
       "Married (dual income)": "marriedDualIncome",
       "Family +1": "family1Child",
       "Family +2": "family2Children",
@@ -223,7 +223,6 @@ function DecoderContent() {
     const transportMap = tIntel?.[mapType] || activeCOL?.transport?.[mapType] || activeCOL?.[mapType] || activeCOL?.transport;
     const transportVal = (typeof transportMap === 'object' && transportMap !== null) ? (transportMap[transportKey] || 0) : (parseFloat(String(transportMap)) || 0);
     const transportCost = usdToLocal(transportVal);
-
     const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar));
     const manualCost = safeParse(manualAdjustments);
 
@@ -240,7 +239,7 @@ function DecoderContent() {
       totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, housingStatus, currency, reliability: activeCOL?.dataReliabilityScore,
       countryIntel, uplift13, uplift14
     };
-  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14]);
+  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel]);
 
   const leopardfishReview = useMemo(() => {
     if (!activeSchool || !analysis) return null;
@@ -525,7 +524,7 @@ function DecoderContent() {
                               <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white")}>{b.code}</button>
                             ))}
                           </div>
-                          <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Disposable surplus</p>
+                          <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Monthly Disposable Surplus</p>
                         </div>
 
                         <div className="flex flex-col items-end">
