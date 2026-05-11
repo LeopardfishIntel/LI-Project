@@ -389,7 +389,7 @@ function MatrixContent() {
                       })()}
                     </div>
 
-                    <div className="grid grid-cols-4 lg:col-span-4 lg:flex lg:w-full">
+                    <div className="grid grid-cols-4 lg:col-span-4 lg:grid lg:grid-cols-4 lg:w-full">
                       <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Savings</span>
                         <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#f97316]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>

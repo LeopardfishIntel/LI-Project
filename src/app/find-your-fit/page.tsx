@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const QUALS = ["PGCE/IPGCE", "B.Ed", "MA/M.Ed", "NPQSL", "QTS"];
 const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas", "Oceania"];
-const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Balance"];
+const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Culture"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
 
 function SubmitButton({ isPending, isDirty }: { isPending: boolean, isDirty: boolean }) {
