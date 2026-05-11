@@ -204,20 +204,13 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
           
           {/* 1. The Header Layer */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-6 border-b border-white/5 pb-8">
-            <div className="space-y-4">
-              <h2 className="text-5xl md:text-7xl font-black text-[#FF6B00] tracking-tighter uppercase leading-none drop-shadow-[0_0_20px_rgba(255,107,0,0.2)]">
-                ANALYSIS IN ACTION
-              </h2>
-              <p className="text-slate-400 text-sm md:text-base font-bold italic tracking-tight max-w-2xl">
-                Key examples of how we use 22+ intelligence sources to drive your negotiation strategy.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
-              <div className="size-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,1)]" />
-              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none">SYSTEM STATUS: ACTIVE // DATA REFRESHED: MAY 2026</span>
-            </div>
+          <div className="text-center mb-16 space-y-4 border-b border-white/5 pb-8">
+            <h2 className="text-5xl md:text-7xl font-black text-[#FF6B00] tracking-tighter uppercase leading-none drop-shadow-[0_0_20px_rgba(255,107,0,0.2)]">
+              ANALYSIS IN ACTION
+            </h2>
+            <p className="text-slate-400 text-sm md:text-base font-bold italic tracking-tight max-w-2xl mx-auto">
+              Key examples of how we use 22+ intelligence sources to drive your negotiation strategy.
+            </p>
           </div>
 
           {/* 2. The Logic Layer (Two 50% Width Power Cards) */}
@@ -271,11 +264,19 @@ export default function Home() {
           </div>
 
           {/* 4. The Footer Call-to-Action */}
-          <div className="border-t border-white/5 pt-12 flex flex-col items-center justify-center text-center space-y-6">
+          <div className="border-t border-white/5 pt-12 flex flex-col items-center justify-center text-center space-y-8">
+            <p className="text-base italic text-slate-400 font-medium tracking-tight">
+              Informed decisions start with Leopardfish Intel—the gold standard for indexed school and financial data.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <TacticalButton href="/find-your-fit/" label="Discover" className="w-48 h-14" />
+              <TacticalButton href="/financial-forecaster/" label="Evaluate" className="w-48 h-14" />
+              <TacticalButton href="/decide/" label="Decide" className="w-48 h-14" />
+              <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
+            </div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest max-w-3xl leading-relaxed">
               All data is adjusted for local tax jurisdictions and includes benefit quantifiers (Flights, CPD, Insurance) for a total compensation view.
             </p>
-            <TacticalButton href="/decide/" label="START YOUR ANALYSIS" className="w-64 h-16" />
           </div>
 
         </div>
