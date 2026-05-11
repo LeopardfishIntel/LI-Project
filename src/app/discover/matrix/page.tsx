@@ -273,7 +273,7 @@ function MatrixContent() {
             </div>
 
             {/* Table Header - Sticky & Layered */}
-            <div className="grid grid-cols-9 sticky top-0 z-20 border-b border-white/10 bg-[#0b1224] text-[10px] font-black uppercase tracking-widest text-slate-500">
+            <div className="hidden lg:grid grid-cols-9 sticky top-0 z-20 border-b border-white/10 bg-[#0b1224] text-[10px] font-black uppercase tracking-widest text-slate-500">
               <div className="col-span-3 flex items-center p-4">Deployment Target</div>
               
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
@@ -342,21 +342,29 @@ function MatrixContent() {
                 sortedCountries.slice(0, limit).map((country, idx) => {
                   const isLast = idx === Math.min(sortedCountries.length, limit) - 1;
                   return (
-                  <div key={idx} className="grid grid-cols-9 items-stretch hover:bg-white/[0.02] transition-colors group border-b border-white/5 last:border-b-0">
-                    <div className="col-span-3 flex items-center pr-6 p-4 relative h-[56px] overflow-hidden group/btn cursor-default">
-                      <div className="flex items-center gap-4 w-full relative h-full">
-                        <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">0{idx + 1}</span>
+                  <div key={idx} className="flex flex-col lg:grid lg:grid-cols-9 items-stretch hover:bg-white/[0.02] transition-colors group border-b border-white/5 last:border-b-0 py-4 lg:py-0">
+                    <div className="lg:col-span-3 flex items-center pr-6 p-4 lg:relative lg:h-[56px] overflow-hidden group/btn cursor-default">
+                      <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full relative h-full">
+                        <div className="flex items-center justify-between w-full lg:w-auto">
+                          <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">0{idx + 1}</span>
+                          <button 
+                            onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
+                            className="lg:hidden bg-[#f97316] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-2 shadow-lg hover:bg-white"
+                          >
+                            Generate <ChevronRight className="size-3" />
+                          </button>
+                        </div>
                         
-                        <div className="relative flex-1 h-full flex items-center">
+                        <div className="relative flex-1 h-full flex items-center w-full">
                           {/* Sliding Text */}
-                          <span className="absolute left-0 text-xl font-black uppercase text-white tracking-tighter transition-all duration-300 group-hover/btn:-translate-y-10 group-hover/btn:opacity-0 truncate w-full">
+                          <span className="lg:absolute left-0 text-2xl lg:text-xl font-black uppercase text-white tracking-tighter transition-all duration-300 lg:group-hover/btn:-translate-y-10 lg:group-hover/btn:opacity-0 truncate w-full">
                             {country.country}
                           </span>
                           
-                          {/* Sliding Button */}
+                          {/* Sliding Button (Desktop) */}
                           <button 
                             onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
-                            className="absolute left-0 translate-y-10 opacity-0 group-hover/btn:translate-y-0 group-hover/btn:opacity-100 transition-all duration-300 bg-[#f97316] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-3 shadow-lg hover:bg-white shrink-0 pointer-events-auto"
+                            className="hidden lg:flex absolute left-0 translate-y-10 opacity-0 group-hover/btn:translate-y-0 group-hover/btn:opacity-100 transition-all duration-300 bg-[#f97316] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm items-center gap-3 shadow-lg hover:bg-white shrink-0 pointer-events-auto"
                           >
                             Generate Report <ChevronRight className="size-3" />
                           </button>
@@ -364,31 +372,40 @@ function MatrixContent() {
                       </div>
                     </div>
 
-                    <div className="col-span-2 flex items-center p-4 border-l border-white/5 pl-6">
+                    <div className="lg:col-span-2 flex items-center px-4 pb-4 lg:pb-0 lg:p-4 lg:border-l border-white/5 lg:pl-6 border-b border-white/5 lg:border-b-0 mb-2 lg:mb-0">
                       {(() => {
                         const conversionFactor = (RATES[benchmark] || 1) / (RATES['USD'] || 1.27);
                         let displayVal = country.rawSurplus * conversionFactor;
                         let sym = benchmark === 'GBP' ? '£' : (benchmark === 'EUR' ? '€' : '$');
                         
                         return (
-                          <span className="text-xl font-black tracking-tighter text-[#f97316]">
-                            {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
-                          </span>
+                          <div className="flex flex-col lg:flex-row lg:items-center gap-1 w-full">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
+                            <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#f97316]">
+                              {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
+                            </span>
+                          </div>
                         );
                       })()}
                     </div>
 
-                    <div className={cn("flex justify-center items-center p-4 border-x-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("border-x-2 border-[#f97316] bg-[#f97316]/5", isLast && "border-b-2"))}>
-                      <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#f97316]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>
-                    </div>
-                    <div className={cn("flex justify-center items-center p-4 border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("border-x-2 border-[#f97316] bg-[#f97316]/5", isLast && "border-b-2"))}>
-                      <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('career')) ? "text-[#f97316]" : "text-white")}>{country.scores.career.toFixed(1)}</span>
-                    </div>
-                    <div className={cn("flex justify-center items-center p-4 border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("border-x-2 border-[#f97316] bg-[#f97316]/5", isLast && "border-b-2"))}>
-                      <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) ? "text-[#f97316]" : "text-white")}>{country.scores.adventure.toFixed(1)}</span>
-                    </div>
-                    <div className={cn("flex justify-center items-center p-4 border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('culture')) && cn("border-x-2 border-[#f97316] bg-[#f97316]/5", isLast && "border-b-2"))}>
-                      <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('culture')) ? "text-[#f97316]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
+                    <div className="grid grid-cols-4 lg:col-span-4 lg:flex lg:w-full">
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                        <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Savings</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#f97316]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>
+                      </div>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                        <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Career</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('career')) ? "text-[#f97316]" : "text-white")}>{country.scores.career.toFixed(1)}</span>
+                      </div>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                        <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Adv</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) ? "text-[#f97316]" : "text-white")}>{country.scores.adventure.toFixed(1)}</span>
+                      </div>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('culture')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                        <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Culture</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('culture')) ? "text-[#f97316]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
+                      </div>
                     </div>
                   </div>
                   );

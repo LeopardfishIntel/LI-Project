@@ -44,21 +44,34 @@ export async function submitInquiry(
 
     // 3. LIVE TRANSMISSION (Resend)
     if (process.env.RESEND_API_KEY) {
-      // Send confirmation to the user
-      await resend.emails.send({
-        from: 'Leopardfish Intel <system@leopardfishintel.com>',
-        to: [email],
-        subject: `Enquiry Received: ${subject}`,
-        text: `Hello ${name},\n\nYour enquiry has been received and logged in our system. Our team will review the details and get back to you shortly.\n\nSubject: ${subject}\n\nMessage:\n${message}\n\nRegards,\nThe Leopardfish Intel Team`,
-      });
+      console.log("🚀 INITIATING LIVE TRANSMISSION TO:", email);
+      
+      try {
+        // Send confirmation to the user
+        const userEmail = await resend.emails.send({
+          from: 'Leopardfish Intel <system@leopardfishintel.com>',
+          to: [email],
+          replyTo: 'roger@leopardfishintel.com',
+          subject: `Enquiry Received: ${subject}`,
+          text: `Hello ${name},\n\nYour enquiry has been received and logged in our system. Our team will review the details and get back to you shortly.\n\nSubject: ${subject}\n\nMessage:\n${message}\n\nRegards,\nThe Leopardfish Intel Team`,
+        });
+        console.log("✅ USER CONFIRMATION SENT:", userEmail);
 
-      // Send notification to Roger
-      await resend.emails.send({
-        from: 'Intelligence Desk <system@leopardfishintel.com>',
-        to: ['roger@leopardfishintel.com'],
-        subject: `🚨 NEW ENQUIRY: ${subject}`,
-        text: `From: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
-      });
+        // Send notification to Roger
+        const adminEmail = await resend.emails.send({
+          from: 'Intelligence Desk <system@leopardfishintel.com>',
+          to: ['roger@leopardfishintel.com'],
+          subject: `🚨 NEW ENQUIRY: ${subject}`,
+          text: `From: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+        });
+        console.log("✅ ADMIN NOTIFICATION SENT:", adminEmail);
+      } catch (resendError) {
+        console.error("❌ RESEND API ERROR:", resendError);
+        // We still return success: true because the enquiry was saved in Firestore, 
+        // but we should know about the email failure.
+      }
+    } else {
+      console.warn("⚠️ RESEND_API_KEY MISSING. Skipping live transmission.");
     }
 
     return {

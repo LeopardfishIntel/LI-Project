@@ -70,6 +70,7 @@ function DecoderContent() {
   const [transportMode, setTransportMode] = useState<"P" | "C" | "T">("P");
   const [benchmark, setBenchmark] = useState("GBP");
   const [overrideBedrooms, setOverrideBedrooms] = useState<number | null>(null);
+  const [showUpliftOptions, setShowUpliftOptions] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
 
@@ -544,58 +545,77 @@ function DecoderContent() {
 
                           {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
                           {analysis?.countryIntel && (
-                            <div className="mt-4 w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-sm">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic flex items-center gap-2">
-                                  Tactical Intel: {analysis.countryIntel.has14th ? "13th & 14th Month" : "13th Month"}
-                                </span>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button className="text-emerald-400 hover:text-white transition-colors">
-                                        <Info className="size-3" />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="left" className="max-w-xs bg-slate-900 border-emerald-500/50 text-white p-4">
-                                      <p className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-tight">Market Intelligence Briefing</p>
-                                      <p className="text-[11px] leading-relaxed mb-3">
-                                        {analysis.countryIntel.note} We are amortising these payments into your monthly forecast (adding 1/12th of your base salary per payment).
-                                      </p>
-                                      <p className="text-[10px] italic text-rose-400 border-t border-white/10 pt-2 font-bold">
-                                        ⚠️ WARNING: Full net salary may not be the exact amount of the 13/14 payment as taxes and social security often vary on bonuses.
-                                      </p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              </div>
+                            <div className="mt-4 w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-sm transition-all duration-500 overflow-hidden">
+                              {!showUpliftOptions && !uplift13 && !uplift14 ? (
+                                <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                                  <div className="flex items-start gap-3">
+                                    <Zap className="size-4 text-emerald-400 mt-1 flex-shrink-0" />
+                                    <p className="text-[11px] font-bold text-slate-300 leading-relaxed italic">
+                                      Do you want to adjust your offer to allow for bonus month salaries offered in <span className="text-emerald-400 font-black">{formatCountry(settings.country)}</span>?
+                                    </p>
+                                  </div>
+                                  <button
+                                    onClick={() => setShowUpliftOptions(true)}
+                                    className="w-full py-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group"
+                                  >
+                                    Adjust Offer <ArrowDownCircle className="inline size-3 ml-1 group-hover:translate-y-0.5 transition-transform" />
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="animate-in zoom-in-95 duration-500">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic flex items-center gap-2">
+                                      Tactical Intel: {analysis.countryIntel.has14th ? "13th & 14th Month" : "13th Month"}
+                                    </span>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-emerald-400 hover:text-white transition-colors">
+                                            <Info className="size-3" />
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="left" className="max-w-xs bg-slate-900 border-emerald-500/50 text-white p-4">
+                                          <p className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-tight">Market Intelligence Briefing</p>
+                                          <p className="text-[11px] leading-relaxed mb-3">
+                                            {analysis.countryIntel.note} We are amortising these payments into your monthly forecast (adding 1/12th of your base salary per payment).
+                                          </p>
+                                          <p className="text-[10px] italic text-rose-400 border-t border-white/10 pt-2 font-bold">
+                                            ⚠️ WARNING: Full net salary may not be the exact amount of the 13/14 payment as taxes and social security often vary on bonuses.
+                                          </p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
 
-                              <div className="flex gap-2">
-                                {analysis.countryIntel.has13th && (
-                                  <button
-                                    onClick={() => setUplift13(!uplift13)}
-                                    className={cn(
-                                      "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
-                                      uplift13 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                  <div className="flex gap-2">
+                                    {analysis.countryIntel.has13th && (
+                                      <button
+                                        onClick={() => setUplift13(!uplift13)}
+                                        className={cn(
+                                          "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                          uplift13 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                        )}
+                                      >
+                                        {uplift13 ? "13th Month Active" : "Apply 13th Month"}
+                                      </button>
                                     )}
-                                  >
-                                    {uplift13 ? "13th Month Active" : "Apply 13th Month"}
-                                  </button>
-                                )}
-                                {analysis.countryIntel.has14th && (
-                                  <button
-                                    onClick={() => setUplift14(!uplift14)}
-                                    className={cn(
-                                      "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
-                                      uplift14 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                    {analysis.countryIntel.has14th && (
+                                      <button
+                                        onClick={() => setUplift14(!uplift14)}
+                                        className={cn(
+                                          "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                          uplift14 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                        )}
+                                      >
+                                        {uplift14 ? "14th Month Active" : "Apply 14th Month"}
+                                      </button>
                                     )}
-                                  >
-                                    {uplift14 ? "14th Month Active" : "Apply 14th Month"}
-                                  </button>
-                                )}
-                              </div>
-                              <p className="mt-2 text-[8px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
-                                Please confirm your specific offer includes these payments
-                              </p>
+                                  </div>
+                                  <p className="mt-2 text-[8px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
+                                    Please confirm your specific offer includes these payments
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -659,7 +679,7 @@ function DecoderContent() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-4 gap-2 mt-8 pt-6 border-t border-white/5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-8 pt-6 border-t border-white/5">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-white/[0.03] p-4 text-center border border-white/5 group rounded-sm cursor-help">
@@ -705,7 +725,7 @@ function DecoderContent() {
                   </Tooltip>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 mt-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">

@@ -12,9 +12,6 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { db } from '@/firebase/server';
-import { updateCostOfLiving } from '@/ai/flows/update-cost-of-living-flow';
-import { generateCountryIndexesFlow } from '@/ai/flows/generate-country-indexes-flow';
-import { enrichSchoolData } from '@/ai/flows/enrich-school-data-flow';
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
@@ -43,6 +40,7 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
       return { error: "Location Name is required", success: false, message: null, data: null };
     }
 
+    const { updateCostOfLiving } = await import('@/ai/flows/update-cost-of-living-flow');
     const res = await updateCostOfLiving({ locationName, countryName } as any);
 
     // 🛰️ COMMIT TO REGISTRY: Actually save the data to Firestore
@@ -396,6 +394,7 @@ export async function enrichAllSchoolsAction(prevState: any): Promise<BulkEnrich
     for (const school of schools as any) {
       if (!school.summary || !school.imageUrl) {
         try {
+          const { enrichSchoolData } = await import('@/ai/flows/enrich-school-data-flow');
           const res = await enrichSchoolData({
             name: school.schoolname || school.name,
             location: school.city,
@@ -426,6 +425,7 @@ export async function enrichAllSchoolsAction(prevState: any): Promise<BulkEnrich
  */
 export async function updateCountryIndexesAction(countryId: string, countryName: string) {
   try {
+    const { generateCountryIndexesFlow } = await import('@/ai/flows/generate-country-indexes-flow');
     const res = await generateCountryIndexesFlow({ country: countryName });
 
     const docRef = doc(db, 'locations_costOfLiving', countryId);

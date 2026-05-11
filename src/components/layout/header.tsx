@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User as UserIcon, LogOut, LogIn } from "lucide-react"; 
+import { User as UserIcon, LogOut, LogIn, Menu, X } from "lucide-react"; 
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/firebase"; 
 import { doc, getDoc } from "firebase/firestore";
@@ -15,6 +15,7 @@ export default function Header() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [operativeName, setOperativeName] = useState<string>("FRED");
   const [teacherId, setTeacherId] = useState<string>("FLI007");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -74,7 +75,7 @@ export default function Header() {
           ))}
         </div>
 
-        {/* ACCOUNT */}
+        {/* ACCOUNT & MOBILE MENU TOGGLE */}
         <div className="flex items-center gap-4">
 
           {user ? (
@@ -105,13 +106,50 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <Link href="/login" className="flex items-center gap-2 bg-[#f97316] text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+            <Link href="/login" className="hidden sm:flex items-center gap-2 bg-[#f97316] text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+              <LogIn className="size-4" />
+              Secure Access
+            </Link>
+          )}
+
+          {/* MOBILE MENU BUTTON */}
+          <button 
+            className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </div>
+      </nav>
+
+      {/* MOBILE DROPDOWN NAVIGATION */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden mt-4 border-t border-white/10 pt-4 flex flex-col gap-4 animate-in slide-in-from-top-2 duration-200">
+          {links.map((link) => (
+            <Link 
+              key={link.href} 
+              href={link.href} 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={cn(
+                "text-[12px] font-bold uppercase tracking-widest transition-colors block px-2 py-1", 
+                pathname === link.href ? "text-[#f97316]" : "text-slate-400 hover:text-white"
+              )}
+            >
+              {link.name}
+            </Link>
+          ))}
+          {!user && (
+            <Link 
+              href="/login" 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="mt-2 flex items-center gap-2 bg-[#f97316] text-white px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+            >
               <LogIn className="size-4" />
               Secure Access
             </Link>
           )}
         </div>
-      </nav>
+      )}
     </header>
   );
 }
