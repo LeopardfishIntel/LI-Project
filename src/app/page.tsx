@@ -239,7 +239,7 @@ export default function Home() {
                 <div className="space-y-3">
                   <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">Dynamic Command</h3>
                   <p className="text-sm text-slate-400 leading-relaxed font-medium">
-                    Our intel is the floor, not the ceiling. While primary indices are standardized, you can use tactical adjustment boxes to add or subtract any specific financial factor at any time. This allows you to model your &apos;Minimum Viable Salary&apos; vs. your &apos;Target Savings Goal&apos; based on your actual family needs.
+                    Our baseline data is just your starting point. While the standard measurements are a helpful guide, you can use the custom boxes to add or remove any financial detail at any time. This allows you to map out your &apos;survival budget&apos; versus your &apos;ideal savings plan&apos; based on what matters most.
                   </p>
                 </div>
               </div>
