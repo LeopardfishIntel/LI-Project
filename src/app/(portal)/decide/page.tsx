@@ -580,15 +580,7 @@ function DecideContent() {
                     ))}
                 </div>
 
-                {/* 💱 CURRENCY LENS */}
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-black uppercase text-slate-500 tracking-[0.15em] italic">Results Currency Lens</span>
-                    <div className="flex bg-black/50 p-0.5 rounded-sm border border-white/10">
-                        {(['GBP', 'USD'] as const).map((cur) => (
-                            <button key={cur} onClick={() => setBenchmark(cur)} className={cn("px-4 py-1 text-[9px] font-black uppercase tracking-wider transition-all italic", benchmark === cur ? "bg-[#007FFF] text-white shadow-[0_0_12px_rgba(0,127,255,0.3)]" : "text-slate-500 hover:text-slate-300")}>{cur}</button>
-                        ))}
-                    </div>
-                </div>
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                     {shootoutMatrix.map((data, idx) => (
@@ -725,6 +717,32 @@ function DecideContent() {
                             )}
                         </div>
                     ))}
+                </div>
+
+                {/* 🎯 SURPLUS INCOME COMPARISONS CURRENCY */}
+                <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-sm shadow-xl">
+                    <div className="flex items-center gap-3 mb-4 md:mb-0">
+                        <div className="bg-[#f97316]/10 p-2 rounded-sm">
+                            <BarChart3 className="size-4 text-[#f97316]" />
+                        </div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">
+                            Surplus Income Comparisons Currency
+                        </p>
+                    </div>
+                    <div className="flex bg-black/40 rounded-sm p-1 border border-white/5">
+                        {(['GBP', 'USD'] as const).map((cur) => (
+                            <button 
+                                key={cur} 
+                                onClick={() => setBenchmark(cur)} 
+                                className={cn(
+                                    "px-8 py-2 text-[10px] font-black rounded-sm transition-all uppercase italic", 
+                                    benchmark === cur ? "bg-[#007FFF] text-white shadow-lg" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                                )}
+                            >
+                                {cur}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="text-center mt-8 mb-8 max-w-2xl mx-auto px-4">

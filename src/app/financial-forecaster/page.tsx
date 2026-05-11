@@ -519,7 +519,12 @@ function DecoderContent() {
                         <div className="absolute top-0 left-0 w-1.5 h-full bg-[#f97316]" />
 
                         {/* 🎯 BENCHMARK CURRENCY TOGGLE */}
-                        <div className="flex items-center justify-end mb-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
+                            {BENCHMARKS.map(b => (
+                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white")}>{b.code}</button>
+                            ))}
+                          </div>
                           <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Monthly Disposable Surplus</p>
                         </div>
 
@@ -766,32 +771,6 @@ function DecoderContent() {
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">National and local safety rating derived from the Global Peace Index and Crime Index data.</TooltipContent>
                   </Tooltip>
-                </div>
-
-                {/* 🎯 SURPLUS INCOME COMPARISONS CURRENCY */}
-                <div className="mt-4 flex flex-col md:flex-row items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-sm shadow-xl">
-                  <div className="flex items-center gap-3 mb-4 md:mb-0">
-                    <div className="bg-[#f97316]/10 p-2 rounded-sm">
-                      <Coins className="size-4 text-[#f97316]" />
-                    </div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">
-                      Surplus Income Comparisons Currency
-                    </p>
-                  </div>
-                  <div className="flex bg-black/40 rounded-sm p-1 border border-white/5">
-                    {BENCHMARKS.map(b => (
-                      <button 
-                        key={b.code} 
-                        onClick={() => setBenchmark(b.code)} 
-                        className={cn(
-                          "px-6 py-2 text-[10px] font-black rounded-sm transition-all uppercase italic", 
-                          benchmark === b.code ? "bg-[#f97316] text-white shadow-lg" : "text-slate-500 hover:text-white hover:bg-white/5"
-                        )}
-                      >
-                        {b.code}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
                 <div className="mt-8 flex flex-col md:flex-row gap-4 items-center justify-between opacity-50 italic px-2 border-t border-white/5 pt-4">
