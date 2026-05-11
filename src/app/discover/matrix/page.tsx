@@ -291,7 +291,7 @@ function MatrixContent() {
                 </span>
               </div>
               
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-x-2 border-t-2 border-[#f97316] bg-[#f97316]/10 text-white")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Wallet className="size-3 text-green-400" /> Savings
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
@@ -301,7 +301,7 @@ function MatrixContent() {
                 </Tooltip>
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && "border-x-2 border-t-2 border-[#f97316] bg-[#f97316]/10 text-white")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Zap className="size-3 text-blue-400" /> Career
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
@@ -311,7 +311,7 @@ function MatrixContent() {
                 </Tooltip>
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-x-2 border-t-2 border-[#f97316] bg-[#f97316]/10 text-white")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10_rgba(249,115,22,0.1)]")}>
                 <Compass className="size-3 text-[#f97316]" /> Adventure
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
@@ -321,7 +321,7 @@ function MatrixContent() {
                 </Tooltip>
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('culture')) && "border-x-2 border-t-2 border-[#f97316] bg-[#f97316]/10 text-white")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance'))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Coffee className="size-3 text-yellow-400" /> Culture
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
@@ -390,21 +390,21 @@ function MatrixContent() {
                     </div>
 
                     <div className="grid grid-cols-4 lg:col-span-4 lg:grid lg:grid-cols-4 lg:w-full">
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Savings</span>
                         <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#f97316]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Career</span>
                         <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('career')) ? "text-[#f97316]" : "text-white")}>{country.scores.career.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Adv</span>
                         <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) ? "text-[#f97316]" : "text-white")}>{country.scores.adventure.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('culture')) && cn("lg:border-x-2 border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance'))) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Culture</span>
-                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('culture')) ? "text-[#f97316]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) ? "text-[#f97316]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
                       </div>
                     </div>
                   </div>
