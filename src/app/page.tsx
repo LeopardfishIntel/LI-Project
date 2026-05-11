@@ -246,7 +246,7 @@ export default function Home() {
                 <div className="space-y-3">
                   <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">Dynamic Command</h3>
                   <p className="text-sm text-slate-400 leading-relaxed font-medium">
-                    Our intel is the floor, not the ceiling. You can override any data point—from housing stipends to local tax—at any time. This allows you to model your &apos;Minimum Viable Salary&apos; vs. your &apos;Target Savings Goal&apos; based on your actual family needs.
+                    Our intel is the floor, not the ceiling. While primary indices are standardized, you can use tactical adjustment boxes to add or subtract any specific financial factor at any time. This allows you to model your &apos;Minimum Viable Salary&apos; vs. your &apos;Target Savings Goal&apos; based on your actual family needs.
                   </p>
                 </div>
               </div>
