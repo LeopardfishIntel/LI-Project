@@ -132,7 +132,7 @@ export default function Home() {
               <TacticalButton href="https://www.leopardfishintel.com/compare/" label="Check Your Offer" className="w-60 h-16" />
            </div>
 
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
+           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
               {counters.map((c) => (
                 <div key={c.label} className="flex flex-col items-center space-y-1 group">
                   <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />
