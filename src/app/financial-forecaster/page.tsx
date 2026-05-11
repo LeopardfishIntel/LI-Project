@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
-import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
-  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, FileText, Info, Car, Bus, Lock, ArrowDownCircle
+  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -487,6 +486,23 @@ function DecoderContent() {
                         <span className="text-[10px] font-black text-[#f97316] uppercase italic tracking-widest">Total outgoings</span>
                         <span className="text-[18px] font-black text-white tabular-nums">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
+
+                      {/* 🛡️ TACTICAL SETUP LINK */}
+                      <button 
+                        onClick={() => router.push('/prepare')}
+                        className="mt-4 w-full p-4 bg-[#007FFF]/5 border border-[#007FFF]/10 rounded-sm hover:bg-[#007FFF]/10 hover:border-[#007FFF]/40 transition-all group flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-3 text-left">
+                          <div className="bg-[#007FFF]/10 p-2 rounded-sm group-hover:scale-110 transition-transform">
+                            <Wallet className="size-4 text-[#007FFF]" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-black text-[#007FFF] uppercase tracking-widest leading-none mb-1">Calculate Setup Costs</p>
+                            <p className="text-[9px] font-medium text-slate-500 italic">Account for initial relocation and local setup expenses.</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="size-4 text-[#007FFF] group-hover:translate-x-1 transition-transform" />
+                      </button>
                     </div>
                   </div>
 
