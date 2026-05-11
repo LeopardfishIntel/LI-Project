@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Wallet, Users, Globe, Pencil, 
+import {
+  Wallet, Users, Globe, Pencil,
   GitCompare, Search, FileText, ShieldAlert,
   ArrowRight, Building2, Eye, BarChart3,
   Target, SlidersHorizontal
@@ -38,7 +38,7 @@ const COUNTER_FALLBACKS = {
 function TacticalButton({ href, label, className }: { href: string; label: string; className?: string }) {
   return (
     <Link href={href} prefetch={false}>
-      <Button 
+      <Button
         className={cn(
           "bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-14 px-10 transition-all hover:bg-[#f97316]/20 shadow-2xl text-sm whitespace-nowrap",
           className
@@ -57,7 +57,7 @@ export default function Home() {
   // 🛰️ DB UPLINKS
   const { data: schoolsData, isLoading: sLoading } = useCollection<School>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
   const { data: colData, isLoading: cLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
-  
+
   const metricsRef = useMemo(() => (mounted && firestore ? doc(firestore, 'app_metrics', 'page_views') : null), [firestore, mounted]);
   const { data: metrics, isLoading: mLoading } = useDoc<AppMetrics>(metricsRef as any);
 
@@ -65,7 +65,7 @@ export default function Home() {
 
   // 🌍 CALCULATED METRICS
   const isAnyLoading = sLoading || cLoading || mLoading;
-  
+
   const schoolCount = schoolsData?.length || COUNTER_FALLBACKS.schools;
   const countryCount = useMemo(() => {
     const fromSchools = schoolsData?.map(s => s.country).filter(Boolean) || [];
@@ -95,23 +95,23 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#f97316]">
-      
+
       {/* 🏔️ HERO SECTION */}
       <section className="relative w-full h-[82vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
         <Image src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" alt="Intelligence background" fill priority className="absolute inset-0 w-full h-full object-cover opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#020617] z-10"></div>
-        
-        <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center w-full pt-4">
-           {/* 🛡️ BADGE */}
-           <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-6 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-             ⦿ Actionable intelligence
-           </div>
 
-           {/* 🛡️ SURGICAL UPDATE: Applied Sharpening, Shadow, and Stroke to your existing H1 */}
-           <h1 
+        <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center w-full pt-4">
+          {/* 🛡️ BADGE */}
+          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-6 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+            ⦿ Actionable intelligence
+          </div>
+
+          {/* 🛡️ SURGICAL UPDATE: Applied Sharpening, Shadow, and Stroke to your existing H1 */}
+          <h1
             className="text-6xl md:text-8xl tracking-[0.2em] mb-4 leading-none font-sans antialiased opacity-90"
-            style={{ 
-              fontWeight: 100, 
+            style={{
+              fontWeight: 100,
               // 1. Tactical Lift (Shadow) + 4. Edge Definition (Stroke)
               textShadow: '0 2px 4px rgba(0,0,0,0.6), 0 0 1px rgba(0,0,0,1)',
               WebkitTextStroke: '0.5px rgba(0,0,0,0.25)',
@@ -120,33 +120,33 @@ export default function Home() {
               MozOsxFontSmoothing: 'grayscale',
               textRendering: 'optimizeLegibility'
             }}
-           >
-             <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
-           </h1>
-           
-           <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
-             Move with certainty, not just hope.
-           </p>
-           
-           <div className="flex flex-col sm:flex-row gap-4 mb-10">
-              <TacticalButton href="/find-your-fit/" label="Find Your Fit" className="w-60 h-16" />
-              <TacticalButton href="/decide/" label="Check Your Offer" className="w-60 h-16" />
-           </div>
+          >
+            <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+          </h1>
 
-           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
-              {counters.map((c) => (
-                <div key={c.label} className="flex flex-col items-center space-y-1 group">
-                  <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />
-                  <span className={cn(
-                    "text-3xl md:text-4xl font-black tracking-tighter transition-all tabular-nums",
-                    c.loading ? "text-white/20 animate-pulse" : "text-white"
-                  )}>
-                    {c.value}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold group-hover:text-[#f97316] transition-colors">{c.label}</span>
-                </div>
-              ))}
-           </div>
+          <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
+            Move with certainty, not just hope.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 mb-10">
+            <TacticalButton href="/find-your-fit/" label="Find Your Fit" className="w-60 h-16" />
+            <TacticalButton href="/decide/" label="Check Your Offer" className="w-60 h-16" />
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
+            {counters.map((c) => (
+              <div key={c.label} className="flex flex-col items-center space-y-1 group">
+                <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />
+                <span className={cn(
+                  "text-3xl md:text-4xl font-black tracking-tighter transition-all tabular-nums",
+                  c.loading ? "text-white/20 animate-pulse" : "text-white"
+                )}>
+                  {c.value}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold group-hover:text-[#f97316] transition-colors">{c.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -183,8 +183,8 @@ export default function Home() {
               <div className={cn("md:col-span-7 flex flex-col space-y-2", index % 2 === 1 ? "md:items-end md:text-right" : "items-start")}>
                 <h3 className="text-4xl md:text-5xl text-white font-black uppercase italic tracking-tighter leading-none">{step.title}</h3>
                 <p className="text-slate-400 text-lg leading-relaxed max-w-lg font-bold">{step.desc}</p>
-                <Link 
-                  href={step.link} 
+                <Link
+                  href={step.link}
                   prefetch={false}
                   className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-1 border-b border-transparent hover:border-[#f97316] transition-all"
                 >
@@ -200,9 +200,9 @@ export default function Home() {
       <section className="py-20 bg-[#0B0E14] border-t border-white/5 relative overflow-hidden">
         {/* Antigravity Ambient Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-[#FF6B00]/5 blur-[120px] pointer-events-none" />
-        
+
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
-          
+
           {/* 1. The Header Layer */}
           <div className="text-center mb-16 space-y-4 border-b border-white/5 pb-8">
             <h2 className="text-5xl md:text-7xl font-black text-[#FF6B00] tracking-tighter uppercase leading-none drop-shadow-[0_0_20px_rgba(255,107,0,0.2)]">
@@ -274,14 +274,14 @@ export default function Home() {
               <TacticalButton href="/decide/" label="Decide" className="w-48 h-14" />
               <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
             </div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest max-w-3xl leading-relaxed">
-              All data is adjusted for local tax jurisdictions and includes benefit quantifiers (Flights, CPD, Insurance) for a total compensation view.
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest max-w-4xl leading-relaxed">
+              * All data is adjusted for local tax jurisdictions and when known includes benefit quantifiers (Flights, CPD, Insurance) for a total compensation view. Refer to page footer for full disclosure.
             </p>
           </div>
 
         </div>
       </section>
-      
+
     </div>
   );
 }
