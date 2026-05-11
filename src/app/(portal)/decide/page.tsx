@@ -478,7 +478,7 @@ function DecideContent() {
                             <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#f97316] italic uppercase leading-none">Compare & Decide</h1>
                         </div>
 
-                        <div className="flex items-stretch gap-2">
+                        <div className="flex flex-col md:flex-row items-stretch gap-2 w-full md:w-auto">
                             {/* 👥 HOUSEHOLD */}
                             <div className="py-1 px-3 bg-[#f97316]/5 border border-[#f97316]/30 rounded-sm flex items-center gap-3 h-[52px]">
                                 <div className="size-7 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shrink-0">
