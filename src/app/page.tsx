@@ -6,7 +6,8 @@ import Image from 'next/image';
 import { 
   Wallet, Users, Globe, Pencil, 
   GitCompare, Search, FileText, ShieldAlert,
-  ArrowRight, Building2, Eye, BarChart3
+  ArrowRight, Building2, Eye, BarChart3,
+  Target, SlidersHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -16,14 +17,14 @@ import type { School, AppMetrics } from '@/lib/types';
 import goldfishImg from '@/assets/goldfish.jpg';
 
 const features = [
-  { title: "TRUE NET SAVINGS", desc: "Calculate genuine disposable income by mapping real-world costs against net offers.", icon: Wallet, color: "text-[#007FFF]" },
-  { title: "FAMILY SCALABILITY", desc: "Our estimates allow for the specific needs of both singles and families, using custom figures for every situation.", icon: Users, color: "text-[#f97316]" },
-  { title: "COST OF LIVING INDEX", desc: "Review primary data on housing, utilities, and essential spending in international locations.", icon: Globe, color: "text-[#007FFF]" },
-  { title: "LIVE OFFER INPUT", desc: "Add your offer details to see how this affects the finances.", icon: Pencil, color: "text-[#f97316]" },
-  { title: "COMPARISON MATRIX", desc: "Analyse up to 3 school offers side-by-side with verified benchmarks.", icon: GitCompare, color: "text-[#007FFF]" },
-  { title: "KEY FINDINGS", desc: "Receive curated analytical reports identifying strengths and risks.", icon: Search, color: "text-[#f97316]" },
-  { title: "FINAL PLAN", desc: "Final review, includes audits of housing, medical care, and departure plans.", icon: FileText, color: "text-[#007FFF]" },
-  { title: "CONTRACT FLAGS", desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses.", icon: ShieldAlert, color: "text-[#f97316]" }
+  { title: "TRUE NET SAVINGS", desc: "Calculate genuine disposable income by mapping real-world costs and tax-adjusted net offers.", icon: Wallet, color: "text-[#FF6B00]" },
+  { title: "FAMILY SCALABILITY", desc: "Adjust estimates for singles, couples, or families to see the true cost of dependents in specific regions.", icon: Users, color: "text-[#007FFF]" },
+  { title: "COST OF LIVING INDEX", desc: "Primary data on housing, utilities, and essential spending—benchmarked for expat lifestyles.", icon: Globe, color: "text-[#FF6B00]" },
+  { title: "LIVE OFFER INPUT", desc: "Plug in your actual contract offer to see how it stacks up against our regional 5-year medians.", icon: Pencil, color: "text-[#007FFF]" },
+  { title: "COMPARISON MATRIX", desc: "Analyse up to 3 school offers side-by-side using verified, standardized benchmarks.", icon: GitCompare, color: "text-[#FF6B00]" },
+  { title: "KEY FINDINGS", desc: "Receive curated analytical reports identifying strengths and hidden risks in your specific location.", icon: Search, color: "text-[#007FFF]" },
+  { title: "CONTRACT FLAGS", desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses before you sign.", icon: ShieldAlert, color: "text-[#FF6B00]" },
+  { title: "SAVINGS TARGETING", desc: "New: Work out the exact number you need to meet your personal wealth and savings goals.", icon: Target, color: "text-[#007FFF]" }
 ];
 
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
@@ -195,45 +196,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 📊 ANALYSIS IN ACTION */}
-      <section className="py-12 bg-[#020617] border-t border-white/5">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="text-center mb-16 space-y-2">
-            <h2 className="text-5xl md:text-7xl font-black text-[#f97316] tracking-tighter uppercase leading-none">
-              ANALYSIS IN ACTION
-            </h2>
-            <p className="text-slate-400 text-[10px] md:text-xs font-black tracking-[0.45em]">
-              Key examples of how we use data to drive decisions.
-            </p>
+      {/* 📊 THE INTEL ENGINE: ANALYSIS IN ACTION */}
+      <section className="py-20 bg-[#0B0E14] border-t border-white/5 relative overflow-hidden">
+        {/* Antigravity Ambient Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-[#FF6B00]/5 blur-[120px] pointer-events-none" />
+        
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          
+          {/* 1. The Header Layer */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-6 border-b border-white/5 pb-8">
+            <div className="space-y-4">
+              <h2 className="text-5xl md:text-7xl font-black text-[#FF6B00] tracking-tighter uppercase leading-none drop-shadow-[0_0_20px_rgba(255,107,0,0.2)]">
+                ANALYSIS IN ACTION
+              </h2>
+              <p className="text-slate-400 text-sm md:text-base font-bold italic tracking-tight max-w-2xl">
+                Key examples of how we use 22+ intelligence sources to drive your negotiation strategy.
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+              <div className="size-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,1)]" />
+              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none">SYSTEM STATUS: ACTIVE // DATA REFRESHED: MAY 2026</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-12 mb-20">
+          {/* 2. The Logic Layer (Two 50% Width Power Cards) */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* Card A: Benchmark */}
+            <div className="bg-white/[0.02] border border-white/10 p-8 rounded-sm shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-md hover:border-white/20 transition-all group">
+              <div className="flex flex-col md:flex-row items-start gap-5">
+                <div className="p-4 bg-[#FF6B00]/10 rounded-sm border border-[#FF6B00]/20 group-hover:bg-[#FF6B00]/20 transition-colors shrink-0">
+                  <Globe className="size-6 text-[#FF6B00]" />
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">The 5-Year Benchmark</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                    To ensure a true &apos;apples-to-apples&apos; comparison, all Leopardfish data is benchmarked to a 5-year teacher experience median. We triangulate filings from schools, verified teacher reports, and regional economic data to give you a reliable starting point in any country.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card B: Override */}
+            <div className="bg-white/[0.02] border border-white/10 p-8 rounded-sm shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-md hover:border-white/20 transition-all group">
+              <div className="flex flex-col md:flex-row items-start gap-5">
+                <div className="p-4 bg-[#007FFF]/10 rounded-sm border border-[#007FFF]/20 group-hover:bg-[#007FFF]/20 transition-colors shrink-0">
+                  <SlidersHorizontal className="size-6 text-[#007FFF]" />
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">Dynamic Command</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                    Our intel is the floor, not the ceiling. You can override any data point—from housing stipends to local tax—at any time. This allows you to model your &apos;Minimum Viable Salary&apos; vs. your &apos;Target Savings Goal&apos; based on your actual family needs.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. The Tactical Grid (8 Small 25% Width Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
             {features.map((f, i) => (
-              <div key={i} className="flex flex-col items-start group">
+              <div key={i} className="bg-white/[0.02] border border-white/10 p-6 rounded-sm shadow-[0_20px_40px_rgba(0,0,0,0.4)] backdrop-blur-md flex flex-col items-start group hover:border-[#FF6B00]/30 transition-all">
                 <div className="flex items-center gap-3 mb-4">
-                  <f.icon className={`size-5 ${f.color}`} />
-                  <h3 className="text-[13px] font-black text-white uppercase tracking-wider italic">
+                  <f.icon className={`size-5 ${f.color} group-hover:scale-110 transition-transform`} />
+                  <h3 className="text-[12px] font-black text-white uppercase tracking-widest italic leading-tight">
                     {f.title}
                   </h3>
                 </div>
-                <p className="text-[13px] text-slate-400 leading-relaxed font-medium">
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
                   {f.desc}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="pt-8 border-t border-white/5 text-center space-y-8">
-            <p className="text-base italic text-slate-400 font-medium tracking-tight">
-              Informed decisions start with Leopardfish Intel—the gold standard for indexed school and financial data.
+          {/* 4. The Footer Call-to-Action */}
+          <div className="border-t border-white/5 pt-12 flex flex-col items-center justify-center text-center space-y-6">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest max-w-3xl leading-relaxed">
+              All data is adjusted for local tax jurisdictions and includes benefit quantifiers (Flights, CPD, Insurance) for a total compensation view.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-               <TacticalButton href="/find-your-fit/" label="Discover" className="w-48 h-14" />
-               <TacticalButton href="/financial-forecaster/" label="Evaluate" className="w-48 h-14" />
-               <TacticalButton href="/decide/" label="Decide" className="w-48 h-14" />
-               <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
-            </div>
+            <TacticalButton href="/decide/" label="START YOUR ANALYSIS" className="w-64 h-16" />
           </div>
+
         </div>
       </section>
       
