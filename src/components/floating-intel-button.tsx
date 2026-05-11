@@ -26,7 +26,7 @@ export function FloatingIntelButton() {
       <div className="absolute inset-0 bg-[#f97316]/20 rounded-full animate-ping opacity-75 group-hover:opacity-0 transition-opacity"></div>
       
       <div className="relative">
-        <Link href="https://www.leopardfishintel.com/enquiry/" prefetch={false}>
+        <Link href="/enquiry/" prefetch={false}>
           <Button 
             className={cn(
               "h-14 w-14 md:h-16 md:w-16 rounded-full bg-[#f97316] hover:bg-[#f97316]/90 text-white shadow-[0_0_30px_rgba(249,115,22,0.4)] border-2 border-white/10",

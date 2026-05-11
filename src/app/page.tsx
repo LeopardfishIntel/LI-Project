@@ -86,7 +86,7 @@ export default function Home() {
   const steps = [
     { title: 'Discover', desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle.", link: '/find-your-fit/', imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', label: 'Find Your Fit' },
     { title: 'Evaluate', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid.", link: '/financial-forecaster/', imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', label: 'Financial Forecast' },
-    { title: 'Decide', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: 'https://www.leopardfishintel.com/compare/', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'Compare Offers' },
+    { title: 'Decide', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: '/decide/', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'Compare Offers' },
     { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare/', imageUrl: (goldfishImg as any).src || goldfishImg, label: 'Get Ready' },
   ];
 
@@ -129,7 +129,7 @@ export default function Home() {
            
            <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <TacticalButton href="/find-your-fit/" label="Find Your Fit" className="w-60 h-16" />
-              <TacticalButton href="https://www.leopardfishintel.com/compare/" label="Check Your Offer" className="w-60 h-16" />
+              <TacticalButton href="/decide/" label="Check Your Offer" className="w-60 h-16" />
            </div>
 
            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
@@ -230,7 +230,7 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4">
                <TacticalButton href="/find-your-fit/" label="Discover" className="w-48 h-14" />
                <TacticalButton href="/financial-forecaster/" label="Evaluate" className="w-48 h-14" />
-               <TacticalButton href="https://www.leopardfishintel.com/compare/" label="Decide" className="w-48 h-14" />
+               <TacticalButton href="/decide/" label="Decide" className="w-48 h-14" />
                <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
             </div>
           </div>
