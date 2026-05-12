@@ -73,6 +73,13 @@ function DecoderContent() {
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
+  
+  // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
+  useEffect(() => {
+    if (settings.country.toLowerCase() === "oman") {
+      setTransportMode("C");
+    }
+  }, [settings.country]);
 
   useEffect(() => { setMounted(true); }, []);
 
