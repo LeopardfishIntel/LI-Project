@@ -130,7 +130,7 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const salaryVal = getSchoolField(activeSchool, ['salaryrange', 'salary', 'netbase']);
+    const salaryVal = getSchoolField(activeSchool, ['salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
       const cleanRange = String(salaryVal).replace(/,/g, '').replace(/\.\d+/g, '');
       const range = cleanRange.match(/\d+/g);
@@ -364,7 +364,10 @@ function DecoderContent() {
                 {/* Header Row */}
                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
                   <div className="space-y-2">
-                    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">{getSchoolField(activeSchool, ['schoolname', 'name', 'school'])}</h2>
+                    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">
+                      {getSchoolField(activeSchool, ['schoolname', 'name', 'school'])}
+                      <span className="text-slate-700 text-lg ml-3 not-italic">#{activeSchool.id}</span>
+                    </h2>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[10px] font-black text-[#f97316] uppercase tracking-widest bg-[#f97316]/10 px-2 py-1 rounded-sm border border-[#f97316]/20">
                         {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
