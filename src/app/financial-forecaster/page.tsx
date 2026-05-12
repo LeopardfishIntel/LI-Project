@@ -381,21 +381,33 @@ function DecoderContent() {
                       </span>
                       <div className="flex gap-2">
                         {(analysis?.surplus ?? 0) <= 0 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-white/10 bg-rose-500/20">
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-rose-500/20 bg-rose-500/10">
                             <AlertCircle className="size-3.5 text-rose-500" />
                             <span className="text-[9px] font-black uppercase tracking-tight text-rose-500">Capital loss</span>
                           </div>
                         )}
-                        {(analysis?.surplus ?? 0) > 0 && (analysis?.rateOfSaving ?? 0) < 15 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-white/10 bg-[#f97316]/20">
+                        {(analysis?.surplus ?? 0) > 0 && (analysis?.rateOfSaving ?? 0) <= 10 && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[#f97316]/20 bg-[#f97316]/10">
                             <AlertTriangle className="size-3.5 text-[#f97316]" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-[#f97316]">Tight potential</span>
+                            <span className="text-[9px] font-black uppercase tracking-tight text-[#f97316]">Limited Potential</span>
                           </div>
                         )}
-                        {(analysis?.rateOfSaving ?? 0) >= 15 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-white/10 bg-emerald-400/10">
+                        {(analysis?.rateOfSaving ?? 0) > 10 && (analysis?.rateOfSaving ?? 0) <= 20 && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
                             <Coins className="size-3.5 text-emerald-400" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-400">Strong potential</span>
+                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-400">Good Savings Potential</span>
+                          </div>
+                        )}
+                        {(analysis?.rateOfSaving ?? 0) > 20 && (analysis?.rateOfSaving ?? 0) <= 30 && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
+                            <Coins className="size-3.5 text-emerald-400" />
+                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-400">Significant Savings Potential</span>
+                          </div>
+                        )}
+                        {(analysis?.rateOfSaving ?? 0) > 30 && (
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-400/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                            <Zap className="size-3.5 text-emerald-300" />
+                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-300">Excellent Savings Potential</span>
                           </div>
                         )}
                       </div>
