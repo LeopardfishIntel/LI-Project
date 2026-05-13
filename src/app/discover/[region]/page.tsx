@@ -397,14 +397,9 @@ function DossierContent() {
                 const isStrategicFocus = params.goals.some(g => g.toLowerCase().includes(m.label.toLowerCase()));
                 return (
                   <div key={m.label} className={cn(
-                    "p-6 border-r last:border-r-0 border-white/5 space-y-3 transition-all duration-500 group relative overflow-hidden",
-                    isStrategicFocus ? "bg-[#f97316]/5 border-t-2 border-t-[#f97316] -mt-[2px]" : "hover:bg-white/[0.02]"
+                    "p-6 border-r border-b lg:border-b-0 border-white/5 space-y-3 transition-all duration-500 group relative overflow-hidden",
+                    isStrategicFocus ? "bg-[#f97316]/5 border-2 border-[#f97316] z-10 shadow-[0_0_20px_rgba(249,115,22,0.1)]" : "hover:bg-white/[0.02]"
                   )}>
-                    {isStrategicFocus && (
-                      <div className="absolute top-0 right-0 p-2">
-                        <Target className="size-3 text-[#f97316] animate-pulse" />
-                      </div>
-                    )}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <m.icon className={cn("size-4", m.color)} />
@@ -412,7 +407,7 @@ function DossierContent() {
                           {m.label} {isStrategicFocus ? "Focus" : "Intel"}
                         </span>
                       </div>
-                      <span className={cn("text-xl font-black italic", m.color)}>{m.score}</span>
+                      <span className={cn("text-xl font-black italic", m.color)}>{m.score.toFixed(1)}</span>
                     </div>
                     <p className={cn("text-[12px] leading-relaxed italic transition-colors", isStrategicFocus ? "text-slate-200" : "text-slate-400 group-hover:text-white")}>
                       {getScoreRationale(m.label, m.score, country.country, country.region)}
