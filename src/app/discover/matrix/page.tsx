@@ -3,14 +3,12 @@
 import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, ChevronRight, AlertTriangle, Globe2, Target
+  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
 import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
-import { 
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger 
-} from "@/components/ui/tooltip";
+import { cn } from '@/lib/utils';
 
 function deriveIntelligenceScores(country: any, finances: any) {
     const name = country.country || "Unknown";
@@ -264,7 +262,6 @@ function MatrixContent() {
           </div>
         </header>
 
-        <TooltipProvider delayDuration={100}>
           <div className="bg-[#0b1224] border border-white/10 rounded-sm overflow-hidden shadow-2xl animate-in zoom-in-95 duration-500 relative">
             
             <div className="bg-white/5 px-4 py-2 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-white/10 flex items-center gap-2 italic">
@@ -279,12 +276,7 @@ function MatrixContent() {
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
                   <span>Country Saving Index</span>
-                  <Tooltip>
-                    <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help text-slate-500" /></TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                      <p>Surplus is hard-capped at £4,500 per teacher and £3,500 for those with dependents to prevent unrealistic financial modeling.</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <Info className="size-3 text-slate-500 cursor-help" />
                 </div>
                 <span className="text-[8px] text-slate-500 normal-case tracking-normal mt-0.5">
                   Est. monthly surplus per teacher
@@ -293,42 +285,22 @@ function MatrixContent() {
               
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Wallet className="size-3 text-green-400" /> Savings
-                <Tooltip>
-                  <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
-                  <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Calculated as Net Salary vs. Housing/Living Index.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
-                <Zap className="size-3 text-blue-400" /> Career
-                <Tooltip>
-                  <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
-                  <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Evaluates the density of top-tier accredited schools, professional development norms, and internal leadership pathways.</p>
-                  </TooltipContent>
-                </Tooltip>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => g.toLowerCase().includes('career')) || params.goals.some((g:string) => g.toLowerCase().includes('growth'))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+                <Zap className="size-3 text-sky-400" /> Career
+                <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10_rgba(249,115,22,0.1)]")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Compass className="size-3 text-[#f97316]" /> Adventure
-                <Tooltip>
-                  <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
-                  <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Calculated as Travel Connectivity vs. Geographic Diversity—including access to desert safaris, jungle trekking, and world-class diving.</p>
-                  </TooltipContent>
-                </Tooltip>
+                <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance'))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
-                <Coffee className="size-3 text-yellow-400" /> Culture
-                <Tooltip>
-                  <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
-                  <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Scores the ease of local integration, English proficiency, and access to historic architecture, theatre, and heritage sites.</p>
-                  </TooltipContent>
-                </Tooltip>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+                <Coffee className="size-3 text-rose-400" /> Culture
+                <Info className="size-3 cursor-help" />
               </div>
             </div>
 
@@ -413,7 +385,7 @@ function MatrixContent() {
               )}
             </div>
           </div>
-        </TooltipProvider>
+          </div>
 
         {sortedCountries.length > 5 && (
           <div className="flex justify-center mt-4 animate-in fade-in duration-500 delay-500 fill-mode-both">

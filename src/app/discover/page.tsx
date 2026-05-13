@@ -9,9 +9,6 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from '@/components/ui/input';
-import { 
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger 
-} from "@/components/ui/tooltip";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 
@@ -210,7 +207,6 @@ export default function FindYourFitGate() {
             <label className="text-[14px] font-bold text-[#007FFF] tracking-wide flex items-center gap-2 uppercase">
               <Target className="size-4" /> Operational goals (Max 2)
             </label>
-            <TooltipProvider delayDuration={100}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
                     { id: 'savings', label: 'savings', tip: 'Calculated as Net Salary vs. Housing/Living Index.' },
@@ -220,29 +216,22 @@ export default function FindYourFitGate() {
                   ].map((goal) => {
                       const isActive = profile.goals.some(g => g.toLowerCase() === goal.id.toLowerCase());
                       return (
-                        <Tooltip key={goal.id}>
-                          <TooltipTrigger asChild>
-                            <button 
-                              type="button"
-                              onClick={() => toggleArrayItem('goals', goal.id, 2)} 
-                              className={cn(
-                                "h-16 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border uppercase cursor-help", 
-                                isActive 
-                                  ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
-                                  : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
-                              )}
-                            >
-                              {goal.label}
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[10px] uppercase font-bold p-3 max-w-[200px] text-center leading-relaxed tracking-wider italic">
-                            {goal.tip}
-                          </TooltipContent>
-                        </Tooltip>
+                        <button 
+                          key={goal.id}
+                          type="button"
+                          onClick={() => toggleArrayItem('goals', goal.id, 2)} 
+                          className={cn(
+                            "h-16 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border uppercase", 
+                            isActive 
+                              ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
+                              : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
+                          )}
+                        >
+                          {goal.label}
+                        </button>
                       );
                   })}
               </div>
-            </TooltipProvider>
           </div>
 
           {/* Target regions */}
