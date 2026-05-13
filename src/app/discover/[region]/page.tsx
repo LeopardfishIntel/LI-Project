@@ -376,7 +376,7 @@ function DossierContent() {
                   <button 
                     onClick={() => {
                       const ids = country.schools?.slice(0, 3).map((s: any) => s.id).join(',');
-                      router.push(`/compare?ids=${ids}`);
+                      router.push(`/decide?ids=${ids}`);
                     }}
                     className="w-full max-w-[240px] bg-[#f97316] text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-white transition-all flex items-center justify-between px-6 rounded-full group shadow-2xl"
                   >
