@@ -64,27 +64,27 @@ function getScoreRationale(metric: string, score: number, country: string, regio
   const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece"].includes(c);
 
   if (metric.toLowerCase() === 'adventure') {
-    if (isHub) return `Strategic regional hub with elite connectivity. Your score reflects the ability to use ${country} as a 'weekend warrior' launchpad for ${region} exploration.`;
-    if (score >= 8.5) return `Deep internal exploration potential. This score is driven by the sheer geographical diversity and domestic travel ease within ${country} borders.`;
-    return `A stable base for regional exploration. The score indicates strong domestic travel infrastructure and established routes to major ${region} hubs.`;
+    if (isHub) return `A strategic regional hub with excellent travel links. This score reflects your ability to use ${country} as a 'weekend warrior' base for exploring ${region} during half-terms and breaks.`;
+    if (score >= 8.5) return `Outstanding domestic exploration potential. This rating is driven by the sheer geographical variety and the ease of travelling within ${country} borders during your non-contact time.`;
+    return `A stable base for regional exploration. The score indicates strong local travel infrastructure and well-established routes to major ${region} hubs.`;
   }
 
   if (metric.toLowerCase() === 'savings') {
-    if (isTaxFree) return `Maximum capital accumulation. The absence of local income tax, combined with provided housing, hard-codes this as a superior savings deployment.`;
-    if (score >= 8.0) return `Low local index advantage. Your surplus here has massive local purchasing power, allowing for a high-quality lifestyle while still saving significantly.`;
-    return `Provides a robust financial buffer. The score reflects a reliable monthly surplus after accounting for a standard international lifestyle.`;
+    if (isTaxFree) return `A superior environment for saving. The absence of local income tax, combined with school-provided housing, makes this a particularly effective posting for building a solid financial buffer.`;
+    if (score >= 8.0) return `Excellent local purchasing power. Your surplus here goes significantly further than in the UK or Europe, allowing for a comfortable lifestyle while still saving a healthy monthly amount.`;
+    return `Provides a reliable financial cushion. This score reflects a steady monthly surplus after accounting for a standard international teaching lifestyle.`;
   }
 
   if (metric.toLowerCase() === 'culture') {
-    if (isHighHeritage) return `Exceptional social infrastructure and deep heritage. This score is driven by a high density of 'Third Spaces' (cafés/hubs) and a welcoming, immersive local community.`;
-    if (r.includes('europe') || r.includes('americas')) return `High social ease index. The social fabric here is built on a rich community culture and deep integration, scoring high for lifestyle balance.`;
-    return `An established professional environment. Integration is straightforward due to well-connected expat social fabrics and supportive international school hubs.`;
+    if (isHighHeritage) return `Exceptional social infrastructure and rich heritage. The score is driven by a high density of 'third spaces'—cafés, social hubs, and historic sites—and a welcoming local community.`;
+    if (r.includes('europe') || r.includes('americas')) return `High social ease. The social fabric here is built on a rich community culture and straightforward integration, scoring well for overall work-life balance.`;
+    return `An established professional environment. Integration is generally smooth due to well-connected expat social circles and supportive international school communities.`;
   }
 
   if (metric.toLowerCase() === 'career') {
-    if (score >= 8.5) return `High-density market mobility. This score reflects superior internal promotion potential and a deep hierarchy of leadership roles across Tier-1 schools.`;
-    if (score >= 7.0) return `Solid professional stability. The score is anchored by the presence of recognized international curriculum standards and high academic attainment norms.`;
-    return `A stable professional hub. While individual schools are strong, the score indicates a focus on steady professional development within a specific institution.`;
+    if (score >= 8.5) return `A high-density market for professional growth. This score reflects strong internal promotion potential and a deep hierarchy of leadership roles across Tier-1 schools.`;
+    if (score >= 7.0) return `Solid professional stability. The rating is anchored by the presence of recognised international curriculum standards and high academic attainment norms within the local schools.`;
+    return `A stable professional hub. While individual schools are strong, the score indicates a focus on steady professional development and classroom practice within a specific institution.`;
   }
 
   return `Intelligence score based on regional cost-of-living indices and professional market data for ${country}.`;
