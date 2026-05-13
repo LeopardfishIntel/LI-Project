@@ -404,7 +404,7 @@ function DossierContent() {
                       <div className="flex items-center gap-2">
                         <m.icon className={cn("size-4", m.color)} />
                         <span className={cn("text-[10px] font-black uppercase tracking-widest", isStrategicFocus ? "text-[#f97316]" : "text-slate-500")}>
-                          {m.label} {isStrategicFocus ? "Focus" : "Intel"}
+                          {m.label}
                         </span>
                       </div>
                       <span className={cn("text-xl font-black italic", m.color)}>{m.score.toFixed(1)}</span>
