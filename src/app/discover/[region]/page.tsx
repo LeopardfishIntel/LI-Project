@@ -416,7 +416,7 @@ function DossierContent() {
                 );
               })}
             </div>
-          ))}
+          )}
         </div>
         
         {/* WORTH CONSIDERING SECTION (No brackets) */}
