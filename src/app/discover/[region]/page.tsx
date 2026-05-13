@@ -393,20 +393,33 @@ function DossierContent() {
                 { label: 'Savings', score: country.suitability.savings, icon: Banknote, color: 'text-emerald-400' },
                 { label: 'Culture', score: country.suitability.balance, icon: Heart, color: 'text-rose-400' },
                 { label: 'Career', score: country.suitability.career, icon: Zap, color: 'text-sky-400' }
-              ].map((m) => (
-                <div key={m.label} className="p-6 border-r last:border-r-0 border-white/5 space-y-3 hover:bg-white/[0.02] transition-colors group">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <m.icon className={cn("size-4", m.color)} />
-                      <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">{m.label} Intel</span>
+              ].map((m) => {
+                const isStrategicFocus = params.goals.some(g => g.toLowerCase().includes(m.label.toLowerCase()));
+                return (
+                  <div key={m.label} className={cn(
+                    "p-6 border-r last:border-r-0 border-white/5 space-y-3 transition-all duration-500 group relative overflow-hidden",
+                    isStrategicFocus ? "bg-[#f97316]/5 border-t-2 border-t-[#f97316] -mt-[2px]" : "hover:bg-white/[0.02]"
+                  )}>
+                    {isStrategicFocus && (
+                      <div className="absolute top-0 right-0 p-2">
+                        <Target className="size-3 text-[#f97316] animate-pulse" />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <m.icon className={cn("size-4", m.color)} />
+                        <span className={cn("text-[10px] font-black uppercase tracking-widest", isStrategicFocus ? "text-[#f97316]" : "text-slate-500")}>
+                          {m.label} {isStrategicFocus ? "Focus" : "Intel"}
+                        </span>
+                      </div>
+                      <span className={cn("text-xl font-black italic", m.color)}>{m.score}</span>
                     </div>
-                    <span className={cn("text-xl font-black italic", m.color)}>{m.score}</span>
+                    <p className={cn("text-[12px] leading-relaxed italic transition-colors", isStrategicFocus ? "text-slate-200" : "text-slate-400 group-hover:text-white")}>
+                      {getScoreRationale(m.label, m.score, country.country, country.region)}
+                    </p>
                   </div>
-                  <p className="text-[12px] text-slate-400 leading-relaxed italic group-hover:text-white transition-colors">
-                    {getScoreRationale(m.label, m.score, country.country, country.region)}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
             </div>
           ))}
