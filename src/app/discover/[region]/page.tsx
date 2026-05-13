@@ -9,7 +9,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
-import { canonicalCountry, RATES, calculateLocalSavingsScore } from '@/lib/calculations';
+import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores } from '@/lib/calculations';
 
 // 🛡️ Bespoke Teacher Security (Direct British English / Globalised)
 const getBespokeTeacherSecurity = (country: string) => {
@@ -25,34 +25,8 @@ const getBespokeTeacherSecurity = (country: string) => {
 // 🧮 Creative Intelligence Heuristics (Regional/Economic Correlation)
 function deriveIntelligenceScores(country: any, finances: any) {
     const name = country.country || "Unknown";
-    const region = (country.region || "").toLowerCase();
-    
-    let advBase = 5.5;
-    if (region.includes("asia")) advBase = 8.4;
-    else if (region.includes("middle east")) advBase = 7.6;
-    else if (region.includes("africa")) advBase = 8.2;
-    else if (region.includes("europe")) advBase = 6.8;
-    else if (region.includes("americas")) advBase = 6.4;
-    
-    if (name.includes("Switzerland") || name.includes("Austria") || name.includes("Vietnam") || name.includes("Thailand")) advBase += 0.8;
-    if (name.includes("China") || name.includes("Japan")) advBase += 0.5;
-    
-    const advVar = (name.length % 4) / 10;
-    const adventure = Number(Math.min(9.9, advBase + advVar).toFixed(1));
-
-    let culBase = 5.8;
-    if (region.includes("europe")) culBase = 8.5;
-    else if (region.includes("east asia")) culBase = 8.2;
-    else if (region.includes("se asia")) culBase = 7.4;
-    else if (region.includes("middle east")) culBase = 6.8;
-    
-    if (Number(finances?.rent1br) > 1500) culBase += 0.4;
-    if (name.includes("France") || name.includes("Italy") || name.includes("Spain") || name.includes("Japan")) culBase += 0.7;
-    
-    const culVar = (name.charCodeAt(0) % 4) / 10;
-    const culture = Number(Math.min(9.9, culBase + culVar).toFixed(1));
-
-    return { adventure, culture };
+    const region = country.region || "";
+    return getStrategicScores(name, region);
 }
 
 function getScoreRationale(metric: string, score: number, country: string, region: string) {

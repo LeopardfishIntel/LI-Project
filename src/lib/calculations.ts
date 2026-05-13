@@ -21,6 +21,71 @@ export const canonicalCountry = (c: string) => {
   return n;
 };
 
+/**
+ * 🕵️ STRATEGIC INTELLIGENCE TIERS
+ * Tier 3: Legendary | Tier 2: High | Tier 1: Standard | Tier 0: Limited
+ */
+export const INTELLIGENCE_TIERS: Record<string, { adv: number, cul: number }> = {
+  "jordan": { adv: 3, cul: 3 },
+  "vietnam": { adv: 3, cul: 2 },
+  "switzerland": { adv: 3, cul: 2 },
+  "nepal": { adv: 3, cul: 1 },
+  "italy": { adv: 2, cul: 3 },
+  "france": { adv: 2, cul: 3 },
+  "japan": { adv: 2, cul: 3 },
+  "egypt": { adv: 2, cul: 3 },
+  "china": { adv: 2, cul: 2 },
+  "thailand": { adv: 2, cul: 2 },
+  "spain": { adv: 1, cul: 3 },
+  "greece": { adv: 1, cul: 3 },
+  "portugal": { adv: 1, cul: 3 },
+  "united arab emirates": { adv: 1, cul: 1 },
+  "qatar": { adv: 1, cul: 1 },
+  "singapore": { adv: 1, cul: 2 },
+  "hong kong": { adv: 1, cul: 2 },
+  "saudi arabia": { adv: 1, cul: 1 },
+  "oman": { adv: 2, cul: 2 },
+  "kuwait": { adv: 0, cul: 1 },
+  "bahrain": { adv: 0, cul: 1 },
+  "united kingdom": { adv: 1, cul: 2 },
+  "united states": { adv: 2, cul: 1 },
+  "brazil": { adv: 3, cul: 2 },
+  "kenya": { adv: 3, cul: 1 },
+  "tanzania": { adv: 3, cul: 1 },
+  "peru": { adv: 3, cul: 2 },
+  "new zealand": { adv: 3, cul: 1 },
+};
+
+export function getStrategicScores(countryName: string, region: string) {
+  const c = canonicalCountry(countryName);
+  const r = (region || "").toLowerCase();
+  const tiers = INTELLIGENCE_TIERS[c];
+
+  const getBase = (lvl: number) => {
+    if (lvl === 3) return 9.0;
+    if (lvl === 2) return 8.0;
+    if (lvl === 1) return 6.5;
+    return 4.5;
+  };
+
+  // Regional Fallbacks
+  const fallbackAdv = r.includes("asia") || r.includes("africa") || r.includes("south america") ? 2 : 1;
+  const fallbackCul = r.includes("europe") || r.includes("east asia") ? 2 : 1;
+
+  let advBase = getBase(tiers?.adv ?? fallbackAdv);
+  let culBase = getBase(tiers?.cul ?? fallbackCul);
+
+  // Micro-Variance (0.0 to 0.8)
+  const hash = c.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const advVar = (hash % 9) / 10;
+  const culVar = ((hash * 7) % 9) / 10;
+
+  return {
+    adventure: Number(Math.min(9.9, advBase + advVar).toFixed(1)),
+    culture: Number(Math.min(9.9, culBase + culVar).toFixed(1))
+  };
+}
+
 export const PROFILE_MAP: Record<string, string> = {
   "single": "single",
   "married-dual": "marriedDualIncome",
@@ -151,9 +216,6 @@ export function calculateBudget(params: BudgetParams) {
   const livingVal = expenditureOverride !== null ? expenditureOverride : ((groceriesMonthly + utilitiesMonthly) * setupMultiplier);
 
   // 4. Transport
-  // drive = fixed car purchase
-  // public = monthly pass * time
-  // taxi = (public * 4) * time (heuristic for daily ride-share)
   const isDriving = transportMode === 'drive';
   const isTaxi = transportMode === 'taxi';
   
@@ -248,7 +310,6 @@ export function calculateSavingsScore(salaryNum: number, familyStatus: string, c
   const ratio = (surplus * 12) / (salaryNum * incomeMultiplier); // Annual surplus vs Annual salary
   
   // Base 4.0 + up to 6 points based on ratio
-  // A 40% surplus ratio = 4.0 + 6.0 = 10 (capped at 9.9)
   let rawScore = 4.0 + (ratio * 15);
   rawScore = Math.max(0.0, Math.min(9.9, rawScore));
   
@@ -257,12 +318,6 @@ export function calculateSavingsScore(salaryNum: number, familyStatus: string, c
 
 /**
  * 🧮 LOCAL SAVINGS SCORE
- * Uses local monthly net USD instead of an annual home salary.
- * 
- * WORLDWIDE ABSOLUTE BASELINE:
- * $0 surplus = 4.0
- * $1,260 surplus = 7.0
- * $2,500+ surplus = 9.9
  */
 export function calculateSurplus(localNetUSD: number, familyStatus: string, cityData: any): number {
   const isFamily = familyStatus.toLowerCase().includes('family');
@@ -296,7 +351,6 @@ export function calculateSurplus(localNetUSD: number, familyStatus: string, city
     rent = Number(cityData?.rent2br) || (rent * 1.2);
   }
 
-  // SUM ALL CORE OUTGOINGS (Mirroring Financial Forecaster logic with granular fallbacks)
   const groceries = getVal(cityData?.groceries, pKey, scalar) || (250 * scalar);
   const utilities = getVal(cityData?.utilities, pKey, scalar * 0.8) || (120 * scalar);
   const connectivity = (getVal(cityData?.internet, pKey, 1) || 50) + ((getVal(cityData?.mobilePhone, pKey, 1) || 30) * personCount);
@@ -306,7 +360,6 @@ export function calculateSurplus(localNetUSD: number, familyStatus: string, city
   const totalOut = rent + groceries + utilities + connectivity + transport + social;
   const rawSurplus = localNetUSD - totalOut;
   
-  // 🛡️ FINANCIAL REALITY CAPS
   const maxCap = isFamily ? 4400 : 5700;
   
   return Math.min(rawSurplus, maxCap);
@@ -314,9 +367,6 @@ export function calculateSurplus(localNetUSD: number, familyStatus: string, city
 
 export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any): number {
   const surplus = calculateSurplus(localNetUSD, familyStatus, cityData);
-  
-  // Worldwide Absolute Formula - Stretched to create diverse 0-9.9 differentiation
-  // You now need the absolute max cap ($5700) to hit a 9.9.
   let rawScore = 4.0 + (surplus / 960);
   rawScore = Math.max(0.0, Math.min(9.9, rawScore));
   

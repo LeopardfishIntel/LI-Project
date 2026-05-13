@@ -6,46 +6,13 @@ import {
   ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
-import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry } from '@/lib/calculations';
+import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
 
 function deriveIntelligenceScores(country: any, finances: any) {
     const name = country.country || "Unknown";
-    const region = (country.region || "").toLowerCase();
-    
-    // 1. ADVENTURE SCORE (The 'Weekend Warrior' / Exploration Factor)
-    let advBase = 5.0;
-    if (region.includes("asia")) advBase = 7.4;
-    else if (region.includes("middle east")) advBase = 6.6;
-    else if (region.includes("africa")) advBase = 7.2;
-    else if (region.includes("europe")) advBase = 5.8;
-    else if (region.includes("americas")) advBase = 6.4;
-    
-    // Modifiers based on specific country profile
-    if (name.includes("Switzerland") || name.includes("Austria") || name.includes("Vietnam") || name.includes("Thailand")) advBase += 0.8;
-    if (name.includes("China") || name.includes("Japan")) advBase += 0.5;
-    
-    // 🛡️ UNIQUE DATA FEED: Strong hash to prevent duplicate scores for nearby countries
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    const advVar = Math.abs(hash % 25) / 10; // Adds 0.0 to 2.4 unique variance
-    const adventure = Number(Math.min(9.9, advBase + advVar).toFixed(1));
-
-    // 2. CULTURE SCORE (The 'Integration / Cafe Culture' Factor)
-    let culBase = 5.2;
-    if (region.includes("europe")) culBase = 7.5;
-    else if (region.includes("east asia")) culBase = 7.2;
-    else if (region.includes("se asia")) culBase = 6.4;
-    else if (region.includes("middle east")) culBase = 5.8;
-    
-    // Modifier: Financial 'Third Space' correlation
-    if (Number(finances?.rent1br) > 1500) culBase += 0.4;
-    if (name.includes("France") || name.includes("Italy") || name.includes("Spain") || name.includes("Japan")) culBase += 0.7;
-    
-    const culVar = Math.abs((hash * 7) % 32) / 10; // Adds 0.0 to 3.1 unique variance
-    const culture = Number(Math.min(9.9, culBase + culVar).toFixed(1));
-
-    return { adventure, culture };
+    const region = country.region || "";
+    return getStrategicScores(name, region);
 }
 
 function getMissionIntelligence(goals: string[], topCountry: string): { title: string, content: string } {
