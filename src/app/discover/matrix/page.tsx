@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target
+  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
 import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry } from '@/lib/calculations';
