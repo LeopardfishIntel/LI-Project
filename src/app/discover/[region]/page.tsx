@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { 
   ShieldCheck, Loader2, ArrowLeft, TrendingUp, 
-  Lock, Zap, GraduationCap, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle
+  Lock, Zap, GraduationCap, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle, ChevronRight
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -328,20 +328,10 @@ function DossierContent() {
                   
                   {/* Truncated at 7 lines */}
                   <div className="p-6 bg-[#007FFF]/5 border border-[#007FFF]/40 flex-grow">
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-4">
                       <p className="text-[#007FFF] text-[13px] font-black uppercase tracking-widest flex items-center gap-2">
                         <ShieldCheck className="size-4" /> Security Reflection
                       </p>
-                      {liveSecurity?.sourceUrl && (
-                        <a 
-                          href={liveSecurity.sourceUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-[9px] text-slate-500 hover:text-[#007FFF] font-bold uppercase underline tracking-tighter"
-                        >
-                          Source: Gov.uk
-                        </a>
-                      )}
                     </div>
                     {loadingSecurity ? (
                       <div className="flex items-center gap-2 py-4 animate-pulse">
@@ -349,9 +339,32 @@ function DossierContent() {
                         <span className="text-[11px] font-black uppercase text-slate-500 tracking-widest">Decrypting Live Feed...</span>
                       </div>
                     ) : (
-                      <p className="text-[15px] text-white leading-relaxed font-medium italic transition-all">
-                        "{liveSecurity?.reflection || country.safety}"
-                      </p>
+                      <div className="space-y-4">
+                        <p className="text-[15px] text-white leading-relaxed font-medium italic transition-all">
+                          "{liveSecurity?.reflection || country.safety}"
+                        </p>
+                        
+                        <div className="pt-4 border-t border-[#007FFF]/20 flex flex-wrap gap-3">
+                          {liveSecurity?.sourceUrl && (
+                            <a 
+                              href={liveSecurity.sourceUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="flex items-center gap-2 bg-[#007FFF] text-white px-3 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all shadow-lg shadow-[#007FFF]/20 rounded-sm"
+                            >
+                              Official Gov.uk Briefing <ChevronRight className="size-3" />
+                            </a>
+                          )}
+                          <a 
+                            href={`https://www.reuters.com/site-search/?query=${country.country}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="flex items-center gap-2 bg-black/40 text-[#f97316] border border-[#f97316]/30 px-3 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-[#f97316] hover:text-black transition-all rounded-sm"
+                          >
+                            Reuters Latest News <Compass className="size-3" />
+                          </a>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
