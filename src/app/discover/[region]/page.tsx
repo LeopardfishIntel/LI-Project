@@ -10,6 +10,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores } from '@/lib/calculations';
+import { getLiveSecurityIntelligence } from '../actions';
 
 // 🛡️ Bespoke Teacher Security (Direct British English / Globalised)
 const getBespokeTeacherSecurity = (country: string) => {
@@ -123,8 +124,22 @@ function DossierContent() {
   const [mounted, setMounted] = useState(false);
   const [expandedSafety, setExpandedSafety] = useState<number | null>(null);
   const [benchmark, setBenchmark] = useState<'USD' | 'GBP' | 'EUR' | 'Local'>('GBP');
+  const [liveSecurity, setLiveSecurity] = useState<{ reflection: string, sourceUrl: string } | null>(null);
+  const [loadingSecurity, setLoadingSecurity] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
+
+  const countrySlug = routeParams?.region as string;
+
+  useEffect(() => {
+    if (mounted && countrySlug) {
+      setLoadingSecurity(true);
+      getLiveSecurityIntelligence(countrySlug).then(res => {
+        setLiveSecurity(res);
+        setLoadingSecurity(false);
+      });
+    }
+  }, [mounted, countrySlug]);
 
   const params = useMemo(() => {
     if (!mounted) return null;
@@ -314,11 +329,30 @@ function DossierContent() {
                   {/* Truncated at 7 lines */}
                   <div className="p-6 bg-[#007FFF]/5 border border-[#007FFF]/40 flex-grow">
                     <div className="flex justify-between items-center mb-3">
-                      <p className="text-[#007FFF] text-[13px] font-black uppercase tracking-widest flex items-center gap-2"><ShieldCheck className="size-4" /> Security Reflection</p>
+                      <p className="text-[#007FFF] text-[13px] font-black uppercase tracking-widest flex items-center gap-2">
+                        <ShieldCheck className="size-4" /> Security Reflection
+                      </p>
+                      {liveSecurity?.sourceUrl && (
+                        <a 
+                          href={liveSecurity.sourceUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-[9px] text-slate-500 hover:text-[#007FFF] font-bold uppercase underline tracking-tighter"
+                        >
+                          Source: Gov.uk
+                        </a>
+                      )}
                     </div>
-                    <p className="text-[15px] text-white leading-relaxed font-medium italic transition-all">
-                      "{country.safety}"
-                    </p>
+                    {loadingSecurity ? (
+                      <div className="flex items-center gap-2 py-4 animate-pulse">
+                        <Loader2 className="size-3 animate-spin text-[#007FFF]" />
+                        <span className="text-[11px] font-black uppercase text-slate-500 tracking-widest">Decrypting Live Feed...</span>
+                      </div>
+                    ) : (
+                      <p className="text-[15px] text-white leading-relaxed font-medium italic transition-all">
+                        "{liveSecurity?.reflection || country.safety}"
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

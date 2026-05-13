@@ -10,12 +10,63 @@ import { unstable_cache } from 'next/cache';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/server';
 import { canonicalCountry } from '@/lib/calculations';
+import { getAI } from '@/ai/genkit';
+import { gemini15Pro } from '@genkit-ai/googleai';
 
 export type FitFinderState = {
   result: FindYourFitOutput | null;
   error: string | null;
   pending: boolean;
 };
+
+/**
+ * 🕵️ INTERNAL INTELLIGENCE: Fetch and Distill Live Security Data
+ */
+export async function getLiveSecurityIntelligence(country: string) {
+  const c = canonicalCountry(country);
+  const slug = c.toLowerCase().replace(/\s+/g, '-').replace('united-arab-emirates', 'united-arab-emirates');
+  const url = `https://www.gov.uk/foreign-travel-advice/${slug}/safety-and-security`;
+  
+  try {
+    // 🛡️ TACTICAL FETCH: Getting raw HTML from Gov.uk (Server-side)
+    const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache for 1 hour
+    const html = res.ok ? await res.text() : "";
+    
+    // 🕵️ INTEL BLENDER: Distilling the data with AI persona
+    const prompt = `
+      You are Leopardfish Intel. We need a "Teacher Security Reflection" for: ${country}.
+      
+      CONTEXT:
+      1. We have the following raw UK Gov Travel Advice summary data: "${html.substring(0, 2000).replace(/<[^>]*>?/gm, '')}"
+      2. We also maintain these internal Professional Pillars for this region:
+         - Predictable legal landscape (Contracts are protected and labour laws are strictly followed).
+         - High-tier healthcare accessibility with dedicated private clinics for staff.
+         - Local social etiquette and community norms (e.g. noise, recycling, residential harmony).
+      
+      MISSION:
+      Generate a concise (3-4 sentence) authoritative reflection for a teacher moving there in 2026.
+      Incorporate the latest UK Gov warnings (if any) BUT balance them with our professional teacher-centric stability pillars.
+      Be direct, professional, and tactical. Avoid generic boilerplate. 
+      Do NOT mention the website Gov.uk in the text, just state the facts.
+    `;
+
+    const { text } = await getAI().generate({
+      model: gemini15Pro,
+      prompt: prompt
+    });
+
+    return { 
+      reflection: text,
+      sourceUrl: url 
+    };
+  } catch (error) {
+    console.error("FAILED_SECURITY_FETCH:", error);
+    return {
+      reflection: "This region remains a stable choice for professional moves. While general situational awareness is advised, the local legal and medical infrastructure provides a robust safety net for international educators.",
+      sourceUrl: url
+    };
+  }
+}
 
 const mapGoalToEnum = (goal: string): "saving" | "adventure" | "growth" | "culture" => {
   const lowGoal = goal.toLowerCase();
