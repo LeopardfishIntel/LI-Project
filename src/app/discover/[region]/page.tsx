@@ -76,9 +76,9 @@ function getScoreRationale(metric: string, score: number, country: string, regio
   }
 
   if (metric.toLowerCase() === 'culture') {
-    if (isHighHeritage) return `Exceptional social infrastructure and rich heritage. The score is driven by a high density of 'third spaces'—cafés, social hubs, and historic sites—and a welcoming local community.`;
-    if (r.includes('europe') || r.includes('americas')) return `High social ease. The social fabric here is built on a rich community culture and straightforward integration, scoring well for overall work-life balance.`;
-    return `An established professional environment. Integration is generally smooth due to well-connected expat social circles and supportive international school communities.`;
+    if (isHighHeritage) return `Exceptional social infrastructure and cultural depth. The score is driven by access to historic architecture, high-end theatre, and a high density of 'third spaces'—cafés and heritage sites that define the local rhythm.`;
+    if (r.includes('europe') || r.includes('americas')) return `High social ease and cultural richness. The social fabric here is built on a rich community heritage, accessible theatre and arts scenes, and straightforward integration into the local lifestyle.`;
+    return `An established professional environment. Cultural engagement here is generally smooth, with well-connected expat social circles and access to modern social hubs and international arts communities.`;
   }
 
   if (metric.toLowerCase() === 'career') {

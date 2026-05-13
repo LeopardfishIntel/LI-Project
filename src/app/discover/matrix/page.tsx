@@ -326,7 +326,7 @@ function MatrixContent() {
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Scores the ease of local integration, English proficiency, and density of 'third spaces' like cafe culture and heritage sites.</p>
+                    <p>Scores the ease of local integration, English proficiency, and access to historic architecture, theatre, and heritage sites.</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
