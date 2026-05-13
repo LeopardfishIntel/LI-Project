@@ -66,7 +66,7 @@ function getScoreRationale(metric: string, score: number, country: string, regio
 
   const isHub = ["united arab emirates", "singapore", "qatar", "hong kong", "bahrain", "oman", "kuwait"].includes(c);
   const isTaxFree = ["united arab emirates", "qatar", "saudi arabia", "kuwait", "bahrain", "oman"].includes(c);
-  const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece", "portugal", "thailand"].includes(c);
+  const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece", "portugal", "thailand", "jordan", "egypt"].includes(c);
 
   if (metric.toLowerCase() === 'adventure') {
     const activities = r.includes('asia') ? ['jungle trekking', 'scuba diving', 'night-market exploration', 'island hopping'] 
@@ -117,8 +117,8 @@ function getScoreRationale(metric: string, score: number, country: string, regio
   if (metric.toLowerCase() === 'culture') {
     if (isHighHeritage) {
       const heritage = [
-        `Exceptional cultural density. The social fabric is rich with ${r.includes('europe') ? 'historic squares and theatre' : 'ancient traditions and vibrant markets'}, offering a deep, immersive experience.`,
-        `A masterclass in heritage. From ${r.includes('asia') ? 'temple complexes' : 'renaissance architecture'} to local arts, your life outside school will be defined by genuine cultural depth.`,
+        `Exceptional cultural density. The social fabric is rich with ${r.includes('europe') ? 'historic squares and theatre' : r.includes('middle east') ? 'UNESCO World Heritage sites and ancient citadels' : 'ancient traditions and vibrant markets'}, offering a deep, immersive experience.`,
+        `A masterclass in heritage. From ${c.includes('jordan') ? 'the lost city of Petra' : r.includes('asia') ? 'temple complexes' : 'renaissance architecture'} to local arts, your life outside school will be defined by genuine cultural depth.`,
         `Outstanding social infrastructure. High access to 'third spaces'—the cafés, galleries, and historic sites that give ${country} its unique rhythm.`
       ];
       return pick(heritage);
@@ -338,12 +338,11 @@ function DossierContent() {
                   </div>
                   
                   {/* Truncated at 7 lines */}
-                  <div className="p-6 bg-[#007FFF]/5 border border-[#007FFF]/40 cursor-pointer hover:bg-[#007FFF]/10 transition-all flex-grow" onClick={() => setExpandedSafety(expandedSafety === idx ? null : idx)}>
+                  <div className="p-6 bg-[#007FFF]/5 border border-[#007FFF]/40 flex-grow">
                     <div className="flex justify-between items-center mb-3">
                       <p className="text-[#007FFF] text-[13px] font-black uppercase tracking-widest flex items-center gap-2"><ShieldCheck className="size-4" /> Security Reflection</p>
-                      {expandedSafety === idx ? <ChevronUp className="size-4 text-white" /> : <ChevronDown className="size-4 text-white" />}
                     </div>
-                    <p className={cn("text-[16px] text-white leading-relaxed font-medium italic transition-all", expandedSafety === idx ? "line-clamp-none" : "line-clamp-[7]")}>
+                    <p className="text-[15px] text-white leading-relaxed font-medium italic transition-all">
                       "{country.safety}"
                     </p>
                   </div>
