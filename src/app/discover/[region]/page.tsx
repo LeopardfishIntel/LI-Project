@@ -56,31 +56,38 @@ function deriveIntelligenceScores(country: any, finances: any) {
 }
 
 function getScoreRationale(metric: string, score: number, country: string, region: string) {
-  const rationales: Record<string, { high: string, mid: string, low: string }> = {
-    adventure: {
-      high: `As a top-tier travel hub in ${region}, ${country} offers unparalleled weekend mobility. The score reflects a superior ratio of flight connectivity to geographical diversity.`,
-      mid: `A stable base for regional exploration. The score indicates strong domestic travel infrastructure and established routes to major ${region} hubs.`,
-      low: `An urban-centric deployment. While international travel is accessible, the score reflects a focus on city-based leisure rather than rugged exploration.`
-    },
-    savings: {
-      high: `The income-to-cost index here is mathematically superior. Rents and services are deeply indexed in your favour, allowing for aggressive capital accumulation.`,
-      mid: `Provides a robust financial buffer. The score reflects a reliable monthly surplus after accounting for a standard high-end expat lifestyle.`,
-      low: `A balanced economic profile. Savings are certainly achievable but require more tactical management of local housing and discretionary spending.`
-    },
-    culture: {
-      high: `Exceptional social infrastructure. This score is driven by a high density of 'Third Spaces' (cafés/hubs) and a welcoming, immersive local community.`,
-      mid: `An established professional environment. Integration is straightforward due to high English proficiency and a well-connected expat social fabric.`,
-      low: `A highly structured and functional social landscape. Cultural integration here is primarily centered around established professional and school circles.`
-    },
-    career: {
-      high: `A high-density market for Tier-1 schools. This score reflects superior internal promotion potential and a deep hierarchy of leadership roles.`,
-      mid: `Strong professional stability. The score is based on the school's high academic standing and the presence of recognized international curriculum standards.`,
-      low: `A developing professional hub. While individual schools are strong, the score indicates fewer local alternatives for rapid lateral career moves.`
-    }
-  };
+  const c = country.toLowerCase();
+  const r = region.toLowerCase();
+  
+  const isHub = ["united arab emirates", "singapore", "qatar", "hong kong", "bahrain", "oman", "kuwait"].includes(c);
+  const isTaxFree = ["united arab emirates", "qatar", "saudi arabia", "kuwait", "bahrain", "oman"].includes(c);
+  const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece"].includes(c);
 
-  const key = score >= 8.5 ? 'high' : (score >= 6.5 ? 'mid' : 'low');
-  return rationales[metric.toLowerCase()][key];
+  if (metric.toLowerCase() === 'adventure') {
+    if (isHub) return `Strategic regional hub with elite connectivity. Your score reflects the ability to use ${country} as a 'weekend warrior' launchpad for ${region} exploration.`;
+    if (score >= 8.5) return `Deep internal exploration potential. This score is driven by the sheer geographical diversity and domestic travel ease within ${country} borders.`;
+    return `A stable base for regional exploration. The score indicates strong domestic travel infrastructure and established routes to major ${region} hubs.`;
+  }
+
+  if (metric.toLowerCase() === 'savings') {
+    if (isTaxFree) return `Maximum capital accumulation. The absence of local income tax, combined with provided housing, hard-codes this as a superior savings deployment.`;
+    if (score >= 8.0) return `Low local index advantage. Your surplus here has massive local purchasing power, allowing for a high-quality lifestyle while still saving significantly.`;
+    return `Provides a robust financial buffer. The score reflects a reliable monthly surplus after accounting for a standard international lifestyle.`;
+  }
+
+  if (metric.toLowerCase() === 'culture') {
+    if (isHighHeritage) return `Exceptional social infrastructure and deep heritage. This score is driven by a high density of 'Third Spaces' (cafés/hubs) and a welcoming, immersive local community.`;
+    if (r.includes('europe') || r.includes('americas')) return `High social ease index. The social fabric here is built on a rich community culture and deep integration, scoring high for lifestyle balance.`;
+    return `An established professional environment. Integration is straightforward due to well-connected expat social fabrics and supportive international school hubs.`;
+  }
+
+  if (metric.toLowerCase() === 'career') {
+    if (score >= 8.5) return `High-density market mobility. This score reflects superior internal promotion potential and a deep hierarchy of leadership roles across Tier-1 schools.`;
+    if (score >= 7.0) return `Solid professional stability. The score is anchored by the presence of recognized international curriculum standards and high academic attainment norms.`;
+    return `A stable professional hub. While individual schools are strong, the score indicates a focus on steady professional development within a specific institution.`;
+  }
+
+  return `Intelligence score based on regional cost-of-living indices and professional market data for ${country}.`;
 }
 
 function DossierContent() {
