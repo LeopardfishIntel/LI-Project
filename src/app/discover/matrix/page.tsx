@@ -143,7 +143,12 @@ function MatrixContent() {
     data.colData.forEach((c: any) => {
       const rawName = c.country || c.city || 'Unknown';
       const name = canonicalCountry(rawName);
-      const dbRegion = (c.region || "").toLowerCase().trim();
+      let dbRegion = (c.region || "").toLowerCase().trim();
+      
+      // 🕵️ STRATEGIC REGIONAL MAPPING: Egypt exists in both Middle East & Africa
+      if (name === 'egypt') {
+        dbRegion += " middle east africa";
+      }
       
       // Keep the country if it matches the user's selected regions
       if (params.regions.length === 0 || params.regions.some((r: string) => dbRegion.includes(r.toLowerCase()))) {

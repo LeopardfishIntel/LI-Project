@@ -1,6 +1,6 @@
 import { getAI } from '@/ai/genkit';
 import { z } from 'zod';
-import { gemini31Pro } from '@genkit-ai/googleai';
+import { gemini15Pro } from '@genkit-ai/googleai';
 
 export const generateCountryIndexesFlow = getAI().defineFlow({
   name: 'generateCountryIndexes',
@@ -64,7 +64,7 @@ export const generateCountryIndexesFlow = getAI().defineFlow({
   `;
 
   const { output } = await getAI().generate({
-    model: gemini31Pro,
+    model: gemini15Pro,
     prompt: prompt,
     output: {
       schema: z.object({
@@ -92,6 +92,8 @@ export const generateCountryIndexesFlow = getAI().defineFlow({
       })
     }
   });
+
+  if (!output) throw new Error("AI_GENERATION_FAILURE: No output returned from Gemini");
 
   // Clamp the final scores to 9.9
   const clamp = (val: number) => Math.min(9.9, Math.max(0, Number(val.toFixed(1))));

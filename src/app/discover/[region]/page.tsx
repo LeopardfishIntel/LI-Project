@@ -122,7 +122,7 @@ function DossierContent() {
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
   const [expandedSafety, setExpandedSafety] = useState<number | null>(null);
-  const [benchmark, setBenchmark] = useState<'USD' | 'GBP' | 'EUR'>('GBP');
+  const [benchmark, setBenchmark] = useState<'USD' | 'GBP' | 'EUR' | 'Local'>('GBP');
 
   useEffect(() => { setMounted(true); }, []);
 

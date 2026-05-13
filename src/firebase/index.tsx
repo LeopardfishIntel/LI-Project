@@ -121,10 +121,20 @@ export const useMemoFirebase = <T,>(fn: () => T, deps: any[]) => useMemo(fn, dep
 /**
  * 🛠️ Utility: Non-blocking Document Update
  */
-export async function setDocumentNonBlocking(collectionName: string, docId: string, data: any) {
+export async function setDocumentNonBlocking(collectionOrRef: string | any, idOrData: string | any, dataMaybe?: any) {
   if (!db) return null;
   try {
-    const docRef = doc(db, collectionName, docId);
+    let docRef;
+    let data;
+    
+    if (typeof collectionOrRef === 'string') {
+      docRef = doc(db, collectionOrRef, idOrData as string);
+      data = dataMaybe;
+    } else {
+      docRef = collectionOrRef;
+      data = idOrData;
+    }
+
     const { setDoc } = await import("firebase/firestore");
     return await setDoc(docRef, data, { merge: true });
   } catch (error) {
