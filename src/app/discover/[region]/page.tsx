@@ -416,8 +416,9 @@ function DossierContent() {
                 );
               })}
             </div>
-          )}
-        </div>
+          </div>
+        ))}
+      </div>
         
         {/* WORTH CONSIDERING SECTION (No brackets) */}
         {alternates.length > 0 && (
