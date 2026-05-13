@@ -215,7 +215,7 @@ export default function FindYourFitGate() {
                   {[
                     { id: 'savings', label: 'savings', tip: 'Calculated as Net Salary vs. Housing/Living Index.' },
                     { id: 'career growth', label: 'career growth', tip: 'Evaluates the density of top-tier accredited schools, professional development norms, and internal leadership pathways.' },
-                    { id: 'adventure', label: 'adventure', tip: 'Calculated as Travel Connectivity vs. Geographic Diversity.' },
+                    { id: 'adventure', label: 'adventure', tip: 'Calculated as Travel Connectivity vs. Geographic Diversity—including access to desert safaris, jungle trekking, and world-class diving.' },
                     { id: 'culture', label: 'culture', tip: 'Scores the ease of local integration, English proficiency, and access to historic architecture, theatre, and heritage sites.' }
                   ].map((goal) => {
                       const isActive = profile.goals.some(g => g.toLowerCase() === goal.id.toLowerCase());

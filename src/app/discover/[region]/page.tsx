@@ -64,9 +64,9 @@ function getScoreRationale(metric: string, score: number, country: string, regio
   const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece"].includes(c);
 
   if (metric.toLowerCase() === 'adventure') {
-    if (isHub) return `A strategic regional hub with excellent travel links. This score reflects your ability to use ${country} as a 'weekend warrior' base for exploring ${region} during half-terms and breaks.`;
-    if (score >= 8.5) return `Outstanding domestic exploration potential. This rating is driven by the sheer geographical variety and the ease of travelling within ${country} borders during your non-contact time.`;
-    return `A stable base for regional exploration. The score indicates strong local travel infrastructure and well-established routes to major ${region} hubs.`;
+    if (isHub) return `A strategic regional hub with excellent travel links. This score reflects your ability to use ${country} as a 'weekend warrior' base for exploring ${region}—from desert safaris in the Gulf to jungle trekking in SE Asia.`;
+    if (score >= 8.5) return `Outstanding domestic exploration potential. This rating is driven by access to world-class ${r.includes('asia') ? 'scuba diving and jungle trails' : 'outdoor pursuits'} right on your doorstep during your non-contact time.`;
+    return `A stable base for regional exploration. The score indicates strong local travel infrastructure for activities like ${r.includes('europe') ? 'alpine skiing' : 'mountain hiking'} and well-established routes to regional adventure hubs.`;
   }
 
   if (metric.toLowerCase() === 'savings') {

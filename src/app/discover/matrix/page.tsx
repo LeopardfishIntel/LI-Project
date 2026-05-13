@@ -316,7 +316,7 @@ function MatrixContent() {
                 <Tooltip>
                   <TooltipTrigger><Info className="size-3 hover:text-white transition-colors cursor-help" /></TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-[#007FFF]/30 text-white font-bold p-3 max-w-[250px] shadow-2xl">
-                    <p>Calculated as Travel Connectivity vs. Geographic Diversity.</p>
+                    <p>Calculated as Travel Connectivity vs. Geographic Diversity—including access to desert safaris, jungle trekking, and world-class diving.</p>
                   </TooltipContent>
                 </Tooltip>
               </div>
