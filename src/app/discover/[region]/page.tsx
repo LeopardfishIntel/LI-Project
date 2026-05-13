@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { 
   ShieldCheck, Loader2, ArrowLeft, TrendingUp, 
-  Lock, Zap, GraduationCap, Target, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle
+  Lock, Zap, GraduationCap, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -56,8 +56,8 @@ function deriveIntelligenceScores(country: any, finances: any) {
 }
 
 function getScoreRationale(metric: string, score: number, country: string, region: string) {
-  const c = country.toLowerCase();
-  const r = region.toLowerCase();
+  const c = (country || "").toLowerCase();
+  const r = (region || "").toLowerCase();
   
   const isHub = ["united arab emirates", "singapore", "qatar", "hong kong", "bahrain", "oman", "kuwait"].includes(c);
   const isTaxFree = ["united arab emirates", "qatar", "saudi arabia", "kuwait", "bahrain", "oman"].includes(c);
