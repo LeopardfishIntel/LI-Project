@@ -416,7 +416,6 @@ function DossierContent() {
                 );
               })}
             </div>
-            </div>
           ))}
         </div>
         

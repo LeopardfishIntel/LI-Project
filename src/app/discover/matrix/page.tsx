@@ -8,7 +8,6 @@ import {
 import { getCountryStats } from '../actions';
 import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
-import { cn } from '@/lib/utils';
 
 function deriveIntelligenceScores(country: any, finances: any) {
     const name = country.country || "Unknown";
@@ -384,7 +383,6 @@ function MatrixContent() {
                 })
               )}
             </div>
-          </div>
           </div>
 
         {sortedCountries.length > 5 && (
