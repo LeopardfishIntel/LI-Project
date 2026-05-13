@@ -58,33 +58,84 @@ function deriveIntelligenceScores(country: any, finances: any) {
 function getScoreRationale(metric: string, score: number, country: string, region: string) {
   const c = (country || "").toLowerCase();
   const r = (region || "").toLowerCase();
+  const s = score;
   
+  // Deterministic seed based on country name to keep rationales consistent but different per country
+  const seed = c.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const pick = (arr: string[]) => arr[seed % arr.length];
+
   const isHub = ["united arab emirates", "singapore", "qatar", "hong kong", "bahrain", "oman", "kuwait"].includes(c);
   const isTaxFree = ["united arab emirates", "qatar", "saudi arabia", "kuwait", "bahrain", "oman"].includes(c);
-  const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece"].includes(c);
+  const isHighHeritage = ["france", "italy", "spain", "japan", "china", "vietnam", "greece", "portugal", "thailand"].includes(c);
 
   if (metric.toLowerCase() === 'adventure') {
-    if (isHub) return `A strategic regional hub with excellent travel links. This score reflects your ability to use ${country} as a 'weekend warrior' base for exploring ${region}—from desert safaris in the Gulf to jungle trekking in SE Asia.`;
-    if (score >= 8.5) return `Outstanding domestic exploration potential. This rating is driven by access to world-class ${r.includes('asia') ? 'scuba diving and jungle trails' : 'outdoor pursuits'} right on your doorstep during your non-contact time.`;
-    return `A stable base for regional exploration. The score indicates strong local travel infrastructure for activities like ${r.includes('europe') ? 'alpine skiing' : 'mountain hiking'} and well-established routes to regional adventure hubs.`;
+    const activities = r.includes('asia') ? ['jungle trekking', 'scuba diving', 'night-market exploration', 'island hopping'] 
+                     : r.includes('europe') ? ['alpine skiing', 'coastal hiking', 'historic cycling routes', 'mountain trail running']
+                     : r.includes('middle east') ? ['desert safaris', 'dune bashing', 'wadi exploration', 'private beach access']
+                     : ['regional exploration', 'local hiking', 'nature photography', 'weekend escapes'];
+    
+    const act1 = activities[seed % activities.length];
+    const act2 = activities[(seed + 1) % activities.length];
+
+    if (isHub) {
+      const hubs = [
+        `A high-velocity travel hub. Being based in ${country} means ${act1} in the wider region is just a short-haul flight away.`,
+        `Strategically positioned for the 'weekend warrior'. Use ${country} as your launchpad for everything from ${act1} to ${act2}.`,
+        `Unrivalled regional connectivity. This score reflects the ease of escaping to ${r}'s most remote corners during your non-contact time.`
+      ];
+      return pick(hubs);
+    }
+    
+    if (s >= 8.5) {
+      return `Outstanding domestic depth. From ${act1} to ${act2}, the local landscape offers a world-class playground right on your doorstep.`;
+    }
+    
+    return `A solid exploration baseline. The rating indicates reliable travel infrastructure and straightforward access to ${act1} within ${country} or nearby.`;
   }
 
   if (metric.toLowerCase() === 'savings') {
-    if (isTaxFree) return `A superior environment for saving. The absence of local income tax, combined with school-provided housing, makes this a particularly effective posting for building a solid financial buffer.`;
-    if (score >= 8.0) return `Excellent local purchasing power. Your surplus here goes significantly further than in the UK or Europe, allowing for a comfortable lifestyle while still saving a healthy monthly amount.`;
-    return `Provides a reliable financial cushion. This score reflects a steady monthly surplus after accounting for a standard international teaching lifestyle.`;
+    if (isTaxFree) {
+      const taxFree = [
+        `A premier wealth-building zone. The zero-tax environment, coupled with housing support, makes ${country} a high-performance choice for your financial buffer.`,
+        `Exceptional saving potential. Without the burden of local income tax, your surplus is significantly amplified compared to UK or European roles.`,
+        `A strategic financial posting. This score reflects the rare combination of high-tier salaries and the absence of personal tax liabilities.`
+      ];
+      return pick(taxFree);
+    }
+    
+    if (s >= 8.0) {
+      return `High purchasing power. Your surplus here stretches much further than in traditional western markets, allowing for a premium lifestyle without compromising your savings goals.`;
+    }
+    
+    if (s >= 6.0) {
+      return `A reliable financial cushion. Expect a steady monthly surplus that supports a comfortable international teaching lifestyle with consistent growth in your net worth.`;
+    }
+
+    return `Functional financial stability. The score suggests a balanced budget where professional earnings comfortably cover the local cost of living while maintaining a modest buffer.`;
   }
 
   if (metric.toLowerCase() === 'culture') {
-    if (isHighHeritage) return `Exceptional social infrastructure and cultural depth. The score is driven by access to historic architecture, high-end theatre, and a high density of 'third spaces'—cafés and heritage sites that define the local rhythm.`;
-    if (r.includes('europe') || r.includes('americas')) return `High social ease and cultural richness. The social fabric here is built on a rich community heritage, accessible theatre and arts scenes, and straightforward integration into the local lifestyle.`;
-    return `An established professional environment. Cultural engagement here is generally smooth, with well-connected expat social circles and access to modern social hubs and international arts communities.`;
+    if (isHighHeritage) {
+      const heritage = [
+        `Exceptional cultural density. The social fabric is rich with ${r.includes('europe') ? 'historic squares and theatre' : 'ancient traditions and vibrant markets'}, offering a deep, immersive experience.`,
+        `A masterclass in heritage. From ${r.includes('asia') ? 'temple complexes' : 'renaissance architecture'} to local arts, your life outside school will be defined by genuine cultural depth.`,
+        `Outstanding social infrastructure. High access to 'third spaces'—the cafés, galleries, and historic sites that give ${country} its unique rhythm.`
+      ];
+      return pick(heritage);
+    }
+
+    if (r.includes('europe')) return `Rich civic life. This score reflects the ease of integration into a lifestyle defined by historic theatre, café culture, and accessible public arts.`;
+    if (r.includes('asia')) return `Dynamic social tapestry. From the energy of local night markets to the quiet of traditional gardens, the cultural engagement here is both active and rewarding.`;
+    if (r.includes('middle east')) return `Sophisticated cosmopolitanism. Experience a unique blend of traditional heritage and hyper-modern social hubs in an environment built for international ease.`;
+    
+    return `An established professional environment. Cultural engagement is smooth, supported by well-connected social circles and a high density of modern amenities.`;
   }
 
   if (metric.toLowerCase() === 'career') {
-    if (score >= 8.5) return `A high-density market for professional growth. This score reflects strong internal promotion potential and a deep hierarchy of leadership roles across Tier-1 schools.`;
-    if (score >= 7.0) return `Solid professional stability. The rating is anchored by the presence of recognised international curriculum standards and high academic attainment norms within the local schools.`;
-    return `A stable professional hub. While individual schools are strong, the score indicates a focus on steady professional development and classroom practice within a specific institution.`;
+    if (s >= 8.5) return `A high-performance market for growth. The density of Tier-1 schools here creates a deep hierarchy of leadership roles and rapid internal promotion pathways.`;
+    if (s >= 7.0) return `Solid professional stability. Your career is anchored by high academic standards, globally recognised curriculum norms, and a strong network of accredited institutions.`;
+    if (s >= 5.0) return `A steady professional hub. Focuses on consistent development and classroom mastery within well-established school frameworks.`;
+    return `Professional baseline. The environment supports foundational growth and stability within a specific institutional context.`;
   }
 
   return `Intelligence score based on regional cost-of-living indices and professional market data for ${country}.`;

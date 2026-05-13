@@ -48,63 +48,98 @@ function deriveIntelligenceScores(country: any, finances: any) {
     return { adventure, culture };
 }
 
-// Removing getInsightTag as the column is now strictly Estimated Monthly Surplus
-
 function getMissionIntelligence(goals: string[], topCountry: string): { title: string, content: string } {
   const g1 = goals[0]?.toLowerCase() || '';
   const g2 = goals[1]?.toLowerCase() || '';
   const note = "\n\nIntelligence Note: The matrix utilises macroeconomic country averages. Specific school compensation packages and outcomes will vary. More precise details are available on the individual schools' evaluate page.";
 
+  // Deterministic pick based on topCountry
+  const seed = topCountry.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const pick = (arr: any[]) => arr[seed % arr.length];
+
   if (goals.length === 1 || g2 === '') {
-    // Condition A: Single Driver
     if (g1.includes('saving')) {
       return {
-        title: "Mission Intelligence: Savings",
-        content: `In ${topCountry}, the rents and general cost of living are exceptionally low compared to the typical international school salary. This means your monthly savings potential is mathematically higher here than in almost any other hub.${note}`
+        title: "Strategic Priority: Financial Fortification",
+        content: pick([
+          `${topCountry} represents a premier wealth-building opportunity. The delta between international school compensation and local overheads is mathematically superior here, allowing for high-velocity savings.`,
+          `Your objective of capital accumulation is best served in ${topCountry}. Low cost-of-living indices combined with robust salary norms ensure your monthly surplus is among the highest in the region.`,
+          `Focusing on ${topCountry} provides the most efficient route to your financial goals. This deployment is defined by a favourable ratio of income to outgoings, specifically tailored for teachers looking to maximise their net worth.`
+        ]) + note
       };
     }
     if (g1.includes('career')) {
       return {
-        title: "Mission Intelligence: Career",
-        content: `${topCountry} ranks highly because international schools here are plentiful. A high density of schools and large student populations mean that middle management and senior leadership roles are far more available, facilitating rapid promotional moves.${note}`
+        title: "Strategic Priority: Professional Advancement",
+        content: pick([
+          `${topCountry} is a high-density professional market. The concentration of Tier-1 schools provides a deep leadership hierarchy, making it the ideal environment for rapid internal promotion.`,
+          `Professional growth is the primary driver in ${topCountry}. With a large network of accredited institutions, teachers here benefit from a robust professional landscape and a clear path to middle and senior management.`,
+          `Deployment to ${topCountry} places you in a Tier-1 professional hub. The school ecosystem here is designed for growth, offering numerous opportunities for leadership development and institutional impact.`
+        ]) + note
       };
     }
     if (g1.includes('adventure')) {
       return {
-        title: "Mission Intelligence: Adventure",
-        content: `${topCountry} offers incredible geographical diversity and serves as a major travel hub. With excellent flight and rail connectivity, there is plenty to see and do during your non-contact time and weekends.${note}`
+        title: "Strategic Priority: Regional Exploration",
+        content: pick([
+          `As a primary travel hub, ${topCountry} provides unmatched access to the wider region. Your non-contact time will be defined by its proximity to diverse landscapes and world-class adventure hubs.`,
+          `${topCountry} offers the perfect baseline for exploration. Its geographical diversity and regional connectivity make it a strategic launchpad for the 'weekend warrior' looking to experience the best of the continent.`,
+          `Geographical diversity is the hallmark of ${topCountry}. From domestic nature trails to regional flight connections, your deployment here ensures a high-engagement lifestyle outside the classroom.`
+        ]) + note
       };
     }
     if (g1.includes('culture')) {
       return {
-        title: "Mission Intelligence: Culture",
-        content: `If your goal is genuine integration, ${topCountry} provides an unparalleled authentic environment. From its rich heritage to an incredibly welcoming expat community, the cultural rhythm here is highly immersive.${note}`
+        title: "Strategic Priority: Cultural Immersion",
+        content: pick([
+          `${topCountry} offers an unparalleled authentic environment for social integration. From its deep heritage to its vibrant 'third spaces', the cultural rhythm here is exceptionally immersive.`,
+          `Genuine integration is the key advantage of ${topCountry}. The social infrastructure—cafés, galleries, and historic sites—provides a rich tapestry for teachers seeking an authentic international experience.`,
+          `The cultural depth of ${topCountry} is a primary driver. This deployment offers a unique opportunity to embed yourself in a community with a rich heritage and a sophisticated, cosmopolitan social life.`
+        ]) + note
       };
     }
   } else {
-    // Condition B: Dual Drivers
-    if (goals.some(g => g.toLowerCase().includes('saving')) && goals.some(g => g.toLowerCase().includes('career'))) {
+    // Dual Drivers
+    const hasSaving = goals.some(g => g.toLowerCase().includes('saving'));
+    const hasCareer = goals.some(g => g.toLowerCase().includes('career'));
+    const hasAdventure = goals.some(g => g.toLowerCase().includes('adventure'));
+    const hasCulture = goals.some(g => g.toLowerCase().includes('culture'));
+
+    if (hasSaving && hasCareer) {
       return {
-        title: "Tactical Balance: Savings & Career",
-        content: `Balancing savings and career progression is challenging, as premium CV locations often have high living costs. ${topCountry} provides the optimal middle ground: schools are plentiful enough to offer promotion pathways, while living costs remain low enough to generate a strong monthly surplus.${note}`
+        title: "Mission Profile: Tactical Growth",
+        content: pick([
+          `Balancing capital accumulation with professional growth is a challenge that ${topCountry} solves effectively. It offers the school density required for promotion while maintaining living costs low enough for significant savings.`,
+          `${topCountry} provides a high-performance balance. You benefit from a robust market for professional advancement without the prohibitive overheads found in other major global hubs.`,
+          `This is a strategic dual-objective deployment. ${topCountry} allows you to build a Tier-1 CV while simultaneously fortifying your financial position through superior local purchasing power.`
+        ]) + note
       };
     }
-    if (goals.some(g => g.toLowerCase().includes('saving')) && goals.some(g => g.toLowerCase().includes('adventure'))) {
+    if (hasSaving && hasAdventure) {
       return {
-        title: "Tactical Balance: Savings & Adventure",
-        content: `${topCountry} offers the perfect ratio of income to exploration. The cost of living allows you to save a strong monthly surplus, while the country's geographical location provides incredibly accessible travel routes to fund your non-contact time.${note}`
+        title: "Mission Profile: The Adventurous Saver",
+        content: pick([
+          `${topCountry} offers an optimal ratio of income to exploration. The favourable financial landscape funds your travel ambitions, while its position as a travel hub makes weekend escapes incredibly efficient.`,
+          `Maximise your surplus and your non-contact time. In ${topCountry}, the low cost of living covers your regional travel costs, turning the entire continent into your backyard without denting your savings.`,
+          `Strategic positioning meets financial strength. ${topCountry} is the ideal base for those looking to fund a high-engagement lifestyle through a robust monthly surplus.`
+        ]) + note
       };
     }
-    
-    return {
-      title: "Tactical Balance",
-      content: `Maximising two distinct goals requires a tactical compromise. ${topCountry} emerges as the optimal choice, successfully catering to both drivers without forcing you to sacrifice one for the other.${note}`
-    };
+    if (hasCareer && hasCulture) {
+      return {
+        title: "Mission Profile: The Sophisticated Professional",
+        content: pick([
+          `Deployment to ${topCountry} satisfies the need for high-tier professional challenges and deep social engagement. The school market is elite, and the surrounding culture offers a rich, immersive civic life.`,
+          `Elevate your career in a world-class cultural setting. ${topCountry} provides access to top-tier institutional leadership and a lifestyle defined by heritage, arts, and sophisticated social hubs.`,
+          `A premium dual-objective choice. ${topCountry} allows for professional classroom mastery within a social fabric that is both historically significant and modernly cosmopolitan.`
+        ]) + note
+      };
+    }
   }
 
   return {
-    title: "Mission Brief",
-    content: `${topCountry} presents the most balanced tactical deployment based on your current drivers, offering strong professional infrastructure and a highly livable economic environment.${note}`
+    title: "Tactical Alignment",
+    content: `Based on your specific focus areas, ${topCountry} represents the optimal tactical alignment. It provides a balanced mission profile that supports your primary objectives while ensuring long-term deployment stability.${note}`
   };
 }
 
