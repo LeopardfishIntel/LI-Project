@@ -213,10 +213,10 @@ export default function FindYourFitGate() {
             <TooltipProvider delayDuration={100}>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { id: 'savings', label: 'savings', tip: 'A mathematical weighting of your projected monthly surplus against local purchasing power and regional cost-of-living indices.' },
-                    { id: 'career growth', label: 'career growth', tip: 'Evaluated through school academic standing, local market density (for promotion mobility), and organizational hierarchy depth.' },
-                    { id: 'adventure', label: 'adventure', tip: 'Measures geographical diversity and regional connectivity, tracking your accessibility to travel hubs and weekend exploration targets.' },
-                    { id: 'culture', label: 'culture', tip: 'A weighting of expat social density, local \'Third Space\' infrastructure (cafés/social hubs), and regional heritage integration.' }
+                    { id: 'savings', label: 'savings', tip: 'Calculated as Net Salary vs. Housing/Living Index.' },
+                    { id: 'career growth', label: 'career growth', tip: 'Evaluates the density of top-tier accredited schools, professional development norms, and internal leadership pathways.' },
+                    { id: 'adventure', label: 'adventure', tip: 'Calculated as Travel Connectivity vs. Geographic Diversity.' },
+                    { id: 'culture', label: 'culture', tip: 'Scores the ease of local integration, English proficiency, and density of \'third spaces\' like cafe culture and heritage sites.' }
                   ].map((goal) => {
                       const isActive = profile.goals.some(g => g.toLowerCase() === goal.id.toLowerCase());
                       return (
