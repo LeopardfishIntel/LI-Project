@@ -1097,6 +1097,24 @@ export default function PreparePage() {
             </Button>
           </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1 p-6 bg-black/40 border border-white/5 relative group hover:border-amber-500/30 transition-all">
+              <div className="absolute -top-3 -left-3 bg-amber-500 text-black font-black text-[10px] px-2 py-1 italic">STEP 01</div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Coins className="size-4 text-amber-500" />
+                  <h3 className="text-[11px] font-black uppercase tracking-widest text-white">Calculate your startup buffer</h3>
+                </div>
+                <p className="text-[10px] font-bold text-slate-400 italic leading-relaxed">
+                  This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions.
+                </p>
+              </div>
+            </div>
+            
+            <div className="lg:col-span-2 p-6 bg-amber-500/5 border border-amber-500/10 flex items-center justify-center italic">
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.2em]">More mission phases coming soon in the next intel drop.</p>
+            </div>
+          </div>
         </section>
 
         <div className="h-12" />

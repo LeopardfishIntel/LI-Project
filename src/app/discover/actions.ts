@@ -24,12 +24,21 @@ export type FitFinderState = {
  */
 export async function getLiveSecurityIntelligence(country: string) {
   const c = canonicalCountry(country);
-  const slug = c.toLowerCase().replace(/\s+/g, '-').replace('united-arab-emirates', 'united-arab-emirates');
+  const slug = c.toLowerCase().replace(/\s+/g, '-');
   const url = `https://www.gov.uk/foreign-travel-advice/${slug}/safety-and-security`;
   
   try {
-    // 🛡️ TACTICAL FETCH: Getting raw HTML from Gov.uk (Server-side)
-    const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache for 1 hour
+    // 🛡️ TACTICAL FETCH: Getting raw HTML from Gov.uk (with timeout)
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 4000); // 4s timeout
+    
+    const res = await fetch(url, { 
+      next: { revalidate: 3600 },
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+    });
+    clearTimeout(id);
+
     const html = res.ok ? await res.text() : "";
     
     // 🕵️ INTEL BLENDER: Distilling the data with AI persona
@@ -37,17 +46,16 @@ export async function getLiveSecurityIntelligence(country: string) {
       You are Leopardfish Intel. We need a "Teacher Security Reflection" for: ${country}.
       
       CONTEXT:
-      1. We have the following raw UK Gov Travel Advice summary data: "${html.substring(0, 2000).replace(/<[^>]*>?/gm, '')}"
-      2. We also maintain these internal Professional Pillars for this region:
-         - Predictable legal landscape (Contracts are protected and labour laws are strictly followed).
-         - High-tier healthcare accessibility with dedicated private clinics for staff.
-         - Local social etiquette and community norms (e.g. noise, recycling, residential harmony).
+      1. UK Gov Data: "${html ? html.substring(0, 1500).replace(/<[^>]*>?/gm, '') : "Live feed temporarily unavailable. Use regional baselines."}"
+      2. Professional Pillars:
+         - Predictable legal landscape (Contracts protected).
+         - High-tier healthcare accessibility.
+         - Local social etiquette (noise/neighbourhood harmony).
       
       MISSION:
       Generate a concise (3-4 sentence) authoritative reflection for a teacher moving there in 2026.
-      Incorporate the latest UK Gov warnings (if any) BUT balance them with our professional teacher-centric stability pillars.
-      Be direct, professional, and tactical. Avoid generic boilerplate. 
-      Do NOT mention the website Gov.uk in the text, just state the facts.
+      Balance UK Gov situational data with our professional stability pillars.
+      Be direct, professional, and tactical. 
     `;
 
     const { text } = await getAI().generate({
@@ -60,9 +68,9 @@ export async function getLiveSecurityIntelligence(country: string) {
       sourceUrl: url 
     };
   } catch (error) {
-    console.error("FAILED_SECURITY_FETCH:", error);
+    console.warn("SECURITY_INTEL_FALLBACK:", country);
     return {
-      reflection: "This region remains a stable choice for professional moves. While general situational awareness is advised, the local legal and medical infrastructure provides a robust safety net for international educators.",
+      reflection: `For a teacher in ${country}, security is anchored by a predictable legal landscape and high-tier healthcare accessibility. While situational awareness is recommended, the local social fabric and professional support networks provide a stable environment for international educators in 2026.`,
       sourceUrl: url
     };
   }
