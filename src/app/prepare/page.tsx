@@ -566,7 +566,7 @@ export default function PreparePage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Coins className="size-5 text-sky-400" />
-              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-sky-400">Calculate your startup buffer</h3>
+              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Calculate your startup buffer</h3>
             </div>
             <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
               This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
