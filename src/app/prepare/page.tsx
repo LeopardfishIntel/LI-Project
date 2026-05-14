@@ -812,36 +812,7 @@ export default function PreparePage() {
                       className="bg-black/40 border-white/10 h-10 pl-7 text-[13px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
-                  <p className="text-[10px] font-bold text-slate-600 italic">Include student loans, pension contributions, or property costs back home.</p>
-                  
-                  <Label className="text-[12px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest pt-2">
-                    Childcare cost (override?)
-                    <div className="group relative">
-                      <Info className="size-3 text-sky-400 cursor-help" />
-                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[12px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-                        Enter any additional childcare expenses. If left blank, defaults to 0.
-                      </div>
-                    </div>
-                  </Label>
-                  <div className="relative">
-                    <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-sky-400" />
-                    <Input
-                      type="number"
-                      value={childcareOverride ?? ''}
-                      onChange={(e) => setChildcareOverride(e.target.value ? Number(e.target.value) : null)}
-                      placeholder="e.g. 300"
-                      className="bg-black/40 border-white/10 h-10 pl-7 text-[13px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-                  <div className="bg-amber-500/5 border border-amber-500/10 p-2 rounded-sm space-y-1 mt-2">
-                    <div className="flex items-center gap-2">
-                      <Info className="size-3 text-amber-500" />
-                      <p className="text-[11px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
-                    </div>
-                    <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
-                      Availability and rates vary wildly. Contact your school HR early to secure a spot and verify current subsidies.
-                    </p>
-                  </div>
+                  <p className="text-[10px] font-bold text-slate-600 italic">Include student loans, mortgages and any pension contributions...</p>
                 </div>
               </div>
             </Card>
@@ -891,22 +862,24 @@ export default function PreparePage() {
 
                   {/* Operational Inputs (Top Tier - Vertically Stacked) */}
                   <div className="flex flex-col gap-4 w-full lg:w-auto">
-                    <div className="space-y-1 min-w-[200px]">
-                      <Label className="text-[12px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
-                        First payday? 
+                    <div className="space-y-1 min-w-[250px] relative group/payday">
+                      <Label className="text-[11px] font-black text-white italic flex items-center gap-2 uppercase tracking-[0.2em] mb-1">
+                        THE PAYDAY GAP
                         <div className="group relative">
                           <Info className="size-3 text-sky-400 cursor-help" />
                           <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[12px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-                            Paperwork delays often push your first pay to the 60-day mark.
+                            Paperwork delays often push your first pay to the 60-day mark. Select your realistic arrival window.
                           </div>
                         </div>
                       </Label>
                       <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
-                        <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[13px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316]"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="bg-black/60 border-[#f97316] h-16 text-[18px] font-black italic text-white rounded-none focus:ring-[#f97316] shadow-[0_0_15px_rgba(249,115,22,0.15)] animate-pulse transition-all hover:animate-none hover:border-[#f97316] hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                          <SelectItem value="30">30 days (On time)</SelectItem>
-                          <SelectItem value="45">45 days (Gap likely)</SelectItem>
-                          <SelectItem value="60">60 days (Safety)</SelectItem>
+                          <SelectItem value="30" className="py-3 px-4 focus:bg-white focus:text-black">30 DAYS <span className="text-[10px] opacity-60 ml-2">(ON TIME)</span></SelectItem>
+                          <SelectItem value="45" className="py-3 px-4 focus:bg-white focus:text-black">45 DAYS <span className="text-[10px] opacity-60 ml-2">(REALISTIC)</span></SelectItem>
+                          <SelectItem value="60" className="py-3 px-4 focus:bg-white focus:text-black">60 DAYS <span className="text-[10px] opacity-60 ml-2">(SAFETY MARGIN)</span></SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -929,7 +902,7 @@ export default function PreparePage() {
               </div>
 
               {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
-              <div className="p-5 lg:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5">
+              <div key={setupDays} className="p-5 lg:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5 animate-in fade-in duration-700 slide-in-from-bottom-1">
                 
                 {/* Stat Outputs with Overrides */}
                 <StatItem 
@@ -997,13 +970,13 @@ export default function PreparePage() {
                 
                 {budget.family > 0 && (
                   <StatItem 
-                    label="Family setup" 
+                    label="Family/Childcare" 
                     value={budget.family} 
                     icon={Baby} 
                     currency={budget.displayCurrency} 
                     overrideValue={familyOverride}
                     onOverride={(val) => setFamilyOverride(val)}
-                    info="Estimated costs for school uniforms."
+                    info="Estimated costs for school uniforms and initial childcare deposits. Rates vary wildly—verify local availability and school subsidies early."
                   />
                 )}
                 
