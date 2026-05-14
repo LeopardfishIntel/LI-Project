@@ -583,7 +583,6 @@ export default function PreparePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
         {/* Red Flags */}
         <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
-          <div className="absolute -top-3 -left-3 bg-amber-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Red Flags</div>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Banknote className="size-5 text-amber-500" />
@@ -592,19 +591,19 @@ export default function PreparePage() {
             <div className="space-y-2">
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">"Negotiable" Salary</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">Vague "Broad Ranges"</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A massive range without a clear ladder is often a bait-and-switch designed to lowball you.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">A massive range without a clear ladder is often a bait-and-switch designed to lowball you.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">The "Secret" Grid</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">Profit-First Chains</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Lower-tier schools view your salary as a "cost" to be cut for shareholders.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Lower-tier schools view your salary as a "cost" to be cut for shareholders.</p>
               </div>
             </div>
           </div>
@@ -612,28 +611,27 @@ export default function PreparePage() {
 
         {/* Green Flags */}
         <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
-          <div className="absolute -top-3 -right-3 bg-emerald-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Green Flags</div>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <ShieldCheck className="size-5 text-emerald-500" />
-              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Gold Standard</h3>
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Best Practice</h3>
             </div>
             <div className="space-y-2">
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">A Transparent Grid</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A public table showing exactly what you earn based on your years of experience and degrees.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">A public table showing exactly what you earn based on your years of experience and degrees.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">Automatic Annual "Steps"</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A guaranteed pay bump every year you stay at the school, protecting your "real" income.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">A guaranteed pay bump every year you stay at the school, protecting your "real" income.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">Degree Differentials</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">Benefit Clarity</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Explicit details on housing, flights, and tax obligations provided before you even interview.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Explicit details on housing, flights, and tax obligations provided before you even interview.</p>
               </div>
             </div>
           </div>
@@ -654,7 +652,6 @@ export default function PreparePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-4">
         {/* Red Flags - Accommodation */}
         <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
-          <div className="absolute -top-3 -left-3 bg-amber-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Red Flags</div>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Home className="size-5 text-amber-500" />
@@ -663,19 +660,19 @@ export default function PreparePage() {
             <div className="space-y-2">
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">The "Commute Trap"</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Locations 45+ minutes from campus turns your "free" time into hours of unpaid travel.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Locations 45+ minutes from campus turns your "free" time into hours of unpaid travel.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">Vague "Suitability" Clauses</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Describing housing as "suitable" without photos or square footage can hide substandard units.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Describing housing as "suitable" without photos or square footage can hide substandard units.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">The Furniture Gap</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Providing "unfurnished" flats without a settling-in allowance. You'll spend months of salary just buying a bed. See our guide!</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Providing "unfurnished" flats without a settling-in allowance. You'll spend months of salary just buying a bed. See our guide!</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-amber-500 uppercase italic">Mandatory Sharing</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff.</p>
               </div>
             </div>
           </div>
@@ -683,28 +680,27 @@ export default function PreparePage() {
 
         {/* Green Flags - Accommodation */}
         <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
-          <div className="absolute -top-3 -right-3 bg-emerald-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Green Flags</div>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <ShieldCheck className="size-5 text-emerald-500" />
-              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Gold Standard</h3>
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Best Practice</h3>
             </div>
             <div className="space-y-2">
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">The "Opt-Out" Choice</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Choice between a managed flat OR a fair-market cash allowance. This proves their housing value is honest. A first year in school housing is often a great choice.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Choice between a managed flat OR a fair-market cash allowance. This proves their housing value is honest. A first year in school housing is often a great choice.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">Household-Based Allocation</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Entitlement policies (size/bedrooms) scale automatically based on the number of your dependents.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Entitlement policies (size/bedrooms) scale automatically based on the number of your dependents.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">Transparency & Tours</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Providing floor plans, actual photos (not marketing shots), and a video walkthrough of your specific unit.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Providing floor plans, actual photos (not marketing shots), and a video walkthrough of your specific unit.</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[13px] font-black text-emerald-500 uppercase italic">The "Welcome Pack"</p>
-                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A fridge stocked with essentials and pre-connected internet. It signals a school that prioritizes well-being.</p>
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">A fridge stocked with essentials and pre-connected internet. It signals a school that prioritizes well-being.</p>
               </div>
             </div>
           </div>
@@ -1613,9 +1609,9 @@ function RiskCard({ icon: Icon, title, desc }: { icon: any, title: string, desc:
     <div className="p-4 bg-[#0b1224] border border-white/5 rounded-sm hover:border-[#f97316]/40 transition-all group w-full">
       <div className="flex items-center gap-3 mb-1.5 text-white">
         <Icon className="size-4 text-[#f97316]" />
-        <h4 className="text-[11px] font-black text-white italic tracking-tight">{title}</h4>
+        <h4 className="text-[12px] font-black text-white italic uppercase tracking-widest">{title}</h4>
       </div>
-      <p className="text-[10px] text-slate-500 font-bold leading-tight italic">{desc}</p>
+      <p className="text-[11px] text-slate-400 font-bold leading-tight italic">{desc}</p>
     </div>
   );
 }
