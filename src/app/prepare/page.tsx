@@ -894,6 +894,24 @@ export default function PreparePage() {
           </div>
         </div>
 
+        {/* 🛡️ MISSION PHASE: STEP 02 */}
+        <div className="mb-10">
+          <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Coins className="size-5 text-sky-400" />
+                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Scrutinise the contract package</h3>
+              </div>
+              <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+                Beyond the basic salary, what is the actual yield? Check for pension contributions, medical insurance gaps, and the specific wording of the end-of-service gratuity. 
+                <span className="block mt-2 text-sky-400/80">
+                  Pensions Note: Many international schools do not pay into a portable pension scheme. If you're coming from the UK, your TPS contributions will stop; you may need to factor in self-funding a SIPP or checking if the school's "gratuity" is based on basic salary or total package.
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Tactical Warning Alert (New Position) */}
 
 
@@ -1046,6 +1064,24 @@ export default function PreparePage() {
                     );
                   })}
                 </div>
+
+        {/* 🛡️ MISSION PHASE: STEP 03 */}
+        <div className="mb-10">
+          <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <FileText className="size-5 text-sky-400" />
+                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
+              </div>
+              <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash. 
+                <span className="block mt-2 text-sky-400/80">
+                  Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks.
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
                 <p className="mt-6 text-[8px] font-bold text-slate-600 uppercase italic tracking-widest border-t border-white/5 pt-3">
                   {selectedIkea 
                     ? "* Note: This is a standardized IKEA field kit. Stock levels may vary by region."
