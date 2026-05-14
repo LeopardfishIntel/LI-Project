@@ -900,7 +900,7 @@ export default function PreparePage() {
         {/* ROW 2: Risks & IKEA (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 flex flex-col gap-3">
-            <IntelCard title="Accommodation" icon={MapPin} subtext="Sort this early so you're not living out of a suitcase for weeks." items={["First 14 days sorted?", "Searching for a flat", calcStatus.includes('family') ? "Childcare availability" : "School house keys", "Rental contracts"]} />
+            <IntelCard title="Accommodation" icon={MapPin} subtext="Sort this early so you're not living out of a suitcase for weeks." items={["First 14 days sorted?", "Confirm hotel cost liability", "Searching for a flat", calcStatus.includes('family') ? "Childcare availability" : "School house keys", "Rental contract - deposits"]} />
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-3">
