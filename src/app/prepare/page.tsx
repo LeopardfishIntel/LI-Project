@@ -5,7 +5,7 @@ import {
   Lock, Banknote, Loader2, Zap, ShoppingCart,
   Home, Clock, Wallet, Car, Ship, CalendarDays, 
   FileText, Landmark, MapPin, Navigation, ArrowRight,
-  Stethoscope, Download, Info, Coins, Package, Monitor, Baby,
+  Stethoscope, Download, Info, Coins, Package, Monitor, Baby, X,
   ChevronDown, ChevronUp, ShieldCheck, Compass, Activity, Globe, Search
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -954,6 +954,55 @@ export default function PreparePage() {
                     </button>
                   }
                 />
+
+                {/* 🔌 Electronics Genkit Expandable (Inline for Mobile UX) */}
+                {showElectronicsKit && (
+                  <div className="col-span-full mb-2 animate-in slide-in-from-top-2 duration-300">
+                    <div className="bg-sky-400/5 border border-sky-400/20 p-4 relative">
+                      <button 
+                        onClick={() => setShowElectronicsKit(false)}
+                        className="absolute top-3 right-3 text-sky-400 hover:text-white transition-colors"
+                      >
+                        <X className="size-4" />
+                      </button>
+                      <div className="flex items-center justify-between mb-3 border-b border-sky-400/10 pb-2 pr-8">
+                        <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.3em] italic flex items-center gap-2">
+                          <Monitor className="size-3" /> SELECT GENKIT ITEMS
+                        </h3>
+                        <p className="text-[10px] font-black italic text-slate-500">Live Estimate: £{electronicsTotal}</p>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        {electronicsItems.map((item, idx) => (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              const newItems = [...electronicsItems];
+                              newItems[idx].selected = !newItems[idx].selected;
+                              setElectronicsItems(newItems);
+                            }}
+                            className={cn(
+                              "p-2 border transition-all flex flex-col items-start gap-1 group/item",
+                              item.selected 
+                                ? "bg-sky-400/10 border-sky-400/30 text-white" 
+                                : "bg-black/40 border-white/5 text-slate-500 grayscale hover:grayscale-0 hover:border-white/20"
+                            )}
+                          >
+                            <span className="text-[8px] font-black uppercase tracking-wider">{item.name}</span>
+                            <span className="text-[9px] font-bold italic opacity-60">£{item.cost}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="mt-3 flex justify-between items-center">
+                        <p className="text-[7px] font-black text-slate-600 uppercase tracking-widest italic">
+                          * Tactical Genkit build complete. Selected items accumulated in mission reserve.
+                        </p>
+                        <p className="text-[7px] font-bold text-slate-600 italic">
+                          Regional averages in GBP applied.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <StatItem 
                   label="Transport" 
                   value={budget.transport} 
@@ -987,48 +1036,7 @@ export default function PreparePage() {
                 />
               </div>
 
-              {/* 🔌 Electronics Genkit Expandable */}
-              {showElectronicsKit && (
-                <div className="px-8 lg:px-12 pb-6 animate-in slide-in-from-top-4 duration-300">
-                  <div className="bg-sky-400/5 border border-sky-400/10 p-4">
-                    <div className="flex items-center justify-between mb-3 border-b border-sky-400/10 pb-2">
-                      <h3 className="text-[10px] font-black text-sky-400 uppercase tracking-[0.3em] italic flex items-center gap-2">
-                        <Monitor className="size-3" /> SELECT
-                      </h3>
-                      <p className="text-[10px] font-black italic text-slate-500">Live Estimate: £{electronicsTotal}</p>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-                      {electronicsItems.map((item, idx) => (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            const newItems = [...electronicsItems];
-                            newItems[idx].selected = !newItems[idx].selected;
-                            setElectronicsItems(newItems);
-                          }}
-                          className={cn(
-                            "p-2 border transition-all flex flex-col items-start gap-1 group/item",
-                            item.selected 
-                              ? "bg-sky-400/10 border-sky-400/30 text-white" 
-                              : "bg-black/40 border-white/5 text-slate-500 grayscale hover:grayscale-0 hover:border-white/20"
-                          )}
-                        >
-                          <span className="text-[8px] font-black uppercase tracking-wider">{item.name}</span>
-                          <span className="text-[9px] font-bold italic opacity-60">£{item.cost}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="mt-3 flex justify-between items-center">
-                      <p className="text-[7px] font-black text-slate-600 uppercase tracking-widest italic">
-                        * Tactical Genkit build complete. Selected items accumulated in mission reserve.
-                      </p>
-                      <p className="text-[7px] font-bold text-slate-600 italic">
-                        Regional averages in GBP applied.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+
 
               {/* 🔄 Reset Row */}
               <div className="px-8 pb-8 flex justify-end">
