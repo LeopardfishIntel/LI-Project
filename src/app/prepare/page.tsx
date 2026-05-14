@@ -6,7 +6,7 @@ import {
   Home, Clock, Wallet, Car, Ship, CalendarDays, 
   FileText, Landmark, MapPin, Navigation, ArrowRight,
   Stethoscope, Download, Info, Coins, Package, Monitor, Baby,
-  ChevronDown, ChevronUp, ShieldCheck, Compass, Activity, Globe
+  ChevronDown, ChevronUp, ShieldCheck, Compass, Activity, Globe, Search
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
