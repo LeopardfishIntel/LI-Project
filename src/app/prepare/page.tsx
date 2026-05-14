@@ -571,7 +571,7 @@ export default function PreparePage() {
             <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
               This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
               <span className="block mt-2 text-sky-400/80">
-                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer for the most accurate results.
+                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
               </span>
             </p>
           </div>
