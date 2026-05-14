@@ -900,8 +900,7 @@ export default function PreparePage() {
         {/* ROW 2: Risks & IKEA (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 flex flex-col gap-3">
-             <RiskCard icon={Banknote} title="Pay scale ambiguity" desc="Treat a lack of clear salary scales as a warning sign." />
-             <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate." />
+            <IntelCard title="Accommodation" icon={MapPin} subtext="Sort this early so you're not living out of a suitcase for weeks." items={["First 14 days sorted?", "Searching for a flat", calcStatus.includes('family') ? "Childcare availability" : "School house keys", "Rental contracts"]} />
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-3">
@@ -1060,7 +1059,10 @@ export default function PreparePage() {
         {/* BOTTOM GRID: The Rest */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           <IntelCard title="Documentation" icon={Clock} subtext="Paperwork delays can stop you from getting paid on time." items={["Visa & work permits", "Degree certificates", "Embassy registration"]} />
-          <IntelCard title="Accommodation" icon={MapPin} subtext="Sort this early so you're not living out of a suitcase for weeks." items={["First 14 days sorted?", "Searching for a flat", calcStatus.includes('family') ? "Childcare availability" : "School house keys", "Rental contracts"]} />
+          <div className="flex flex-col gap-4">
+            <RiskCard icon={Banknote} title="Pay scale ambiguity" desc="Treat a lack of clear salary scales as a warning sign." />
+            <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate." />
+          </div>
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
