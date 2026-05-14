@@ -561,26 +561,18 @@ export default function PreparePage() {
       </div>
 
       {/* 🛡️ MISSION PHASE: STEP 01 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-          <div className="absolute -top-3 -left-3 bg-sky-400 text-black font-black text-[10px] px-2 py-1 italic tracking-widest">MISSION PHASE 01</div>
-          <div className="space-y-3">
+      <div className="mb-10">
+        <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Coins className="size-4 text-sky-400" />
-              <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-white">Calculate your startup buffer</h3>
+              <Coins className="size-5 text-sky-400" />
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-sky-400">Calculate your startup buffer</h3>
             </div>
-            <p className="text-[11px] font-bold text-slate-300 italic leading-relaxed max-w-3xl">
-              This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions.
+            <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+              This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
+              <span className="block mt-2 text-sky-400/80">Note: The input fields below are dynamic and can be adjusted to suit your specific situation; current figures represent median intelligence estimates for your destination.</span>
             </p>
           </div>
-        </div>
-        
-        <div className="lg:col-span-1 p-6 bg-black/40 border border-white/5 flex flex-col justify-center italic">
-          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1">Status: Initializing</p>
-          <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
-            <div className="bg-sky-400 h-full w-1/3 animate-pulse"></div>
-          </div>
-          <p className="text-[8px] font-bold text-slate-600 uppercase tracking-widest mt-2">Phases 02-06 pending intel drop</p>
         </div>
       </div>
 
