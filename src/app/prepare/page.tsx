@@ -54,7 +54,8 @@ export default function PreparePage() {
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const [selectedCountry, setSelectedCountry] = useState<string>('all');
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
-  const [transportMode, setTransportMode] = useState<'public' | 'drive' | 'taxi'>('drive');
+  const [transportMode, setTransportMode] = useState<'public' | 'drive' | 'taxi'>('public');
+  const [pensionRegion, setPensionRegion] = useState<'GB' | 'US'>('GB');
   const [setupDays, setSetupDays] = useState<string>('45'); 
   const [arrivalAllowance, setArrivalAllowance] = useState<number>(0);
   const [monthlyCommitments, setMonthlyCommitments] = useState<number>(0);
@@ -553,25 +554,204 @@ export default function PreparePage() {
     <div className="container mx-auto px-4 md:px-12 py-10 text-white bg-[#020617] min-h-screen font-sans">
       
       {/* Header */}
-      <div className="mb-6 space-y-1">
+      <div className="mb-4 space-y-1">
         <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
           The ultimate <span className="text-[#f97316]">arrival plan.</span>
         </h1>
-        <p className="text-[#94a3b8] font-bold text-[11px] tracking-[0.05em] opacity-80 italic">Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation.</p>
+        <p className="text-[#94a3b8] font-bold text-[13px] tracking-[0.05em] opacity-80 italic">Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation.</p>
       </div>
 
       {/* 🛡️ MISSION PHASE: STEP 01 */}
-      <div className="mb-10">
-        <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-          <div className="space-y-4">
+      <div className="mb-4">
+        <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+          <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Search className="size-5 text-sky-400" />
               <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Scrutinise the contract package</h3>
             </div>
-            <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+            <p className="text-[14px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
               It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
               <span className="block mt-2 text-sky-400/80">
                 Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 🛡️ TACTICAL RISKS: CONTRACT RED & GREEN FLAGS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+        {/* Red Flags */}
+        <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
+          <div className="absolute -top-3 -left-3 bg-amber-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Red Flags</div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Banknote className="size-5 text-amber-500" />
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Warnings</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">"Negotiable" Salary</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">Vague "Broad Ranges"</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A massive range without a clear ladder is often a bait-and-switch designed to lowball you.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">The "Secret" Grid</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">Profit-First Chains</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Lower-tier schools view your salary as a "cost" to be cut for shareholders.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Green Flags */}
+        <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
+          <div className="absolute -top-3 -right-3 bg-emerald-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Green Flags</div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="size-5 text-emerald-500" />
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Gold Standard</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">A Transparent Grid</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A public table showing exactly what you earn based on your years of experience and degrees.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">Automatic Annual "Steps"</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A guaranteed pay bump every year you stay at the school, protecting your "real" income.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">Degree Differentials</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">Benefit Clarity</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Explicit details on housing, flights, and tax obligations provided before you even interview.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate. If you're banned from talking about your salary with colleagues, it's usually because the school is hiding major pay disparities." />
+        <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+            <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+            "Always ask for the scale during the first interview. If they get defensive, you've already found your answer. Professional schools are proud of their transparency."
+          </p>
+        </div>
+      </div>
+
+      {/* 🛡️ TACTICAL RISKS: ACCOMMODATION INTEL */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-4">
+        {/* Red Flags - Accommodation */}
+        <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
+          <div className="absolute -top-3 -left-3 bg-amber-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Red Flags</div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Home className="size-5 text-amber-500" />
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Warnings</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">The "Commute Trap"</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Locations 45+ minutes from campus turns your "free" time into hours of unpaid travel.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">Vague "Suitability" Clauses</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Describing housing as "suitable" without photos or square footage can hide substandard units.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">The Furniture Gap</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Providing "unfurnished" flats without a settling-in allowance. You'll spend months of salary just buying a bed. See our guide!</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-amber-500 uppercase italic">Mandatory Sharing</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Green Flags - Accommodation */}
+        <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
+          <div className="absolute -top-3 -right-3 bg-emerald-500 text-black font-black text-[12px] px-2 py-1 italic tracking-widest uppercase">Green Flags</div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="size-5 text-emerald-500" />
+              <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Gold Standard</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">The "Opt-Out" Choice</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Choice between a managed flat OR a fair-market cash allowance. This proves their housing value is honest. A first year in school housing is often a great choice.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">Household-Based Allocation</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Entitlement policies (size/bedrooms) scale automatically based on the number of your dependents.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">Transparency & Tours</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">Providing floor plans, actual photos (not marketing shots), and a video walkthrough of your specific unit.</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[13px] font-black text-emerald-500 uppercase italic">The "Welcome Pack"</p>
+                <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">A fridge stocked with essentials and pre-connected internet. It signals a school that prioritizes well-being.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+        <div className="lg:col-span-2 p-5 bg-sky-400/5 border border-sky-400/20">
+          <div className="flex items-center gap-3 mb-3">
+            <Package className="size-5 text-sky-400" />
+            <h3 className="text-[13px] font-black uppercase tracking-widest text-white">📦 The Housing Spectrum</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <p className="text-[12px] font-black text-sky-400 uppercase italic">Furnished</p>
+              <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Includes "big ticket" items (Sofa, Bed, Dining). Check if it includes "softs" (linens/kitchenware).</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[12px] font-black text-sky-400 uppercase italic">Unfurnished</p>
+              <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Usually includes "White Goods" (Fridge/Stove) only. Must come with a cash "Settling-in Allowance."</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[12px] font-black text-sky-400 uppercase italic">Allowances</p>
+              <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Monthly cash. Ensure it covers 100% of local rent + at least 70% of average utility costs.</p>
+            </div>
+          </div>
+        </div>
+        <div className="lg:col-span-1 p-5 bg-sky-400/5 border border-sky-400/20 italic flex flex-col justify-center">
+          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+            <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+            "Ask to speak with the teacher currently living in these units. Ask about the three things the school won't tell you: internet reliability, water pressure, and noise levels at 6:00 AM."
+          </p>
+        </div>
+      </div>
+
+      {/* 🛡️ MISSION PHASE: STEP 02 */}
+      <div className="mb-6">
+        <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Coins className="size-5 text-sky-400" />
+              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
+            </div>
+            <p className="text-[14px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+              This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
+              <span className="block mt-2 text-sky-400/80">
+                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
               </span>
             </p>
           </div>
@@ -620,8 +800,8 @@ export default function PreparePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
-                  <Label className="text-[10px] font-bold text-slate-500 italic">4. Home commitments?</Label>
+                <div className="space-y-2 pt-2 border-t border-white/5">
+                  <Label className="text-[12px] font-bold text-slate-500 italic">4. Home commitments?</Label>
                   <div className="relative">
                     <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-sky-400" />
                     <Input 
@@ -629,16 +809,16 @@ export default function PreparePage() {
                       value={monthlyCommitments || ''} 
                       onChange={(e: ChangeEvent<HTMLInputElement>) => setMonthlyCommitments(Number(e.target.value))}
                       placeholder="e.g. Loans/Pensions"
-                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="bg-black/40 border-white/10 h-10 pl-7 text-[13px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
-                  <p className="text-[8px] font-bold text-slate-600 italic">Include student loans, pension contributions, or property costs back home.</p>
+                  <p className="text-[10px] font-bold text-slate-600 italic">Include student loans, pension contributions, or property costs back home.</p>
                   
-                  <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest pt-2">
+                  <Label className="text-[12px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest pt-2">
                     Childcare cost (override?)
                     <div className="group relative">
                       <Info className="size-3 text-sky-400 cursor-help" />
-                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[12px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                         Enter any additional childcare expenses. If left blank, defaults to 0.
                       </div>
                     </div>
@@ -650,15 +830,15 @@ export default function PreparePage() {
                       value={childcareOverride ?? ''}
                       onChange={(e) => setChildcareOverride(e.target.value ? Number(e.target.value) : null)}
                       placeholder="e.g. 300"
-                      className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="bg-black/40 border-white/10 h-10 pl-7 text-[13px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
-                  <div className="bg-amber-500/5 border border-amber-500/10 p-3 rounded-sm space-y-1 mt-2">
+                  <div className="bg-amber-500/5 border border-amber-500/10 p-2 rounded-sm space-y-1 mt-2">
                     <div className="flex items-center gap-2">
                       <Info className="size-3 text-amber-500" />
-                      <p className="text-[9px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
+                      <p className="text-[11px] font-black text-amber-500 uppercase italic">Childcare Alert</p>
                     </div>
-                    <p className="text-[8px] font-bold text-slate-400 italic leading-snug">
+                    <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
                       Availability and rates vary wildly. Contact your school HR early to secure a spot and verify current subsidies.
                     </p>
                   </div>
@@ -670,19 +850,19 @@ export default function PreparePage() {
           <div className="lg:col-span-8 flex">
             <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl w-full flex flex-col">
               {/* 🏔️ DASHBOARD TOP: Primary Intelligence */}
-              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-8 lg:p-12 border-b border-white/5">
+              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-6 lg:p-8 border-b border-white/5">
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 text-white" />
                 </div>
                 
                 {/* 🛰️ DATA HIERARCHY */}
                 {/* 🛰️ ROW 1: PRIMARY INTELLIGENCE */}
-                <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
+                <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                   
                   {/* Reserve Counter */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <p className="text-[11px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
+                      <p className="text-[13px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
                     </div>
                     <p className={cn(
                       "font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-2xl",
@@ -692,14 +872,14 @@ export default function PreparePage() {
                     </p>
                     
                     {/* Tactical Currency Switcher */}
-                    <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-4">
+                    <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-3">
                       {['GBP', 'USD', 'EUR', 'Local'].map((c) => (
                         <button
                           key={c}
                           disabled={c === 'Local' && selectedCountry === 'all'}
                           onClick={() => setCurrency(c)}
                           className={cn(
-                            "px-3 py-1 text-[10px] font-black transition-all uppercase",
+                            "px-3 py-1 text-[12px] font-black transition-all uppercase",
                             currency === c ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
                           )}
                         >
@@ -710,19 +890,19 @@ export default function PreparePage() {
                   </div>
 
                   {/* Operational Inputs (Top Tier - Vertically Stacked) */}
-                  <div className="flex flex-col gap-5 w-full lg:w-auto">
-                    <div className="space-y-1.5 min-w-[200px]">
-                      <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
+                  <div className="flex flex-col gap-4 w-full lg:w-auto">
+                    <div className="space-y-1 min-w-[200px]">
+                      <Label className="text-[12px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest">
                         First payday? 
                         <div className="group relative">
                           <Info className="size-3 text-sky-400 cursor-help" />
-                          <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                          <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[12px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                             Paperwork delays often push your first pay to the 60-day mark.
                           </div>
                         </div>
                       </Label>
                       <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
-                        <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[11px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316]"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="bg-black/60 border-white/10 h-12 text-[13px] font-black italic text-[#fafaf9] rounded-none focus:ring-[#f97316]"><SelectValue /></SelectTrigger>
                         <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                           <SelectItem value="30">30 days (On time)</SelectItem>
                           <SelectItem value="45">45 days (Gap likely)</SelectItem>
@@ -730,8 +910,8 @@ export default function PreparePage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2 min-w-[150px]">
-                      <Label className="text-[10px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
+                    <div className="space-y-1 min-w-[150px]">
+                      <Label className="text-[12px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
                       <div className="relative">
                         <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#f97316]" />
                         <Input 
@@ -739,7 +919,7 @@ export default function PreparePage() {
                           value={arrivalAllowance || ''} 
                           onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
                           placeholder="e.g. 1500"
-                          className="bg-black/60 border-white/10 h-12 pl-10 text-[11px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-black/60 border-white/10 h-12 pl-10 text-[13px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                       </div>
                     </div>
@@ -749,7 +929,7 @@ export default function PreparePage() {
               </div>
 
               {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
-              <div className="p-6 lg:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5">
+              <div className="p-5 lg:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5">
                 
                 {/* Stat Outputs with Overrides */}
                 <StatItem 
@@ -812,7 +992,7 @@ export default function PreparePage() {
                   currency={budget.displayCurrency} 
                   overrideValue={transportOverride}
                   onOverride={(val) => setTransportOverride(val)}
-                  info={transportMode === 'drive' ? "Estimated cost for a reliable second-hand car purchase and initial registration." : (transportMode === 'taxi' ? "Estimated cost for daily ride-share/taxi trips for the duration of your setup period." : "Estimated cost for public transport passes and initial commute setup.")}
+                  info={transportMode === 'drive' ? "Estimated cost for short-term car hire and fuel for your setup period. It is typically too early to purchase a car before residency is granted." : (transportMode === 'taxi' ? "Estimated cost for daily ride-share/taxi trips for the duration of your setup period." : "Estimated cost for public transport passes and initial commute setup.")}
                 />
                 
                 {budget.family > 0 && (
@@ -894,148 +1074,135 @@ export default function PreparePage() {
           </div>
         </div>
 
-        {/* 🛡️ MISSION PHASE: STEP 02 */}
-        <div className="mb-10">
-          <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Coins className="size-5 text-sky-400" />
-                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
-              </div>
-              <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-                This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
-                <span className="block mt-2 text-sky-400/80">
-                  The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
+
 
         {/* Tactical Warning Alert (New Position) */}
 
 
-        {/* ROW 2: Risks & IKEA (Height Matched) */}
+        {/* ROW 2: IKEA Readiness (Full Width) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-          <div className="lg:col-span-4 flex flex-col gap-3">
-            <IntelCard title="Accommodation" icon={MapPin} subtext="Sort this early so you're not living out of a suitcase for weeks." items={["First 14 days sorted?", "Confirm hotel cost liability", "Searching for a flat", calcStatus.includes('family') ? "Childcare availability" : "School house keys", "Rental contract - deposits"]} />
-          </div>
+          <div className="lg:col-span-12 flex flex-col gap-3">
+            <Card className={cn("border-white/10 p-3 flex items-center justify-between w-full shadow-lg transition-all gap-4", selectedCountry !== 'all' ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                {(() => {
+                  const hasIkea = selectedIkea && (() => {
+                    const ikeaKey = Object.keys(selectedIkea).find(k => k.toLowerCase().includes('ikea'));
+                    if (ikeaKey) {
+                      const val = selectedIkea[ikeaKey];
+                      if (val !== undefined && val !== null && val !== "" && !['0', 'no', 'false', 'n', 'f'].includes(String(val).toLowerCase().trim())) {
+                        return true;
+                      }
+                    }
+                    const altKeys = ['Has Ikea', 'Has IKEA', 'Has_Ikea', 'hasIkea', 'Ikea', 'IKEA'];
+                    for (const k of altKeys) {
+                      const val = selectedIkea[k];
+                      if (val !== undefined && val !== null && val !== "" && !['0', 'no', 'false', 'n', 'f'].includes(String(val).toLowerCase().trim())) {
+                        return true;
+                      }
+                    }
+                    return false;
+                  })();
+                  return (
+                    <>
+                      <div className={cn(
+                        "p-2 rounded-full flex-shrink-0", 
+                        hasIkea
+                          ? "bg-green-500/10 text-green-500" 
+                          : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-amber-500/10 text-amber-500")
+                      )}>
+                        <ShoppingCart className="size-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-[12px] font-black uppercase tracking-widest text-white italic leading-tight truncate">
+                          IKEA readiness check: <span className="text-sky-400 underline decoration-sky-400/30 underline-offset-4">{selectedCountry !== 'all' ? selectedCountry : 'Your destination'}</span>
+                        </h4>
+                        <p className="text-[10px] font-bold text-slate-500 tracking-tight italic truncate">
+                          {selectedIkea 
+                            ? (hasIkea ? "Verified local IKEA presence." : "Using regional shipping estimates.")
+                            : "Standard furnishing estimate."}
+                        </p>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
 
-          <div className="lg:col-span-8 flex flex-col gap-3">
-            <Card className={cn("border-white/10 p-5 flex flex-col justify-between w-full h-full shadow-lg transition-all gap-4", selectedCountry !== 'all' ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  {(() => {
-                    const hasIkea = selectedIkea && (() => {
-                      const ikeaKey = Object.keys(selectedIkea).find(k => k.toLowerCase().includes('ikea'));
-                      if (ikeaKey) {
-                        const val = selectedIkea[ikeaKey];
-                        if (val !== undefined && val !== null && val !== "" && !['0', 'no', 'false', 'n', 'f'].includes(String(val).toLowerCase().trim())) {
-                          return true;
-                        }
-                      }
-                      const altKeys = ['Has Ikea', 'Has IKEA', 'Has_Ikea', 'hasIkea', 'Ikea', 'IKEA'];
-                      for (const k of altKeys) {
-                        const val = selectedIkea[k];
-                        if (val !== undefined && val !== null && val !== "" && !['0', 'no', 'false', 'n', 'f'].includes(String(val).toLowerCase().trim())) {
-                          return true;
-                        }
-                      }
-                      return false;
-                    })();
+              {selectedCountry !== 'all' && (
+                <div className="flex items-center gap-6 flex-shrink-0">
+                  {/* Selected Tier Only */}
+                  {selectedIkea && (() => {
+                    let targetLocalCurrency = selectedIkea['Currency'] || 'USD';
+                    if (targetLocalCurrency === 'Local' || targetLocalCurrency === 'local' || !targetLocalCurrency) {
+                      targetLocalCurrency = 'USD';
+                    }
+                    const activeIkeaCurrency = ikeaDisplayCurrency === 'Local' ? targetLocalCurrency : ikeaDisplayCurrency;
+                    
+                    const tierMap = [
+                      { label: 'Single', key: 'Single', status: 'single' },
+                      { label: 'Couple', key: 'Couple', status: 'married-dual' },
+                      { label: 'Family +1', key: 'Family +1', status: 'family-1' },
+                      { label: 'Family +2', key: 'Family +2', status: 'family-2' },
+                      { label: 'Family +3', key: 'Family +3', status: 'family-3' },
+                    ];
+                    
+                    const activeTier = tierMap.find(t => t.status === calcStatus) || tierMap[0];
+                    const usdVal = Number(selectedIkea[activeTier.key]) || 1000;
+                    const rate = RATES[activeIkeaCurrency] || 1.0;
+                    const displayVal = (usdVal / (RATES['USD'] || 1.27)) * rate;
+
                     return (
-                      <>
-                        <div className={cn(
-                          "p-3 rounded-full", 
-                          hasIkea
-                            ? "bg-green-500/10 text-green-500" 
-                            : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-amber-500/10 text-amber-500")
-                        )}>
-                          <ShoppingCart className="size-6" />
+                      <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2 px-4 py-1.5 bg-sky-400/10 border border-sky-400/30 italic">
+                          <span className="text-[10px] font-bold text-sky-400 uppercase tracking-tighter opacity-60">{activeTier.label}:</span>
+                          <span className="text-[13px] font-black text-white">{formatCurrency(displayVal, activeIkeaCurrency)}</span>
                         </div>
-                        <div>
-                          <h4 className="text-[11px] font-black uppercase tracking-widest text-white italic leading-tight">
-                            IKEA readiness check: <span className="text-sky-400 underline decoration-sky-400/30 underline-offset-4">{selectedCountry !== 'all' ? selectedCountry : 'Your destination'}</span>
-                          </h4>
-                          <p className="text-[10px] font-bold text-slate-500 tracking-tight italic mt-1">
-                            {selectedIkea 
-                              ? (hasIkea ? "Verified IKEA presence. Using actual cost indices." : "No local IKEA verified. Using regional shipping estimates.")
-                              : "Standard furnishing estimate. Essential inventory listed below."}
-                          </p>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-600 font-black text-[9px] uppercase tracking-widest italic flex-shrink-0">Currency:</span>
+                          <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
+                            <button 
+                              onClick={() => setIkeaDisplayCurrency('Local')}
+                              className={cn("px-2 py-0.5 text-[9px] font-black tracking-tighter transition-all", ikeaDisplayCurrency === 'Local' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                            >
+                              LOC ({targetLocalCurrency})
+                            </button>
+                            <button 
+                              onClick={() => setIkeaDisplayCurrency('GBP')}
+                              className={cn("px-2 py-0.5 text-[9px] font-black tracking-tighter transition-all", ikeaDisplayCurrency === 'GBP' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                            >
+                              GBP
+                            </button>
+                            <button 
+                              onClick={() => setIkeaDisplayCurrency('USD')}
+                              className={cn("px-2 py-0.5 text-[9px] font-black tracking-tighter transition-all", ikeaDisplayCurrency === 'USD' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                            >
+                              USD
+                            </button>
+                            <button 
+                              onClick={() => setIkeaDisplayCurrency('EUR')}
+                              className={cn("px-2 py-0.5 text-[9px] font-black tracking-tighter transition-all", ikeaDisplayCurrency === 'EUR' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                            >
+                              EUR
+                            </button>
+                          </div>
                         </div>
-                      </>
+                      </div>
                     );
                   })()}
-                </div>
-                {selectedCountry !== 'all' && (
-                  <div className="flex items-center gap-3 self-end md:self-auto">
+
+                  <div className="flex items-center gap-2 border-l border-white/10 pl-6">
                     <button 
                       onClick={() => setShowIkeaKit(!showIkeaKit)}
-                      className="p-2 px-3 text-[9px] font-black uppercase italic border border-white/10 hover:bg-white hover:text-black transition-all"
+                      className="p-1.5 px-3 text-[10px] font-black uppercase italic border border-white/10 hover:bg-white hover:text-black transition-all"
                     >
-                      {showIkeaKit ? 'Hide Items' : 'View Kit'}
+                      {showIkeaKit ? 'Hide' : 'Kit'}
                     </button>
                     <button 
                       onClick={downloadIkeaPdf}
-                      className="p-2 px-3 text-[9px] font-black uppercase italic bg-sky-400 text-black hover:bg-white transition-all flex items-center gap-2"
+                      className="p-1.5 px-3 text-[10px] font-black uppercase italic bg-sky-400 text-black hover:bg-white transition-all flex items-center gap-2"
                     >
                       <Download className="size-3" /> PDF
                     </button>
-                  </div>
-                )}
-              </div>
-
-              {selectedIkea && (
-                <div className="border-t border-white/5 pt-3 mt-1">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    {(() => {
-                      let targetLocalCurrency = selectedIkea['Currency'] || 'USD';
-                      if (targetLocalCurrency === 'Local' || targetLocalCurrency === 'local' || !targetLocalCurrency) {
-                        targetLocalCurrency = 'USD';
-                      }
-                      const activeIkeaCurrency = ikeaDisplayCurrency === 'Local' ? targetLocalCurrency : ikeaDisplayCurrency;
-                      return (
-                        <>
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 italic">
-                            <span className="text-slate-500 font-black tracking-widest uppercase">Base currency:</span>
-                            <Select value={ikeaDisplayCurrency} onValueChange={setIkeaDisplayCurrency}>
-                              <SelectTrigger className="w-[95px] h-6 bg-black/40 border-white/10 text-white text-[9px] font-black italic rounded-none tracking-wider px-2">
-                                <SelectValue placeholder="Local" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-[#0b1224] border-white/10 text-white min-w-[95px]">
-                                <SelectItem value="Local" className="text-[9px] font-black italic uppercase tracking-wider focus:bg-white focus:text-black">Local ({targetLocalCurrency})</SelectItem>
-                                <SelectItem value="GBP" className="text-[9px] font-black italic uppercase tracking-wider focus:bg-white focus:text-black">GBP (£)</SelectItem>
-                                <SelectItem value="USD" className="text-[9px] font-black italic uppercase tracking-wider focus:bg-white focus:text-black">USD ($)</SelectItem>
-                                <SelectItem value="EUR" className="text-[9px] font-black italic uppercase tracking-wider focus:bg-white focus:text-black">EUR (€)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="flex flex-wrap gap-4 text-[10px]">
-                            {[
-                              { label: 'Single', key: 'Single' },
-                              { label: 'Couple', key: 'Couple' },
-                              { label: 'Family +1', key: 'Family +1' },
-                              { label: 'Family +2', key: 'Family +2' },
-                              { label: 'Family +3', key: 'Family +3' },
-                            ].map((tier, idx) => {
-                              const usdVal = Number(selectedIkea[tier.key]) || 1000;
-                              const rate = RATES[activeIkeaCurrency] || 1.0;
-                              const displayVal = (usdVal / (RATES['USD'] || 1.27)) * rate;
-                              const isActive = calcStatus === (tier.key === 'Single' ? 'single' : tier.key === 'Couple' ? 'married-dual' : tier.key === 'Family +1' ? 'family-1' : tier.key === 'Family +2' ? 'family-2' : 'family-3');
-                              return (
-                                <div key={idx} className={cn(
-                                  "flex items-center gap-1.5 p-1 px-2 border italic transition-all",
-                                  isActive ? "bg-sky-400/10 border-sky-400/40 text-sky-400" : "bg-black/20 border-white/5 text-slate-500 hover:border-white/10"
-                                )}>
-                                  <span className="font-bold">{tier.label}:</span>
-                                  <span className="font-black text-white">{formatCurrency(displayVal, activeIkeaCurrency)}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </>
-                      );
-                    })()}
                   </div>
                 </div>
               )}
@@ -1065,23 +1232,7 @@ export default function PreparePage() {
                   })}
                 </div>
 
-        {/* 🛡️ MISSION PHASE: STEP 03 */}
-        <div className="mb-10">
-          <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <FileText className="size-5 text-sky-400" />
-                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
-              </div>
-              <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper. 
-                <span className="block mt-2 text-sky-400/80">
-                  Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks. If you aren't already legalised, you aren't really moving.
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
+
                 <p className="mt-6 text-[8px] font-bold text-slate-600 uppercase italic tracking-widest border-t border-white/5 pt-3">
                   {selectedIkea 
                     ? "* Note: This is a standardized IKEA field kit. Stock levels may vary by region."
@@ -1092,47 +1243,300 @@ export default function PreparePage() {
           </div>
         </div>
 
-        {/* BOTTOM GRID: The Rest */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <IntelCard title="Documentation" icon={Clock} subtext="Bureaucracy is the final boss. Paperwork delays can stop you from getting paid on time." items={["Visa & work permits", "Degree certificates", "Embassy registration"]} />
-          <div className="flex flex-col gap-4">
-            <RiskCard icon={Banknote} title="Pay scale ambiguity" desc="Treat a lack of clear salary scales as a warning sign." />
-            <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate." />
+        {/* 🛡️ MISSION PHASE: STEP 03 */}
+        <div className="mb-6">
+          <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <FileText className="size-5 text-sky-400" />
+                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
+              </div>
+              <p className="text-[14px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
+                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper. 
+                <span className="block mt-2 text-sky-400/80">
+                  Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks. If you aren't already legalised, you aren't really moving.
+                </span>
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* 🛡️ TACTICAL RISKS: DOCUMENTATION INTEL */}
+        <div className="mb-6">
+          <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <FileText className="size-5 text-sky-400" />
+                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">The Essentials</h3>
+              </div>
+              <p className="text-[14px] font-bold text-slate-400 italic leading-relaxed max-w-5xl">
+                To navigate the required international paperwork, you need to manage three moving parts: authenticity, validity, and legal right to work.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-[13px] font-black text-sky-400 uppercase italic">Degree Attestation (The "Stamps")</p>
+                    <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">
+                      <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
+                      <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
+                      <span className="text-sky-400/80 uppercase text-[11px]">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[13px] font-black text-sky-400 uppercase italic">Criminal Record Checks (Safeguarding)</p>
+                    <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">
+                      <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
+                      <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
+                      <span className="text-sky-400/80 uppercase text-[11px]">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <p className="text-[13px] font-black text-sky-400 uppercase italic">Visas & Work Permits</p>
+                    <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">
+                      <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
+                      <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
+                      <span className="text-[#f97316] uppercase text-[11px]">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[13px] font-black text-sky-400 uppercase italic">Embassy Registration & Local ID</p>
+                    <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed">
+                      <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
+                      <span className="text-white">Validity:</span> Linked to your visa.<br/>
+                      <span className="text-sky-400/80 uppercase text-[11px]">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-white/5">
+                <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+                  <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                    <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                    "Scan everything. Before you hand over any original document to a school or embassy, ensure you have a high-resolution PDF saved in the cloud. You’ll need these scans for everything from opening a bank account to registering for a local SIM card before your physical ID arrives."
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM GRID: The Remaining Operations */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Navigation className="size-4 text-sky-400 -rotate-90" />
-                <CardTitle className="text-[11px] font-black uppercase tracking-widest text-white">Transport</CardTitle>
+                <Navigation className="size-4 text-[#f97316] -rotate-90" />
+                <CardTitle className="text-[13px] font-black uppercase tracking-widest text-[#f97316]">Transport Strategy</CardTitle>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setTransportMode('public')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'public' ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
-                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#f97316] text-white border-[#f97316]" : "bg-black/20 border-white/10 text-slate-500")}>Car Hire</button>
-                <button onClick={() => setTransportMode('taxi')} className={cn("flex-1 py-1.5 text-[9px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'taxi' ? "bg-indigo-500 text-white border-indigo-500" : "bg-black/20 border-white/10 text-slate-500")}>Taxi</button>
+                <button onClick={() => setTransportMode('public')} className={cn("flex-1 py-1.5 text-[10px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'public' ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
+                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[10px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#f97316] text-white border-[#f97316]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
+                <button onClick={() => setTransportMode('taxi')} className={cn("flex-1 py-1.5 text-[10px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'taxi' ? "bg-indigo-500 text-white border-indigo-500" : "bg-black/20 border-white/10 text-slate-500")}>Taxi/App</button>
               </div>
-              <ul className="space-y-2 text-[10px] font-bold text-slate-400 italic">
-                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {transportMode === 'drive' ? "Driving licence" : (transportMode === 'taxi' ? "Download local taxi apps" : "Metro registration")}</li>
-                <li className="flex gap-3"><span className="text-[#f97316]">●</span> {transportMode === 'drive' ? "Hiring or buying" : (transportMode === 'taxi' ? "International SIM card" : "Taxi app setup")}</li>
-              </ul>
+              
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold text-slate-400 italic leading-tight">
+                  {transportMode === 'public' && "Budget-friendly in hubs like Dubai or HK. Often more reliable than home-country networks. Note: In some regions, low frequency or lack of direct access to school stops can make this impractical."}
+                  {transportMode === 'drive' && "Essential for satellite communities. Note: Residency is usually required to buy a car; this is often best handled after your probation period."}
+                  {transportMode === 'taxi' && "Good for the first 14 days and grocery runs, but unsustainable as a long-term primary commute."}
+                </p>
+
+                <ul className="space-y-2 text-[12px] font-bold text-slate-300 italic">
+                  {transportMode === 'public' && (
+                    <>
+                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Metro registration (Nol, Octopus, Litacka)</li>
+                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Map your 'School-to-Station' walking route</li>
+                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Download official transit apps (e.g. S'hail, Citymapper)</li>
+                    </>
+                  )}
+                  {transportMode === 'drive' && (
+                    <>
+                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> IDP (International Driving Permit) - Get before leaving!</li>
+                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> Verify home-license exchange rules (Some need re-tests)</li>
+                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> Budget for 'Salik' (tolls) and mandatory parking fees</li>
+                    </>
+                  )}
+                  {transportMode === 'taxi' && (
+                    <>
+                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Download local apps (Careem, Grab, Uber, Bolt)</li>
+                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Link a multi-currency card (Wise/Revolut) to save on fees</li>
+                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Share live ride location; know the price before you start</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">
+                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                  "Mobilize together. Check if your school has a 'Teacher Carpool' or staff shuttle. It’s the fastest way to cut costs and get the 'staff-room honest' intel on the best neighborhoods and local hidden gems."
+                </p>
+              </div>
             </div>
           </Card>
-          <IntelCard title="Salary runway" icon={CalendarDays} subtext="The 'August Gap' is real. Most teachers land in August but won't see a penny until late September." items={["Pay dates confirmed", `Funds for the first ${setupDays} days`, "Bank account set up"]} />
-          <IntelCard title="Money & banking" icon={Landmark} subtext="Don't get stung by high-street bank rates when sending your hard-earned cash back home." items={["Transfer apps set up", "International wire costs", "Payout plans"]} />
-          <IntelCard title="Health & registration" icon={Stethoscope} subtext="Check if your school medical cover starts when you land or only on your first official day of work." items={["Insurance start date", "Short-term cover", "Hospital locations"]} />
+          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Landmark className="size-4 text-[#f97316]" />
+                  <CardTitle className="text-[13px] font-black uppercase tracking-widest text-[#f97316]">Pensions & Retirement</CardTitle>
+                </div>
+                <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
+                  <button 
+                    onClick={() => setPensionRegion('GB')}
+                    className={cn("px-2 py-1 text-[10px] font-black tracking-widest transition-all", pensionRegion === 'GB' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                  >
+                    UK
+                  </button>
+                  <button 
+                    onClick={() => setPensionRegion('US')}
+                    className={cn("px-2 py-1 text-[10px] font-black tracking-widest transition-all", pensionRegion === 'US' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                  >
+                    US
+                  </button>
+                </div>
+              </div>
+
+              {pensionRegion === 'GB' ? (
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-tight">
+                    As of April 2026, Class 3 NI is the primary mechanism to protect your UK State Pension.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">Cost: £18.40 / week</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Approx £957/year. Each qualifying year adds ~£358 to your annual pension for life.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">ROI: 3-Year Breakeven</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">The strongest return on investment for any teacher abroad. Break even within 3 years of retirement.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">Eligibility</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Must have 10 qualifying years or 10 years of continuous UK residency. You can backfill 6 previous years.</p>
+                    </div>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-600 uppercase italic tracking-widest pt-2 border-t border-white/5">
+                    * Advice only - check with HMRC / DWP for final eligibility.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-tight">
+                    US educators face the "Windfall Elimination Provision" (WEP) when teaching on local contracts.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">WEP Risk</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Foreign pensions (like UAE gratuity) can reduce your US Social Security payout by up to 50%.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">IRA Contribution Trap</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">If using the FEIE (Foreign Earned Income Exclusion), you have no "earned income" to contribute to a Roth IRA.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[12px] font-black text-sky-400 uppercase italic">Brokerage Strategy</p>
+                      <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Most US teachers abroad use low-cost index funds in a standard brokerage account to mirror 401(k) growth.</p>
+                    </div>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-600 uppercase italic tracking-widest pt-2 border-t border-white/5">
+                    * Advice only - check with SSA / Tax Professional for individual guidance.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Card>
+          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Landmark className="size-4 text-[#f97316]" />
+                <CardTitle className="text-[13px] font-black uppercase tracking-widest text-[#f97316]">Money & Banking</CardTitle>
+              </div>
+              <p className="text-[11px] font-bold text-slate-400 italic leading-tight">
+                Moving money internationally can cost you 3% to 5% of your salary in hidden bank fees.
+              </p>
+
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">School-Preferred Banks</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Ask which bank the school uses for payroll. Using the same provider usually ensures same-day pay and branch convenience.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">Avoid High-Street Rates</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Use apps like Wise or Revolut for the "mid-market" rate. Banks hide massive fees in poor exchange rates.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">The "Triple-Dip" Trap</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">SWIFT transfers get charged by sending, receiving, and intermediary banks. Fintech bypasses this, saving ~£30/transfer.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">The Split Strategy</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Local account for rent/daily life. "Sweep" savings home monthly to protect against local currency drops.</p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">
+                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                  "Don't transfer on Fridays. Banks add a 'volatility buffer' over weekends. Send your money on a Tuesday or Wednesday for the cheapest results."
+                </p>
+              </div>
+            </div>
+          </Card>
+          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Stethoscope className="size-4 text-[#f97316]" />
+                <CardTitle className="text-[13px] font-black uppercase tracking-widest text-[#f97316]">Health & Registration</CardTitle>
+              </div>
+              <p className="text-[11px] font-bold text-slate-400 italic leading-tight">
+                Your medical cover is your most important safety net.
+              </p>
+
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">The "Arrival Gap"</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Many policies activate only on your first contract day. If you land 2 weeks early, you are uninsured. Bridge this with travel insurance.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">Network Tier Limits</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Check if your card is "Premium" or "General." General networks often exclude the top-tier hospitals near expat housing.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">Co-Pay Realities</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Basic plans often have 20%+ co-pays for dental or outpatient visits. Budget for out-of-pocket "minor" illnesses.</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[12px] font-black text-sky-400 uppercase italic">Fitness for Residency</p>
+                  <p className="text-[11px] font-bold text-slate-400 italic leading-relaxed">Expect a mandatory "Fitness Test" (Blood/X-ray). Certain historical conditions can impact your residency permit.</p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">
+                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                  "Download the insurance app immediately. Having your digital card and policy number ready means you can find 'in-network' clinics in seconds during an emergency."
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
         
         
         {/* 🛰️ MISSION BRIEFING: THE FLI007 ARRIVAL PLAN */}
-        <section className="mt-20 border-t-2 border-white/5 pt-20 mb-20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+        <section className="mt-10 border-t-2 border-white/5 pt-10 mb-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="bg-amber-500 text-black font-black text-[10px] px-2 py-0.5 italic tracking-[0.2em] uppercase">FRED FLI007</div>
-                <h2 className="text-3xl font-black italic tracking-tighter text-white uppercase">The Ultimate Arrival Plan</h2>
-              </div>
-              <p className="text-sm font-bold text-slate-400 italic max-w-xl leading-relaxed">
-                Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation. 
-                This is your mission-ready briefing document, grounded in Leopardfish Intel.
+              <p className="text-amber-500 font-black text-[13px] italic tracking-[0.2em] uppercase">The Ultimate Arrival Plan for</p>
+              <h2 className="text-2xl md:text-3xl font-black italic tracking-tighter text-white uppercase">FRED FLI007</h2>
+              <p className="text-[14px] font-bold text-slate-400 italic max-w-xl leading-relaxed">
+                Your Essential Relocation Briefing. Grounded in Leopardfish Intel.
               </p>
             </div>
             <Button 
@@ -1167,14 +1571,14 @@ function StatItem({
   const isLongSymbol = currencySymbol.length > 1;
 
   return (
-    <div className="bg-black/40 border border-white/5 p-3.5 space-y-3 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
-      <div className="flex items-center justify-between gap-1 min-h-[18px]">
-        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none">
+    <div className="bg-black/40 border border-white/5 p-3 space-y-2 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
+      <div className="flex items-center justify-between gap-1 min-h-[16px]">
+        <div className="text-[12px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none">
           <Icon className="size-3 text-sky-400 shrink-0" /> {label}
           {info && (
             <div className="group/info relative shrink-0">
               <Info className="size-2.5 text-slate-600 cursor-help" />
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[10px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-3 bg-black border border-white/10 rounded-sm text-[12px] font-bold text-slate-300 leading-tight italic opacity-0 group-hover/info:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                 {info}
               </div>
             </div>
@@ -1183,11 +1587,11 @@ function StatItem({
         {action}
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-1">
         <div className="relative">
           <span className={cn(
             "absolute left-3 top-1/2 -translate-y-1/2 font-black italic pointer-events-none transition-colors",
-            isLongSymbol ? "text-[10px] tracking-tight" : "text-lg",
+            isLongSymbol ? "text-[12px] tracking-tight" : "text-lg",
             isOverridden ? "text-[#f97316]" : "text-slate-500"
           )}>
             {currencySymbol}
@@ -1197,7 +1601,7 @@ function StatItem({
             value={displayVal || ''} 
             onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
             className={cn(
-              "bg-black/60 border-white/5 h-14 text-2xl font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+              "bg-black/60 border-white/5 h-12 text-[15px] font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
               isLongSymbol ? "pl-14" : "pl-10",
               isOverridden ? "text-[#f97316] border-[#f97316]/30" : "text-white"
             )}

@@ -219,13 +219,17 @@ export function calculateBudget(params: BudgetParams) {
   const isDriving = transportMode === 'drive';
   const isTaxi = transportMode === 'taxi';
   
-  const mapType = isDriving ? 'carPurchase' : 'publicTransport';
+  const mapType = isDriving ? 'carHire' : 'publicTransport';
   const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType] || targetData?.transport;
-  const baseTransport = usdToDisplay(getVal(transportMap, profileKey, isDriving ? 1 : personCount));
+  const baseTransport = usdToDisplay(getVal(transportMap, profileKey, isDriving ? 1.0 : personCount));
   
   let transportVal = transportOverride !== null ? transportOverride : 0;
   if (transportOverride === null) {
-    if (isDriving) transportVal = baseTransport;
+    if (isDriving) {
+      // If carHire is missing, we use a heuristic (e.g. 1.8x public transport)
+      const finalBase = (targetData?.transport?.carHire || targetData?.carHire) ? baseTransport : (usdToDisplay(getVal(targetData?.transport?.publicTransport || targetData?.publicTransport, profileKey, personCount)) * 1.8);
+      transportVal = finalBase * setupMultiplier;
+    }
     else if (isTaxi) transportVal = (baseTransport * 4) * setupMultiplier;
     else transportVal = baseTransport * setupMultiplier;
   }
