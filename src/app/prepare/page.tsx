@@ -570,7 +570,9 @@ export default function PreparePage() {
             </div>
             <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
               This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
-              <span className="block mt-2 text-sky-400/80">Note: The input fields below are dynamic and can be adjusted to suit your specific situation; current figures represent median intelligence estimates for your destination.</span>
+              <span className="block mt-2 text-sky-400/80">
+                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer for the most accurate results.
+              </span>
             </p>
           </div>
         </div>
@@ -893,15 +895,7 @@ export default function PreparePage() {
         </div>
 
         {/* Tactical Warning Alert (New Position) */}
-        <div className="bg-amber-500/10 border border-amber-500/20 p-4 flex items-start gap-4 animate-in slide-in-from-top-4 duration-700">
-          <AlertCircle className="size-5 text-amber-500 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <p className="text-[11px] font-black uppercase tracking-widest text-amber-500 italic">Tactical Warning: Regional Estimates</p>
-            <p className="text-[10px] font-bold text-slate-400 italic leading-snug">
-              Calculations are based on Leopradfishintel regional and school indices. School-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. please adjust data fields to refelct your personalised offer in order ot get the most accurate results.
-            </p>
-          </div>
-        </div>
+
 
         {/* ROW 2: Risks & IKEA (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
