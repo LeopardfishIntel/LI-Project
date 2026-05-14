@@ -565,13 +565,13 @@ export default function PreparePage() {
         <div className="p-8 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Coins className="size-5 text-sky-400" />
-              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Calculate your startup buffer</h3>
+              <Search className="size-5 text-sky-400" />
+              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Scrutinise the contract package</h3>
             </div>
             <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-              This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
+              It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
               <span className="block mt-2 text-sky-400/80">
-                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
+                Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
               </span>
             </p>
           </div>
@@ -900,12 +900,12 @@ export default function PreparePage() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Coins className="size-5 text-sky-400" />
-                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Scrutinise the contract package</h3>
+                <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
               </div>
               <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-                It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
+                This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
                 <span className="block mt-2 text-sky-400/80">
-                  Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
+                  The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
                 </span>
               </p>
             </div>
