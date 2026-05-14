@@ -628,11 +628,11 @@ export default function PreparePage() {
                       type="number" 
                       value={monthlyCommitments || ''} 
                       onChange={(e: ChangeEvent<HTMLInputElement>) => setMonthlyCommitments(Number(e.target.value))}
-                      placeholder="e.g. Student loans"
+                      placeholder="e.g. Loans/Pensions"
                       className="bg-black/40 border-white/10 h-10 pl-7 text-[11px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
-                  <p className="text-[8px] font-bold text-slate-600 italic">Include student loans or property costs back home.</p>
+                  <p className="text-[8px] font-bold text-slate-600 italic">Include student loans, pension contributions, or property costs back home.</p>
                   
                   <Label className="text-[10px] font-bold text-slate-500 italic flex items-center gap-2 uppercase tracking-widest pt-2">
                     Childcare cost (override?)
@@ -903,9 +903,9 @@ export default function PreparePage() {
                 <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Scrutinise the contract package</h3>
               </div>
               <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-                Beyond the basic salary, what is the actual yield? Check for pension contributions, medical insurance gaps, and the specific wording of the end-of-service gratuity. 
+                It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
                 <span className="block mt-2 text-sky-400/80">
-                  Pensions Note: Many international schools do not pay into a portable pension scheme. If you're coming from the UK, your TPS contributions will stop; you may need to factor in self-funding a SIPP or checking if the school's "gratuity" is based on basic salary or total package.
+                  Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
                 </span>
               </p>
             </div>
@@ -1074,9 +1074,9 @@ export default function PreparePage() {
                 <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
               </div>
               <p className="text-[12px] font-bold text-slate-300 italic leading-relaxed max-w-5xl">
-                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash. 
+                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper. 
                 <span className="block mt-2 text-sky-400/80">
-                  Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks.
+                  Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks. If you aren't already legalised, you aren't really moving.
                 </span>
               </p>
             </div>
@@ -1094,7 +1094,7 @@ export default function PreparePage() {
 
         {/* BOTTOM GRID: The Rest */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <IntelCard title="Documentation" icon={Clock} subtext="Paperwork delays can stop you from getting paid on time." items={["Visa & work permits", "Degree certificates", "Embassy registration"]} />
+          <IntelCard title="Documentation" icon={Clock} subtext="Bureaucracy is the final boss. Paperwork delays can stop you from getting paid on time." items={["Visa & work permits", "Degree certificates", "Embassy registration"]} />
           <div className="flex flex-col gap-4">
             <RiskCard icon={Banknote} title="Pay scale ambiguity" desc="Treat a lack of clear salary scales as a warning sign." />
             <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate." />
@@ -1116,9 +1116,9 @@ export default function PreparePage() {
               </ul>
             </div>
           </Card>
-          <IntelCard title="Salary runway" icon={CalendarDays} subtext="Most teachers land in August but won't be paid until late September." items={["Pay dates confirmed", `Funds for the first ${setupDays} days`, "Bank account set up"]} />
-          <IntelCard title="Money & banking" icon={Landmark} subtext="Work out how to send money back home and where your final payout goes." items={["Transfer apps set up", "International wire costs", "Payout plans"]} />
-          <IntelCard title="Health & registration" icon={Stethoscope} subtext="Check if your school cover starts when you land or only on day one." items={["Insurance start date", "Short-term cover", "Hospital locations"]} />
+          <IntelCard title="Salary runway" icon={CalendarDays} subtext="The 'August Gap' is real. Most teachers land in August but won't see a penny until late September." items={["Pay dates confirmed", `Funds for the first ${setupDays} days`, "Bank account set up"]} />
+          <IntelCard title="Money & banking" icon={Landmark} subtext="Don't get stung by high-street bank rates when sending your hard-earned cash back home." items={["Transfer apps set up", "International wire costs", "Payout plans"]} />
+          <IntelCard title="Health & registration" icon={Stethoscope} subtext="Check if your school medical cover starts when you land or only on your first official day of work." items={["Insurance start date", "Short-term cover", "Hospital locations"]} />
         </div>
         
         
@@ -1132,7 +1132,7 @@ export default function PreparePage() {
               </div>
               <p className="text-sm font-bold text-slate-400 italic max-w-xl leading-relaxed">
                 Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation. 
-                Your mission-ready briefing document, grounded in Leopardfish Intel.
+                This is your mission-ready briefing document, grounded in Leopardfish Intel.
               </p>
             </div>
             <Button 
