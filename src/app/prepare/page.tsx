@@ -904,7 +904,7 @@ export default function PreparePage() {
           </div>
 
           <div className="lg:col-span-8 flex flex-col gap-3">
-            <Card className={cn("border-white/10 p-5 flex flex-col justify-between w-full shadow-lg transition-all gap-4", selectedCountry !== 'all' ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
+            <Card className={cn("border-white/10 p-5 flex flex-col justify-between w-full h-full shadow-lg transition-all gap-4", selectedCountry !== 'all' ? "bg-[#0b1224]" : "bg-slate-900/50 opacity-50")}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   {(() => {
@@ -1174,7 +1174,7 @@ function StatItem({
 
 function IntelCard({ title, icon: Icon, items, subtext }: { title: string, icon: any, items: string[], subtext: string }) {
   return (
-    <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all group text-white">
+    <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all group text-white h-full">
       <CardHeader className="p-0 mb-3 space-y-1 text-white">
         <div className="flex items-center gap-3 text-white">
           <Icon className="size-4 text-sky-400 text-white" />
