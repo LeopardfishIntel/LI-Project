@@ -46,4 +46,28 @@
   .glass-panel {
     @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-2xl;
   }
+
+  /* 💎 Tactical Mirror Effect */
+  .tactical-mirror {
+    @apply relative overflow-hidden transition-all duration-500;
+  }
+  .tactical-mirror::before {
+    content: "";
+    @apply absolute -top-[100%] -left-[100%] w-[300%] h-[300%] pointer-events-none;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      transparent 45%,
+      rgba(255, 255, 255, 0.1) 48%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.1) 52%,
+      transparent 55%,
+      transparent 100%
+    );
+    transform: rotate(25deg);
+    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .tactical-mirror:hover::before {
+    @apply top-[-50%] left-[-50%];
+  }
 }

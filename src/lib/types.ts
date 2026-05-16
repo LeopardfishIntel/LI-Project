@@ -15,7 +15,7 @@ export interface SchoolIntel {
   };
   healthInsurance?: string | null;
   curriculum?: string | null;
-  classSize?: number | null;
+  classSize?: string | number | null;
   studentTeacherRatio?: string | null;
   benefitsSummary?: string | null;
   nonContactTime?: number | null;
@@ -24,6 +24,7 @@ export interface SchoolIntel {
   jobsPortal?: string; 
   minQualifications?: string;
   visaRestrictions?: string;
+  max_age_notes?: string;
 }
 
 export interface LocationCostOfLiving {
@@ -84,6 +85,10 @@ export interface School {
   classsize?: string | number;
   techecosystem?: string;
   finance?: string;
+  max_age_notes?: string;
+  academic_Degree_req?: string;
+  license_req?: string;
+  noncontacttime?: string | number;
 }
 
 export interface TeacherProfile {

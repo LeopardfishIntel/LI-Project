@@ -6,25 +6,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: any, currency = 'USD') {
-  if (typeof amount === 'string' && amount.includes('-')) return `${amount} ${currency}`;
+  if (typeof amount === 'string' && amount.includes('-')) return `${currency} ${amount}`;
   const numericAmount = parseFloat(amount);
-  if (isNaN(numericAmount)) return `0 ${currency}`;
+  if (isNaN(numericAmount)) return `${currency} 0`;
 
   let validCurrency = typeof currency === 'string' && currency.length === 3 ? currency.toUpperCase() : 'USD';
   if (validCurrency === 'LOCAL' || validCurrency === 'ALL') {
     validCurrency = 'USD';
   }
 
-  try {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: validCurrency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(numericAmount);
-  } catch (e) {
-    return `${numericAmount.toLocaleString('en-US')} ${validCurrency}`;
-  }
+  const formatted = numericAmount.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return `${validCurrency} ${formatted}`;
 }
 
 /**
