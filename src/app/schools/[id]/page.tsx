@@ -231,11 +231,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     async function fetchBriefing() {
       if (!school || !isDossierInitialized) return;
 
-      const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}`;
+      const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}_${adults}_${children}`;
 
       // 🛡️ 1. Cache Hit Gate: Attempt immediate load
       const currentCache = school.cachedBriefings?.[cacheKey] || 
-        (activeCurrencyCode === 'USD' && selectedFamilyStatus === 'single' ? school.cachedBriefing : null);
+        (activeCurrencyCode === 'USD' && selectedFamilyStatus === 'single' && adults === 1 && children === 0 ? school.cachedBriefing : null);
 
       if (currentCache) {
         const isFallbackTemplate = currentCache.briefing.includes("primary focus has to be the balance between the offered salary");
@@ -291,8 +291,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
 
         const monthlyTotal = salaryNum * 1.18;
-        const situation = selectedFamilyStatus === 'couple' ? 'couple' : (selectedFamilyStatus === 'family' ? 'family-2' : 'single');
-        const surplus = calculateSurplus(monthlyTotal, situation, locationData, isHousingProvided);
+        const surplus = calculateSurplus(monthlyTotal, adults, children, locationData, isHousingProvided);
         const expenses = Math.max(0, monthlyTotal - surplus);
 
         const monthlyCostForecastStr = formatCurrency(convertUSD(expenses), activeCurrencyCode);
@@ -369,7 +368,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         }
       } catch (error) {
         console.error('Briefing fetch failed:', error);
-        const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}`;
+        const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}_${adults}_${children}`;
         const currentCacheCheck = school.cachedBriefings?.[cacheKey] || (activeCurrencyCode === 'USD' && selectedFamilyStatus === 'single' ? school.cachedBriefing : null);
         if (!currentCacheCheck) {
           setBriefing({
@@ -384,7 +383,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     }
     
     fetchBriefing();
-  }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus]);
+  }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus, adults, children]);
 
   if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton />;
   if (!school) notFound();
@@ -713,7 +712,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                     }
 
                     const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
-                    const surplus = calculateSurplus(salaryNum * 1.18, situation, locationData, isHousingProvided);
+                    const surplus = calculateSurplus(salaryNum * 1.18, adults, children, locationData, isHousingProvided);
                     const monthlyTotal = salaryNum * 1.18;
                     const expenses = Math.max(0, monthlyTotal - surplus);
                     const isLoss = surplus < 0;
