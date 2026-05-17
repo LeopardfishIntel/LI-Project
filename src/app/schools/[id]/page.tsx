@@ -248,6 +248,14 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         
         const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
 
+        const monthlyTotal = salaryNum * 1.18;
+        const surplus = calculateSurplus(monthlyTotal, 'single', locationData, isHousingProvided);
+        const expenses = Math.max(0, monthlyTotal - surplus);
+
+        const monthlyCostForecastStr = formatCurrency(convertUSD(expenses), activeCurrencyCode);
+        const schoolMedianStr = formatCurrency(convertUSD(monthlyTotal), activeCurrencyCode);
+        const expectedSurplusStr = formatCurrency(convertUSD(surplus), activeCurrencyCode);
+
         const finalizedColData = {
           currencyCode: 'USD',
           monthlyRent1BR: isHousingProvided ? 'Provided (0 USD)' : `${singleRent} USD`,
@@ -285,6 +293,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           },
           currencyCode: activeCurrencyCode,
           exchangeRate: rateFactor,
+          monthlyCostForecast: monthlyCostForecastStr,
+          schoolMedian: schoolMedianStr,
+          expectedSurplus: expectedSurplusStr,
           nonce: Date.now().toString()
         });
 
@@ -544,7 +555,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
               <CardContent className="p-0">
                 {/* SECTION 1: COST OF LIVING INPUTS & BREAKDOWN */}
                 <div className="p-6 border-b border-white/5">
-                  <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-4 italic">1. Cost of Living Index</p>
+                  <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-4 italic">1. Monthly Cost Forecast</p>
                   <CostOfLivingCalculator
                     school={school}
                     overrideLocationData={locationData || undefined}
@@ -559,11 +570,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   />
                 </div>
 
-                {/* SECTION 2: REGIONAL SALARY FORECAST */}
+                {/* SECTION 2: SCHOOL MEDIAN */}
                 <div className="p-6 border-b border-white/5 bg-white/5">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1 italic">2. Regional Salary Forecast</p>
+                      <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1 italic">2. School Median</p>
                       <h4 className="text-[11px] font-black text-white/60 lowercase italic leading-none">Teacher median (5yr experience)</h4>
                     </div>
                     <TrendingUp className="size-5 text-primary opacity-50" />
@@ -578,13 +589,13 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   </div>
                 </div>
 
-                {/* SECTION 3: SAVINGS POTENTIAL GAUGE */}
+                {/* SECTION 3: EXPECTED SURPLUS */}
                 <div className="p-6 space-y-6 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                     <TrendingUp className="size-16 text-primary" />
                   </div>
                   
-                  <p className="text-[10px] font-black uppercase text-primary tracking-widest italic">3. Savings Potential</p>
+                  <p className="text-[10px] font-black uppercase text-primary tracking-widest italic">3. Expected Surplus</p>
 
                   {(() => {
                     // 🛰️ TACTICAL SITUATIONAL MAPPING
@@ -648,7 +659,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                               )}
                             </div>
                             <div className="text-center relative z-10 mt-6 space-y-0">
-                              <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] opacity-80">Savings Outlook</p>
+                              <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] opacity-80">Expected Surplus</p>
                               <p className="text-2xl font-black text-white tracking-tighter italic">
                                 {formatCurrency(convertUSD(surplus), activeCurrencyCode)}
                                 <span className="text-xs text-muted-foreground ml-1 not-italic font-normal uppercase opacity-40">/mo</span>

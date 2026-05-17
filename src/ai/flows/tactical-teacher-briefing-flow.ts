@@ -14,6 +14,9 @@ const TacticalBriefingInputSchema = z.object({
   }),
   currencyCode: z.string().optional().describe('The user requested active currency code, e.g. USD, OMR, AED, etc.'),
   exchangeRate: z.number().optional().describe('The conversion factor from 1 USD to the target currencyCode.'),
+  monthlyCostForecast: z.string().optional().describe('Pre-formatted monthly cost forecast string'),
+  schoolMedian: z.string().optional().describe('Pre-formatted school median salary string'),
+  expectedSurplus: z.string().optional().describe('Pre-formatted expected surplus string'),
   nonce: z.string().optional(),
 });
 
@@ -38,30 +41,21 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     - Active Currency: ${activeCurrency} (All values in your advice must be converted and displayed using ${activeCurrency}!)
 
     CRITICAL GROUND-TRUTH DATABASE CONCURRENCE DIRECTIVE:
-    - You MUST treat the provided School Data and Cost of Living database context as the absolute, non-negotiable ground-truth for all numbers, salaries, rents, cost indices, and benefits.
+    - You MUST treat the provided School Data and Cost of Living database context as the absolute, non-negotiable ground-truth.
     - PRIORITISE these database values strictly over any general, pre-trained knowledge, assumptions, or external estimates you may hold about ${input.schoolName} or its city.
-    - Strictly avoid hallucinating, inventing, or guessing any rent costs, grocery values, utility bills, or tax metrics. Every financial reference in the narrative MUST perfectly concur with and be derived from the provided database context.
-    - Specifically, in Paragraph 2 (Financial Planning), you MUST extract and write down the EXACT cost values specified in the Cost of Living data (converted to ${activeCurrency} using the rate of ${rate}):
-      * Rent: Use the exact value of "monthlyRent1BR" from the Cost of Living data.
-      * Utilities: Use the exact value of "utilities" from the Cost of Living data.
-      * Internet: Use the exact value of "internet" from the Cost of Living data.
-      * Mobile phone service: Use the exact value of "mobile" from the Cost of Living data.
-      * Groceries / Food: Use the exact value of "food" from the Cost of Living data.
-      * Dining & social: Use the exact value of "diningSocial" from the Cost of Living data.
-      * Public transport / fuel: Use the exact value of "transport" from the Cost of Living data.
-      * Uncovered medical: Use the exact value of "uncoveredMedical" from the Cost of Living data.
-      * Total expenses: Mention the exact value of "totalExpensesExcludingRent" (if rent is Provided/0) or "totalExpensesIncludingRent" (if not provided).
-    - Under no circumstances should you round these numbers, invent other values, or guess different averages. The text MUST perfectly align with these exact figures.
+    - Specifically, in Paragraph 2 (Financial Planning), you MUST ONLY write a clear, high-level summary of the finances by referring EXACTLY and ONLY to the three numbers alongside in the right-hand panel:
+      1. Monthly Cost Forecast: ${input.monthlyCostForecast || 'N/A'}
+      2. School Median: ${input.schoolMedian || 'N/A'}
+      3. Expected Surplus: ${input.expectedSurplus || 'N/A'}
+    - Under no circumstances should you mention any other numbers (such as individual grocery, mobile data, utilities, or transport items) in Paragraph 2. You must ONLY refer to and quote these exact three figures. Under no circumstances should you invent, round, or guess any other financial numbers.
 
     IMPORTANT DYNAMIC CURRENCY DIRECTIVE:
-    - You MUST write ALL financial references, salaries, rents, cost of living numbers, and savings values in the narrative in ${activeCurrency} currency.
-    - The raw data is in USD. To convert any USD value to ${activeCurrency}, multiply it by the exchange rate of ${rate} (e.g. convertedAmount = usdValue * ${rate}).
-    - Format all converted figures with the correct currency symbol or suffix (e.g. for OMR, write "OMR 350" or "350 OMR"; for AED, write "AED 3,300"; for USD, write "$900").
+    - You MUST write ALL financial references in the narrative in ${activeCurrency} currency.
     - Strictly do NOT mention any other currencies in the text. Only mention ${activeCurrency} figures.
 
     STRUCTURE YOUR ADVICE INTO THESE 4 FLOWING PARAGRAPHS (EACH PARAGRAPH MUST BE 150-200 WORDS):
     1. The Professional Reality: Based on the curriculum and staff data, what is the workload really like? Is this a high-pressure corporate environment or a more stable, traditional school? Explain that moving here is a serious career move that requires careful lifestyle planning based on teacher feedback.
-    2. Financial Planning: Look at the salary vs. the cost of living provided. For a ${input.userProfile.familyStatus} profile, will they realistically save money? Mention specific converted ${activeCurrency} figures from the data. Discuss their monthly "spending habits" and savings potential.
+    2. Financial Planning: Summarize the finances by referring EXACTLY and ONLY to the three numbers alongside in the right-hand panel: the Monthly Cost Forecast of ${input.monthlyCostForecast || 'N/A'}, the School Median salary of ${input.schoolMedian || 'N/A'}, and the Expected Surplus of ${input.expectedSurplus || 'N/A'}. Explain how these three figures balance out for a teacher's situation. Do not quote or invent any other financial figures.
     3. Lifestyle & Integration: Based on the city data, where should they actually live? What are the hidden costs of relocating (initial setup, transport, insurance)? Discuss finding a good neighborhood to avoid long commutes.
     4. The Final Recommendation: Give a direct, supportive recommendation. Is this a great two-year contract to build savings and international experience, or a long-term home? Mention getting the residency visa sorted.
 
