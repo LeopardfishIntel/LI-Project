@@ -56,7 +56,8 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
       if (u) {
         // 🛰️ SESSION HANDSHAKE (Required for Middleware)
         const token = await u.getIdToken();
-        document.cookie = `__session=${token}; path=/; SameSite=Lax; Secure`;
+        const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+        document.cookie = `__session=${token}; path=/; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 
         // 🎯 REAL-TIME IDENTITY SENTRY
         const userRef = doc(db, "users", u.uid);

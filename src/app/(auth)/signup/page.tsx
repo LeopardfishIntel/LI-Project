@@ -33,7 +33,8 @@ export default function SignupPage() {
       // 2. 🛰️ TACTICAL BRIDGE: Set the __session cookie
       // This is the "Secret Sauce" that lets your Middleware know the user is authorized.
       const token = await getIdToken(user);
-      document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax; secure`;
+      const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax${isSecure ? '; secure' : ''}`;
 
       // 3. 📝 PROFILE INITIALIZATION
       const profileRef = doc(db, "teachers", user.uid);
