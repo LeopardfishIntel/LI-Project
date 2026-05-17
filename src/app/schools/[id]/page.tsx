@@ -142,6 +142,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string, generatedAt?: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);
   const [selectedQualification, setSelectedQualification] = React.useState<string>('');
+  const [showValidationErrors, setShowValidationErrors] = React.useState(false);
   const [currency, setCurrency] = React.useState('USD');
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
@@ -576,7 +577,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         </div>
                       </div>
 
-                      {selectedQualification === 'None' && (
+                      {showValidationErrors && selectedQualification === 'None' && (
                         <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-sm text-left animate-in slide-in-from-top-2 duration-300">
                           <h5 className="text-xs font-black uppercase text-red-400 flex items-center gap-2 mb-1.5">
                             <ShieldAlert className="size-4 shrink-0 text-red-500" />
@@ -588,19 +589,26 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         </div>
                       )}
 
+                      {showValidationErrors && !selectedQualification && (
+                        <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-sm text-left animate-in slide-in-from-top-2 duration-300">
+                          <h5 className="text-xs font-black uppercase text-red-400 flex items-center gap-2 mb-1.5">
+                            <ShieldAlert className="size-4 shrink-0 text-red-500" />
+                            Qualification Selection Required
+                          </h5>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                            Please select your active teaching qualification above. This is a required field before report initialization can proceed.
+                          </p>
+                        </div>
+                      )}
+
                       <button
                         onClick={() => {
+                          setShowValidationErrors(true);
                           if (selectedQualification && selectedQualification !== 'None') {
                             setIsDossierInitialized(true);
                           }
                         }}
-                        disabled={!selectedQualification || selectedQualification === 'None'}
-                        className={cn(
-                          "w-full mt-6 py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2",
-                          (!selectedQualification || selectedQualification === 'None')
-                            ? "bg-white/5 border border-white/5 text-slate-600 cursor-not-allowed"
-                            : "bg-primary border border-primary text-white hover:bg-white hover:text-black hover:border-white"
-                        )}
+                        className="w-full mt-6 py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 bg-primary border border-primary text-white hover:bg-white hover:text-black hover:border-white"
                       >
                         <ShieldAlert className="size-4" />
                         Initialize Ground-Truth Verdict

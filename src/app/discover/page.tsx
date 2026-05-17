@@ -17,6 +17,7 @@ export default function FindYourFitGate() {
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
 
   const [profile, setProfile] = useState({
     age: "35+",
@@ -80,7 +81,9 @@ export default function FindYourFitGate() {
   };
 
   const handleLaunch = () => {
+    setShowValidationErrors(true);
     if (profile.regions.length === 0) return;
+    if (profile.qualifications.length === 0 || profile.qualifications.some(q => q.toLowerCase() === 'none')) return;
     setIsGenerating(true);
     localStorage.setItem('lf_profile', JSON.stringify(profile));
 
@@ -274,14 +277,14 @@ export default function FindYourFitGate() {
           </div>
 
           {/* UI Warning Display if None is Selected */}
-          {profile.qualifications.some(q => q.toLowerCase() === 'none') && (
+          {showValidationErrors && profile.qualifications.some(q => q.toLowerCase() === 'none') && (
             <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
               <span className="shrink-0 size-5 flex items-center justify-center border border-amber-500 rounded-full font-bold">!</span>
               <span>To ensure deployment compliance, a recognized state/national teaching qualification is required. Unfortunately, without a verified qualification, we cannot run full matching reports.</span>
             </div>
           )}
 
-          {profile.qualifications.length === 0 && (
+          {showValidationErrors && profile.qualifications.length === 0 && (
             <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
               <span className="shrink-0 size-5 flex items-center justify-center border border-red-500 rounded-full font-bold">!</span>
               <span>Please select your active teaching qualification. This is a required field.</span>
@@ -290,10 +293,10 @@ export default function FindYourFitGate() {
 
           <button 
             onClick={handleLaunch} 
-            disabled={profile.regions.length === 0 || profile.qualifications.length === 0 || profile.qualifications.some(q => q.toLowerCase() === 'none') || isGenerating} 
+            disabled={isGenerating} 
             className={cn(
               "w-full h-24 tracking-[0.5em] text-2xl font-black transition-all flex items-center justify-center gap-4 border shadow-2xl uppercase", 
-              profile.regions.length > 0 && profile.qualifications.length > 0 && !profile.qualifications.some(q => q.toLowerCase() === 'none') && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
+              !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
             {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}

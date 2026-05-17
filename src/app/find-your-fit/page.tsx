@@ -48,6 +48,7 @@ export default function FindYourFitPage() {
   const [mounted, setMounted] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
   
   const [formData, setFormData] = useState({
     age: '35-49', familyStatus: 'Single', 
@@ -61,6 +62,7 @@ export default function FindYourFitPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowValidationErrors(true);
     if (formData.regions.length === 0) return;
     if (formData.qualifications.length === 0 || formData.qualifications.includes('None')) return;
     setIsPending(true);
@@ -218,21 +220,21 @@ export default function FindYourFitPage() {
           {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}
 
           {/* 🛡️ UI Error Display */}
-          {formData.qualifications.length === 0 && (
+          {showValidationErrors && formData.qualifications.length === 0 && (
             <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95">
               <AlertTriangle className="size-4 shrink-0" /> 
               <span className="leading-tight">Please select your active teaching qualification. This is a required field.</span>
             </div>
           )}
 
-          {formData.qualifications.includes('None') && (
+          {showValidationErrors && formData.qualifications.includes('None') && (
             <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95 text-left leading-relaxed">
               <AlertTriangle className="size-4 shrink-0 text-amber-500" /> 
               <span>To ensure high-fidelity school matching and deployment compliance, a recognized state/national teaching credential (e.g. QTS, SACE, State Licensing) is required. Unfortunately, without a verified qualification, we cannot run full deployment planning reports.</span>
             </div>
           )}
 
-          {formData.regions.length === 0 && (
+          {showValidationErrors && formData.regions.length === 0 && (
             <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95">
               <AlertTriangle className="size-4 shrink-0" /> 
               <span className="leading-tight">Please select at least one Target Region.</span>
@@ -242,7 +244,7 @@ export default function FindYourFitPage() {
           <SubmitButton 
             isPending={isPending} 
             isDirty={isDirty} 
-            isDisabled={formData.qualifications.length === 0 || formData.qualifications.includes('None') || formData.regions.length === 0} 
+            isDisabled={false} 
           />
         </form>
 
