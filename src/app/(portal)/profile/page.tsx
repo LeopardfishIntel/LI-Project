@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
-const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas", "Oceania"];
+const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas"];
 
 export default function ProfilePage() {
     const { customId, isAdmin, loading: authLoading } = useUser();
