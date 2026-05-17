@@ -134,6 +134,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   // FIXED: Standardize hook usage for Isomorphic Bridge
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
+
+  // 💰 Aggressive Finance Mapping declared at the very top to prevent Temporal Dead Zone ReferenceErrors
+  const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || '—';
+  const salaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
+
   const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);
   const [currency, setCurrency] = React.useState('USD');
@@ -389,12 +394,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const summary = school.summary || school.description || 'Intelligence Dossier Pending...';
 
   // 💰 Aggressive Finance Mapping
-  const rawFinance = school.intel?.salary?.value || school.finance || (school as any).salary || (school as any).monthlySalary || (school as any).salaryValue || '—';
   const finance = typeof rawFinance === 'number' || (!isNaN(parseFloat(String(rawFinance))) && String(rawFinance).match(/^\d+$/))
     ? formatCurrency(convertUSD(Number(rawFinance)), activeCurrencyCode)
     : rawFinance;
 
-  const salaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
   const rating = school.intel?.salary?.score || school.rating || 'neutral';
   const housing = school.intel?.housing?.value || school.housingprovision || '—';
   const health = school.intel?.healthInsurance || school.healthcoverage || '—';
