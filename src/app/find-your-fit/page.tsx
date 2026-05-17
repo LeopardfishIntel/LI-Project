@@ -204,9 +204,21 @@ export default function FindYourFitPage() {
             </div>
             <div className="space-y-4">
               <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><Compass className="size-3" /> Target Regions (Max 2)</label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {REGIONS.map(r => (
-                  <button key={r} type="button" onClick={() => toggleArrayItem('regions', r, 2)} className={cn("py-2 text-[10px] font-bold border transition-all uppercase", formData.regions.includes(r) ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{r}</button>
+                  <button 
+                    key={r} 
+                    type="button" 
+                    onClick={() => toggleArrayItem('regions', r, 2)} 
+                    className={cn(
+                      "py-3 text-[10px] font-bold border transition-all rounded-sm uppercase text-center w-full", 
+                      formData.regions.includes(r) 
+                        ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
+                        : "bg-white/5 border-white/10 text-slate-600 hover:text-white"
+                    )}
+                  >
+                    {r}
+                  </button>
                 ))}
               </div>
             </div>
