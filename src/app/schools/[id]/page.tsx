@@ -22,6 +22,9 @@ import {
   ShieldCheck,
   Clock,
   TrendingUp,
+  ShieldAlert,
+  User as UserIcon,
+  GraduationCap,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -137,6 +140,36 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
   const [mounted, setMounted] = React.useState(false);
+  const [isDossierInitialized, setIsDossierInitialized] = React.useState(false);
+  const [selectedFamilyStatus, setSelectedFamilyStatus] = React.useState<'single' | 'couple' | 'family'>('single');
+
+  // Synchronize initial selection on mount / change if not initialized yet
+  React.useEffect(() => {
+    if (!isDossierInitialized) {
+      if (adults >= 2 && children === 0) {
+        setSelectedFamilyStatus('couple');
+      } else if (children > 0) {
+        setSelectedFamilyStatus('family');
+      } else {
+        setSelectedFamilyStatus('single');
+      }
+    }
+  }, [adults, children, isDossierInitialized]);
+
+  // If already initialized and sliders are changed, auto-update the briefing to keep them 100% in sync!
+  React.useEffect(() => {
+    if (isDossierInitialized) {
+      let nextStatus: 'single' | 'couple' | 'family' = 'single';
+      if (adults >= 2 && children === 0) {
+        nextStatus = 'couple';
+      } else if (children > 0) {
+        nextStatus = 'family';
+      }
+      if (nextStatus !== selectedFamilyStatus) {
+        setSelectedFamilyStatus(nextStatus);
+      }
+    }
+  }, [adults, children, isDossierInitialized, selectedFamilyStatus]);
 
   React.useEffect(() => {
     setMounted(true);
@@ -191,10 +224,13 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   React.useEffect(() => {
     async function fetchBriefing() {
-      if (!school) return;
+      if (!school || !isDossierInitialized) return;
+
+      const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}`;
 
       // 🛡️ 1. Cache Hit Gate: Attempt immediate load
-      const currentCache = school.cachedBriefings?.[activeCurrencyCode] || (activeCurrencyCode === 'USD' ? school.cachedBriefing : null);
+      const currentCache = school.cachedBriefings?.[cacheKey] || 
+        (activeCurrencyCode === 'USD' && selectedFamilyStatus === 'single' ? school.cachedBriefing : null);
 
       if (currentCache) {
         const isFallbackTemplate = currentCache.briefing.includes("primary focus has to be the balance between the offered salary");
@@ -207,7 +243,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         const isPreConcurrenceFix = generatedAtTime < concurrenceFixTime;
         
         if (isFallbackTemplate || isShortCachedBriefing || isPreConcurrenceFix) {
-          console.log(`[INTEL BANK] Cache bypass triggered for currency ${activeCurrencyCode}. Fallback: ${isFallbackTemplate}, Short: ${isShortCachedBriefing}, Pre-Concurrence-Fix: ${isPreConcurrenceFix}. Forcing fresh aligned generation.`);
+          console.log(`[INTEL BANK] Cache bypass triggered for currency ${activeCurrencyCode} and profile ${selectedFamilyStatus}. Fallback: ${isFallbackTemplate}, Short: ${isShortCachedBriefing}, Pre-Concurrence-Fix: ${isPreConcurrenceFix}. Forcing fresh aligned generation.`);
           setBriefing(null); // Clear the outdated cached version so the loader is forced to show immediately
           setIsBriefingLoading(true);
         } else {
@@ -217,14 +253,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           const cacheAgeMs = Date.now() - new Date(currentCache.generatedAt).getTime();
           const cacheAgeDays = cacheAgeMs / (1000 * 60 * 60 * 24);
           if (cacheAgeDays <= 7) {
-            console.log(`[INTEL BANK] Cache hit for currency ${activeCurrencyCode} is fresh (${cacheAgeDays.toFixed(1)} days old). Serving immediately.`);
+            console.log(`[INTEL BANK] Cache hit for currency ${activeCurrencyCode} and profile ${selectedFamilyStatus} is fresh (${cacheAgeDays.toFixed(1)} days old). Serving immediately.`);
             return;
           }
           
-          console.log(`[INTEL BANK] Cache expired for currency ${activeCurrencyCode} (${cacheAgeDays.toFixed(1)} days old). Initiating background re-sync.`);
+          console.log(`[INTEL BANK] Cache expired for currency ${activeCurrencyCode} and profile ${selectedFamilyStatus} (${cacheAgeDays.toFixed(1)} days old). Initiating background re-sync.`);
         }
       } else {
         // Cache Miss: Full loader
+        setBriefing(null);
         setIsBriefingLoading(true);
       }
 
@@ -237,7 +274,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
         
         // Single profile values (which is the default userProfile passed to Genkit)
-        const singleRent = isHousingProvided ? 0 : (safeVal(activeCoL.rent1br) || 1200);
+        const singleRent = isHousingProvided ? 0 : (safeVal((activeCoL as any).monthlyRent1BR || (activeCoL as any).rent1br) || 1200);
         const singleUtilities = safeVal(activeCoL.utilities) || 150;
         const singleInternet = safeVal(activeCoL.internet) || 60;
         const singleMobile = safeVal(activeCoL.mobile) || 30;
@@ -249,7 +286,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
 
         const monthlyTotal = salaryNum * 1.18;
-        const surplus = calculateSurplus(monthlyTotal, 'single', locationData, isHousingProvided);
+        const situation = selectedFamilyStatus === 'couple' ? 'couple' : (selectedFamilyStatus === 'family' ? 'family-2' : 'single');
+        const surplus = calculateSurplus(monthlyTotal, situation, locationData, isHousingProvided);
         const expenses = Math.max(0, monthlyTotal - surplus);
 
         const monthlyCostForecastStr = formatCurrency(convertUSD(expenses), activeCurrencyCode);
@@ -288,8 +326,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           colData: JSON.stringify(finalizedColData),
           userProfile: {
             age: 30,
-            familyStatus: 'single',
-            spouseWorking: false
+            familyStatus: selectedFamilyStatus,
+            spouseWorking: selectedFamilyStatus === 'couple'
           },
           currencyCode: activeCurrencyCode,
           exchangeRate: rateFactor,
@@ -314,9 +352,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           if (db && !isNewFallback) {
             const schoolRef = doc(db, 'schools', school.id);
             await updateDoc(schoolRef, {
-              [`cachedBriefings.${activeCurrencyCode}`]: briefingPayload
+              [`cachedBriefings.${cacheKey}`]: briefingPayload
             });
-            console.log(`[INTEL BANK] Successfully banked school briefing in database for currency ${activeCurrencyCode}.`);
+            console.log(`[INTEL BANK] Successfully banked school briefing in database for cache key ${cacheKey}.`);
           } else if (isNewFallback) {
             console.log("[INTEL BANK] Skipped banking fallback briefing in database.");
           }
@@ -326,7 +364,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         }
       } catch (error) {
         console.error('Briefing fetch failed:', error);
-        const currentCacheCheck = school.cachedBriefings?.[activeCurrencyCode] || (activeCurrencyCode === 'USD' ? school.cachedBriefing : null);
+        const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}`;
+        const currentCacheCheck = school.cachedBriefings?.[cacheKey] || (activeCurrencyCode === 'USD' && selectedFamilyStatus === 'single' ? school.cachedBriefing : null);
         if (!currentCacheCheck) {
           setBriefing({
             briefing: 'The tactical briefing engine is currently offline. Please check back shortly for your ground-truth intel.',
@@ -340,7 +379,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     }
     
     fetchBriefing();
-  }, [school?.id, locationData?.id, activeCurrencyCode]);
+  }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus]);
 
   if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton />;
   if (!school) notFound();
@@ -445,7 +484,68 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   <BookOpen className="size-24 text-primary" />
                 </div>
                 <CardContent className="pt-8">
-                  {(isBriefingLoading && (!school?.cachedBriefing || briefing === null)) ? (
+                  {!isDossierInitialized ? (
+                    <div className="space-y-6 py-4">
+                      <div className="text-center space-y-2 mb-6">
+                        <div className="inline-flex items-center justify-center size-12 bg-primary/10 rounded-full border border-primary/20 text-primary mb-2">
+                          <ShieldCheck className="size-6 animate-pulse" />
+                        </div>
+                        <h4 className="text-sm font-black uppercase text-white tracking-widest">Dossier Access Authorization</h4>
+                        <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                          Please select your primary family and living profile to initialize and align your custom tactical cost verdict.
+                        </p>
+                      </div>
+
+                      {/* Tactical Grid Selectors */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {[
+                          { id: 'single', name: 'Single Teacher', desc: '1 Adult, 0 Dependents', icon: UserIcon },
+                          { id: 'couple', name: 'Dual Income', desc: '2 Adults, 0 Dependents', icon: Users },
+                          { id: 'family', name: 'Family Profile', desc: 'Active Dependents', icon: GraduationCap }
+                        ].map((profile) => {
+                          const IconComp = profile.icon;
+                          const isSelected = selectedFamilyStatus === profile.id;
+                          return (
+                            <button
+                              key={profile.id}
+                              onClick={() => {
+                                setSelectedFamilyStatus(profile.id as any);
+                                // Dynamic Slider Pre-Alignment on selection
+                                if (profile.id === 'single') {
+                                  setAdults(1);
+                                  setChildren(0);
+                                } else if (profile.id === 'couple') {
+                                  setAdults(2);
+                                  setChildren(0);
+                                } else if (profile.id === 'family') {
+                                  setAdults(2);
+                                  setChildren(2);
+                                }
+                              }}
+                              className={cn(
+                                "flex flex-col items-center text-center p-4 border rounded-sm transition-all",
+                                isSelected 
+                                  ? "bg-primary/10 border-primary/60 text-white drop-shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
+                                  : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10"
+                              )}
+                            >
+                              <IconComp className={cn("size-6 mb-2", isSelected ? "text-primary" : "text-slate-500")} />
+                              <span className="text-[10px] font-black uppercase tracking-wider">{profile.name}</span>
+                              <span className="text-[9px] text-muted-foreground mt-1 lowercase italic">{profile.desc}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        onClick={() => setIsDossierInitialized(true)}
+                        className="w-full mt-6 bg-primary text-white py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2"
+                      >
+                        <ShieldAlert className="size-4" />
+                        Initialize Ground-Truth Verdict
+                      </button>
+                    </div>
+                  ) : (isBriefingLoading && (!school?.cachedBriefing || briefing === null)) ? (
                     <BriefingConsoleLoader />
                   ) : briefing ? (
                     <div className="prose prose-invert max-w-none space-y-4">
