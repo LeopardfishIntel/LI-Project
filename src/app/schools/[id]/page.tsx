@@ -197,14 +197,18 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       const currentCache = school.cachedBriefings?.[activeCurrencyCode] || (activeCurrencyCode === 'USD' ? school.cachedBriefing : null);
 
       if (currentCache) {
-        // If it's a fallback template or outdated short briefing, bypass cache to force a live 600+ word report!
         const isFallbackTemplate = currentCache.briefing.includes("primary focus has to be the balance between the offered salary");
         const wordCount = currentCache.briefing.split(/\s+/).filter(Boolean).length;
         const isShortCachedBriefing = wordCount < 400;
         
-        if (isFallbackTemplate || isShortCachedBriefing) {
-          console.log(`[INTEL BANK] Cache bypass triggered for currency ${activeCurrencyCode}. Fallback: ${isFallbackTemplate}, WordCount: ${wordCount} (<400). Forcing fresh long-form generation.`);
-          setBriefing(null); // Clear the short cached version so the loader is forced to show immediately
+        // Auto-invalidate any cache generated before the strict concurrence fix (2026-05-17T18:40:00Z)
+        const generatedAtTime = currentCache.generatedAt ? new Date(currentCache.generatedAt).getTime() : 0;
+        const concurrenceFixTime = new Date('2026-05-17T18:40:00Z').getTime();
+        const isPreConcurrenceFix = generatedAtTime < concurrenceFixTime;
+        
+        if (isFallbackTemplate || isShortCachedBriefing || isPreConcurrenceFix) {
+          console.log(`[INTEL BANK] Cache bypass triggered for currency ${activeCurrencyCode}. Fallback: ${isFallbackTemplate}, Short: ${isShortCachedBriefing}, Pre-Concurrence-Fix: ${isPreConcurrenceFix}. Forcing fresh aligned generation.`);
+          setBriefing(null); // Clear the outdated cached version so the loader is forced to show immediately
           setIsBriefingLoading(true);
         } else {
           setBriefing(currentCache);
