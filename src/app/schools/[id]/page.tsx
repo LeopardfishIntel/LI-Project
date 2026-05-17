@@ -136,6 +136,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [currency, setCurrency] = React.useState('USD');
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 🛰️ TACTICAL DATA NORMALIZATION
   const locationId = school?.locationId || ((school?.city && school?.country) ? `${school.city.toLowerCase().trim().replace(/\s+/g, '-')}-${school.country.toLowerCase().trim().replace(/\s+/g, '-')}` : null);
@@ -571,33 +576,39 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         <div className="space-y-6">
                           <div className="relative flex flex-col items-center">
                             <div className="h-44 w-full -mb-16">
-                              <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                  <Pie
-                                    data={[
-                                      { name: 'Monthly Costs', value: expenses },
-                                      { name: 'Surplus Potential', value: surplus }
-                                    ]}
-                                    cx="50%"
-                                    cy="70%"
-                                    startAngle={180}
-                                    endAngle={0}
-                                    innerRadius={65}
-                                    outerRadius={85}
-                                    paddingAngle={2}
-                                    dataKey="value"
-                                    stroke="none"
-                                    label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                                    labelLine={false}
-                                  >
-                                    <Cell fill="#1e293b" />
-                                    <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                                  </Pie>
-                                  <Tooltip
-                                    contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px', fontSize: '10px', color: '#fff' }}
-                                  />
-                                </PieChart>
-                              </ResponsiveContainer>
+                              {mounted ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                  <PieChart>
+                                    <Pie
+                                      data={[
+                                        { name: 'Monthly Costs', value: expenses },
+                                        { name: 'Surplus Potential', value: surplus }
+                                      ]}
+                                      cx="50%"
+                                      cy="70%"
+                                      startAngle={180}
+                                      endAngle={0}
+                                      innerRadius={65}
+                                      outerRadius={85}
+                                      paddingAngle={2}
+                                      dataKey="value"
+                                      stroke="none"
+                                      label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                                      labelLine={false}
+                                    >
+                                      <Cell fill="#1e293b" />
+                                      <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                                    </Pie>
+                                    <Tooltip
+                                      contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px', fontSize: '10px', color: '#fff' }}
+                                    />
+                                  </PieChart>
+                                </ResponsiveContainer>
+                              ) : (
+                                <div className="h-full w-full flex items-center justify-center">
+                                  <span className="text-[10px] font-mono text-slate-500 tracking-widest animate-pulse">PREPARING CHART DATA...</span>
+                                </div>
+                              )}
                             </div>
                             <div className="text-center relative z-10 mt-6 space-y-0">
                               <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] opacity-80">Savings Outlook</p>
