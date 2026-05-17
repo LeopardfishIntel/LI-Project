@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
-const QUALS = ["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "IB Cert", "EU State", "None"];
+const QUALS = ["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "EU State", "None"];
 const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas", "Oceania"];
 const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Culture"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
@@ -182,9 +182,21 @@ export default function FindYourFitPage() {
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-4">
               <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><GraduationCap className="size-4" /> Qualifications</label>
-              <div className="flex flex-wrap gap-1">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {QUALS.map(q => (
-                  <button key={q} type="button" onClick={() => toggleArrayItem('qualifications', q)} className={cn("px-4 py-2 text-[10px] font-bold border transition-all", formData.qualifications.includes(q) ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{q}</button>
+                  <button 
+                    key={q} 
+                    type="button" 
+                    onClick={() => toggleArrayItem('qualifications', q)} 
+                    className={cn(
+                      "py-3 text-[10px] font-bold border transition-all rounded-sm uppercase text-center w-full", 
+                      formData.qualifications.includes(q) 
+                        ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
+                        : "bg-white/5 border-white/10 text-slate-600 hover:text-white"
+                    )}
+                  >
+                    {q}
+                  </button>
                 ))}
               </div>
             </div>

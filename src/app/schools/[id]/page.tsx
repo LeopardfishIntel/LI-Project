@@ -551,10 +551,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.15em] block">
                           🎓 Teaching Qualification <span className="text-[#f97316] font-bold">* Required</span>
                         </label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                           {[
                             'UK (QTS)', 'US State', 'ANZ Reg', 'SA SACE', 
-                            'IB Cert', 'EU State', 'None'
+                            'EU State', 'None'
                           ].map((qual) => {
                             const isSelected = selectedQualification === qual;
                             return (
