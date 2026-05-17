@@ -714,8 +714,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
                     const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
                     const surplus = calculateSurplus(salaryNum * 1.18, situation, locationData, isHousingProvided);
-                    const monthlyTotal = salaryNum * 1.18; // Use Forecasted Salary for Potential
+                    const monthlyTotal = salaryNum * 1.18;
                     const expenses = Math.max(0, monthlyTotal - surplus);
+                    const isLoss = surplus < 0;
+                    const costsColor = isLoss ? '#b91c1c' : '#1e293b';
 
                     return (
                       <>
@@ -733,7 +735,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                     <Pie
                                       data={[
                                         { name: 'Monthly Costs', value: expenses },
-                                        { name: 'Surplus Potential', value: surplus }
+                                        { name: 'Surplus Potential', value: Math.max(0, surplus) }
                                       ]}
                                       cx="50%"
                                       cy="70%"
@@ -747,7 +749,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                       label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                                       labelLine={false}
                                     >
-                                      <Cell fill="#1e293b" />
+                                      <Cell fill={costsColor} />
                                       <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
                                     </Pie>
                                     <Tooltip
@@ -762,7 +764,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                               )}
                             </div>
                             <div className="text-center relative z-10 mt-6 space-y-0">
-                              <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] opacity-80">Expected Surplus</p>
+                              <p className={cn(
+                                "text-[9px] font-black uppercase tracking-[0.2em] opacity-80",
+                                isLoss ? "text-rose-500" : "text-primary"
+                              )}>{isLoss ? "Expected Deficit" : "Expected Surplus"}</p>
                               <p className="text-2xl font-black text-white tracking-tighter italic">
                                 {formatCurrency(convertUSD(surplus), activeCurrencyCode)}
                                 <span className="text-xs text-muted-foreground ml-1 not-italic font-normal uppercase opacity-40">/mo</span>
@@ -778,9 +783,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                 {formatCurrency(convertUSD(expenses), activeCurrencyCode)}
                               </p>
                             </div>
-                            <div className="bg-[#10B981]/5 p-4 space-y-1 border-l border-white/5 text-right">
-                              <p className="text-[9px] font-black text-[#10B981] uppercase tracking-[0.15em]">Surplus</p>
-                              <p className="text-lg font-black text-[#10B981] tracking-tight italic">
+                            <div className={cn(
+                              "p-4 space-y-1 border-l border-white/5 text-right",
+                              isLoss ? "bg-rose-500/5 text-[#f43f5e]" : "bg-[#10B981]/5 text-[#10B981]"
+                            )}>
+                              <p className={cn(
+                                "text-[9px] font-black uppercase tracking-[0.15em]",
+                                isLoss ? "text-[#f43f5e]" : "text-[#10B981]"
+                              )}>{isLoss ? "Deficit" : "Surplus"}</p>
+                              <p className="text-lg font-black tracking-tight italic">
                                 {formatCurrency(convertUSD(surplus), activeCurrencyCode)}
                               </p>
                             </div>
