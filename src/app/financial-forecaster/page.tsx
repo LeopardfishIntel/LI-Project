@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
+import { rewordDossierBriefing } from './actions';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -73,6 +74,10 @@ function DecoderContent() {
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
+  
+  const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
+  const [isRewording, setIsRewording] = useState(false);
+  const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
   
   // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
   useEffect(() => {
@@ -271,6 +276,54 @@ function DecoderContent() {
     const briefObj = cachedMap[currency] || activeSchool.cachedBriefing;
     return briefObj?.briefing || null;
   }, [activeSchool, currency]);
+
+  useEffect(() => {
+    if (!cachedBriefingText || !activeSchool) {
+      setRewordedBriefingText(null);
+      setLastRewordedSource("");
+      return;
+    }
+
+    // Make a unique cache key based on briefing content, school, currency and status
+    const sourceKey = `${activeSchool.id}_${currency}_${settings.familyStatus}_${cachedBriefingText.length}`;
+    if (sourceKey === lastRewordedSource) return;
+
+    let active = true;
+    const triggerReword = async () => {
+      setIsRewording(true);
+      try {
+        const res = await rewordDossierBriefing({
+          briefing: cachedBriefingText,
+          schoolName: activeSchool.schoolname || activeSchool.school || "the school",
+          familyStatus: settings.familyStatus
+        });
+        if (active) {
+          if (res.data) {
+            setRewordedBriefingText(res.data);
+            setLastRewordedSource(sourceKey);
+          } else {
+            // Fallback to original text if rewording fails to bypass blank layout issues
+            setRewordedBriefingText(cachedBriefingText);
+          }
+        }
+      } catch (err) {
+        console.error("Reword failed:", err);
+        if (active) {
+          setRewordedBriefingText(cachedBriefingText);
+        }
+      } finally {
+        if (active) {
+          setIsRewording(false);
+        }
+      }
+    };
+
+    triggerReword();
+
+    return () => {
+      active = false;
+    };
+  }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource]);
 
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
@@ -728,15 +781,32 @@ function DecoderContent() {
                     {/* 🛰️ PREMIUM DYNAMIC BRIEFING NARRATIVE */}
                     {cachedBriefingText ? (
                       <div className="pt-6 border-t border-white/5 space-y-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[9px] font-black text-[#f97316] uppercase tracking-[0.15em] bg-[#f97316]/10 px-2 py-0.5 rounded-sm border border-[#f97316]/20 flex items-center gap-1">
-                            <Zap className="size-2.5" /> Premium Intelligence Dossier
-                          </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black text-[#f97316] uppercase tracking-[0.15em] bg-[#f97316]/10 px-2 py-0.5 rounded-sm border border-[#f97316]/20 flex items-center gap-1">
+                              <Zap className="size-2.5" /> Staffroom Vibe & Dossier Intel
+                            </span>
+                          </div>
+                          {isRewording && (
+                            <span className="text-[9px] font-black text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
+                              <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
+                              Recalibrating staffroom talk...
+                            </span>
+                          )}
                         </div>
-                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-sky-500/30 pl-4 italic">
-                          {cachedBriefingText.split('\n\n').map((para: string, i: number) => (
-                            <p key={`briefing-para-${i}`}>{para.trim()}</p>
-                          ))}
+                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-sky-500/30 pl-4 italic font-medium">
+                          {isRewording && !rewordedBriefingText ? (
+                            <div className="space-y-3 py-2">
+                              <div className="h-4 bg-white/5 rounded-sm w-3/4 animate-pulse" />
+                              <div className="h-4 bg-white/5 rounded-sm w-5/6 animate-pulse" />
+                              <div className="h-4 bg-white/5 rounded-sm w-2/3 animate-pulse" />
+                              <div className="h-4 bg-white/5 rounded-sm w-4/5 animate-pulse" />
+                            </div>
+                          ) : (
+                            (rewordedBriefingText || cachedBriefingText).split('\n\n').map((para: string, i: number) => (
+                              <p key={`briefing-para-${i}`}>{para.trim()}</p>
+                            ))
+                          )}
                         </div>
                       </div>
                     ) : (

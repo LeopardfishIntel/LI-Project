@@ -1,10 +1,25 @@
- 'use server';
+'use server';
 
-import { evaluateOffer, type EvaluateOfferInput, type EvaluateOfferOutput } from '@/ai/flows/evaluate-offer-flow';
+export interface EvaluateOfferInput {
+    schoolName: string;
+    location: string;
+    country: string;
+    monthlySavings: number;
+    currency: string;
+    familyStatus: string;
+}
+
+export interface EvaluateOfferOutput {
+    strengths: string;
+    weaknesses: string;
+    opportunities: string;
+    threats: string;
+    overallScore: number;
+}
 
 /**
  * Generates a tactical SWOT analysis of a potential teaching contract offer.
- * * @param input - The contract offer parameters (school, location, savings, etc.)
+ * @param input - The contract offer parameters (school, location, savings, etc.)
  * @returns An object containing the generated SWOT data or an error message.
  */
 export async function getOfferTacticalVerdict(input: EvaluateOfferInput): Promise<{ data: EvaluateOfferOutput | null; error: string | null; }> {
@@ -13,6 +28,9 @@ export async function getOfferTacticalVerdict(input: EvaluateOfferInput): Promis
         if (!input.schoolName || !input.location) {
             throw new Error("Incomplete intelligence: School and Location data required.");
         }
+
+        // 🛰️ DYNAMIC IMPORT TO BYPASS CLIENT BUNDLER CLASH DURING SSR
+        const { evaluateOffer } = await import('@/ai/flows/evaluate-offer-flow');
 
         const data = await evaluateOffer(input);
         return { data, error: null };
@@ -24,5 +42,49 @@ export async function getOfferTacticalVerdict(input: EvaluateOfferInput): Promis
             data: null, 
             error: typeof e === 'string' ? e : e.message || "Uplink failure during verdict generation. Intelligence pipeline is offline." 
         };
+    }
+}
+
+/**
+ * Dynamic Server Action to rephrase the cached briefing into a strict, candid UK English "staffroom chat" style.
+ */
+export async function rewordDossierBriefing(input: {
+    briefing: string;
+    schoolName: string;
+    familyStatus: string;
+}): Promise<{ data: string | null; error: string | null; }> {
+    try {
+        if (!input.briefing) {
+            throw new Error("Source briefing text is required for translation.");
+        }
+
+        // 🛰️ DYNAMIC IMPORT TO BYPASS CLIENT BUNDLER CLASH DURING SSR
+        const { getAI } = await import('@/ai/genkit');
+
+        const ai = getAI();
+        const response = await ai.generate({
+            prompt: `You are an elite, highly experienced British international school teacher and recruitment coordinator.
+Your task is to reword the following detailed school intelligence dossier so that it retains 100% of its factual information, numbers, curriculum details, housing notes, and saving/expense insights, but sounds completely fresh, unique, and written in a candid, authentic staffroom coffee-chat vibe with strictly UK English teacher-talk phrasing.
+
+Factual Source Dossier:
+${input.briefing}
+
+Additional Context:
+- Target School: ${input.schoolName}
+- Teacher Profile Status: ${input.familyStatus}
+
+Instructions:
+1. **Style**: Strictly UK English. Use authentic British staffroom terms where natural (e.g., SLT, PPA time, TLR, prep time, supply cover, key stages, Head of Dept, staffroom vibe, cost of living, standard of living, school day).
+2. **Goal**: Say the exact same things, but completely reworded. If the source briefing is ~600 words, make this reworded version around ~500-600 words as well, formatted beautifully in 3 to 4 strong, detailed paragraphs separated by double newlines (\\n\\n).
+3. **No Direct Copying**: Do not copy exact sentences or structural headers word-for-word. It must read like a completely distinct colleague-to-colleague advisory sharing the exact same ground-truth facts.
+4. **Tone**: Warm, candid, authoritative, and supportive. Focus on what it's *actually* like on the ground for a teacher of this profile.
+
+Provide only the reworded text. No intro or outro.`,
+        });
+
+        return { data: response.text || null, error: null };
+    } catch (e: any) {
+        console.error("AI Briefing Rewording Failed:", e);
+        return { data: null, error: e.message || "Uplink failure during rewording." };
     }
 }
