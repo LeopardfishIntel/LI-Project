@@ -139,7 +139,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || '—';
   const salaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
 
-  const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string } | null>(null);
+  const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string, generatedAt?: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);
   const [currency, setCurrency] = React.useState('USD');
   const [adults, setAdults] = React.useState(1);
@@ -375,6 +375,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             briefing: 'The tactical briefing engine is currently offline. Please check back shortly for your ground-truth intel.',
             currentHead: 'Offline',
             ownership: 'Offline',
+            generatedAt: new Date().toISOString()
           });
         }
       } finally {
@@ -471,9 +472,14 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
             {/* 🎯 THE LEOPARDFISH VERDICT (AI BRIEFING) */}
             <div className="space-y-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex flex-wrap items-center gap-3">
                   <h3 className="text-2xl font-black uppercase tracking-tighter text-primary italic">Leopardfish Intel School Insights</h3>
+                  {briefing?.generatedAt && (
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm">
+                      Compiled: {new Date(briefing.generatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 {isBriefingLoading && school?.cachedBriefing && (
                   <span className="text-[9px] font-black uppercase tracking-widest text-[#f97316] bg-[#f97316]/10 px-2.5 py-1 border border-[#f97316]/20 animate-pulse shrink-0">
