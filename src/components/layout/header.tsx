@@ -8,9 +8,12 @@ import { User as UserIcon, LogOut, LogIn, Menu, X } from "lucide-react";
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/firebase"; 
 import { doc, getDoc } from "firebase/firestore";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [operativeName, setOperativeName] = useState<string>("FRED");
@@ -48,10 +51,8 @@ export default function Header() {
     { name: "Connect", href: "/enquiry" },
   ];
 
-  if (!mounted) return <div className="h-16 bg-[#020617] border-b border-white/5" />;
-
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 bg-[#020617]/90 backdrop-blur-md px-6 py-3">
+    <header className="sticky top-0 z-[100] border-b border-white/5 bg-[#020617]/90 backdrop-blur-md px-6 py-3">
       <nav className="flex justify-between items-center max-w-7xl mx-auto">
         
         {/* BRANDING */}
@@ -67,13 +68,15 @@ export default function Header() {
               href={link.href} 
               className={cn(
                 "text-[11px] font-bold uppercase tracking-widest transition-colors", 
-                pathname === link.href ? "text-[#f97316]" : "text-slate-400 hover:text-white"
+                (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))) ? "text-[#f97316]" : "text-slate-400 hover:text-white"
               )}
             >
               {link.name}
             </Link>
           ))}
         </div>
+
+
 
         {/* ACCOUNT & MOBILE MENU TOGGLE */}
         <div className="flex items-center gap-4">

@@ -1,24 +1,31 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { Search, MapPin, BookOpen, ArrowRight, Loader2 } from 'lucide-react';
 import { useCollection, db } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default function SchoolDirectoryPage() {
+function SchoolDirectoryContent() {
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+  const searchParams = useSearchParams();
 
-  // 🛡️ Hydration Guard
+  // 🛡️ Hydration Guard & Query Param Scanner
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const q = searchParams.get('q');
+    if (q) {
+      setSearchQuery(q);
+      setHasSearched(true);
+    }
+  }, [searchParams]);
 
   // 🛡️ Logic Gate: Prevent collection() call if db is undefined during build
   const schoolsCollection = db ? collection(db, 'schools') : null;
@@ -138,5 +145,17 @@ export default function SchoolDirectoryPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SchoolDirectoryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-[#f97316]" />
+      </div>
+    }>
+      <SchoolDirectoryContent />
+    </Suspense>
   );
 }

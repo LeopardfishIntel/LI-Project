@@ -89,6 +89,18 @@ export interface School {
   academic_Degree_req?: string;
   license_req?: string;
   noncontacttime?: string | number;
+  cachedBriefing?: {
+    briefing: string;
+    currentHead: string;
+    ownership: string;
+    generatedAt: string;
+  };
+  cachedBriefings?: Record<string, {
+    briefing: string;
+    currentHead: string;
+    ownership: string;
+    generatedAt: string;
+  }>;
 }
 
 export interface TeacherProfile {

@@ -10,14 +10,22 @@ import { googleAI } from '@genkit-ai/googleai';
 let aiInstance: any = null;
 
 export function getAI() {
-  if (aiInstance) return aiInstance;
-
   const isServer = typeof window === 'undefined';
   
   // 🛡️ SECURITY: Only attempt to pull keys on the server
   const KEY = isServer 
     ? (process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY) 
     : 'CLIENT_SIDE_STUB';
+
+  const KEY_PREFIX = KEY ? KEY.substring(0, 10) : "NONE";
+
+  // If we already initialized Genkit, and the cached instance has the SAME key prefix as the active one, let's reuse it!
+  if (aiInstance && aiInstance.apiKeyPrefix === KEY_PREFIX) {
+    console.log("🛸 [GENKIT] getAI cached instance accessed. Active KEY prefix:", aiInstance.apiKeyPrefix || "N/A");
+    return aiInstance;
+  }
+
+  console.log("🛸 [GENKIT] getAI fresh init. isServer:", isServer, "Key Prefix:", KEY_PREFIX);
 
   aiInstance = genkit({
     plugins: [
@@ -28,6 +36,8 @@ export function getAI() {
     // 🚀 2026 Stable Standard
     model: 'googleai/gemini-1.5-flash',
   });
+
+  aiInstance.apiKeyPrefix = KEY_PREFIX;
 
   return aiInstance;
 }

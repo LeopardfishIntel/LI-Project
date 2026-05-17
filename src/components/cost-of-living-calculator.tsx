@@ -23,6 +23,7 @@ interface CostOfLivingCalculatorProps {
   setAdults?: (val: number) => void;
   children?: number;
   setChildren?: (val: number) => void;
+  variant?: 'card' | 'ghost';
 }
 
 export function CostOfLivingCalculator({ 
@@ -34,7 +35,8 @@ export function CostOfLivingCalculator({
   adults: externalAdults,
   setAdults: setExternalAdults,
   children: externalChildren,
-  setChildren: setExternalChildren
+  setChildren: setExternalChildren,
+  variant = 'card'
 }: CostOfLivingCalculatorProps) {
   const [internalAdults, setInternalAdults] = useState(1);
   const [internalChildren, setInternalChildren] = useState(0);
@@ -117,6 +119,101 @@ export function CostOfLivingCalculator({
   const { rent: rentToShow, label: rentLabel } = getRentForFamily(activeCoL as any, familyStatus);
   const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
 
+  const content = (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Adults</Label>
+          <div className="flex gap-1 p-1 bg-white/5 rounded-sm">
+            {[1, 2].map(val => (
+              <button
+                key={val}
+                onClick={() => setAdults(val)}
+                className={cn(
+                  "flex-1 py-1.5 text-xs font-black rounded-[2px] transition-all",
+                  adults === val ? "bg-primary text-black" : "text-white/40 hover:text-white"
+                )}
+              >
+                {val}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Children</Label>
+          <div className="flex gap-1 p-1 bg-white/5 rounded-sm">
+            {[0, 1, 2, 3].map(val => (
+              <button
+                key={val}
+                onClick={() => setChildren(val)}
+                className={cn(
+                  "flex-1 py-1.5 text-xs font-black rounded-[2px] transition-all",
+                  children === val ? "bg-primary text-black" : "text-white/40 hover:text-white"
+                )}
+              >
+                {val}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3 text-sm text-muted-foreground font-medium">
+        <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Home className="w-4 h-4 text-primary" /> {rentLabel}</span>
+          <span className="text-white font-bold">{isHousingProvided ? 'PROVIDED' : formatCurrency(convert(rentToShow || 1200), targetCurrency)}</span>
+        </div>
+         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-yellow-400" /> Utilities (Water/Elec/Gas)</span>
+          <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).utilities)) || 150), targetCurrency)}</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Wifi className="w-4 h-4 text-blue-400" /> High-Speed Internet</span>
+          <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).internet)) || 60), targetCurrency)}</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-purple-400" /> Mobile data</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).mobile)) || 30) * adults), targetCurrency)}</span>
+        </div>
+         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Utensils className="w-4 h-4 text-amber-400" /> Monthly Groceries</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).food)) || 350) * adults + (parseFloat(String((activeCoL as any).food)) || 350) * 0.5 * children), targetCurrency)}</span>
+        </div>
+         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Coffee className="w-4 h-4 text-orange-400" /> Dining & social</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).diningSocial)) || 150) * adults), targetCurrency)}</span>
+        </div>
+        <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><TramFront className="w-4 h-4 text-rose-400" /> Public transport / fuel</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).transport)) || 60) * adults + (parseFloat(String((activeCoL as any).transport)) || 60) * 0.3 * children), targetCurrency)}</span>
+        </div>
+        {(parseFloat(String((activeCoL as any).vehicleInsuranceMaint)) > 0) && <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+            <span className="flex items-center gap-2"><Car className="w-4 h-4 text-neutral-400" /> Vehicle maintenance</span>
+            <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).vehicleInsuranceMaint)) || 0), targetCurrency)}</span>
+        </div>}
+         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4 text-red-400" /> Medical gaps (e.g. Dental)</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).uncoveredMedical)) || 50) * adults + (parseFloat(String((activeCoL as any).uncoveredMedical)) || 50) * 0.5 * children), targetCurrency)}</span>
+        </div>
+        {(parseFloat(String((activeCoL as any).childcareMonthly)) > 0) && <div className="flex justify-between items-center py-1.5">
+          <span className="flex items-center gap-2"><Baby className="w-4 h-4 text-sky-400" /> Childcare (Monthly)</span>
+          <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).childcareMonthly)) || 0) * children), targetCurrency)}</span>
+        </div>}
+      </div>
+      
+      <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-end">
+        <div className="space-y-1">
+          <p className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Monthly Cost Forecast</p>
+          <p className="text-4xl font-black text-white tracking-tighter uppercase italic">
+            {formatCurrency(convert(totalCost), targetCurrency)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (variant === 'ghost') return content;
+
   return (
     <Card className="bg-card/70 backdrop-blur-sm border-border">
       <CardHeader className="flex-row items-center justify-between border-b border-white/5 pb-4">
@@ -148,95 +245,9 @@ export function CostOfLivingCalculator({
         </div>
       </CardHeader>
       <CardContent className="pt-6">
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="space-y-1.5">
-            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Adults</Label>
-            <div className="flex gap-1 p-1 bg-white/5 rounded-sm">
-              {[1, 2].map(val => (
-                <button
-                  key={val}
-                  onClick={() => setAdults(val)}
-                  className={cn(
-                    "flex-1 py-1.5 text-xs font-black rounded-[2px] transition-all",
-                    adults === val ? "bg-primary text-black" : "text-white/40 hover:text-white"
-                  )}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest px-1">Children</Label>
-            <div className="flex gap-1 p-1 bg-white/5 rounded-sm">
-              {[0, 1, 2, 3].map(val => (
-                <button
-                  key={val}
-                  onClick={() => setChildren(val)}
-                  className={cn(
-                    "flex-1 py-1.5 text-xs font-black rounded-[2px] transition-all",
-                    children === val ? "bg-primary text-black" : "text-white/40 hover:text-white"
-                  )}
-                >
-                  {val}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-3 text-sm text-muted-foreground font-medium">
-          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Home className="w-4 h-4 text-primary" /> {rentLabel}</span>
-            <span className="text-white font-bold">{isHousingProvided ? 'PROVIDED' : formatCurrency(convert(rentToShow || 1200), targetCurrency)}</span>
-          </div>
-           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-yellow-400" /> Utilities (Water/Elec/Gas)</span>
-            <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).utilities)) || 150), targetCurrency)}</span>
-          </div>
-          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Wifi className="w-4 h-4 text-blue-400" /> High-Speed Internet</span>
-            <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).internet)) || 60), targetCurrency)}</span>
-          </div>
-          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Smartphone className="w-4 h-4 text-purple-400" /> Mobile data</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).mobile)) || 30) * adults), targetCurrency)}</span>
-          </div>
-           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Utensils className="w-4 h-4 text-amber-400" /> Monthly Groceries</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).food)) || 350) * adults + (parseFloat(String((activeCoL as any).food)) || 350) * 0.5 * children), targetCurrency)}</span>
-          </div>
-           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Coffee className="w-4 h-4 text-orange-400" /> Dining & social</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).diningSocial)) || 150) * adults), targetCurrency)}</span>
-          </div>
-          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><TramFront className="w-4 h-4 text-rose-400" /> Public transport / fuel</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).transport)) || 60) * adults + (parseFloat(String((activeCoL as any).transport)) || 60) * 0.3 * children), targetCurrency)}</span>
-          </div>
-          {(parseFloat(String((activeCoL as any).vehicleInsuranceMaint)) > 0) && <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-              <span className="flex items-center gap-2"><Car className="w-4 h-4 text-neutral-400" /> Vehicle maintenance</span>
-              <span className="text-white font-bold">{formatCurrency(convert(parseFloat(String((activeCoL as any).vehicleInsuranceMaint)) || 0), targetCurrency)}</span>
-          </div>}
-           <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-            <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4 text-red-400" /> Medical gaps (e.g. Dental)</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).uncoveredMedical)) || 50) * adults + (parseFloat(String((activeCoL as any).uncoveredMedical)) || 50) * 0.5 * children), targetCurrency)}</span>
-          </div>
-          {(parseFloat(String((activeCoL as any).childcareMonthly)) > 0) && <div className="flex justify-between items-center py-1.5">
-            <span className="flex items-center gap-2"><Baby className="w-4 h-4 text-sky-400" /> Childcare (Monthly)</span>
-            <span className="text-white font-bold">{formatCurrency(convert((parseFloat(String((activeCoL as any).childcareMonthly)) || 0) * children), targetCurrency)}</span>
-          </div>}
-        </div>
-        
-        <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-end">
-          <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Monthly Cost Forecast</p>
-            <p className="text-4xl font-black text-white tracking-tighter uppercase italic">
-              {formatCurrency(convert(totalCost), targetCurrency)}
-            </p>
-          </div>
-        </div>
+        {content}
       </CardContent>
     </Card>
   );
 }
+

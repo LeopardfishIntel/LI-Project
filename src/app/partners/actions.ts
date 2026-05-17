@@ -61,21 +61,53 @@ export async function submitInquiry(
 
     // 3. LIVE TRANSMISSION
     if (process.env.RESEND_API_KEY) {
-      // Send confirmation to the user
-      await resend.emails.send({
-        from: 'Leopardfish Intel <system@leopardfishintel.com>',
-        to: [email],
-        subject: emailSubject,
-        text: emailBody,
-      });
+      try {
+        // 🛰️ Local Dev / Unverified Domain Fallback
+        const isDev = process.env.NODE_ENV === 'development';
+        
+        const fromAddress = isDev 
+          ? 'Leopardfish Intel <onboarding@resend.dev>' 
+          : 'Leopardfish Intel <system@leopardfishintel.com>';
+          
+        const adminFromAddress = isDev 
+          ? 'Intelligence Desk <onboarding@resend.dev>' 
+          : 'Intelligence Desk <system@leopardfishintel.com>';
 
-      // Send notification to Roger
-      await resend.emails.send({
-        from: 'Intelligence Desk <system@leopardfishintel.com>',
-        to: ['roger@leopardfishintel.com'],
-        subject: `🚨 NEW INQUIRY: ${inquiryType.toUpperCase()} - ${organisation}`,
-        text: `Source: ${name}\nEmail: ${email}\nOrganisation: ${organisation}\n\nMessage Detail:\n${message}`,
-      });
+        console.log(`[RESEND PARTNERS] Attempting transmission using: ${fromAddress}`);
+
+        // Send confirmation to the user
+        const userEmail = await resend.emails.send({
+          from: fromAddress,
+          to: [email],
+          subject: emailSubject,
+          text: emailBody,
+        });
+
+        if (userEmail.error) {
+          console.error("❌ PARTNER USER CONFIRMATION FAILED:", userEmail.error.message);
+          if (userEmail.error.message.includes("domain is not verified")) {
+            console.warn("⚠️ DOMAIN UNVERIFIED: Please verify leopardfishintel.com at https://resend.com/domains");
+          }
+        } else {
+          console.log("✅ PARTNER USER CONFIRMATION SENT:", userEmail.data);
+        }
+
+        // Send notification to Roger
+        const adminEmail = await resend.emails.send({
+          from: adminFromAddress,
+          to: ['roger@leopardfishintel.com'],
+          subject: `🚨 NEW INQUIRY: ${inquiryType.toUpperCase()} - ${organisation}`,
+          text: `Source: ${name}\nEmail: ${email}\nOrganisation: ${organisation}\n\nMessage Detail:\n${message}`,
+        });
+
+        if (adminEmail.error) {
+          console.error("❌ PARTNER ADMIN NOTIFICATION FAILED:", adminEmail.error.message);
+        } else {
+          console.log("✅ PARTNER ADMIN NOTIFICATION SENT:", adminEmail.data);
+        }
+      } catch (resendError) {
+        console.error("❌ PARTNER RESEND EXCEPTION OCCURRED:", resendError);
+      }
     }
 
     return {
