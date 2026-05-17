@@ -323,47 +323,59 @@ export function calculateSavingsScore(salaryNum: number, familyStatus: string, c
 /**
  * 🧮 LOCAL SAVINGS SCORE
  */
-export function calculateSurplus(localNetUSD: number, familyStatus: string, cityData: any): number {
+export function calculateSurplus(localNetUSD: number, familyStatus: string, cityData: any, isHousingProvided = false): number {
   const isFamily = familyStatus.toLowerCase().includes('family');
   const isDual = familyStatus.toLowerCase().includes('dual') || familyStatus.toLowerCase().includes('couple');
   
   const status = familyStatus.toLowerCase();
-  let pKey = "single";
-  let scalar = 1.0;
-  let personCount = 1;
+  let adults = 1;
+  let children = 0;
 
-  if (status === "single") { pKey = "single"; scalar = 1.0; personCount = 1; }
-  else if (status === "couple") { pKey = "marriedDualIncome"; scalar = 1.8; personCount = 2; }
-  else if (status.includes("family-1")) { pKey = "family1Child"; scalar = 2.2; personCount = 3; }
-  else if (status.includes("family-2")) { pKey = "family2Children"; scalar = 2.5; personCount = 4; }
-  else if (status.includes("family-3")) { pKey = "family3PlusChildren"; scalar = 2.8; personCount = 5; }
-
-  const safeParse = (val: any) => { const n = parseFloat(String(val)); return isNaN(n) ? 0 : n; };
-  const getVal = (data: any, key: string, mult: number) => {
-    if (!data) return 0;
-    if (typeof data === 'object' && data !== null) {
-      if (data[key]) return safeParse(data[key]);
-      return safeParse(data.single || data.base || 0) * mult;
-    }
-    return safeParse(data) * mult;
-  };
-
-  let rent = Number(cityData?.rent1br) || 800;
-  if (status.includes('family-2') || status.includes('family-3')) {
-    rent = Number(cityData?.rent3br) || (rent * 1.5);
-  } else if (isFamily || isDual) {
-    rent = Number(cityData?.rent2br) || (rent * 1.2);
+  if (status === "single") {
+    adults = 1;
+    children = 0;
+  } else if (status === "couple" || status === "marrieddualincome") {
+    adults = 2;
+    children = 0;
+  } else if (status.includes("family-1")) {
+    adults = 2;
+    children = 1;
+  } else if (status.includes("family-2")) {
+    adults = 2;
+    children = 2;
+  } else if (status.includes("family-3")) {
+    adults = 2;
+    children = 3;
   }
 
-  const groceries = getVal(cityData?.groceries, pKey, scalar) || (250 * scalar);
-  const utilities = getVal(cityData?.utilities, pKey, scalar * 0.8) || (120 * scalar);
-  const connectivity = (getVal(cityData?.internet, pKey, 1) || 50) + ((getVal(cityData?.mobilePhone, pKey, 1) || 30) * personCount);
-  const transport = getVal(cityData?.transport?.publicTransport || cityData?.publicTransport || cityData?.transport, pKey, personCount) || (60 * personCount);
-  const social = getVal(cityData?.diningSocial, pKey, scalar) || (200 * scalar);
+  const safeVal = (val: any) => parseFloat(String(val)) || 0;
+  const activeCoL = cityData || {};
 
-  const totalOut = rent + groceries + utilities + connectivity + transport + social;
+  const foodCost = (safeVal(activeCoL.food) || safeVal((activeCoL as any).monthlyFood) || 350) * adults + (safeVal(activeCoL.food) || 350) * 0.5 * children;
+  const transportCost = (safeVal(activeCoL.transport) || safeVal((activeCoL as any).monthlyTransport) || 60) * adults + (safeVal(activeCoL.transport) || 60) * 0.3 * children;
+  const mobileCost = (safeVal(activeCoL.mobile) || safeVal((activeCoL as any).mobileMonthly) || 30) * adults;
+  const diningSocialCost = (safeVal(activeCoL.diningSocial) || safeVal((activeCoL as any).socialMonthly) || 150) * adults;
+  const uncoveredMedicalCost = (safeVal(activeCoL.uncoveredMedical) || 50) * adults + (safeVal(activeCoL.uncoveredMedical) || 50) * 0.5 * children;
+
+  let rentCost = 0;
+  if (!isHousingProvided) {
+    const rentKey = status === 'single' ? 'rent1br' : (status.includes('family-2') || status.includes('family-3') ? 'rent3br' : 'rent2br');
+    rentCost = safeVal(activeCoL[rentKey]) || safeVal(activeCoL.rent1br) || 1200;
+  }
+
+  const totalOut =
+    rentCost +
+    foodCost +
+    transportCost +
+    (safeVal(activeCoL.utilities) || 150) +
+    (safeVal(activeCoL.internet) || 60) +
+    mobileCost +
+    diningSocialCost +
+    safeVal((activeCoL as any).vehicleInsuranceMaint) +
+    safeVal((activeCoL as any).childcareMonthly) * children +
+    uncoveredMedicalCost;
+
   const rawSurplus = localNetUSD - totalOut;
-  
   const maxCap = isFamily ? 4400 : 5700;
   
   return Math.min(rawSurplus, maxCap);

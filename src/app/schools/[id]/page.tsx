@@ -227,6 +227,38 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       try {
         const rateFactor = (RATES[activeCurrencyCode] || 1) / 1.27;
 
+        // Calculate exact, finalized costs that will be displayed in the UI to prevent any AI deviation
+        const activeCoL = locationData || {};
+        const safeVal = (val: any) => parseFloat(String(val)) || 0;
+        const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+        
+        // Single profile values (which is the default userProfile passed to Genkit)
+        const singleRent = isHousingProvided ? 0 : (safeVal(activeCoL.rent1br) || 1200);
+        const singleUtilities = safeVal(activeCoL.utilities) || 150;
+        const singleInternet = safeVal(activeCoL.internet) || 60;
+        const singleMobile = safeVal(activeCoL.mobile) || 30;
+        const singleFood = safeVal(activeCoL.food) || 350;
+        const singleDining = safeVal(activeCoL.diningSocial) || 150;
+        const singleTransport = safeVal(activeCoL.transport) || 60;
+        const singleMedical = safeVal(activeCoL.uncoveredMedical) || 50;
+        
+        const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
+
+        const finalizedColData = {
+          currencyCode: 'USD',
+          monthlyRent1BR: isHousingProvided ? 'Provided (0 USD)' : `${singleRent} USD`,
+          isHousingProvided: isHousingProvided,
+          utilities: `${singleUtilities} USD`,
+          internet: `${singleInternet} USD`,
+          mobile: `${singleMobile} USD`,
+          food: `${singleFood} USD`,
+          diningSocial: `${singleDining} USD`,
+          transport: `${singleTransport} USD`,
+          uncoveredMedical: `${singleMedical} USD`,
+          totalExpensesExcludingRent: `${singleTotalExpenses - singleRent} USD`,
+          totalExpensesIncludingRent: `${singleTotalExpenses} USD`
+        };
+
         const result = await getTacticalBriefing({
           schoolName: school.schoolname || school.name,
           coreSchoolData: `
@@ -241,7 +273,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             - Raw Database Payload: ${JSON.stringify(school)}
             - Critical Intelligence: Please identify who owns the school (e.g. GEMS, Taaleem, Nord Anglia, or private) and the current headmaster/principal (including "as of" date if available) from the raw database payload.
           `,
-          colData: JSON.stringify(locationData || { info: 'No local cost of living data available yet.' }),
+          colData: JSON.stringify(finalizedColData),
           userProfile: {
             age: 30,
             familyStatus: 'single',
@@ -562,7 +594,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                       label = adults >= 2 ? 'Family (2 Adults + Kids)' : 'Family (Single Parent)';
                     }
 
-                    const surplus = calculateSurplus(salaryNum * 1.18, situation, locationData);
+                    const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+                    const surplus = calculateSurplus(salaryNum * 1.18, situation, locationData, isHousingProvided);
                     const monthlyTotal = salaryNum * 1.18; // Use Forecasted Salary for Potential
                     const expenses = Math.max(0, monthlyTotal - surplus);
 

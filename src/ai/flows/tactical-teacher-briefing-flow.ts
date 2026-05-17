@@ -40,8 +40,18 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     CRITICAL GROUND-TRUTH DATABASE CONCURRENCE DIRECTIVE:
     - You MUST treat the provided School Data and Cost of Living database context as the absolute, non-negotiable ground-truth for all numbers, salaries, rents, cost indices, and benefits.
     - PRIORITISE these database values strictly over any general, pre-trained knowledge, assumptions, or external estimates you may hold about ${input.schoolName} or its city.
-    - Strictly avoid hallucinating, inventing, or guessing any rent costs, grocery values, utility bills, tuition benefits, or tax metrics. Every financial reference in the narrative MUST perfectly concur with and be derived from the provided database context.
-    - If a specific cost is explicitly detailed in the Cost of Living data, you must reference that database value.
+    - Strictly avoid hallucinating, inventing, or guessing any rent costs, grocery values, utility bills, or tax metrics. Every financial reference in the narrative MUST perfectly concur with and be derived from the provided database context.
+    - Specifically, in Paragraph 2 (Financial Planning), you MUST extract and write down the EXACT cost values specified in the Cost of Living data (converted to ${activeCurrency} using the rate of ${rate}):
+      * Rent: Use the exact value of "monthlyRent1BR" from the Cost of Living data.
+      * Utilities: Use the exact value of "utilities" from the Cost of Living data.
+      * Internet: Use the exact value of "internet" from the Cost of Living data.
+      * Mobile phone service: Use the exact value of "mobile" from the Cost of Living data.
+      * Groceries / Food: Use the exact value of "food" from the Cost of Living data.
+      * Dining & social: Use the exact value of "diningSocial" from the Cost of Living data.
+      * Public transport / fuel: Use the exact value of "transport" from the Cost of Living data.
+      * Uncovered medical: Use the exact value of "uncoveredMedical" from the Cost of Living data.
+      * Total expenses: Mention the exact value of "totalExpensesExcludingRent" (if rent is Provided/0) or "totalExpensesIncludingRent" (if not provided).
+    - Under no circumstances should you round these numbers, invent other values, or guess different averages. The text MUST perfectly align with these exact figures.
 
     IMPORTANT DYNAMIC CURRENCY DIRECTIVE:
     - You MUST write ALL financial references, salaries, rents, cost of living numbers, and savings values in the narrative in ${activeCurrency} currency.
