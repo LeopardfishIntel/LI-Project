@@ -55,9 +55,19 @@ export default function FindYourFitGate() {
 
   const toggleArrayItem = (field: 'qualifications' | 'curriculum' | 'goals' | 'regions', value: string, max?: number) => {
     setProfile(prev => {
-      const current = prev[field] as string[];
-      const exists = current.some(item => item.toLowerCase() === value.toLowerCase());
+      let current = prev[field] as string[];
+      if (field === 'qualifications') {
+        if (value.toLowerCase() === 'none') {
+          if (current.some(i => i.toLowerCase() === 'none')) {
+            return { ...prev, qualifications: [] };
+          }
+          return { ...prev, qualifications: ['None'] };
+        } else {
+          current = current.filter(i => i.toLowerCase() !== 'none');
+        }
+      }
       
+      const exists = current.some(item => item.toLowerCase() === value.toLowerCase());
       if (exists) {
         return { ...prev, [field]: current.filter(i => i.toLowerCase() !== value.toLowerCase()) };
       }
@@ -139,7 +149,7 @@ export default function FindYourFitGate() {
                   <Check className="size-4 text-[#007FFF] opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[280px]">
-                  {["b.ed", "pgce", "ma education", "phd", "qts", "ipgce"].map(q => (
+                  {["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "IB Cert", "EU State", "None"].map(q => (
                     <DropdownMenuCheckboxItem key={q} checked={profile.qualifications.some(item => item.toLowerCase() === q.toLowerCase())} onCheckedChange={() => toggleArrayItem('qualifications', q)} className="font-bold uppercase">{q}</DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>
@@ -263,12 +273,27 @@ export default function FindYourFitGate() {
             </div>
           </div>
 
+          {/* UI Warning Display if None is Selected */}
+          {profile.qualifications.some(q => q.toLowerCase() === 'none') && (
+            <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
+              <span className="shrink-0 size-5 flex items-center justify-center border border-amber-500 rounded-full font-bold">!</span>
+              <span>To ensure deployment compliance, a recognized state/national teaching qualification is required. Unfortunately, without a verified qualification, we cannot run full matching reports.</span>
+            </div>
+          )}
+
+          {profile.qualifications.length === 0 && (
+            <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
+              <span className="shrink-0 size-5 flex items-center justify-center border border-red-500 rounded-full font-bold">!</span>
+              <span>Please select your active teaching qualification. This is a required field.</span>
+            </div>
+          )}
+
           <button 
             onClick={handleLaunch} 
-            disabled={profile.regions.length === 0 || isGenerating} 
+            disabled={profile.regions.length === 0 || profile.qualifications.length === 0 || profile.qualifications.some(q => q.toLowerCase() === 'none') || isGenerating} 
             className={cn(
               "w-full h-24 tracking-[0.5em] text-2xl font-black transition-all flex items-center justify-center gap-4 border shadow-2xl uppercase", 
-              profile.regions.length > 0 && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
+              profile.regions.length > 0 && profile.qualifications.length > 0 && !profile.qualifications.some(q => q.toLowerCase() === 'none') && !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
             {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}

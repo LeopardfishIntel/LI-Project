@@ -11,12 +11,12 @@ import { Input } from "@/components/ui/input";
 
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
-const QUALS = ["PGCE/IPGCE", "B.Ed", "MA/M.Ed", "NPQSL", "QTS"];
+const QUALS = ["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "IB Cert", "EU State", "None"];
 const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas", "Oceania"];
 const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Culture"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
 
-function SubmitButton({ isPending, isDirty }: { isPending: boolean, isDirty: boolean }) {
+function SubmitButton({ isPending, isDirty, isDisabled }: { isPending: boolean, isDirty: boolean, isDisabled?: boolean }) {
   const [loadingText, setLoadingText] = useState("Analyzing Leopardfish Intel...");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function SubmitButton({ isPending, isDirty }: { isPending: boolean, isDirty: boo
   return (
     <button 
       type="submit" 
-      disabled={isPending} 
+      disabled={isPending || isDisabled} 
       className="w-full h-16 bg-[#f97316] text-white text-lg font-black tracking-widest uppercase hover:bg-white hover:text-black transition-all border-2 border-[#f97316] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
     >
       {isPending ? (
@@ -62,6 +62,7 @@ export default function FindYourFitPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.regions.length === 0) return;
+    if (formData.qualifications.length === 0 || formData.qualifications.includes('None')) return;
     setIsPending(true);
 
     const params = new URLSearchParams({
@@ -82,7 +83,15 @@ export default function FindYourFitPage() {
   // 🛡️ STRICT LIMIT LOGIC: Only allows 2 selections for Objectives/Regions
   const toggleArrayItem = (key: 'qualifications' | 'objectives' | 'regions', value: string, limit?: number) => {
     setFormData(prev => {
-      const current = prev[key];
+      let current = prev[key];
+      if (key === 'qualifications') {
+        if (value === 'None') {
+          if (current.includes('None')) return { ...prev, qualifications: [] };
+          return { ...prev, qualifications: ['None'] };
+        } else {
+          current = current.filter(i => i !== 'None');
+        }
+      }
       if (current.includes(value)) return { ...prev, [key]: current.filter(i => i !== value) };
       if (limit && current.length >= limit) return prev;
       return { ...prev, [key]: [...current, value] };
@@ -197,14 +206,32 @@ export default function FindYourFitPage() {
           {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}
 
           {/* 🛡️ UI Error Display */}
-          {formData.regions.length === 0 && isPending && (
+          {formData.qualifications.length === 0 && (
+            <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95">
+              <AlertTriangle className="size-4 shrink-0" /> 
+              <span className="leading-tight">Please select your active teaching qualification. This is a required field.</span>
+            </div>
+          )}
+
+          {formData.qualifications.includes('None') && (
+            <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95 text-left leading-relaxed">
+              <AlertTriangle className="size-4 shrink-0 text-amber-500" /> 
+              <span>To ensure high-fidelity school matching and deployment compliance, a recognized state/national teaching credential (e.g. QTS, SACE, State Licensing) is required. Unfortunately, without a verified qualification, we cannot run full deployment planning reports.</span>
+            </div>
+          )}
+
+          {formData.regions.length === 0 && (
             <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95">
               <AlertTriangle className="size-4 shrink-0" /> 
               <span className="leading-tight">Please select at least one Target Region.</span>
             </div>
           )}
 
-          <SubmitButton isPending={isPending} isDirty={isDirty} />
+          <SubmitButton 
+            isPending={isPending} 
+            isDirty={isDirty} 
+            isDisabled={formData.qualifications.length === 0 || formData.qualifications.includes('None') || formData.regions.length === 0} 
+          />
         </form>
 
       </div>

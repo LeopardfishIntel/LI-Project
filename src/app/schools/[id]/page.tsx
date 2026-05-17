@@ -141,6 +141,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string, generatedAt?: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);
+  const [selectedQualification, setSelectedQualification] = React.useState<string>('');
   const [currency, setCurrency] = React.useState('USD');
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
@@ -545,9 +546,61 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         })}
                       </div>
 
+                      {/* Qualification Gate Selectors */}
+                      <div className="space-y-3 pt-4 border-t border-white/5 text-left">
+                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.15em] block">
+                          🎓 Teaching Qualification <span className="text-[#f97316] font-bold">* Required</span>
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {[
+                            'UK (QTS)', 'US State', 'ANZ Reg', 'SA SACE', 
+                            'IB Cert', 'EU State', 'None'
+                          ].map((qual) => {
+                            const isSelected = selectedQualification === qual;
+                            return (
+                              <button
+                                key={qual}
+                                type="button"
+                                onClick={() => setSelectedQualification(qual)}
+                                className={cn(
+                                  "py-3 text-[10px] font-bold border transition-all rounded-sm",
+                                  isSelected
+                                    ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]"
+                                    : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10"
+                                )}
+                              >
+                                {qual}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {selectedQualification === 'None' && (
+                        <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-sm text-left animate-in slide-in-from-top-2 duration-300">
+                          <h5 className="text-xs font-black uppercase text-red-400 flex items-center gap-2 mb-1.5">
+                            <ShieldAlert className="size-4 shrink-0 text-red-500" />
+                            Minimum Guidelines Not Met
+                          </h5>
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                            To ensure compliance and high-fidelity school insights, a recognized teaching qualification or state registration is required. Unfortunately, we cannot generate custom financial reports or dossier forecasts for candidates without a verified international teaching credential.
+                          </p>
+                        </div>
+                      )}
+
                       <button
-                        onClick={() => setIsDossierInitialized(true)}
-                        className="w-full mt-6 bg-primary text-white py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-2"
+                        onClick={() => {
+                          if (selectedQualification && selectedQualification !== 'None') {
+                            setIsDossierInitialized(true);
+                          }
+                        }}
+                        disabled={!selectedQualification || selectedQualification === 'None'}
+                        className={cn(
+                          "w-full mt-6 py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2",
+                          (!selectedQualification || selectedQualification === 'None')
+                            ? "bg-white/5 border border-white/5 text-slate-600 cursor-not-allowed"
+                            : "bg-primary border border-primary text-white hover:bg-white hover:text-black hover:border-white"
+                        )}
                       >
                         <ShieldAlert className="size-4" />
                         Initialize Ground-Truth Verdict
