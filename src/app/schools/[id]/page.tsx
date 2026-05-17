@@ -295,7 +295,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     fetchBriefing();
   }, [school?.id, locationData?.id, activeCurrencyCode]);
 
-  if (isSchoolLoading) return <SchoolProfileSkeleton />;
+  if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton />;
   if (!school) notFound();
 
   // Data Normalization
