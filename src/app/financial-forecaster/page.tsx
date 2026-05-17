@@ -265,6 +265,13 @@ function DecoderContent() {
     return { inspectContent, surplusPara, safetyPara, schoolContext };
   }, [activeSchool, analysis, currency, settings.familyStatus]);
 
+  const cachedBriefingText = useMemo(() => {
+    if (!activeSchool) return null;
+    const cachedMap = activeSchool.cachedBriefings || {};
+    const briefObj = cachedMap[currency] || activeSchool.cachedBriefing;
+    return briefObj?.briefing || null;
+  }, [activeSchool, currency]);
+
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
 
@@ -703,18 +710,45 @@ function DecoderContent() {
                 </div>
 
                 {leopardfishReview && (
-                  <div className="mt-8 p-6 bg-white/[0.02] border border-white/5 rounded-sm shadow-sm">
-                    <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
-                      <FileText className="size-4" /> Leopardfish review
-                    </h4>
-                    <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
-                      {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
-                        <p key={`para-explicit-${i}`}>{para.trim()}</p>
-                      ))}
-                      <p>{leopardfishReview.surplusPara}</p>
-                      <p>{leopardfishReview.safetyPara}</p>
-                      <p className="text-slate-500 text-[10px] uppercase tracking-widest">{leopardfishReview.schoolContext}</p>
+                  <div className="mt-8 p-6 bg-white/[0.02] border border-white/5 rounded-sm shadow-sm space-y-6">
+                    <div>
+                      <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
+                        <FileText className="size-4" /> Leopardfish review
+                      </h4>
+                      <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
+                        {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
+                          <p key={`para-explicit-${i}`}>{para.trim()}</p>
+                        ))}
+                        <p>{leopardfishReview.surplusPara}</p>
+                        <p>{leopardfishReview.safetyPara}</p>
+                        <p className="text-slate-500 text-[10px] uppercase tracking-widest">{leopardfishReview.schoolContext}</p>
+                      </div>
                     </div>
+
+                    {/* 🛰️ PREMIUM DYNAMIC BRIEFING NARRATIVE */}
+                    {cachedBriefingText ? (
+                      <div className="pt-6 border-t border-white/5 space-y-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-black text-[#f97316] uppercase tracking-[0.15em] bg-[#f97316]/10 px-2 py-0.5 rounded-sm border border-[#f97316]/20 flex items-center gap-1">
+                            <Zap className="size-2.5" /> Premium Intelligence Dossier
+                          </span>
+                        </div>
+                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-sky-500/30 pl-4 italic">
+                          {cachedBriefingText.split('\n\n').map((para: string, i: number) => (
+                            <p key={`briefing-para-${i}`}>{para.trim()}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="pt-6 border-t border-white/5">
+                        <button
+                          onClick={() => router.push(`/schools/${activeSchool.id}`)}
+                          className="text-[10px] font-black text-sky-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-sky-500/5 hover:bg-sky-500/10 border border-sky-500/10 hover:border-sky-500/40 px-3 py-2 rounded-sm"
+                        >
+                          <Zap className="size-3 text-[#f97316] animate-pulse" /> Trigger premium AI briefing compilation
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
