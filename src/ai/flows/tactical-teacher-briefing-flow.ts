@@ -37,6 +37,12 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     - The Colleague: ${input.userProfile.age} years old, ${input.userProfile.familyStatus} status, spouse working: ${input.userProfile.spouseWorking}.
     - Active Currency: ${activeCurrency} (All values in your advice must be converted and displayed using ${activeCurrency}!)
 
+    CRITICAL GROUND-TRUTH DATABASE CONCURRENCE DIRECTIVE:
+    - You MUST treat the provided School Data and Cost of Living database context as the absolute, non-negotiable ground-truth for all numbers, salaries, rents, cost indices, and benefits.
+    - PRIORITISE these database values strictly over any general, pre-trained knowledge, assumptions, or external estimates you may hold about ${input.schoolName} or its city.
+    - Strictly avoid hallucinating, inventing, or guessing any rent costs, grocery values, utility bills, tuition benefits, or tax metrics. Every financial reference in the narrative MUST perfectly concur with and be derived from the provided database context.
+    - If a specific cost is explicitly detailed in the Cost of Living data, you must reference that database value.
+
     IMPORTANT DYNAMIC CURRENCY DIRECTIVE:
     - You MUST write ALL financial references, salaries, rents, cost of living numbers, and savings values in the narrative in ${activeCurrency} currency.
     - The raw data is in USD. To convert any USD value to ${activeCurrency}, multiply it by the exchange rate of ${rate} (e.g. convertedAmount = usdValue * ${rate}).
