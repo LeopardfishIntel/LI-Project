@@ -860,7 +860,7 @@ function DecoderContent() {
                     */}
                     <div>
                       <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
-                        <FileText className="size-4" /> Leopardfish review
+                        <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
                       </h4>
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
                         
@@ -892,7 +892,6 @@ function DecoderContent() {
                                 <div className="flex items-center gap-2.5">
                                   <Activity className="size-4 text-[#f97316]" />
                                   <div>
-                                    <p className="font-black uppercase tracking-wider text-slate-300">Staff Turnover Guide</p>
                                     <p className="text-[10px] text-slate-400 font-medium">
                                       Category:{" "}
                                       <span className={cn(
