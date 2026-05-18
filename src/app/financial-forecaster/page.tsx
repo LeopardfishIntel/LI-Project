@@ -3,8 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
-  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
-  Copy, Check
+  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -22,15 +21,13 @@ const RATES: Record<string, number> = {
 };
 
 const STABILITY_PROMPT = `You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
-
-[INPUT DATA LAYOUT]
+||[INPUT DATA LAYOUT]
 You will be provided a JSON payload containing the profile details and raw TES job posting history for a batch of schools. The data for each school follows this format:
 - schoolId: Unique identifier
 - schoolName: Name of the institution
 - estimatedStaffBase: Total number of academic staff
 - rawJobPostings: Array of jobs posted over the last 12 months (includes jobTitle, postDate)
-
-[ANALYTICAL INSTRUCTIONS & FORMULAS]
+||[ANALYTICAL INSTRUCTIONS & FORMULAS]
 For each school in the input payload, compute the following metrics exactly:
 1. averageYearlyTesAdverts: The total count of unique listings in the rawJobPostings array.
 2. estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
@@ -41,8 +38,7 @@ For each school in the input payload, compute the following metrics exactly:
    - "Healthy" if Churn 10% - 15% and Urgency is Low/Moderate.
    - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
    - "High Risk" if Churn > 22% or Urgency is Extreme.
-
-[GENKIT DATA STRUCTURE MANDATE]
+||[GENKIT DATA STRUCTURE MANDATE]
 Output a valid JSON array matching this exact schema:
 
 import { z } from 'genkit';
@@ -99,7 +95,6 @@ function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
-  const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [settings, setSettings] = useState({
     country: "",
     schoolId: "",
@@ -299,7 +294,7 @@ function DecoderContent() {
 
   const leopardfishReview = useMemo(() => {
     if (!activeSchool || !analysis) return null;
-    const inspectContent = activeSchool.inspect || "";
+    const inspectContent = STABILITY_PROMPT;
     const surplusPara = analysis.surplus > 0
       ? `Analysis of your ${settings.familyStatus.toLowerCase()} profile indicates a healthy monthly surplus of ${currency} ${Math.round(analysis.surplus).toLocaleString()}. This reflects a ${analysis.rateOfSaving}% saving potential after all core outgoings are accounted for.`
       : `Based on the provided salary and the current cost of living for a ${settings.familyStatus.toLowerCase()} profile, there is a projected monthly deficit of ${currency} ${Math.abs(Math.round(analysis.surplus)).toLocaleString()}. This may require a review of local housing options or additional allowance negotiations.`;
@@ -854,8 +849,8 @@ function DecoderContent() {
                         <FileText className="size-4" /> Leopardfish review
                       </h4>
                       <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
-                        {STABILITY_PROMPT.split('\n\n').map((para: string, i: number) => (
-                          <p key={`para-explicit-${i}`} className="whitespace-pre-wrap">{para.trim()}</p>
+                        {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
+                          <p key={`para-explicit-${i}`}>{para.trim()}</p>
                         ))}
                         <p>{leopardfishReview.surplusPara}</p>
                         <p>{leopardfishReview.safetyPara}</p>
