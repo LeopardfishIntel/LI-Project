@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
-import { rewordDossierBriefing } from './actions';
+import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -20,43 +20,7 @@ const RATES: Record<string, number> = {
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
 };
 
-const STABILITY_PROMPT = `You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
-||[INPUT DATA LAYOUT]
-You will be provided a JSON payload containing the profile details and raw TES job posting history for a batch of schools. The data for each school follows this format:
-- schoolId: Unique identifier
-- schoolName: Name of the institution
-- estimatedStaffBase: Total number of academic staff
-- rawJobPostings: Array of jobs posted over the last 12 months (includes jobTitle, postDate)
-||[ANALYTICAL INSTRUCTIONS & FORMULAS]
-For each school in the input payload, compute the following metrics exactly:
-1. averageYearlyTesAdverts: The total count of unique listings in the rawJobPostings array.
-2. estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
-3. leadershipChurnRatioPercent: Isolate jobs where jobTitle contains keywords like "Head of", "Director", "Coordinator", "Principal", or "Lead". Calculate as (Leadership Vacancies / total unique listings) * 100. Round to 1 decimal place.
-4. lateSeasonUrgencyScore: Analyze postDate values. If multiple core classroom positions have postDate values in April, May, or June, assign "Extreme". If mostly January-March, assign "Moderate". If wrapped up before January, assign "Low".
-5. riskRating: 
-   - "Stable" if Churn < 10% and Urgency is Low.
-   - "Healthy" if Churn 10% - 15% and Urgency is Low/Moderate.
-   - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
-   - "High Risk" if Churn > 22% or Urgency is Extreme.
-||[GENKIT DATA STRUCTURE MANDATE]
-Output a valid JSON array matching this exact schema:
 
-import { z } from 'genkit';
-
-export const GlobalStabilitySchema = z.object({
-  schoolId: z.string(),
-  schoolName: z.string(),
-  metrics: z.object({
-    estimatedStaffBase: z.number(),
-    averageYearlyTesAdverts: z.number(),
-    estimatedChurnRatePercent: z.number(),
-    leadershipChurnRatioPercent: z.number(),
-    lateSeasonUrgencyScore: z.enum(['Low', 'Moderate', 'Extreme']),
-    riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']),
-  }),
-  leopardfishIntelAlert: z.string().description('A concise 2-sentence tactical breakdown of the risks/stabilities discovered.'),
-  lastUpdated: z.string()
-});`;
 
 const BENCHMARKS = [
   { label: "GBP (£)", code: "GBP" },
@@ -116,6 +80,12 @@ function DecoderContent() {
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
   const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
+
+  const [stabilityReport, setStabilityReport] = useState<any>(null);
+  const [isCalculatingStability, setIsCalculatingStability] = useState(false);
+  const [stabilityError, setStabilityError] = useState<string | null>(null);
+
+
   
   // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
   useEffect(() => {
@@ -142,6 +112,55 @@ function DecoderContent() {
   };
 
   const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
+
+  useEffect(() => {
+    if (!activeSchool) {
+      setStabilityReport(null);
+      setStabilityError(null);
+      return;
+    }
+
+    let isSubscribed = true;
+
+    async function loadStability() {
+      setIsCalculatingStability(true);
+      setStabilityError(null);
+      try {
+        const staffBaseVal = activeSchool.numericalstaff || parseInt(activeSchool.staffcount) || 80;
+        const res = await getSchoolStabilityReport({
+          schoolId: activeSchool.id,
+          schoolName: activeSchool.schoolname || activeSchool.school || activeSchool.name,
+          estimatedStaffBase: staffBaseVal,
+          curriculum: activeSchool.curriculum,
+          city: activeSchool.city,
+          country: activeSchool.country,
+          inspections: activeSchool.inspect || activeSchool.accreditation,
+        });
+
+        if (isSubscribed) {
+          if (res.error) {
+            setStabilityError(res.error);
+          } else {
+            setStabilityReport(res.data);
+          }
+        }
+      } catch (err: any) {
+        if (isSubscribed) {
+          setStabilityError(err.message || "Failed to contact stability engine.");
+        }
+      } finally {
+        if (isSubscribed) {
+          setIsCalculatingStability(false);
+        }
+      }
+    }
+
+    loadStability();
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [activeSchool?.id]);
 
   const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
@@ -294,7 +313,6 @@ function DecoderContent() {
 
   const leopardfishReview = useMemo(() => {
     if (!activeSchool || !analysis) return null;
-    const inspectContent = STABILITY_PROMPT;
     const surplusPara = analysis.surplus > 0
       ? `Analysis of your ${settings.familyStatus.toLowerCase()} profile indicates a healthy monthly surplus of ${currency} ${Math.round(analysis.surplus).toLocaleString()}. This reflects a ${analysis.rateOfSaving}% saving potential after all core outgoings are accounted for.`
       : `Based on the provided salary and the current cost of living for a ${settings.familyStatus.toLowerCase()} profile, there is a projected monthly deficit of ${currency} ${Math.abs(Math.round(analysis.surplus)).toLocaleString()}. This may require a review of local housing options or additional allowance negotiations.`;
@@ -305,7 +323,7 @@ function DecoderContent() {
 
     const schoolContext = `With a work/life score of ${activeSchool.worklifescore || 'N/A'} and an academic score of ${activeSchool.academicscore || 'N/A'}, this school offers a ${activeSchool.curriculum} framework. The data used for this review has a reliability rating of ${analysis.reliability}/10.`;
 
-    return { inspectContent, surplusPara, safetyPara, schoolContext };
+    return { surplusPara, safetyPara, schoolContext };
   }, [activeSchool, analysis, currency, settings.familyStatus]);
 
   const cachedBriefingText = useMemo(() => {
@@ -848,13 +866,87 @@ function DecoderContent() {
                       <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
                         <FileText className="size-4" /> Leopardfish review
                       </h4>
-                      <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
-                        {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
-                          <p key={`para-explicit-${i}`} className="whitespace-pre-wrap">{para.trim()}</p>
-                        ))}
-                        <p>{leopardfishReview.surplusPara}</p>
-                        <p>{leopardfishReview.safetyPara}</p>
-                        <p className="text-slate-500 text-[10px] uppercase tracking-widest">{leopardfishReview.schoolContext}</p>
+                      <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
+                        
+                        {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
+                        <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Stability Audit</span>
+                            {isCalculatingStability && (
+                              <span className="text-[9px] font-bold text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
+                                <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
+                                Running AI Ledger Analysis...
+                              </span>
+                            )}
+                          </div>
+
+                          {isCalculatingStability ? (
+                            <div className="space-y-2 py-2">
+                              <div className="h-3 bg-white/5 rounded-sm w-3/4 animate-pulse" />
+                              <div className="h-3 bg-white/5 rounded-sm w-1/2 animate-pulse" />
+                              <div className="h-10 bg-white/5 rounded-sm animate-pulse" />
+                            </div>
+                          ) : stabilityError ? (
+                            <div className="text-red-400 text-xs font-semibold">
+                              ⚠️ Stability engine offline: {stabilityError}
+                            </div>
+                          ) : stabilityReport ? (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est Staff Numbers</div>
+                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase}</div>
+                                </div>
+                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Known Adverts in the last 12 months</div>
+                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.averageYearlyTesAdverts}</div>
+                                </div>
+                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est. 12m Churn Rate</div>
+                                  <div className="text-sm font-black text-sky-400 mt-0.5">{stabilityReport.metrics.estimatedChurnRatePercent}%</div>
+                                </div>
+                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Leadership Churn</div>
+                                  <div className="text-sm font-black text-amber-400 mt-0.5">{stabilityReport.metrics.leadershipChurnRatioPercent}%</div>
+                                </div>
+                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-2 sm:col-span-2">
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
+                                  {(() => {
+                                    const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore || '';
+                                    const normalizedScore = 
+                                      (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
+                                      (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
+                                      (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
+                                      rawScore;
+                                    
+                                    return (
+                                      <div className={cn(
+                                        "text-xs font-black mt-1 uppercase",
+                                        normalizedScore === 'Proactive' && "text-green-400",
+                                        normalizedScore === 'Standard' && "text-amber-400",
+                                        normalizedScore === 'Reactive' && "text-red-400"
+                                      )}>
+                                        {normalizedScore}
+                                      </div>
+                                    );
+                                  })()}
+                                </div>
+                              </div>
+                              <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm">
+                                <p className="text-xs text-slate-300 font-medium italic">
+                                  "{stabilityReport.leopardfishIntelAlert}"
+                                </p>
+                                <p className="text-[11px] text-slate-400 mt-2 font-normal border-t border-[#f97316]/10 pt-2 leading-relaxed">
+                                  This analysis is mapped from known job advertisements published across the academic cycle on portals such as TES, Schrole, and Search Associates. It gives us a proper staffroom pulse of the school's recruiting pace, though keep in mind it could equally signal programme expansion, new department wings, or curriculum broadening rather than purely staff turnover.
+                                </p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-slate-500 text-xs font-semibold">
+                              Select a school to audit stability metrics.
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
