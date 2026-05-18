@@ -1282,7 +1282,7 @@ function DecoderContent() {
                                   "{stabilityReport.leopardfishIntelAlert}"
                                 </p>
                                 <p className="text-[11px] text-slate-400 mt-2 font-normal border-t border-[#f97316]/10 pt-2 leading-relaxed">
-                                  This data is based on known job advertisements over the school year on sites such as TES, Schrole, Search Associates, and Guardian Jobs. It provides a realistic staffroom pulse of the school's recruiting pace. Keep in mind that active recruitment can reflect positive school growth, curriculum expansion, or the development of new specialized departments; however, it can also point to high staff turnover driven by leadership restructuring, workload pressures, or teacher dissatisfaction.
+                                  This data is based on known job advertisements over the school year indexed across more than 24 key recruitment channels—including major international portals (TES, Schrole, Search Associates), global agencies, regional expat boards, international school networks, and direct school web portals. It provides a realistic staffroom pulse of the school's recruiting pace. Keep in mind that active recruitment can reflect positive school growth, curriculum expansion, or the development of new specialized departments; however, it can also point to high staff turnover driven by leadership restructuring, workload pressures, or teacher dissatisfaction.
                                 </p>
                               </div>
                             </div>
