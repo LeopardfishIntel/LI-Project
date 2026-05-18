@@ -324,6 +324,12 @@ function DecoderContent() {
   }, [activeSchool, currency]);
 
   useEffect(() => {
+    // 🛡️ SEQUENTIAL LOADING MANDATE:
+    // Only trigger Staffroom Vibe & Dossier Intel rewording AFTER the Leopardfish Intel (stabilityReport) has finished loading.
+    if (!stabilityReport || isCalculatingStability) {
+      return;
+    }
+
     if (!cachedBriefingText || !activeSchool) {
       setRewordedBriefingText(null);
       setLastRewordedSource("");
@@ -369,7 +375,7 @@ function DecoderContent() {
     return () => {
       active = false;
     };
-  }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource]);
+  }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource, stabilityReport, isCalculatingStability]);
 
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
@@ -829,7 +835,7 @@ function DecoderContent() {
                       5. riskRating: 
                          - "Stable" if Churn < 10% and Urgency is Low.
                          - "Healthy" if Churn 10% - 15% and Urgency is Low/Moderate.
-                         - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
+                         - "Caution" if Churn 15.1% - 22% or Senior Leadership Churn > 25%.
                          - "High Risk" if Churn > 22% or Urgency is Extreme.
 
                       [GENKIT DATA STRUCTURE MANDATE]
@@ -965,7 +971,7 @@ function DecoderContent() {
                                   </div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Leadership Churn</div>
+                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Senior Leadership Churn</div>
                                   <div className="text-sm font-black text-amber-400 mt-0.5">
                                     {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
                                   </div>
