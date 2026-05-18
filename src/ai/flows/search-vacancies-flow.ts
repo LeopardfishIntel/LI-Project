@@ -32,12 +32,13 @@ export const searchVacanciesFlow = getAI().defineFlow(
   },
   async input => {
     const ai = getAI();
-    const promptText = `Find and verify the exact number of distinct, publicly advertised job vacancies for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} over the last 12 months.
+    const promptText = `Find and verify the exact number of distinct, publicly advertised job vacancies for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} published exactly within the last 12 months (since May 2025).
 Search & Verification Constraints:
-1. Search across TES, Schrole, and the school’s direct HR portal.
-2. Filter out local support staff (e.g., coaches, drivers, admin, tech support). Only count academic teaching and leadership roles.
-3. Ignore date bugs (do not mistake a start date like "17 August" for 17 vacancies). 
-4. Do not confuse the target school with similarly named schools or sister campuses.
+1. Search across all major international school recruitment portals: TES, Schrole, Search Associates, TeacherHorizons, Guardian Jobs, and the school’s direct HR/Careers portal.
+2. Filter out local support staff (e.g., coaches, drivers, admin, tech support, gardeners). Only count academic teaching and leadership roles.
+3. Strict 12-Month Filter: Calculate publication dates relative to today's date (May 18, 2026). Strictly ignore and filter out any historical or archived listings published prior to May 2025.
+4. Ignore date bugs (do not mistake a start date like "17 August" for 17 vacancies). 
+5. Do not confuse the target school with similarly named schools or sister campuses.
 
 Return a JSON object conforming exactly to this structure:
 {
