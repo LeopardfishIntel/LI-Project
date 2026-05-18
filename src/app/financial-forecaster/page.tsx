@@ -892,6 +892,63 @@ function DecoderContent() {
                             </div>
                           ) : stabilityReport ? (
                             <div className="space-y-4">
+                              {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
+                              <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                                <div className="flex items-center gap-2.5">
+                                  <Activity className="size-4 text-[#f97316]" />
+                                  <div>
+                                    <p className="font-black uppercase tracking-wider text-slate-300">Staff Turnover Guide</p>
+                                    <p className="text-[10px] text-slate-400 font-medium">
+                                      Category:{" "}
+                                      <span className={cn(
+                                        "font-black uppercase",
+                                        stabilityReport.metrics.estimatedChurnRatePercent == null && "text-slate-400",
+                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent < 10 && "text-emerald-400",
+                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent >= 10 && stabilityReport.metrics.estimatedChurnRatePercent <= 15 && "text-green-400",
+                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent > 15 && stabilityReport.metrics.estimatedChurnRatePercent <= 22 && "text-amber-400",
+                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent > 22 && "text-rose-400"
+                                      )}>
+                                        {(() => {
+                                          const rate = stabilityReport.metrics.estimatedChurnRatePercent;
+                                          if (rate == null) return "None found";
+                                          if (rate < 10) return "Low Turnover (Stable)";
+                                          if (rate <= 15) return "Moderate Turnover (Healthy)";
+                                          if (rate <= 22) return "Elevated Turnover (Caution)";
+                                          return "High Turnover (Significant Churn)";
+                                        })()}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 self-start sm:self-center">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-black uppercase text-[9px] text-sky-400 transition-all hover:text-white">
+                                        <Info className="size-3" /> Implications & Impact
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" className="max-w-sm bg-slate-900 border border-white/10 text-white p-3 space-y-2 rounded-sm shadow-xl z-50">
+                                      <p className="text-[10px] font-black uppercase tracking-wider text-sky-400 border-b border-white/10 pb-1">Implications & Impact</p>
+                                      <ul className="space-y-1.5 text-[10px] leading-relaxed text-slate-300 font-medium">
+                                        <li>
+                                          <span className="font-black text-emerald-400">Low (&lt;10%):</span> Outstanding retention. Indicates a settled staffroom, stable SLT support, and high satisfaction.
+                                        </li>
+                                        <li>
+                                          <span className="font-black text-green-400">Moderate (10-15%):</span> Standard lifecycle. Natural international transition at the end of standard 2-year contracts.
+                                        </li>
+                                        <li>
+                                          <span className="font-black text-amber-400">Elevated (15-22%):</span> Active transition. Likely department shuffles, leadership restructure, or shifting timetables.
+                                        </li>
+                                        <li>
+                                          <span className="font-black text-rose-400">High (&gt;22%):</span> Significant churn. Points to heavy workloads, leadership churn, or structural instability.
+                                        </li>
+                                      </ul>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              </div>
+
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est Staff Numbers</div>
