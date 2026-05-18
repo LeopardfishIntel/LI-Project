@@ -35,7 +35,9 @@ export const searchVacanciesFlow = getAI().defineFlow(
     const promptText = `Find and verify the exact number of distinct, publicly advertised job vacancies for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} published exactly within the last 12 months (since May 2025).
 Search & Verification Constraints:
 1. Search across all major international school recruitment portals: TES, Schrole, Search Associates, TeacherHorizons, Guardian Jobs, and the school’s direct HR/Careers portal.
-2. Filter out local support staff (e.g., coaches, drivers, admin, tech support, gardeners). Only count academic teaching and leadership roles.
+2. Target Roles (Teaching, Support, & Leadership):
+   - MUST INCLUDE: All classroom teachers (primary & secondary), specialized subject teachers (e.g., Performing Arts), Senior & Middle Leadership, Head of Student Support / SENCOs, Learning Support Teachers, EAL (English as an Additional Language) Specialists, and Careers/University Advisors.
+   - MUST EXCLUDE: Non-academic local support staff (e.g., bus drivers, building caretakers, gardeners, office receptionists, finance clerks, IT tech support, sports-only coaches).
 3. Strict 12-Month Filter: Calculate publication dates relative to today's date (May 18, 2026). Strictly ignore and filter out any historical or archived listings published prior to May 2025.
 4. Ignore date bugs (do not mistake a start date like "17 August" for 17 vacancies). 
 5. Do not confuse the target school with similarly named schools or sister campuses.
