@@ -14,7 +14,9 @@ export const GlobalStabilitySchema = z.object({
     riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']).nullable().optional(),
   }),
   leopardfishIntelAlert: z.string().describe('A concise 2-sentence tactical breakdown of the risks/stabilities discovered.'),
-  lastUpdated: z.string()
+  lastUpdated: z.string(),
+  scrapedJobsList: z.array(z.string()).optional(),
+  lastScrapedAt: z.string().optional()
 });
 
 export type GlobalStabilityResult = z.infer<typeof GlobalStabilitySchema>;

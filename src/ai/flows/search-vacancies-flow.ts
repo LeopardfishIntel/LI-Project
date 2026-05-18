@@ -1,0 +1,77 @@
+'use server';
+
+import { getAI } from "@/ai/genkit";
+import { z } from "zod";
+
+const SearchVacanciesInputSchema = z.object({
+  schoolName: z.string(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+});
+
+const SearchVacanciesOutputSchema = z.object({
+  scrapedJobsCount: z.number(),
+  scrapedJobsList: z.array(z.string()),
+});
+
+export type SearchVacanciesResult = z.infer<typeof SearchVacanciesOutputSchema>;
+
+export async function searchVacancies(input: {
+  schoolName: string;
+  city?: string;
+  country?: string;
+}): Promise<SearchVacanciesResult> {
+  return searchVacanciesFlow(input);
+}
+
+export const searchVacanciesFlow = getAI().defineFlow(
+  {
+    name: "searchVacanciesFlow",
+    inputSchema: SearchVacanciesInputSchema,
+    outputSchema: SearchVacanciesOutputSchema,
+  },
+  async input => {
+    const ai = getAI();
+    const promptText = `Find and verify the exact number of distinct, publicly advertised job vacancies for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} over the last 12 months.
+Search & Verification Constraints:
+1. Search across TES, Schrole, and the school’s direct HR portal.
+2. Filter out local support staff (e.g., coaches, drivers, admin, tech support). Only count academic teaching and leadership roles.
+3. Ignore date bugs (do not mistake a start date like "17 August" for 17 vacancies). 
+4. Do not confuse the target school with similarly named schools or sister campuses.
+
+Return a JSON object conforming exactly to this structure:
+{
+  "scrapedJobsCount": number, // the exact count of distinct verified teaching/leadership vacancies
+  "scrapedJobsList": string[] // a list of strings representing each unique vacancy found, e.g. ["Teacher of Maths (Aug 2026)", "Head of Lower Prep"]
+}`;
+
+    const response = await ai.generate({
+      model: "googleai/gemini-2.5-flash",
+      prompt: promptText,
+      config: {
+        tools: [{ googleSearch: {} } as any],
+        responseMimeType: "application/json",
+      }
+    });
+
+    let cleanText = response.text.trim();
+    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      cleanText = jsonMatch[0];
+    }
+
+    try {
+      const result = JSON.parse(cleanText);
+      return {
+        scrapedJobsCount: typeof result.scrapedJobsCount === "number" ? result.scrapedJobsCount : 0,
+        scrapedJobsList: Array.isArray(result.scrapedJobsList) ? result.scrapedJobsList.map(String) : [],
+      };
+    } catch (e) {
+      console.error("Failed to parse vacancies search JSON response:", response.text, e);
+      return {
+        scrapedJobsCount: 0,
+        scrapedJobsList: [],
+      };
+    }
+  }
+);

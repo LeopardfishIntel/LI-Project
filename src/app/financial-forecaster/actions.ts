@@ -102,14 +102,15 @@ export async function getSchoolStabilityReport(input: {
     city?: string;
     country?: string;
     inspections?: string;
+    forceRefresh?: boolean;
 }): Promise<{ data: any | null; error: string | null; }> {
     try {
         if (!input.schoolId) {
             throw new Error("Missing school identifier.");
         }
 
-        // 1. Check in-memory server cache first for super-fast retrieval
-        if (stabilityMemoryCache.has(input.schoolId)) {
+        // 1. If not forcing a refresh, check in-memory server cache first
+        if (!input.forceRefresh && stabilityMemoryCache.has(input.schoolId)) {
             console.log(`🛸 [STABILITY ENGINE] Returning in-memory cached stability report for ${input.schoolName}`);
             return { data: stabilityMemoryCache.get(input.schoolId), error: null };
         }
@@ -120,25 +121,81 @@ export async function getSchoolStabilityReport(input: {
         const schoolRef = doc(db, 'schools', input.schoolId);
         let schoolSnap: any = null;
         let scrapedJobsCount: number | null = null;
+        let scrapedJobsList: string[] = [];
+        let lastScrapedAt: string | null = null;
 
-        // 2. Read from Firestore with fallback to proceed even if read has issues
+        // 2. Read from Firestore
         try {
             schoolSnap = await getDoc(schoolRef);
         } catch (readErr) {
             console.warn(`🛸 [STABILITY ENGINE] Firestore read permission/connection limit:`, readErr);
         }
 
+        let needsNewSearch = false;
         if (schoolSnap && schoolSnap.exists()) {
             const data = schoolSnap.data();
-            scrapedJobsCount = data.scrapedJobsCount ?? data.jobAdvertsCount ?? data.scrapedAdverts ?? null;
-            if (data.cachedStability) {
+            scrapedJobsCount = data.scrapedJobsCount !== undefined ? data.scrapedJobsCount : null;
+            scrapedJobsList = Array.isArray(data.scrapedJobsList) ? data.scrapedJobsList : [];
+            lastScrapedAt = data.lastScrapedAt || null;
+
+            // Determine if a new search is required:
+            // - No search has ever run, OR
+            // - Force refresh is requested, OR
+            // - 14 days (two weeks) have passed since the last search
+            if (input.forceRefresh || lastScrapedAt === null || scrapedJobsCount === null) {
+                needsNewSearch = true;
+            } else {
+                const daysElapsed = (Date.now() - new Date(lastScrapedAt).getTime()) / (1000 * 60 * 60 * 24);
+                if (daysElapsed >= 14) {
+                    needsNewSearch = true;
+                }
+            }
+
+            // If we don't need a new search AND we have cached stability report in Firestore:
+            if (!needsNewSearch && data.cachedStability) {
                 console.log(`🛸 [STABILITY ENGINE] Returning Firestore cached stability report for ${input.schoolName}`);
-                stabilityMemoryCache.set(input.schoolId, data.cachedStability);
-                return { data: data.cachedStability, error: null };
+                const cachedReport = {
+                    ...data.cachedStability,
+                    scrapedJobsList,
+                    lastScrapedAt
+                };
+                stabilityMemoryCache.set(input.schoolId, cachedReport);
+                return { data: cachedReport, error: null };
+            }
+        } else {
+            needsNewSearch = true;
+        }
+
+        // 3. Trigger Active AI Search if required!
+        if (needsNewSearch) {
+            console.log(`🛸 [STABILITY ENGINE] Triggering active Google Search vacancies flow for ${input.schoolName}...`);
+            const { searchVacancies } = await import('@/ai/flows/search-vacancies-flow');
+            try {
+                const searchRes = await searchVacancies({
+                    schoolName: input.schoolName,
+                    city: input.city,
+                    country: input.country
+                });
+                scrapedJobsCount = searchRes.scrapedJobsCount;
+                scrapedJobsList = searchRes.scrapedJobsList;
+                lastScrapedAt = new Date().toISOString();
+
+                // Save searched vacancies data back to school Firestore document immediately (reducing future requests!)
+                if (schoolSnap && schoolSnap.exists()) {
+                    await updateDoc(schoolRef, {
+                        scrapedJobsCount,
+                        scrapedJobsList,
+                        lastScrapedAt,
+                        cachedStability: null // invalidate cache to compute stability with new numbers
+                    });
+                    console.log(`🛸 [STABILITY ENGINE] Saved active search results to Firestore for ${input.schoolName}`);
+                }
+            } catch (searchErr) {
+                console.error(`🛸 [STABILITY ENGINE] Active AI search failed; falling back to null/ledger:`, searchErr);
             }
         }
 
-        // 3. Compute fresh report using the AI Genkit Flow
+        // 4. Compute fresh stability report using the AI Genkit Flow
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
         const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
         const report = await calculateStabilityFlow({
@@ -146,10 +203,14 @@ export async function getSchoolStabilityReport(input: {
             scrapedJobsCount
         });
 
-        // 4. Update memory cache immediately
+        // Attach scraped details directly to stability report before caching
+        report.scrapedJobsList = scrapedJobsList;
+        report.lastScrapedAt = lastScrapedAt || undefined;
+
+        // 5. Update memory cache immediately
         stabilityMemoryCache.set(input.schoolId, report);
 
-        // 5. Attempt to update Firestore, catching any permission failures gracefully
+        // 6. Attempt to update Firestore, catching any permission failures gracefully
         try {
             await updateDoc(schoolRef, {
                 cachedStability: report

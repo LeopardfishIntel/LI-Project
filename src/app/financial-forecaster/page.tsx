@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
-  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle
+  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
+  Briefcase, ChevronDown, RefreshCw
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -113,54 +114,43 @@ function DecoderContent() {
 
   const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
 
+  const loadStabilityReport = useCallback(async (force: boolean = false) => {
+    if (!activeSchool) return;
+    setIsCalculatingStability(true);
+    setStabilityError(null);
+    try {
+      const staffBaseVal = activeSchool.numericalstaff || parseInt(activeSchool.staffcount) || 80;
+      const res = await getSchoolStabilityReport({
+        schoolId: activeSchool.id,
+        schoolName: activeSchool.schoolname || activeSchool.school || activeSchool.name,
+        estimatedStaffBase: staffBaseVal,
+        curriculum: activeSchool.curriculum,
+        city: activeSchool.city,
+        country: activeSchool.country,
+        inspections: activeSchool.inspect || activeSchool.accreditation,
+        forceRefresh: force,
+      });
+
+      if (res.error) {
+        setStabilityError(res.error);
+      } else {
+        setStabilityReport(res.data);
+      }
+    } catch (err: any) {
+      setStabilityError(err.message || "Failed to contact stability engine.");
+    } finally {
+      setIsCalculatingStability(false);
+    }
+  }, [activeSchool]);
+
   useEffect(() => {
     if (!activeSchool) {
       setStabilityReport(null);
       setStabilityError(null);
       return;
     }
-
-    let isSubscribed = true;
-
-    async function loadStability() {
-      setIsCalculatingStability(true);
-      setStabilityError(null);
-      try {
-        const staffBaseVal = activeSchool.numericalstaff || parseInt(activeSchool.staffcount) || 80;
-        const res = await getSchoolStabilityReport({
-          schoolId: activeSchool.id,
-          schoolName: activeSchool.schoolname || activeSchool.school || activeSchool.name,
-          estimatedStaffBase: staffBaseVal,
-          curriculum: activeSchool.curriculum,
-          city: activeSchool.city,
-          country: activeSchool.country,
-          inspections: activeSchool.inspect || activeSchool.accreditation,
-        });
-
-        if (isSubscribed) {
-          if (res.error) {
-            setStabilityError(res.error);
-          } else {
-            setStabilityReport(res.data);
-          }
-        }
-      } catch (err: any) {
-        if (isSubscribed) {
-          setStabilityError(err.message || "Failed to contact stability engine.");
-        }
-      } finally {
-        if (isSubscribed) {
-          setIsCalculatingStability(false);
-        }
-      }
-    }
-
-    loadStability();
-
-    return () => {
-      isSubscribed = false;
-    };
-  }, [activeSchool?.id]);
+    loadStabilityReport(false);
+  }, [activeSchool?.id, loadStabilityReport]);
 
   const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
@@ -945,6 +935,15 @@ function DecoderContent() {
                                       </ul>
                                     </TooltipContent>
                                   </Tooltip>
+
+                                  <button
+                                    onClick={() => loadStabilityReport(true)}
+                                    disabled={isCalculatingStability}
+                                    type="button"
+                                    className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f97316]/10 hover:bg-[#f97316]/20 border border-[#f97316]/30 hover:border-[#f97316]/50 rounded-sm font-black uppercase text-[9px] text-[#f97316] transition-all hover:text-white disabled:opacity-50"
+                                  >
+                                    <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> Re-verify vacancies
+                                  </button>
                                 </div>
                               </div>
 
@@ -997,6 +996,37 @@ function DecoderContent() {
                                   })()}
                                 </div>
                               </div>
+
+                              {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
+                              {stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
+                                <div className="border border-white/5 bg-black/10 rounded-sm">
+                                  <details className="group">
+                                    <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
+                                      <span className="flex items-center gap-1.5">
+                                        <Briefcase className="size-3 text-[#f97316]" />
+                                        View Discovered Vacancies ({stabilityReport.scrapedJobsList.length})
+                                      </span>
+                                      <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
+                                    </summary>
+                                    <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300">
+                                        {stabilityReport.scrapedJobsList.map((job: string, idx: number) => (
+                                          <div key={idx} className="flex items-center gap-2 p-1.5 bg-white/5 border border-white/5 rounded-sm">
+                                            <span className="text-[#f97316] font-bold">{idx + 1}.</span>
+                                            <span className="font-semibold">{job}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      {stabilityReport.lastScrapedAt && (
+                                        <p className="text-[9px] text-slate-500 font-medium text-right pt-1">
+                                          Last verified via active search: {new Date(stabilityReport.lastScrapedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </details>
+                                </div>
+                              )}
+
                               <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm">
                                 <p className="text-xs text-slate-300 font-medium italic">
                                   "{stabilityReport.leopardfishIntelAlert}"
