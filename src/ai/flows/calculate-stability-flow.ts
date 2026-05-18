@@ -75,7 +75,7 @@ export async function calculateStabilityFlow(
     - If and ONLY if a positive Hard Data Scraped Jobs Count is provided (representing a real AI search or cached search), you can use that number for averageYearlyTesAdverts and calculate the metrics accordingly:
       - estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
       - leadershipChurnRatioPercent: If leadership counts are known or estimated from the hard data, calculate it. Otherwise return 0 or null.
-      - lateSeasonUrgencyScore: If late-season data is available, assign "Proactive", "Standard", or "Reactive". Otherwise return "Standard" or null.
+      - lateSeasonUrgencyScore: Strictly assign one of "Proactive", "Standard", or "Reactive" based on recruitment pattern and vacancy distribution. Do not return null if vacancies exist.
       - riskRating: Assign "Stable", "Healthy", "Caution", or "High Risk" based on the hard data. If no hard data is found, set it to "Stable" or null.
 
 2. Return the calculated stability metrics, the short 2-sentence leopardfishIntelAlert explaining the discovery, and metadata.
@@ -97,6 +97,17 @@ export async function calculateStabilityFlow(
     report.metrics.averageYearlyTesAdverts = input.scrapedJobsCount;
     if (input.estimatedStaffBase > 0) {
       report.metrics.estimatedChurnRatePercent = parseFloat(((input.scrapedJobsCount / input.estimatedStaffBase) * 100).toFixed(1));
+    }
+    // 🛡️ Bulletproof Fallback: Ensure lateSeasonUrgencyScore is strictly classified if LLM outputted null
+    if (!report.metrics.lateSeasonUrgencyScore) {
+      const churn = report.metrics.estimatedChurnRatePercent || 0;
+      if (churn < 10) {
+        report.metrics.lateSeasonUrgencyScore = "Proactive";
+      } else if (churn <= 22) {
+        report.metrics.lateSeasonUrgencyScore = "Standard";
+      } else {
+        report.metrics.lateSeasonUrgencyScore = "Reactive";
+      }
     }
   }
 
