@@ -1014,7 +1014,7 @@ function DecoderContent() {
                                       <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
                                     </summary>
                                     <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300">
+                                      <div className="grid grid-cols-1 gap-2 text-slate-300">
                                         {stabilityReport.scrapedJobsList.map((job: string, idx: number) => (
                                           <div key={idx} className="flex items-center gap-2 p-1.5 bg-white/5 border border-white/5 rounded-sm">
                                             <span className="text-[#f97316] font-bold">{idx + 1}.</span>
