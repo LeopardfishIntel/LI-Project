@@ -854,27 +854,9 @@ function DecoderContent() {
                         <FileText className="size-4" /> Leopardfish review
                       </h4>
                       <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
-                        <div className="relative group/prompt mt-2 mb-4 bg-black/40 border border-white/5 p-4 rounded-sm">
-                          <div className="absolute top-2 right-2 z-10 opacity-60 group-hover/prompt:opacity-100 transition-opacity">
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(STABILITY_PROMPT);
-                                setCopiedPrompt(true);
-                                setTimeout(() => setCopiedPrompt(false), 2000);
-                              }}
-                              className="p-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm text-slate-400 hover:text-white transition-colors"
-                              title="Copy prompt"
-                            >
-                              {copiedPrompt ? <Check className="size-3.5 text-green-400" /> : <Copy className="size-3.5" />}
-                            </button>
-                          </div>
-                          <p className="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-2 flex items-center gap-1.5">
-                            <ShieldCheck className="size-3.5 text-[#f97316]" /> The Global Stability Auditor Prompt
-                          </p>
-                          <pre className="text-[10px] text-slate-400 font-mono leading-relaxed whitespace-pre-wrap max-h-[220px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
-                            {STABILITY_PROMPT}
-                          </pre>
-                        </div>
+                        {STABILITY_PROMPT.split('\n\n').map((para: string, i: number) => (
+                          <p key={`para-explicit-${i}`} className="whitespace-pre-wrap">{para.trim()}</p>
+                        ))}
                         <p>{leopardfishReview.surplusPara}</p>
                         <p>{leopardfishReview.safetyPara}</p>
                         <p className="text-slate-500 text-[10px] uppercase tracking-widest">{leopardfishReview.schoolContext}</p>
