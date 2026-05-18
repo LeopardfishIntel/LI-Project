@@ -1420,9 +1420,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-5 mx-auto mb-2 text-white transition-transform group-hover:scale-110" />
+                        <BookOpen className="size-5 mx-auto mb-2 text-amber-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Academic</p>
-                        <p className="text-2xl font-black text-white italic leading-none">{activeSchool.academicscore || "---"}</p>
+                        <p className="text-2xl font-black text-amber-400 italic leading-none">{activeSchool.academicscore || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The academic rigour, student attainment levels, and university placement success of the school.</TooltipContent>
