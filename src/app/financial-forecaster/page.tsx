@@ -870,15 +870,14 @@ function DecoderContent() {
                         
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
                         <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Stability Audit</span>
-                            {isCalculatingStability && (
+                          {isCalculatingStability && (
+                            <div className="flex items-center justify-between">
                               <span className="text-[9px] font-bold text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
                                 <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
                                 Running AI Ledger Analysis...
                               </span>
-                            )}
-                          </div>
+                            </div>
+                          )}
 
                           {isCalculatingStability ? (
                             <div className="space-y-2 py-2">
