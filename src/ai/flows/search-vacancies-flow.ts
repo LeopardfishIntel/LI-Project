@@ -30,7 +30,7 @@ export const searchVacanciesFlow = getAI().defineFlow(
     inputSchema: SearchVacanciesInputSchema,
     outputSchema: SearchVacanciesOutputSchema,
   },
-  async input => {
+  async (input: z.infer<typeof SearchVacanciesInputSchema>) => {
     const ai = getAI();
     const promptText = `Find and verify the exact number of distinct, publicly advertised job vacancies for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} published exactly within the last 12 months (since May 2025).
 Search & Verification Constraints:
