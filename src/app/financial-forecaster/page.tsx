@@ -850,7 +850,7 @@ function DecoderContent() {
                       </h4>
                       <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
                         {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
-                          <p key={`para-explicit-${i}`}>{para.trim()}</p>
+                          <p key={`para-explicit-${i}`} className="whitespace-pre-wrap">{para.trim()}</p>
                         ))}
                         <p>{leopardfishReview.surplusPara}</p>
                         <p>{leopardfishReview.safetyPara}</p>
