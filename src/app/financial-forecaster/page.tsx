@@ -1160,7 +1160,7 @@ function DecoderContent() {
                                         )}
                                         {isCalculatingStability 
                                           ? "Sweeping Live Vacancies..." 
-                                          : `View Discovered Vacancies (${stabilityReport?.scrapedJobsList?.length || 0})`}
+                                          : `View Discovered Vacancies (12-Month History: ${stabilityReport?.scrapedJobsList?.length || 0})`}
                                       </span>
                                       <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
                                     </summary>
