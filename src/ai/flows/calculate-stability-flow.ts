@@ -81,7 +81,7 @@ export async function calculateStabilityFlow(
 
 2. Return the calculated stability metrics, the short 2-sentence leopardfishIntelAlert explaining the discovery, and metadata.
     - If no hard data is found, explain in the leopardfishIntelAlert that no active job advertisements or recent teacher vacancies were discovered in our AI search for this school, reflecting strong institutional retention.
-    - ⚠️ CRITICAL TONE DIRECTIVE: Keep the leopardfishIntelAlert supportive, warm, and highly constructive. Frame higher annual recruitment volumes or late-season vacancies with kindness—explicitly note that they often reflect positive school growth, curriculum expansion, new specialized departments, class size reductions, or campus development, rather than strictly negative teacher churn.
+    - ⚠️ CRITICAL TONE DIRECTIVE: Keep the leopardfishIntelAlert objective, balanced, and highly constructive. When analyzing higher annual recruitment volumes or late-season vacancies, note that they can reflect positive school growth, curriculum expansion, or new specialized departments, but must also be balanced by acknowledging that they may stem from standard teacher churn, leadership shuffles, workload pressures, or staff dissatisfaction. Provide a fair, multi-faceted staffroom pulse.
 `
   });
 
