@@ -1149,7 +1149,7 @@ function DecoderContent() {
                                 <div className="border border-white/5 bg-black/10 rounded-sm">
                                   <details className="group" open={isCalculatingStability ? true : undefined}>
                                     <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
-                                      <span className="flex items-center gap-1.5">
+                                      <span className="flex items-center gap-2">
                                         {isCalculatingStability ? (
                                           <span className="relative flex h-3.5 w-3.5 items-center justify-center">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/50 opacity-75"></span>
@@ -1158,9 +1158,20 @@ function DecoderContent() {
                                         ) : (
                                           <Briefcase className="size-3 text-[#f97316]" />
                                         )}
-                                        {isCalculatingStability 
-                                          ? "Sweeping Live Vacancies..." 
-                                          : `View Discovered Vacancies (12-Month History: ${stabilityReport?.scrapedJobsList?.length || 0})`}
+                                        {isCalculatingStability ? (
+                                          <span className="text-[10px] font-black uppercase tracking-wider text-[#f97316] animate-pulse">
+                                            Sweeping Live Vacancies...
+                                          </span>
+                                        ) : (
+                                          <span className="flex items-center gap-2.5">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
+                                              View Discovered Vacancies
+                                            </span>
+                                            <span className="px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 text-[8px] font-black uppercase tracking-wider leading-none">
+                                              12-Month History: {stabilityReport?.scrapedJobsList?.length || 0}
+                                            </span>
+                                          </span>
+                                        )}
                                       </span>
                                       <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
                                     </summary>
