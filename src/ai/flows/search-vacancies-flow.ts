@@ -170,7 +170,24 @@ Use targeted queries:
     };
 
     const getNormalizedComparisonKey = (title: string): string => {
-      let key = title.toLowerCase();
+      // 🛡️ Strip all parentheses and their contents first to avoid dynamic date differences ruining deduplication!
+      let key = title.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
+      
+      // Remove target school name substrings if present to allow "Principal" and "Principal, School Name" to align perfectly
+      if (input.schoolName) {
+        const words = input.schoolName.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        for (const word of words) {
+          key = key.replace(new RegExp(word, 'g'), '');
+        }
+      }
+      // Also remove city and country if present
+      if (input.city) {
+        key = key.replace(new RegExp(input.city.toLowerCase(), 'g'), '');
+      }
+      if (input.country) {
+        key = key.replace(new RegExp(input.country.toLowerCase(), 'g'), '');
+      }
+
       // align common month abbreviations
       key = key.replace(/august/g, 'aug');
       key = key.replace(/january/g, 'jan');
