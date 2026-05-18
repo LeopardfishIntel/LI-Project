@@ -764,6 +764,48 @@ function DecoderContent() {
 
                 {leopardfishReview && (
                   <div className="mt-8 p-6 bg-white/[0.02] border border-white/5 rounded-sm shadow-sm space-y-6">
+                    {/*
+                      You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
+
+                      [INPUT DATA LAYOUT]
+                      You will be provided a JSON payload containing the profile details and raw TES job posting history for a batch of schools. The data for each school follows this format:
+                      - schoolId: Unique identifier
+                      - schoolName: Name of the institution
+                      - estimatedStaffBase: Total number of academic staff
+                      - rawJobPostings: Array of jobs posted over the last 12 months (includes jobTitle, postDate)
+
+                      [ANALYTICAL INSTRUCTIONS & FORMULAS]
+                      For each school in the input payload, compute the following metrics exactly:
+                      1. averageYearlyTesAdverts: The total count of unique listings in the rawJobPostings array.
+                      2. estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
+                      3. leadershipChurnRatioPercent: Isolate jobs where jobTitle contains keywords like "Head of", "Director", "Coordinator", "Principal", or "Lead". Calculate as (Leadership Vacancies / total unique listings) * 100. Round to 1 decimal place.
+                      4. lateSeasonUrgencyScore: Analyze postDate values. If multiple core classroom positions have postDate values in April, May, or June, assign "Extreme". If mostly January-March, assign "Moderate". If wrapped up before January, assign "Low".
+                      5. riskRating: 
+                         - "Stable" if Churn < 10% and Urgency is Low.
+                         - "Healthy" if Churn 10% - 15% and Urgency is Low/Moderate.
+                         - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
+                         - "High Risk" if Churn > 22% or Urgency is Extreme.
+
+                      [GENKIT DATA STRUCTURE MANDATE]
+                      Output a valid JSON array matching this exact schema:
+
+                      import { z } from 'genkit';
+
+                      export const GlobalStabilitySchema = z.object({
+                        schoolId: z.string(),
+                        schoolName: z.string(),
+                        metrics: z.object({
+                          estimatedStaffBase: z.number(),
+                          averageYearlyTesAdverts: z.number(),
+                          estimatedChurnRatePercent: z.number(),
+                          leadershipChurnRatioPercent: z.number(),
+                          lateSeasonUrgencyScore: z.enum(['Low', 'Moderate', 'Extreme']),
+                          riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']),
+                        }),
+                        leopardfishIntelAlert: z.string().description('A concise 2-sentence tactical breakdown of the risks/stabilities discovered.'),
+                        lastUpdated: z.string()
+                      });
+                    */}
                     <div>
                       <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
                         <FileText className="size-4" /> Leopardfish review
