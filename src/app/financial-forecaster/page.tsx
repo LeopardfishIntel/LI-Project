@@ -1163,12 +1163,15 @@ function DecoderContent() {
                                             Sweeping Live Vacancies...
                                           </span>
                                         ) : (
-                                          <span className="flex items-center gap-2.5">
+                                          <span className="flex items-center gap-2">
                                             <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
                                               View Discovered Vacancies
                                             </span>
-                                            <span className="px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 text-[8px] font-black uppercase tracking-wider leading-none">
-                                              12-Month History: {stabilityReport?.scrapedJobsList?.length || 0}
+                                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[8px] font-black uppercase tracking-wider leading-none">
+                                              12-Month History
+                                            </span>
+                                            <span className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black leading-none">
+                                              {stabilityReport?.scrapedJobsList?.length || 0}
                                             </span>
                                           </span>
                                         )}
