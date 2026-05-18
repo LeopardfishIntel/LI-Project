@@ -56,6 +56,21 @@ const SALARY_INTEL: Record<string, { has13th: boolean, has14th: boolean, note?: 
 
 const formatCountry = (c: string) => c.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
+const formatDeterministicDate = (isoString: string) => {
+  if (!isoString) return "";
+  try {
+    const parts = isoString.split('T')[0].split('-');
+    if (parts.length !== 3) return "";
+    const [year, monthNum, dayNum] = parts;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[parseInt(monthNum, 10) - 1] || 'Jan';
+    const day = parseInt(dayNum, 10);
+    return `${day} ${month} ${year}`;
+  } catch {
+    return "";
+  }
+};
+
 function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
@@ -1024,7 +1039,7 @@ function DecoderContent() {
                                       </div>
                                       {stabilityReport.lastScrapedAt && (
                                         <p className="text-[9px] text-slate-500 font-medium text-right pt-1">
-                                          Last verified via active search: {new Date(stabilityReport.lastScrapedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                          Last verified via active search: {formatDeterministicDate(stabilityReport.lastScrapedAt)}
                                         </p>
                                       )}
                                     </div>
