@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
-  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle
+  AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
+  Copy, Check
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -19,6 +20,47 @@ const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
 };
+
+const STABILITY_PROMPT = `You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
+
+[INPUT DATA LAYOUT]
+You will be provided a JSON payload containing the profile details and raw TES job posting history for a batch of schools. The data for each school follows this format:
+- schoolId: Unique identifier
+- schoolName: Name of the institution
+- estimatedStaffBase: Total number of academic staff
+- rawJobPostings: Array of jobs posted over the last 12 months (includes jobTitle, postDate)
+
+[ANALYTICAL INSTRUCTIONS & FORMULAS]
+For each school in the input payload, compute the following metrics exactly:
+1. averageYearlyTesAdverts: The total count of unique listings in the rawJobPostings array.
+2. estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
+3. leadershipChurnRatioPercent: Isolate jobs where jobTitle contains keywords like "Head of", "Director", "Coordinator", "Principal", or "Lead". Calculate as (Leadership Vacancies / total unique listings) * 100. Round to 1 decimal place.
+4. lateSeasonUrgencyScore: Analyze postDate values. If multiple core classroom positions have postDate values in April, May, or June, assign "Extreme". If mostly January-March, assign "Moderate". If wrapped up before January, assign "Low".
+5. riskRating: 
+   - "Stable" if Churn < 10% and Urgency is Low.
+   - "Healthy" if Churn 10% - 15% and Urgency is Low/Moderate.
+   - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
+   - "High Risk" if Churn > 22% or Urgency is Extreme.
+
+[GENKIT DATA STRUCTURE MANDATE]
+Output a valid JSON array matching this exact schema:
+
+import { z } from 'genkit';
+
+export const GlobalStabilitySchema = z.object({
+  schoolId: z.string(),
+  schoolName: z.string(),
+  metrics: z.object({
+    estimatedStaffBase: z.number(),
+    averageYearlyTesAdverts: z.number(),
+    estimatedChurnRatePercent: z.number(),
+    leadershipChurnRatioPercent: z.number(),
+    lateSeasonUrgencyScore: z.enum(['Low', 'Moderate', 'Extreme']),
+    riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']),
+  }),
+  leopardfishIntelAlert: z.string().description('A concise 2-sentence tactical breakdown of the risks/stabilities discovered.'),
+  lastUpdated: z.string()
+});`;
 
 const BENCHMARKS = [
   { label: "GBP (£)", code: "GBP" },
@@ -57,6 +99,7 @@ function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
+  const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [settings, setSettings] = useState({
     country: "",
     schoolId: "",
@@ -811,9 +854,27 @@ function DecoderContent() {
                         <FileText className="size-4" /> Leopardfish review
                       </h4>
                       <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
-                        {leopardfishReview.inspectContent.split('||').map((para: string, i: number) => (
-                          <p key={`para-explicit-${i}`}>{para.trim()}</p>
-                        ))}
+                        <div className="relative group/prompt mt-2 mb-4 bg-black/40 border border-white/5 p-4 rounded-sm">
+                          <div className="absolute top-2 right-2 z-10 opacity-60 group-hover/prompt:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(STABILITY_PROMPT);
+                                setCopiedPrompt(true);
+                                setTimeout(() => setCopiedPrompt(false), 2000);
+                              }}
+                              className="p-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm text-slate-400 hover:text-white transition-colors"
+                              title="Copy prompt"
+                            >
+                              {copiedPrompt ? <Check className="size-3.5 text-green-400" /> : <Copy className="size-3.5" />}
+                            </button>
+                          </div>
+                          <p className="text-[10px] font-black uppercase text-sky-400 tracking-widest mb-2 flex items-center gap-1.5">
+                            <ShieldCheck className="size-3.5 text-[#f97316]" /> The Global Stability Auditor Prompt
+                          </p>
+                          <pre className="text-[10px] text-slate-400 font-mono leading-relaxed whitespace-pre-wrap max-h-[220px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10">
+                            {STABILITY_PROMPT}
+                          </pre>
+                        </div>
                         <p>{leopardfishReview.surplusPara}</p>
                         <p>{leopardfishReview.safetyPara}</p>
                         <p className="text-slate-500 text-[10px] uppercase tracking-widest">{leopardfishReview.schoolContext}</p>
