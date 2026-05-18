@@ -975,20 +975,53 @@ function DecoderContent() {
                         
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
                         <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
-                          {isCalculatingStability && (
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] font-bold text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
-                                <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
-                                Running Analysis this may take 1 or 2 mins...
-                              </span>
-                            </div>
-                          )}
-
-                          {isCalculatingStability ? (
-                            <div className="space-y-2 py-2">
+                          
+                          {isCalculatingStability && !stabilityReport ? (
+                            <div className="space-y-3 py-2">
                               <div className="h-3 bg-white/5 rounded-sm w-3/4 animate-pulse" />
                               <div className="h-3 bg-white/5 rounded-sm w-1/2 animate-pulse" />
-                              <div className="h-10 bg-white/5 rounded-sm animate-pulse" />
+                              
+                              {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD (FIRST LOAD) */}
+                              <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40 mt-3">
+                                <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
+                                    <span className="relative flex h-2 w-2">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
+                                    </span>
+                                    Executing Two-Step Vacancy Audit
+                                  </span>
+                                  <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
+                                    AI Portal Verification...
+                                  </span>
+                                </div>
+                                
+                                <div className="space-y-2.5 pt-0.5">
+                                  {/* STEP 1 */}
+                                  <div className="flex items-start gap-2.5">
+                                    <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
+                                      ✓
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
+                                      <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
+                                    </div>
+                                  </div>
+
+                                  {/* STEP 2 */}
+                                  <div className="flex items-start gap-2.5">
+                                    <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
+                                      <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
+                                        Step 2: Active Web Portals Sweep
+                                      </p>
+                                      <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums &amp; school web portals live...</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           ) : stabilityError ? (
                             <div className="text-red-400 text-xs font-semibold">
