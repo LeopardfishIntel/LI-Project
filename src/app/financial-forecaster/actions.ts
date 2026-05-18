@@ -119,6 +119,7 @@ export async function getSchoolStabilityReport(input: {
 
         const schoolRef = doc(db, 'schools', input.schoolId);
         let schoolSnap: any = null;
+        let scrapedJobsCount: number | null = null;
 
         // 2. Read from Firestore with fallback to proceed even if read has issues
         try {
@@ -129,6 +130,7 @@ export async function getSchoolStabilityReport(input: {
 
         if (schoolSnap && schoolSnap.exists()) {
             const data = schoolSnap.data();
+            scrapedJobsCount = data.scrapedJobsCount ?? data.jobAdvertsCount ?? data.scrapedAdverts ?? null;
             if (data.cachedStability) {
                 console.log(`🛸 [STABILITY ENGINE] Returning Firestore cached stability report for ${input.schoolName}`);
                 stabilityMemoryCache.set(input.schoolId, data.cachedStability);
@@ -139,7 +141,10 @@ export async function getSchoolStabilityReport(input: {
         // 3. Compute fresh report using the AI Genkit Flow
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
         const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
-        const report = await calculateStabilityFlow(input);
+        const report = await calculateStabilityFlow({
+            ...input,
+            scrapedJobsCount
+        });
 
         // 4. Update memory cache immediately
         stabilityMemoryCache.set(input.schoolId, report);

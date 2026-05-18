@@ -7,11 +7,11 @@ export const GlobalStabilitySchema = z.object({
   schoolName: z.string(),
   metrics: z.object({
     estimatedStaffBase: z.number(),
-    averageYearlyTesAdverts: z.number(),
-    estimatedChurnRatePercent: z.number(),
-    leadershipChurnRatioPercent: z.number(),
-    lateSeasonUrgencyScore: z.enum(['Proactive', 'Standard', 'Reactive']),
-    riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']),
+    averageYearlyTesAdverts: z.number().nullable().optional(),
+    estimatedChurnRatePercent: z.number().nullable().optional(),
+    leadershipChurnRatioPercent: z.number().nullable().optional(),
+    lateSeasonUrgencyScore: z.enum(['Proactive', 'Standard', 'Reactive']).nullable().optional(),
+    riskRating: z.enum(['Stable', 'Healthy', 'Caution', 'High Risk']).nullable().optional(),
   }),
   leopardfishIntelAlert: z.string().describe('A concise 2-sentence tactical breakdown of the risks/stabilities discovered.'),
   lastUpdated: z.string()
@@ -27,6 +27,7 @@ const CalculateStabilityInputSchema = z.object({
   city: z.string().optional(),
   country: z.string().optional(),
   inspections: z.string().optional(),
+  scrapedJobsCount: z.number().nullable().optional(),
 });
 
 export async function calculateStabilityFlow(
@@ -64,29 +65,39 @@ export async function calculateStabilityFlow(
 - Curriculum: ${input.curriculum || 'Standard International'}
 - Location: ${input.city || 'N/A'}, ${input.country || 'N/A'}
 - Accreditation / Inspections: ${input.inspections || 'N/A'}
+- Hard Data Scraped Jobs Count: ${input.scrapedJobsCount !== undefined && input.scrapedJobsCount !== null ? input.scrapedJobsCount : 'None found'}
 
 [INSTRUCTIONS]
- 1. Since we do not have a pre-existing list of raw job postings for this school in our database, you must first synthesize/simulate a highly realistic, statistically plausible set of 12-month job postings (rawJobPostings array) for this school by drawing carefully upon your deep knowledge of major international teacher recruitment platforms (such as TES, Schrole, Search Associates, and Guardian Jobs) for this specific institution.
-   - You MUST look extremely carefully at typical historical posting volumes on these sites for this specific school. For premium British international schools in the Gulf region like Cheltenham Muscat, they typically advertise between 15 to 18 vacancies annually on portals like TES/Schrole. Ensure your simulated rawJobPostings count reflects this realistic footprint (ideally 15 to 18 listings).
-   - Some job titles must represent classroom teachers (e.g. "Maths Teacher", "English Teacher", "Primary Teacher") with post dates spread realistic across the recruitment cycle (Jan-June).
-   - Include 0 to 3 leadership positions (e.g. "Head of Science", "Coordinator of EYFS", "Secondary Principal") depending on the school's size.
-   - Assign realistic post dates (postDate) in YYYY-MM-DD format (covering the last 12 months, e.g., spread across late-season April/May/June and early-season Jan-March).
+ 1. Strictly check if there is a Hard Data Scraped Jobs Count provided in the school context.
+    - If the Hard Data Scraped Jobs Count is "None found" or is not provided (or is 0), you MUST NOT estimate, simulate, or guess any job postings or average yearly adverts! You MUST set averageYearlyTesAdverts to null, set estimatedChurnRatePercent to null, and set leadershipChurnRatioPercent to null.
+    - If and ONLY if a positive Hard Data Scraped Jobs Count is provided (representing a real AI search or cached search), you can use that number for averageYearlyTesAdverts and calculate the metrics accordingly:
+      - estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
+      - leadershipChurnRatioPercent: If leadership counts are known or estimated from the hard data, calculate it. Otherwise return 0 or null.
+      - lateSeasonUrgencyScore: If late-season data is available, assign "Proactive", "Standard", or "Reactive". Otherwise return "Standard" or null.
+      - riskRating: Assign "Stable", "Healthy", "Caution", or "High Risk" based on the hard data. If no hard data is found, set it to "Stable" or null.
 
-2. Apply the following formulas EXACTLY on your simulated rawJobPostings list:
-   - averageYearlyTesAdverts: The total count of unique listings in the rawJobPostings array.
-   - estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
-   - leadershipChurnRatioPercent: Isolate jobs where jobTitle contains keywords like "Head of", "Director", "Coordinator", "Principal", or "Lead". Calculate as (Leadership Vacancies / total unique listings) * 100. Round to 1 decimal place.
-   - lateSeasonUrgencyScore: Analyze postDate values. If multiple core classroom positions have postDate values in April, May, or June, assign "Reactive". If mostly January-March, assign "Standard". If wrapped up before January, assign "Proactive".
-   - riskRating: 
-     - "Stable" if Churn < 10% and Urgency is Proactive.
-     - "Healthy" if Churn 10% - 15% and Urgency is Proactive/Standard.
-     - "Caution" if Churn 15.1% - 22% or Leadership Churn > 25%.
-     - "High Risk" if Churn > 22% or Urgency is Reactive.
-
-3. Return the calculated stability metrics, the short 2-sentence leopardfishIntelAlert explaining the discovery, and metadata.
-   - ⚠️ CRITICAL TONE DIRECTIVE: Keep the leopardfishIntelAlert supportive, warm, and highly constructive. Frame higher annual recruitment volumes or late-season vacancies with kindness—explicitly note that they often reflect positive school growth, curriculum expansion, new specialized departments, class size reductions, or campus development, rather than strictly negative teacher churn.
+2. Return the calculated stability metrics, the short 2-sentence leopardfishIntelAlert explaining the discovery, and metadata.
+    - If no hard data is found, explain in the leopardfishIntelAlert that no active job advertisements or recent teacher vacancies were discovered in our AI search for this school, reflecting strong institutional retention.
+    - ⚠️ CRITICAL TONE DIRECTIVE: Keep the leopardfishIntelAlert supportive, warm, and highly constructive. Frame higher annual recruitment volumes or late-season vacancies with kindness—explicitly note that they often reflect positive school growth, curriculum expansion, new specialized departments, class size reductions, or campus development, rather than strictly negative teacher churn.
 `
   });
 
-  return response.output as GlobalStabilityResult;
+  const report = response.output as GlobalStabilityResult;
+
+  // 🛡️ PROGRAMMATIC SAFETY UPLINK: Prevent any estimated averages if no hard data exists
+  if (input.scrapedJobsCount === undefined || input.scrapedJobsCount === null) {
+    report.metrics.averageYearlyTesAdverts = null;
+    report.metrics.estimatedChurnRatePercent = null;
+    report.metrics.leadershipChurnRatioPercent = null;
+    report.metrics.lateSeasonUrgencyScore = null;
+    report.metrics.riskRating = "Stable";
+  } else {
+    report.metrics.averageYearlyTesAdverts = input.scrapedJobsCount;
+    if (input.estimatedStaffBase > 0) {
+      report.metrics.estimatedChurnRatePercent = parseFloat(((input.scrapedJobsCount / input.estimatedStaffBase) * 100).toFixed(1));
+    }
+  }
+
+  return report;
 }
+

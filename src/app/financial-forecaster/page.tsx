@@ -895,24 +895,33 @@ function DecoderContent() {
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est Staff Numbers</div>
-                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase}</div>
+                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase || '—'}</div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Known Adverts in the last 12 months</div>
-                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.averageYearlyTesAdverts}</div>
+                                  <div className="text-sm font-black text-white mt-0.5">
+                                    {stabilityReport.metrics.averageYearlyTesAdverts != null ? stabilityReport.metrics.averageYearlyTesAdverts : 'None found'}
+                                  </div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est. 12m Churn Rate</div>
-                                  <div className="text-sm font-black text-sky-400 mt-0.5">{stabilityReport.metrics.estimatedChurnRatePercent}%</div>
+                                  <div className="text-sm font-black text-sky-400 mt-0.5">
+                                    {stabilityReport.metrics.estimatedChurnRatePercent != null ? `${stabilityReport.metrics.estimatedChurnRatePercent}%` : 'None found'}
+                                  </div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Leadership Churn</div>
-                                  <div className="text-sm font-black text-amber-400 mt-0.5">{stabilityReport.metrics.leadershipChurnRatioPercent}%</div>
+                                  <div className="text-sm font-black text-amber-400 mt-0.5">
+                                    {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
+                                  </div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-2 sm:col-span-2">
                                   <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
                                   {(() => {
-                                    const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore || '';
+                                    const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
+                                    if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
+                                      return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
+                                    }
                                     const normalizedScore = 
                                       (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
                                       (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
@@ -937,7 +946,7 @@ function DecoderContent() {
                                   "{stabilityReport.leopardfishIntelAlert}"
                                 </p>
                                 <p className="text-[11px] text-slate-400 mt-2 font-normal border-t border-[#f97316]/10 pt-2 leading-relaxed">
-                                  This analysis is mapped from known job advertisements published across the academic cycle on portals such as TES, Schrole, and Search Associates. It gives us a proper staffroom pulse of the school's recruiting pace, though keep in mind it could equally signal programme expansion, new department wings, or curriculum broadening rather than purely staff turnover.
+                                  This data is based on known job advertisements over the school year on sites such as TES, Schrole, Search Associates, and Guardian Jobs. It gives us a proper staffroom pulse of the school's recruiting pace, though keep in mind it could equally signal programme expansion, new department wings, or curriculum broadening rather than purely staff turnover.
                                 </p>
                               </div>
                             </div>
