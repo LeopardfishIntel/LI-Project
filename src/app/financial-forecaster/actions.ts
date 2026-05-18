@@ -136,7 +136,20 @@ export async function getSchoolStabilityReport(input: {
             const data = schoolSnap.data();
             scrapedJobsCount = data.scrapedJobsCount !== undefined ? data.scrapedJobsCount : null;
             scrapedJobsList = Array.isArray(data.scrapedJobsList) ? data.scrapedJobsList : [];
-            lastScrapedAt = data.lastScrapedAt || null;
+            // Safely parse Firestore Timestamp or Date or string to an ISO string
+            if (data.lastScrapedAt) {
+                if (typeof data.lastScrapedAt.toDate === 'function') {
+                    lastScrapedAt = data.lastScrapedAt.toDate().toISOString();
+                } else if (data.lastScrapedAt.seconds) {
+                    lastScrapedAt = new Date(data.lastScrapedAt.seconds * 1000).toISOString();
+                } else if (data.lastScrapedAt instanceof Date) {
+                    lastScrapedAt = data.lastScrapedAt.toISOString();
+                } else {
+                    lastScrapedAt = String(data.lastScrapedAt);
+                }
+            } else {
+                lastScrapedAt = null;
+            }
 
             // Determine if a new search is required:
             // - No search has ever run, OR
@@ -149,6 +162,55 @@ export async function getSchoolStabilityReport(input: {
                 if (daysElapsed >= 14) {
                     needsNewSearch = true;
                 }
+            }
+
+            // If a new search is required, BUT we have cached stability data and it is NOT a manual force refresh:
+            // return the stale cache immediately and execute the revalidation sweep in the background!
+            if (needsNewSearch && data.cachedStability && !input.forceRefresh) {
+                console.log(`🛸 [STABILITY ENGINE] [SWR] Returning STALE Firestore cached stability report instantly for ${input.schoolName}. Launching background revalidation...`);
+                const cachedReport = {
+                    ...data.cachedStability,
+                    scrapedJobsList,
+                    lastScrapedAt
+                };
+                
+                // Fire background scrape task
+                (async () => {
+                    try {
+                        const { searchVacancies } = await import('@/ai/flows/search-vacancies-flow');
+                        const searchRes = await searchVacancies({
+                            schoolName: input.schoolName,
+                            city: input.city,
+                            country: input.country
+                        });
+                        const freshJobsCount = searchRes.scrapedJobsCount;
+                        const freshJobsList = searchRes.scrapedJobsList;
+                        const freshLastScrapedAt = new Date().toISOString();
+
+                        const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
+                        const freshReport = await calculateStabilityFlow({
+                            ...input,
+                            scrapedJobsCount: freshJobsCount
+                        });
+
+                        freshReport.scrapedJobsList = freshJobsList;
+                        freshReport.lastScrapedAt = freshLastScrapedAt;
+
+                        await updateDoc(schoolRef, {
+                            scrapedJobsCount: freshJobsCount,
+                            scrapedJobsList: freshJobsList,
+                            lastScrapedAt: freshLastScrapedAt,
+                            cachedStability: freshReport
+                        });
+                        stabilityMemoryCache.set(input.schoolId, freshReport);
+                        console.log(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation completed successfully for ${input.schoolName}!`);
+                    } catch (bgErr) {
+                        console.error(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation failed:`, bgErr);
+                    }
+                })();
+
+                stabilityMemoryCache.set(input.schoolId, cachedReport);
+                return { data: cachedReport, error: null };
             }
 
             // If we don't need a new search AND we have cached stability report in Firestore:

@@ -56,11 +56,26 @@ const SALARY_INTEL: Record<string, { has13th: boolean, has14th: boolean, note?: 
 
 const formatCountry = (c: string) => c.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
-const formatDeterministicDate = (isoString: string) => {
-  if (!isoString) return "";
+const formatDeterministicDate = (input: any) => {
+  if (!input) return "";
   try {
-    const parts = isoString.split('T')[0].split('-');
-    if (parts.length !== 3) return "";
+    let dateStr = "";
+    if (typeof input === 'string') {
+      dateStr = input;
+    } else if (input && typeof input.toDate === 'function') {
+      dateStr = input.toDate().toISOString();
+    } else if (input instanceof Date) {
+      dateStr = input.toISOString();
+    } else if (input && typeof input.toISOString === 'function') {
+      dateStr = input.toISOString();
+    } else if (input && typeof input.seconds === 'number') {
+      dateStr = new Date(input.seconds * 1000).toISOString();
+    } else {
+      dateStr = String(input);
+    }
+
+    const parts = dateStr.split('T')[0].split('-');
+    if (parts.length !== 3) return dateStr;
     const [year, monthNum, dayNum] = parts;
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const month = months[parseInt(monthNum, 10) - 1] || 'Jan';
@@ -69,6 +84,74 @@ const formatDeterministicDate = (isoString: string) => {
   } catch {
     return "";
   }
+};
+
+const getJobStatus = (job: string): { status: 'open' | 'closed'; hasDeadline: boolean; label: string } => {
+  const today = new Date("2026-05-18");
+  
+  // Find all parenthetical blocks in the string
+  const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
+  if (parentheticalMatches.length === 0) {
+    return { status: 'open', hasDeadline: false, label: '' };
+  }
+  
+  // Find the parenthetical that contains date/cycle indicators
+  const dateParenthetical = parentheticalMatches.find(m => {
+    const text = m[1].toLowerCase();
+    return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
+  }) || parentheticalMatches[parentheticalMatches.length - 1];
+  
+  const content = dateParenthetical[1];
+  const parts = content.split(';').map(s => s.trim());
+  
+  // 1. Explicit Closes date check
+  const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
+  if (closesPart) {
+    const dateStr = closesPart.replace(/closes:\s*/i, '').trim();
+    const closesDate = new Date(dateStr);
+    if (!isNaN(closesDate.getTime())) {
+      if (closesDate >= today) {
+        return { status: 'open', hasDeadline: true, label: `OPEN (Closes: ${dateStr})` };
+      } else {
+        return { status: 'closed', hasDeadline: true, label: `CLOSED (${dateStr})` };
+      }
+    }
+  }
+  
+  // 2. Explicit Posted date check (assume 4 weeks / 28 days closing window if no closes date)
+  const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
+  if (postedPart) {
+    const dateStr = postedPart.replace(/posted:\s*/i, '').trim();
+    const postedDate = new Date(dateStr);
+    if (!isNaN(postedDate.getTime())) {
+      const closesDate = new Date(postedDate.getTime() + 28 * 24 * 60 * 60 * 1000);
+      const closesDateStr = closesDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      if (closesDate >= today) {
+        return { status: 'open', hasDeadline: true, label: `OPEN (Closes: ${closesDateStr})` };
+      } else {
+        return { status: 'closed', hasDeadline: true, label: `CLOSED (${closesDateStr})` };
+      }
+    }
+  }
+  
+  // 3. Fallback to start cycle month / year heuristics
+  const lower = content.toLowerCase();
+  if (lower.includes('2026/27') || lower.includes('2027')) {
+    return { status: 'open', hasDeadline: false, label: '' };
+  }
+  if (lower.includes('2025')) {
+    return { status: 'closed', hasDeadline: false, label: 'CLOSED' };
+  }
+  if (lower.includes('2026')) {
+    const pastMonths = ['jan', 'feb', 'mar', 'apr', 'january', 'february', 'march', 'april'];
+    const hasPastMonth = pastMonths.some(m => lower.includes(m));
+    if (hasPastMonth) {
+      return { status: 'closed', hasDeadline: false, label: 'CLOSED' };
+    }
+    return { status: 'open', hasDeadline: false, label: '' };
+  }
+  
+  return { status: 'open', hasDeadline: false, label: '' };
 };
 
 function DecoderContent() {
@@ -96,6 +179,7 @@ function DecoderContent() {
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
   const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
+  const [briefingRequested, setBriefingRequested] = useState(false);
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
@@ -111,6 +195,10 @@ function DecoderContent() {
   }, [settings.country]);
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    setBriefingRequested(false);
+  }, [settings.schoolId]);
 
   const { data: allSchools } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
   const { data: costOfLiving } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
@@ -345,6 +433,12 @@ function DecoderContent() {
       return;
     }
 
+    if (!briefingRequested) {
+      setRewordedBriefingText(null);
+      setLastRewordedSource("");
+      return;
+    }
+
     if (!cachedBriefingText || !activeSchool) {
       setRewordedBriefingText(null);
       setLastRewordedSource("");
@@ -390,7 +484,7 @@ function DecoderContent() {
     return () => {
       active = false;
     };
-  }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource, stabilityReport, isCalculatingStability]);
+  }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource, stabilityReport, isCalculatingStability, briefingRequested]);
 
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
@@ -885,7 +979,7 @@ function DecoderContent() {
                             <div className="flex items-center justify-between">
                               <span className="text-[9px] font-bold text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
                                 <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
-                                Running AI Ledger Analysis...
+                                Running Analysis this may take 1 or 2 mins...
                               </span>
                             </div>
                           )}
@@ -1018,27 +1112,130 @@ function DecoderContent() {
                               </div>
 
                               {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
-                              {stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
+                              {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
                                 <div className="border border-white/5 bg-black/10 rounded-sm">
-                                  <details className="group">
+                                  <details className="group" open={isCalculatingStability ? true : undefined}>
                                     <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
                                       <span className="flex items-center gap-1.5">
-                                        <Briefcase className="size-3 text-[#f97316]" />
-                                        View Discovered Vacancies ({stabilityReport.scrapedJobsList.length})
+                                        {isCalculatingStability ? (
+                                          <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/50 opacity-75"></span>
+                                            <Briefcase className="size-3 text-[#f97316]" />
+                                          </span>
+                                        ) : (
+                                          <Briefcase className="size-3 text-[#f97316]" />
+                                        )}
+                                        {isCalculatingStability 
+                                          ? "Sweeping Live Vacancies..." 
+                                          : `View Discovered Vacancies (${stabilityReport?.scrapedJobsList?.length || 0})`}
                                       </span>
                                       <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
                                     </summary>
                                     <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
-                                      <div className="grid grid-cols-1 gap-2 text-slate-300">
-                                        {stabilityReport.scrapedJobsList.map((job: string, idx: number) => (
-                                          <div key={idx} className="flex items-center gap-2 p-1.5 bg-white/5 border border-white/5 rounded-sm">
-                                            <span className="text-[#f97316] font-bold">{idx + 1}.</span>
-                                            <span className="font-semibold">{job}</span>
+                                      
+                                      {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD */}
+                                      {isCalculatingStability && (
+                                        <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40">
+                                          <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
+                                            <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
+                                              <span className="relative flex h-2 w-2">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
+                                              </span>
+                                              Executing Two-Step Vacancy Audit
+                                            </span>
+                                            <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
+                                              AI Portal Verification...
+                                            </span>
                                           </div>
-                                        ))}
-                                      </div>
-                                      {stabilityReport.lastScrapedAt && (
-                                        <p className="text-[9px] text-slate-500 font-medium text-right pt-1">
+                                          
+                                          <div className="space-y-2.5 pt-0.5">
+                                            {/* STEP 1 */}
+                                            <div className="flex items-start gap-2.5">
+                                              <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
+                                                ✓
+                                              </div>
+                                              <div>
+                                                <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
+                                                <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
+                                              </div>
+                                            </div>
+
+                                            {/* STEP 2 */}
+                                            <div className="flex items-start gap-2.5">
+                                              <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
+                                                <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
+                                              </div>
+                                              <div>
+                                                <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
+                                                  Step 2: Active Web Portals Sweep
+                                                </p>
+                                                <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums & school web portals live...</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {stabilityReport?.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
+                                        <div className={cn(
+                                          "grid grid-cols-1 gap-2 text-slate-300 transition-opacity duration-300",
+                                          isCalculatingStability && "opacity-35 pointer-events-none"
+                                        )}>
+                                          {stabilityReport.scrapedJobsList.map((job: string, idx: number) => {
+                                            const { status, hasDeadline, label } = getJobStatus(job);
+                                            const isOpen = status === 'open';
+                                            const isHighlightedOpen = isOpen && hasDeadline;
+                                            const isMutedClosed = !isOpen;
+                                            return (
+                                              <div 
+                                                key={idx} 
+                                                className={cn(
+                                                  "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 p-2 border rounded-sm transition-all text-[11px]",
+                                                  isHighlightedOpen 
+                                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300 shadow-sm shadow-emerald-950/20" 
+                                                    : isMutedClosed
+                                                      ? "bg-white/5 border-white/5 text-slate-500"
+                                                      : "bg-white/5 border-white/5 text-slate-300"
+                                                )}
+                                              >
+                                                <div className="flex items-center gap-2">
+                                                  <span className={cn(
+                                                    "font-bold text-[10px]", 
+                                                    isHighlightedOpen ? "text-emerald-400" : isMutedClosed ? "text-slate-600" : "text-slate-400"
+                                                  )}>
+                                                    {idx + 1}.
+                                                  </span>
+                                                  <span className={cn(
+                                                    "font-semibold", 
+                                                    isHighlightedOpen ? "text-emerald-50" : isMutedClosed ? "text-slate-500 line-through decoration-white/10" : "text-slate-200"
+                                                  )}>
+                                                    {job}
+                                                  </span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                                                  {isHighlightedOpen ? (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                                      {label}
+                                                    </span>
+                                                  ) : isMutedClosed ? (
+                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-white/5 text-slate-500 border border-white/5">
+                                                      {label}
+                                                    </span>
+                                                  ) : null}
+                                                </div>
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+
+                                      {stabilityReport?.lastScrapedAt && (
+                                        <p className={cn(
+                                          "text-[9px] text-slate-500 font-medium text-right pt-1 transition-opacity duration-300",
+                                          isCalculatingStability && "opacity-35"
+                                        )}>
                                           Last verified via active search: {formatDeterministicDate(stabilityReport.lastScrapedAt)}
                                         </p>
                                       )}
@@ -1066,7 +1263,7 @@ function DecoderContent() {
                     </div>
 
                     {/* 🛰️ PREMIUM DYNAMIC BRIEFING NARRATIVE */}
-                    {cachedBriefingText ? (
+                    {cachedBriefingText && briefingRequested ? (
                       <div className="pt-6 border-t border-white/5 space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1099,10 +1296,16 @@ function DecoderContent() {
                     ) : (
                       <div className="pt-6 border-t border-white/5">
                         <button
-                          onClick={() => router.push(`/schools/${activeSchool.id}`)}
+                          onClick={() => {
+                            if (cachedBriefingText) {
+                              setBriefingRequested(true);
+                            } else {
+                              router.push(`/schools/${activeSchool.id}`);
+                            }
+                          }}
                           className="text-[10px] font-black text-sky-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-sky-500/5 hover:bg-sky-500/10 border border-sky-500/10 hover:border-sky-500/40 px-3 py-2 rounded-sm"
                         >
-                          <Zap className="size-3 text-[#f97316] animate-pulse" /> Trigger premium AI briefing compilation
+                          <Zap className="size-3 text-[#f97316] animate-pulse" /> Request Leopardfish School Analysis
                         </button>
                       </div>
                     )}

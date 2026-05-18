@@ -53,6 +53,7 @@ export async function calculateStabilityFlow(
 
   const ai = getAI();
   const response = await ai.generate({
+    model: 'googleai/gemini-2.5-flash',
     output: { schema: GlobalStabilitySchema },
     config: {
       seed: deterministicSeed,
