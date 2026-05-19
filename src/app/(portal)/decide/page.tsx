@@ -510,13 +510,7 @@ function DecideContent() {
                         </div>
                     </div>
 
-                    {/* ROW 2: Disclaimer */}
-                    <div className="mt-2 p-2 bg-rose-500/5 border-l-2 border-[#f97316] rounded-sm">
-                        <p className="text-[11px] font-bold text-slate-400 italic flex items-center gap-3 tracking-tight">
-                            <AlertTriangle className="size-3.5 text-[#f97316] shrink-0" />
-                            This analysis is only as good as the data you input! Ensure net salaries and household status are accurate for the best forecast.
-                        </p>
-                    </div>
+
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
