@@ -506,7 +506,7 @@ function DecideContent() {
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Globe2 className="size-3 text-[#007FFF]" /> Country</Label>
                                     <Select value={selectedCountries[i]} onValueChange={(val) => { const nC = [...selectedCountries]; nC[i] = val; setSelectedCountries(nC); }}>
-                                        <SelectTrigger className="bg-black/40 border-white/10 h-8 text-[#007FFF] font-black text-[11px]"><SelectValue placeholder="Location" /></SelectTrigger>
+                                        <SelectTrigger className="bg-black/40 border-white/10 h-8 text-white font-black text-[11px]"><SelectValue placeholder="Location" /></SelectTrigger>
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{availableCountries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                                     </Select>
                                 </div>
@@ -517,31 +517,33 @@ function DecideContent() {
                                     </Select>
                                 </div>
                             </div>
-                            <div className="pt-1 border-t border-white/5">
-                                <div className="space-y-1">
-                                    <Label className="text-[10px] font-black text-[#007FFF] italic whitespace-nowrap flex items-center justify-between uppercase tracking-tighter">
-                                        <div className="flex flex-col gap-0.5">
-                                            <span>Monthly income ({shootoutMatrix[i]?.currency || 'Local'})</span>
-                                            {!manualSalaries[i] && selectedIds[i] && (
-                                                <span className="text-[8px] text-[#f97316] font-black uppercase tracking-widest italic leading-none">Median income applied</span>
-                                            )}
-                                        </div>
+                            <div className="pt-2 border-t border-white/5 flex items-center justify-between gap-3 h-9">
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                    <Label className="text-[11px] font-black text-slate-400 italic tracking-tighter leading-none">
+                                        Monthly income ({shootoutMatrix[i]?.currency || 'Local'})
                                     </Label>
-                                    <Input
-                                        type="number"
-                                        value={netSalaries[i]}
-                                        placeholder="0"
-                                        onChange={(e) => {
-                                            const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next);
-                                            const nextM = [...manualSalaries]; nextM[i] = true; setManualSalaries(nextM);
-                                        }}
-                                        className={cn(
-                                            "bg-black/40 border-white/5 h-8 text-right font-black text-[13px] pr-2",
-                                            !manualSalaries[i] && selectedIds[i] ? "text-slate-300" : "text-white",
-                                            noSpinners
-                                        )}
-                                    />
+                                    {selectedIds[i] && (
+                                        <Tooltip text={!manualSalaries[i] 
+                                            ? "This is the estimated median salary for this school. You can override it by typing in a different amount." 
+                                            : "You have overridden the estimated median salary. Clear this input to revert to the default median."}>
+                                            <Info className="size-3.5 cursor-help text-slate-400" />
+                                        </Tooltip>
+                                    )}
                                 </div>
+                                <Input
+                                    type="number"
+                                    value={netSalaries[i]}
+                                    placeholder="0"
+                                    onChange={(e) => {
+                                        const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next);
+                                        const nextM = [...manualSalaries]; nextM[i] = true; setManualSalaries(nextM);
+                                    }}
+                                    className={cn(
+                                        "bg-black/40 h-7 w-28 text-right font-black text-[12px] pr-2 rounded-sm",
+                                        !manualSalaries[i] && selectedIds[i] ? "text-slate-400 border-white/5" : "text-white border-white/20",
+                                        noSpinners
+                                    )}
+                                />
                             </div>
                         </div>
                     ))}
@@ -552,30 +554,23 @@ function DecideContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                     {shootoutMatrix.map((data, idx) => (
                         <div key={`card-${idx}`} className={cn(
-                            "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[790px]",
+                            "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[760px]",
                             "border-[#f97316]/40",
                             data?.school.id === topPickId && "border-[#f97316] ring-2 ring-[#f97316] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
                         )}>
                             {data ? (
                                 <>
-                                    <div className="h-16 flex flex-col justify-center">
-                                        <div className="space-y-1 flex-1">
-                                            <h2 className="text-lg md:text-3xl font-black text-[#f97316] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
-                                            <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1">
-                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
-                                                <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]" /> {data.school.housingprovision}</span>
-                                            </div>
+                                    <div className="flex flex-col gap-1">
+                                        <div className="h-[72px] flex items-start pt-1">
+                                            <h2 className="text-[17px] md:text-[28px] font-black text-[#f97316] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1 h-6">
+                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
+                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]" /> {data.school.housingprovision}</span>
                                         </div>
                                     </div>
 
-                                    {/* 🍃 FULL WIDTH VIBE */}
-                                    <div className="pt-2 h-12">
-                                        <p className="text-[12px] font-bold text-emerald-400/90 italic leading-tight tracking-tight border-b border-white/5 pb-2 line-clamp-2">
-                                            {getLifestyleVibe(data.school.city, data.workload)}
-                                        </p>
-                                    </div>
 
-                                    <div className="flex items-center gap-2 text-[10px] font-black text-slate-500 h-4 uppercase tracking-widest leading-none"><MapPin className="size-3 text-[#007FFF]" /> {data.school.city}, {data.school.country}</div>
 
                                     {/* ⚡ CARD-SPECIFIC LIFESTYLE SELECTOR */}
                                     <div className="mt-2 p-1.5 bg-white/5 border border-white/5 rounded-sm flex items-center justify-between">
@@ -591,7 +586,7 @@ function DecideContent() {
                                                     }}
                                                     className={cn(
                                                         "px-3 py-1 text-[8px] font-black uppercase tracking-wider transition-all italic",
-                                                        cardLifestyles[idx] === mode ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-slate-300"
+                                                        cardLifestyles[idx] === mode ? "bg-slate-300 text-slate-950 shadow-[0_0_10px_rgba(148,163,184,0.1)]" : "text-slate-500 hover:text-slate-300"
                                                     )}
                                                 >
                                                     {mode}
@@ -604,7 +599,7 @@ function DecideContent() {
                                     <div className="grid grid-cols-2 gap-2 mt-1 p-2 bg-white/[0.02] border border-white/5 rounded-sm">
                                         <div className="space-y-1">
                                             <Tooltip text="Including tutoring, investments, or allowances.">
-                                                <Label className="text-[9px] font-black text-slate-500 italic uppercase tracking-tighter">Other income</Label>
+                                                <Label className="text-[9px] font-black text-slate-500 italic tracking-tighter">Other income +</Label>
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
@@ -620,7 +615,7 @@ function DecideContent() {
                                         </div>
                                         <div className="space-y-1">
                                             <Tooltip text="Mortgages back home, student loans, or credit commitments.">
-                                                <Label className="text-[9px] font-black text-slate-500 italic uppercase tracking-tighter">Home commitment</Label>
+                                                <Label className="text-[9px] font-black text-slate-500 italic tracking-tighter">Home Commitments -</Label>
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
@@ -694,14 +689,14 @@ function DecideContent() {
                                         </div>
 
                                         {/* 💰 3-YEAR WEALTH POT */}
-                                        <div className={cn("p-3 border rounded-sm flex items-center justify-between", data.savings3Year > 0 ? "bg-[#f97316]/10 border-[#f97316]/30" : "bg-rose-500/10 border-rose-500/50")}>
-                                            <div>
-                                                <p className={cn("text-[8px] font-black uppercase tracking-[0.2em] mb-0.5 italic", data.savings3Year > 0 ? "text-[#f97316]" : "text-rose-500")}>3-Year Bankable Pot</p>
-                                                <p className="text-[10px] font-bold text-slate-400 italic leading-tight">Projected assets at contract end.</p>
+                                        <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings3Year > 0 ? "bg-[#f97316]/10 border-[#f97316]/30" : "bg-rose-500/10 border-rose-500/50")}>
+                                            <div className="flex items-center justify-between">
+                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#f97316]" : "text-rose-500")}>3-Year Bankable Pot</p>
+                                                <p className={cn("text-[14px] font-black italic tabular-nums leading-none", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
                                             </div>
-                                            <div className="text-right leading-none">
-                                                <p className={cn("text-base font-black italic tabular-nums", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
-                                                <p className="text-[9px] font-bold text-slate-500 mt-1">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || 0.79)).toLocaleString()}</p>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[12px] font-bold text-slate-400 italic leading-none">Projected assets at contract end.</p>
+                                                <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || 0.79)).toLocaleString()}</p>
                                             </div>
                                         </div>
 
