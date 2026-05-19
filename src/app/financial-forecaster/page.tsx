@@ -992,7 +992,7 @@ function DecoderContent() {
                                     Executing Two-Step Vacancy Audit
                                   </span>
                                   <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                    AI Portal Verification...
+                                    Running Research Engine...
                                   </span>
                                 </div>
                                 
@@ -1209,7 +1209,7 @@ function DecoderContent() {
                                                   Executing Two-Step Vacancy Audit
                                                 </span>
                                                 <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                                  AI Portal Verification...
+                                                  Running Research Engine...
                                                 </span>
                                               </div>
                                               
