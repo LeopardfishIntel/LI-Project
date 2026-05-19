@@ -1111,23 +1111,30 @@ function DecoderContent() {
                                     {stabilityReport.metrics.estimatedChurnRatePercent != null ? `${stabilityReport.metrics.estimatedChurnRatePercent}%` : 'None found'}
                                   </div>
                                 </div>
-                                <div className="col-span-2 sm:col-span-3 relative rounded-sm overflow-hidden">
-                                  {/* Premium Paywall Overlay */}
-                                  <div className="absolute inset-0 z-10 backdrop-blur-md bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                    <div className="flex items-center justify-center bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
-                                      <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Find out more</span>
-                                    </div>
-                                  </div>
+                              </div> {/* Closes the first grid row */}
 
-                                  {/* Locked Content */}
-                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 opacity-30 select-none pointer-events-none">
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm blur-[2px]">
+                              {/* MASSIVE PREMIUM WRAPPER */}
+                              <div className="relative rounded-sm overflow-hidden mt-3">
+                                {/* SINGLE PAYWALL OVERLAY */}
+                                <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
+                                  {/* Non-orange, sleek glass button */}
+                                  <div className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl">
+                                    <span className="text-[11px] font-black uppercase tracking-widest text-slate-300 hover:text-white transition-colors">Find out more</span>
+                                  </div>
+                                </div>
+
+                                {/* LOCKED CONTENT */}
+                                <div className="opacity-30 select-none pointer-events-none blur-[2px] space-y-3">
+                                  
+                                  {/* Locked Metrics Grid */}
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Senior Leadership Churn</div>
                                       <div className="text-sm font-black text-amber-400 mt-0.5">
                                         {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
                                       </div>
                                     </div>
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2 blur-[2px]">
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2">
                                       <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
                                       {(() => {
                                         const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
@@ -1153,172 +1160,162 @@ function DecoderContent() {
                                       })()}
                                     </div>
                                   </div>
-                                </div>
-                              </div>
 
-                              {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
-                              {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
-                                <div className="border border-white/5 bg-black/10 rounded-sm mt-3">
-                                  <details className="group" open={isCalculatingStability ? true : undefined}>
-                                    <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
-                                      <span className="flex items-center gap-2">
-                                        {isCalculatingStability ? (
-                                          <span className="relative flex h-3.5 w-3.5 items-center justify-center">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/50 opacity-75"></span>
-                                            <Briefcase className="size-3 text-[#f97316]" />
-                                          </span>
-                                        ) : (
-                                          <Briefcase className="size-3 text-[#f97316]" />
-                                        )}
-                                        {isCalculatingStability ? (
-                                          <span className="text-[10px] font-black uppercase tracking-wider text-[#f97316] animate-pulse">
-                                            Sweeping Live Vacancies...
-                                          </span>
-                                        ) : (
+                                  {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
+                                  {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
+                                    <div className="border border-white/5 bg-black/10 rounded-sm">
+                                      <details className="group" open={isCalculatingStability ? true : undefined}>
+                                        <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
                                           <span className="flex items-center gap-2">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
-                                              View Discovered Vacancies
-                                            </span>
-                                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[8px] font-black uppercase tracking-wider leading-none">
-                                              12-Month History
-                                            </span>
-                                            <span className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black leading-none">
-                                              {stabilityReport?.scrapedJobsList?.length || 0}
-                                            </span>
-                                          </span>
-                                        )}
-                                      </span>
-                                      <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
-                                    </summary>
-                                    <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
-                                      
-                                      {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD */}
-                                      {isCalculatingStability && (
-                                        <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40">
-                                          <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
-                                            <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
-                                              <span className="relative flex h-2 w-2">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
+                                            {isCalculatingStability ? (
+                                              <span className="relative flex h-3.5 w-3.5 items-center justify-center">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/50 opacity-75"></span>
+                                                <Briefcase className="size-3 text-[#f97316]" />
                                               </span>
-                                              Executing Two-Step Vacancy Audit
-                                            </span>
-                                            <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                              AI Portal Verification...
-                                            </span>
-                                          </div>
+                                            ) : (
+                                              <Briefcase className="size-3 text-[#f97316]" />
+                                            )}
+                                            {isCalculatingStability ? (
+                                              <span className="text-[10px] font-black uppercase tracking-wider text-[#f97316] animate-pulse">
+                                                Sweeping Live Vacancies...
+                                              </span>
+                                            ) : (
+                                              <span className="flex items-center gap-2">
+                                                <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
+                                                  View Discovered Vacancies
+                                                </span>
+                                                <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[8px] font-black uppercase tracking-wider leading-none">
+                                                  12-Month History
+                                                </span>
+                                                <span className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black leading-none">
+                                                  {stabilityReport?.scrapedJobsList?.length || 0}
+                                                </span>
+                                              </span>
+                                            )}
+                                          </span>
+                                          <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
+                                        </summary>
+                                        <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
                                           
-                                          <div className="space-y-2.5 pt-0.5">
-                                            {/* STEP 1 */}
-                                            <div className="flex items-start gap-2.5">
-                                              <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
-                                                ✓
-                                              </div>
-                                              <div>
-                                                <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
-                                                <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
-                                              </div>
-                                            </div>
-
-                                            {/* STEP 2 */}
-                                            <div className="flex items-start gap-2.5">
-                                              <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
-                                                <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
-                                              </div>
-                                              <div>
-                                                <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
-                                                  Step 2: Active Web Portals Sweep
-                                                </p>
-                                                <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums & school web portals live...</p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {stabilityReport?.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
-                                        <div className={cn(
-                                          "grid grid-cols-1 gap-2 text-slate-300 transition-opacity duration-300",
-                                          isCalculatingStability && "opacity-35 pointer-events-none"
-                                        )}>
-                                          {stabilityReport.scrapedJobsList.map((job: string, idx: number) => {
-                                            const { status, hasDeadline, label } = getJobStatus(job);
-                                            const isOpen = status === 'open';
-                                            const isHighlightedOpen = isOpen && hasDeadline;
-                                            const isMutedClosed = !isOpen;
-                                            return (
-                                              <div 
-                                                key={idx} 
-                                                className={cn(
-                                                  "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 p-2 border rounded-sm transition-all text-[11px]",
-                                                  isHighlightedOpen 
-                                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300 shadow-sm shadow-emerald-950/20" 
-                                                    : isMutedClosed
-                                                      ? "bg-white/5 border-white/5 text-slate-500"
-                                                      : "bg-white/5 border-white/5 text-slate-300"
-                                                )}
-                                              >
-                                                <div className="flex items-center gap-2">
-                                                  <span className={cn(
-                                                    "font-bold text-[10px]", 
-                                                    isHighlightedOpen ? "text-emerald-400" : isMutedClosed ? "text-slate-600" : "text-slate-400"
-                                                  )}>
-                                                    {idx + 1}.
+                                          {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD */}
+                                          {isCalculatingStability && (
+                                            <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40">
+                                              <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
+                                                <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
+                                                  <span className="relative flex h-2 w-2">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
+                                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
                                                   </span>
-                                                  <span className={cn(
-                                                    "font-semibold", 
-                                                    isHighlightedOpen ? "text-emerald-50" : isMutedClosed ? "text-slate-500 line-through decoration-white/10" : "text-slate-200"
-                                                  )}>
-                                                    {job}
-                                                  </span>
+                                                  Executing Two-Step Vacancy Audit
+                                                </span>
+                                                <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
+                                                  AI Portal Verification...
+                                                </span>
+                                              </div>
+                                              
+                                              <div className="space-y-2.5 pt-0.5">
+                                                {/* STEP 1 */}
+                                                <div className="flex items-start gap-2.5">
+                                                  <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
+                                                    ✓
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
+                                                    <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
+                                                  </div>
                                                 </div>
-                                                <div className="flex items-center gap-1.5 self-end sm:self-auto">
-                                                  {isHighlightedOpen ? (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                                                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                                      {label}
-                                                    </span>
-                                                  ) : isMutedClosed ? (
-                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-white/5 text-slate-500 border border-white/5">
-                                                      {label}
-                                                    </span>
-                                                  ) : null}
+
+                                                {/* STEP 2 */}
+                                                <div className="flex items-start gap-2.5">
+                                                  <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
+                                                    <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
+                                                  </div>
+                                                  <div>
+                                                    <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
+                                                      Step 2: Active Web Portals Sweep
+                                                    </p>
+                                                    <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums & school web portals live...</p>
+                                                  </div>
                                                 </div>
                                               </div>
-                                            );
-                                          })}
-                                        </div>
-                                      )}
+                                            </div>
+                                          )}
 
-                                      {stabilityReport?.lastScrapedAt && (
-                                        <p className={cn(
-                                          "text-[9px] text-slate-500 font-medium text-right pt-1 transition-opacity duration-300",
-                                          isCalculatingStability && "opacity-35"
-                                        )}>
-                                          Last verified via active search: {formatDeterministicDate(stabilityReport.lastScrapedAt)}
-                                        </p>
-                                      )}
+                                          {stabilityReport?.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
+                                            <div className={cn(
+                                              "grid grid-cols-1 gap-2 text-slate-300 transition-opacity duration-300",
+                                              isCalculatingStability && "opacity-35 pointer-events-none"
+                                            )}>
+                                              {stabilityReport.scrapedJobsList.map((job: string, idx: number) => {
+                                                const { status, hasDeadline, label } = getJobStatus(job);
+                                                const isOpen = status === 'open';
+                                                const isHighlightedOpen = isOpen && hasDeadline;
+                                                const isMutedClosed = !isOpen;
+                                                return (
+                                                  <div 
+                                                    key={idx} 
+                                                    className={cn(
+                                                      "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 p-2 border rounded-sm transition-all text-[11px]",
+                                                      isHighlightedOpen 
+                                                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300 shadow-sm shadow-emerald-950/20" 
+                                                        : isMutedClosed
+                                                          ? "bg-white/5 border-white/5 text-slate-500"
+                                                          : "bg-white/5 border-white/5 text-slate-300"
+                                                    )}
+                                                  >
+                                                    <div className="flex items-center gap-2">
+                                                      <span className={cn(
+                                                        "font-bold text-[10px]", 
+                                                        isHighlightedOpen ? "text-emerald-400" : isMutedClosed ? "text-slate-600" : "text-slate-400"
+                                                      )}>
+                                                        {idx + 1}.
+                                                      </span>
+                                                      <span className={cn(
+                                                        "font-semibold", 
+                                                        isHighlightedOpen ? "text-emerald-50" : isMutedClosed ? "text-slate-500 line-through decoration-white/10" : "text-slate-200"
+                                                      )}>
+                                                        {job}
+                                                      </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                                                      {isHighlightedOpen ? (
+                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                                          {label}
+                                                        </span>
+                                                      ) : isMutedClosed ? (
+                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-white/5 text-slate-500 border border-white/5">
+                                                          {label}
+                                                        </span>
+                                                      ) : null}
+                                                    </div>
+                                                  </div>
+                                                );
+                                              })}
+                                            </div>
+                                          )}
+
+                                          {stabilityReport?.lastScrapedAt && (
+                                            <p className={cn(
+                                              "text-[9px] text-slate-500 font-medium text-right pt-1 transition-opacity duration-300",
+                                              isCalculatingStability && "opacity-35"
+                                            )}>
+                                              Last verified via active search: {formatDeterministicDate(stabilityReport.lastScrapedAt)}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </details>
                                     </div>
-                                  </details>
-                                </div>
-                              )}
+                                  )}
 
-                              <div className="relative rounded-sm overflow-hidden mt-3">
-                                {/* Premium Paywall Overlay */}
-                                <div className="absolute inset-0 z-10 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                  <div className="flex items-center justify-center bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Find out more</span>
+                                  <div className="p-3 bg-white/5 border border-white/10 rounded-sm text-xs leading-relaxed text-slate-300">
+                                    <span className="font-medium italic text-slate-200">
+                                      {stabilityReport.leopardfishIntelAlert}
+                                    </span>
+                                    <span className="text-slate-400 ml-1.5">
+                                      This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
+                                    </span>
                                   </div>
-                                </div>
-                                
-                                {/* Locked Content */}
-                                <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm text-xs leading-relaxed text-slate-300 opacity-40 select-none pointer-events-none blur-[2.5px]">
-                                  <span className="font-medium italic text-slate-200">
-                                    {stabilityReport.leopardfishIntelAlert}
-                                  </span>
-                                  <span className="text-slate-400 ml-1.5">
-                                    This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
-                                  </span>
                                 </div>
                               </div>
                             </div>
