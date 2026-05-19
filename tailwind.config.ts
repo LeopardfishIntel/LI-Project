@@ -14,7 +14,7 @@ const config: Config = {
         display: ["var(--font-montserrat)", "sans-serif"],
       },
       colors: {
-        primary: "#f97316",    // Orange
+        primary: "#d95f02",    // Deep Copper
         background: "#020617", // Deep Navy
         azure: "#007FFF",      // Intel Blue
         foreground: "#ffffff",
