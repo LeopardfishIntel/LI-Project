@@ -656,7 +656,7 @@ function DecoderContent() {
                             </span>
                           )}
                         </div>
-                        <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "text-emerald-500 italic")}>
+                        <span className={cn("text-[14px] font-black tabular-nums text-slate-300", analysis?.housingStatus === 'provided' && "italic")}>
                           {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
                         </span>
                       </div>
