@@ -1291,13 +1291,13 @@ function DecoderContent() {
                                 </div>
                               )}
 
-                              <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm">
-                                <p className="text-xs text-slate-300 font-medium italic">
-                                  "{stabilityReport.leopardfishIntelAlert}"
-                                </p>
-                                <p className="text-[11px] text-slate-400 mt-2 font-normal border-t border-[#f97316]/10 pt-2 leading-relaxed">
-                                  This data is based on known job advertisements over the school year indexed across more than 24 key recruitment channels—including major international portals (TES, Schrole, Search Associates), global agencies, regional expat boards, international school networks, and direct school web portals. It provides a realistic staffroom pulse of the school's recruiting pace. Keep in mind that active recruitment can reflect positive school growth, curriculum expansion, or the development of new specialized departments; however, it can also point to high staff turnover driven by leadership restructuring, workload pressures, or teacher dissatisfaction.
-                                </p>
+                              <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm text-xs leading-relaxed text-slate-300">
+                                <span className="font-medium italic text-slate-200">
+                                  {stabilityReport.leopardfishIntelAlert}
+                                </span>
+                                <span className="text-slate-400 ml-1.5">
+                                  This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
+                                </span>
                               </div>
                             </div>
                           ) : (
