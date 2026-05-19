@@ -773,8 +773,6 @@ function DecoderContent() {
                       </div>
 
                       <div className="bg-[#f97316]/5 p-6 border border-[#f97316]/20 text-right rounded-sm relative shadow-inner">
-                        <div className="absolute top-0 left-0 w-1.5 h-full bg-[#f97316]" />
-
                         {/* 🎯 BENCHMARK CURRENCY TOGGLE */}
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
