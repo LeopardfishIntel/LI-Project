@@ -374,7 +374,7 @@ function DecideContent() {
             const rate = currentRates[currency] || 1.0;
             const salaryIn = parseFloat(netSalaries[index]) || 0;
             const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
-            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[bonusKey] ?? 0)) + (parseFloat(adjustments[index].second) || 0) + (parseFloat(adjustments[index].other) || 0);
+            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[bonusKey] ?? 0)) + (parseFloat(adjustments[index].other) || 0);
 
             // 🏠 DYNAMIC HOUSING ENGINE
             const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
@@ -517,7 +517,7 @@ function DecideContent() {
                                     </Select>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5 items-center">
+                            <div className="pt-1 border-t border-white/5">
                                 <div className="space-y-1">
                                     <Label className="text-[10px] font-black text-[#007FFF] italic whitespace-nowrap flex items-center justify-between uppercase tracking-tighter">
                                         <div className="flex flex-col gap-0.5">
@@ -542,20 +542,6 @@ function DecideContent() {
                                         )}
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <Tooltip text="Including spouse salary, child benefit, or recurring family income."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">2nd income</Label></Tooltip>
-                                    <Input type="number" value={adjustments[i].second} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], second: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 items-center">
-                                <div className="space-y-1">
-                                    <Tooltip text="Including tutoring, investments, or allowances."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Other income</Label></Tooltip>
-                                    <Input type="number" value={adjustments[i].other} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], other: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
-                                </div>
-                                <div className="space-y-1">
-                                    <Tooltip text="Mortgages back home, student loans, or credit commitments."><Label className="text-[10px] font-black text-slate-500 italic uppercase tracking-tighter">Home commitment</Label></Tooltip>
-                                    <Input type="number" value={adjustments[i].home} onChange={(e) => { const next = [...adjustments]; next[i] = { ...next[i], home: e.target.value }; setAdjustments(next); }} className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} />
-                                </div>
                             </div>
                         </div>
                     ))}
@@ -566,7 +552,7 @@ function DecideContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                     {shootoutMatrix.map((data, idx) => (
                         <div key={`card-${idx}`} className={cn(
-                            "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[720px]",
+                            "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[790px]",
                             "border-[#f97316]/40",
                             data?.school.id === topPickId && "border-[#f97316] ring-2 ring-[#f97316] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
                         )}>
@@ -611,6 +597,42 @@ function DecideContent() {
                                                     {mode}
                                                 </button>
                                             ))}
+                                        </div>
+                                    </div>
+
+                                    {/* 🎯 CARD-SPECIFIC ADJUSTMENTS */}
+                                    <div className="grid grid-cols-2 gap-2 mt-1 p-2 bg-white/[0.02] border border-white/5 rounded-sm">
+                                        <div className="space-y-1">
+                                            <Tooltip text="Including tutoring, investments, or allowances.">
+                                                <Label className="text-[9px] font-black text-slate-500 italic uppercase tracking-tighter">Other income</Label>
+                                            </Tooltip>
+                                            <Input 
+                                                type="number" 
+                                                value={adjustments[idx].other} 
+                                                placeholder="0"
+                                                onChange={(e) => { 
+                                                    const next = [...adjustments]; 
+                                                    next[idx] = { ...next[idx], other: e.target.value }; 
+                                                    setAdjustments(next); 
+                                                }} 
+                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} 
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Tooltip text="Mortgages back home, student loans, or credit commitments.">
+                                                <Label className="text-[9px] font-black text-slate-500 italic uppercase tracking-tighter">Home commitment</Label>
+                                            </Tooltip>
+                                            <Input 
+                                                type="number" 
+                                                value={adjustments[idx].home} 
+                                                placeholder="0"
+                                                onChange={(e) => { 
+                                                    const next = [...adjustments]; 
+                                                    next[idx] = { ...next[idx], home: e.target.value }; 
+                                                    setAdjustments(next); 
+                                                }} 
+                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} 
+                                            />
                                         </div>
                                     </div>
 
