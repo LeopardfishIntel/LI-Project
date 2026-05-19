@@ -574,7 +574,7 @@ function DecoderContent() {
             <button
               onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
               disabled={!activeSchool}
-              className="w-full bg-zinc-900 text-white border-2 border-[#f97316] py-3.5 text-xl font-bold rounded-none hover:bg-zinc-800 transition-colors mt-2 disabled:opacity-50"
+              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-14 transition-all hover:bg-[#f97316]/20 shadow-2xl text-sm mt-2 disabled:opacity-50"
             >
               Compare Similar Options
             </button>
