@@ -648,9 +648,13 @@ function DecoderContent() {
                     <div className="space-y-1.5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
                           <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
-                          <span className="text-[8px] font-black text-sky-400 uppercase tracking-widest">{analysis?.propertyLabel}</span>
+                          {analysis?.propertyLabel && (
+                            <span className="px-1.5 py-0.5 rounded-sm bg-sky-500/10 border border-sky-500/20 text-[8px] font-black text-sky-400 uppercase tracking-widest leading-none">
+                              {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
+                            </span>
+                          )}
                         </div>
                         <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "text-emerald-500 italic")}>
                           {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
