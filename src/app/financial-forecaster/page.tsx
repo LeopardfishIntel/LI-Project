@@ -705,9 +705,9 @@ function DecoderContent() {
                             </div>
                             
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-[#f97316] text-white shadow-sm" : "text-slate-500 hover:text-white")}>Bus +</button>
-                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-[#f97316] text-white shadow-sm" : "text-slate-500 hover:text-white")}>Car Hire</button>
-                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-[#f97316] text-white shadow-sm" : "text-slate-500 hover:text-white")}>Taxi</button>
+                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Bus +</button>
+                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Car Hire</button>
+                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Taxi</button>
                             </div>
                             <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                           </div>
@@ -777,7 +777,7 @@ function DecoderContent() {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
                             {BENCHMARKS.map(b => (
-                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white")}>{b.code}</button>
+                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>{b.code}</button>
                             ))}
                           </div>
                           <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Monthly Disposable Surplus</p>
