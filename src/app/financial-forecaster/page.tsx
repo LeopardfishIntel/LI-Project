@@ -718,12 +718,9 @@ function DecoderContent() {
                       {/* RESTORED: Custom Adjustments Box from Screenshot */}
                       <div className="pt-4 mt-2">
                         <div className="flex justify-between items-center">
-                          <div className="flex items-start gap-2">
-                            <Wallet className="size-4 text-sky-400 mt-1" />
-                            <div>
-                              <p className="text-[11px] font-black text-sky-400 uppercase tracking-widest italic leading-none">Custom Adjustments (+/-)</p>
-                              <p className="text-[9px] font-medium text-slate-500 italic">home country commitments, student loans etc.</p>
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <Wallet className="size-4 text-sky-400" />
+                            <p className="text-[11px] font-black text-sky-400 uppercase tracking-widest italic leading-none">Custom Adjustments (+/-)</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-black text-slate-600 uppercase">{currency}</span>
@@ -771,9 +768,9 @@ function DecoderContent() {
                       </div>
 
                       <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-sm flex justify-between items-center">
-                        <div className="text-left">
-                          <p className="text-[9px] font-black text-sky-400 uppercase tracking-widest italic mb-1">Additional income</p>
-                          <p className="text-[8px] font-bold text-slate-500 uppercase italic flex items-center gap-1"><Banknote className="size-3" /> Tutoring / tlr credits</p>
+                        <div className="flex items-center gap-2">
+                          <Banknote className="size-4 text-sky-400" />
+                          <p className="text-[11px] font-black text-sky-400 uppercase tracking-widest italic leading-none">Additional Income</p>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[9px] font-black text-emerald-700">{currency}</span>
