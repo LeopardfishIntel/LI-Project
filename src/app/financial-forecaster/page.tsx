@@ -1363,9 +1363,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-5 mx-auto mb-2 text-sky-400 transition-transform group-hover:scale-110" />
+                        <Clock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Non-contact</p>
-                        <p className="text-2xl font-black text-sky-400 italic leading-none">{activeSchool.noncontacttime || "---"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none">{activeSchool.noncontacttime || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Contractual non-contact time expressed as a percentage of a full teaching timetable.</TooltipContent>
@@ -1374,9 +1374,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Activity className="size-5 mx-auto mb-2 text-emerald-400 transition-transform group-hover:scale-110" />
+                        <Activity className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Health coverage</p>
-                        <p className="text-xl font-black text-emerald-400 italic leading-none uppercase">{activeSchool.healthcoverage || "Standard"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none uppercase">{activeSchool.healthcoverage || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The level of private or state medical insurance provided within this school's contract.</TooltipContent>
@@ -1385,9 +1385,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-5 mx-auto mb-2 text-[#f97316] transition-transform group-hover:scale-110" />
+                        <BookOpen className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Curriculum</p>
-                        <p className="text-xl font-black text-[#f97316] italic leading-none uppercase">{activeSchool.curriculum || "---"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none uppercase">{activeSchool.curriculum || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The primary teaching and assessment framework used for delivery at this school.</TooltipContent>
@@ -1396,9 +1396,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <ShieldCheck className="size-5 mx-auto mb-2 text-sky-400 transition-transform group-hover:scale-110" />
+                        <ShieldCheck className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Accreditations</p>
-                        <p className="text-xl font-black text-sky-400 italic leading-none uppercase">{activeSchool.approvals || "Standard"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none uppercase">{activeSchool.approvals || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">External quality assurance and professional body memberships such as COBIS, HMC, or BSO.</TooltipContent>
@@ -1409,9 +1409,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-5 mx-auto mb-2 text-sky-400 transition-transform group-hover:scale-110" />
+                        <Clock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Work/life</p>
-                        <p className="text-2xl font-black text-sky-400 italic leading-none">{activeSchool.worklifescore || "---"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none">{activeSchool.worklifescore || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Our internal rating for work-life balance based on direct teacher feedback and workload audit.</TooltipContent>
@@ -1420,9 +1420,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-5 mx-auto mb-2 text-amber-400 transition-transform group-hover:scale-110" />
+                        <BookOpen className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Academic</p>
-                        <p className="text-2xl font-black text-amber-400 italic leading-none">{activeSchool.academicscore || "---"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none">{activeSchool.academicscore || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The academic rigour, student attainment levels, and university placement success of the school.</TooltipContent>
@@ -1431,9 +1431,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Target className="size-5 mx-auto mb-2 text-emerald-400 transition-transform group-hover:scale-110" />
+                        <Target className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Expected retirement</p>
-                        <p className="text-xl font-black text-emerald-400 italic leading-none">
+                        <p className="text-lg font-bold text-slate-300 italic leading-none">
                           {activeReq ? `M: ${activeReq.max_age_m} | F: ${activeReq.max_age_f}` : "---"}
                         </p>
                       </div>
@@ -1444,9 +1444,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Lock className="size-5 mx-auto mb-2 text-[#f97316] transition-transform group-hover:scale-110" />
+                        <Lock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Security/Safety</p>
-                        <p className="text-2xl font-black text-[#f97316] italic leading-none">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
+                        <p className="text-lg font-bold text-slate-300 italic leading-none">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">National and local safety rating derived from the Global Peace Index and Crime Index data.</TooltipContent>
