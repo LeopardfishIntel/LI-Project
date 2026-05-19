@@ -517,7 +517,7 @@ function DecoderContent() {
 
         {/* Sidebar: Manual Unrolled Search Settings */}
         <div className="w-full lg:w-72 bg-[#0b1224] border-r border-white/5 p-4 lg:fixed lg:h-full overflow-y-auto z-30 shadow-xl">
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-[#007FFF] uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors"><ArrowLeft className="size-3" /> Back</button>
+          <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors"><ArrowLeft className="size-3" /> Back</button>
           <p className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
 
           <div className="space-y-3">
@@ -574,7 +574,7 @@ function DecoderContent() {
             <button
               onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
               disabled={!activeSchool}
-              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-10 transition-all hover:bg-[#f97316]/20 shadow-2xl text-xs tracking-wider mt-2 disabled:opacity-50"
+              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-teal-500 text-teal-400 font-bold rounded-none h-10 transition-all hover:bg-teal-500 hover:text-white shadow-[0_0_15px_rgba(20,184,166,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
             >
               Compare Options
             </button>
@@ -644,12 +644,12 @@ function DecoderContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
                   <div className="space-y-3">
-                    <h3 className="text-[11px] font-black text-rose-500 uppercase tracking-[0.3em] flex items-center gap-2 border-b border-rose-500/10 pb-1.5"><Minus className="size-4" /> Monthly outgoings</h3>
+                    <h3 className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.3em] flex items-center gap-2 border-b border-[#f97316]/10 pb-1.5"><Minus className="size-4" /> Monthly outgoings</h3>
                     <div className="space-y-1.5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
                         <div className="flex items-center gap-2">
-                          <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
                           {analysis?.propertyLabel && (
                             <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">
                               {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
@@ -662,17 +662,17 @@ function DecoderContent() {
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Standard food and household supply indices for your household size.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Standard food and household supply indices for your household size.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.groceries || 0).toLocaleString()}</span>
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Utilities</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Monthly averages for electricity, heating, water, and waste management.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Utilities</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Monthly averages for electricity, heating, water, and waste management.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.utilities || 0).toLocaleString()}</span>
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Internet and sim</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Includes standard home broadband and one SIM card per person in the home.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Internet and sim</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Includes standard home broadband and one SIM card per person in the home.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.connectivity || 0).toLocaleString()}</span>
                       </div>
 
@@ -680,7 +680,7 @@ function DecoderContent() {
                         <div className="flex flex-col gap-1 w-full">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-1.5">
-                              <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
+                              <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
 
                               {activeCOL?.transport && (
                                 <Tooltip>
@@ -705,9 +705,9 @@ function DecoderContent() {
                             </div>
                             
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Bus +</button>
-                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Car Hire</button>
-                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>Taxi</button>
+                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Bus +</button>
+                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Car Hire</button>
+                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Taxi</button>
                             </div>
                             <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                           </div>
@@ -715,7 +715,7 @@ function DecoderContent() {
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">A discretionary guide for dining out, cultural activities, and general socialising.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">A discretionary guide for dining out, cultural activities, and general socialising.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.social || 0).toLocaleString()}</span>
                       </div>
 
@@ -723,8 +723,8 @@ function DecoderContent() {
                       <div className="pt-4 mt-2">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
-                            <Wallet className="size-4 text-sky-400" />
-                            <p className="text-[11px] font-black text-sky-400 uppercase tracking-widest italic leading-none">Custom Adjustments (+/-)</p>
+                            <Wallet className="size-4 text-slate-400" />
+                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Custom Adjustments (+/-)</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-black text-slate-600 uppercase">{currency}</span>
@@ -732,14 +732,14 @@ function DecoderContent() {
                               type="number"
                               value={manualAdjustments}
                               onChange={(e) => setManualAdjustments(e.target.value)}
-                              className={cn("bg-black/40 border-white/10 w-28 h-10 px-3 text-right text-base font-black text-white focus:border-[#f97316] transition-all", noSpinners)}
+                              className={cn("bg-black/40 border-white/10 w-28 h-10 px-3 text-right text-base font-black text-white focus:border-teal-500 transition-all", noSpinners)}
                             />
                           </div>
                         </div>
                       </div>
 
                       <div className="flex justify-between items-center pt-2 border-t-2 border-[#f97316]/20 mt-4">
-                        <span className="text-[10px] font-black text-[#f97316] uppercase italic tracking-widest">Total outgoings</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase italic tracking-widest">Total outgoings</span>
                         <span className="text-[18px] font-black text-white tabular-nums">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
 
@@ -748,7 +748,7 @@ function DecoderContent() {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-[11px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-2 border-b border-emerald-500/10 pb-1.5"><Plus className="size-4" /> Monthly incomes</h3>
+                    <h3 className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.3em] flex items-center gap-2 border-b border-[#f97316]/10 pb-1.5"><Plus className="size-4" /> Monthly incomes</h3>
                     <div className="space-y-4">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
@@ -758,17 +758,17 @@ function DecoderContent() {
 
                       <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-sm flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <Banknote className="size-4 text-sky-400" />
-                          <p className="text-[11px] font-black text-sky-400 uppercase tracking-widest italic leading-none">Additional Income</p>
+                          <Banknote className="size-4 text-slate-400" />
+                          <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Additional Income</p>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[9px] font-black text-emerald-700">{currency}</span>
-                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/40 border border-emerald-500/20 w-24 h-8 px-2 text-right text-xs font-black text-emerald-400 rounded-sm focus:border-emerald-500", noSpinners)} />
+                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/40 border-white/10 w-24 h-8 px-2 text-right text-xs font-black text-emerald-400 rounded-sm focus:border-teal-500", noSpinners)} />
                         </div>
                       </div>
 
                       <div className="flex justify-between items-center pt-2 border-t border-emerald-500/10">
-                        <span className="text-[10px] font-black text-emerald-500 uppercase italic tracking-widest">Total monthly income</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase italic tracking-widest">Total monthly income</span>
                         <span className="text-[16px] font-black text-white tabular-nums">{currency} {Math.round(analysis?.totalIn || 0).toLocaleString()}</span>
                       </div>
 
@@ -777,7 +777,7 @@ function DecoderContent() {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
                             {BENCHMARKS.map(b => (
-                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-white/15 text-white shadow-sm" : "text-slate-500 hover:text-slate-300")}>{b.code}</button>
+                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>{b.code}</button>
                             ))}
                           </div>
                           <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Monthly Disposable Surplus</p>
@@ -1114,7 +1114,7 @@ function DecoderContent() {
                                 <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
                                   {/* Non-orange, sleek glass button */}
                                   <div className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl">
-                                    <span className="text-[11px] font-black uppercase tracking-widest text-slate-300 hover:text-white transition-colors">Find out more</span>
+                                    <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
                                   </div>
                                 </div>
 
