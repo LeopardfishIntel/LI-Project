@@ -675,7 +675,31 @@ function DecoderContent() {
                       <div className="flex justify-between items-center border-b border-white/5 pb-1">
                         <div className="flex flex-col gap-1 w-full">
                           <div className="flex justify-between items-center">
-                            <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
+                            <div className="flex items-center gap-1.5">
+                              <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
+
+                              {activeCOL?.transport && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="flex items-center justify-center bg-white/5 border border-white/10 p-0.5 rounded-sm cursor-help hover:bg-white/10 transition-colors">
+                                      <Info className="size-2.5 text-sky-400" />
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="bottom" className="bg-[#0b1224] border-[#f97316]/30 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50">
+                                    <div className="flex items-start gap-2">
+                                      <Zap className="size-3 text-[#f97316] shrink-0 mt-0.5" />
+                                      <span className="leading-relaxed font-medium italic">
+                                        {transportMode === "P" ?
+                                          (tIntel?.bestOptionNoDriver || activeCOL?.transport?.bestOptionNoDriver || "Standard transit network.") :
+                                          (tIntel?.bestOptionDriver || activeCOL?.transport?.bestOptionDriver || "Vehicle ownership/hire recommended.")
+                                        }
+                                      </span>
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </div>
+                            
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
                               <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-[#f97316] text-white shadow-sm" : "text-slate-500 hover:text-white")}>Bus +</button>
                               <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-[#f97316] text-white shadow-sm" : "text-slate-500 hover:text-white")}>Car Hire</button>
@@ -683,19 +707,6 @@ function DecoderContent() {
                             </div>
                             <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                           </div>
-
-                          {/* 🕵️ TACTICAL INSIGHT DISPLAY */}
-                          {activeCOL?.transport && (
-                            <div className="bg-white/5 p-2 rounded-sm border-l border-[#f97316]/50 mt-1">
-                              <p className="text-[9px] font-medium text-slate-400 italic">
-                                <Zap className="inline size-2.5 text-[#f97316] mr-1" />
-                                {transportMode === "P" ?
-                                  (tIntel?.bestOptionNoDriver || activeCOL?.transport?.bestOptionNoDriver || "Standard transit network.") :
-                                  (tIntel?.bestOptionDriver || activeCOL?.transport?.bestOptionDriver || "Vehicle ownership/hire recommended.")
-                                }
-                              </p>
-                            </div>
-                          )}
                         </div>
                       </div>
 
