@@ -493,20 +493,7 @@ function DecideContent() {
                                 </div>
                             </div>
 
-                            {/* ⚡ LIFESTYLE SYNC */}
-                            <div className="py-1 px-3 bg-emerald-500/5 border border-emerald-500/30 rounded-sm flex items-center gap-3 h-[52px]">
-                                <div className="size-7 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/20 shrink-0">
-                                    <Zap className="size-3.5 text-emerald-500" />
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-1">Sync All Lifestyles</Label>
-                                    <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/5">
-                                        {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
-                                            <button key={mode} onClick={() => setCardLifestyles([mode, mode, mode])} className={cn("px-3 py-0.5 text-[8px] font-black uppercase tracking-wider transition-all italic leading-tight", cardLifestyles.every(l => l === mode) ? "bg-emerald-500 text-white shadow-[0_0_10px_rgba(16,185,129,0.2)]" : "text-slate-500 hover:text-slate-300")}>{mode}</button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 
