@@ -1111,36 +1111,49 @@ function DecoderContent() {
                                     {stabilityReport.metrics.estimatedChurnRatePercent != null ? `${stabilityReport.metrics.estimatedChurnRatePercent}%` : 'None found'}
                                   </div>
                                 </div>
-                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Senior Leadership Churn</div>
-                                  <div className="text-sm font-black text-amber-400 mt-0.5">
-                                    {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
+                                <div className="col-span-2 sm:col-span-3 relative rounded-sm overflow-hidden">
+                                  {/* Premium Paywall Overlay */}
+                                  <div className="absolute inset-0 z-10 backdrop-blur-md bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
+                                    <div className="flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
+                                      <Lock className="size-4 text-[#f97316]" />
+                                      <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Available on Request</span>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-2 sm:col-span-2">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
-                                  {(() => {
-                                    const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
-                                    if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
-                                      return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
-                                    }
-                                    const normalizedScore = 
-                                      (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
-                                      (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
-                                      (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
-                                      rawScore;
-                                    
-                                    return (
-                                      <div className={cn(
-                                        "text-xs font-black mt-1 uppercase",
-                                        normalizedScore === 'Proactive' && "text-green-400",
-                                        normalizedScore === 'Standard' && "text-amber-400",
-                                        normalizedScore === 'Reactive' && "text-red-400"
-                                      )}>
-                                        {normalizedScore}
+
+                                  {/* Locked Content */}
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 opacity-30 select-none pointer-events-none">
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm blur-[2px]">
+                                      <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Senior Leadership Churn</div>
+                                      <div className="text-sm font-black text-amber-400 mt-0.5">
+                                        {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
                                       </div>
-                                    );
-                                  })()}
+                                    </div>
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2 blur-[2px]">
+                                      <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
+                                      {(() => {
+                                        const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
+                                        if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
+                                          return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
+                                        }
+                                        const normalizedScore = 
+                                          (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
+                                          (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
+                                          (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
+                                          rawScore;
+                                        
+                                        return (
+                                          <div className={cn(
+                                            "text-xs font-black mt-1 uppercase",
+                                            normalizedScore === 'Proactive' && "text-green-400",
+                                            normalizedScore === 'Standard' && "text-amber-400",
+                                            normalizedScore === 'Reactive' && "text-red-400"
+                                          )}>
+                                            {normalizedScore}
+                                          </div>
+                                        );
+                                      })()}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
 
