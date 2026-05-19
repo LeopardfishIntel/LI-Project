@@ -41,7 +41,7 @@ export default function Footer() {
           {/* Right Column: Disclosure */}
           <div className="md:col-span-2 border-l border-[#d6a65d]/40 pl-6 py-1">
             <p className="text-xs md:text-sm text-gray-400 leading-relaxed font-medium antialiased">
-              Leopardfish Intel provides data-driven insights for informational purposes only and does not offer financial, legal, or immigration advice. Final decisions and due diligence are the responsibility of each teacher. International postings carry risks; teachers should ensure adequate personal financial reserves before relocating.
+              Leopardfish Intel provides data-driven insights for informational purposes only and does not offer financial, legal, or immigration advice. Final decisions and due diligence are the responsibility of each teacher. International postings carry risks; teachers should ensure adequate personal financial reserves before relocating. Calculations are based on current regional indices and are intended as a guide only. Final disposable income will naturally vary based on personal spending and specific household arrangements.
             </p>
           </div>
         </div>

@@ -520,9 +520,9 @@ function DecoderContent() {
           <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors"><ArrowLeft className="size-3" /> Back</button>
           <p className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
 
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Target country</label>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Target country</label>
               <Select value={settings.country} onValueChange={(v) => setSettings({ ...settings, country: v, schoolId: "" })}>
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="Country" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
@@ -531,8 +531,8 @@ function DecoderContent() {
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Select school</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Select school</label>
               <Select disabled={!settings.country} value={settings.schoolId} onValueChange={(v) => setSettings({ ...settings, schoolId: v })}>
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="School" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
@@ -543,8 +543,8 @@ function DecoderContent() {
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">Family status</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Family status</label>
               <Select value={settings.familyStatus} onValueChange={(v) => setSettings({ ...settings, familyStatus: v })}>
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
@@ -558,14 +558,14 @@ function DecoderContent() {
               </Select>
             </div>
 
-            <div className="pt-2 border-t border-white/5 space-y-2">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black text-sky-400 uppercase tracking-widest italic leading-none mb-1">Monthly net salary ({currency})</label>
+            <div className="pt-3 border-t border-white/5 space-y-3">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed mb-2">Monthly net salary ({currency})</label>
                 <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
               </div>
               {settings.familyStatus !== "Single" && settings.familyStatus !== "Married (sole earner)" && (
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic leading-none mb-1">Partner net salary ({currency})</label>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed mb-2">Partner net salary ({currency})</label>
                   <Input type="number" value={settings.partnerSalary} onChange={(e) => setSettings({ ...settings, partnerSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
                 </div>
               )}
@@ -574,7 +574,7 @@ function DecoderContent() {
             <button
               onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
               disabled={!activeSchool}
-              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-teal-500 text-teal-400 font-bold rounded-none h-10 transition-all hover:bg-teal-500 hover:text-white shadow-[0_0_15px_rgba(20,184,166,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
+              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-10 transition-all hover:bg-[#f97316] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
             >
               Compare Options
             </button>
@@ -597,7 +597,7 @@ function DecoderContent() {
                       <span className="text-slate-700 text-lg ml-3 not-italic">#{activeSchool.id}</span>
                     </h2>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[10px] font-black text-[#f97316] uppercase tracking-widest bg-[#f97316]/10 px-2 py-1 rounded-sm border border-[#f97316]/20">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-sm border border-white/10">
                         {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
                       </span>
                       <div className="flex gap-2">
@@ -635,23 +635,23 @@ function DecoderContent() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-0.5">Reliability</p>
-                    <p className="text-2xl font-black text-slate-300 italic leading-none">{analysis?.reliability}<span className="text-xs text-slate-700">/10</span></p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 leading-relaxed">Reliability</p>
+                    <p className="text-2xl font-black text-slate-300 italic leading-tight">{analysis?.reliability}<span className="text-xs text-slate-700">/10</span></p>
                   </div>
                 </div>
 
                 {/* Main Grid: Outgoings & Incomes */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
-                  <div className="space-y-3">
-                    <h3 className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.3em] flex items-center gap-2 border-b border-[#f97316]/10 pb-1.5"><Minus className="size-4" /> Monthly outgoings</h3>
-                    <div className="space-y-1.5">
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black text-[#f97316] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#f97316]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
+                    <div className="space-y-3">
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
                         <div className="flex items-center gap-2">
-                          <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
                           {analysis?.propertyLabel && (
-                            <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">
+                            <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
                               {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
                             </span>
                           )}
@@ -661,26 +661,26 @@ function DecoderContent() {
                         </span>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Standard food and household supply indices for your household size.</TooltipContent></Tooltip>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Standard food and household supply indices for your household size.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.groceries || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Utilities</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Monthly averages for electricity, heating, water, and waste management.</TooltipContent></Tooltip>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Utilities</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Monthly averages for electricity, heating, water, and waste management.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.utilities || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Internet and sim</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Includes standard home broadband and one SIM card per person in the home.</TooltipContent></Tooltip>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Internet and sim</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Includes standard home broadband and one SIM card per person in the home.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.connectivity || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <div className="flex flex-col gap-1 w-full">
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex flex-col gap-1.5 w-full">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-1.5">
-                              <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
+                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
 
                               {activeCOL?.transport && (
                                 <Tooltip>
@@ -705,26 +705,26 @@ function DecoderContent() {
                             </div>
                             
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Bus +</button>
-                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Car Hire</button>
-                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>Taxi</button>
+                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Bus +</button>
+                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Car Hire</button>
+                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Taxi</button>
                             </div>
                             <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-teal-500/50">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">A discretionary guide for dining out, cultural activities, and general socialising.</TooltipContent></Tooltip>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">A discretionary guide for dining out, cultural activities, and general socialising.</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.social || 0).toLocaleString()}</span>
                       </div>
 
                       {/* RESTORED: Custom Adjustments Box from Screenshot */}
-                      <div className="pt-4 mt-2">
+                      <div className="pt-5 mt-3">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
                             <Wallet className="size-4 text-slate-400" />
-                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Custom Adjustments (+/-)</p>
+                            <p className="text-xs font-black text-slate-400 uppercase tracking-wider italic leading-normal">Custom Adjustments (+/-)</p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-black text-slate-600 uppercase">{currency}</span>
@@ -738,55 +738,55 @@ function DecoderContent() {
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center pt-2 border-t-2 border-[#f97316]/20 mt-4">
-                        <span className="text-[10px] font-black text-slate-400 uppercase italic tracking-widest">Total outgoings</span>
-                        <span className="text-[18px] font-black text-white tabular-nums">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
+                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#f97316]/20 mt-5">
+                        <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total outgoings</span>
+                        <span className="text-[18px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
 
 
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.3em] flex items-center gap-2 border-b border-[#f97316]/10 pb-1.5"><Plus className="size-4" /> Monthly incomes</h3>
-                    <div className="space-y-4">
+                  <div className="space-y-5">
+                    <h3 className="text-xs font-black text-[#f97316] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#f97316]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
+                    <div className="space-y-5">
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Monthly net base</span>
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-wider leading-normal">Monthly net base</span>
                         <span className="text-[14px] font-black text-white">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
 
-                      <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-sm flex justify-between items-center">
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
                         <div className="flex items-center gap-2">
                           <Banknote className="size-4 text-slate-400" />
-                          <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest italic leading-none">Additional Income</p>
+                          <span className="text-xs font-black text-slate-400 uppercase tracking-wider leading-normal">Additional Income</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] font-black text-emerald-700">{currency}</span>
-                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/40 border-white/10 w-24 h-8 px-2 text-right text-xs font-black text-emerald-400 rounded-sm focus:border-teal-500", noSpinners)} />
+                          <span className="text-[9px] font-black text-slate-600">{currency}</span>
+                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/40 border-white/10 w-24 h-8 px-2 text-right text-xs font-black text-white rounded-sm focus:border-teal-500", noSpinners)} />
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center pt-2 border-t border-emerald-500/10">
-                        <span className="text-[10px] font-black text-slate-400 uppercase italic tracking-widest">Total monthly income</span>
-                        <span className="text-[16px] font-black text-white tabular-nums">{currency} {Math.round(analysis?.totalIn || 0).toLocaleString()}</span>
+                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#f97316]/20 mt-1">
+                        <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total monthly income</span>
+                        <span className="text-[16px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalIn || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="bg-[#f97316]/5 p-6 border border-[#f97316]/20 text-right rounded-sm relative shadow-inner">
+                      <div className="bg-[#f97316]/5 p-7 border border-[#f97316]/20 text-right rounded-sm relative shadow-inner">
                         {/* 🎯 BENCHMARK CURRENCY TOGGLE */}
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-4">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
                             {BENCHMARKS.map(b => (
-                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-500 hover:text-teal-400")}>{b.code}</button>
+                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
                             ))}
                           </div>
-                          <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] italic">Monthly Disposable Surplus</p>
+                          <p className="text-xs font-black text-[#f97316] uppercase tracking-[0.25em] italic leading-normal">Monthly Disposable Surplus</p>
                         </div>
 
                         <div className="flex flex-col items-end">
-                          <div className="flex items-baseline gap-2 leading-none">
+                          <div className="flex items-baseline gap-2 leading-tight">
                             <span className="text-xl font-black text-white/50">{currency}</span>
-                            <span className={cn("text-5xl font-black tracking-tighter tabular-nums text-white", (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
+                            <span className={cn("text-5xl font-black tracking-tighter tabular-nums text-white leading-tight", (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
                               {Math.round(analysis?.surplus || 0).toLocaleString()}
                               {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#f97316] ml-1">*</span>}
                             </span>
@@ -895,7 +895,7 @@ function DecoderContent() {
                                 setUplift13(false);
                                 setUplift14(false);
                               }}
-                              className="mt-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white underline underline-offset-4"
+                              className="mt-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-white underline underline-offset-4"
                             >
                               Reset to Standard Baseline
                             </button>
@@ -963,7 +963,7 @@ function DecoderContent() {
                       });
                     */}
                     <div>
-                      <h4 className="text-[11px] font-black text-sky-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
+                      <h4 className="text-xs font-black text-[#f97316] uppercase tracking-[0.4em] mb-4 flex items-center gap-2 leading-relaxed">
                         <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
                       </h4>
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
@@ -991,31 +991,29 @@ function DecoderContent() {
                                   </span>
                                 </div>
                                 
-                                <div className="space-y-2.5 pt-0.5">
-                                  {/* STEP 1 */}
-                                  <div className="flex items-start gap-2.5">
-                                    <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
-                                      ✓
-                                    </div>
-                                    <div>
-                                      <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
-                                      <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
-                                    </div>
-                                  </div>
+                                <div className="space-y-2 pt-0.5">
+                                   {/* STEP 1 */}
+                                   <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
+                                     <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black shrink-0">
+                                       ✓
+                                     </div>
+                                     <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Step 1: Institutional Dossier Loaded</span>
+                                       <span className="text-[9px] text-slate-400 font-medium">— Retrieved local vacancy records &amp; database (&lt; 100ms)</span>
+                                     </div>
+                                   </div>
 
-                                  {/* STEP 2 */}
-                                  <div className="flex items-start gap-2.5">
-                                    <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
-                                      <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
-                                    </div>
-                                    <div>
-                                      <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
-                                        Step 2: Active Web Portals Sweep
-                                      </p>
-                                      <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums &amp; school web portals live...</p>
-                                    </div>
-                                  </div>
-                                </div>
+                                   {/* STEP 2 */}
+                                   <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
+                                     <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold shrink-0">
+                                       <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
+                                     </div>
+                                     <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Step 2: Active Web Portals Sweep</span>
+                                       <span className="text-[9px] text-slate-400 font-medium">— Auditing TES, Schrole, aggregates, forums &amp; school web portals live...</span>
+                                     </div>
+                                   </div>
+                                 </div>
                               </div>
                             </div>
                           ) : stabilityError ? (
@@ -1051,16 +1049,15 @@ function DecoderContent() {
                                     </p>
                                   </div>
                                 </div>
-
                                 <div className="flex items-center gap-2 self-start sm:self-center">
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <button className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-sm font-black uppercase text-[9px] text-sky-400 transition-all hover:text-white">
+                                      <button className="flex items-center gap-1.5 px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 rounded-sm font-black uppercase text-[9px] text-teal-400 transition-all hover:text-white">
                                         <Info className="size-3" /> Implications & Impact
                                       </button>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top" className="max-w-sm bg-slate-900 border border-white/10 text-white p-3 space-y-2 rounded-sm shadow-xl z-50">
-                                      <p className="text-[10px] font-black uppercase tracking-wider text-sky-400 border-b border-white/10 pb-1">Implications & Impact</p>
+                                    <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2.5 rounded-sm shadow-xl z-50">
+                                      <p className="text-[10px] font-black uppercase tracking-wider text-[#f97316] border-b border-white/10 pb-1.5 leading-relaxed">Implications & Impact</p>
                                       <ul className="space-y-1.5 text-[10px] leading-relaxed text-slate-300 font-medium">
                                         <li>
                                           <span className="font-black text-emerald-400">Low (&lt;10%):</span> Outstanding retention. Indicates a settled staffroom, stable SLT support, and high satisfaction.
@@ -1077,7 +1074,6 @@ function DecoderContent() {
                                       </ul>
                                     </TooltipContent>
                                   </Tooltip>
-
                                   <button
                                     onClick={() => loadStabilityReport(true)}
                                     disabled={isCalculatingStability}
@@ -1091,46 +1087,48 @@ function DecoderContent() {
 
                               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est Staff Numbers</div>
+                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Staff</div>
                                   <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase || '—'}</div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Known Adverts in the last 12 months</div>
+                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
                                   <div className="text-sm font-black text-white mt-0.5">
                                     {stabilityReport.metrics.averageYearlyTesAdverts != null ? stabilityReport.metrics.averageYearlyTesAdverts : 'None found'}
                                   </div>
                                 </div>
                                 <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Est. 12m Churn Rate</div>
-                                  <div className="text-sm font-black text-sky-400 mt-0.5">
+                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
+                                  <div className="text-sm font-black text-white mt-0.5">
                                     {stabilityReport.metrics.estimatedChurnRatePercent != null ? `${stabilityReport.metrics.estimatedChurnRatePercent}%` : 'None found'}
                                   </div>
                                 </div>
-                              </div> {/* Closes the first grid row */}
+                              </div>
 
                               {/* MASSIVE PREMIUM WRAPPER */}
                               <div className="relative rounded-sm overflow-hidden mt-3">
                                 {/* SINGLE PAYWALL OVERLAY */}
                                 <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
                                   {/* Non-orange, sleek glass button */}
-                                  <div className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl">
+                                  <div 
+                                    onClick={() => activeSchool && router.push(`/schools/${activeSchool.id}`)}
+                                    className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
+                                  >
                                     <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
                                   </div>
                                 </div>
 
                                 {/* LOCKED CONTENT */}
-                                <div className="opacity-30 select-none pointer-events-none blur-[2px] space-y-3">
-                                  
+                                <div className="opacity-30 select-none pointer-events-none blur-[2px]">
                                   {/* Locked Metrics Grid */}
                                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                      <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Senior Leadership Churn</div>
+                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Senior Leadership Churn</div>
                                       <div className="text-sm font-black text-amber-400 mt-0.5">
                                         {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
                                       </div>
                                     </div>
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2">
-                                      <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Recruitment Style</div>
+                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Recruitment Style</div>
                                       {(() => {
                                         const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
                                         if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
@@ -1155,167 +1153,11 @@ function DecoderContent() {
                                       })()}
                                     </div>
                                   </div>
-
-                                  {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
-                                  {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
-                                    <div className="border border-white/5 bg-black/10 rounded-sm">
-                                      <details className="group">
-                                        <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
-                                          <span className="flex items-center gap-2">
-                                            {isCalculatingStability ? (
-                                              <span className="relative flex h-3.5 w-3.5 items-center justify-center">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/50 opacity-75"></span>
-                                                <Briefcase className="size-3 text-[#f97316]" />
-                                              </span>
-                                            ) : (
-                                              <Briefcase className="size-3 text-[#f97316]" />
-                                            )}
-                                            {isCalculatingStability ? (
-                                              <span className="text-[10px] font-black uppercase tracking-wider text-[#f97316] animate-pulse">
-                                                Sweeping Live Vacancies...
-                                              </span>
-                                            ) : (
-                                              <span className="flex items-center gap-2">
-                                                <span className="text-[10px] font-black uppercase tracking-wider text-sky-400">
-                                                  View Discovered Vacancies
-                                                </span>
-                                                <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[8px] font-black uppercase tracking-wider leading-none">
-                                                  12-Month History
-                                                </span>
-                                                <span className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black leading-none">
-                                                  {stabilityReport?.scrapedJobsList?.length || 0}
-                                                </span>
-                                              </span>
-                                            )}
-                                          </span>
-                                          <ChevronDown className="size-3 text-slate-400 group-open:rotate-180 transition-transform" />
-                                        </summary>
-                                        <div className="p-3 border-t border-white/5 bg-black/25 text-[10px] space-y-2">
-                                          
-                                          {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD */}
-                                          {isCalculatingStability && (
-                                            <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40">
-                                              <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
-                                                <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
-                                                  <span className="relative flex h-2 w-2">
-                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
-                                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
-                                                  </span>
-                                                  Executing Two-Step Vacancy Audit
-                                                </span>
-                                                <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                                  Running Research Engine...
-                                                </span>
-                                              </div>
-                                              
-                                              <div className="space-y-2.5 pt-0.5">
-                                                {/* STEP 1 */}
-                                                <div className="flex items-start gap-2.5">
-                                                  <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black mt-0.5">
-                                                    ✓
-                                                  </div>
-                                                  <div>
-                                                    <p className="text-[10px] font-black text-emerald-300 uppercase tracking-wider">Step 1: Institutional Dossier Loaded</p>
-                                                    <p className="text-[9px] text-slate-400 font-medium">Retrieved local vacancy records &amp; institutional profile database (&lt; 100ms)</p>
-                                                  </div>
-                                                </div>
-
-                                                {/* STEP 2 */}
-                                                <div className="flex items-start gap-2.5">
-                                                  <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold mt-0.5">
-                                                    <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
-                                                  </div>
-                                                  <div>
-                                                    <p className="text-[10px] font-black text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
-                                                      Step 2: Active Web Portals Sweep
-                                                    </p>
-                                                    <p className="text-[9px] text-slate-400 font-medium">Auditing TES, Schrole, aggregates, forums & school web portals live...</p>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          )}
-
-                                          {stabilityReport?.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0 && (
-                                            <div className={cn(
-                                              "grid grid-cols-1 gap-2 text-slate-300 transition-opacity duration-300",
-                                              isCalculatingStability && "opacity-35 pointer-events-none"
-                                            )}>
-                                              {stabilityReport.scrapedJobsList.map((job: string, idx: number) => {
-                                                const { status, hasDeadline, label } = getJobStatus(job);
-                                                const isOpen = status === 'open';
-                                                const isHighlightedOpen = isOpen && hasDeadline;
-                                                const isMutedClosed = !isOpen;
-                                                return (
-                                                  <div 
-                                                    key={idx} 
-                                                    className={cn(
-                                                      "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 p-2 border rounded-sm transition-all text-[11px]",
-                                                      isHighlightedOpen 
-                                                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300 shadow-sm shadow-emerald-950/20" 
-                                                        : isMutedClosed
-                                                          ? "bg-white/5 border-white/5 text-slate-500"
-                                                          : "bg-white/5 border-white/5 text-slate-300"
-                                                    )}
-                                                  >
-                                                    <div className="flex items-center gap-2">
-                                                      <span className={cn(
-                                                        "font-bold text-[10px]", 
-                                                        isHighlightedOpen ? "text-emerald-400" : isMutedClosed ? "text-slate-600" : "text-slate-400"
-                                                      )}>
-                                                        {idx + 1}.
-                                                      </span>
-                                                      <span className={cn(
-                                                        "font-semibold", 
-                                                        isHighlightedOpen ? "text-emerald-50" : isMutedClosed ? "text-slate-500 line-through decoration-white/10" : "text-slate-200"
-                                                      )}>
-                                                        {job}
-                                                      </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5 self-end sm:self-auto">
-                                                      {isHighlightedOpen ? (
-                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                                                          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                                          {label}
-                                                        </span>
-                                                      ) : isMutedClosed ? (
-                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-white/5 text-slate-500 border border-white/5">
-                                                          {label}
-                                                        </span>
-                                                      ) : null}
-                                                    </div>
-                                                  </div>
-                                                );
-                                              })}
-                                            </div>
-                                          )}
-
-                                          {stabilityReport?.lastScrapedAt && (
-                                            <p className={cn(
-                                              "text-[9px] text-slate-500 font-medium text-right pt-1 transition-opacity duration-300",
-                                              isCalculatingStability && "opacity-35"
-                                            )}>
-                                              Last verified via active search: {formatDeterministicDate(stabilityReport.lastScrapedAt)}
-                                            </p>
-                                          )}
-                                        </div>
-                                      </details>
-                                    </div>
-                                  )}
-
-                                  <div className="p-3 bg-white/5 border border-white/10 rounded-sm text-xs leading-relaxed text-slate-300">
-                                    <span className="font-medium italic text-slate-200">
-                                      {stabilityReport.leopardfishIntelAlert}
-                                    </span>
-                                    <span className="text-slate-400 ml-1.5">
-                                      This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
-                                    </span>
-                                  </div>
                                 </div>
                               </div>
                             </div>
                           ) : (
-                            <div className="text-slate-500 text-xs font-semibold">
+                            <div className="text-slate-400 text-xs font-semibold">
                               Select a school to audit stability metrics.
                             </div>
                           )}
@@ -1333,13 +1175,13 @@ function DecoderContent() {
                             </span>
                           </div>
                           {isRewording && (
-                            <span className="text-[9px] font-black text-sky-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
-                              <span className="size-1.5 rounded-full bg-sky-400 animate-ping" />
+                            <span className="text-[9px] font-black text-teal-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
+                              <span className="size-1.5 rounded-full bg-teal-400 animate-ping" />
                               Recalibrating staffroom talk...
                             </span>
                           )}
                         </div>
-                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-sky-500/30 pl-4 italic font-medium">
+                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-teal-500/30 pl-4 italic font-medium">
                           {isRewording && !rewordedBriefingText ? (
                             <div className="space-y-3 py-2">
                               <div className="h-4 bg-white/5 rounded-sm w-3/4 animate-pulse" />
@@ -1364,7 +1206,7 @@ function DecoderContent() {
                               router.push(`/schools/${activeSchool.id}`);
                             }
                           }}
-                          className="text-[10px] font-black text-sky-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-sky-500/5 hover:bg-sky-500/10 border border-sky-500/10 hover:border-sky-500/40 px-3 py-2 rounded-sm"
+                          className="text-[10px] font-black text-teal-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-teal-500/5 hover:bg-teal-500/10 border border-teal-500/10 hover:border-teal-500/40 px-3 py-2 rounded-sm"
                         >
                           <Zap className="size-3 text-[#f97316] animate-pulse" /> Request Leopardfish School Analysis
                         </button>
@@ -1373,13 +1215,13 @@ function DecoderContent() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-8 pt-6 border-t border-white/5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-8 pt-6 border-t border-white/5">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Non-contact</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.noncontacttime || "---"}</p>
+                        <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Non-contact</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.noncontacttime || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Contractual non-contact time expressed as a percentage of a full teaching timetable.</TooltipContent>
@@ -1388,9 +1230,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Activity className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Health coverage</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.healthcoverage || "Standard"}</p>
+                        <Activity className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Health coverage</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.healthcoverage || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The level of private or state medical insurance provided within this school's contract.</TooltipContent>
@@ -1399,9 +1241,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Curriculum</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.curriculum || "---"}</p>
+                        <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Curriculum</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.curriculum || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The primary teaching and assessment framework used for delivery at this school.</TooltipContent>
@@ -1410,22 +1252,22 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <ShieldCheck className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Accreditations</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.approvals || "Standard"}</p>
+                        <ShieldCheck className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Accreditations</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.approvals || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">External quality assurance and professional body memberships such as COBIS, HMC, or BSO.</TooltipContent>
                   </Tooltip>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-2.5">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Work/life</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.worklifescore || "---"}</p>
+                        <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Work/life</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.worklifescore || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Our internal rating for work-life balance based on direct teacher feedback and workload audit.</TooltipContent>
@@ -1434,9 +1276,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Academic</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.academicscore || "---"}</p>
+                        <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Academic</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.academicscore || "---"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The academic rigour, student attainment levels, and university placement success of the school.</TooltipContent>
@@ -1445,9 +1287,9 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Target className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Expected retirement</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">
+                        <Target className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Expected retirement</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">
                           {activeReq ? `M: ${activeReq.max_age_m} | F: ${activeReq.max_age_f}` : "---"}
                         </p>
                       </div>
@@ -1458,19 +1300,13 @@ function DecoderContent() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Lock className="size-4 mx-auto mb-2 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[9px] font-black text-[#f97316] uppercase tracking-widest leading-none mb-1">Security/Safety</p>
-                        <p className="text-sm font-semibold text-slate-300 italic leading-none">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
+                        <Lock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Security/Safety</p>
+                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">National and local safety rating derived from the Global Peace Index and Crime Index data.</TooltipContent>
                   </Tooltip>
-                </div>
-
-                <div className="mt-8 flex flex-col md:flex-row gap-4 items-center justify-between opacity-50 italic px-2 border-t border-white/5 pt-4">
-                  <p className="text-[11px] font-medium text-slate-500 leading-snug tracking-wider">
-                    Calculations are based on current regional indices and are intended as a guide only. Final disposable income will naturally vary based on personal spending and specific household arrangements.
-                  </p>
                 </div>
               </div>
             </div>
