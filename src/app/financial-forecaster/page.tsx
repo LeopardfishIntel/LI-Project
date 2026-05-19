@@ -636,7 +636,7 @@ function DecoderContent() {
                   </div>
                   <div className="text-right">
                     <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-0.5">Reliability</p>
-                    <p className="text-2xl font-black text-sky-500 italic leading-none">{analysis?.reliability}<span className="text-xs text-slate-700">/10</span></p>
+                    <p className="text-2xl font-black text-slate-300 italic leading-none">{analysis?.reliability}<span className="text-xs text-slate-700">/10</span></p>
                   </div>
                 </div>
 
