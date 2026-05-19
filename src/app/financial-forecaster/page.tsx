@@ -1164,7 +1164,7 @@ function DecoderContent() {
                                   {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
                                   {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
                                     <div className="border border-white/5 bg-black/10 rounded-sm">
-                                      <details className="group" open={isCalculatingStability ? true : undefined}>
+                                      <details className="group">
                                         <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
                                           <span className="flex items-center gap-2">
                                             {isCalculatingStability ? (
