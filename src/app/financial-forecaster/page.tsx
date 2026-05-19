@@ -1029,14 +1029,7 @@ function DecoderContent() {
                                   <div>
                                     <p className="text-[10px] text-slate-400 font-medium">
                                       Category:{" "}
-                                      <span className={cn(
-                                        "font-black uppercase",
-                                        stabilityReport.metrics.estimatedChurnRatePercent == null && "text-slate-400",
-                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent < 10 && "text-emerald-400",
-                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent >= 10 && stabilityReport.metrics.estimatedChurnRatePercent <= 15 && "text-green-400",
-                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent > 15 && stabilityReport.metrics.estimatedChurnRatePercent <= 22 && "text-amber-400",
-                                        stabilityReport.metrics.estimatedChurnRatePercent != null && stabilityReport.metrics.estimatedChurnRatePercent > 22 && "text-rose-400"
-                                      )}>
+                                      <span className="font-black uppercase text-slate-300">
                                         {(() => {
                                           const rate = stabilityReport.metrics.estimatedChurnRatePercent;
                                           if (rate == null) return "None found";
