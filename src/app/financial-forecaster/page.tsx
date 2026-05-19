@@ -651,7 +651,7 @@ function DecoderContent() {
                         <div className="flex items-center gap-2">
                           <Tooltip><TooltipTrigger asChild><span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight cursor-help border-b border-dotted border-slate-700">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
                           {analysis?.propertyLabel && (
-                            <span className="px-1.5 py-0.5 rounded-sm bg-sky-500/10 border border-sky-500/20 text-[8px] font-black text-sky-400 uppercase tracking-widest leading-none">
+                            <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none">
                               {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
                             </span>
                           )}
