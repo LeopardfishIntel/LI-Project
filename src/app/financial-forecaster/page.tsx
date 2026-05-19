@@ -1114,9 +1114,8 @@ function DecoderContent() {
                                 <div className="col-span-2 sm:col-span-3 relative rounded-sm overflow-hidden">
                                   {/* Premium Paywall Overlay */}
                                   <div className="absolute inset-0 z-10 backdrop-blur-md bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                    <div className="flex items-center gap-2 bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
-                                      <Lock className="size-4 text-[#f97316]" />
-                                      <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Available on Request</span>
+                                    <div className="flex items-center justify-center bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
+                                      <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Find out more</span>
                                     </div>
                                   </div>
 
@@ -1159,7 +1158,7 @@ function DecoderContent() {
 
                               {/* 📋 DISCOVERED VACANCIES DROPDOWN */}
                               {((stabilityReport && stabilityReport.scrapedJobsList && stabilityReport.scrapedJobsList.length > 0) || isCalculatingStability) && (
-                                <div className="border border-white/5 bg-black/10 rounded-sm">
+                                <div className="border border-white/5 bg-black/10 rounded-sm mt-3">
                                   <details className="group" open={isCalculatingStability ? true : undefined}>
                                     <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
                                       <span className="flex items-center gap-2">
@@ -1304,13 +1303,23 @@ function DecoderContent() {
                                 </div>
                               )}
 
-                              <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm text-xs leading-relaxed text-slate-300">
-                                <span className="font-medium italic text-slate-200">
-                                  {stabilityReport.leopardfishIntelAlert}
-                                </span>
-                                <span className="text-slate-400 ml-1.5">
-                                  This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
-                                </span>
+                              <div className="relative rounded-sm overflow-hidden mt-3">
+                                {/* Premium Paywall Overlay */}
+                                <div className="absolute inset-0 z-10 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
+                                  <div className="flex items-center justify-center bg-[#f97316]/10 border border-[#f97316]/20 px-4 py-2 rounded-sm cursor-pointer hover:bg-[#f97316]/20 transition-colors shadow-2xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#f97316]">Find out more</span>
+                                  </div>
+                                </div>
+                                
+                                {/* Locked Content */}
+                                <div className="p-3 bg-[#f97316]/5 border border-[#f97316]/10 rounded-sm text-xs leading-relaxed text-slate-300 opacity-40 select-none pointer-events-none blur-[2.5px]">
+                                  <span className="font-medium italic text-slate-200">
+                                    {stabilityReport.leopardfishIntelAlert}
+                                  </span>
+                                  <span className="text-slate-400 ml-1.5">
+                                    This data is compiled from historical job advertisements indexed across 24+ key recruitment channels—including major portals (TES, Schrole, Search Associates), global agencies, and direct school networks—to provide a realistic pulse of the school's recruiting pace.
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           ) : (
