@@ -229,7 +229,7 @@ function MatrixContent() {
   if (!mounted || !params || !data) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#f97316]">
+    <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#d95f02]">
       <div className="max-w-5xl mx-auto space-y-12">
         <header className="space-y-6">
           <div className="flex justify-between items-end">
@@ -239,7 +239,7 @@ function MatrixContent() {
               </h1>
               <div className="flex items-center gap-4 mt-3 flex-wrap">
                 <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
-                  Priority Drivers: <span className="text-[#f97316]">{params.goals.join(', ')}</span>
+                  Priority Drivers: <span className="text-[#d95f02]">{params.goals.join(', ')}</span>
                 </p>
                 <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
                 <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
@@ -289,22 +289,22 @@ function MatrixContent() {
                 </span>
               </div>
               
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Wallet className="size-3 text-green-400" /> Savings
                 <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => g.toLowerCase().includes('career')) || params.goals.some((g:string) => g.toLowerCase().includes('growth'))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => g.toLowerCase().includes('career')) || params.goals.some((g:string) => g.toLowerCase().includes('growth'))) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Zap className="size-3 text-sky-400" /> Career
                 <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
-                <Compass className="size-3 text-[#f97316]" /> Adventure
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+                <Compass className="size-3 text-[#d95f02]" /> Adventure
                 <Info className="size-3 cursor-help" />
               </div>
 
-              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) && "border-[#f97316] bg-[#f97316]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
+              <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Coffee className="size-3 text-rose-400" /> Culture
                 <Info className="size-3 cursor-help" />
               </div>
@@ -327,7 +327,7 @@ function MatrixContent() {
                           <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">0{idx + 1}</span>
                           <button 
                             onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
-                            className="lg:hidden bg-[#f97316] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-2 shadow-lg hover:bg-white"
+                            className="lg:hidden bg-[#d95f02] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-2 shadow-lg hover:bg-white"
                           >
                             Generate <ChevronRight className="size-3" />
                           </button>
@@ -342,7 +342,7 @@ function MatrixContent() {
                           {/* Sliding Button (Desktop) */}
                           <button 
                             onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
-                            className="hidden lg:flex absolute left-0 translate-y-10 opacity-0 group-hover/btn:translate-y-0 group-hover/btn:opacity-100 transition-all duration-300 bg-[#f97316] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm items-center gap-3 shadow-lg hover:bg-white shrink-0 pointer-events-auto"
+                            className="hidden lg:flex absolute left-0 translate-y-10 opacity-0 group-hover/btn:translate-y-0 group-hover/btn:opacity-100 transition-all duration-300 bg-[#d95f02] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm items-center gap-3 shadow-lg hover:bg-white shrink-0 pointer-events-auto"
                           >
                             Generate Report <ChevronRight className="size-3" />
                           </button>
@@ -359,7 +359,7 @@ function MatrixContent() {
                         return (
                           <div className="flex flex-col lg:flex-row lg:items-center gap-1 w-full">
                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
-                            <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#f97316]">
+                            <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#d95f02]">
                               {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
                             </span>
                           </div>
@@ -368,21 +368,21 @@ function MatrixContent() {
                     </div>
 
                     <div className="grid grid-cols-4 lg:col-span-4 lg:grid lg:grid-cols-4 lg:w-full">
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent lg:border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && cn("lg:border-[#d95f02] bg-[#d95f02]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Savings</span>
-                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#f97316]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('saving')) ? "text-[#d95f02]" : "text-white")}>{country.scores.savings.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('career')) && cn("lg:border-[#d95f02] bg-[#d95f02]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Career</span>
-                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('career')) ? "text-[#f97316]" : "text-white")}>{country.scores.career.toFixed(1)}</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('career')) ? "text-[#d95f02]" : "text-white")}>{country.scores.career.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && cn("lg:border-[#d95f02] bg-[#d95f02]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Adv</span>
-                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) ? "text-[#f97316]" : "text-white")}>{country.scores.adventure.toFixed(1)}</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) ? "text-[#d95f02]" : "text-white")}>{country.scores.adventure.toFixed(1)}</span>
                       </div>
-                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance'))) && cn("lg:border-[#f97316] bg-[#f97316]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
+                      <div className={cn("flex flex-col justify-center items-center p-4 lg:border-x-2 border-transparent", params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance'))) && cn("lg:border-[#d95f02] bg-[#d95f02]/5 rounded-sm lg:rounded-none", isLast && "lg:border-b-2"))}>
                         <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Culture</span>
-                        <span className={cn("text-2xl font-black italic transition-colors", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) ? "text-[#f97316]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
+                        <span className={cn("text-2xl font-black italic transition-colors", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) ? "text-[#d95f02]" : "text-white")}>{country.scores.culture.toFixed(1)}</span>
                       </div>
                     </div>
                   </div>
@@ -407,7 +407,7 @@ function MatrixContent() {
         {sortedCountries.length > 0 && (
           <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
             <div className="flex items-start gap-4">
-              <div className="bg-[#f97316]/10 text-[#f97316] p-2 rounded-sm shrink-0 mt-0.5">
+              <div className="bg-[#d95f02]/10 text-[#d95f02] p-2 rounded-sm shrink-0 mt-0.5">
                 <Target className="size-5" />
               </div>
               <div>

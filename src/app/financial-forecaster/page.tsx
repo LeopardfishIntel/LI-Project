@@ -154,6 +154,106 @@ const getJobStatus = (job: string): { status: 'open' | 'closed'; hasDeadline: bo
   return { status: 'open', hasDeadline: false, label: '' };
 };
 
+const parseJobString = (job: string) => {
+  const sourcePart = job.split(' - ');
+  const source = sourcePart[1] || 'Web';
+  const main = sourcePart[0] || job;
+
+  // Extract title (everything before the first parenthesis)
+  const parenIdx = main.indexOf('(');
+  const title = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();
+
+  // Extract posted and closes from parentheticals
+  const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
+  let postedDate = '';
+  let closesDate = '';
+  if (parentheticalMatches.length > 0) {
+    const dateParenthetical = parentheticalMatches.find(m => {
+      const text = m[1].toLowerCase();
+      return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
+    }) || parentheticalMatches[parentheticalMatches.length - 1];
+    
+    const content = dateParenthetical[1];
+    const parts = content.split(';').map(s => s.trim());
+    const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
+    if (postedPart) postedDate = postedPart.replace(/posted:\s*/i, '').trim();
+    const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
+    if (closesPart) closesDate = closesPart.replace(/closes:\s*/i, '').trim();
+  }
+
+  const statusInfo = getJobStatus(job);
+  return { title, source, postedDate, closesDate, status: statusInfo.status, label: statusInfo.label, original: job };
+};
+
+const getJobPostedDate = (job: string): Date | null => {
+  const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
+  if (parentheticalMatches.length === 0) return null;
+  const dateParenthetical = parentheticalMatches.find(m => {
+    const text = m[1].toLowerCase();
+    return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
+  }) || parentheticalMatches[parentheticalMatches.length - 1];
+
+  const content = dateParenthetical[1];
+  const parts = content.split(';').map(s => s.trim());
+
+  // 1. Explicit Posted:
+  const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
+  if (postedPart) {
+    const dateStr = postedPart.replace(/posted:\s*/i, '').trim();
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d;
+  }
+
+  // 2. Explicit Closes: (posted is approx Closes - 28 days)
+  const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
+  if (closesPart) {
+    const dateStr = closesPart.replace(/closes:\s*/i, '').trim();
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return new Date(d.getTime() - 28 * 24 * 60 * 60 * 1000);
+    }
+  }
+
+  // 3. Fallbacks based on start date or cycle mentions
+  const lower = content.toLowerCase();
+  const today = new Date("2026-05-18");
+  if (lower.includes('2025')) {
+    return new Date("2025-01-01");
+  }
+  if (lower.includes('2026')) {
+    return new Date("2026-01-01");
+  }
+
+  return null;
+};
+
+const processAndFilterJobs = (jobs: string[]) => {
+  const today = new Date("2026-05-18");
+  const twelveMonthsAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+
+  const processed = jobs.map(job => {
+    const parsed = parseJobString(job);
+    const postedDate = getJobPostedDate(job);
+    return { ...parsed, rawPostedDate: postedDate };
+  });
+
+  // Filter: Keep if postedDate >= twelveMonthsAgo OR if postedDate is null (we assume it's current/within range if it has no explicit old date)
+  const filtered = processed.filter(job => {
+    if (!job.rawPostedDate) return true;
+    return job.rawPostedDate >= twelveMonthsAgo;
+  });
+
+  // Sort: Open jobs first, then closed.
+  return filtered.sort((a, b) => {
+    if (a.status === 'open' && b.status !== 'open') return -1;
+    if (a.status !== 'open' && b.status === 'open') return 1;
+
+    const dateA = a.rawPostedDate ? a.rawPostedDate.getTime() : today.getTime();
+    const dateB = b.rawPostedDate ? b.rawPostedDate.getTime() : today.getTime();
+    return dateB - dateA;
+  });
+};
+
 function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
@@ -184,6 +284,7 @@ function DecoderContent() {
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
+  const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
 
 
   
@@ -221,6 +322,9 @@ function DecoderContent() {
     if (!activeSchool) return;
     setIsCalculatingStability(true);
     setStabilityError(null);
+    if (force) {
+      setStabilityReport(null);
+    }
     try {
       const staffBaseVal = activeSchool.numericalstaff || parseInt(activeSchool.staffcount) || 80;
       const res = await getSchoolStabilityReport({
@@ -240,15 +344,29 @@ function DecoderContent() {
         setStabilityReport(res.data);
       }
     } catch (err: any) {
-      setStabilityError(err.message || "Failed to contact stability engine.");
+      const errMsg = err?.message || String(err);
+      console.error("AI Stability Calculation Error:", err);
+      if (
+        errMsg.includes("reading 'call'") ||
+        errMsg.includes("undefined (reading 'call')") ||
+        errMsg.includes("Failed to fetch")
+      ) {
+        console.warn("Detected Webpack chunk/HMR module mismatch. Reloading page to sync bundles...", err);
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+          return;
+        }
+      }
+      setStabilityError(errMsg || "Failed to contact stability engine.");
     } finally {
       setIsCalculatingStability(false);
     }
   }, [activeSchool]);
 
   useEffect(() => {
+    setTurnoverUnlocked(false);
+    setStabilityReport(null); // Clear previous report immediately to show progress card/loader!
     if (!activeSchool) {
-      setStabilityReport(null);
       setStabilityError(null);
       return;
     }
@@ -513,12 +631,12 @@ function DecoderContent() {
 
   return (
     <TooltipProvider delayDuration={100}>
-      <div className="flex flex-col lg:flex-row min-h-screen bg-[#020617] text-white selection:bg-[#f97316]">
+      <div className="flex flex-col lg:flex-row min-h-screen bg-[#020617] text-white selection:bg-[#d95f02]">
 
         {/* Sidebar: Manual Unrolled Search Settings */}
         <div className="w-full lg:w-72 bg-[#0b1224] border-r border-white/5 p-4 lg:fixed lg:h-full overflow-y-auto z-30 shadow-xl">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors"><ArrowLeft className="size-3" /> Back</button>
-          <p className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
+          <p className="text-[11px] font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
 
           <div className="space-y-4">
             <div className="space-y-2">
@@ -574,7 +692,7 @@ function DecoderContent() {
             <button
               onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
               disabled={!activeSchool}
-              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-10 transition-all hover:bg-[#f97316] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
+              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-none h-10 transition-all hover:bg-[#d95f02] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
             >
               Compare Options
             </button>
@@ -608,9 +726,9 @@ function DecoderContent() {
                           </div>
                         )}
                         {(analysis?.surplus ?? 0) > 0 && (analysis?.rateOfSaving ?? 0) <= 10 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[#f97316]/20 bg-[#f97316]/10">
-                            <AlertTriangle className="size-3.5 text-[#f97316]" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-[#f97316]">Limited Potential</span>
+                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[#d95f02]/20 bg-[#d95f02]/10">
+                            <AlertTriangle className="size-3.5 text-[#d95f02]" />
+                            <span className="text-[9px] font-black uppercase tracking-tight text-[#d95f02]">Limited Potential</span>
                           </div>
                         )}
                         {(analysis?.rateOfSaving ?? 0) > 10 && (analysis?.rateOfSaving ?? 0) <= 20 && (
@@ -644,7 +762,7 @@ function DecoderContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
                   <div className="space-y-4">
-                    <h3 className="text-xs font-black text-[#f97316] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#f97316]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
+                    <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
                     <div className="space-y-3">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -689,9 +807,9 @@ function DecoderContent() {
                                       <Info className="size-2.5 text-sky-400" />
                                     </div>
                                   </TooltipTrigger>
-                                  <TooltipContent side="bottom" className="bg-[#0b1224] border-[#f97316]/30 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50">
+                                  <TooltipContent side="bottom" className="bg-[#0b1224] border-[#d95f02]/30 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50">
                                     <div className="flex items-start gap-2">
-                                      <Zap className="size-3 text-[#f97316] shrink-0 mt-0.5" />
+                                      <Zap className="size-3 text-[#d95f02] shrink-0 mt-0.5" />
                                       <span className="leading-relaxed font-medium italic">
                                         {transportMode === "P" ?
                                           (tIntel?.bestOptionNoDriver || activeCOL?.transport?.bestOptionNoDriver || "Standard transit network.") :
@@ -738,7 +856,7 @@ function DecoderContent() {
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#f97316]/20 mt-5">
+                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#d95f02]/20 mt-5">
                         <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total outgoings</span>
                         <span className="text-[18px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
@@ -748,7 +866,7 @@ function DecoderContent() {
                   </div>
 
                   <div className="space-y-5">
-                    <h3 className="text-xs font-black text-[#f97316] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#f97316]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
+                    <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
                     <div className="space-y-5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -767,12 +885,12 @@ function DecoderContent() {
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#f97316]/20 mt-1">
+                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#d95f02]/20 mt-1">
                         <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total monthly income</span>
                         <span className="text-[16px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalIn || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="bg-[#f97316]/5 p-7 border border-[#f97316]/20 text-right rounded-sm relative shadow-inner">
+                      <div className="bg-[#d95f02]/5 p-7 border border-[#d95f02]/20 text-right rounded-sm relative shadow-inner">
                         {/* 🎯 BENCHMARK CURRENCY TOGGLE */}
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
@@ -780,7 +898,7 @@ function DecoderContent() {
                               <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
                             ))}
                           </div>
-                          <p className="text-xs font-black text-[#f97316] uppercase tracking-[0.25em] italic leading-normal">Monthly Disposable Surplus</p>
+                          <p className="text-xs font-black text-[#d95f02] uppercase tracking-[0.25em] italic leading-normal">Monthly Disposable Surplus</p>
                         </div>
 
                         <div className="flex flex-col items-end">
@@ -788,7 +906,7 @@ function DecoderContent() {
                             <span className="text-xl font-black text-white/50">{currency}</span>
                             <span className={cn("text-5xl font-black tracking-tighter tabular-nums text-white leading-tight", (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
                               {Math.round(analysis?.surplus || 0).toLocaleString()}
-                              {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#f97316] ml-1">*</span>}
+                              {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#d95f02] ml-1">*</span>}
                             </span>
                           </div>
 
@@ -963,10 +1081,10 @@ function DecoderContent() {
                       });
                     */}
                     <div>
-                      <h4 className="text-xs font-black text-[#f97316] uppercase tracking-[0.4em] mb-4 flex items-center gap-2 leading-relaxed">
+                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center gap-2 leading-relaxed">
                         <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
                       </h4>
-                      <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#f97316]/30 pl-4">
+                      <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#d95f02]/30 pl-4">
                         
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
                         <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
@@ -977,12 +1095,12 @@ function DecoderContent() {
                               <div className="h-3 bg-white/5 rounded-sm w-1/2 animate-pulse" />
                               
                               {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD (FIRST LOAD) */}
-                              <div className="p-3 bg-white/[0.02] border border-white/5 rounded-sm space-y-2.5 shadow-inner shadow-black/40 mt-3">
+                              <div className="p-3 bg-[#d95f02]/5 border border-[#d95f02]/30 shadow-[0_0_15px_rgba(249,115,22,0.07)] animate-pulse rounded-sm space-y-2.5 shadow-inner shadow-black/40 mt-3">
                                 <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
-                                  <span className="text-[9px] font-black uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-[#d95f02] flex items-center gap-1.5">
                                     <span className="relative flex h-2 w-2">
-                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316] opacity-75"></span>
-                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f97316]"></span>
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d95f02] opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d95f02]"></span>
                                     </span>
                                     Executing Two-Step Vacancy Audit
                                   </span>
@@ -1005,8 +1123,8 @@ function DecoderContent() {
 
                                    {/* STEP 2 */}
                                    <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
-                                     <div className="flex items-center justify-center size-4 rounded-full bg-[#f97316]/20 text-[#f97316] border border-[#f97316]/30 text-[9px] font-bold shrink-0">
-                                       <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#f97316] rounded-full" />
+                                     <div className="flex items-center justify-center size-4 rounded-full bg-[#d95f02]/20 text-[#d95f02] border border-[#d95f02]/30 text-[9px] font-bold shrink-0">
+                                       <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#d95f02] rounded-full" />
                                      </div>
                                      <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
                                        <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Step 2: Active Web Portals Sweep</span>
@@ -1020,135 +1138,204 @@ function DecoderContent() {
                             <div className="text-red-400 text-xs font-semibold">
                               ⚠️ Stability engine offline: {stabilityError}
                             </div>
-                          ) : stabilityReport ? (
-                            <div className="space-y-4">
-                              {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
-                              <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2.5">
-                                  <Activity className="size-4 text-[#f97316]" />
-                                  <div>
-                                    <p className="text-[10px] text-slate-400 font-medium">
-                                      Category:{" "}
-                                      <span className="font-black uppercase text-slate-300">
-                                        {(() => {
-                                          const rate = stabilityReport.metrics.estimatedChurnRatePercent;
-                                          if (rate == null) return "None found";
-                                          if (rate < 10) return "Low Turnover (Stable)";
-                                          if (rate <= 15) return "Moderate Turnover (Healthy)";
-                                          if (rate <= 22) return "Elevated Turnover (Caution)";
-                                          return "High Turnover (Significant Churn)";
-                                        })()}
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2 self-start sm:self-center">
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button className="flex items-center gap-1.5 px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 rounded-sm font-black uppercase text-[9px] text-teal-400 transition-all hover:text-white">
-                                        <Info className="size-3" /> Implications & Impact
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2.5 rounded-sm shadow-xl z-50">
-                                      <p className="text-[10px] font-black uppercase tracking-wider text-[#f97316] border-b border-white/10 pb-1.5 leading-relaxed">Implications & Impact</p>
-                                      <ul className="space-y-1.5 text-[10px] leading-relaxed text-slate-300 font-medium">
-                                        <li>
-                                          <span className="font-black text-emerald-400">Low (&lt;10%):</span> Outstanding retention. Indicates a settled staffroom, stable SLT support, and high satisfaction.
-                                        </li>
-                                        <li>
-                                          <span className="font-black text-green-400">Moderate (10-15%):</span> Standard lifecycle. Natural international transition at the end of standard 2-year contracts.
-                                        </li>
-                                        <li>
-                                          <span className="font-black text-amber-400">Elevated (15-22%):</span> Active transition. Likely department shuffles, leadership restructure, or shifting timetables.
-                                        </li>
-                                        <li>
-                                          <span className="font-black text-rose-400">High (&gt;22%):</span> Significant churn. Points to heavy workloads, leadership churn, or structural instability.
-                                        </li>
-                                      </ul>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <button
-                                    onClick={() => loadStabilityReport(true)}
-                                    disabled={isCalculatingStability}
-                                    type="button"
-                                    className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f97316]/10 hover:bg-[#f97316]/20 border border-[#f97316]/30 hover:border-[#f97316]/50 rounded-sm font-black uppercase text-[9px] text-[#f97316] transition-all hover:text-white disabled:opacity-50"
-                                  >
-                                    <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> Re-verify vacancies
-                                  </button>
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Staff</div>
-                                  <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase || '—'}</div>
-                                </div>
-                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
-                                  <div className="text-sm font-black text-white mt-0.5">
-                                    {stabilityReport.metrics.averageYearlyTesAdverts != null ? stabilityReport.metrics.averageYearlyTesAdverts : 'None found'}
-                                  </div>
-                                </div>
-                                <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                  <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
-                                  <div className="text-sm font-black text-white mt-0.5">
-                                    {stabilityReport.metrics.estimatedChurnRatePercent != null ? `${stabilityReport.metrics.estimatedChurnRatePercent}%` : 'None found'}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* MASSIVE PREMIUM WRAPPER */}
-                              <div className="relative rounded-sm overflow-hidden mt-3">
-                                {/* SINGLE PAYWALL OVERLAY */}
-                                <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                  {/* Non-orange, sleek glass button */}
-                                  <div 
-                                    onClick={() => activeSchool && router.push(`/schools/${activeSchool.id}`)}
-                                    className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
-                                  >
-                                    <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
-                                  </div>
-                                </div>
-
-                                {/* LOCKED CONTENT */}
-                                <div className="opacity-30 select-none pointer-events-none blur-[2px]">
-                                  {/* Locked Metrics Grid */}
-                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Senior Leadership Churn</div>
-                                      <div className="text-sm font-black text-amber-400 mt-0.5">
-                                        {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
+                                          ) : stabilityReport ? (
+                            (() => {
+                              const processedJobs = processAndFilterJobs(stabilityReport.scrapedJobsList || []);
+                              const churnRate = stabilityReport.metrics.estimatedStaffBase 
+                                ? Math.round((processedJobs.length / stabilityReport.metrics.estimatedStaffBase) * 100) 
+                                : (stabilityReport.metrics.estimatedChurnRatePercent || 0);
+                              return (
+                                <div className="space-y-4">
+                                  {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
+                                  <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                                    <div className="flex items-center gap-2.5">
+                                      <Activity className="size-4 text-[#d95f02]" />
+                                      <div>
+                                        <p className="text-[10px] text-slate-400 font-medium">
+                                          Category:{" "}
+                                          <span className="font-black uppercase text-slate-300">
+                                            {(() => {
+                                              if (churnRate < 10) return "Low Turnover (Stable)";
+                                              if (churnRate <= 15) return "Moderate Turnover (Healthy)";
+                                              if (churnRate <= 22) return "Elevated Turnover (Caution)";
+                                              return "High Turnover (Significant Churn)";
+                                            })()}
+                                          </span>
+                                        </p>
                                       </div>
                                     </div>
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2">
-                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Recruitment Style</div>
-                                      {(() => {
-                                        const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
-                                        if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
-                                          return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
-                                        }
-                                        const normalizedScore = 
-                                          (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
-                                          (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
-                                          (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
-                                          rawScore;
-                                        
-                                        return (
-                                          <div className={cn(
-                                            "text-xs font-black mt-1 uppercase",
-                                            normalizedScore === 'Proactive' && "text-green-400",
-                                            normalizedScore === 'Standard' && "text-amber-400",
-                                            normalizedScore === 'Reactive' && "text-red-400"
-                                          )}>
-                                            {normalizedScore}
+                                    <div className="flex items-center gap-2 self-start sm:self-center">
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="flex items-center gap-1.5 px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 rounded-sm font-black uppercase text-[9px] text-teal-400 transition-all hover:text-white">
+                                            <Info className="size-3" /> Implications & Impact
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2.5 rounded-sm shadow-xl z-50">
+                                          <p className="text-[10px] font-black uppercase tracking-wider text-[#d95f02] border-b border-white/10 pb-1.5 leading-relaxed">Implications & Impact</p>
+                                          <ul className="space-y-1.5 text-[10px] leading-relaxed text-slate-300 font-medium">
+                                            <li>
+                                              <span className="font-black text-emerald-400">Low (&lt;10%):</span> Outstanding retention. Indicates a settled staffroom, stable SLT support, and high satisfaction.
+                                            </li>
+                                            <li>
+                                              <span className="font-black text-green-400">Moderate (10-15%):</span> Standard lifecycle. Natural international transition at the end of standard 2-year contracts.
+                                            </li>
+                                            <li>
+                                              <span className="font-black text-amber-400">Elevated (15-22%):</span> Active transition. Likely department shuffles, leadership restructure, or shifting timetables.
+                                            </li>
+                                            <li>
+                                              <span className="font-black text-rose-400">High (&gt;22%):</span> Significant churn. Points to heavy workloads, leadership churn, or structural instability.
+                                            </li>
+                                          </ul>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <button
+                                        onClick={() => loadStabilityReport(true)}
+                                        disabled={isCalculatingStability}
+                                        type="button"
+                                        className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[9px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
+                                      >
+                                        <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> Re-verify vacancies
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Staff</div>
+                                      <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase || '—'}</div>
+                                    </div>
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
+                                      <div className="text-sm font-black text-white mt-0.5">
+                                        {processedJobs.length}
+                                      </div>
+                                    </div>
+                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
+                                      <div className="text-sm font-black text-white mt-0.5">
+                                        {churnRate}%
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* MASSIVE PREMIUM WRAPPER */}
+                                  <div className="relative rounded-sm overflow-hidden mt-3">
+                                    {/* SINGLE PAYWALL OVERLAY */}
+                                    {!turnoverUnlocked && (
+                                      <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
+                                        {/* Non-orange, sleek glass button */}
+                                        <button 
+                                          onClick={() => setTurnoverUnlocked(true)}
+                                          type="button"
+                                          className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
+                                        >
+                                          <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
+                                        </button>
+                                      </div>
+                                    )}
+
+                                    {/* LOCKED / UNLOCKED CONTENT */}
+                                    <div className={cn("space-y-4 transition-all duration-300", !turnoverUnlocked && "opacity-30 select-none pointer-events-none blur-[2px]")}>
+                                      {/* Locked Metrics Grid */}
+                                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Senior Leadership Churn</div>
+                                          <div className="text-sm font-black text-amber-400 mt-0.5">
+                                            {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
                                           </div>
-                                        );
-                                      })()}
+                                        </div>
+                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2">
+                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Recruitment Style</div>
+                                          {(() => {
+                                            const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
+                                            if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
+                                              return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
+                                            }
+                                            const normalizedScore = 
+                                              (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
+                                              (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
+                                              (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
+                                              rawScore;
+                                            
+                                            return (
+                                              <div className={cn(
+                                                "text-xs font-black mt-1 uppercase",
+                                                normalizedScore === 'Proactive' && "text-green-400",
+                                                normalizedScore === 'Standard' && "text-amber-400",
+                                                normalizedScore === 'Reactive' && "text-red-400"
+                                              )}>
+                                                {normalizedScore}
+                                              </div>
+                                            );
+                                          })()}
+                                        </div>
+                                      </div>
+
+                                      {/* 📋 DISCOVERED VACANCIES DROPDOWN / LIST */}
+                                      {turnoverUnlocked && processedJobs.length > 0 && (
+                                        <div className="border border-white/5 bg-black/10 rounded-sm">
+                                          <details className="group" open>
+                                            <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
+                                              <span className="flex items-center gap-1.5">
+                                                <Briefcase className="size-3 text-[#d95f02]" />
+                                                View Discovered Vacancies ({processedJobs.length})
+                                              </span>
+                                              <ChevronDown className="size-3 text-slate-500 group-open:rotate-180 transition-transform" />
+                                            </summary>
+                                            <div className="p-3 border-t border-white/5 space-y-2 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
+                                              {processedJobs.map((job, idx) => (
+                                                <div key={idx} className="flex items-center justify-between gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
+                                                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                    <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
+                                                      {String(idx + 1).padStart(2, '0')}
+                                                    </span>
+                                                    <span className="font-bold text-slate-200 truncate" title={job.title}>
+                                                      {job.title}
+                                                    </span>
+                                                    <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
+                                                      {job.source}
+                                                    </span>
+                                                  </div>
+                                                  <div className="flex items-center gap-2 shrink-0">
+                                                    {job.postedDate && (
+                                                      <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
+                                                        Listed: {job.postedDate}
+                                                      </span>
+                                                    )}
+                                                    <span className={cn(
+                                                      "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
+                                                      job.status === 'open' 
+                                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                                                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                                    )}>
+                                                      {job.status === 'open' ? 'Open' : 'Closed'}
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </details>
+                                        </div>
+                                      )}
+
+                                      {/* Churn Implications Alert Box */}
+                                      {turnoverUnlocked && stabilityReport.leopardfishIntelAlert && (
+                                        <div className="mt-4 p-3 bg-[#d95f02]/5 border border-[#d95f02]/20 rounded-sm">
+                                          <div className="flex gap-2.5">
+                                            <AlertTriangle className="size-4 text-[#d95f02] shrink-0 mt-0.5" />
+                                            <div className="space-y-1">
+                                              <h5 className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Churn Implications</h5>
+                                              <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic">{stabilityReport.leopardfishIntelAlert}</p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
+                              );
+                            })()
                           ) : (
                             <div className="text-slate-400 text-xs font-semibold">
                               Select a school to audit stability metrics.
@@ -1163,7 +1350,7 @@ function DecoderContent() {
                       <div className="pt-6 border-t border-white/5 space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-[#f97316] uppercase tracking-[0.15em] bg-[#f97316]/10 px-2 py-0.5 rounded-sm border border-[#f97316]/20 flex items-center gap-1">
+                            <span className="text-[9px] font-black text-[#d95f02] uppercase tracking-[0.15em] bg-[#d95f02]/10 px-2 py-0.5 rounded-sm border border-[#d95f02]/20 flex items-center gap-1">
                               <Zap className="size-2.5" /> Staffroom Vibe & Dossier Intel
                             </span>
                           </div>
@@ -1201,7 +1388,7 @@ function DecoderContent() {
                           }}
                           className="text-[10px] font-black text-teal-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-teal-500/5 hover:bg-teal-500/10 border border-teal-500/10 hover:border-teal-500/40 px-3 py-2 rounded-sm"
                         >
-                          <Zap className="size-3 text-[#f97316] animate-pulse" /> Request Leopardfish School Analysis
+                          <Zap className="size-3 text-[#d95f02] animate-pulse" /> Request Leopardfish School Analysis
                         </button>
                       </div>
                     )}
@@ -1213,7 +1400,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Non-contact</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Non-contact</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.noncontacttime || "---"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1224,7 +1411,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <Activity className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Health coverage</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Health coverage</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.healthcoverage || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1235,7 +1422,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Curriculum</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Curriculum</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.curriculum || "---"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1246,7 +1433,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <ShieldCheck className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Accreditations</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Accreditations</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.approvals || "Standard"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1259,7 +1446,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Work/life</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Work/life</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.worklifescore || "---"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1270,7 +1457,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Academic</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Academic</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.academicscore || "---"}</p>
                       </div>
                     </TooltipTrigger>
@@ -1281,7 +1468,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <Target className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Expected retirement</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Expected retirement</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">
                           {activeReq ? `M: ${activeReq.max_age_m} | F: ${activeReq.max_age_f}` : "---"}
                         </p>
@@ -1294,7 +1481,7 @@ function DecoderContent() {
                     <TooltipTrigger asChild>
                       <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
                         <Lock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest leading-relaxed mb-2">Security/Safety</p>
+                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Security/Safety</p>
                         <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
                       </div>
                     </TooltipTrigger>

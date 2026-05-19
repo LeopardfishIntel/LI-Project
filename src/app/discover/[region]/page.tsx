@@ -256,7 +256,7 @@ function DossierContent() {
   if (!mounted || !params) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#f97316]">
+    <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#d95f02]">
       <div className="max-w-7xl mx-auto space-y-12">
         <header className="space-y-6">
           <button onClick={() => router.push('/discover/matrix?' + searchParams.toString())} className="flex items-center gap-2 text-[12px] font-bold text-[#007FFF] uppercase tracking-widest hover:text-white transition-colors">
@@ -264,7 +264,7 @@ function DossierContent() {
           </button>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#f97316] pl-6 italic text-[#f97316]">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#d95f02] pl-6 italic text-[#d95f02]">
               What you could achieve
             </h1>
           </div>
@@ -272,7 +272,7 @@ function DossierContent() {
 
         <div className="grid grid-cols-1 gap-12">
           {topPicks.map((country, idx) => (
-            <div key={idx} className="flex flex-col border border-white/10 bg-black/40 hover:border-[#f97316]/50 transition-all shadow-2xl overflow-hidden">
+            <div key={idx} className="flex flex-col border border-white/10 bg-black/40 hover:border-[#d95f02]/50 transition-all shadow-2xl overflow-hidden">
               
               {/* Profile Summary Bar */}
               <div className="w-full bg-white/[0.03] border-b border-white/10 px-8 py-3 flex flex-wrap items-center gap-x-8 gap-y-2">
@@ -294,7 +294,7 @@ function DossierContent() {
                 </div>
                 <div className="flex items-center gap-2 border-l border-white/10 pl-8">
                   <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Focus:</span>
-                  <span className="text-[11px] font-bold text-[#f97316] uppercase italic">{params.goals.join(', ')}</span>
+                  <span className="text-[11px] font-bold text-[#d95f02] uppercase italic">{params.goals.join(', ')}</span>
                 </div>
               </div>
 
@@ -304,9 +304,9 @@ function DossierContent() {
               <div className="lg:col-span-4 p-8 border-r border-white/10 bg-black/60 flex flex-col h-full">
                 <div className="mb-6">
                   <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-[0.2em] mb-1">{country.region}</p>
-                  <h2 className="text-3xl font-black tracking-tighter uppercase leading-none mb-2 text-[#f97316]">{country.country}</h2>
-                  <p className="text-[#f97316] text-[12px] font-black uppercase tracking-widest flex items-center gap-2 italic">
-                    <Star className="size-3 fill-[#f97316]" /> Rating: {country.countryRating}/10
+                  <h2 className="text-3xl font-black tracking-tighter uppercase leading-none mb-2 text-[#d95f02]">{country.country}</h2>
+                  <p className="text-[#d95f02] text-[12px] font-black uppercase tracking-widest flex items-center gap-2 italic">
+                    <Star className="size-3 fill-[#d95f02]" /> Rating: {country.countryRating}/10
                   </p>
                 </div>
 
@@ -359,7 +359,7 @@ function DossierContent() {
                             href={`https://www.reuters.com/site-search/?query=${country.country}`} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="flex items-center gap-2 bg-black/40 text-[#f97316] border border-[#f97316]/30 px-3 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-[#f97316] hover:text-black transition-all rounded-sm"
+                            className="flex items-center gap-2 bg-black/40 text-[#d95f02] border border-[#d95f02]/30 px-3 py-2 text-[9px] font-black uppercase tracking-widest hover:bg-[#d95f02] hover:text-black transition-all rounded-sm"
                           >
                             Reuters Latest News <Compass className="size-3" />
                           </a>
@@ -391,7 +391,7 @@ function DossierContent() {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[#f97316] text-[10px] font-black uppercase tracking-widest">Est. Monthly Surplus</p>
+                    <p className="text-[#d95f02] text-[10px] font-black uppercase tracking-widest">Est. Monthly Surplus</p>
                     <p className="text-3xl font-black tracking-tighter text-white uppercase">{country.displayCurrency} {country.displaySurplus.toLocaleString()}</p>
                   </div>
                 </div>
@@ -410,10 +410,10 @@ function DossierContent() {
                   ))}
                 </div>
 
-                <div className="p-8 bg-[#f97316]/5 border-l-4 border-[#f97316] flex-grow flex flex-col justify-center space-y-4">
-                  <div className="flex justify-between items-center pb-4 border-b border-[#f97316]/20">
-                    <p className="text-[#f97316] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
-                    <span className="text-[#f97316] font-black text-[11px] italic bg-[#f97316]/20 px-3 py-1 rounded-full border border-[#f97316]/30 tracking-tight">Match: {country.fitScore}%</span>
+                <div className="p-8 bg-[#d95f02]/5 border-l-4 border-[#d95f02] flex-grow flex flex-col justify-center space-y-4">
+                  <div className="flex justify-between items-center pb-4 border-b border-[#d95f02]/20">
+                    <p className="text-[#d95f02] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
+                    <span className="text-[#d95f02] font-black text-[11px] italic bg-[#d95f02]/20 px-3 py-1 rounded-full border border-[#d95f02]/30 tracking-tight">Match: {country.fitScore}%</span>
                   </div>
                   
                   <div className="space-y-4 pt-2">
@@ -433,12 +433,12 @@ function DossierContent() {
                   <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">International Schools</p>
                   <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {country.schools?.map((s: any, i: number) => (
-                      <button key={i} className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#f97316] text-left transition-all">
+                      <button key={i} className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#d95f02] text-left transition-all">
                         <div className="flex justify-between items-start mb-2">
                           <span className="font-black text-white text-[12px] uppercase truncate pr-2">{s.schoolname}</span>
                           <span className="font-black text-[#007FFF] text-[12px]">{s.totalscore}</span>
                         </div>
-                        <span className="text-[9px] font-black uppercase text-[#f97316] bg-[#f97316]/10 px-2 py-1 border border-[#f97316]/20">{s.curriculum || "IB / British"}</span>
+                        <span className="text-[9px] font-black uppercase text-[#d95f02] bg-[#d95f02]/10 px-2 py-1 border border-[#d95f02]/20">{s.curriculum || "IB / British"}</span>
                       </button>
                     ))}
                   </div>
@@ -449,7 +449,7 @@ function DossierContent() {
                       const ids = country.schools?.slice(0, 3).map((s: any) => s.id).join(',');
                       router.push(`/decide?ids=${ids}`);
                     }}
-                    className="w-full max-w-[240px] bg-[#f97316] text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-white transition-all flex items-center justify-between px-6 rounded-full group shadow-2xl"
+                    className="w-full max-w-[240px] bg-[#d95f02] text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-white transition-all flex items-center justify-between px-6 rounded-full group shadow-2xl"
                   >
                     Compare Targets <Scale className="size-4 group-hover:rotate-12 transition-transform" />
                   </button>
@@ -460,7 +460,7 @@ function DossierContent() {
             {/* 🛡️ INTELLIGENCE DEEP-DIVE (FOUR CARD ARRAY) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-white/10 bg-black/40">
               {[
-                { label: 'Adventure', score: country.suitability.adventure, icon: Compass, color: 'text-[#f97316]' },
+                { label: 'Adventure', score: country.suitability.adventure, icon: Compass, color: 'text-[#d95f02]' },
                 { label: 'Savings', score: country.suitability.savings, icon: Banknote, color: 'text-emerald-400' },
                 { label: 'Culture', score: country.suitability.balance, icon: Heart, color: 'text-rose-400' },
                 { label: 'Career', score: country.suitability.career, icon: Zap, color: 'text-sky-400' }
@@ -469,12 +469,12 @@ function DossierContent() {
                 return (
                   <div key={m.label} className={cn(
                     "p-6 border-r border-b lg:border-b-0 border-white/5 space-y-3 transition-all duration-500 group relative overflow-hidden",
-                    isStrategicFocus ? "bg-[#f97316]/5 border-2 border-[#f97316] z-10 shadow-[0_0_20px_rgba(249,115,22,0.1)]" : "hover:bg-white/[0.02]"
+                    isStrategicFocus ? "bg-[#d95f02]/5 border-2 border-[#d95f02] z-10 shadow-[0_0_20px_rgba(249,115,22,0.1)]" : "hover:bg-white/[0.02]"
                   )}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <m.icon className={cn("size-4", m.color)} />
-                        <span className={cn("text-[10px] font-black uppercase tracking-widest", isStrategicFocus ? "text-[#f97316]" : "text-slate-500")}>
+                        <span className={cn("text-[10px] font-black uppercase tracking-widest", isStrategicFocus ? "text-[#d95f02]" : "text-slate-500")}>
                           {m.label}
                         </span>
                       </div>
@@ -497,8 +497,8 @@ function DossierContent() {
             <h3 className="text-2xl font-black text-[#007FFF] uppercase italic tracking-tighter mb-8">Other deployments worth considering</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {alternates.map((country, i) => (
-                <button key={i} onClick={() => router.push(`/discover/${country.country.toLowerCase()}`)} className="p-4 bg-black/60 border border-white/10 hover:border-[#f97316] transition-all text-left group">
-                  <p className="text-base font-black text-white uppercase group-hover:text-[#f97316] transition-colors truncate">{country.country}</p>
+                <button key={i} onClick={() => router.push(`/discover/${country.country.toLowerCase()}`)} className="p-4 bg-black/60 border border-white/10 hover:border-[#d95f02] transition-all text-left group">
+                  <p className="text-base font-black text-white uppercase group-hover:text-[#d95f02] transition-colors truncate">{country.country}</p>
                   <p className="text-[10px] font-black text-[#007FFF] italic">{country.fitScore}% Match</p>
                 </button>
               ))}

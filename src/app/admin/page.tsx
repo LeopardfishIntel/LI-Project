@@ -182,16 +182,16 @@ export default function AdminCommandPage() {
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white p-8 md:p-12 font-sans selection:bg-[#f97316]">
+    <div className="min-h-screen bg-[#020617] text-white p-8 md:p-12 font-sans selection:bg-[#d95f02]">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* BRAND HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
           <div className="space-y-2">
             <div className="flex items-center gap-4">
-              <Database className="size-10 text-[#f97316] animate-pulse" />
+              <Database className="size-10 text-[#d95f02] animate-pulse" />
               <h1 className="text-5xl font-black uppercase italic tracking-tighter">
-                Data <span className="text-[#f97316]">Command.</span>
+                Data <span className="text-[#d95f02]">Command.</span>
               </h1>
             </div>
             <p className="text-[#94a3b8] font-black uppercase text-[10px] tracking-[0.5em] opacity-60">
@@ -208,7 +208,7 @@ export default function AdminCommandPage() {
         <div className="flex flex-wrap gap-4 border-b border-white/10 pb-4">
             <button 
                 onClick={() => setActiveTab('schools-data')}
-                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'schools-data' ? "bg-[#f97316] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
+                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'schools-data' ? "bg-[#d95f02] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
             >
                 Schools Data
             </button>
@@ -265,7 +265,7 @@ export default function AdminCommandPage() {
                     </div>
                     <div className="p-6 space-y-6">
                         <textarea 
-                            className="w-full h-[450px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#f97316] transition-all resize-none shadow-inner"
+                            className="w-full h-[450px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#d95f02] transition-all resize-none shadow-inner"
                             placeholder={`[\n  {\n    "id": "FLIS0001",\n    "schoolname": "German Swiss Int'l",\n    "academicscore": "9.8",\n    "financescore": "9.0",\n    "country": "Hong Kong",\n    "city": "Hong Kong"\n  }\n]`}
                             value={schoolsJsonInput}
                             onChange={(e) => setSchoolsJsonInput(e.target.value)}
@@ -273,7 +273,7 @@ export default function AdminCommandPage() {
                         <button 
                           onClick={handleSchoolsUpload}
                           disabled={loading || !schoolsJsonInput}
-                          className="w-full h-16 bg-[#f97316] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                          className="w-full h-16 bg-[#d95f02] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
                         >
                           {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Schools Injection Protocol"}
                         </button>
@@ -526,7 +526,7 @@ export default function AdminCommandPage() {
                             <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-[#f97316] mb-2">Verified Schools</div>
+                            <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
                             <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">

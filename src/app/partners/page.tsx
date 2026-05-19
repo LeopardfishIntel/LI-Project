@@ -16,7 +16,7 @@ const initialState: InquiryState = { message: null, error: null, success: false 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="bg-[#f97316] hover:bg-white hover:text-black transition-all font-black uppercase tracking-widest px-8 h-12 rounded-none">
+    <Button type="submit" disabled={pending} className="bg-[#d95f02] hover:bg-white hover:text-black transition-all font-black uppercase tracking-widest px-8 h-12 rounded-none">
       {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</> : <><Send className="mr-2 h-4 w-4" /> Submit Request</>}
     </Button>
   );
@@ -27,11 +27,11 @@ export default function PartnersPage() {
   const [state, formAction] = useActionState(submitInquiry, initialState);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617] min-h-screen font-sans selection:bg-[#f97316]">
+    <div className="container mx-auto px-4 md:px-6 py-12 bg-[#020617] min-h-screen font-sans selection:bg-[#d95f02]">
       <div className="max-w-3xl mx-auto space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-5xl font-black tracking-tighter text-white uppercase italic">
-            Connect with <span className="text-[#f97316]">Leopardfish Intel</span>
+            Connect with <span className="text-[#d95f02]">Leopardfish Intel</span>
           </h1>
           <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Independent Intelligence for the Global Education Community.</p>
         </div>
@@ -48,7 +48,7 @@ export default function PartnersPage() {
                 <RadioGroup name="inquiryType" value={inquiryType} onValueChange={setInquiryType} className="flex flex-wrap gap-8 pt-2">
                   {['teacher', 'school', 'provider'].map((type) => (
                     <div key={type} className="flex items-center space-x-2">
-                      <RadioGroupItem value={type} id={type} className="border-[#f97316]" />
+                      <RadioGroupItem value={type} id={type} className="border-[#d95f02]" />
                       <Label htmlFor={type} className="text-white font-black uppercase text-[11px] cursor-pointer italic">{type === 'teacher' ? 'International Teacher' : type === 'school' ? 'School Official' : 'Service Provider'}</Label>
                     </div>
                   ))}

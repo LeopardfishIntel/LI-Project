@@ -112,14 +112,14 @@ function BriefingConsoleLoader() {
   }, []);
 
   return (
-    <div className="font-mono text-[10px] text-[#f97316]/80 bg-black/60 border border-[#f97316]/20 p-5 rounded-none space-y-2.5 uppercase tracking-widest leading-relaxed">
+    <div className="font-mono text-[10px] text-[#d95f02]/80 bg-black/60 border border-[#d95f02]/20 p-5 rounded-none space-y-2.5 uppercase tracking-widest leading-relaxed">
       {steps.slice(0, step + 1).map((line, index) => (
         <div key={index} className={cn(
           "flex items-start gap-2",
-          index === step ? "text-[#f97316] animate-pulse font-bold" : "text-slate-500"
+          index === step ? "text-[#d95f02] animate-pulse font-bold" : "text-slate-500"
         )}>
           <span className={cn(
-            "inline-block size-1.5 bg-[#f97316] mr-2 mt-1 shrink-0",
+            "inline-block size-1.5 bg-[#d95f02] mr-2 mt-1 shrink-0",
             index === step ? "animate-ping" : "opacity-40"
           )} />
           <span className="break-all">{line}</span>
@@ -484,7 +484,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   )}
                 </div>
                 {isBriefingLoading && school?.cachedBriefing && (
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#f97316] bg-[#f97316]/10 px-2.5 py-1 border border-[#f97316]/20 animate-pulse shrink-0">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-[#d95f02] bg-[#d95f02]/10 px-2.5 py-1 border border-[#d95f02]/20 animate-pulse shrink-0">
                     🔄 Live OSINT Re-Sync
                   </span>
                 )}
@@ -550,7 +550,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                       {/* Qualification Gate Selectors */}
                       <div className="space-y-3 pt-4 border-t border-white/5 text-left">
                         <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.15em] block">
-                          🎓 Teaching Qualification <span className="text-[#f97316] font-bold">* Required</span>
+                          🎓 Teaching Qualification <span className="text-[#d95f02] font-bold">* Required</span>
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                           {[
@@ -566,7 +566,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                                 className={cn(
                                   "py-3 text-[10px] font-bold border transition-all rounded-sm",
                                   isSelected
-                                    ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]"
+                                    ? "bg-[#d95f02]/20 border-[#d95f02] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]"
                                     : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10"
                                 )}
                               >

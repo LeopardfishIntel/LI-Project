@@ -464,10 +464,10 @@ function DecideContent() {
     const topPickId = ranked[0]?.school.id;
     const detailedConclusion = useMemo(() => generateDetailedConclusion(ranked), [ranked]);
 
-    if (!mounted || sLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#f97316] size-10" /></div>;
+    if (!mounted || sLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02] size-10" /></div>;
 
     return (
-        <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#f97316]">
+        <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#d95f02]">
             <div className="max-w-7xl mx-auto space-y-4">
 
                 <header className="mb-4 border-b border-white/5 pb-3">
@@ -475,14 +475,14 @@ function DecideContent() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                         <div>
                             <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-[#007FFF] uppercase tracking-[0.2em] hover:text-white transition-colors mb-1"><ArrowLeft className="size-3" /> Back</button>
-                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#f97316] italic uppercase leading-none">Compare & Decide</h1>
+                            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#d95f02] italic uppercase leading-none">Compare & Decide</h1>
                         </div>
 
                         <div className="flex flex-col md:flex-row items-stretch gap-2 w-full md:w-auto">
                             {/* 👥 HOUSEHOLD */}
-                            <div className="py-1 px-3 bg-[#f97316]/5 border border-[#f97316]/30 rounded-sm flex items-center gap-3 h-[52px]">
-                                <div className="size-7 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shrink-0">
-                                    <Users className="size-3.5 text-[#f97316]" />
+                            <div className="py-1 px-3 bg-[#d95f02]/5 border border-[#d95f02]/30 rounded-sm flex items-center gap-3 h-[52px]">
+                                <div className="size-7 bg-[#d95f02]/10 rounded-full flex items-center justify-center border border-[#d95f02]/20 shrink-0">
+                                    <Users className="size-3.5 text-[#d95f02]" />
                                 </div>
                                 <div className="flex flex-col justify-center min-w-[140px]">
                                     <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-0.5">Household</Label>
@@ -510,7 +510,7 @@ function DecideContent() {
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{availableCountries.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                                     </Select>
                                 </div>
-                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Target className="size-3 text-[#f97316]" /> Target</Label>
+                                <div className="space-y-1"><Label className="text-[10px] font-black text-slate-500 flex items-center gap-1.5 uppercase tracking-widest"><Target className="size-3 text-[#d95f02]" /> Target</Label>
                                     <Select disabled={!selectedCountries[i]} value={selectedIds[i]} onValueChange={(val) => handleSchoolSelect(val, i)}>
                                         <SelectTrigger className="bg-black/40 border-white/10 h-8 text-white font-black text-[11px]"><SelectValue placeholder="Institution" /></SelectTrigger>
                                         <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{(schools || []).filter((s: any) => s.country === selectedCountries[i]).map((s: any) => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}</SelectContent>
@@ -555,18 +555,18 @@ function DecideContent() {
                     {shootoutMatrix.map((data, idx) => (
                         <div key={`card-${idx}`} className={cn(
                             "bg-[#0b1224]/50 border transition-all duration-500 p-6 space-y-3 flex flex-col relative min-h-[760px]",
-                            "border-[#f97316]/40",
-                            data?.school.id === topPickId && "border-[#f97316] ring-2 ring-[#f97316] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
+                            "border-[#d95f02]/40",
+                            data?.school.id === topPickId && "border-[#d95f02] ring-2 ring-[#d95f02] ring-offset-4 ring-offset-[#020617] shadow-[0_0_40px_rgba(249,115,22,0.1)]"
                         )}>
                             {data ? (
                                 <>
                                     <div className="flex flex-col gap-1">
                                         <div className="h-[72px] flex items-start pt-1">
-                                            <h2 className="text-[17px] md:text-[28px] font-black text-[#f97316] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
+                                            <h2 className="text-[17px] md:text-[28px] font-black text-[#d95f02] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
                                         </div>
                                         <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1 h-6">
                                             <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
-                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#f97316]" /> {data.school.housingprovision}</span>
+                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#d95f02]" /> {data.school.housingprovision}</span>
                                         </div>
                                     </div>
 
@@ -632,7 +632,7 @@ function DecideContent() {
                                     </div>
 
                                     <div className="grid grid-cols-4 gap-1.5 py-4 h-14 mt-2 border-y border-white/5">
-                                        <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#f97316" />
+                                        <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#d95f02" />
                                         <ScoreBadge label="Country" score={data.countryScore} color="#007FFF" />
                                         <ScoreBadge label="School" score={data.schoolScore} />
                                         <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
@@ -689,9 +689,9 @@ function DecideContent() {
                                         </div>
 
                                         {/* 💰 3-YEAR WEALTH POT */}
-                                        <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings3Year > 0 ? "bg-[#f97316]/10 border-[#f97316]/30" : "bg-rose-500/10 border-rose-500/50")}>
+                                        <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings3Year > 0 ? "bg-[#d95f02]/10 border-[#d95f02]/30" : "bg-rose-500/10 border-rose-500/50")}>
                                             <div className="flex items-center justify-between">
-                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#f97316]" : "text-rose-500")}>3-Year Bankable Pot</p>
+                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#d95f02]" : "text-rose-500")}>3-Year Bankable Pot</p>
                                                 <p className={cn("text-[14px] font-black italic tabular-nums leading-none", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
                                             </div>
                                             <div className="flex items-center justify-between">
@@ -700,6 +700,14 @@ function DecideContent() {
                                             </div>
                                         </div>
 
+                                        {isUnlocked && aiBriefing?.perSchoolBriefs?.[data.school.id] && (
+                                            <div className="p-3 bg-sky-500/5 border border-sky-500/20 rounded-sm italic text-[11px] text-slate-300 leading-relaxed mt-2 select-text">
+                                                <p className="text-[8px] font-black text-sky-400 uppercase tracking-widest mb-1 not-italic flex items-center gap-1">
+                                                    <Zap className="size-2 text-[#d95f02]" /> Location Intelligence Brief
+                                                </p>
+                                                "{aiBriefing.perSchoolBriefs[data.school.id]}"
+                                            </div>
+                                        )}
                                     </div>
                                 </>
                             ) : (
@@ -720,8 +728,8 @@ function DecideContent() {
                 {/* 🎯 SURPLUS INCOME COMPARISONS CURRENCY */}
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-sm shadow-xl">
                     <div className="flex items-center gap-3 mb-4 md:mb-0">
-                        <div className="bg-[#f97316]/10 p-2 rounded-sm">
-                            <BarChart3 className="size-4 text-[#f97316]" />
+                        <div className="bg-[#d95f02]/10 p-2 rounded-sm">
+                            <BarChart3 className="size-4 text-[#d95f02]" />
                         </div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">
                             Surplus Income Comparisons Currency
@@ -745,7 +753,7 @@ function DecideContent() {
 
                 <div className="text-center mt-8 mb-8 max-w-2xl mx-auto px-4">
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-1 flex items-center justify-center gap-2">
-                        <Target className="size-3 text-[#f97316]" /> How the Top Pick is Decided
+                        <Target className="size-3 text-[#d95f02]" /> How the Top Pick is Decided
                     </p>
                     <p className="text-[12px] text-slate-400 leading-relaxed italic">
                         It&apos;s not all about the savings! The winning orange highlight is awarded to the school with the highest overall Match Percentage. This algorithm strictly balances your projected bankable surplus against the school&apos;s academic reputation, city safety, and weekly workload.
@@ -753,9 +761,9 @@ function DecideContent() {
                 </div>
 
                 {!isUnlocked ? (
-                    <div className="bg-[#f97316]/5 border border-dashed border-[#f97316]/30 p-12 rounded-sm flex flex-col items-center space-y-6">
-                        <div className="size-16 bg-[#f97316]/10 rounded-full flex items-center justify-center border border-[#f97316]/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
-                            <Zap className={cn("size-8 text-[#f97316]", isGenerating && "animate-pulse")} />
+                    <div className="bg-[#d95f02]/5 border border-dashed border-[#d95f02]/30 p-12 rounded-sm flex flex-col items-center space-y-6">
+                        <div className="size-16 bg-[#d95f02]/10 rounded-full flex items-center justify-center border border-[#d95f02]/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
+                            <Zap className={cn("size-8 text-[#d95f02]", isGenerating && "animate-pulse")} />
                         </div>
                         <div className="text-center space-y-2">
                             <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">Unlock Tactical Intelligence</h3>
@@ -764,19 +772,19 @@ function DecideContent() {
                         <button
                             onClick={handleUnlockIntelligence}
                             disabled={isGenerating || ranked.length < 2}
-                            className="px-10 py-4 bg-[#f97316] text-white font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-2xl disabled:opacity-50 flex items-center gap-3"
+                            className="px-10 py-4 bg-[#d95f02] text-white font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-2xl disabled:opacity-50 flex items-center gap-3"
                         >
                             {isGenerating ? <><Loader2 className="animate-spin size-4" /> Compiling Briefing...</> : <><Fingerprint className="size-4" /> Request Final Intelligence Briefing</>}
                         </button>
                     </div>
                 ) : (
-                    <div className="lg:col-span-3 bg-[#f97316]/5 border border-[#f97316]/20 p-12 rounded-sm relative overflow-hidden flex flex-col items-center animate-in zoom-in-95 duration-700">
+                    <div className="lg:col-span-3 bg-[#d95f02]/5 border border-[#d95f02]/20 p-12 rounded-sm relative overflow-hidden flex flex-col items-center animate-in zoom-in-95 duration-700">
                         <div className="absolute inset-0 flex items-center justify-center opacity-[0.12] pointer-events-none select-none overflow-hidden z-0">
                             <span className="text-[60px] md:text-[80px] font-black tracking-[0.2em] rotate-[-20deg] whitespace-nowrap text-white text-center">leopardfish intel</span>
                         </div>
                         <div className="relative z-10 space-y-8 w-full max-w-5xl">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-[12px] font-black text-[#f97316] uppercase tracking-[0.4em] flex items-center gap-2"><Zap className="size-4" /> Leopardfish intel conclusion</h3>
+                                <h3 className="text-[12px] font-black text-[#d95f02] uppercase tracking-[0.4em] flex items-center gap-2"><Zap className="size-4" /> Leopardfish intel conclusion</h3>
                                 <button onClick={() => setIsUnlocked(false)} className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">Relock Briefing</button>
                             </div>
                             <div className="text-[16px] font-medium italic tracking-tight text-slate-300 leading-relaxed space-y-6">

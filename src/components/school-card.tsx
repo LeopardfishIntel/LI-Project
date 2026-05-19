@@ -29,7 +29,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
   const dossierUrl = `/schools/${schoolId}`;
 
   return (
-    <Card className="glass bg-[#1f2937]/70 border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#f97316]/20 transition-all duration-300 group rounded-sm">
+    <Card className="glass bg-[#1f2937]/70 border-white/5 overflow-hidden flex flex-col h-full shadow-lg hover:shadow-[#d95f02]/20 transition-all duration-300 group rounded-sm">
       <CardHeader className="p-0">
         <Link href={dossierUrl} prefetch={false} className="block relative overflow-hidden">
           <Image
@@ -44,7 +44,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
             {approvals}
           </div>
           {score && (
-            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-[#f97316] px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 bg-[#d95f02] px-2 py-1 rounded-sm text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
               <ShieldCheck className="size-3" /> Score: {score}
             </div>
           )}
@@ -53,12 +53,12 @@ export function SchoolCard({ school }: SchoolCardProps) {
       <CardContent className="p-5 flex-grow space-y-4">
         <div>
             <CardTitle className="text-xl mb-1.5 font-black tracking-tighter normal-case text-white leading-tight uppercase">
-            <Link href={dossierUrl} prefetch={false} className="hover:text-[#f97316] transition-colors">
+            <Link href={dossierUrl} prefetch={false} className="hover:text-[#d95f02] transition-colors">
                 {name}
             </Link>
             </CardTitle>
             <div className="flex items-center text-[#94a3b8] text-[10px] font-black uppercase tracking-widest">
-            <MapPin className="w-3 h-3 mr-1.5 text-[#f97316]" />
+            <MapPin className="w-3 h-3 mr-1.5 text-[#d95f02]" />
             <span>{city}, {country}</span>
             </div>
         </div>
@@ -69,7 +69,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
           <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", getTacticalColor(rating as string))}>
             Rating: {rating}
           </Badge>
-          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", curriculum !== '—' ? "text-[#f97316]" : "text-muted-foreground")}>
+          <Badge variant="outline" className={cn("text-[9px] font-black uppercase rounded-sm bg-white/5 border-white/10", curriculum !== '—' ? "text-[#d95f02]" : "text-muted-foreground")}>
             {curriculum}
           </Badge>
         </div>
@@ -83,7 +83,7 @@ export function SchoolCard({ school }: SchoolCardProps) {
 
       </CardContent>
       <CardFooter className="p-5 pt-0 mt-auto">
-        <Button className="w-full bg-[#f97316] hover:bg-[#f97316]/90 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-sm border-0" asChild>
+        <Button className="w-full bg-[#d95f02] hover:bg-[#d95f02]/90 text-white font-black uppercase tracking-widest text-[10px] h-11 rounded-sm border-0" asChild>
             <Link href={dossierUrl} prefetch={false}>
                 View dossier
             </Link>

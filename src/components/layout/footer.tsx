@@ -20,7 +20,7 @@ export default function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 prefetch={false}
-                className="text-gray-500 hover:text-[#f97316] transition-colors"
+                className="text-gray-500 hover:text-[#d95f02] transition-colors"
                 aria-label="Visit our LinkedIn"
               >
                 <Linkedin className="size-5" />
@@ -30,7 +30,7 @@ export default function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 prefetch={false}
-                className="text-gray-500 hover:text-[#f97316] transition-colors"
+                className="text-gray-500 hover:text-[#d95f02] transition-colors"
                 aria-label="Visit our Facebook"
               >
                 <Facebook className="size-5" />

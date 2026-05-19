@@ -7,7 +7,7 @@
     /* Hard-Coded Tactical Tokens */
     --background: #020617;
     --foreground: #ffffff;
-    --primary: #f97316;
+    --primary: #d95f02;
     --azure: #007FFF;
     --border: rgba(255, 255, 255, 0.1);
     
@@ -16,7 +16,7 @@
     --popover: #020617;
     --muted: 217.2 32.6% 17.5%;
     --accent: 217.2 32.6% 17.5%;
-    --ring: #f97316;
+    --ring: #d95f02;
   }
 
   body {

@@ -70,7 +70,7 @@ export default function ProfilePage() {
     if (authLoading || !mounted) {
         return (
             <div className="h-screen flex items-center justify-center bg-[#020617]">
-                <Loader2 className="animate-spin text-[#f97316] size-10" />
+                <Loader2 className="animate-spin text-[#d95f02] size-10" />
             </div>
         );
     }
@@ -82,15 +82,15 @@ export default function ProfilePage() {
                 {/* 🛡️ DOSSIER HEADER */}
                 <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between border-b border-white/10 pb-8">
                     <div className="flex items-center gap-6">
-                        <div className="size-24 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border-2 border-[#f97316]/50 rounded-full flex items-center justify-center shadow-2xl relative">
-                           {isAdmin ? <ShieldCheck className="size-12 text-[#f97316]" /> : <Fingerprint className="size-12 text-[#007FFF]" />}
+                        <div className="size-24 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border-2 border-[#d95f02]/50 rounded-full flex items-center justify-center shadow-2xl relative">
+                           {isAdmin ? <ShieldCheck className="size-12 text-[#d95f02]" /> : <Fingerprint className="size-12 text-[#007FFF]" />}
                         </div>
                         <div>
                             {isEditing ? (
                                 <Input 
                                     value={editBuffer?.fullName || ""} 
                                     onChange={(e) => setEditBuffer({...editBuffer, fullName: e.target.value})}
-                                    className="bg-black/40 border-[#f97316]/50 text-2xl font-black italic uppercase rounded-none h-12 w-full md:w-96"
+                                    className="bg-black/40 border-[#d95f02]/50 text-2xl font-black italic uppercase rounded-none h-12 w-full md:w-96"
                                     placeholder="OPERATIVE NAME"
                                 />
                             ) : (
@@ -99,10 +99,10 @@ export default function ProfilePage() {
                                 </h1>
                             )}
                             <div className="flex items-center gap-3 mt-3">
-                                <Badge variant="outline" className="border-[#f97316] text-[#f97316] font-black italic px-4 py-1">
+                                <Badge variant="outline" className="border-[#d95f02] text-[#d95f02] font-black italic px-4 py-1">
                                     {customId || "AWAITING DESIGNATION"}
                                 </Badge>
-                                {isAdmin && <Badge className="bg-[#f97316] text-white font-black uppercase text-[10px] tracking-widest px-3 py-0.5">Level 4 Admin</Badge>}
+                                {isAdmin && <Badge className="bg-[#d95f02] text-white font-black uppercase text-[10px] tracking-widest px-3 py-0.5">Level 4 Admin</Badge>}
                             </div>
                         </div>
                     </div>
@@ -111,12 +111,12 @@ export default function ProfilePage() {
                         {isEditing ? (
                             <>
                                 <Button onClick={() => setIsEditing(false)} variant="ghost" className="text-slate-500 hover:text-white uppercase font-black text-xs tracking-widest"><X className="mr-2 size-4" /> Abort</Button>
-                                <Button onClick={handleSave} disabled={isSaving} className="bg-[#f97316] hover:bg-white hover:text-black rounded-none font-black uppercase text-xs tracking-widest h-10 px-6">
+                                <Button onClick={handleSave} disabled={isSaving} className="bg-[#d95f02] hover:bg-white hover:text-black rounded-none font-black uppercase text-xs tracking-widest h-10 px-6">
                                     {isSaving ? <Loader2 className="animate-spin size-4" /> : <><Save className="mr-2 size-4" /> Commit Changes</>}
                                 </Button>
                             </>
                         ) : (
-                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 hover:border-[#f97316] hover:text-[#f97316] bg-transparent rounded-none uppercase font-black text-[10px] tracking-[0.2em] h-10 px-6">
+                            <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 hover:border-[#d95f02] hover:text-[#d95f02] bg-transparent rounded-none uppercase font-black text-[10px] tracking-[0.2em] h-10 px-6">
                                 <Edit3 className="mr-2 size-3" /> Modify Dossier
                             </Button>
                         )}
@@ -131,7 +131,7 @@ export default function ProfilePage() {
                         
                         {/* STATUS CARD */}
                         <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden group">
-                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <Users className="size-4 text-sky-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Status</CardTitle>
@@ -140,7 +140,7 @@ export default function ProfilePage() {
                                 {isEditing ? (
                                     <div className="grid grid-cols-2 gap-1 mt-2">
                                         {FAMILY_STATUS.map(v => (
-                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, familyStatus: v})} className={cn("py-2 text-[8px] font-bold border transition-all uppercase", editBuffer?.familyStatus === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v.replace('Family ', '')}</button>
+                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, familyStatus: v})} className={cn("py-2 text-[8px] font-bold border transition-all uppercase", editBuffer?.familyStatus === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v.replace('Family ', '')}</button>
                                         ))}
                                     </div>
                                 ) : (
@@ -151,7 +151,7 @@ export default function ProfilePage() {
 
                         {/* AGE GROUP CARD */}
                         <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden">
-                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <Calendar className="size-4 text-emerald-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Age Group</CardTitle>
@@ -160,7 +160,7 @@ export default function ProfilePage() {
                                 {isEditing ? (
                                     <div className="grid grid-cols-3 gap-1 mt-2">
                                         {AGE_RANGES.map(v => (
-                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, age: v})} className={cn("py-2 text-[8px] font-bold border transition-all", editBuffer?.age === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v}</button>
+                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, age: v})} className={cn("py-2 text-[8px] font-bold border transition-all", editBuffer?.age === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v}</button>
                                         ))}
                                     </div>
                                 ) : (
@@ -171,7 +171,7 @@ export default function ProfilePage() {
 
                         {/* TARGET ZONES CARD */}
                         <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden">
-                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />}
+                            {isEditing && <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]" />}
                             <CardHeader className="flex flex-row items-center gap-2 pb-2">
                                 <MapPin className="size-4 text-rose-400" />
                                 <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Target Zones</CardTitle>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                                                     const next = current.includes(r) ? current.filter((i: string) => i !== r) : [...current, r].slice(-2);
                                                     setEditBuffer({...editBuffer, preferredCountries: next});
                                                 }} 
-                                                className={cn("py-2 text-[8px] font-bold border transition-all uppercase", (editBuffer?.preferredCountries || editBuffer?.regions || []).includes(r) ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}
+                                                className={cn("py-2 text-[8px] font-bold border transition-all uppercase", (editBuffer?.preferredCountries || editBuffer?.regions || []).includes(r) ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}
                                             >
                                                 {r}
                                             </button>
@@ -210,8 +210,8 @@ export default function ProfilePage() {
                     <div className="bg-white/5 border border-white/5 p-8 shadow-2xl">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-[#f97316]/10 border border-[#f97316]/20">
-                                    <KeyRound className="size-6 text-[#f97316]" />
+                                <div className="p-3 bg-[#d95f02]/10 border border-[#d95f02]/20">
+                                    <KeyRound className="size-6 text-[#d95f02]" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-black uppercase italic tracking-tight text-white leading-none">Security Protocols</h3>

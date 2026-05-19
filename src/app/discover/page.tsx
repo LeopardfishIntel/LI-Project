@@ -107,25 +107,25 @@ export default function FindYourFitGate() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-8 lg:p-12 font-sans selection:bg-[#f97316]">
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-8 lg:p-12 font-sans selection:bg-[#d95f02]">
       <div className="max-w-5xl w-full space-y-12 animate-in fade-in duration-500">
         
         {/* 🛡️ Header section: 25% Reduction & Orange Branding */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-2 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] mx-auto">
+          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#d95f02]/30 bg-[#d95f02]/10 text-[#d95f02] text-[13px] font-[900] tracking-[0.5em] mb-2 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] mx-auto">
              ⦿ Actionable intelligence
           </div>
-          <h1 className="text-5xl font-black text-[#f97316] tracking-tighter leading-none italic uppercase">
+          <h1 className="text-5xl font-black text-[#d95f02] tracking-tighter leading-none italic uppercase">
             Find your fit
           </h1>
           <p className="text-lg max-w-2xl mx-auto leading-relaxed">
-            <span className="text-[#f1f5f9] font-bold border-b border-[#f97316]/30 pb-1 uppercase">Your profile, our direction.</span> 
+            <span className="text-[#f1f5f9] font-bold border-b border-[#d95f02]/30 pb-1 uppercase">Your profile, our direction.</span> 
             <span className="text-slate-400 ml-2 italic">Intelligence-driven matching for the international educator.</span>
           </p>
         </div>
         
         <div className="bg-[#0b1224]/50 border border-white/5 p-8 lg:p-16 rounded-sm shadow-2xl relative backdrop-blur-md">
-          <div className="absolute top-0 left-0 w-full h-1 bg-[#f97316]/20" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-[#d95f02]/20" />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16 text-left">
             {/* Age */}
@@ -236,7 +236,7 @@ export default function FindYourFitGate() {
                           className={cn(
                             "h-16 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border uppercase", 
                             isActive 
-                              ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
+                              ? "bg-[#d95f02] border-[#d95f02] text-white shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
                               : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
                           )}
                         >
@@ -264,7 +264,7 @@ export default function FindYourFitGate() {
                         className={cn(
                           "h-16 px-6 text-[13px] font-black tracking-[0.2em] transition-all rounded-sm border flex items-center justify-between group uppercase", 
                           isActive 
-                            ? "bg-white/10 border-[#f97316] text-white shadow-[0_0_20px_rgba(249,115,22,0.1)]" 
+                            ? "bg-white/10 border-[#d95f02] text-white shadow-[0_0_20px_rgba(249,115,22,0.1)]" 
                             : isDisabled ? "bg-white/5 border-white/5 text-slate-700 cursor-not-allowed" : "bg-white/5 border-white/10 text-slate-500 hover:border-[#007FFF]/50"
                         )}
                       >
@@ -278,8 +278,8 @@ export default function FindYourFitGate() {
 
           {/* UI Warning Display if None is Selected */}
           {showValidationErrors && profile.qualifications.some(q => q.toLowerCase() === 'none') && (
-            <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
-              <span className="shrink-0 size-5 flex items-center justify-center border border-amber-500 rounded-full font-bold">!</span>
+            <div className="p-4 bg-[#d95f02]/10 border border-[#d95f02]/30 text-[#d95f02] text-xs font-black uppercase tracking-widest flex items-center gap-3 text-left leading-relaxed mb-6">
+              <span className="shrink-0 size-5 flex items-center justify-center border border-[#d95f02] rounded-full font-bold">!</span>
               <span>To ensure deployment compliance, a recognized state/national teaching qualification is required. Unfortunately, without a verified qualification, we cannot run full matching reports.</span>
             </div>
           )}
@@ -296,10 +296,10 @@ export default function FindYourFitGate() {
             disabled={isGenerating} 
             className={cn(
               "w-full h-24 tracking-[0.5em] text-2xl font-black transition-all flex items-center justify-center gap-4 border shadow-2xl uppercase", 
-              !isGenerating ? "bg-white text-black hover:bg-[#f97316] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
+              !isGenerating ? "bg-white text-black hover:bg-[#d95f02] hover:text-white border-white" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
-            {isGenerating ? <Loader2 className="size-8 animate-spin text-[#f97316]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}
+            {isGenerating ? <Loader2 className="size-8 animate-spin text-[#d95f02]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}
           </button>
         </div>
       </div>

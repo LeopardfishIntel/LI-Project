@@ -73,7 +73,7 @@ export default function IntelForm() {
       className={cn(
         "px-4 py-2 text-[10px] font-black tracking-widest rounded-sm border transition-all uppercase whitespace-nowrap", 
         active 
-          ? "bg-[#f97316] border-[#f97316] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]" 
+          ? "bg-[#d95f02] border-[#d95f02] text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]" 
           : "bg-white/5 border-white/10 text-gray-500 hover:text-white hover:bg-white/10"
       )}
     >
@@ -85,7 +85,7 @@ export default function IntelForm() {
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-32 space-y-6">
-      <div className="size-12 border-2 border-[#f97316]/20 border-t-[#f97316] rounded-full animate-spin" />
+      <div className="size-12 border-2 border-[#d95f02]/20 border-t-[#d95f02] rounded-full animate-spin" />
       <div className="text-center animate-pulse">
         <h3 className="text-sm font-black text-white tracking-[0.4em] uppercase font-headline">Compiling Intelligence</h3>
         <p className="text-gray-500 text-[10px] mt-2 uppercase tracking-widest font-bold font-sans">Querying Global Databases</p>
@@ -110,14 +110,14 @@ export default function IntelForm() {
       {/* STEP HEADER */}
       <div className="flex justify-between items-end mb-12 border-b border-white/5 pb-8">
         <div className="space-y-2">
-          <p className="text-[#f97316] text-[10px] font-black uppercase tracking-[0.3em]">Step {step} of 2</p>
+          <p className="text-[#d95f02] text-[10px] font-black uppercase tracking-[0.3em]">Step {step} of 2</p>
           <h2 className="text-3xl md:text-5xl font-normal text-white tracking-tighter font-headline">
             {step === 1 ? 'The Asset' : 'The Mission'}
           </h2>
         </div>
         <div className="flex gap-1 mb-2">
-          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 1 ? "bg-[#f97316]" : "bg-white/20")}></div>
-          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 2 ? "bg-[#f97316]" : "bg-white/10")}></div>
+          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 1 ? "bg-[#d95f02]" : "bg-white/20")}></div>
+          <div className={cn("h-1 w-8 rounded-full transition-all duration-500", step === 2 ? "bg-[#d95f02]" : "bg-white/10")}></div>
         </div>
       </div>
 
@@ -138,7 +138,7 @@ export default function IntelForm() {
                 type="number" 
                 value={formData.experience} 
                 onChange={(e) => setFormData({...formData, experience: e.target.value})} 
-                className="w-full bg-white/5 border border-white/10 px-4 py-3 rounded-sm text-white focus:border-[#f97316] outline-none font-mono transition-colors" 
+                className="w-full bg-white/5 border border-white/10 px-4 py-3 rounded-sm text-white focus:border-[#d95f02] outline-none font-mono transition-colors" 
               />
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function IntelForm() {
           </div>
 
           <div className="space-y-4 pt-4 border-t border-white/5">
-            <label className="text-[10px] font-black text-[#f97316] uppercase tracking-widest">Curriculum Experience</label>
+            <label className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest">Curriculum Experience</label>
             <div className="flex flex-wrap gap-2">
               {CURRICULUMS.map(c => (
                 <TogglePill 
@@ -173,7 +173,7 @@ export default function IntelForm() {
 
           <Button 
             onClick={() => setStep(2)} 
-            className="w-full bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black h-14 tracking-[0.2em] uppercase hover:bg-[#f97316]/20 transition-all active:scale-[0.98]"
+            className="w-full bg-[#d95f02]/10 border border-[#d95f02]/30 text-[#d95f02] font-black h-14 tracking-[0.2em] uppercase hover:bg-[#d95f02]/20 transition-all active:scale-[0.98]"
           >
             Establish Mission <ArrowRight className="size-4 ml-2" />
           </Button>
@@ -211,7 +211,7 @@ export default function IntelForm() {
             </Button>
             <Button 
               onClick={handleExecuteAnalysis} 
-              className="flex-1 bg-[#f97316] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
+              className="flex-1 bg-[#d95f02] text-white font-black h-14 tracking-[0.2em] uppercase hover:bg-[#ea580c] shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
             >
               Execute Analysis
             </Button>

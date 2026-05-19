@@ -57,7 +57,7 @@ export default function Header() {
         
         {/* BRANDING */}
         <a href="/" className="text-xl font-bold tracking-tighter hover:opacity-80 transition-opacity">
-          <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+          <span className="text-[#d95f02]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
         </a>
 
         {/* NAVIGATION */}
@@ -68,7 +68,7 @@ export default function Header() {
               href={link.href} 
               className={cn(
                 "text-[11px] font-bold uppercase tracking-widest transition-colors", 
-                (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))) ? "text-[#f97316]" : "text-slate-400 hover:text-white"
+                (pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))) ? "text-[#d95f02]" : "text-slate-400 hover:text-white"
               )}
             >
               {link.name}
@@ -86,10 +86,10 @@ export default function Header() {
               {/* THE CLICKABLE DOSSIER LINK */}
               <a 
                 href="/profile" 
-                className="flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10 group hover:bg-white/10 hover:border-[#f97316]/50 transition-all cursor-pointer"
+                className="flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10 group hover:bg-white/10 hover:border-[#d95f02]/50 transition-all cursor-pointer"
               >
-                <div className="size-8 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border border-[#f97316]/30 rounded-full flex items-center justify-center">
-                  <UserIcon className="size-4 text-[#f97316]" />
+                <div className="size-8 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border border-[#d95f02]/30 rounded-full flex items-center justify-center">
+                  <UserIcon className="size-4 text-[#d95f02]" />
                 </div>
                 <div className="text-left hidden sm:block">
                   <p className="text-[10px] font-black uppercase text-white leading-none">{operativeName}</p>
@@ -109,7 +109,7 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <a href="/login" className="hidden sm:flex items-center gap-2 bg-[#f97316] text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+            <a href="/login" className="hidden sm:flex items-center gap-2 bg-[#d95f02] text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
               <LogIn className="size-4" />
               Secure Access
             </a>
@@ -135,7 +135,7 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
               className={cn(
                 "text-[12px] font-bold uppercase tracking-widest transition-colors block px-2 py-1", 
-                pathname === link.href ? "text-[#f97316]" : "text-slate-400 hover:text-white"
+                pathname === link.href ? "text-[#d95f02]" : "text-slate-400 hover:text-white"
               )}
             >
               {link.name}
@@ -145,7 +145,7 @@ export default function Header() {
             <a 
               href="/login" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="mt-2 flex items-center gap-2 bg-[#f97316] text-white px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+              className="mt-2 flex items-center gap-2 bg-[#d95f02] text-white px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
             >
               <LogIn className="size-4" />
               Secure Access

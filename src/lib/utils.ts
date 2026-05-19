@@ -28,7 +28,7 @@ export function formatCurrency(amount: any, currency = 'USD') {
  */
 export function getTacticalColor(rating: string | undefined): string {
     const low = rating?.toLowerCase() || '';
-    if (low.includes('g') || low === 'good') return 'text-[#f97316]'; // Brand Orange
+    if (low.includes('g') || low === 'good') return 'text-[#d95f02]'; // Brand Orange
     if (low.includes('b') || low === 'bad') return 'text-[#007FFF]';  // Intel Blue (Tactical Alert)
     return 'text-slate-500';
 }

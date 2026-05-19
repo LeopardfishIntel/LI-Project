@@ -32,7 +32,7 @@ function SubmitButton({ isPending, isDirty, isDisabled }: { isPending: boolean, 
     <button 
       type="submit" 
       disabled={isPending || isDisabled} 
-      className="w-full h-16 bg-[#f97316] text-white text-lg font-black tracking-widest uppercase hover:bg-white hover:text-black transition-all border-2 border-[#f97316] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
+      className="w-full h-16 bg-[#d95f02] text-white text-lg font-black tracking-widest uppercase hover:bg-white hover:text-black transition-all border-2 border-[#d95f02] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
     >
       {isPending ? (
         <><Loader2 className="animate-spin size-5" /> {loadingText}</>
@@ -103,11 +103,11 @@ export default function FindYourFitPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white p-4 lg:p-10 font-sans selection:bg-[#f97316]">
+    <div className="min-h-screen bg-[#020617] text-white p-4 lg:p-10 font-sans selection:bg-[#d95f02]">
       {isPending && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
-          <div className="text-center space-y-6 max-w-md p-8 border border-[#f97316]/30 bg-[#0b1224] shadow-2xl">
-            <Loader2 className="animate-spin size-12 text-[#f97316] mx-auto" />
+          <div className="text-center space-y-6 max-w-md p-8 border border-[#d95f02]/30 bg-[#0b1224] shadow-2xl">
+            <Loader2 className="animate-spin size-12 text-[#d95f02] mx-auto" />
             <h2 className="text-3xl font-black uppercase italic tracking-tighter text-white">Compiling Intel...</h2>
             <p className="text-slate-400 text-sm italic">LeopardfishIntel is analysing your profile this may take up to 30 seconds. <strong>Good Intel takes time.</strong></p>
           </div>
@@ -116,10 +116,10 @@ export default function FindYourFitPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* BRITISH HEADINGS */}
-        <div className="flex justify-between items-end border-b-2 border-[#f97316]/20 pb-4">
+        <div className="flex justify-between items-end border-b-2 border-[#d95f02]/20 pb-4">
           <div>
             <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
-              Find your <span className="text-[#f97316]">fit</span>
+              Find your <span className="text-[#d95f02]">fit</span>
             </h1>
             <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] mt-1">
               Intel Intake // Ver. 2026.04
@@ -129,24 +129,24 @@ export default function FindYourFitPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
-          <div className="absolute top-0 left-0 w-1 h-full bg-[#f97316]" />
+          <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]" />
 
           {/* 1. PERSONAL PROFILE */}
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><User className="size-3 text-[#f97316]" /> Age Range</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><User className="size-3 text-[#d95f02]" /> Age Range</label>
               <div className="grid grid-cols-3 md:grid-cols-6 gap-1">
                 {AGE_RANGES.map(v => (
-                  <button key={v} type="button" onClick={() => setFormData({...formData, age: v})} className={cn("py-2 text-[10px] font-bold border transition-all", formData.age === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v}</button>
+                  <button key={v} type="button" onClick={() => setFormData({...formData, age: v})} className={cn("py-2 text-[10px] font-bold border transition-all", formData.age === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v}</button>
                 ))}
               </div>
             </div>
             
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><Briefcase className="size-3 text-[#f97316]" /> Family Status</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase italic flex items-center gap-2 tracking-widest"><Briefcase className="size-3 text-[#d95f02]" /> Family Status</label>
               <div className="grid grid-cols-3 md:grid-cols-5 gap-1">
                 {FAMILY_STATUS.map(v => (
-                  <button key={v} type="button" onClick={() => setFormData({...formData, familyStatus: v})} className={cn("py-2 text-[9px] font-bold border transition-all uppercase", formData.familyStatus === v ? "bg-[#f97316] border-[#f97316] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>
+                  <button key={v} type="button" onClick={() => setFormData({...formData, familyStatus: v})} className={cn("py-2 text-[9px] font-bold border transition-all uppercase", formData.familyStatus === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>
                     {v.replace('Family ', '')}
                   </button>
                 ))}
@@ -168,15 +168,15 @@ export default function FindYourFitPage() {
           <div className="grid md:grid-cols-3 gap-6 border-y border-white/5 py-8">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current City <span className="text-red-500">*</span></label>
-              <Input name="currentCity" required value={formData.currentCity} onChange={e => setFormData({...formData, currentCity: e.target.value})} placeholder="E.G. LONDON, UK" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#f97316] transition-all" />
+              <Input name="currentCity" required value={formData.currentCity} onChange={e => setFormData({...formData, currentCity: e.target.value})} placeholder="E.G. LONDON, UK" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current Salary <span className="text-red-500">*</span></label>
-              <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. £45,000" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#f97316] transition-all" />
+              <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. £45,000" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Years Experience <span className="text-red-500">*</span></label>
-              <Input name="experience" required type="number" min="0" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} placeholder="E.G. 12" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#f97316] transition-all" />
+              <Input name="experience" required type="number" min="0" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} placeholder="E.G. 12" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
             </div>
           </div>
 
@@ -193,7 +193,7 @@ export default function FindYourFitPage() {
                     className={cn(
                       "py-3 text-[10px] font-bold border transition-all rounded-sm uppercase text-center w-full", 
                       formData.qualifications.includes(q) 
-                        ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
+                        ? "bg-[#d95f02]/20 border-[#d95f02] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
                         : "bg-white/5 border-white/10 text-slate-600 hover:text-white"
                     )}
                   >
@@ -213,7 +213,7 @@ export default function FindYourFitPage() {
                     className={cn(
                       "py-3 text-[10px] font-bold border transition-all rounded-sm uppercase text-center w-full", 
                       formData.regions.includes(r) 
-                        ? "bg-[#f97316]/20 border-[#f97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
+                        ? "bg-[#d95f02]/20 border-[#d95f02] text-white shadow-[0_0_8px_rgba(249,115,22,0.15)]" 
                         : "bg-white/5 border-white/10 text-slate-600 hover:text-white"
                     )}
                   >
@@ -240,8 +240,8 @@ export default function FindYourFitPage() {
           )}
 
           {showValidationErrors && formData.qualifications.includes('None') && (
-            <div className="p-4 bg-amber-500/10 border border-amber-500/30 text-amber-500 text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95 text-left leading-relaxed">
-              <AlertTriangle className="size-4 shrink-0 text-amber-500" /> 
+            <div className="p-4 bg-[#d95f02]/10 border border-[#d95f02]/30 text-[#d95f02] text-[11px] font-black uppercase tracking-widest flex items-center gap-3 animate-in zoom-in-95 text-left leading-relaxed">
+              <AlertTriangle className="size-4 shrink-0 text-[#d95f02]" /> 
               <span>To ensure high-fidelity school matching and deployment compliance, a recognized state/national teaching credential (e.g. QTS, SACE, State Licensing) is required. Unfortunately, without a verified qualification, we cannot run full deployment planning reports.</span>
             </div>
           )}

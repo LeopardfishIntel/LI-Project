@@ -10,7 +10,7 @@ export default function StrategicChecksheetPage() {
   const handlePrint = () => typeof window !== 'undefined' && window.print();
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-[#f97316]/20">
+    <div className="min-h-screen bg-white text-black p-4 md:p-12 print:p-0 font-sans selection:bg-[#d95f02]/20">
       <div className="max-w-4xl mx-auto flex justify-between items-center mb-12 print:hidden">
         <Button variant="outline" asChild className="border-black/20 text-black px-6">
           <Link href="/prepare"><ArrowLeft className="mr-2 size-4" /> Return</Link>

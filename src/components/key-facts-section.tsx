@@ -65,7 +65,7 @@ export function KeyFactsSection() {
   // Note: We use logical OR (||) to provide "Hardcoded Intel" if the DB is slow.
   const stats = [
     { 
-      icon: <Building2 className="size-3.5 text-[#f97316]" />, 
+      icon: <Building2 className="size-3.5 text-[#d95f02]" />, 
       endValue: schools?.length || 452, // Tactical Fallback
       label: 'Verified Schools', 
       format: (val: number) => val.toLocaleString() 
@@ -77,7 +77,7 @@ export function KeyFactsSection() {
       format: (val: number) => `${val}` 
     },
     { 
-      icon: <Users2 className="size-3.5 text-[#f97316]" />, 
+      icon: <Users2 className="size-3.5 text-[#d95f02]" />, 
       endValue: metrics?.site_visits || 12840, // Tactical Fallback
       label: 'Teacher Visits', 
       format: (val: number) => val.toLocaleString() 
@@ -102,7 +102,7 @@ export function KeyFactsSection() {
             <div className="flex items-baseline gap-1">
               <AnimatedCounter endValue={stat.endValue} format={stat.format} />
               {(schoolsLoading || metricsLoading) && index === 0 && (
-                <Loader2 className="size-3 animate-spin text-[#f97316]/30" />
+                <Loader2 className="size-3 animate-spin text-[#d95f02]/30" />
               )}
             </div>
 

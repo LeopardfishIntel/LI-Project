@@ -68,7 +68,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center">
           <h2 className="text-2xl font-black italic text-white uppercase tracking-tighter">
-            <span className="text-[#f97316]">Leopard</span>
+            <span className="text-[#d95f02]">Leopard</span>
             <span className="text-[#007FFF]">fish Access</span>
           </h2>
           <p className="text-slate-500 text-[10px] mt-2 uppercase tracking-[0.3em] font-bold">
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <Input 
               type="email" 
               placeholder="EMAIL ADDRESS" 
-              className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#f97316] transition-all"
+              className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#d95f02] transition-all"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -106,7 +106,7 @@ export default function LoginPage() {
               <Input 
                 type={showPassword ? "text" : "password"} 
                 placeholder="PASSWORD" 
-                className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#f97316] transition-all pr-12"
+                className="bg-black/60 border-white/10 text-white rounded-none h-12 text-[10px] tracking-widest focus-visible:ring-1 focus-visible:ring-[#d95f02] transition-all pr-12"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -124,7 +124,7 @@ export default function LoginPage() {
 
           {/* RESET SUCCESS FEEDBACK */}
           {resetMessage && (
-            <p className="text-[8px] text-[#f97316] font-black text-center tracking-[0.2em] animate-pulse">
+            <p className="text-[8px] text-[#d95f02] font-black text-center tracking-[0.2em] animate-pulse">
               {resetMessage}
             </p>
           )}
@@ -132,7 +132,7 @@ export default function LoginPage() {
           <Button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-[#f97316] hover:bg-white hover:text-black text-white font-black uppercase text-[10px] h-12 rounded-none transition-all mt-4"
+            className="w-full bg-[#d95f02] hover:bg-white hover:text-black text-white font-black uppercase text-[10px] h-12 rounded-none transition-all mt-4"
           >
             {loading ? "Verifying..." : "Authorize Entry"}
           </Button>

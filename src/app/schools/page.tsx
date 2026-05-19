@@ -69,7 +69,7 @@ function SchoolDirectoryContent() {
         {/* Navigation Header - Tightened py-10 to pt-4 */}
         <div className="text-center space-y-2 pt-4">
           <h1 className="text-4xl font-black text-white tracking-tighter uppercase">
-            Global <span className="text-[#f97316]">Navigator</span>
+            Global <span className="text-[#d95f02]">Navigator</span>
           </h1>
           <p className="text-slate-500 text-xs font-black uppercase tracking-[0.3em]">
             Search by school, city, country, or curriculum
@@ -79,11 +79,11 @@ function SchoolDirectoryContent() {
         {/* Omni-Search Bar */}
         <form onSubmit={handleSearch} className="relative group max-w-2xl mx-auto w-full">
           <div className="absolute left-5 top-1/2 -translate-y-1/2">
-            <Search className="size-5 text-[#f97316]" />
+            <Search className="size-5 text-[#d95f02]" />
           </div>
           <Input 
             placeholder="ENTER SEARCH PARAMETERS..." 
-            className="pl-14 h-16 bg-white/5 border-white/10 text-white text-lg font-black placeholder:text-slate-800 focus:border-[#f97316] rounded-none transition-all uppercase tracking-tight"
+            className="pl-14 h-16 bg-white/5 border-white/10 text-white text-lg font-black placeholder:text-slate-800 focus:border-[#d95f02] rounded-none transition-all uppercase tracking-tight"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -92,7 +92,7 @@ function SchoolDirectoryContent() {
           />
           <button 
             type="submit"
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#f97316] text-white p-2 hover:bg-white hover:text-black transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#d95f02] text-white p-2 hover:bg-white hover:text-black transition-colors"
           >
             <ArrowRight className="size-5" />
           </button>
@@ -102,7 +102,7 @@ function SchoolDirectoryContent() {
         <div className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="size-8 animate-spin text-[#f97316]" />
+              <Loader2 className="size-8 animate-spin text-[#d95f02]" />
             </div>
           ) : !hasSearched ? (
             <div className="py-12 text-center border border-white/5 bg-white/[0.02]">
@@ -116,10 +116,10 @@ function SchoolDirectoryContent() {
                 <Link 
                   key={school.id} 
                   href={`/schools/${school.id}`}
-                  className="group flex items-center justify-between bg-[#0b1224] border border-white/5 p-4 hover:border-[#f97316] transition-all"
+                  className="group flex items-center justify-between bg-[#0b1224] border border-white/5 p-4 hover:border-[#d95f02] transition-all"
                 >
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-base font-black text-white uppercase tracking-tighter truncate group-hover:text-[#f97316] transition-colors">
+                    <h3 className="text-base font-black text-white uppercase tracking-tighter truncate group-hover:text-[#d95f02] transition-colors">
                       {school.schoolname || school.name || school.schoolName || "RECON PENDING"}
                     </h3>
                     <div className="flex gap-4 mt-1">
@@ -131,7 +131,7 @@ function SchoolDirectoryContent() {
                       </p>
                     </div>
                   </div>
-                  <ArrowRight className="size-4 text-slate-800 group-hover:text-[#f97316] group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="size-4 text-slate-800 group-hover:text-[#d95f02] group-hover:translate-x-1 transition-all" />
                 </Link>
               ))}
 
@@ -152,7 +152,7 @@ export default function SchoolDirectoryPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-[#020617] flex items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-[#f97316]" />
+        <Loader2 className="size-8 animate-spin text-[#d95f02]" />
       </div>
     }>
       <SchoolDirectoryContent />

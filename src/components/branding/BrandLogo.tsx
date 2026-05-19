@@ -20,13 +20,13 @@ export default function BrandLogo({ className }: { className?: string }) {
     <div className={cn("flex items-center gap-2 select-none", className)}>
       <div className="relative">
         {mounted ? (
-          <Binoculars className="size-6 text-[#f97316] drop-shadow-[0_0_8px_rgba(249,115,22,0.3)]" />
+          <Binoculars className="size-6 text-[#d95f02] drop-shadow-[0_0_8px_rgba(249,115,22,0.3)]" />
         ) : (
           <div className="size-6 bg-white/5 animate-pulse rounded-full" />
         )}
       </div>
       <span className="font-bold text-xl tracking-tighter leading-none flex items-baseline">
-        <span className="text-[#f97316]">Leopardfish</span>
+        <span className="text-[#d95f02]">Leopardfish</span>
         <span className="ml-1 text-[#007FFF]">Intel</span>
       </span>
     </div>

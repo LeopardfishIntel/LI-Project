@@ -22,7 +22,7 @@ export function ClientShield({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center space-y-4">
         <div className="flex items-center gap-3">
-          <Loader2 className="size-5 animate-spin text-[#f97316]" />
+          <Loader2 className="size-5 animate-spin text-[#d95f02]" />
           <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.5em]">
             Initialising Terminal...
           </span>

@@ -80,6 +80,14 @@ export default function PreparePage() {
   const [showElectronicsKit, setShowElectronicsKit] = useState(false);
   const [showIkeaKit, setShowIkeaKit] = useState(false);
   const [showDependents, setShowDependents] = useState(false);
+  const [step1Open, setStep1Open] = useState(false);
+  const [step2Open, setStep2Open] = useState(false);
+  const [step3Open, setStep3Open] = useState(false);
+  const [essentialsOpen, setEssentialsOpen] = useState(false);
+  const [transportOpen, setTransportOpen] = useState(false);
+  const [pensionOpen, setPensionOpen] = useState(false);
+  const [bankingOpen, setBankingOpen] = useState(false);
+  const [healthOpen, setHealthOpen] = useState(false);
 
   // Overrides
   const [docsOverride, setDocsOverride] = useState<number | null>(null);
@@ -640,36 +648,70 @@ export default function PreparePage() {
     doc.save(`The_Ultimate_Arrival_Plan_${selectedCountry.replace(/\s+/g, '_')}.pdf`);
   };
 
-  if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#f97316]" /></div>;
+  if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02]" /></div>;
 
   return (
-    <div className="container mx-auto px-4 md:px-12 py-10 text-white bg-[#020617] min-h-screen font-sans">
+    <div 
+      className="container mx-auto px-4 md:px-12 py-10 text-white bg-[#020617] min-h-screen font-sans"
+      style={{ '--primary': '#d95f02' } as React.CSSProperties}
+    >
       
       {/* Header */}
       <div className="mb-4 space-y-1">
         <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
-          The ultimate <span className="text-[#f97316]">arrival plan.</span>
+          The ultimate <span className="text-[#d95f02]">arrival plan.</span>
         </h1>
         <p className="text-[#94a3b8] font-bold text-[14px] tracking-[0.05em] opacity-80 italic">Because improvising is a great strategy for a Friday afternoon lesson, but a terrible one for international relocation.</p>
       </div>
 
-      {/* 🛡️ MISSION PHASE: STEP 01 */}
-      <div className="mb-4">
-        <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Search className="size-5 text-sky-400" />
-              <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Scrutinise the contract package</h3>
-            </div>
-            <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-              It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
-              <span className="block mt-2 text-sky-400/80">
-                Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
-              </span>
+      {/* 🛰️ MISSION BRIEFING: THE FLI007 ARRIVAL PLAN */}
+      <section className="border-b-2 border-white/5 pb-8 mb-6 mt-2">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="space-y-2">
+            <p className="text-[#d95f02] font-black text-[14px] italic tracking-[0.2em] uppercase">The Ultimate Arrival Plan for</p>
+            <h2 className="text-2xl md:text-3xl font-black italic tracking-tighter text-white uppercase">FRED FLI007</h2>
+            <p className="text-[15px] font-bold text-slate-400 italic max-w-xl leading-relaxed">
+              Your Essential Relocation Briefing. Grounded in Leopardfish Intel.
             </p>
           </div>
+          <Button 
+            className="bg-black hover:bg-[#d95f02] hover:text-black text-white border-2 border-[#d95f02] font-black text-xs uppercase italic px-10 h-14 rounded-none transition-all group flex items-center gap-3"
+            onClick={downloadBriefingPdf}
+          >
+            <Lock className="size-4 group-hover:hidden" />
+            <Download className="size-4 hidden group-hover:block" />
+            Generate PDF Briefing
+          </Button>
         </div>
-      </div>
+      </section>
+
+      {/* 🛡️ MISSION PHASE: STEP 01 */}
+      <div className="mb-4">
+        <button 
+          onClick={() => setStep1Open(!step1Open)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Search className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Scrutinise the contract package</h3>
+          </div>
+          {step1Open ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step1Open && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20">
+              <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
+                It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
+                <span className="block mt-2 text-sky-400/80">
+                  Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
+                </span>
+              </p>
+            </div>
 
       {/* 🛡️ MISSION PHASE: THE SURPLUS TEST */}
       <div className="mb-6">
@@ -752,27 +794,27 @@ export default function PreparePage() {
       {/* 🛡️ TACTICAL RISKS: CONTRACT RED & GREEN FLAGS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
         {/* Red Flags */}
-        <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
+        <div className="p-5 bg-[#d95f02]/5 border border-[#d95f02]/20 relative group hover:border-[#d95f02]/40 transition-all">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <Banknote className="size-5 text-amber-500" />
+              <Banknote className="size-5 text-[#d95f02]" />
               <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Warnings</h3>
             </div>
             <div className="space-y-2">
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">"Negotiable" Salary</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">"Negotiable" Salary</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps.</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">Vague "Broad Ranges"</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Vague "Broad Ranges"</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">A massive range without a clear ladder is often a bait-and-switch designed to lowball you.</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">The "Secret" Grid</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The "Secret" Grid</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises.</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">Profit-First Chains</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Profit-First Chains</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Lower-tier schools view your salary as a "cost" to be cut for shareholders.</p>
               </div>
             </div>
@@ -821,27 +863,27 @@ export default function PreparePage() {
       {/* 🛡️ TACTICAL RISKS: ACCOMMODATION INTEL */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-4">
         {/* Red Flags - Accommodation */}
-        <div className="p-5 bg-amber-500/5 border border-amber-500/20 relative group hover:border-amber-500/40 transition-all">
+        <div className="p-5 bg-[#d95f02]/5 border border-[#d95f02]/20 relative group hover:border-[#d95f02]/40 transition-all">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <Home className="size-5 text-amber-500" />
+              <Home className="size-5 text-[#d95f02]" />
               <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Warnings</h3>
             </div>
             <div className="space-y-2">
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">The "Commute Trap"</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The "Commute Trap"</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Locations 45+ minutes from campus turns your "free" time into hours of unpaid travel.</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">Vague "Suitability" Clauses</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Vague "Suitability" Clauses</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Describing housing as "suitable" without photos or square footage can hide substandard units.</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">The Furniture Gap</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The Furniture Gap</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Providing "unfurnished" flats without a settling-in allowance. You'll spend months of salary just buying a bed. See our guide!</p>
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-amber-500 uppercase italic">Mandatory Sharing</p>
+                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Mandatory Sharing</p>
                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff.</p>
               </div>
             </div>
@@ -905,24 +947,37 @@ export default function PreparePage() {
           </p>
         </div>
       </div>
+    </div>
+  )}
+</div>
 
       {/* 🛡️ MISSION PHASE: STEP 02 */}
       <div className="mb-6">
-        <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Coins className="size-5 text-sky-400" />
-              <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
-            </div>
-            <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-              This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
-              <span className="block mt-2 text-sky-400/80">
-                The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
-              </span>
-            </p>
+        <button 
+          onClick={() => setStep2Open(!step2Open)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Coins className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
           </div>
-        </div>
-      </div>
+          {step2Open ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step2Open && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20">
+              <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
+                This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
+                <span className="block mt-2 text-sky-400/80">
+                  The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
+                </span>
+              </p>
+            </div>
 
       <div className="max-w-7xl mx-auto space-y-5">
         
@@ -932,7 +987,7 @@ export default function PreparePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 flex">
             <Card className="bg-[#0b1224] border-white/10 p-6 w-full space-y-5 flex flex-col justify-center">
-              <h3 className="text-[12px] font-black text-[#f97316] tracking-widest uppercase italic underline underline-offset-8 mb-2">Your details</h3>
+              <h3 className="text-[12px] font-black text-[#d95f02] tracking-widest uppercase italic underline underline-offset-8 mb-2">Your details</h3>
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-[12px] font-bold text-slate-500 italic">1. Which country?</Label>
@@ -999,7 +1054,7 @@ export default function PreparePage() {
                   {/* Reserve Counter */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <p className="text-[14px] font-black text-[#f97316] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
+                      <p className="text-[14px] font-black text-[#d95f02] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
                     </div>
                     <p className={cn(
                       "font-black italic tracking-tighter leading-none transition-all duration-300 drop-shadow-2xl",
@@ -1017,7 +1072,7 @@ export default function PreparePage() {
                           onClick={() => setCurrency(c)}
                           className={cn(
                             "px-3 py-1 text-[13px] font-black transition-all uppercase",
-                            currency === c ? "bg-[#f97316] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
+                            currency === c ? "bg-[#d95f02] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
                           )}
                         >
                           {c}
@@ -1039,7 +1094,7 @@ export default function PreparePage() {
                         </div>
                       </Label>
                       <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
-                        <SelectTrigger className="bg-black/60 border-[#f97316] h-16 text-[18px] font-black italic text-white rounded-none focus:ring-[#f97316] shadow-[0_0_15px_rgba(249,115,22,0.15)] animate-pulse transition-all hover:animate-none hover:border-[#f97316] hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+                        <SelectTrigger className="bg-black/60 border-[#d95f02] h-16 text-[18px] font-black italic text-white rounded-none focus:ring-[#d95f02] shadow-[0_0_15px_rgba(249,115,22,0.15)] animate-pulse transition-all hover:animate-none hover:border-[#d95f02] hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
@@ -1052,13 +1107,13 @@ export default function PreparePage() {
                     <div className="space-y-1 min-w-[150px]">
                       <Label className="text-[13px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
                       <div className="relative">
-                        <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#f97316]" />
+                        <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#d95f02]" />
                         <Input 
                           type="number" 
                           value={arrivalAllowance || ''} 
                           onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
                           placeholder="e.g. 1500"
-                          className="bg-black/60 border-white/10 h-12 pl-10 text-[14px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#f97316] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="bg-black/60 border-white/10 h-12 pl-10 text-[14px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#d95f02] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                       </div>
                     </div>
@@ -1212,7 +1267,7 @@ export default function PreparePage() {
               <div className="px-8 pb-8 flex justify-end">
                 <button 
                   onClick={resetToDefaults}
-                  className="text-[12px] font-black text-[#f97316] hover:text-[#00e5ff] uppercase tracking-widest italic transition-colors"
+                  className="text-[12px] font-black text-[#d95f02] hover:text-[#00e5ff] uppercase tracking-widest italic transition-colors"
                 >
                   Reset all overrides to LeopardfishIntel defaults
                 </button>
@@ -1251,7 +1306,7 @@ export default function PreparePage() {
                       <>
                         <div className={cn(
                           "p-2.5 rounded-full", 
-                          hasIkea ? "bg-green-500/10 text-green-500" : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-amber-500/10 text-amber-500")
+                          hasIkea ? "bg-green-500/10 text-green-500" : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-[#d95f02]/10 text-[#d95f02]")
                         )}>
                           <ShoppingCart className="size-5" />
                         </div>
@@ -1383,7 +1438,7 @@ export default function PreparePage() {
                     return (
                       <div key={idx} className="flex items-center justify-between text-[12px] font-bold text-slate-300 italic opacity-80 border-b border-white/5 pb-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[#f97316]">●</span> {itemName}
+                          <span className="text-[#d95f02]">●</span> {itemName}
                         </div>
                         <span className="text-sky-400 font-black">x{quantity}</span>
                       </div>
@@ -1402,15 +1457,30 @@ export default function PreparePage() {
           </div>
         </div>
       </div>
+      </div>
+    )}
+</div>
 
       {/* 🛡️ MISSION PHASE: STEP 03 */}
-        <div className="mb-6">
-          <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <FileText className="size-5 text-sky-400" />
-                <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
-              </div>
+      <div className="mb-6">
+        <button 
+          onClick={() => setStep3Open(!step3Open)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <FileText className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
+          </div>
+          {step3Open ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step3Open && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20">
               <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
                 This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper. 
                 <span className="block mt-2 text-sky-400/80">
@@ -1418,13 +1488,26 @@ export default function PreparePage() {
                 </span>
               </p>
             </div>
-          </div>
-        </div>
 
-        {/* 🛡️ TACTICAL RISKS: DOCUMENTATION INTEL */}
         <div className="mb-6">
-          <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-            <div className="space-y-4">
+          <button 
+            onClick={() => setEssentialsOpen(!essentialsOpen)}
+            className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <FileText className="size-5 text-sky-400" />
+              <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-white">The Essentials</h3>
+            </div>
+            {essentialsOpen ? (
+              <ChevronUp className="size-5 text-sky-400" />
+            ) : (
+              <ChevronDown className="size-5 text-sky-400" />
+            )}
+          </button>
+
+          {essentialsOpen && (
+            <div className="mt-4 p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <FileText className="size-5 text-sky-400" />
                 <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-white">The Essentials</h3>
@@ -1459,7 +1542,7 @@ export default function PreparePage() {
                     <p className="text-[13px] font-bold text-slate-300 italic leading-relaxed">
                       <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
                       <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
-                      <span className="text-[#f97316] uppercase text-[12px]">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
+                      <span className="text-[#d95f02] uppercase text-[12px]">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
                     </p>
                   </div>
                   <div className="space-y-1">
@@ -1483,6 +1566,7 @@ export default function PreparePage() {
               </div>
             </div>
           </div>
+          )}
         </div>
 
         {/* BOTTOM GRID: The Remaining Operations */}
@@ -1490,13 +1574,26 @@ export default function PreparePage() {
 
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Navigation className="size-4 text-[#f97316] -rotate-90" />
-                <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#f97316]">Transport Strategy</CardTitle>
-              </div>
+              <button 
+                onClick={() => setTransportOpen(!transportOpen)}
+                className="w-full flex items-center justify-between text-left focus:outline-none"
+              >
+                <div className="flex items-center gap-3">
+                  <Navigation className="size-4 text-[#d95f02] -rotate-90" />
+                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Transport Strategy</CardTitle>
+                </div>
+                {transportOpen ? (
+                  <ChevronUp className="size-4 text-sky-400" />
+                ) : (
+                  <ChevronDown className="size-4 text-sky-400" />
+                )}
+              </button>
+
+              {transportOpen && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               <div className="flex gap-2">
                 <button onClick={() => setTransportMode('public')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'public' ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
-                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#f97316] text-white border-[#f97316]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
+                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#d95f02] text-white border-[#d95f02]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
                 <button onClick={() => setTransportMode('taxi')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'taxi' ? "bg-indigo-500 text-white border-indigo-500" : "bg-black/20 border-white/10 text-slate-500")}>Taxi/App</button>
               </div>
               
@@ -1517,9 +1614,9 @@ export default function PreparePage() {
                   )}
                   {transportMode === 'drive' && (
                     <>
-                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> IDP (International Driving Permit) - Get before leaving!</li>
-                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> Verify home-license exchange rules (Some need re-tests)</li>
-                      <li className="flex gap-3"><span className="text-[#f97316] font-black">●</span> Budget for 'Salik' (tolls) and mandatory parking fees</li>
+                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> IDP (International Driving Permit) - Get before leaving!</li>
+                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> Verify home-license exchange rules (Some need re-tests)</li>
+                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> Budget for 'Salik' (tolls) and mandatory parking fees</li>
                     </>
                   )}
                   {transportMode === 'taxi' && (
@@ -1538,30 +1635,47 @@ export default function PreparePage() {
                   "Mobilize together. Check if your school has a 'Teacher Carpool' or staff shuttle. It’s the fastest way to cut costs and get the 'staff-room honest' intel on the best neighborhoods and local hidden gems."
                 </p>
               </div>
+                </div>
+              )}
             </div>
           </Card>
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Landmark className="size-4 text-[#f97316]" />
-                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#f97316]">Pensions & Retirement</CardTitle>
-                </div>
-                <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
-                  <button 
-                    onClick={() => setPensionRegion('GB')}
-                    className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'GB' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
-                  >
-                    UK
-                  </button>
-                  <button 
-                    onClick={() => setPensionRegion('US')}
-                    className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'US' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
-                  >
-                    US
-                  </button>
-                </div>
+                <button 
+                  onClick={() => setPensionOpen(!pensionOpen)}
+                  className="flex items-center gap-3 text-left focus:outline-none flex-1"
+                >
+                  <Landmark className="size-4 text-[#d95f02]" />
+                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02] flex items-center gap-2">
+                    Pensions & Retirement
+                    {pensionOpen ? (
+                      <ChevronUp className="size-4 text-sky-400" />
+                    ) : (
+                      <ChevronDown className="size-4 text-sky-400" />
+                    )}
+                  </CardTitle>
+                </button>
+                {pensionOpen && (
+                  <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
+                    <button 
+                      onClick={() => setPensionRegion('GB')}
+                      className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'GB' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                    >
+                      UK
+                    </button>
+                    <button 
+                      onClick={() => setPensionRegion('US')}
+                      className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'US' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
+                    >
+                      US
+                    </button>
+                  </div>
+                )}
               </div>
+
+              {pensionOpen && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200 w-full">
 
               {pensionRegion === 'GB' ? (
                 <div className="space-y-3">
@@ -1610,14 +1724,29 @@ export default function PreparePage() {
                   </p>
                 </div>
               )}
+                </div>
+              )}
             </div>
           </Card>
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Landmark className="size-4 text-[#f97316]" />
-                <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#f97316]">Money & Banking</CardTitle>
-              </div>
+              <button 
+                onClick={() => setBankingOpen(!bankingOpen)}
+                className="w-full flex items-center justify-between text-left focus:outline-none"
+              >
+                <div className="flex items-center gap-3">
+                  <Landmark className="size-4 text-[#d95f02]" />
+                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Money & Banking</CardTitle>
+                </div>
+                {bankingOpen ? (
+                  <ChevronUp className="size-4 text-sky-400" />
+                ) : (
+                  <ChevronDown className="size-4 text-sky-400" />
+                )}
+              </button>
+
+              {bankingOpen && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
                 Moving money internationally can cost you 3% to 5% of your salary in hidden bank fees.
               </p>
@@ -1647,14 +1776,29 @@ export default function PreparePage() {
                   "Don't transfer on Fridays. Banks add a 'volatility buffer' over weekends. Send your money on a Tuesday or Wednesday for the cheapest results."
                 </p>
               </div>
+                </div>
+              )}
             </div>
           </Card>
           <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Stethoscope className="size-4 text-[#f97316]" />
-                <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#f97316]">Health & Registration</CardTitle>
-              </div>
+              <button 
+                onClick={() => setHealthOpen(!healthOpen)}
+                className="w-full flex items-center justify-between text-left focus:outline-none"
+              >
+                <div className="flex items-center gap-3">
+                  <Stethoscope className="size-4 text-[#d95f02]" />
+                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Health & Registration</CardTitle>
+                </div>
+                {healthOpen ? (
+                  <ChevronUp className="size-4 text-sky-400" />
+                ) : (
+                  <ChevronDown className="size-4 text-sky-400" />
+                )}
+              </button>
+
+              {healthOpen && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
                 Your medical cover is your most important safety net.
               </p>
@@ -1684,32 +1828,16 @@ export default function PreparePage() {
                   "Download the insurance app immediately. Having your digital card and policy number ready means you can find 'in-network' clinics in seconds during an emergency."
                 </p>
               </div>
+                </div>
+              )}
             </div>
           </Card>
         </div>
+      </div>
+    )}
+</div>
         
-        
-        {/* 🛰️ MISSION BRIEFING: THE FLI007 ARRIVAL PLAN */}
-        <section className="mt-10 border-t-2 border-white/5 pt-10 mb-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-            <div className="space-y-2">
-              <p className="text-amber-500 font-black text-[14px] italic tracking-[0.2em] uppercase">The Ultimate Arrival Plan for</p>
-              <h2 className="text-2xl md:text-3xl font-black italic tracking-tighter text-white uppercase">FRED FLI007</h2>
-              <p className="text-[15px] font-bold text-slate-400 italic max-w-xl leading-relaxed">
-                Your Essential Relocation Briefing. Grounded in Leopardfish Intel.
-              </p>
-            </div>
-            <Button 
-              className="bg-amber-500 hover:bg-white text-black font-black text-xs uppercase italic px-10 h-14 rounded-none transition-all group flex items-center gap-3"
-              onClick={downloadBriefingPdf}
-            >
-              <Lock className="size-4 group-hover:hidden" />
-              <Download className="size-4 hidden group-hover:block" />
-              Generate PDF Briefing
-            </Button>
-          </div>
 
-        </section>
 
         <div className="h-12" />
       </div>
@@ -1730,7 +1858,7 @@ function StatItem({
   const isLongSymbol = currencySymbol.length > 1;
 
   return (
-    <div className="bg-black/40 border border-white/5 p-3 space-y-2 hover:border-[#f97316]/20 transition-all group relative h-full flex flex-col justify-between">
+    <div className="bg-black/40 border border-white/5 p-3 space-y-2 hover:border-[#d95f02]/20 transition-all group relative h-full flex flex-col justify-between">
       <div className="flex items-center justify-between gap-1 min-h-[16px]">
         <div className="text-[13px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 leading-none">
           <Icon className="size-3 text-sky-400 shrink-0" /> {label}
@@ -1751,7 +1879,7 @@ function StatItem({
           <span className={cn(
             "absolute left-3 top-1/2 -translate-y-1/2 font-black italic pointer-events-none transition-colors",
             isLongSymbol ? "text-[13px] tracking-tight" : "text-lg",
-            isOverridden ? "text-[#f97316]" : "text-slate-500"
+            isOverridden ? "text-[#d95f02]" : "text-slate-500"
           )}>
             {currencySymbol}
           </span>
@@ -1760,9 +1888,9 @@ function StatItem({
             value={displayVal || ''} 
             onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
             className={cn(
-              "bg-black/60 border-white/5 h-12 text-[16px] font-black italic rounded-none focus-visible:ring-[#f97316] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+              "bg-black/60 border-white/5 h-12 text-[16px] font-black italic rounded-none focus-visible:ring-[#d95f02] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
               isLongSymbol ? "pl-14" : "pl-10",
-              isOverridden ? "text-[#f97316] border-[#f97316]/30" : "text-white"
+              isOverridden ? "text-[#d95f02] border-[#d95f02]/30" : "text-white"
             )}
           />
         </div>
@@ -1785,7 +1913,7 @@ function IntelCard({ title, icon: Icon, items, subtext }: { title: string, icon:
         <ul className="space-y-2.5 pt-1">
           {items.map((item, i) => (
             <li key={i} className="text-[12px] font-bold text-slate-400 flex items-start gap-3 leading-tight italic">
-              <span className="text-[#f97316]">●</span> {item}
+              <span className="text-[#d95f02]">●</span> {item}
             </li>
           ))}
         </ul>
@@ -1796,9 +1924,9 @@ function IntelCard({ title, icon: Icon, items, subtext }: { title: string, icon:
 
 function RiskCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
   return (
-    <div className="p-4 bg-[#0b1224] border border-white/5 rounded-sm hover:border-[#f97316]/40 transition-all group w-full">
+    <div className="p-4 bg-[#0b1224] border border-white/5 rounded-sm hover:border-[#d95f02]/40 transition-all group w-full">
       <div className="flex items-center gap-3 mb-1.5 text-white">
-        <Icon className="size-4 text-[#f97316]" />
+        <Icon className="size-4 text-[#d95f02]" />
         <h4 className="text-[13px] font-black text-white italic uppercase tracking-widest">{title}</h4>
       </div>
       <p className="text-[12px] text-slate-400 font-bold leading-tight italic">{desc}</p>

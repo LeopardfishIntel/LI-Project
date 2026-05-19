@@ -20,7 +20,7 @@ const features = [
     title: "FAMILY SCALABILITY",
     desc: "Our estimates allow for the specific needs of both singles and families, using custom figures for every situation.",
     icon: Users,
-    color: "text-[#f97316]" // Tactical Orange
+    color: "text-[#d95f02]" // Tactical Orange
   },
   {
     title: "COST OF LIVING INDEX",
@@ -32,7 +32,7 @@ const features = [
     title: "LIVE OFFER INPUT",
     desc: "Add your offer details to see how this affects the finances.",
     icon: Pencil,
-    color: "text-[#f97316]"
+    color: "text-[#d95f02]"
   },
   {
     title: "COMPARISON MATRIX",
@@ -44,7 +44,7 @@ const features = [
     title: "KEY FINDINGS",
     desc: "Receive curated analytical reports identifying strengths and risks.",
     icon: Search,
-    color: "text-[#f97316]"
+    color: "text-[#d95f02]"
   },
   {
     title: "FINAL PLAN",
@@ -56,7 +56,7 @@ const features = [
     title: "CONTRACT FLAGS",
     desc: "Identify early renewal traps, hidden deductions, and ambiguous handbook clauses.",
     icon: ShieldAlert,
-    color: "text-[#f97316]"
+    color: "text-[#d95f02]"
   }
 ];
 
@@ -70,7 +70,7 @@ export function AnalysisInAction() {
           <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none">
             ANALYSIS IN ACTION
           </h2>
-          <p className="text-[#f97316] text-[10px] md:text-xs font-black uppercase tracking-[0.45em]">
+          <p className="text-[#d95f02] text-[10px] md:text-xs font-black uppercase tracking-[0.45em]">
             Key examples of how we use data to drive decisions.
           </p>
         </div>
@@ -100,12 +100,12 @@ export function AnalysisInAction() {
           
           <div className="flex gap-4">
             <Link href="/directory">
-              <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
+              <Button className="bg-[#d95f02] hover:bg-[#d95f02]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
                 BROWSE SCHOOLS <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>
             <Link href="/discover">
-              <Button className="bg-[#f97316] hover:bg-[#f97316]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
+              <Button className="bg-[#d95f02] hover:bg-[#d95f02]/90 text-white rounded-none h-14 px-8 font-black uppercase text-[11px] tracking-widest transition-all">
                 FIND MY FIT <ArrowRight className="ml-2 size-4" />
               </Button>
             </Link>

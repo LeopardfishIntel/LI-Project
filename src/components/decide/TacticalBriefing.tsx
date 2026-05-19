@@ -50,7 +50,7 @@ export default function TacticalBriefing({ userProfile, schoolData, colData }: P
   if (!isMounted) return null;
 
   return (
-    <section className="w-full bg-[#020617] p-8 border-l-4 border-[#f97316] my-8 shadow-xl">
+    <section className="w-full bg-[#020617] p-8 border-l-4 border-[#d95f02] my-8 shadow-xl">
       <h2 className="text-3xl font-black tracking-tighter text-white mb-6 uppercase">
         Institutional Intelligence: {schoolData?.idschoolname || "Strategic Overview"}
       </h2>
@@ -58,7 +58,7 @@ export default function TacticalBriefing({ userProfile, schoolData, colData }: P
       <div className="space-y-6 text-slate-300 leading-relaxed text-lg font-normal">
         {loading ? (
           <div className="flex items-center space-x-3 text-[#007FFF]">
-            <div className="w-2 h-2 bg-[#f97316] animate-ping rounded-full" />
+            <div className="w-2 h-2 bg-[#d95f02] animate-ping rounded-full" />
             <span className="font-bold tracking-tight">Synthesizing Senior Staff Briefing...</span>
           </div>
         ) : (

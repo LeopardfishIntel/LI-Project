@@ -41,9 +41,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-white/5 bg-[#020617]">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-2 mb-4" prefetch={false}>
-          <Binoculars className="size-6 text-[#f97316]" />
+          <Binoculars className="size-6 text-[#d95f02]" />
           <span className="font-bold font-headline text-lg tracking-tighter group-data-[collapsible=icon]:hidden whitespace-nowrap">
-            <span className="text-[#f97316]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
+            <span className="text-[#d95f02]">Leopardfish</span> <span className="text-[#007FFF]">Intel</span>
           </span>
         </Link>
 
@@ -54,12 +54,12 @@ export function AppSidebar() {
               <div className="relative">
                 <Fingerprint className={cn(
                   "size-5",
-                  isAdmin ? "text-[#f97316]" : "text-[#007FFF]"
+                  isAdmin ? "text-[#d95f02]" : "text-[#007FFF]"
                 )} />
                 {/* Pulsing Status Dot */}
                 <span className={cn(
                   "absolute -top-1 -right-1 size-2 rounded-full animate-pulse",
-                  isAdmin ? "bg-[#f97316]" : "bg-[#007FFF]"
+                  isAdmin ? "bg-[#d95f02]" : "bg-[#007FFF]"
                 )} />
               </div>
               <div className="flex flex-col">
@@ -112,7 +112,7 @@ export function AppSidebar() {
             <SidebarMenuItem className="mt-10 pt-4 border-t border-white/5">
               <SidebarMenuButton
                 asChild
-                className="text-[#f97316] hover:bg-[#f97316]/10 hover:text-[#f97316]"
+                className="text-[#d95f02] hover:bg-[#d95f02]/10 hover:text-[#d95f02]"
               >
                 <Link href="/admin">
                   <ShieldCheck className="size-4" />

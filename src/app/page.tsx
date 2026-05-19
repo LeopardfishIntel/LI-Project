@@ -40,7 +40,7 @@ function TacticalButton({ href, label, className }: { href: string; label: strin
     <Link href={href} prefetch={false}>
       <Button
         className={cn(
-          "bg-zinc-950/60 backdrop-blur-xl border border-[#f97316] text-white font-bold rounded-none h-14 px-10 transition-all hover:bg-[#f97316]/20 shadow-2xl text-sm whitespace-nowrap",
+          "bg-zinc-950/60 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-none h-14 px-10 transition-all hover:bg-[#d95f02]/20 shadow-2xl text-sm whitespace-nowrap",
           className
         )}
       >
@@ -78,9 +78,9 @@ export default function Home() {
   const comparisonsCount = metrics?.comparisons_made || COUNTER_FALLBACKS.comparisons;
 
   const counters = [
-    { label: 'INTL SCHOOLS', value: schoolCount.toLocaleString(), icon: Building2, color: 'text-[#f97316]', loading: isAnyLoading },
+    { label: 'INTL SCHOOLS', value: schoolCount.toLocaleString(), icon: Building2, color: 'text-[#d95f02]', loading: isAnyLoading },
     { label: 'COUNTRIES', value: countryCount.toLocaleString(), icon: Globe, color: 'text-[#007FFF]', loading: isAnyLoading },
-    { label: 'VISITS', value: visitsCount.toLocaleString(), icon: Eye, color: 'text-[#f97316]', loading: isAnyLoading },
+    { label: 'VISITS', value: visitsCount.toLocaleString(), icon: Eye, color: 'text-[#d95f02]', loading: isAnyLoading },
     { label: 'COMPARISONS', value: comparisonsCount.toLocaleString(), icon: BarChart3, color: 'text-[#007FFF]', loading: isAnyLoading },
   ];
 
@@ -94,7 +94,7 @@ export default function Home() {
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#f97316]">
+    <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#d95f02]">
 
       {/* 🏔️ HERO SECTION */}
       <section className="relative w-full h-[82vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
@@ -103,7 +103,7 @@ export default function Home() {
 
         <div className="relative z-30 max-w-5xl mx-auto flex flex-col items-center w-full pt-4">
           {/* 🛡️ BADGE */}
-          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316] text-[13px] font-[900] tracking-[0.5em] mb-6 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+          <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-[#d95f02]/30 bg-[#d95f02]/10 text-[#d95f02] text-[13px] font-[900] tracking-[0.5em] mb-6 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
             ⦿ Actionable intelligence
           </div>
 
@@ -121,7 +121,7 @@ export default function Home() {
               textRendering: 'optimizeLegibility'
             }}
           >
-            <span className="text-[#f97316]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
+            <span className="text-[#d95f02]">Leopard</span><span className="text-[#007FFF]">fish Intel</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-white font-bold max-w-2xl mb-10 tracking-tight italic uppercase opacity-90">
@@ -143,7 +143,7 @@ export default function Home() {
                 )}>
                   {c.value}
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold group-hover:text-[#f97316] transition-colors">{c.label}</span>
+                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold group-hover:text-[#d95f02] transition-colors">{c.label}</span>
               </div>
             ))}
           </div>
@@ -154,7 +154,7 @@ export default function Home() {
       <section className="py-8 bg-[#020617] border-y border-white/5">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h1 className="text-4xl md:text-6xl uppercase tracking-tighter text-white font-black mb-4 leading-none">
-            Know <span className="text-[#f97316]">before</span> you go
+            Know <span className="text-[#d95f02]">before</span> you go
           </h1>
           <div className="space-y-4 max-w-4xl mx-auto">
             <p className="text-slate-400 text-lg md:text-xl leading-relaxed font-bold tracking-tight">
@@ -186,7 +186,7 @@ export default function Home() {
                 <Link
                   href={step.link}
                   prefetch={false}
-                  className="text-[#f97316] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-1 border-b border-transparent hover:border-[#f97316] transition-all"
+                  className="text-[#d95f02] text-xs font-black tracking-[0.4em] uppercase flex items-center group pt-1 border-b border-transparent hover:border-[#d95f02] transition-all"
                 >
                   {step.label} <ArrowRight className="ml-3 size-4 group-hover:translate-x-2 transition-transform" />
                 </Link>
