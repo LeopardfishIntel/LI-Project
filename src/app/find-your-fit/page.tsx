@@ -32,7 +32,7 @@ function SubmitButton({ isPending, isDirty, isDisabled }: { isPending: boolean, 
     <button 
       type="submit" 
       disabled={isPending || isDisabled} 
-      className="w-full h-16 bg-[#d95f02] text-white text-lg font-black tracking-widest uppercase hover:bg-white hover:text-black transition-all border-2 border-[#d95f02] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
+      className="w-full h-16 bg-black text-slate-100 text-lg font-black tracking-widest hover:bg-[#d95f02] hover:text-black transition-all border-2 border-[#d95f02] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
     >
       {isPending ? (
         <><Loader2 className="animate-spin size-5" /> {loadingText}</>
@@ -129,7 +129,7 @@ export default function FindYourFitPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
-          <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]" />
+          <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]/30" />
 
           {/* 1. PERSONAL PROFILE */}
           <div className="grid md:grid-cols-2 gap-12">
