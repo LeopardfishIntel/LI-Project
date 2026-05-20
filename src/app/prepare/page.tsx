@@ -859,7 +859,7 @@ export default function PreparePage() {
                           { id: 5, title: "Negotiation Prep", desc: `Use any savings gaps to determine the exact contract uplift required to make deployment viable.` },
                           { id: 6, title: "Lock in the Profile", desc: `Save your profile metrics to secure your baseline runway for future PDF manual generation.` }
                         ].map(item => (
-                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full">
+                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:min-h-[120px]">
                             <div>
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
@@ -878,7 +878,7 @@ export default function PreparePage() {
                     <div className="pt-4 flex border-t border-sky-400/10">
                       <Link 
                         href="/financial-forecaster"
-                        className="bg-black hover:bg-sky-400 hover:text-black text-white border-2 border-sky-400 font-black text-xs italic px-6 h-12 rounded-none transition-all flex items-center gap-2 justify-center"
+                        className="bg-black hover:bg-[#d95f02] hover:text-black text-white border-2 border-[#d95f02] font-black text-xs italic px-6 h-12 rounded-none transition-all flex items-center gap-2 justify-center"
                       >
                         <ArrowUpRight className="size-4" /> Launch Evaluate Dashboard
                       </Link>
@@ -899,16 +899,21 @@ export default function PreparePage() {
                        
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                          {[
-                           { label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
-                           { label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
-                           { label: "The 4x4 necessity", desc: `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` },
-                           { label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
-                           { label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
-                           { label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
+                           { id: 'A', label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
+                           { id: 'B', label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
+                           { id: 'C', label: "The 4x4 necessity", desc: `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` },
+                           { id: 'D', label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
+                           { id: 'E', label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
+                           { id: 'F', label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
                          ].map((item, i) => (
-                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full">
+                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:min-h-[120px]">
                              <div>
-                               <p className="text-[12px] font-black text-sky-400 uppercase tracking-wider mb-2">{item.label}</p>
+                               <div className="flex items-center gap-2 mb-2">
+                                 <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
+                                   {item.id}
+                                 </span>
+                                 <p className="text-[12px] font-black text-white uppercase tracking-wider">{item.label}</p>
+                               </div>
                                <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
                              </div>
                            </div>
