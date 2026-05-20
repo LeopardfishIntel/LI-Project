@@ -1304,7 +1304,7 @@ export default function PreparePage() {
 
                   {/* Operational Inputs (Top Tier - Vertically Stacked) */}
                   <div className="flex flex-col gap-4 w-full lg:w-auto">
-                    <div className="space-y-1 min-w-[250px] relative group/payday">
+                    <div className="space-y-1 min-w-[150px] relative group/payday">
                       <Label className="text-[12px] font-black text-white italic flex items-center gap-2 uppercase tracking-[0.2em] mb-1">
                         THE PAYDAY GAP
                         <div className="group relative">
@@ -1315,7 +1315,7 @@ export default function PreparePage() {
                         </div>
                       </Label>
                       <Select value={setupDays} onValueChange={(val: string) => setSetupDays(val)}>
-                        <SelectTrigger className="bg-black/60 border-[#d95f02] h-16 text-[18px] font-black italic text-white rounded-none focus:ring-[#d95f02] shadow-[0_0_15px_rgba(249,115,22,0.15)] animate-pulse transition-all hover:animate-none hover:border-[#d95f02] hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+                        <SelectTrigger className="bg-black/60 border-[#d95f02] h-11 text-[14px] font-black italic text-white rounded-none focus:ring-[#d95f02] shadow-[0_0_10px_rgba(249,115,22,0.1)] transition-all hover:border-[#d95f02] hover:shadow-[0_0_15px_rgba(249,115,22,0.2)]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
