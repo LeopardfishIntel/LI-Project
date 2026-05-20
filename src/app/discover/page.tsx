@@ -296,7 +296,7 @@ export default function FindYourFitGate() {
             disabled={isGenerating} 
             className={cn(
               "w-full h-24 tracking-[0.2em] text-2xl font-black transition-all flex items-center justify-center gap-4 border-2 shadow-2xl", 
-              !isGenerating ? "bg-black border-[#d95f02] text-slate-100 hover:bg-[#d95f02] hover:text-black" : "opacity-20 cursor-not-allowed text-slate-700"
+              !isGenerating ? "bg-black border-[#d95f02] text-slate-200 hover:bg-[#d95f02] hover:text-black" : "opacity-20 cursor-not-allowed text-slate-700"
             )}
           >
             {isGenerating ? <Loader2 className="size-8 animate-spin text-[#d95f02]" /> : <><Zap className="size-6" /> Leopardfish Intel Analysis</>}

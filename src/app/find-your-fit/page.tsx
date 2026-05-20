@@ -32,7 +32,7 @@ function SubmitButton({ isPending, isDirty, isDisabled }: { isPending: boolean, 
     <button 
       type="submit" 
       disabled={isPending || isDisabled} 
-      className="w-full h-16 bg-black text-slate-100 text-lg font-black tracking-widest hover:bg-[#d95f02] hover:text-black transition-all border-2 border-[#d95f02] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
+      className="w-full h-16 bg-black text-slate-200 text-lg font-black tracking-widest hover:bg-[#d95f02] hover:text-black transition-all border-2 border-[#d95f02] flex items-center justify-center gap-3 shadow-xl italic disabled:opacity-50 disabled:grayscale animate-in fade-in duration-300"
     >
       {isPending ? (
         <><Loader2 className="animate-spin size-5" /> {loadingText}</>
