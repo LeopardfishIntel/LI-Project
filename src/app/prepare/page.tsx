@@ -890,7 +890,7 @@ export default function PreparePage() {
                     <div className="space-y-6">
                        <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
                          <Compass className="size-4 text-sky-400" />
-                         <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Tuning the Dials: The 'What-If' Scenarios</h4>
+                         <h4 className="text-[14px] font-black uppercase tracking-widest text-white">The 'What-If' Scenarios</h4>
                        </div>
                        
                        <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
