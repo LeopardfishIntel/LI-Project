@@ -455,5 +455,10 @@ export function matchesRegion(dbRegion: string, queryRegion: string): boolean {
   const isAmericasQuery = qReg === 'americas' || qReg === 'latin america' || qReg === 'south america' || qReg === 'north america' || qReg === 'latin-america';
   if (isAmericasDb && isAmericasQuery) return true;
   
+  // Prevent "southeast asia" from matching "east asia"
+  if (qReg === 'east asia' && dbReg.includes('southeast')) {
+    return false;
+  }
+  
   return dbReg.includes(qReg);
 }
