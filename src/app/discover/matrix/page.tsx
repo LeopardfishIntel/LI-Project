@@ -8,6 +8,7 @@ import {
 import { getCountryStats } from '../actions';
 import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 function deriveIntelligenceScores(country: any, finances: any) {
     const name = country.country || "Unknown";
@@ -303,7 +304,14 @@ function MatrixContent() {
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
                   <span>Country Saving Index</span>
-                  <Info className="size-3 text-slate-500 cursor-help" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal">
+                      Based on school packages and housing allowances these can vary substantially, check the school offer carefully.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
                 <span className="text-[8px] text-slate-500 normal-case tracking-normal mt-0.5">
                   Est. monthly surplus per teacher
