@@ -439,3 +439,20 @@ export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: st
   
   return Number(rawScore.toFixed(1));
 }
+
+export function matchesRegion(dbRegion: string, queryRegion: string): boolean {
+  const dbReg = dbRegion.toLowerCase().trim();
+  const qReg = queryRegion.toLowerCase().trim();
+  
+  if (dbReg === qReg) return true;
+  
+  const isSEAsiaDb = dbReg === 'southeast asia' || dbReg === 'south east asia' || dbReg === 'se asia';
+  const isSEAsiaQuery = qReg === 'southeast asia' || qReg === 'south east asia' || qReg === 'se asia' || qReg === 'se-asia';
+  if (isSEAsiaDb && isSEAsiaQuery) return true;
+  
+  const isAmericasDb = dbReg === 'americas' || dbReg === 'latin america' || dbReg === 'south america' || dbReg === 'north america';
+  const isAmericasQuery = qReg === 'americas' || qReg === 'latin america' || qReg === 'south america' || qReg === 'north america' || qReg === 'latin-america';
+  if (isAmericasDb && isAmericasQuery) return true;
+  
+  return dbReg.includes(qReg) || qReg.includes(dbReg);
+}

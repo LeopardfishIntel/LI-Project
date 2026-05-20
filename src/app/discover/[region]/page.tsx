@@ -9,7 +9,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
-import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores } from '@/lib/calculations';
+import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores, matchesRegion } from '@/lib/calculations';
 import { getLiveSecurityIntelligence } from '../actions';
 
 // 🛡️ Bespoke Teacher Security (Direct British English / Globalised)
@@ -164,7 +164,7 @@ function DossierContent() {
 
     const allResults = reqsData.filter(country => {
       const dbRegion = (country.region || "").toLowerCase().trim();
-      return params.regions.some(r => dbRegion.includes(r));
+      return params.regions.some(r => matchesRegion(dbRegion, r));
     }).map(country => {
       const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(country.country || ""));
       const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(country.country || ""));

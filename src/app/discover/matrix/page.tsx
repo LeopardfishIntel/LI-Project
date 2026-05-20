@@ -6,7 +6,7 @@ import {
   ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
-import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores } from '@/lib/calculations';
+import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores, matchesRegion } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
@@ -152,7 +152,7 @@ function MatrixContent() {
       }
       
       // Keep the country if it matches the user's selected regions
-      if (params.regions.length === 0 || params.regions.some((r: string) => dbRegion.includes(r.toLowerCase()))) {
+      if (params.regions.length === 0 || params.regions.some((r: string) => matchesRegion(dbRegion, r))) {
         if (!countryGroups[name]) countryGroups[name] = c;
       }
     });
