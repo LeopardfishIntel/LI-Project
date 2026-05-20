@@ -425,7 +425,7 @@ export default function PreparePage() {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(9);
         
-        // Left Side: LEOPARDFISH INTEL // FIELD MANUAL
+        // Left Side: LEOPARDFISH INTEL // SECTION TITLE
         doc.setTextColor(249, 115, 22); // Orange
         doc.text("LEOPARDFISH", 20, 20);
         const orangeWidth = doc.getTextWidth("LEOPARDFISH");
@@ -435,7 +435,7 @@ export default function PreparePage() {
         const intelWidth = doc.getTextWidth("INTEL");
         
         doc.setTextColor(150, 150, 150); // Gray
-        doc.text(` // FIELD MANUAL`, 20 + orangeWidth + intelWidth + 2, 20);
+        doc.text(` // ${title.toUpperCase()}`, 20 + orangeWidth + intelWidth + 2, 20);
         
         // Right Side: REPORT GENERATED: ... // MISSION ID: ...
         const rightText = `REPORT GENERATED: ${reportDate} // MISSION ID: ${missionId}`;
@@ -526,7 +526,7 @@ export default function PreparePage() {
 
     printHeading("THE RISK PROFILE: CONTRACT RED FLAGS", 9, 2);
     printLine("• Vague \"Broad Ranges\": A massive salary range lacking a clearly defined ladder is frequently a tactical bait-and-switch designed to lowball you during final negotiations.", 8.5, "normal", textMain, 2);
-    printLine("• Profit-First Chains: Lower-tier corporate or shareholder-driven international schools view teacher compensation purely as a \"cost center\" to be minimized, leading to aggressive stagnation.", 8.5, "normal", textMain, 2);
+    printLine(`• Profit-First Chains: Lower-tier corporate or shareholder-driven international schools view teacher compensation purely as a "cost center" to be minimized, leading to aggressive stagnation. While top-tier institutional HR departments (like ${schoolLabel}) are highly reliable for visa legalities and contracts, they simply lack the administrative bandwidth for daily lifestyle onboarding, leaving you to self-finance early setup operations.`, 8.5, "normal", textMain, 2);
     printLine("• The \"Secret\" Grid & NDA Restrictions: If the school operates on a secret grid or enforces NDA clauses preventing staff from discussing compensation, this is a critical mission warning. A school that hides its numbers always has a systemic equity or retention problem to hide.", 8.5, "normal", textMain, 4);
 
     printHeading("EVALUATION BENCHMARKS: SCALE BEST PRACTICE", 9, 2);
@@ -540,7 +540,12 @@ export default function PreparePage() {
     printHeading(`HOUSING SPECTRUM & AUDIT FOR ${selectedCountry.toUpperCase()} AT ${(selectedSchool?.schoolname || 'TARGET SCHOOL').toUpperCase()}`, 9, 2);
     printHeading("THE HOUSING SPECTRUM", 8.5, 2);
     printLine("• Furnished: Sofa, Bed, and Dining table are standard. Verify if it includes \"softs\" like linens and kitchenware.", 8.5, "normal", textMain, 2);
-    printLine("• Unfurnished: In this region, this usually includes \"White Goods\" (Fridge/Stove) only, making a solid upfront cash \"Settling-in Allowance\" or an IKEA Kit absolutely mandatory.", 8.5, "normal", textMain, 2);
+    
+    const isOman = selectedCountry.toLowerCase() === 'oman';
+    const unfurnishedText = isOman 
+      ? `• Unfurnished: In Oman, this guarantees "White Goods" (Fridge/Stove) only, but requires personal capital for soft goods, bedding, and seating, making a settling-in allowance or IKEA Kit mandatory.`
+      : `• Unfurnished: In this region, this guarantees "White Goods" (Fridge/Stove) only, but requires personal capital for soft goods, bedding, and seating.`;
+    printLine(unfurnishedText, 8.5, "normal", textMain, 2);
     printLine("• Allowances: If taking monthly cash, it must cover 100% of local rent plus at least 70% of average utility costs to prevent lifestyle erosion.", 8.5, "normal", textMain, 4);
 
     printHeading("HOUSING RISK ASSESSMENT", 8.5, 2);
@@ -567,9 +572,50 @@ export default function PreparePage() {
     printLine("• Fitness for Residency: Note that the mandatory host-country medical screening (Blood tests/X-rays) is unforgiving; certain historical or chronic conditions can directly block or derail a residency permit, halting your ability to legally stay or open a bank account.", 8.5, "normal", textMain, 4);
 
     printLine("06. Connect: Avoiding the 'Triple-Dip'", 9, "bold", primary, 1);
-    printLine("Standard SWIFT transfers hit three different banks, each taking a slice of your money. Set up multi-currency apps (like Wise or Revolut) before you land. Execute your transfers on a Tuesday or Wednesday only; avoid weekends, as banks add a 'volatility buffer' to the exchange rate while markets are closed, costing you an extra 1% to 2%.", 8.5, "normal", textMain, 6);
+    printLine("Standard SWIFT transfers hit three different banks, each taking a slice of your money. Set up multi-currency apps (like Wise or Revolut) before you land. (See Page 2 for weekend transfer restrictions).", 8.5, "normal", textMain, 6);
 
     printLine(`Expert Tip: In ${selectedCountry}, your residency permit is the key to everything from getting a car to home Wi-Fi. Until that physical card is in your hand, you are essentially a tourist with a very expensive hobby. Does your current contract offer a specific timeline for when they expect your residency permit to be finalised?`, 8.5, "italic", primary, 8);
+
+    // PAGE BREAK: Page 3
+    drawFooter(pageCount);
+    doc.addPage();
+    pageCount++;
+    drawHeader("FIELD MANUAL");
+    y = 35;
+
+    // Render buffer matrix here (moved up from Page 4)
+    printHeading("🛠️ PERSONALIZED STARTUP BUFFER ANALYSIS", 10, 4);
+    printLine(`• Target Country: ${selectedCountry}`, 9, "normal", textMain, 2);
+    printLine(`• Target School: ${schoolLabel}`, 9, "normal", textMain, 2);
+    printLine(`• Deployment Profile: ${calcStatus.replace('-', ' ').toUpperCase()}`, 9, "normal", textMain, 2);
+    printLine(`• The Payday Gap Horizon: ${setupDays} Days (Safety Margin)`, 9, "normal", textMain, 4);
+
+    if (isOman) {
+      printLine("TACTICAL WARNING (OMAN BANKING LOCK): Local banking, housing contracts, and car lease/rental credit facilities remain locked until your physical residency permit (residency card) is issued. Upfront cash or home-country card liquidity is absolutely critical for early operations.", 8.5, "bold", primary, 4);
+    }
+
+    const isZeroHousing = Math.round(budget.housing) === 0 || budget.isSubsidised;
+    const housingText = isZeroHousing 
+      ? `• Rent & Secure Deposit: £0 (Fully provided and covered by ${schoolLabel}; no personal upfront cash outlay required for baseline housing).`
+      : `• Rent & Secure Deposit: £${Math.round(budget.housing).toLocaleString()} (Covers estimated first month's rent plus a standard local security deposit).`;
+
+    printHeading(`REQUIRED ARRIVAL & SETUP RESERVE: GBP ${Math.round(totalReserve).toLocaleString()}`, 10, 4);
+
+    printHeading("RUNWAY BREAKDOWN MATRIX:", 9.5, 3);
+    printLine(`• Visas & Document Legalization: £${Math.round(budget.docs).toLocaleString()} (Estimated legal, apostille, and embassy processing fees).`, 8.5, "normal", textMain, 2);
+    printLine(housingText, 8.5, "normal", textMain, 2);
+    printLine(`• Living Runway (${setupDays} Days): £${Math.round(budget.expenditure).toLocaleString()} (Scaled for groceries, utilities, and daily essentials for a ${calcStatus.replace('-', ' ')} profile).`, 8.5, "normal", textMain, 2);
+    printLine(`• Logistics & Excess Shipping: £${Math.round(budget.logistics).toLocaleString()} (Combined estimate for courier services and airline baggage overrides).`, 8.5, "normal", textMain, 2);
+    printLine(`• Transport Setup: £${Math.round(budget.transport).toLocaleString()} (Initial public transit registration and commuting buffer).`, 8.5, "normal", textMain, 4);
+
+    const ikeaGbp = calcStatus === 'single' ? 450 : 900;
+    const ikeaLocalVal = isOman ? `${Math.round(ikeaGbp / 2.08)} OMR` : `${Math.round(budget.ikea).toLocaleString()} ${budget.displayCurrency}`;
+    const ikeaText = `• Profile Essential Kit (${familyStatusLabel}): Exactly £${ikeaGbp} (approx ${ikeaLocalVal}${isOman ? ' based on a standard 1 OMR = ~2.08 GBP peg' : ''}).`;
+
+    printHeading("🛒 THE IKEA INDEX READY-CHECK", 10, 4);
+    printLine(`• Local Registry Status: Verified Active in ${selectedCountry}.`, 9, "normal", textMain, 2);
+    printLine(ikeaText, 9, "normal", textMain, 2);
+    printLine("• Tactical Directive: If your assigned flat is structurally \"Unfurnished\", this exact Field Kit inventory value has been automatically appended to your total Startup Buffer above to secure basic week-one living essentials (Bedding, primary cookware, basic comfort seating).", 8.5, "normal", textMain, 8);
 
     // NEW SECTION: THE SURPLUS TEST
     y += 8;
@@ -629,26 +675,6 @@ export default function PreparePage() {
     printLine("The Cost: This can easily cost hundreds of pounds and take months. Start the second you sign. Do not wait for HR to chase you.", 9, "normal", textMain, 4);
     printLine("The Inquisitive Question: 'Could HR provide a comprehensive checklist of the exact documents required for the visa? Also, does the school reimburse the attestation and legalization fees upon arrival?'", 9, "italic", primary, 8);
 
-    printHeading("🛠️ PERSONALIZED STARTUP BUFFER ANALYSIS", 10, 4);
-    printLine(`• Target Country: ${selectedCountry}`, 9, "normal", textMain, 2);
-    printLine(`• Target School: ${selectedSchool?.schoolname || 'International Deployment'}`, 9, "normal", textMain, 2);
-    printLine(`• Deployment Profile: ${calcStatus.replace('-', ' ').toUpperCase()}`, 9, "normal", textMain, 2);
-    printLine(`• The Payday Gap Horizon: ${setupDays} Days (Safety Margin)`, 9, "normal", textMain, 4);
-
-    printHeading(`REQUIRED ARRIVAL & SETUP RESERVE: GBP ${Math.round(totalReserve).toLocaleString()}`, 10, 4);
-
-    printHeading("RUNWAY BREAKDOWN MATRIX:", 9.5, 3);
-    printLine(`• Visas & Document Legalization: £${Math.round(budget.docs).toLocaleString()} (Estimated legal, apostille, and embassy processing fees).`, 8.5, "normal", textMain, 2);
-    printLine(`• Rent & Secure Deposit: £${Math.round(budget.housing).toLocaleString()} (Covers estimated first month's rent plus a standard local security deposit).`, 8.5, "normal", textMain, 2);
-    printLine(`• Living Runway (${setupDays} Days): £${Math.round(budget.expenditure).toLocaleString()} (Scaled for groceries, utilities, and daily essentials for a ${calcStatus.replace('-', ' ')} profile).`, 8.5, "normal", textMain, 2);
-    printLine(`• Logistics & Excess Shipping: £${Math.round(budget.logistics).toLocaleString()} (Combined estimate for courier services and airline baggage overrides).`, 8.5, "normal", textMain, 2);
-    printLine(`• Transport Setup: £${Math.round(budget.transport).toLocaleString()} (Initial public transit registration and commuting buffer).`, 8.5, "normal", textMain, 4);
-
-    printHeading("🛒 THE IKEA INDEX READY-CHECK", 10, 4);
-    printLine(`• Local Registry Status: Verified Active in ${selectedCountry}.`, 9, "normal", textMain, 2);
-    printLine(`• Profile Essential Kit (${calcStatus === 'single' ? 'Single' : 'Family + 1'}): Exactly JPY ${Math.round(budget.ikea).toLocaleString()} (or local currency equivalent).`, 9, "normal", textMain, 2);
-    printLine("• Tactical Directive: If your assigned flat is structurally \"Unfurnished\", this exact Field Kit inventory value has been automatically appended to your total Startup Buffer above to secure basic week-one living essentials (Bedding, primary cookware, basic comfort seating).", 8.5, "normal", textMain, 8);
-
     printHeading("PART 5: A ROOF OVER YOUR HEAD (HOUSING)", 10, 4);
     printLine("Unless the school is putting you in a fully furnished flat, the housing hunt is your biggest hurdle.", 9, "normal", textMain, 4);
     printLine("The Hotel Trap: If the school provides temporary housing, ask if they settle the bill directly. If you have to pay upfront and claim it back, you must add this cost as an 'Override' in the Rent section of the dashboard to ensure your reserve is accurate.", 9, "normal", textMain, 4);
@@ -663,7 +689,7 @@ export default function PreparePage() {
     drawFooter(pageCount);
     doc.addPage();
     pageCount++;
-    drawHeader("CHECKLIST");
+    drawHeader("PAGE 6");
     y = 35;
 
     printHeading("Relocation Checklist", 10, 4);
@@ -684,7 +710,7 @@ export default function PreparePage() {
     drawFooter(pageCount);
     doc.addPage();
     pageCount++;
-    drawHeader("COMMUNICATION");
+    drawHeader("PAGE 7");
     y = 35;
 
     printHeading("THE SAMPLE HR EMAIL (THE 'ART OF THE PUSHBACK' IN ACTION)", 10, 4);
