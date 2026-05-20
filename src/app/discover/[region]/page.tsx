@@ -264,7 +264,7 @@ function DossierContent() {
           </button>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-8 border-[#d95f02] pl-6 italic text-[#d95f02]">
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter border-l-4 border-[#d95f02]/60 pl-4 italic text-[#d95f02]">
               What you could achieve
             </h1>
           </div>
@@ -410,7 +410,7 @@ function DossierContent() {
                   ))}
                 </div>
 
-                <div className="p-8 bg-[#d95f02]/5 border-l-4 border-[#d95f02] flex-grow flex flex-col justify-center space-y-4">
+                <div className="p-8 bg-[#d95f02]/5 border-l-2 border-[#d95f02]/50 flex-grow flex flex-col justify-center space-y-4">
                   <div className="flex justify-between items-center pb-4 border-b border-[#d95f02]/20">
                     <p className="text-[#d95f02] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
                     <span className="text-[#d95f02] font-black text-[11px] italic bg-[#d95f02]/20 px-3 py-1 rounded-full border border-[#d95f02]/30 tracking-tight">Match: {country.fitScore}%</span>
