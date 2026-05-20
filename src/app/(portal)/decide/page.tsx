@@ -493,6 +493,26 @@ function DecideContent() {
                                 </div>
                             </div>
 
+                            {/* 💱 BENCHMARK CURRENCY */}
+                            <div className="py-1 px-3 bg-white/[0.03] border border-white/10 rounded-sm flex items-center gap-3 h-[52px]">
+                                <div className="flex flex-col justify-center">
+                                    <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-1.5">Benchmark</Label>
+                                    <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
+                                        {(['GBP', 'USD'] as const).map((cur) => (
+                                            <button
+                                                key={cur}
+                                                onClick={() => setBenchmark(cur)}
+                                                className={cn(
+                                                    "px-4 py-1 text-[10px] font-black rounded-sm transition-all uppercase italic",
+                                                    benchmark === cur ? "bg-[#007FFF] text-white shadow-lg" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                                                )}
+                                            >
+                                                {cur}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -599,7 +619,7 @@ function DecideContent() {
                                     <div className="grid grid-cols-2 gap-2 mt-1 p-2 bg-white/[0.02] border border-white/5 rounded-sm">
                                         <div className="space-y-1">
                                             <Tooltip text="Including tutoring, investments, or allowances.">
-                                                <Label className="text-[9px] font-black text-slate-500 italic tracking-tighter">Other income +</Label>
+                                                <Label className="text-[11px] font-black text-slate-500 italic tracking-tighter">Other income +</Label>
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
@@ -615,7 +635,7 @@ function DecideContent() {
                                         </div>
                                         <div className="space-y-1">
                                             <Tooltip text="Mortgages back home, student loans, or credit commitments.">
-                                                <Label className="text-[9px] font-black text-slate-500 italic tracking-tighter">Home Commitments -</Label>
+                                                <Label className="text-[11px] font-black text-slate-500 italic tracking-tighter">Home Commitments -</Label>
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
@@ -691,7 +711,7 @@ function DecideContent() {
                                         {/* 💰 3-YEAR WEALTH POT */}
                                         <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings3Year > 0 ? "bg-[#d95f02]/10 border-[#d95f02]/30" : "bg-rose-500/10 border-rose-500/50")}>
                                             <div className="flex items-center justify-between">
-                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#d95f02]" : "text-rose-500")}>3-Year Bankable Pot</p>
+                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#f5f5f5]" : "text-rose-500")} >3-Year Bankable Pot</p>
                                                 <p className={cn("text-[14px] font-black italic tabular-nums leading-none", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
                                             </div>
                                             <div className="flex items-center justify-between">
@@ -724,57 +744,22 @@ function DecideContent() {
                         </div>
                     ))}
                 </div>
-
-                {/* 🎯 SURPLUS INCOME COMPARISONS CURRENCY */}
-                <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-sm shadow-xl">
-                    <div className="flex items-center gap-3 mb-4 md:mb-0">
-                        <div className="bg-[#d95f02]/10 p-2 rounded-sm">
-                            <BarChart3 className="size-4 text-[#d95f02]" />
-                        </div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] italic">
-                            Surplus Income Comparisons Currency
-                        </p>
-                    </div>
-                    <div className="flex bg-black/40 rounded-sm p-1 border border-white/5">
-                        {(['GBP', 'USD'] as const).map((cur) => (
-                            <button 
-                                key={cur} 
-                                onClick={() => setBenchmark(cur)} 
-                                className={cn(
-                                    "px-8 py-2 text-[10px] font-black rounded-sm transition-all uppercase italic", 
-                                    benchmark === cur ? "bg-[#007FFF] text-white shadow-lg" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
-                                )}
-                            >
-                                {cur}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="text-center mt-8 mb-8 max-w-2xl mx-auto px-4">
-                    <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-1 flex items-center justify-center gap-2">
-                        <Target className="size-3 text-[#d95f02]" /> How the Top Pick is Decided
-                    </p>
-                    <p className="text-[12px] text-slate-400 leading-relaxed italic">
-                        It&apos;s not all about the savings! The winning orange highlight is awarded to the school with the highest overall Match Percentage. This algorithm strictly balances your projected bankable surplus against the school&apos;s academic reputation, city safety, and weekly workload.
-                    </p>
-                </div>
-
+                {/* TOP PICK EXPLAINER + CTA — compact strip */}
                 {!isUnlocked ? (
-                    <div className="bg-[#d95f02]/5 border border-dashed border-[#d95f02]/30 p-12 rounded-sm flex flex-col items-center space-y-6">
-                        <div className="size-16 bg-[#d95f02]/10 rounded-full flex items-center justify-center border border-[#d95f02]/20 shadow-[0_0_20px_rgba(249,115,22,0.1)]">
-                            <Zap className={cn("size-8 text-[#d95f02]", isGenerating && "animate-pulse")} />
-                        </div>
-                        <div className="text-center space-y-2">
-                            <h3 className="text-xl font-black uppercase italic tracking-tighter text-white">Unlock Tactical Intelligence</h3>
-                            <p className="text-slate-500 text-sm italic max-w-md mx-auto">Generate a professional comparative briefing cross-referencing workload, financial surplus, and regional career growth.</p>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4 p-4 bg-[#d95f02]/5 border border-dashed border-[#d95f02]/20 rounded-sm">
+                        <div className="flex items-start gap-3 flex-1">
+                            <Target className="size-3.5 text-[#f5f5f5] shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-[#f5f5f5] leading-none mb-1">How the top pick is decided</p>
+                                <p className="text-[11px] text-slate-500 italic leading-snug">The winner is the highest overall Match %. Surplus, academic rep, city safety and workload are all weighted equally.</p>
+                            </div>
                         </div>
                         <button
                             onClick={handleUnlockIntelligence}
                             disabled={isGenerating || ranked.length < 2}
-                            className="px-10 py-4 bg-[#d95f02] text-white font-black uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-2xl disabled:opacity-50 flex items-center gap-3"
+                            className="shrink-0 px-6 py-3 border border-[#d95f02] bg-black text-[#f5f5f5] font-black normal-case tracking-wide text-sm hover:bg-[#d95f02] transition-all disabled:opacity-50 whitespace-nowrap"
                         >
-                            {isGenerating ? <><Loader2 className="animate-spin size-4" /> Compiling Briefing...</> : <><Fingerprint className="size-4" /> Request Final Intelligence Briefing</>}
+                            {isGenerating ? <span className="flex items-center gap-2"><Loader2 className="animate-spin size-4" /> Compiling...</span> : 'Request Intelligence Briefing'}
                         </button>
                     </div>
                 ) : (

@@ -5,7 +5,7 @@ import { jsPDF } from 'jspdf';
 import { 
   Lock, Banknote, Loader2, Zap, ShoppingCart,
   Home, Clock, Wallet, Car, Ship, CalendarDays, 
-  FileText, Landmark, MapPin, Navigation, ArrowRight,
+  FileText, Landmark, MapPin, Navigation, ArrowRight, ArrowUpRight,
   Stethoscope, Download, Info, Coins, Package, Monitor, Baby, X,
   ChevronDown, ChevronUp, ShieldCheck, Compass, Activity, Globe, Search, Target
 } from 'lucide-react';
@@ -81,13 +81,16 @@ export default function PreparePage() {
   const [showIkeaKit, setShowIkeaKit] = useState(false);
   const [showDependents, setShowDependents] = useState(false);
   const [step1Open, setStep1Open] = useState(false);
+  const [step1aOpen, setStep1aOpen] = useState(false);
+  const [step1bOpen, setStep1bOpen] = useState(false);
+  const [step1cOpen, setStep1cOpen] = useState(false);
   const [step2Open, setStep2Open] = useState(false);
   const [step3Open, setStep3Open] = useState(false);
-  const [essentialsOpen, setEssentialsOpen] = useState(false);
-  const [transportOpen, setTransportOpen] = useState(false);
-  const [pensionOpen, setPensionOpen] = useState(false);
-  const [bankingOpen, setBankingOpen] = useState(false);
-  const [healthOpen, setHealthOpen] = useState(false);
+  const [step3aOpen, setStep3aOpen] = useState(false);
+  const [step3bOpen, setStep3bOpen] = useState(false);
+  const [step3cOpen, setStep3cOpen] = useState(false);
+  const [step3dOpen, setStep3dOpen] = useState(false);
+  const [step3eOpen, setStep3eOpen] = useState(false);
 
   // Overrides
   const [docsOverride, setDocsOverride] = useState<number | null>(null);
@@ -100,6 +103,7 @@ export default function PreparePage() {
   const [childcareOverride, setChildcareOverride] = useState<number | null>(null);
   const [ikeaOverride, setIkeaOverride] = useState<number | null>(null);
   const [ikeaDisplayCurrency, setIkeaDisplayCurrency] = useState<string>('Local');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const resetToDefaults = () => {
     setDocsOverride(null);
@@ -379,7 +383,8 @@ export default function PreparePage() {
     doc.setFont("helvetica", "normal");
 
     IKEA_KIT_ITEMS.forEach((item) => {
-      const quantity = (item.q as any)[calcStatus] || 1;
+      const qKey = calcStatus === 'married-sole' ? 'married-dual' : calcStatus;
+      const quantity = (item.q as any)[qKey] || 1;
       const itemName = selectedIkea ? item.name : item.generic;
       doc.setDrawColor(200, 200, 200);
       doc.rect(20, y - 4, 4, 4); // Checkbox
@@ -491,8 +496,22 @@ export default function PreparePage() {
     printHeading("STRICTLY CONFIDENTIAL: INTERNATIONAL DEPLOYMENT DOSSIER", 11, 4);
 
     printHeading("STAFF ROOM BRIEFING: WELCOME TO THE JUMP", 10, 6);
-    printLine("Congratulations on your international post. Navigating the application screening, the time-zone-mangled interviews, and the reference checks is no small feat. Our job now is to decode and translate that contract PDF into a realistic picture of what your life on the ground will actually look like.", 9, "normal", textMain, 4);
-    printLine("The Leopardfish Intel guide is designed to be your staff room mentor. It dynamically adjusts to the data we hold on your target country to provide the specific insights you need. It is essential that you select the correct country, school, and family status, as these details directly shape the guidance we provide.", 9, "normal", textMain, 4);
+    const familyStatusLabel = 
+      calcStatus === 'single' ? 'Single' :
+      calcStatus === 'married-dual' ? 'Married (dual income)' :
+      calcStatus === 'married-sole' ? 'Married (sole earner)' :
+      calcStatus === 'family-1' ? 'Family (1 child)' :
+      calcStatus === 'family-2' ? 'Family (2 children)' :
+      calcStatus === 'family-3' ? 'Family (3+ children)' : 'Single';
+    const schoolLabel = selectedSchool?.schoolname || 'International Deployment';
+    const countryLabel = selectedCountry !== 'all' ? selectedCountry : 'International Destination';
+
+    const congratulationText = `Congratulations on your upcoming international post at ${schoolLabel} in ${countryLabel}. Navigating the application screening, the time-zone-mangled interviews, and the reference checks is no small feat. As you prepare for deployment as a ${familyStatusLabel} profile, our job now is to decode and translate that contract into a realistic picture of what your life on the ground will actually look like.`;
+    printLine(congratulationText, 9, "normal", textMain, 4);
+    
+    const adjustmentText = `This Leopardfish Intel guide has been dynamically generated for ${countryLabel} using the specific ground-truth data we hold on ${schoolLabel}. Because you are relocating with a ${familyStatusLabel} status, all calculated runways, legal document fees, local housing expectations, and startup buffers have been tailored to fit your household configuration.`;
+    printLine(adjustmentText, 9, "normal", textMain, 4);
+
     printLine("Below, we are going to walk through the reality of getting your move right, sorting your paperwork, and planning for costs so that you can survive the first 60 days without the stress that often accompanies an unplanned relocation.", 9, "normal", textMain, 10);
 
     printHeading("TACTICAL ROADMAP: THE SIX PHASES", 10, 4);
@@ -505,14 +524,47 @@ export default function PreparePage() {
     printLine("02. Evaluate: The Transparency Test", 9, "bold", primary, 1);
     printLine("Scrutinise the contract for Salary Scale Transparency. Professional schools are proud of their fixed, step-based grids that reward tenure. If a school uses 'Negotiable' pay or 'Secret' scales, treat it as a mission warning—it usually hides pay gaps and a lack of equity across the staff room.", 8.5, "normal", textMain, 4);
 
+    printHeading("THE RISK PROFILE: CONTRACT RED FLAGS", 9, 2);
+    printLine("• Vague \"Broad Ranges\": A massive salary range lacking a clearly defined ladder is frequently a tactical bait-and-switch designed to lowball you during final negotiations.", 8.5, "normal", textMain, 2);
+    printLine("• Profit-First Chains: Lower-tier corporate or shareholder-driven international schools view teacher compensation purely as a \"cost center\" to be minimized, leading to aggressive stagnation.", 8.5, "normal", textMain, 2);
+    printLine("• The \"Secret\" Grid & NDA Restrictions: If the school operates on a secret grid or enforces NDA clauses preventing staff from discussing compensation, this is a critical mission warning. A school that hides its numbers always has a systemic equity or retention problem to hide.", 8.5, "normal", textMain, 4);
+
+    printHeading("EVALUATION BENCHMARKS: SCALE BEST PRACTICE", 9, 2);
+    printLine("• A Transparent Grid: A public table showing exactly what you earn based on your years of experience and degrees.", 8.5, "normal", textMain, 2);
+    printLine("• Automatic Annual \"Steps\": A guaranteed pay bump every year you stay at the school, protecting your \"real\" income against regional inflation.", 8.5, "normal", textMain, 2);
+    printLine("• Degree Differentials: Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise.", 8.5, "normal", textMain, 4);
+
     printLine("03. Decide: The Benefit Audit", 9, "bold", primary, 1);
     printLine("Look beyond the basic salary and audit the 'Soft Money' perks. Check for flight caps, guaranteed CPD (Masters funding), and excess baggage allowances. Crucially, confirm if there is a Currency Safeguard, such as a hard-currency split or exchange rate protection, to prevent your local salary from evaporating if the economy wobbles.", 8.5, "normal", textMain, 4);
+
+    printHeading(`HOUSING SPECTRUM & AUDIT FOR ${selectedCountry.toUpperCase()} AT ${(selectedSchool?.schoolname || 'TARGET SCHOOL').toUpperCase()}`, 9, 2);
+    printHeading("THE HOUSING SPECTRUM", 8.5, 2);
+    printLine("• Furnished: Sofa, Bed, and Dining table are standard. Verify if it includes \"softs\" like linens and kitchenware.", 8.5, "normal", textMain, 2);
+    printLine("• Unfurnished: In this region, this usually includes \"White Goods\" (Fridge/Stove) only, making a solid upfront cash \"Settling-in Allowance\" or an IKEA Kit absolutely mandatory.", 8.5, "normal", textMain, 2);
+    printLine("• Allowances: If taking monthly cash, it must cover 100% of local rent plus at least 70% of average utility costs to prevent lifestyle erosion.", 8.5, "normal", textMain, 4);
+
+    printHeading("HOUSING RISK ASSESSMENT", 8.5, 2);
+    printLine("• The \"Commute Trap\": Securing a location 45+ minutes from campus turns free time into hours of unpaid, exhausting travel.", 8.5, "normal", textMain, 2);
+    printLine("• Vague \"Suitability\" Clauses: Avoid contracts describing housing as \"suitable\" without providing certified photos, square footage, or video walkthroughs of the specific assigned unit.", 8.5, "normal", textMain, 2);
+    printLine("• Mandatory Sharing: Forced apartment sharing with other adult staff is an unacceptable breach of professional and personal boundaries.", 8.5, "normal", textMain, 2);
+    printLine("• Expert Field Advice: Bypass HR policy and ask a current teacher living in these units about the three things the school won't disclose: internet reliability, water pressure, and noise levels at 6:00 AM.", 8.5, "italic", primary, 4);
+
+    printHeading("PENSIONS & RETIREMENT STRATEGY (UK / US)", 9, 2);
+    printLine("• The UK Play (Class 3 NI): If you have UK ties, protect your UK State Pension. As of April 2026, Class 3 NI is the primary mechanism to protect your UK State Pension. Costing exactly £18.40 / week (~£957/year), each qualifying year adds ~£358 to your annual pension for life. This represents a powerful 3-Year Breakeven ROI—the strongest return on investment for any teacher abroad. You can backfill up to 6 previous years.", 8.5, "normal", textMain, 2);
+    printLine("• The US Play (TRS / 403b): For US educators, moving abroad completely pauses accumulating state pension years (TRS) and matching contributions to 403(b) plans, necessitating independent, disciplined wealth-building.", 8.5, "normal", textMain, 2);
+    printLine("• The Split Strategy & Weekend Volatility: Use a local bank account strictly for immediate rent and daily life, while executing an automated monthly \"sweep\" of savings back to your home-country account via fintech apps (Wise/Revolut) to protect against local currency drops. Crucially, never transfer money on Fridays or weekends, as banks inject a 1% to 2% \"volatility buffer\" into exchange rates while markets are closed.", 8.5, "normal", textMain, 4);
 
     printLine("04. Prepare: The Legalisation Marathon", 9, "bold", primary, 1);
     printLine("This is the \"marking phase\" of the move—tedious but vital. You must navigate the notarisation chain for your target country. Scan everything to a high-resolution cloud drive before you hand over originals; you will need these digital copies for everything from local SIM cards to bank accounts.", 8.5, "normal", textMain, 4);
 
     printLine("05. Schools: The Ground-Truth Intel", 9, "bold", primary, 1);
     printLine("HR handles the legalities, but a 'Staff Room Buddy' handles the reality. Contact the school early to secure childcare spots, as availability is often tight. Use the 'Leaver Trick': connect with teachers who are departing this summer to buy their furniture at a discount or potentially take over their apartment lease.", 8.5, "normal", textMain, 4);
+
+    printHeading("HEALTHCARE & REGISTRATION OPERATIONAL RISKS", 9, 2);
+    printLine("• The \"Arrival Gap\": School medical policies frequently activate strictly on Day 1 of the official contract. If landing 2 weeks early for relocation, you are flying completely uninsured and must bridge this with a private travel insurance policy.", 8.5, "normal", textMain, 2);
+    printLine("• Network Tier Limits: Verify if your provider card is \"Premium\" or \"General.\" General networks often entirely exclude the top-tier international emergency hospitals located nearest to expat neighborhoods.", 8.5, "normal", textMain, 2);
+    printLine("• Co-Pay Realities: Basic plans often carry 20%+ co-pays for dental or outpatient visits, requiring a dedicated out-of-pocket budget for minor illnesses.", 8.5, "normal", textMain, 2);
+    printLine("• Fitness for Residency: Note that the mandatory host-country medical screening (Blood tests/X-rays) is unforgiving; certain historical or chronic conditions can directly block or derail a residency permit, halting your ability to legally stay or open a bank account.", 8.5, "normal", textMain, 4);
 
     printLine("06. Connect: Avoiding the 'Triple-Dip'", 9, "bold", primary, 1);
     printLine("Standard SWIFT transfers hit three different banks, each taking a slice of your money. Set up multi-currency apps (like Wise or Revolut) before you land. Execute your transfers on a Tuesday or Wednesday only; avoid weekends, as banks add a 'volatility buffer' to the exchange rate while markets are closed, costing you an extra 1% to 2%.", 8.5, "normal", textMain, 6);
@@ -577,15 +629,25 @@ export default function PreparePage() {
     printLine("The Cost: This can easily cost hundreds of pounds and take months. Start the second you sign. Do not wait for HR to chase you.", 9, "normal", textMain, 4);
     printLine("The Inquisitive Question: 'Could HR provide a comprehensive checklist of the exact documents required for the visa? Also, does the school reimburse the attestation and legalization fees upon arrival?'", 9, "italic", primary, 8);
 
-    printHeading("PART 3: THE ARRIVAL RESERVE (CASH FLOW)", 10, 4);
-    printLine("Your Leopardfish dashboard calculates a required 'Arrival & Setup Reserve' based on regional ground-truth. This is your survival fund for the 'Gap'.", 9, "normal", textMain, 4);
-    printLine("How to use the Buffer Tool: Adjust the 'Payday Gap' on the dashboard (30, 45, or 60 days). If you land early or paperwork is slow, your first salary can be delayed. The tool will automatically increase your required reserve to cover this risk.", 9, "normal", textMain, 4);
-    printLine("The 'Settling-In' Trap: Some schools offer a 'settling-in allowance'. Enter this into the dashboard to see how it offsets your initial costs. Note: Ensure this is a grant, not just a salary advance.", 9, "normal", textMain, 4);
-    printLine("The Inquisitive Question: 'On what exact date can I realistically expect my first full salary deposit to clear? Is the settling-in allowance an additional grant or a pro-rata salary advance?'", 9, "italic", primary, 8);
+    printHeading("🛠️ PERSONALIZED STARTUP BUFFER ANALYSIS", 10, 4);
+    printLine(`• Target Country: ${selectedCountry}`, 9, "normal", textMain, 2);
+    printLine(`• Target School: ${selectedSchool?.schoolname || 'International Deployment'}`, 9, "normal", textMain, 2);
+    printLine(`• Deployment Profile: ${calcStatus.replace('-', ' ').toUpperCase()}`, 9, "normal", textMain, 2);
+    printLine(`• The Payday Gap Horizon: ${setupDays} Days (Safety Margin)`, 9, "normal", textMain, 4);
 
-    printHeading("PART 4: THE IKEA INDEX (FURNISHING)", 10, 4);
-    printLine("The cost of setting up a home varies wildly. Use the 'IKEA Readiness' module on the dashboard to see if your destination has a verified store and what a 'Field Kit' for your family status costs.", 9, "normal", textMain, 4);
-    printLine("Tactical Advice: If your flat is 'Unfurnished', toggle the IKEA Kit on the dashboard to see the inventory of essentials you'll need to buy in week one. This figure is automatically added to your total Startup Buffer.", 9, "normal", textMain, 8);
+    printHeading(`REQUIRED ARRIVAL & SETUP RESERVE: GBP ${Math.round(totalReserve).toLocaleString()}`, 10, 4);
+
+    printHeading("RUNWAY BREAKDOWN MATRIX:", 9.5, 3);
+    printLine(`• Visas & Document Legalization: £${Math.round(budget.docs).toLocaleString()} (Estimated legal, apostille, and embassy processing fees).`, 8.5, "normal", textMain, 2);
+    printLine(`• Rent & Secure Deposit: £${Math.round(budget.housing).toLocaleString()} (Covers estimated first month's rent plus a standard local security deposit).`, 8.5, "normal", textMain, 2);
+    printLine(`• Living Runway (${setupDays} Days): £${Math.round(budget.expenditure).toLocaleString()} (Scaled for groceries, utilities, and daily essentials for a ${calcStatus.replace('-', ' ')} profile).`, 8.5, "normal", textMain, 2);
+    printLine(`• Logistics & Excess Shipping: £${Math.round(budget.logistics).toLocaleString()} (Combined estimate for courier services and airline baggage overrides).`, 8.5, "normal", textMain, 2);
+    printLine(`• Transport Setup: £${Math.round(budget.transport).toLocaleString()} (Initial public transit registration and commuting buffer).`, 8.5, "normal", textMain, 4);
+
+    printHeading("🛒 THE IKEA INDEX READY-CHECK", 10, 4);
+    printLine(`• Local Registry Status: Verified Active in ${selectedCountry}.`, 9, "normal", textMain, 2);
+    printLine(`• Profile Essential Kit (${calcStatus === 'single' ? 'Single' : 'Family + 1'}): Exactly JPY ${Math.round(budget.ikea).toLocaleString()} (or local currency equivalent).`, 9, "normal", textMain, 2);
+    printLine("• Tactical Directive: If your assigned flat is structurally \"Unfurnished\", this exact Field Kit inventory value has been automatically appended to your total Startup Buffer above to secure basic week-one living essentials (Bedding, primary cookware, basic comfort seating).", 8.5, "normal", textMain, 8);
 
     printHeading("PART 5: A ROOF OVER YOUR HEAD (HOUSING)", 10, 4);
     printLine("Unless the school is putting you in a fully furnished flat, the housing hunt is your biggest hurdle.", 9, "normal", textMain, 4);
@@ -676,7 +738,7 @@ export default function PreparePage() {
           </div>
           <Button 
             className="bg-black hover:bg-[#d95f02] hover:text-black text-white border-2 border-[#d95f02] font-black text-xs uppercase italic px-10 h-14 rounded-none transition-all group flex items-center gap-3"
-            onClick={downloadBriefingPdf}
+            onClick={() => setIsConfirmModalOpen(true)}
           >
             <Lock className="size-4 group-hover:hidden" />
             <Download className="size-4 hidden group-hover:block" />
@@ -693,7 +755,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Search className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 1. Scrutinise the contract package</h3>
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1. Scrutinise the contract package</h3>
           </div>
           {step1Open ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -704,252 +766,378 @@ export default function PreparePage() {
 
         {step1Open && (
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="p-6 bg-sky-400/5 border border-sky-400/20">
-              <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-                It’s easy to get distracted by a high tax-free salary, but you need to weigh up the whole package to see what the move is actually worth. Let’s look at the detail... You’ll want to check that your onboarding and relocation allowances actually cover the reality of moving your life, and keep an eye out for gaps in the medical insurance—like dental or outpatient fees—that could leave you out of pocket. 
-                <span className="block mt-2 text-sky-400/80">
-                  Since most schools don't offer a pension, you'll likely need to fund your own retirement back home to make up for the loss of the TPS. This makes the wording of your end-of-service gratuity vital; if it’s only calculated on your basic pay rather than your total package, your final "thank you" payout might be a lot smaller than you’d hoped. Below we take a deeper look at the implicatons..
-                </span>
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 space-y-4">
+              <p className="text-[15px] font-bold text-slate-300 leading-relaxed w-full">
+                It’s incredibly easy to get distracted by the flash of a high, tax-free salary, but you really do need to weigh up the whole package to see what an international move is actually worth. For starters, you’ll want to check that your onboarding and relocation allowances cover the practical reality of moving your life, whilst keeping a sharp eye out for gaps in your medical insurance—like dental or outpatient fees—that could leave you seriously out of pocket.
+              </p>
+              <p className="text-[15px] font-bold text-slate-300 leading-relaxed w-full">
+                For British teachers, the biggest hurdle is that most schools don’t offer a pension, meaning you’ll need to fund your own retirement back home to make up for the loss of the TPS. If you’re a US citizen, “tax-free” is a bit of a myth anyway, as you’ll still have to navigate IRS filing requirements and the Foreign Earned Income Exclusion on your global income. Meanwhile, other nationalities must tread carefully around their own home country’s strict tax residency rules to avoid a nasty surprise bill when they return.
+              </p>
+              <p className="text-[15px] font-bold text-slate-300 leading-relaxed w-full">
+                Because of this DIY approach to retirement, the wording of your end-of-service gratuity becomes absolutely vital. If it’s only calculated on your basic pay rather than your total package, your final “thank you” payout might be a lot smaller than you’d hoped. Below, we take a deeper look at the implications...
               </p>
             </div>
 
-      {/* 🛡️ MISSION PHASE: THE SURPLUS TEST */}
-      <div className="mb-6">
-        <div className="p-6 bg-rose-500/5 border border-rose-500/20 relative group hover:border-rose-500/40 transition-all">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Activity className="size-5 text-rose-500" />
-              <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-rose-500">The Surplus Test</h3>
-            </div>
-            <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-              Before you sign on the dotted line, you need to look beyond the quoted salary and perform a cold, hard stress test on your lifestyle. The Leopardfish Intel allows you these insights — letting you adjust the numbers to suit your specific circumstances now so you can arrive in {selectedCountry !== 'all' ? selectedCountry : 'Oman'} confident that finances are secure.
-            </p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <div className="space-y-6 pt-2">
-                  <div className="flex items-center gap-3 border-b border-rose-500/10 pb-3">
-                    <Target className="size-4 text-rose-500" />
-                    <h4 className="text-[14px] font-black uppercase tracking-widest text-white">How to find your surplus</h4>
+          </div>
+        )}
+      </div>
+
+      {/* 🛡️ MISSION PHASE: STEP 1A — RUN THE SURPLUS TEST */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep1aOpen(!step1aOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Activity className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1a. Run the Surplus Test</h3>
+          </div>
+          {step1aOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step1aOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Activity className="size-5 text-sky-400" />
+                  <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">The Surplus Test</h3>
+                </div>
+                <p className="text-[15px] font-bold text-slate-300 leading-relaxed w-full">
+                  Before you sign on the dotted line, you need to look beyond the quoted salary and perform a cold, hard stress test on your lifestyle. The Leopardfish Intel allows you these insights — letting you adjust the numbers to suit your specific circumstances now so you can arrive in {selectedCountry !== 'all' ? selectedCountry : 'Oman'} confident that finances are secure.
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Target className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">How to find your surplus</h4>
+                      </div>
+                      <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
+                        Navigate to the Evaluate page to play with the costs of your new international lifestyle and complete these steps:
+                      </p>
+                      
+                      {/* Visual Stepper Checklist */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                          { id: 1, title: "Input the Net Salary", desc: `Enter the exact monthly net salary figure from your contract on the Evaluate page.` },
+                          { id: 2, title: "Plug in Home Anchors", desc: `Use custom adjustments to account for home-country commitments like mortgages or student loans.` },
+                          { id: 3, title: "Add Partner Income", desc: `Incorporate any additional partner net income or tutoring allowances that boost your monthly earnings.` },
+                          { id: 4, title: "Review the Surplus", desc: `If you are not achieving at least a 10% surplus, the system will flag the contract as Limited Potential.` },
+                          { id: 5, title: "Negotiation Prep", desc: `Use any savings gaps to determine the exact contract uplift required to make deployment viable.` },
+                          { id: 6, title: "Lock in the Profile", desc: `Save your profile metrics to secure your baseline runway for future PDF manual generation.` }
+                        ].map(item => (
+                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex gap-3">
+                            <span className="text-sky-400 font-mono font-black text-lg">0{item.id}</span>
+                            <div className="space-y-1">
+                              <p className="text-[13px] font-black text-white uppercase tracking-wider">{item.title}</p>
+                              <p className="text-[12px] font-bold text-slate-400 leading-snug">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+ 
+                    {/* Launch Evaluate Dashboard CTA */}
+                    <div className="pt-4 flex border-t border-sky-400/10">
+                      <Link 
+                        href="/financial-forecaster"
+                        className="bg-black hover:bg-sky-400 hover:text-black text-white border-2 border-sky-400 font-black text-xs italic px-6 h-12 rounded-none transition-all flex items-center gap-2 justify-center"
+                      >
+                        <ArrowUpRight className="size-4" /> Launch Evaluate Dashboard
+                      </Link>
+                    </div>
                   </div>
-                  <p className="text-[13px] font-bold text-slate-400 italic mt-2 mb-4">
-                    Navigate to the Evaluate page to play with the costs of your new international lifestyle and complete these steps:
-                  </p>
-                   {[
-                     { id: 1, title: "Input the Offered Net Salary", desc: `Enter the exact figure from your contract into the Monthly Net Salary field.` },
-                     { id: 2, title: "Plug in the 'Home commitments'", desc: `Use the Custom Adjustments section to account for every penny that leaves your account for home-country commitments. This includes UK mortgages, student loans, and your Class 3 NI contributions.` },
-                     { id: 3, title: "Add Partner Income", desc: `Add any additional partner income or any tutor or management allowances that boost the net salary already entered.` },
-                     { id: 4, title: "Review the Surplus", desc: `If you are not achieving a 10% surplus (around ${formatCurrency(monthlyBudget.totalIncome * 0.1, budget.displayCurrency)}), the tool will flag this as "Limited Potential".` },
-                     { id: 5, title: "Negotiation Tool", desc: `If the surplus is negative or simply "not enough" to meet your savings goals, the mission—as currently framed—will not work for you. Adjustments will need to be made.` }
-                   ].map(item => (
-                     <div key={item.id} className="flex gap-4">
-                       <span className="text-rose-500 font-black text-[15px] italic leading-none">{item.id}.</span>
-                       <div className="space-y-0.5">
-                         <p className="text-[14px] font-black text-white uppercase italic leading-none">{item.title}</p>
-                         <p className="text-[13px] font-bold text-slate-400 italic leading-snug">{item.desc}</p>
+ 
+                  {/* Right Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-6">
+                       <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                         <Compass className="size-4 text-sky-400" />
+                         <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Tuning the Dials: The 'What-If' Scenarios</h4>
                        </div>
-                     </div>
-                   ))}
+                       
+                       <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
+                         If the initial numbers look grim, don't panic. Adjust your inputs to find the "path to surplus" on the Evaluate page:
+                       </p>
+                       
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         {[
+                           { label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
+                           { label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
+                           { label: "The 4x4 necessity", desc: `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` },
+                           { label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
+                           { label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
+                           { label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
+                         ].map((item, i) => (
+                           <div key={i} className="p-3 bg-black/60 border border-white/5 hover:border-sky-400/20 transition-all flex flex-col justify-between">
+                             <div>
+                               <p className="text-[12px] font-black text-sky-400 uppercase tracking-wider mb-1">{item.label}</p>
+                               <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
+                             </div>
+                             <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
+                               <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Tuning Dial</span>
+                               <div className="h-1 w-12 bg-white/10 rounded-full relative overflow-hidden">
+                                 <div className="absolute left-0 top-0 h-full w-2/3 bg-sky-400" />
+                               </div>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                    </div>
+ 
+                    <div className="pt-3 border-t border-sky-400/10">
+                      <p className="text-[12px] font-bold text-slate-500 leading-relaxed italic">
+                        <span className="text-sky-400 font-black uppercase tracking-widest not-italic block mb-1">Peer Advice:</span>
+                        "Use this page to find your 'Breaking Point.' If you have to downgrade your lifestyle to a level you'll hate just to save £200 a month, the mission is a fail. Use these results to fuel your negotiation email."
+                      </p>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-              
-              <div className="bg-black/40 border border-rose-500/20 p-5 space-y-4">
-                 <div className="flex items-center gap-3 border-b border-rose-500/10 pb-3">
-                   <Compass className="size-4 text-rose-500" />
-                   <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Tuning the Dials: The 'What-If' Scenarios</h4>
-                 </div>
-                 
-                 <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">
-                   If the initial numbers look grim, don't panic. Adjust your inputs to find the "path to surplus"
-                 </p>
-                 <ul className="space-y-3">
-                   <li className="space-y-1">
-                     <p className="text-[13px] font-black text-rose-500 uppercase italic">Housing Adjustments</p>
-                     <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Could you downgrade from your current estimate ({formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to a smaller flat to reclaim some surplus?</p>
-                   </li>
-                   <li className="space-y-1">
-                     <p className="text-[13px] font-black text-rose-500 uppercase italic">The Partner Variable</p>
-                     <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">If you are moving with a spouse, input a Partner Net Salary. Often, a second income is the difference between "just surviving" and "thriving".</p>
-                   </li>
-                   <li className="space-y-1">
-                     <p className="text-[13px] font-black text-rose-500 uppercase italic">The 4x4 Necessity</p>
-                     <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">In {selectedCountry !== 'all' ? selectedCountry : 'Oman'}, infrastructure is built for cars; a 4x4 is a non-negotiable "infrastructure tax" for a family (around {formatCurrency(monthlyBudget.transport, budget.displayCurrency)}). Downgrading to a sedan will help, but limits your adventures.</p>
-                   </li>
-                   <li className="space-y-1">
-                     <p className="text-[13px] font-black text-rose-500 uppercase italic">Home-Country Cuts</p>
-                     <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Can you reduce your "Home Anchors"? Adjusting your custom commitments might be the only way to make a tight {formatCurrency(monthlyBudget.totalIncome, budget.displayCurrency)} total income viable.</p>
-                   </li>
-                 </ul>
-                 <div className="pt-3 border-t border-rose-500/10">
-                   <p className="text-[12px] font-bold text-slate-500 leading-relaxed">
-                     <span className="text-rose-500 font-black uppercase tracking-widest block mb-1">Peer Advice:</span>
-                     "Use this page to find your 'Breaking Point.' If you have to downgrade your lifestyle to a level you'll hate just to save £200 a month, the mission is a fail. Use these results to fuel your negotiation email."
-                   </p>
-                 </div>
-              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* 🛡️ TACTICAL RISKS: CONTRACT RED & GREEN FLAGS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-        {/* Red Flags */}
-        <div className="p-5 bg-[#d95f02]/5 border border-[#d95f02]/20 relative group hover:border-[#d95f02]/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Banknote className="size-5 text-[#d95f02]" />
-              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Warnings</h3>
-            </div>
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">"Negotiable" Salary</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Vague "Broad Ranges"</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">A massive range without a clear ladder is often a bait-and-switch designed to lowball you.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The "Secret" Grid</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Profit-First Chains</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Lower-tier schools view your salary as a "cost" to be cut for shareholders.</p>
-              </div>
-            </div>
+      {/* 🛡️ MISSION PHASE: STEP 1B — EVALUATE PAY SCALES AND NDAS */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep1bOpen(!step1bOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Banknote className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1b. Evaluate Pay Scales and NDAs</h3>
           </div>
-        </div>
+          {step1bOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
 
-        {/* Green Flags */}
-        <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="size-5 text-emerald-500" />
-              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Pay Scales - The Best Practice</h3>
-            </div>
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">A Transparent Grid</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">A public table showing exactly what you earn based on your years of experience and degrees.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">Automatic Annual "Steps"</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">A guaranteed pay bump every year you stay at the school, protecting your "real" income.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">Degree Differentials</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">Benefit Clarity</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Explicit details on housing, flights, and tax obligations provided before you even interview.</p>
+        {step1bOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                {/* Row 1: Side by Side Pay Scale Warnings & Best Practices */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card - Pay Scales Warnings */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Banknote className="size-5 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Pay Scales - The Warnings</h4>
+                      </div>
+                      <div className="space-y-4">
+                        {[
+                          { title: "Negotiable Salary", desc: "Top schools use fixed grids. Negotiation implies a lack of transparency and usually results in pay gaps." },
+                          { title: "Vague Broad Ranges", desc: "A massive range without a clear ladder is often a bait-and-switch designed to lowball you." },
+                          { title: "The Secret Grid", desc: "Refusal to show the scale until the contract stage usually hides a lack of guaranteed raises." },
+                          { title: "Profit-First Chains", desc: "Lower-tier schools view your salary as a cost to be cut for shareholders." }
+                        ].map((item, i) => (
+                          <div key={i} className="space-y-1">
+                            <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                            <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column Card - Pay Scales Best Practice */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <ShieldCheck className="size-5 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Pay Scales - The Best Practice</h4>
+                      </div>
+                      <div className="space-y-4">
+                        {[
+                          { title: "A Transparent Grid", desc: "A public table showing exactly what you earn based on your years of experience and degrees." },
+                          { title: "Automatic Annual Steps", desc: "A guaranteed pay bump every year you stay at the school, protecting your real income." },
+                          { title: "Degree Differentials", desc: "Clear, higher pay brackets for holding an MA or PhD, acknowledging your expertise." },
+                          { title: "Benefit Clarity", desc: "Explicit details on housing, flights, and tax obligations provided before you even interview." }
+                        ].map((item, i) => (
+                          <div key={i} className="space-y-1">
+                            <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                            <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Row 2: Side by Side NDA Clauses & Expert Tip */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card - NDA Clauses */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Lock className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">NDA Clauses</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                        Check restrictions on discussing pay or the school climate. If you're banned from talking about your salary with colleagues, it's usually because the school is hiding major pay disparities.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Column Card - Expert Tip */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Info className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Expert Tip</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                        "Always ask for the scale during the first interview. If they get defensive, you've already found your answer. Professional schools are proud of their transparency."
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-        <RiskCard icon={Lock} title="NDA clauses" desc="Check restrictions on discussing pay or the school climate. If you're banned from talking about your salary with colleagues, it's usually because the school is hiding major pay disparities." />
-        <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
-          <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
-            <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-            "Always ask for the scale during the first interview. If they get defensive, you've already found your answer. Professional schools are proud of their transparency."
-          </p>
-        </div>
-      </div>
+      {/* 🛡️ MISSION PHASE: STEP 1C — EVALUATE ACCOMMODATION */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep1cOpen(!step1cOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Home className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1c. Evaluate Accommodation</h3>
+          </div>
+          {step1cOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
 
-      {/* 🛡️ TACTICAL RISKS: ACCOMMODATION INTEL */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-4">
-        {/* Red Flags - Accommodation */}
-        <div className="p-5 bg-[#d95f02]/5 border border-[#d95f02]/20 relative group hover:border-[#d95f02]/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Home className="size-5 text-[#d95f02]" />
-              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Warnings</h3>
-            </div>
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The "Commute Trap"</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Locations 45+ minutes from campus turns your "free" time into hours of unpaid travel.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Vague "Suitability" Clauses</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Describing housing as "suitable" without photos or square footage can hide substandard units.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">The Furniture Gap</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Providing "unfurnished" flats without a settling-in allowance. You'll spend months of salary just buying a bed. See our guide!</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#d95f02] uppercase italic">Mandatory Sharing</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {step1cOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                {/* Row 1: Side by Side Accommodation Warnings & Best Practices */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card - Accommodation Warnings */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Home className="size-5 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Accommodation - The Warnings</h4>
+                      </div>
+                      <div className="space-y-4">
+                        {[
+                          { title: "The Commute Trap", desc: "Locations 45+ minutes from campus turns your free time into hours of unpaid travel." },
+                          { title: "Vague Suitability Clauses", desc: "Describing housing as suitable without photos or square footage can hide substandard units." },
+                          { title: "The Furniture Gap", desc: "Providing unfurnished flats without a settling-in allowance. You'll spend months of salary just buying a bed." },
+                          { title: "Mandatory Sharing", desc: "Asking teachers to share apartments. This represents a lack of professional boundaries for adult staff." }
+                        ].map((item, i) => (
+                          <div key={i} className="space-y-1">
+                            <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                            <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
 
-        {/* Green Flags - Accommodation */}
-        <div className="p-5 bg-emerald-500/5 border border-emerald-500/20 relative group hover:border-emerald-500/40 transition-all">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="size-5 text-emerald-500" />
-              <h3 className="text-[15px] font-black uppercase tracking-[0.2em] text-white">Accommodation - The Best Practice</h3>
-            </div>
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">The "Opt-Out" Choice</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Choice between a managed flat OR a fair-market cash allowance. This proves their housing value is honest. A first year in school housing is often a great choice.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">Household-Based Allocation</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Entitlement policies (size/bedrooms) scale automatically based on the number of your dependents.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">Transparency & Tours</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">Providing floor plans, actual photos (not marketing shots), and a video walkthrough of your specific unit.</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[14px] font-black text-emerald-500 uppercase italic">The "Welcome Pack"</p>
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">A fridge stocked with essentials and pre-connected internet. It signals a school that prioritizes well-being.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                  {/* Right Column Card - Accommodation Best Practice */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <ShieldCheck className="size-5 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Accommodation - The Best Practice</h4>
+                      </div>
+                      <div className="space-y-4">
+                        {[
+                          { title: "The Opt-Out Choice", desc: "Choice between a managed flat OR a fair-market cash allowance. This proves their housing value is honest." },
+                          { title: "Household-Based Allocation", desc: "Entitlement policies (size/bedrooms) scale automatically based on the number of your dependents." },
+                          { title: "Transparency & Tours", desc: "Providing floor plans, actual photos (not marketing shots), and a video walkthrough of your specific unit." },
+                          { title: "The Welcome Pack", desc: "A fridge stocked with essentials and pre-connected internet. It signals a school that prioritizes well-being." }
+                        ].map((item, i) => (
+                          <div key={i} className="space-y-1">
+                            <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                            <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
-        <div className="lg:col-span-2 p-5 bg-sky-400/5 border border-sky-400/20">
-          <div className="flex items-center gap-3 mb-3">
-            <Package className="size-5 text-sky-400" />
-            <h3 className="text-[14px] font-black uppercase tracking-widest text-white">📦 The Housing Spectrum</h3>
+                </div>
+
+                {/* Row 2: Side by Side The Housing Spectrum & Expert Tip */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card - The Housing Spectrum */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Package className="size-5 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">The Housing Spectrum</h4>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Furnished</p>
+                          <p className="text-[11px] font-bold text-slate-400 leading-relaxed">Includes big ticket items (Sofa, Bed, Dining). Check if it includes softs (linens/kitchenware).</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Unfurnished</p>
+                          <p className="text-[11px] font-bold text-slate-400 leading-relaxed">Usually includes White Goods (Fridge/Stove) only. Must come with a cash Settling-in Allowance.</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Allowances</p>
+                          <p className="text-[11px] font-bold text-slate-400 leading-relaxed">Monthly cash. Ensure it covers 100% of local rent + at least 70% of average utility costs.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column Card - Expert Tip */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Info className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Expert Tip</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                        "Ask to speak with the teacher currently living in these units. Ask about the three things the school won't tell you: internet reliability, water pressure, and noise levels at 6:00 AM."
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <p className="text-[13px] font-black text-sky-400 uppercase italic">Furnished</p>
-              <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Includes "big ticket" items (Sofa, Bed, Dining). Check if it includes "softs" (linens/kitchenware).</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[13px] font-black text-sky-400 uppercase italic">Unfurnished</p>
-              <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Usually includes "White Goods" (Fridge/Stove) only. Must come with a cash "Settling-in Allowance."</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[13px] font-black text-sky-400 uppercase italic">Allowances</p>
-              <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Monthly cash. Ensure it covers 100% of local rent + at least 70% of average utility costs.</p>
-            </div>
-          </div>
-        </div>
-        <div className="lg:col-span-1 p-5 bg-sky-400/5 border border-sky-400/20 italic flex flex-col justify-center">
-          <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
-            <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-            "Ask to speak with the teacher currently living in these units. Ask about the three things the school won't tell you: internet reliability, water pressure, and noise levels at 6:00 AM."
-          </p>
-        </div>
+        )}
       </div>
-    </div>
-  )}
-</div>
 
       {/* 🛡️ MISSION PHASE: STEP 02 */}
       <div className="mb-6">
@@ -959,7 +1147,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Coins className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 2. Calculate your startup buffer</h3>
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 2. Calculate your startup buffer</h3>
           </div>
           {step2Open ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -978,8 +1166,11 @@ export default function PreparePage() {
                 </span>
               </p>
             </div>
+          </div>
+        )}
+      </div>
 
-      <div className="max-w-7xl mx-auto space-y-5">
+      <div className="max-w-7xl mx-auto space-y-5 mb-6">
         
         {/* Tactical Warning Alert Moved Down */}
         
@@ -1015,6 +1206,7 @@ export default function PreparePage() {
                     <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                       <SelectItem value="single">Single</SelectItem>
                       <SelectItem value="married-dual">Married (dual income)</SelectItem>
+                      <SelectItem value="married-sole">Married (sole earner)</SelectItem>
                       <SelectItem value="family-1">Family (1 child)</SelectItem>
                       <SelectItem value="family-2">Family (2 children)</SelectItem>
                       <SelectItem value="family-3">Family (3+ children)</SelectItem>
@@ -1341,7 +1533,7 @@ export default function PreparePage() {
                         { label: 'Family +3', key: 'Family +3', status: 'family-3' },
                       ];
                       
-                      const activeTier = tierMap.find(t => t.status === calcStatus) || tierMap[0];
+                      const activeTier = tierMap.find(t => t.status === calcStatus || (t.status === 'married-dual' && calcStatus === 'married-sole')) || tierMap[0];
                       const usdVal = Number(selectedIkea[activeTier.key]) || 1000;
                       const rate = RATES[activeIkeaCurrency] || 1.0;
                       const displayVal = (usdVal / (RATES['USD'] || 1.27)) * rate;
@@ -1367,7 +1559,7 @@ export default function PreparePage() {
                                     ikeaDisplayCurrency === c ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white"
                                   )}
                                 >
-                                  {c === 'Local' ? `LOC (${targetLocalCurrency})` : c}
+                                  {c === 'Local' ? targetLocalCurrency : c}
                                 </button>
                               ))}
                             </div>
@@ -1433,7 +1625,8 @@ export default function PreparePage() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
                   {IKEA_KIT_ITEMS.map((item, idx) => {
-                    const quantity = (item.q as any)[calcStatus] || 1;
+                    const qKey = calcStatus === 'married-sole' ? 'married-dual' : calcStatus;
+                    const quantity = (item.q as any)[qKey] || 1;
                     const itemName = selectedIkea ? item.name : item.generic;
                     return (
                       <div key={idx} className="flex items-center justify-between text-[12px] font-bold text-slate-300 italic opacity-80 border-b border-white/5 pb-1">
@@ -1457,9 +1650,6 @@ export default function PreparePage() {
           </div>
         </div>
       </div>
-      </div>
-    )}
-</div>
 
       {/* 🛡️ MISSION PHASE: STEP 03 */}
       <div className="mb-6">
@@ -1469,7 +1659,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <FileText className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">Step 3. Start the paperwork</h3>
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3. Start the paperwork</h3>
           </div>
           {step3Open ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -1488,356 +1678,529 @@ export default function PreparePage() {
                 </span>
               </p>
             </div>
+          </div>
+        )}
+      </div>
 
-        <div className="mb-6">
-          <button 
-            onClick={() => setEssentialsOpen(!essentialsOpen)}
-            className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <FileText className="size-5 text-sky-400" />
-              <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-white">The Essentials</h3>
-            </div>
-            {essentialsOpen ? (
-              <ChevronUp className="size-5 text-sky-400" />
-            ) : (
-              <ChevronDown className="size-5 text-sky-400" />
-            )}
-          </button>
+      {/* 🛡️ MISSION PHASE: STEP 3A — THE ESSENTIALS */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep3aOpen(!step3aOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <FileText className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3a. Start the Paperwork (The Essentials)</h3>
+          </div>
+          {step3aOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
 
-          {essentialsOpen && (
-            <div className="mt-4 p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
-              <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <FileText className="size-5 text-sky-400" />
-                <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-white">The Essentials</h3>
-              </div>
-              <p className="text-[15px] font-bold text-slate-400 italic leading-relaxed w-full">
-                To navigate the required international paperwork, you need to manage three moving parts: authenticity, validity, and legal right to work.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <p className="text-[14px] font-black text-sky-400 uppercase italic">Degree Attestation (The "Stamps")</p>
-                    <p className="text-[13px] font-bold text-slate-300 italic leading-relaxed">
-                      <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
-                      <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
-                      <span className="text-sky-400/80 uppercase text-[12px]">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
-                    </p>
+        {step3aOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                <p className="text-[14px] font-bold text-slate-300 leading-relaxed">
+                  To navigate the required international paperwork, you need to manage three moving parts: authenticity, validity, and legal right to work.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Degree Attestation (The "Stamps")</p>
+                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                          <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
+                          <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
+                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
+                        </p>
+                      </div>
+                      <div className="space-y-1 pt-3 border-t border-sky-400/10">
+                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Criminal Record Checks (Safeguarding)</p>
+                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                          <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
+                          <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
+                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[14px] font-black text-sky-400 uppercase italic">Criminal Record Checks (Safeguarding)</p>
-                    <p className="text-[13px] font-bold text-slate-300 italic leading-relaxed">
-                      <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
-                      <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
-                      <span className="text-sky-400/80 uppercase text-[12px]">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
-                    </p>
+
+                  {/* Right Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Visas & Work Permits</p>
+                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                          <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
+                          <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
+                          <span className="text-sky-400 uppercase text-[10px] font-black">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
+                        </p>
+                      </div>
+                      <div className="space-y-1 pt-3 border-t border-sky-400/10">
+                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Embassy Registration & Local ID</p>
+                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                          <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
+                          <span className="text-white">Validity:</span> Linked to your visa.<br/>
+                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
+                        </p>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
 
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <p className="text-[14px] font-black text-sky-400 uppercase italic">Visas & Work Permits</p>
-                    <p className="text-[13px] font-bold text-slate-300 italic leading-relaxed">
-                      <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
-                      <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
-                      <span className="text-[#d95f02] uppercase text-[12px]">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
+                <div className="pt-3 border-t border-sky-400/10">
+                  <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                      <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                      "Scan everything. Before you hand over any original document to a school or embassy, ensure you have a high-resolution PDF saved in the cloud. You’ll need these scans for everything from opening a bank account to registering for a local SIM card before your physical ID arrives."
                     </p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[14px] font-black text-sky-400 uppercase italic">Embassy Registration & Local ID</p>
-                    <p className="text-[13px] font-bold text-slate-300 italic leading-relaxed">
-                      <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
-                      <span className="text-white">Validity:</span> Linked to your visa.<br/>
-                      <span className="text-sky-400/80 uppercase text-[12px]">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-white/5">
-                <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
-                  <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
-                    <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-                    "Scan everything. Before you hand over any original document to a school or embassy, ensure you have a high-resolution PDF saved in the cloud. You’ll need these scans for everything from opening a bank account to registering for a local SIM card before your physical ID arrives."
-                  </p>
                 </div>
               </div>
             </div>
           </div>
-          )}
-        </div>
-
-        {/* BOTTOM GRID: The Remaining Operations */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <button 
-                onClick={() => setTransportOpen(!transportOpen)}
-                className="w-full flex items-center justify-between text-left focus:outline-none"
-              >
-                <div className="flex items-center gap-3">
-                  <Navigation className="size-4 text-[#d95f02] -rotate-90" />
-                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Transport Strategy</CardTitle>
-                </div>
-                {transportOpen ? (
-                  <ChevronUp className="size-4 text-sky-400" />
-                ) : (
-                  <ChevronDown className="size-4 text-sky-400" />
-                )}
-              </button>
-
-              {transportOpen && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-              <div className="flex gap-2">
-                <button onClick={() => setTransportMode('public')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'public' ? "bg-sky-400 text-black border-sky-400" : "bg-black/20 border-white/10 text-slate-500")}>Public</button>
-                <button onClick={() => setTransportMode('drive')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'drive' ? "bg-[#d95f02] text-white border-[#d95f02]" : "bg-black/20 border-white/10 text-slate-500")}>Driving</button>
-                <button onClick={() => setTransportMode('taxi')} className={cn("flex-1 py-1.5 text-[12px] font-black uppercase italic rounded-sm border transition-all", transportMode === 'taxi' ? "bg-indigo-500 text-white border-indigo-500" : "bg-black/20 border-white/10 text-slate-500")}>Taxi/App</button>
-              </div>
-              
-              <div className="space-y-3">
-                <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                  {transportMode === 'public' && "Budget-friendly in hubs like Dubai or HK. Often more reliable than home-country networks. Note: In some regions, low frequency or lack of direct access to school stops can make this impractical."}
-                  {transportMode === 'drive' && "Essential for satellite communities. Note: Residency is usually required to buy a car; this is often best handled after your probation period."}
-                  {transportMode === 'taxi' && "Good for the first 14 days and grocery runs, but unsustainable as a long-term primary commute."}
-                </p>
-
-                <ul className="space-y-2 text-[13px] font-bold text-slate-300 italic">
-                  {transportMode === 'public' && (
-                    <>
-                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Metro registration (Nol, Octopus, Litacka)</li>
-                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Map your 'School-to-Station' walking route</li>
-                      <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Download official transit apps (e.g. S'hail, Citymapper)</li>
-                    </>
-                  )}
-                  {transportMode === 'drive' && (
-                    <>
-                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> IDP (International Driving Permit) - Get before leaving!</li>
-                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> Verify home-license exchange rules (Some need re-tests)</li>
-                      <li className="flex gap-3"><span className="text-[#d95f02] font-black">●</span> Budget for 'Salik' (tolls) and mandatory parking fees</li>
-                    </>
-                  )}
-                  {transportMode === 'taxi' && (
-                    <>
-                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Download local apps (Careem, Grab, Uber, Bolt)</li>
-                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Link a multi-currency card (Wise/Revolut) to save on fees</li>
-                      <li className="flex gap-3"><span className="text-indigo-400 font-black">●</span> Share live ride location; know the price before you start</li>
-                    </>
-                  )}
-                </ul>
-              </div>
-
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">
-                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-                  "Mobilize together. Check if your school has a 'Teacher Carpool' or staff shuttle. It’s the fastest way to cut costs and get the 'staff-room honest' intel on the best neighborhoods and local hidden gems."
-                </p>
-              </div>
-                </div>
-              )}
-            </div>
-          </Card>
-          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <button 
-                  onClick={() => setPensionOpen(!pensionOpen)}
-                  className="flex items-center gap-3 text-left focus:outline-none flex-1"
-                >
-                  <Landmark className="size-4 text-[#d95f02]" />
-                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02] flex items-center gap-2">
-                    Pensions & Retirement
-                    {pensionOpen ? (
-                      <ChevronUp className="size-4 text-sky-400" />
-                    ) : (
-                      <ChevronDown className="size-4 text-sky-400" />
-                    )}
-                  </CardTitle>
-                </button>
-                {pensionOpen && (
-                  <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
-                    <button 
-                      onClick={() => setPensionRegion('GB')}
-                      className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'GB' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
-                    >
-                      UK
-                    </button>
-                    <button 
-                      onClick={() => setPensionRegion('US')}
-                      className={cn("px-2 py-1 text-[12px] font-black tracking-widest transition-all", pensionRegion === 'US' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}
-                    >
-                      US
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {pensionOpen && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200 w-full">
-
-              {pensionRegion === 'GB' ? (
-                <div className="space-y-3">
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                    As of April 2026, Class 3 NI is the primary mechanism to protect your UK State Pension.
-                  </p>
-                  <div className="space-y-2">
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">Cost: £18.40 / week</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Approx £957/year. Each qualifying year adds ~£358 to your annual pension for life.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">ROI: 3-Year Breakeven</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">The strongest return on investment for any teacher abroad. Break even within 3 years of retirement.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">Eligibility</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Must have 10 qualifying years or 10 years of continuous UK residency. You can backfill 6 previous years.</p>
-                    </div>
-                  </div>
-                  <p className="text-[12px] font-bold text-slate-600 uppercase italic tracking-widest pt-2 border-t border-white/5">
-                    * Advice only - check with HMRC / DWP for final eligibility.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                    US educators face the "Windfall Elimination Provision" (WEP) when teaching on local contracts.
-                  </p>
-                  <div className="space-y-2">
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">WEP Risk</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Foreign pensions (like UAE gratuity) can reduce your US Social Security payout by up to 50%.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">IRA Contribution Trap</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">If using the FEIE (Foreign Earned Income Exclusion), you have no "earned income" to contribute to a Roth IRA.</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[13px] font-black text-sky-400 uppercase italic">Brokerage Strategy</p>
-                      <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Most US teachers abroad use low-cost index funds in a standard brokerage account to mirror 401(k) growth.</p>
-                    </div>
-                  </div>
-                  <p className="text-[12px] font-bold text-slate-600 uppercase italic tracking-widest pt-2 border-t border-white/5">
-                    * Advice only - check with SSA / Tax Professional for individual guidance.
-                  </p>
-                </div>
-              )}
-                </div>
-              )}
-            </div>
-          </Card>
-          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <button 
-                onClick={() => setBankingOpen(!bankingOpen)}
-                className="w-full flex items-center justify-between text-left focus:outline-none"
-              >
-                <div className="flex items-center gap-3">
-                  <Landmark className="size-4 text-[#d95f02]" />
-                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Money & Banking</CardTitle>
-                </div>
-                {bankingOpen ? (
-                  <ChevronUp className="size-4 text-sky-400" />
-                ) : (
-                  <ChevronDown className="size-4 text-sky-400" />
-                )}
-              </button>
-
-              {bankingOpen && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-              <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                Moving money internationally can cost you 3% to 5% of your salary in hidden bank fees.
-              </p>
-
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">School-Preferred Banks</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Ask which bank the school uses for payroll. Using the same provider usually ensures same-day pay and branch convenience.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">Avoid High-Street Rates</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Use apps like Wise or Revolut for the "mid-market" rate. Banks hide massive fees in poor exchange rates.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">The "Triple-Dip" Trap</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">SWIFT transfers get charged by sending, receiving, and intermediary banks. Fintech bypasses this, saving ~£30/transfer.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">The Split Strategy</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Local account for rent/daily life. "Sweep" savings home monthly to protect against local currency drops.</p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">
-                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-                  "Don't transfer on Fridays. Banks add a 'volatility buffer' over weekends. Send your money on a Tuesday or Wednesday for the cheapest results."
-                </p>
-              </div>
-                </div>
-              )}
-            </div>
-          </Card>
-          <Card className="bg-[#0b1224] border-white/5 p-5 hover:border-sky-400/30 transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <button 
-                onClick={() => setHealthOpen(!healthOpen)}
-                className="w-full flex items-center justify-between text-left focus:outline-none"
-              >
-                <div className="flex items-center gap-3">
-                  <Stethoscope className="size-4 text-[#d95f02]" />
-                  <CardTitle className="text-[14px] font-black uppercase tracking-widest text-[#d95f02]">Health & Registration</CardTitle>
-                </div>
-                {healthOpen ? (
-                  <ChevronUp className="size-4 text-sky-400" />
-                ) : (
-                  <ChevronDown className="size-4 text-sky-400" />
-                )}
-              </button>
-
-              {healthOpen && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-              <p className="text-[12px] font-bold text-slate-400 italic leading-tight">
-                Your medical cover is your most important safety net.
-              </p>
-
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">The "Arrival Gap"</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Many policies activate only on your first contract day. If you land 2 weeks early, you are uninsured. Bridge this with travel insurance.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">Network Tier Limits</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Check if your card is "Premium" or "General." General networks often exclude the top-tier hospitals near expat housing.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">Co-Pay Realities</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Basic plans often have 20%+ co-pays for dental or outpatient visits. Budget for out-of-pocket "minor" illnesses.</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[13px] font-black text-sky-400 uppercase italic">Fitness for Residency</p>
-                  <p className="text-[12px] font-bold text-slate-400 italic leading-relaxed">Expect a mandatory "Fitness Test" (Blood/X-ray). Certain historical conditions can impact your residency permit.</p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-[13px] font-bold text-slate-400 italic leading-relaxed">
-                  <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
-                  "Download the insurance app immediately. Having your digital card and policy number ready means you can find 'in-network' clinics in seconds during an emergency."
-                </p>
-              </div>
-                </div>
-              )}
-            </div>
-          </Card>
-        </div>
+        )}
       </div>
-    )}
-</div>
+
+      {/* 🛡️ MISSION PHASE: STEP 3B — TRANSPORT STRATEGY */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep3bOpen(!step3bOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Navigation className="size-5 text-sky-400 -rotate-90" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3b. Transport Strategy</h3>
+          </div>
+          {step3bOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step3bOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm w-fit">
+                  <button onClick={() => setTransportMode('public')} className={cn("px-4 py-1.5 text-[12px] font-black uppercase italic transition-all", transportMode === 'public' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}>Public</button>
+                  <button onClick={() => setTransportMode('drive')} className={cn("px-4 py-1.5 text-[12px] font-black uppercase italic transition-all", transportMode === 'drive' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}>Driving</button>
+                  <button onClick={() => setTransportMode('taxi')} className={cn("px-4 py-1.5 text-[12px] font-black uppercase italic transition-all", transportMode === 'taxi' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}>Taxi/App</button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Navigation className="size-4 text-sky-400 -rotate-90" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Mode Plan</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                        {transportMode === 'public' && "Budget-friendly in hubs like Dubai or HK. Often more reliable than home-country networks. Note: In some regions, low frequency or lack of direct access to school stops can make this impractical."}
+                        {transportMode === 'drive' && "Essential for satellite communities. Note: Residency is usually required to buy a car; this is often best handled after your probation period."}
+                        {transportMode === 'taxi' && "Good for the first 14 days and grocery runs, but unsustainable as a long-term primary commute."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <ShieldCheck className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">Checklist Items</h4>
+                      </div>
+                      <ul className="space-y-2 text-[12px] font-bold text-slate-300 italic">
+                        {transportMode === 'public' && (
+                          <>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Metro registration (Nol, Octopus, Litacka)</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Map your 'School-to-Station' walking route</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Download official transit apps (e.g. S'hail, Citymapper)</li>
+                          </>
+                        )}
+                        {transportMode === 'drive' && (
+                          <>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> IDP (International Driving Permit) - Get before leaving!</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Verify home-license exchange rules (Some need re-tests)</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Budget for 'Salik' (tolls) and mandatory parking fees</li>
+                          </>
+                        )}
+                        {transportMode === 'taxi' && (
+                          <>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Download local apps (Careem, Grab, Uber, Bolt)</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Link a multi-currency card (Wise/Revolut) to save on fees</li>
+                            <li className="flex gap-3"><span className="text-sky-400 font-black">●</span> Share live ride location; know the price before you start</li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="pt-3 border-t border-sky-400/10">
+                  <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                      <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                      "Mobilize together. Check if your school has a 'Teacher Carpool' or staff shuttle. It’s the fastest way to cut costs and get the 'staff-room honest' intel on the best neighborhoods and local hidden gems."
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 🛡️ MISSION PHASE: STEP 3C — PENSIONS & RETIREMENT */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep3cOpen(!step3cOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Landmark className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3c. Pensions & Retirement</h3>
+          </div>
+          {step3cOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step3cOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card - UK Pension Strategy */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Landmark className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">UK Pension Strategy</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                        As of April 2026, Class 3 NI is the primary mechanism to protect your UK State Pension.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Cost: £18.40 / week</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">Approx £957/year. Each qualifying year adds ~£358 to your annual pension for life.</p>
+                        </div>
+                        <div className="space-y-1 pt-2 border-t border-sky-400/10">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">ROI: 3-Year Breakeven</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">The strongest return on investment for any teacher abroad. Break even within 3 years of retirement.</p>
+                        </div>
+                        <div className="space-y-1 pt-2 border-t border-sky-400/10">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Eligibility</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">Must have 10 qualifying years or 10 years of continuous UK residency. You can backfill 6 previous years.</p>
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider pt-2 border-t border-sky-400/10">
+                          * Advice only - check with HMRC / DWP for final eligibility.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column Card - US Pension Strategy */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <ShieldCheck className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">US Pension Strategy</h4>
+                      </div>
+                      <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                        US educators face the "Windfall Elimination Provision" (WEP) when teaching on local contracts.
+                      </p>
+                      
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">WEP Risk</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">Foreign pensions (like UAE gratuity) can reduce your US Social Security payout by up to 50%.</p>
+                        </div>
+                        <div className="space-y-1 pt-2 border-t border-sky-400/10">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">IRA Contribution Trap</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">If using the FEIE (Foreign Earned Income Exclusion), you have no "earned income" to contribute to a Roth IRA.</p>
+                        </div>
+                        <div className="space-y-1 pt-2 border-t border-sky-400/10">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Brokerage Strategy</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">Most US teachers abroad use low-cost index funds in a standard brokerage account to mirror 401(k) growth.</p>
+                        </div>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider pt-2 border-t border-sky-400/10">
+                          * Advice only - check with SSA / Tax Professional for individual guidance.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Full-Width Footer for Other Nations */}
+                <div className="bg-black/40 border border-sky-400/20 p-5 mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="space-y-1 text-center md:text-left">
+                    <h5 className="text-[13px] font-black text-white uppercase tracking-wider">Other Nations & Custom Calculations</h5>
+                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                      For other nations, consult with the <Link href="/financial-forecaster" className="text-sky-400 underline hover:text-sky-300">LeopardfishIntel evaluate page</Link> for regional specifics and tailored pension calculations.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 🛡️ MISSION PHASE: STEP 3D — MONEY & BANKING */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep3dOpen(!step3dOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Landmark className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3d. Money & Banking</h3>
+          </div>
+          {step3dOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step3dOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                <p className="text-[14px] font-bold text-slate-300 leading-relaxed">
+                  Moving money internationally can cost you 3% to 5% of your salary in hidden bank fees.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      {[
+                        { title: "School-Preferred Banks", desc: "Ask which bank the school uses for payroll. Using the same provider usually ensures same-day pay and branch convenience." },
+                        { title: "Avoid High-Street Rates", desc: "Use apps like Wise or Revolut for the mid-market rate. Banks hide massive fees in poor exchange rates." }
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      {[
+                        { title: "The Triple-Dip Trap", desc: "SWIFT transfers get charged by sending, receiving, and intermediary banks. Fintech bypasses this, saving ~£30/transfer." },
+                        { title: "The Split Strategy", desc: "Local account for rent/daily life. Sweep savings home monthly to protect against local currency drops." }
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="pt-3 border-t border-sky-400/10">
+                  <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                      <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                      "Don't transfer on Fridays. Banks add a 'volatility buffer' over weekends. Send your money on a Tuesday or Wednesday for the cheapest results."
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 🛡️ MISSION PHASE: STEP 3E — HEALTH & REGISTRATION */}
+      <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
+        <button
+          onClick={() => setStep3eOpen(!step3eOpen)}
+          className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <Stethoscope className="size-5 text-sky-400" />
+            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3e. Health & Registration</h3>
+          </div>
+          {step3eOpen ? (
+            <ChevronUp className="size-5 text-sky-400" />
+          ) : (
+            <ChevronDown className="size-5 text-sky-400" />
+          )}
+        </button>
+
+        {step3eOpen && (
+          <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
+              <div className="space-y-6">
+                
+                <p className="text-[14px] font-bold text-slate-300 leading-relaxed">
+                  Your medical cover is your most important safety net.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Left Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      {[
+                        { title: "The Arrival Gap", desc: "Many policies activate only on your first contract day. If you land 2 weeks early, you are uninsured. Bridge this with travel insurance." },
+                        { title: "Network Tier Limits", desc: "Check if your card is Premium or General. General networks often exclude the top-tier hospitals near expat housing." }
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right Column Card */}
+                  <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
+                    <div className="space-y-4">
+                      {[
+                        { title: "Co-Pay Realities", desc: "Basic plans often have 20%+ co-pays for dental or outpatient visits. Budget for out-of-pocket minor illnesses." },
+                        { title: "Fitness for Residency", desc: "Expect a mandatory Fitness Test (Blood/X-ray). Certain historical conditions can impact your residency permit." }
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-1">
+                          <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">{item.title}</p>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">{item.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="pt-3 border-t border-sky-400/10">
+                  <div className="p-5 bg-sky-400/5 border border-sky-400/20 italic">
+                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                      <span className="text-sky-400 font-black uppercase tracking-widest block mb-1">Expert Tip:</span>
+                      "Download the insurance app immediately. Having your digital card and policy number ready means you can find 'in-network' clinics in seconds during an emergency."
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
         
 
+      {/* 🚀 PRE-Briefing confirmation overlay modal */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#0b1224] border border-[#d95f02]/30 p-6 max-w-md w-full relative space-y-6 shadow-2xl">
+            <button 
+              onClick={() => setIsConfirmModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="size-5" />
+            </button>
+
+            <div className="space-y-2">
+              <h3 className="text-lg font-black text-white italic uppercase tracking-wider flex items-center gap-2">
+                <Target className="size-5 text-[#d95f02]" />
+                Verify Deployment Profile
+              </h3>
+              <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
+                Confirm your deployment parameters. These selections directly feed the dynamic briefing calculations and Genkit modules in your PDF Field Manual.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {/* Country */}
+              <div className="space-y-1.5">
+                <Label className="text-[12px] font-bold text-slate-400 italic">1. Target Country</Label>
+                <Select value={selectedCountry} onValueChange={(val: string) => { setSelectedCountry(val); setSelectedSchoolId(null); }}>
+                  <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue placeholder="Select country..." /></SelectTrigger>
+                  <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                    <SelectItem value="all">Everywhere</SelectItem>
+                    {availableCountries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* School */}
+              <div className="space-y-1.5">
+                <Label className="text-[12px] font-bold text-slate-400 italic">2. Target School</Label>
+                <Select value={selectedSchoolId ?? ''} onValueChange={(val: string) => setSelectedSchoolId(val)}>
+                  <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue placeholder="Pick your school..." /></SelectTrigger>
+                  <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                    {filteredSchools.map(s => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Family status */}
+              <div className="space-y-1.5">
+                <Label className="text-[12px] font-bold text-slate-400 italic">3. Family Status Profile</Label>
+                <Select value={calcStatus} onValueChange={(val: string) => setCalcStatus(val)}>
+                  <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
+                    <SelectItem value="single">Single</SelectItem>
+                    <SelectItem value="married-dual">Married (dual income)</SelectItem>
+                    <SelectItem value="married-sole">Married (sole earner)</SelectItem>
+                    <SelectItem value="family-1">Family (1 child)</SelectItem>
+                    <SelectItem value="family-2">Family (2 children)</SelectItem>
+                    <SelectItem value="family-3">Family (3+ children)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="w-1/3 border-white/10 hover:bg-white/5 text-white font-bold text-xs uppercase italic rounded-none h-11"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  setIsConfirmModalOpen(false);
+                  downloadBriefingPdf();
+                }}
+                className="w-2/3 bg-[#d95f02] hover:bg-[#d95f02]/90 text-white font-black text-xs uppercase italic rounded-none h-11"
+              >
+                Confirm & Generate PDF
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
         <div className="h-12" />
       </div>

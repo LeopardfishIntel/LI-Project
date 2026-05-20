@@ -40,7 +40,8 @@ export const searchVacanciesFlow = getAI().defineFlow(
 2. Permissive 12-Month Inclusion: You must include all discovered job listings unless the search snippet explicitly and unambiguously proves that the job was posted prior to May 2025 (e.g., a clearly marked timestamp like 'Published: 2024' or 'Deadlines in 2024'). If no publication date is specified, or if the listing references the 2025/26 or 2026/27 academic years, you MUST assume it is a valid recent listing and include it.
 3. Ignore date bugs (do not mistake a start date like "17 August" for 17 vacancies). 
 4. Do not confuse the target school with similarly named schools or sister campuses.
-5. Add Metadata and Discovery Source to Each Vacancy:
+5. Aggregator Skepticism (Tier 3 Strictness): For generic job boards or local aggregators (Indeed, Recruit.net, Glassdoor, local sites), if there are NO explicit publication or closing dates found in the snippet, you MUST append "[UNVERIFIED]" to the source (e.g., "- Indeed [UNVERIFIED]").
+6. Add Metadata and Discovery Source to Each Vacancy:
    - For every vacancy, inspect the search snippet to locate its publication/posting date and explicit closing/deadline date.
    - Inside the job title parentheses, format these details exactly as: '(StartCycleOrMonth; Posted: DD MMM YYYY; Closes: DD MMM YYYY)' (e.g. '(Aug 2026; Posted: 15 Apr 2026; Closes: 13 May 2026)'). 
    - If no explicit closing date is found but a posting date is found, calculate a closing date exactly 4 weeks (28 days) after the posting date and append it as 'Closes: [Calculated Date]'.
@@ -138,10 +139,6 @@ Use targeted queries:
     const allRawJobs = sweepResults.flat();
 
     // 🧠 SYSTEM UPGRADE: Historical Knowledge Base Fallback
-    // If the school is NOT Riverside Prague (which uses our hardcoded ledger), perform a secondary intelligence sweep
-    // query using Gemini's native training knowledge database of closed or historically indexed recruitment events
-    // for this specific school over the trailing 12 months (since May 2025). This ensures we populate historical closed
-    // listings even when live crawler indexation is blocked by job board expiries!
     console.log(`🛸 [SWEEP ENGINE] Initiating Gemini Historical Knowledge Base lookup for ${input.schoolName}...`);
     try {
       const historicalKnowledgeResponse = await ai.generate({
@@ -155,14 +152,6 @@ If the exact posting date is not known, estimate a logical date within their sta
 Conform strictly to the following JSON structure:
 {
   "scrapedJobsList": string[]
-}
-
-Example output:
-{
-  "scrapedJobsList": [
-    "English Teacher – British School (2025/2026 Cycle; Posted: 02 Apr 2025; Closes: 30 Apr 2025) - TES",
-    "Teacher of Physics (Secondary Block) (Aug 2026; Posted: 18 Oct 2025; Closes: 15 Nov 2025) - Schrole"
-  ]
 }
 
 Provide ONLY the raw JSON object.`,
@@ -196,6 +185,15 @@ Provide ONLY the raw JSON object.`,
       allRawJobs.unshift(...pragueGroundTruth);
     }
 
+    // 🛡️ TIER 3 STRICTNESS: Sort jobs so [UNVERIFIED] ones are processed LAST
+    allRawJobs.sort((a, b) => {
+      const aUnverified = a.includes('[UNVERIFIED]');
+      const bUnverified = b.includes('[UNVERIFIED]');
+      if (aUnverified && !bUnverified) return 1;
+      if (!aUnverified && bUnverified) return -1;
+      return 0;
+    });
+
     const finalList: string[] = [];
 
     const getCoreTitleAndSource = (raw: string): { core: string; source: string } => {
@@ -203,7 +201,6 @@ Provide ONLY the raw JSON object.`,
       const source = parts[1] ? ` - ${parts[1]}` : '';
       let core = parts[0] || raw;
       
-      // Only strip parentheses if they do NOT represent distinct historical cycle/year indicators
       const hasDistinctYear = /202[4-7]|cycle|jan|oct|dec|mar|may/i.test(core);
       if (!hasDistinctYear) {
         core = core.replace(/\s*\([^)]*\)/g, '').trim();
@@ -212,42 +209,22 @@ Provide ONLY the raw JSON object.`,
     };
 
     const getNormalizedComparisonKey = (title: string): string => {
-      // 🛡️ Strip all parentheses and their contents first to avoid dynamic date differences ruining deduplication!
       let key = title.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
-      
-      // Remove target school name substrings if present to allow "Principal" and "Principal, School Name" to align perfectly
       if (input.schoolName) {
         const words = input.schoolName.toLowerCase().split(/\s+/).filter(w => w.length > 3);
         for (const word of words) {
           key = key.replace(new RegExp(word, 'g'), '');
         }
       }
-      // Also remove city and country if present
-      if (input.city) {
-        key = key.replace(new RegExp(input.city.toLowerCase(), 'g'), '');
-      }
-      if (input.country) {
-        key = key.replace(new RegExp(input.country.toLowerCase(), 'g'), '');
-      }
+      if (input.city) key = key.replace(new RegExp(input.city.toLowerCase(), 'g'), '');
+      if (input.country) key = key.replace(new RegExp(input.country.toLowerCase(), 'g'), '');
 
-      // align common month abbreviations
-      key = key.replace(/august/g, 'aug');
-      key = key.replace(/january/g, 'jan');
-      key = key.replace(/december/g, 'dec');
-      key = key.replace(/october/g, 'oct');
-      key = key.replace(/march/g, 'mar');
-      // standard synonym expansions to align terms
-      key = key.replace(/learning\s+support\s+assistant/g, 'lsa');
-      key = key.replace(/special\s+educational\s+needs\s+coordinator/g, 'senco');
-      key = key.replace(/special\s+educational\s+needs/g, 'sen');
-      key = key.replace(/head\s+of\s+student\s+support/g, 'senco');
-      key = key.replace(/english\s+as\s+an\s+additional\s+language/g, 'eal');
-      key = key.replace(/mathematics/g, 'maths');
-      key = key.replace(/physical\s+education/g, 'pe');
-      key = key.replace(/design\s+and\s+technology/g, 'dt');
-      // strip all non-alphanumeric
+      key = key.replace(/august/g, 'aug').replace(/january/g, 'jan').replace(/december/g, 'dec').replace(/october/g, 'oct').replace(/march/g, 'mar');
+      key = key.replace(/learning\s+support\s+assistant/g, 'lsa').replace(/special\s+educational\s+needs\s+coordinator/g, 'senco').replace(/special\s+educational\s+needs/g, 'sen').replace(/head\s+of\s+student\s+support/g, 'senco').replace(/english\s+as\s+an\s+additional\s+language/g, 'eal').replace(/mathematics/g, 'maths').replace(/physical\s+education/g, 'pe').replace(/design\s+and\s+technology/g, 'dt');
       return key.replace(/[^a-z0-9]/g, '').trim();
     };
+
+    let droppedUnverified = 0;
 
     for (const rawJob of allRawJobs) {
       if (!rawJob) continue;
@@ -263,11 +240,10 @@ Provide ONLY the raw JSON object.`,
         const existingCore = getCoreTitleAndSource(existingJob).core;
         const existingNorm = getNormalizedComparisonKey(existingCore);
 
-        // Substring matching or exact match after expansions
         if (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey)) {
           isDuplicate = true;
-          // Keep the longer (more descriptive) core title!
-          if (core.length > existingCore.length) {
+          // Keep the longer (more descriptive) core title, UNLESS the new one is [UNVERIFIED]
+          if (core.length > existingCore.length && !rawJob.includes('[UNVERIFIED]')) {
             duplicateIdx = i;
           }
           break;
@@ -275,15 +251,19 @@ Provide ONLY the raw JSON object.`,
       }
 
       if (!isDuplicate) {
-        // Keep the original formatted job with source
+        // 🛡️ TIER 3 STRICTNESS: If it's unverified and doesn't match an existing verified job, DROP IT!
+        if (rawJob.includes('[UNVERIFIED]')) {
+          droppedUnverified++;
+          console.warn(`🛸 [SWEEP ENGINE] Dropped uncorroborated Tier 3 ghost listing: ${rawJob}`);
+          continue;
+        }
         finalList.push(rawJob);
       } else if (duplicateIdx !== -1) {
-        // Replace with the more descriptive version
         finalList[duplicateIdx] = rawJob;
       }
     }
 
-    console.log(`🛸 [SWEEP ENGINE] Completed 4-phase search. Found ${finalList.length} distinct vacancies.`);
+    console.log(`🛸 [SWEEP ENGINE] Completed 4-phase search. Found ${finalList.length} distinct verified vacancies. Dropped ${droppedUnverified} ghost listings.`);
 
     return {
       scrapedJobsCount: finalList.length,

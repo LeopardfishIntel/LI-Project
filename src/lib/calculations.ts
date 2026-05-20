@@ -89,6 +89,7 @@ export function getStrategicScores(countryName: string, region: string) {
 export const PROFILE_MAP: Record<string, string> = {
   "single": "single",
   "married-dual": "marriedDualIncome",
+  "married-sole": "marriedDualIncome",
   "family-1": "family1Child",
   "family-2": "family2Children",
   "family-3": "family3PlusChildren"
@@ -157,7 +158,7 @@ export function calculateBudget(params: BudgetParams) {
   let childrenCount = 0;
   let scalar = 1.0;
   let ikeaScalar = 1.0;
-  if (calcStatus === 'married-dual')       { personCount = 2; scalar = 1.9; ikeaScalar = 1.4; }
+  if (calcStatus === 'married-dual' || calcStatus === 'married-sole') { personCount = 2; scalar = 1.9; ikeaScalar = 1.4; }
   else if (calcStatus === 'family-1')       { personCount = 3; childrenCount = 1; scalar = 2.3; ikeaScalar = 1.85; }
   else if (calcStatus === 'family-2')       { personCount = 4; childrenCount = 2; scalar = 2.65; ikeaScalar = 2.2; }
   else if (calcStatus === 'family-3')       { personCount = 5; childrenCount = 3; scalar = 3.0; ikeaScalar = 2.58; }
@@ -258,6 +259,7 @@ export function calculateBudget(params: BudgetParams) {
     const fieldMap: Record<string, string> = {
       'single': 'Single',
       'married-dual': 'Couple',
+      'married-sole': 'Couple',
       'family-1': 'Family +1',
       'family-2': 'Family +2',
       'family-3': 'Family +3'
