@@ -186,10 +186,11 @@ function MatrixContent() {
         ? (cAverages.totalSalary / cAverages.salaryCount) 
         : 2500; // 🛡️ Lowered fallback to prevent "rich" distortions for thin-data countries
 
-      const rawSurplus = calculateSurplus(localMonthlyNetUSD, params.status, c);
+      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman'].includes(countryKey.toLowerCase());
+      const rawSurplus = calculateSurplus(localMonthlyNetUSD, params.status, c, isGulfHousing);
       const intelScores = deriveIntelligenceScores(c, null);
       const scores = {
-        savings: calculateLocalSavingsScore(localMonthlyNetUSD, params.status, c),
+        savings: calculateLocalSavingsScore(localMonthlyNetUSD, params.status, c, isGulfHousing),
         career: Number(c.careerScore) || Number(Math.min(9.9, rawCareer).toFixed(1)),
         adventure: Number(c.adventureScore) || intelScores.adventure,
         culture: Number(c.cultureScore) || intelScores.culture

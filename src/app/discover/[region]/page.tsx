@@ -190,13 +190,17 @@ function DossierContent() {
       const multiplier = params.status.includes('dual') ? 1.85 : 1;
       const netUSD = Math.round(localAverageSalary * multiplier);
       
-      const outgoingsUSD = ((Number(finances?.rent1br) || 1200) + 600) * (params.status.includes('family') ? 1.55 : 1);
+      const countryName = country.country || "";
+      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman'].includes(canonicalCountry(countryName));
+      const rentCost = isGulfHousing ? 0 : (Number(finances?.rent1br) || 1200);
+      
+      const outgoingsUSD = (rentCost + 600) * (params.status.includes('family') ? 1.55 : 1);
       const surplusUSD = Math.max(-500, netUSD - outgoingsUSD);
       
       const intelScores = deriveIntelligenceScores(country, finances);
       const suitability = {
         adventure: Number(finances?.adventureScore) || intelScores.adventure,
-        savings: calculateLocalSavingsScore(localAverageSalary, params.status, finances),
+        savings: calculateLocalSavingsScore(localAverageSalary, params.status, finances, isGulfHousing),
         balance: Number(finances?.cultureScore) || intelScores.culture,
         career: Number(finances?.careerScore) || Number(country.academicscore) || 7
       };

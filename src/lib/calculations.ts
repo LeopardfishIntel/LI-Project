@@ -432,8 +432,8 @@ export function calculateSurplus(
   return Math.min(rawSurplus, maxCap);
 }
 
-export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any): number {
-  const surplus = calculateSurplus(localNetUSD, familyStatus, cityData);
+export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any, isHousingProvided: boolean = false): number {
+  const surplus = calculateSurplus(localNetUSD, familyStatus, cityData, isHousingProvided);
   let rawScore = 4.0 + (surplus / 960);
   rawScore = Math.max(0.0, Math.min(9.9, rawScore));
   
