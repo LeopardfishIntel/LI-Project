@@ -309,7 +309,7 @@ function MatrixContent() {
                       <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal">
-                      Based on school packages and housing allowances these can vary substantially, check the school offer carefully.
+                      Based on standard school packages and accommodation allowances. These can vary substantially; check contract offers carefully.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -325,7 +325,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Proprietary index scoring the country's saving potential based on net average salary vs outgoings.
+                    Proprietary index scoring savings potential based on net average salary against regular local outgoings.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -337,7 +337,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Index tracking career progression, leadership opportunities, and school density.
+                    Index tracking professional development, leadership pathways, and international school density.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -349,7 +349,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Heuristics measuring accessibility, regional travel options, and domestic activity landscapes.
+                    Heuristics measuring travel accessibility, regional flight networks, and local activities.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -361,7 +361,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Scoring based on cultural richness, lifestyle compatibility, and local integration.
+                    Scoring based on cultural richness, lifestyle compatibility, and integration with the host nation's community.
                   </TooltipContent>
                 </Tooltip>
               </div>
