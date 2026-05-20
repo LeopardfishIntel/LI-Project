@@ -1263,7 +1263,7 @@ export default function PreparePage() {
           <div className="lg:col-span-8 flex">
             <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl w-full flex flex-col">
               {/* 🏔️ DASHBOARD TOP: Primary Intelligence */}
-              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] p-6 lg:p-8 border-b border-white/5">
+              <div className="relative bg-gradient-to-br from-[#0b1224] to-[#020617] py-10 px-6 lg:py-14 lg:px-8 border-b border-white/5">
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 text-white" />
                 </div>
@@ -1273,7 +1273,7 @@ export default function PreparePage() {
                 <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                   
                   {/* Reserve Counter */}
-                  <div className="space-y-1">
+                  <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <p className="text-[14px] font-black text-[#d95f02] tracking-[0.4em] uppercase leading-none italic whitespace-nowrap">Arrival & setup reserve</p>
                     </div>
@@ -1285,7 +1285,7 @@ export default function PreparePage() {
                     </p>
                     
                     {/* Tactical Currency Switcher */}
-                    <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-3">
+                    <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-5">
                       {['GBP', 'USD', 'EUR', 'Local'].map((c) => (
                         <button
                           key={c}
@@ -1293,7 +1293,7 @@ export default function PreparePage() {
                           onClick={() => setCurrency(c)}
                           className={cn(
                             "px-3 py-1 text-[13px] font-black transition-all uppercase",
-                            currency === c ? "bg-[#d95f02] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
+                            currency === c ? "bg-[#007FFF] text-white" : "text-slate-500 hover:text-white disabled:opacity-20"
                           )}
                         >
                           {c}
@@ -1319,9 +1319,9 @@ export default function PreparePage() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                          <SelectItem value="30" className="py-3 px-4 focus:bg-white focus:text-black">30 DAYS <span className="text-[12px] opacity-60 ml-2">(ON TIME)</span></SelectItem>
-                          <SelectItem value="45" className="py-3 px-4 focus:bg-white focus:text-black">45 DAYS <span className="text-[12px] opacity-60 ml-2">(REALISTIC)</span></SelectItem>
-                          <SelectItem value="60" className="py-3 px-4 focus:bg-white focus:text-black">60 DAYS <span className="text-[12px] opacity-60 ml-2">(SAFETY MARGIN)</span></SelectItem>
+                          <SelectItem value="30" className="py-3 px-4 focus:bg-white focus:text-black">30 DAYS</SelectItem>
+                          <SelectItem value="45" className="py-3 px-4 focus:bg-white focus:text-black">45 DAYS</SelectItem>
+                          <SelectItem value="60" className="py-3 px-4 focus:bg-white focus:text-black">60 DAYS</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1364,6 +1364,7 @@ export default function PreparePage() {
                   overrideValue={housingOverride}
                   onOverride={(val) => setHousingOverride(val)}
                   info={budget.isSubsidised ? "Subsidised (50%) rate applied. Typically covers first month rent + security deposit." : "Covers estimated first month rent plus security deposit (usually 1.5 months)."}
+                  customDisplay={budget.isHousingProvided ? "Covered" : undefined}
                 />
                 <StatItem 
                   label={`Living (${setupDays} days)`} 
@@ -1394,9 +1395,15 @@ export default function PreparePage() {
                   action={
                     <button 
                       onClick={(e) => { e.stopPropagation(); setShowElectronicsKit(!showElectronicsKit); }}
-                      className="p-1 px-2 text-[12px] font-black uppercase italic text-sky-400 hover:text-white transition-colors bg-sky-400/10 border border-sky-400/20 rounded-none z-10 whitespace-nowrap"
+                      className={cn(
+                        "size-5 rounded-full flex items-center justify-center transition-colors z-10 border",
+                        showElectronicsKit 
+                          ? "bg-rose-500/20 text-rose-400 border-rose-500/30" 
+                          : "bg-sky-400/20 text-sky-400 border-sky-400/30 hover:bg-sky-400/40 hover:text-white"
+                      )}
+                      title={showElectronicsKit ? 'Close Kit Selection' : 'Select Genkit Items'}
                     >
-                      {showElectronicsKit ? 'Close' : 'Select'}
+                      {showElectronicsKit ? <X className="size-3" /> : <Info className="size-3" />}
                     </button>
                   }
                 />
@@ -2238,16 +2245,17 @@ export default function PreparePage() {
 
 // 📎 Helpers
 function StatItem({ 
-  label, value, icon: Icon, currency, info, overrideValue, onOverride, action 
+  label, value, icon: Icon, currency, info, overrideValue, onOverride, action, customDisplay
 }: { 
   label: string, value: number, icon: any, currency: string, info?: string, 
   overrideValue?: number | null, onOverride?: (val: number | null) => void,
-  action?: React.ReactNode
+  action?: React.ReactNode, customDisplay?: string
 }) {
   const isOverridden = overrideValue !== null && overrideValue !== undefined;
   const displayVal = isOverridden ? overrideValue : Math.round(value);
   const currencySymbol = currency === 'GBP' ? '£' : (currency === 'USD' ? '$' : (currency === 'EUR' ? '€' : currency));
   const isLongSymbol = currencySymbol.length > 1;
+  const showCustom = customDisplay && !isOverridden;
 
   return (
     <div className="bg-black/40 border border-white/5 p-3 space-y-2 hover:border-[#d95f02]/20 transition-all group relative h-full flex flex-col justify-between">
@@ -2268,23 +2276,46 @@ function StatItem({
       
       <div className="space-y-1">
         <div className="relative">
-          <span className={cn(
-            "absolute left-3 top-1/2 -translate-y-1/2 font-black italic pointer-events-none transition-colors",
-            isLongSymbol ? "text-[13px] tracking-tight" : "text-lg",
-            isOverridden ? "text-[#d95f02]" : "text-slate-500"
-          )}>
-            {currencySymbol}
-          </span>
-          <Input 
-            type="number" 
-            value={displayVal || ''} 
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
-            className={cn(
-              "bg-black/60 border-white/5 h-12 text-[16px] font-black italic rounded-none focus-visible:ring-[#d95f02] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
-              isLongSymbol ? "pl-14" : "pl-10",
-              isOverridden ? "text-[#d95f02] border-[#d95f02]/30" : "text-white"
-            )}
-          />
+          {showCustom ? (
+            <div className="flex items-center h-12 bg-sky-500/10 border border-sky-500/30 px-3 text-[14px] font-black uppercase italic text-sky-400 rounded-none w-full">
+              {customDisplay}
+              <button 
+                onClick={() => onOverride?.(0)}
+                className="ml-auto text-[10px] uppercase font-bold text-slate-500 hover:text-white transition-colors"
+                title="Override value"
+              >
+                Edit
+              </button>
+            </div>
+          ) : (
+            <>
+              <span className={cn(
+                "absolute left-3 top-1/2 -translate-y-1/2 font-black italic pointer-events-none transition-colors",
+                isLongSymbol ? "text-[13px] tracking-tight" : "text-lg",
+                isOverridden ? "text-[#d95f02]" : "text-slate-500"
+              )}>
+                {currencySymbol}
+              </span>
+              <Input 
+                type="number" 
+                value={displayVal || ''} 
+                onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
+                className={cn(
+                  "bg-black/60 border-white/5 h-12 text-[16px] font-black italic rounded-none focus-visible:ring-[#d95f02] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                  isLongSymbol ? "pl-14" : "pl-10",
+                  isOverridden ? "text-[#d95f02] border-[#d95f02]/30" : "text-white"
+                )}
+              />
+              {customDisplay && (
+                <button 
+                  onClick={() => onOverride?.(null)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] uppercase font-black text-slate-500 hover:text-sky-400 transition-colors"
+                >
+                  Reset
+                </button>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

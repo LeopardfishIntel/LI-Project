@@ -286,7 +286,8 @@ export function calculateBudget(params: BudgetParams) {
     ikea: ikeaVal,
     total: docsVal + rentVal + livingVal + transportVal + commitmentsVal + logisticsVal + familyVal + electronicsVal + childcareVal + ikeaVal,
     displayCurrency: currency === 'Local' ? localCurrency : currency,
-    isSubsidised: housingProv.includes('subsidised')
+    isSubsidised: housingProv.includes('subsidised'),
+    isHousingProvided: housingProv.includes('provided')
   };
 }
 
