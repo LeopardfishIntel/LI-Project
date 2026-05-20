@@ -859,7 +859,7 @@ export default function PreparePage() {
                           { id: 5, title: "Negotiation Prep", desc: `Use any savings gaps to determine the exact contract uplift required to make deployment viable.` },
                           { id: 6, title: "Lock in the Profile", desc: `Save your profile metrics to secure your baseline runway for future PDF manual generation.` }
                         ].map(item => (
-                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:min-h-[120px]">
+                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:h-[140px]">
                             <div>
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
@@ -906,7 +906,7 @@ export default function PreparePage() {
                            { id: 'E', label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
                            { id: 'F', label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
                          ].map((item, i) => (
-                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:min-h-[120px]">
+                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:h-[140px]">
                              <div>
                                <div className="flex items-center gap-2 mb-2">
                                  <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
