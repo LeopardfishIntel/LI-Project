@@ -320,22 +320,50 @@ function MatrixContent() {
               
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent border-l border-white/5", params.goals.some((g:string) => g.toLowerCase().includes('saving')) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Wallet className="size-3 text-green-400" /> Savings
-                <Info className="size-3 cursor-help" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                    Proprietary index scoring the country's saving potential based on net average salary vs outgoings.
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => g.toLowerCase().includes('career')) || params.goals.some((g:string) => g.toLowerCase().includes('growth'))) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Zap className="size-3 text-sky-400" /> Career
-                <Info className="size-3 cursor-help" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                    Index tracking career progression, leadership opportunities, and school density.
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", params.goals.some((g:string) => g.toLowerCase().includes('adventure')) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Compass className="size-3 text-[#d95f02]" /> Adventure
-                <Info className="size-3 cursor-help" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                    Heuristics measuring accessibility, regional travel options, and domestic activity landscapes.
+                  </TooltipContent>
+                </Tooltip>
               </div>
 
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => (g.toLowerCase().includes('culture') || g.toLowerCase().includes('balance')))) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
                 <Coffee className="size-3 text-rose-400" /> Culture
-                <Info className="size-3 cursor-help" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                    Scoring based on cultural richness, lifestyle compatibility, and local integration.
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
 
