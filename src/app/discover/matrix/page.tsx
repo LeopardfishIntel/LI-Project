@@ -245,6 +245,10 @@ function MatrixContent() {
                 <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
                   Profile Basis: <span className="text-[#007FFF]">{params.status ? params.status.replace('-', ' ') : "Unknown"}</span>
                 </p>
+                <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
+                  Selected Regions: <span className="text-sky-400">{params.regions.length > 0 ? params.regions.join(', ') : "All"}</span>
+                </p>
               </div>
             </div>
 
