@@ -186,11 +186,27 @@ function MatrixContent() {
         ? (cAverages.totalSalary / cAverages.salaryCount) 
         : 2500; // 🛡️ Lowered fallback to prevent "rich" distortions for thin-data countries
 
-      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman'].includes(countryKey.toLowerCase());
-      const rawSurplus = calculateSurplus(localMonthlyNetUSD, params.status, c, isGulfHousing);
-      const intelScores = deriveIntelligenceScores(c, null);
+      const countryKeyLower = countryKey.toLowerCase();
+      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryKeyLower);
+      
+      let finalC = c;
+      if (countryKeyLower === 'singapore') {
+        finalC = {
+          ...c,
+          rent1br: c.rent1br ? Number(c.rent1br) * 0.25 : 300,
+          rent2br: c.rent2br ? Number(c.rent2br) * 0.25 : 420,
+          rent3br: c.rent3br ? Number(c.rent3br) * 0.25 : 540,
+          monthlyRent1BR: c.monthlyRent1BR ? Number(c.monthlyRent1BR) * 0.25 : 300,
+          monthlyRent2BR: c.monthlyRent2BR ? Number(c.monthlyRent2BR) * 0.25 : 420,
+          monthlyRent3BR: c.monthlyRent3BR ? Number(c.monthlyRent3BR) * 0.25 : 540,
+          apartment: c.apartment ? Number(c.apartment) * 0.25 : 300,
+        };
+      }
+
+      const rawSurplus = calculateSurplus(localMonthlyNetUSD, params.status, finalC, isGulfHousing);
+      const intelScores = deriveIntelligenceScores(finalC, null);
       const scores = {
-        savings: calculateLocalSavingsScore(localMonthlyNetUSD, params.status, c, isGulfHousing),
+        savings: calculateLocalSavingsScore(localMonthlyNetUSD, params.status, finalC, isGulfHousing),
         career: Number(c.careerScore) || Number(Math.min(9.9, rawCareer).toFixed(1)),
         adventure: Number(c.adventureScore) || intelScores.adventure,
         culture: Number(c.cultureScore) || intelScores.culture

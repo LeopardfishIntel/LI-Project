@@ -191,18 +191,34 @@ function DossierContent() {
       const netUSD = Math.round(localAverageSalary * multiplier);
       
       const countryName = country.country || "";
-      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman'].includes(canonicalCountry(countryName));
-      const rentCost = isGulfHousing ? 0 : (Number(finances?.rent1br) || 1200);
+      const countryNameLower = canonicalCountry(countryName);
+      const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryNameLower);
+      
+      let finalFinances = finances;
+      if (countryNameLower === 'singapore' && finances) {
+        finalFinances = {
+          ...finances,
+          rent1br: finances.rent1br ? Number(finances.rent1br) * 0.25 : 300,
+          rent2br: finances.rent2br ? Number(finances.rent2br) * 0.25 : 420,
+          rent3br: finances.rent3br ? Number(finances.rent3br) * 0.25 : 540,
+          monthlyRent1BR: finances.monthlyRent1BR ? Number(finances.monthlyRent1BR) * 0.25 : 300,
+          monthlyRent2BR: finances.monthlyRent2BR ? Number(finances.monthlyRent2BR) * 0.25 : 420,
+          monthlyRent3BR: finances.monthlyRent3BR ? Number(finances.monthlyRent3BR) * 0.25 : 540,
+          apartment: finances.apartment ? Number(finances.apartment) * 0.25 : 300,
+        };
+      }
+
+      const rentCost = isGulfHousing ? 0 : (Number(finalFinances?.rent1br) || 1200);
       
       const outgoingsUSD = (rentCost + 600) * (params.status.includes('family') ? 1.55 : 1);
       const surplusUSD = Math.max(-500, netUSD - outgoingsUSD);
       
-      const intelScores = deriveIntelligenceScores(country, finances);
+      const intelScores = deriveIntelligenceScores(country, finalFinances);
       const suitability = {
-        adventure: Number(finances?.adventureScore) || intelScores.adventure,
-        savings: calculateLocalSavingsScore(localAverageSalary, params.status, finances, isGulfHousing),
-        balance: Number(finances?.cultureScore) || intelScores.culture,
-        career: Number(finances?.careerScore) || Number(country.academicscore) || 7
+        adventure: Number(finalFinances?.adventureScore) || intelScores.adventure,
+        savings: calculateLocalSavingsScore(localAverageSalary, params.status, finalFinances, isGulfHousing),
+        balance: Number(finalFinances?.cultureScore) || intelScores.culture,
+        career: Number(finalFinances?.careerScore) || Number(country.academicscore) || 7
       };
 
       let fitScore = Math.round(((suitability.adventure + suitability.savings + suitability.balance + suitability.career) / 40) * 100);
