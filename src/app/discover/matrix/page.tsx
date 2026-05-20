@@ -183,11 +183,20 @@ function MatrixContent() {
       }
       const rawCareer = dynamicCareer;
       
-      const localMonthlyNetUSD = (cAverages && cAverages.salaryCount > 0) 
-        ? (cAverages.totalSalary / cAverages.salaryCount) 
-        : 2500; // 🛡️ Lowered fallback to prevent "rich" distortions for thin-data countries
-
       const countryKeyLower = countryKey.toLowerCase();
+      let fallbackSalary = 2500;
+      if (countryKeyLower === 'switzerland') fallbackSalary = 6500;
+      else if (countryKeyLower === 'singapore') fallbackSalary = 5000;
+      else if (countryKeyLower === 'hong kong') fallbackSalary = 5000;
+      else if (['united arab emirates', 'qatar'].includes(countryKeyLower)) fallbackSalary = 4500;
+
+      let localMonthlyNetUSD = (cAverages && cAverages.salaryCount > 0) 
+        ? (cAverages.totalSalary / cAverages.salaryCount) 
+        : fallbackSalary;
+
+      if (['finland', 'sweden'].includes(countryKeyLower)) {
+        localMonthlyNetUSD = localMonthlyNetUSD * 0.75;
+      }
       const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryKeyLower);
       
       let finalC = c;

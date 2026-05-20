@@ -170,14 +170,26 @@ function DossierContent() {
       const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(country.country || ""));
       const hasSchools = schools.length > 0;
       
-      let localAverageSalary = 4500;
+      let fallbackSalary = 2500;
+      if (countryNameLower === 'switzerland') fallbackSalary = 6500;
+      else if (countryNameLower === 'singapore') fallbackSalary = 5000;
+      else if (countryNameLower === 'hong kong') fallbackSalary = 5000;
+      else if (['united arab emirates', 'qatar'].includes(countryNameLower)) fallbackSalary = 4500;
+
+      let localAverageSalary = fallbackSalary;
       let validSalaries = 0;
       schools.forEach((s: any) => {
           if (s.salaryRange) {
-              const cleanRange = s.salaryRange.replace(/,/g, '');
-              const range = cleanRange.match(/\d+/g);
+              const cleanRange = s.salaryRange.toLowerCase().replace(/,/g, '');
+              const range = cleanRange.match(/\d+(?:\.\d+)?k?/g);
               if (range) {
-                  const usdMed = range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0]);
+                  const parseValue = (valStr: string) => {
+                    let val = parseFloat(valStr);
+                    if (valStr.includes('k')) val *= 1000;
+                    return val;
+                  };
+                  const annualMed = range.length > 1 ? (parseValue(range[0]) + parseValue(range[1])) / 2 : parseValue(range[0]);
+                  const usdMed = annualMed > 5000 ? annualMed / 12 : annualMed;
                   localAverageSalary = validSalaries === 0 ? usdMed : localAverageSalary + usdMed;
                   validSalaries++;
               }
@@ -186,12 +198,17 @@ function DossierContent() {
       if (validSalaries > 1) {
           localAverageSalary = localAverageSalary / validSalaries;
       }
+
+      const countryName = country.country || "";
+      const countryNameLower = canonicalCountry(countryName);
+
+      if (['finland', 'sweden'].includes(countryNameLower)) {
+          localAverageSalary = localAverageSalary * 0.75;
+      }
       
       const multiplier = params.status.includes('dual') ? 1.85 : 1;
       const netUSD = Math.round(localAverageSalary * multiplier);
       
-      const countryName = country.country || "";
-      const countryNameLower = canonicalCountry(countryName);
       const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryNameLower);
       
       let finalFinances = finances;
