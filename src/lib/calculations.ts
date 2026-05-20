@@ -444,6 +444,7 @@ export function matchesRegion(dbRegion: string, queryRegion: string): boolean {
   const dbReg = dbRegion.toLowerCase().trim();
   const qReg = queryRegion.toLowerCase().trim();
   
+  if (!dbReg || !qReg) return false;
   if (dbReg === qReg) return true;
   
   const isSEAsiaDb = dbReg === 'southeast asia' || dbReg === 'south east asia' || dbReg === 'se asia';
@@ -454,5 +455,5 @@ export function matchesRegion(dbRegion: string, queryRegion: string): boolean {
   const isAmericasQuery = qReg === 'americas' || qReg === 'latin america' || qReg === 'south america' || qReg === 'north america' || qReg === 'latin-america';
   if (isAmericasDb && isAmericasQuery) return true;
   
-  return dbReg.includes(qReg) || qReg.includes(dbReg);
+  return dbReg.includes(qReg);
 }
