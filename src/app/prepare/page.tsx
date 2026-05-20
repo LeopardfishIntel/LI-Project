@@ -816,7 +816,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Activity className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1a. Run the Surplus Test</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 1a. Run the Surplus Test</p>
           </div>
           {step1aOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -831,7 +831,7 @@ export default function PreparePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Activity className="size-5 text-sky-400" />
-                  <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">The Surplus Test</h3>
+                  <p className="text-[16px] font-black uppercase tracking-[0.2em] text-sky-400">The Surplus Test</p>
                 </div>
                 <p className="text-[15px] font-bold text-slate-300 leading-relaxed w-full">
                   Before you sign on the dotted line, you need to look beyond the quoted salary and perform a cold, hard stress test on your lifestyle. The Leopardfish Intel allows you these insights — letting you adjust the numbers to suit your specific circumstances now so you can arrive in {selectedCountry !== 'all' ? selectedCountry : 'Oman'} confident that finances are secure.
@@ -941,7 +941,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Banknote className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1b. Evaluate Pay Scales and NDAs</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 1b. Evaluate Pay Scales and NDAs</p>
           </div>
           {step1bOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -1051,7 +1051,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Home className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 1c. Evaluate Accommodation</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 1c. Evaluate Accommodation</p>
           </div>
           {step1cOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -1409,9 +1409,9 @@ export default function PreparePage() {
                         <X className="size-4" />
                       </button>
                       <div className="flex items-center justify-between mb-3 border-b border-sky-400/10 pb-2 pr-8">
-                        <h3 className="text-[12px] font-black text-sky-400 uppercase tracking-[0.3em] italic flex items-center gap-2">
+                        <p className="text-[12px] font-black text-sky-400 uppercase tracking-[0.3em] italic flex items-center gap-2">
                           <Monitor className="size-3" /> SELECT GENKIT ITEMS
-                        </h3>
+                        </p>
                         <p className="text-[12px] font-black italic text-slate-500">Live Estimate: £{electronicsTotal}</p>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -1716,7 +1716,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <FileText className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3a. Start the Paperwork (The Essentials)</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 3a. Start the Paperwork (The Essentials)</p>
           </div>
           {step3aOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -1802,7 +1802,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Navigation className="size-5 text-sky-400 -rotate-90" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3b. Transport Strategy</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 3b. Transport Strategy</p>
           </div>
           {step3bOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -1897,7 +1897,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Landmark className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3c. Pensions & Retirement</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 3c. Pensions & Retirement</p>
           </div>
           {step3cOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -2001,7 +2001,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Landmark className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3d. Money & Banking</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 3d. Money & Banking</p>
           </div>
           {step3dOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -2076,7 +2076,7 @@ export default function PreparePage() {
         >
           <div className="flex items-center gap-3">
             <Stethoscope className="size-5 text-sky-400" />
-            <h3 className="text-[16px] font-black uppercase tracking-[0.2em] text-slate-200">Step 3e. Health & Registration</h3>
+            <p className="text-[16px] font-black tracking-[0.2em] text-slate-300">Step 3e. Health & Registration</p>
           </div>
           {step3eOpen ? (
             <ChevronUp className="size-5 text-sky-400" />
@@ -2156,10 +2156,10 @@ export default function PreparePage() {
             </button>
 
             <div className="space-y-2">
-              <h3 className="text-lg font-black text-white italic uppercase tracking-wider flex items-center gap-2">
+              <p className="text-lg font-black text-white italic uppercase tracking-wider flex items-center gap-2">
                 <Target className="size-5 text-[#d95f02]" />
                 Verify Deployment Profile
-              </h3>
+              </p>
               <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
                 Confirm your deployment parameters. These selections directly feed the dynamic briefing calculations and Genkit modules in your PDF Field Manual.
               </p>
