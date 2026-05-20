@@ -204,6 +204,12 @@ function DossierContent() {
 
       if (['finland', 'sweden'].includes(countryNameLower)) {
           localAverageSalary = localAverageSalary * 0.75;
+      } else if (countryNameLower === 'argentina') {
+          localAverageSalary = localAverageSalary * 0.50;
+      } else if (['brazil', 'south africa'].includes(countryNameLower)) {
+          localAverageSalary = localAverageSalary * 0.70;
+      } else if (countryNameLower === 'kenya') {
+          localAverageSalary = localAverageSalary * 0.75;
       }
       
       const multiplier = params.status.includes('dual') ? 1.85 : 1;
@@ -247,9 +253,20 @@ function DossierContent() {
       const regionStr = country.region || 'the region';
       const transportStr = regionStr.toLowerCase().includes('asia') || regionStr.toLowerCase().includes('europe') ? `excellent transport links across ${regionStr}` : `accessible travel routes throughout the region`;
 
-      const bespokeVerdict = canonicalCountry(country.country) === canonicalCountry(params.currentLocation)
+      let verdictCaveat = "";
+      if (countryNameLower === 'argentina') {
+        verdictCaveat = " ⚠️ TACTICAL WARNING: Argentina is subject to severe currency volatility and inflation. Savings calculations assume USD-pegged contracts paid into offshore accounts; standard contracts paid in local Argentine Pesos (ARS) will not yield these numbers.";
+      } else if (['brazil', 'south africa'].includes(countryNameLower)) {
+        verdictCaveat = ` ⚠️ CONTRACT NOTE: Savings potential in ${country.country} is highly tier-sensitive. This forecast assumes an elite Tier-1 international school package (with fully provided housing). Standard mid-tier or bilingual school packages typically yield substantially lower savings.`;
+      } else if (countryNameLower === 'kenya') {
+        verdictCaveat = " ⚠️ CONTRACT NOTE: Projections are based on expat-level packages at top-tier international schools. Local or mid-tier contracts rarely offer comparable housing or savings terms.";
+      } else if (['finland', 'sweden'].includes(countryNameLower)) {
+        verdictCaveat = ` ⚠️ TAX NOTE: Nordic countries feature high progressive tax rates (35–45%) and out-of-pocket housing. Vetting individual contract allowances is crucial to achieving this target.`;
+      }
+
+      const bespokeVerdict = (canonicalCountry(country.country) === canonicalCountry(params.currentLocation)
         ? `As you are currently based in ${country.country}, this deployment represents your current professional baseline. It continues to be an excellent match for your focus on '${g1}', providing the stability and quality of life that suits ${famStr}. Using this as your benchmark allows for a highly accurate comparison against other regional opportunities.`
-        : `${country.country} is an excellent match for your profile, particularly regarding '${g1}'. The established international schools here provide a highly professional environment, allowing for a high quality of life tailored to ${famStr}. Furthermore, its strategic position in ${regionStr} offers superb '${g2}' opportunities, making it a very sound deployment.`;
+        : `${country.country} is an excellent match for your profile, particularly regarding '${g1}'. The established international schools here provide a highly professional environment, allowing for a high quality of life tailored to ${famStr}. Furthermore, its strategic position in ${regionStr} offers superb '${g2}' opportunities, making it a very sound deployment.`) + verdictCaveat;
       
       const bespokeAlignment = canonicalCountry(country.country) === canonicalCountry(params.currentLocation)
         ? `In your current role, you are already benefiting from a robust professional landscape that values your experience. Your secondary objectives of '${g2}' and cultural immersion are well-supported by the local infrastructure and ${transportStr}, making your current posting a very strong standard to beat in any future move.`

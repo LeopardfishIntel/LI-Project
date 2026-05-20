@@ -196,6 +196,12 @@ function MatrixContent() {
 
       if (['finland', 'sweden'].includes(countryKeyLower)) {
         localMonthlyNetUSD = localMonthlyNetUSD * 0.75;
+      } else if (countryKeyLower === 'argentina') {
+        localMonthlyNetUSD = localMonthlyNetUSD * 0.50;
+      } else if (['brazil', 'south africa'].includes(countryKeyLower)) {
+        localMonthlyNetUSD = localMonthlyNetUSD * 0.70;
+      } else if (countryKeyLower === 'kenya') {
+        localMonthlyNetUSD = localMonthlyNetUSD * 0.75;
       }
       const isGulfHousing = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryKeyLower);
       
@@ -308,7 +314,7 @@ function MatrixContent() {
 
             {/* Table Header - Sticky & Layered */}
             <div className="hidden lg:grid grid-cols-9 sticky top-0 z-20 border-b border-white/10 bg-[#0b1224] text-[10px] font-black uppercase tracking-widest text-slate-500">
-              <div className="col-span-3 flex items-center p-4">Deployment Target</div>
+              <div className="col-span-3 flex items-center p-4 text-[#007FFF]">Deployment Target (Click to Gen Report)</div>
               
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
@@ -390,7 +396,7 @@ function MatrixContent() {
                     <div className="lg:col-span-3 flex items-center pr-6 p-4 lg:relative lg:h-[56px] overflow-hidden group/btn cursor-default">
                       <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full relative h-full">
                         <div className="flex items-center justify-between w-full lg:w-auto">
-                          <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">0{idx + 1}</span>
+                          <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">{idx + 1}</span>
                           <button 
                             onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
                             className="lg:hidden bg-[#d95f02] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-2 shadow-lg hover:bg-white"
