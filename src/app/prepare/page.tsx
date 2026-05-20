@@ -859,11 +859,15 @@ export default function PreparePage() {
                           { id: 5, title: "Negotiation Prep", desc: `Use any savings gaps to determine the exact contract uplift required to make deployment viable.` },
                           { id: 6, title: "Lock in the Profile", desc: `Save your profile metrics to secure your baseline runway for future PDF manual generation.` }
                         ].map(item => (
-                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex gap-3">
-                            <span className="text-sky-400 font-mono font-black text-lg">0{item.id}</span>
-                            <div className="space-y-1">
-                              <p className="text-[13px] font-black text-white uppercase tracking-wider">{item.title}</p>
-                              <p className="text-[12px] font-bold text-slate-400 leading-snug">{item.desc}</p>
+                          <div key={item.id} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
+                                  {item.id}
+                                </span>
+                                <p className="text-[12px] font-black text-white uppercase tracking-wider">{item.title}</p>
+                              </div>
+                              <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -902,16 +906,10 @@ export default function PreparePage() {
                            { label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
                            { label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
                          ].map((item, i) => (
-                           <div key={i} className="p-3 bg-black/60 border border-white/5 hover:border-sky-400/20 transition-all flex flex-col justify-between">
+                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full">
                              <div>
-                               <p className="text-[12px] font-black text-sky-400 uppercase tracking-wider mb-1">{item.label}</p>
+                               <p className="text-[12px] font-black text-sky-400 uppercase tracking-wider mb-2">{item.label}</p>
                                <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
-                             </div>
-                             <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2">
-                               <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Tuning Dial</span>
-                               <div className="h-1 w-12 bg-white/10 rounded-full relative overflow-hidden">
-                                 <div className="absolute left-0 top-0 h-full w-2/3 bg-sky-400" />
-                               </div>
                              </div>
                            </div>
                          ))}
