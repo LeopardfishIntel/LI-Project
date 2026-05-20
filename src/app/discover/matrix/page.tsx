@@ -152,7 +152,7 @@ function MatrixContent() {
       }
       
       // Keep the country if it matches the user's selected regions
-      if (params.regions.length === 0 || params.regions.some((r: string) => matchesRegion(dbRegion, r))) {
+      if (params.regions.length === 0 || params.regions.some((r: string) => matchesRegion(dbRegion, r, name))) {
         if (!countryGroups[name]) countryGroups[name] = c;
       }
     });

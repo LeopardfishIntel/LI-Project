@@ -164,7 +164,7 @@ function DossierContent() {
 
     const allResults = reqsData.filter(country => {
       const dbRegion = (country.region || "").toLowerCase().trim();
-      return params.regions.some(r => matchesRegion(dbRegion, r));
+      return params.regions.some(r => matchesRegion(dbRegion, r, country.country));
     }).map(country => {
       const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(country.country || ""));
       const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(country.country || ""));

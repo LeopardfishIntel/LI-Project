@@ -440,11 +440,38 @@ export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: st
   return Number(rawScore.toFixed(1));
 }
 
-export function matchesRegion(dbRegion: string, queryRegion: string): boolean {
+export function matchesRegion(dbRegion: string, queryRegion: string, countryName?: string): boolean {
   const dbReg = dbRegion.toLowerCase().trim();
   const qReg = queryRegion.toLowerCase().trim();
   
-  if (!dbReg || !qReg) return false;
+  if (!qReg) return false;
+
+  // Explicit Country-based Region Overrides/Checks
+  if (countryName) {
+    const cCanonical = canonicalCountry(countryName);
+    
+    // Southeast Asia canonical list
+    const isSEAsiaQuery = qReg === 'southeast asia' || qReg === 'south east asia' || qReg === 'se asia' || qReg === 'se-asia';
+    if (isSEAsiaQuery) {
+      const seAsiaCountries = [
+        'brunei', 'cambodia', 'indonesia', 'laos', 'malaysia', 
+        'myanmar', 'burma', 'philippines', 'singapore', 'thailand', 
+        'timor-leste', 'east timor', 'vietnam'
+      ];
+      if (seAsiaCountries.includes(cCanonical)) return true;
+    }
+    
+    // East Asia canonical list
+    const isEastAsiaQuery = qReg === 'east asia' || qReg === 'east-asia';
+    if (isEastAsiaQuery) {
+      const eastAsiaCountries = [
+        'china', 'japan', 'mongolia', 'north korea', 'south korea', 'taiwan'
+      ];
+      if (eastAsiaCountries.includes(cCanonical)) return true;
+    }
+  }
+  
+  if (!dbReg) return false;
   if (dbReg === qReg) return true;
   
   const isSEAsiaDb = dbReg === 'southeast asia' || dbReg === 'south east asia' || dbReg === 'se asia';
