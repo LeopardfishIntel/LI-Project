@@ -5,3 +5,8 @@
 out/
 build/
 node_modules/
+
+# Scratch & Local Temporary Files
+scratch/
+*.tsbuildinfo
+
