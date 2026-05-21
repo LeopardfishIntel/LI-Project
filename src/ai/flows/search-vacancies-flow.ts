@@ -142,6 +142,10 @@ export const searchVacanciesFlow = getAI().defineFlow(
     - If no dates are found in the snippet, just list the start cycle (e.g. '(Aug 2026)').
     - Finally, append the discovery source to the end, e.g. '- TES', '- Schrole', '- School Web'.
 
+14. Institutional Phase & Section Matching:
+    - You MUST cross-verify if the target school actually operates the education phase (Primary/Prep vs. Secondary/College) matching the discovered vacancy.
+    - If the target school is a "College", "Gymnasium", "Senior School", or "High School" catering exclusively to secondary/sixth-form students (such as English College in Prague), you MUST discard and filter out any discovered primary/prep/early-years/preschool roles (such as "Primary School Teacher" or "Head of Primary School") as these are misattributions to other local primary campuses.
+
 Return a JSON object conforming exactly to this structure:
 {
   "scrapedJobsCount": number,

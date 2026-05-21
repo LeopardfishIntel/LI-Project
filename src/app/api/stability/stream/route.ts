@@ -406,6 +406,7 @@ Your primary execution challenges are:
 3. Maximizing execution speed by skipping deep-text analysis on local aggregators.
 4. Structuring and formatting varying text properties using strict UK educational terms.
 5. Emitting metrics optimized for a two-row structural dashboard grid using proper British spelling.
+6. Institutional Phase & Section Matching: You MUST cross-verify if the target school operates the education phase (Primary/Prep vs. Secondary/College) matching the discovered vacancy. If the school is a secondary-only institution (e.g. English College in Prague), you MUST discard any primary/prep roles (like "Primary School Teacher" or "Head of Primary School").
 
 ---
 
