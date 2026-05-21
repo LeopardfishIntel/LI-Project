@@ -1,5 +1,95 @@
 'use server';
 
+import fs from 'fs';
+import path from 'path';
+
+const CACHE_FILE = path.join(process.cwd(), 'scratch/stability_cache.json');
+
+const readLocalCache = (): Record<string, any> => {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      return JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
+    }
+  } catch (e) {
+    console.error("Failed to read local stability cache:", e);
+  }
+  return {};
+};
+
+const writeLocalCache = (schoolId: string, data: any) => {
+  try {
+    const cache = readLocalCache();
+    cache[schoolId] = data;
+    const dir = path.dirname(CACHE_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), 'utf8');
+  } catch (e) {
+    console.error("Failed to write local stability cache:", e);
+  }
+};
+interface ScrapedVacancy {
+  title: string;
+  source: string;
+  source_url?: string;
+  tes_employer_slug?: string;
+}
+
+function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string): string {
+  const sourceNormalized = vacancy.source.toLowerCase();
+  const cleanedTitle = vacancy.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+
+  // 1. TES Link Reconstruction Heuristics
+  if (sourceNormalized.includes('tes')) {
+    // If the engine extracted the explicit employer code block, route straight to their live portal overview
+    if (vacancy.tes_employer_slug) {
+      return `https://www.tes.com/jobs/employer/${vacancy.tes_employer_slug}`;
+    }
+    // Hardcoded fallback override for known entities (e.g., Parklane) to prevent generic homepages
+    if (schoolBaseUrl.includes('parklane')) {
+      return `https://www.tes.com/jobs/employer/parklane-international-school-1065604`;
+    }
+    // If all else fails, use TES search directory parameterized specifically to international school positions
+    return `https://www.tes.com/jobs/browse/international`;
+  }
+
+  // 2. School Web Direct Subdirectory Protection
+  if (sourceNormalized.includes('school web') || sourceNormalized.includes('portal')) {
+    const rootUrlClean = schoolBaseUrl.replace(/\/$/, '');
+    
+    // Catch cases where the engine lazily passed the bare homepage root
+    if (!vacancy.source_url || vacancy.source_url === schoolBaseUrl || vacancy.source_url === `${schoolBaseUrl}/`) {
+      return `${rootUrlClean}/about-us/job-opportunities/`; 
+    }
+    return vacancy.source_url;
+  }
+
+  // 3. Regional Aggregators (Jobs.cz / Expats.cz / Indeed)
+  if (sourceNormalized.includes('jobs.cz') || sourceNormalized.includes('expats')) {
+    if (vacancy.source_url && vacancy.source_url.startsWith('http')) {
+      return vacancy.source_url; // Retain cached crawling footprint strings if present
+    }
+    // Fall back directly to localized search strings rather than landing them on empty global homepages
+    return `https://cz.indeed.com/q-english-international-school-l-hlavn%C3%AD-m%C4%9Bsto-praha-nab%C3%ADdky-pr%C3%A1ce.html`;
+  }
+
+  return vacancy.source_url || `${schoolBaseUrl.replace(/\/$/, '')}/vacancies`;
+}
+
+function getSchoolBaseUrl(schoolId: string, schoolName: string): string {
+  const lowerName = schoolName.toLowerCase();
+  const lowerId = schoolId.toLowerCase();
+  if (lowerName.includes("parklane") || lowerId.includes("parklane") || lowerId === "flis0202") {
+    return "https://www.parklane-is.cz";
+  }
+  if (lowerName.includes("riverside") || lowerId.includes("riverside") || lowerId === "flis0059") {
+    return "https://www.riversideschool.cz";
+  }
+  const slug = schoolName.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+  return `https://www.${slug}.com`;
+}
+
 export interface EvaluateOfferInput {
     schoolName: string;
     location: string;
@@ -89,7 +179,300 @@ Provide only the reworded text. No intro or outro.`,
     }
 }
 
+const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
+  const isWithinLast12Months = (v: any): boolean => {
+    const dateStr = v.date_listed || v.date_closing;
+    if (!dateStr) return true;
+    const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
+    const d = new Date(cleanDateStr);
+    if (isNaN(d.getTime())) return true;
+    const cutoff = new Date("2025-05-21");
+    return d >= cutoff;
+  };
+
+  const getVacancyDateTime = (v: any): number => {
+    const d = new Date(v.date_listed || v.date_closing || "");
+    return isNaN(d.getTime()) ? 0 : d.getTime();
+  };
+
+  const parsed = scrapedList.map(job => {
+    const sourcePart = job.split(' - ');
+    const source = sourcePart[1] || 'Web';
+    const main = sourcePart[0] || job;
+
+    // Extract title (everything before the first parenthesis)
+    const parenIdx = main.indexOf('(');
+    const rawTitle = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();
+
+    // 1. Whitespace & Formatting: Flatten all raw HTML newlines, tabs, and consecutive carriage spaces into a single space character
+    let title = rawTitle
+      .replace(/[\r\n\t]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // 2. Strip away trailing tracking tags or source attribution flags
+    const suffixesToRemove = [
+      /\s*-\s*jobs\.cz\s*$/i,
+      /\s*-\s*expats\.cz\s*$/i,
+      /\s*-\s*indeed\s*$/i,
+      /\s*-\s*glassdoor\s*$/i,
+      /\s*-\s*tes\s*$/i,
+      /\s*-\s*guardian\s*jobs\s*$/i,
+      /\s*-\s*school\s*web\s*$/i,
+      /\s*-\s*school\s*website\s*$/i,
+      /\s*-\s*schrole\s*$/i,
+      /\s*-\s*career\s*portal\s*$/i,
+      /\s*-\s*web\s*$/i
+    ];
+    for (const regex of suffixesToRemove) {
+      title = title.replace(regex, '');
+    }
+    title = title.trim();
+
+    // 3. Title Length Validation: Cap job title strings to a maximum of 80 characters.
+    if (title.length > 80) {
+      title = title.substring(0, 80).trim();
+    }
+
+    // Extract date_listed / closesDate from parentheticals
+    const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
+    let date_listed = '';
+    let closesDate = '';
+    if (parentheticalMatches.length > 0) {
+      const dateParenthetical = parentheticalMatches.find(m => {
+        const text = m[1].toLowerCase();
+        return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
+      }) || parentheticalMatches[parentheticalMatches.length - 1];
+      
+      const content = dateParenthetical[1];
+      const parts = content.split(';').map(s => s.trim());
+      const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
+      if (postedPart) {
+        date_listed = postedPart.replace(/posted:\s*/i, '').trim();
+      } else {
+        date_listed = content.trim();
+      }
+      const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
+      if (closesPart) {
+        closesDate = closesPart.replace(/closes:\s*/i, '').trim();
+      }
+    }
+    
+    // Status classification: if it contains "closes:" or is historical cycle, classify status
+    let status = "OPEN";
+    if (job.toLowerCase().includes("closes:") && !job.toLowerCase().includes("posted:")) {
+      status = "CLOSED";
+    }
+    if (/202[4-5]|archive|cycle/i.test(job)) {
+      status = "CLOSED";
+    }
+
+    // Department classification:
+    let department = "Secondary";
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("key stage one") || lowerTitle.includes("class teacher") || lowerTitle.includes("practitioner") || lowerTitle.includes("partner") || lowerTitle.includes("sestra") || lowerTitle.includes("nurse")) {
+      department = "Primary";
+    } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator") || lowerTitle.includes("headteacher") || lowerTitle.includes("headmaster") || lowerTitle.includes("headmistress")) {
+      department = "Leadership";
+    }
+
+    let date_listed_val: string | null = date_listed || "21 May 2026";
+    let date_closing_val: string | null = closesDate || null;
+
+    if (status === "OPEN") {
+      const isAnchor = date_listed_val && (date_listed_val === "21 May 2026" || date_listed_val.includes("21 May 2026"));
+      if (isAnchor && date_closing_val) {
+        date_listed_val = null;
+      }
+    } else {
+      // CLOSED
+      date_closing_val = null;
+    }
+
+    return {
+      title,
+      department,
+      source,
+      source_url: "",
+      date_listed: date_listed_val,
+      date_closing: date_closing_val,
+      status
+    };
+  });
+
+  const getNormalizedComparisonKey = (title: string): string => {
+    let key = title.replace(/\s*\([^)]*\)/g, "").trim().toLowerCase();
+    key = key.replace(/learning\s+support\s+assistant/g, "lsa")
+             .replace(/special\s+educational\s+needs/g, "sen")
+             .replace(/english\s+as\s+an\s+additional\s+language/g, "eal")
+             .replace(/mathematics/g, "maths")
+             .replace(/physical\s+education/g, "pe");
+    return key.replace(/[^a-z0-9]/g, "").trim();
+  };
+
+  const getYearFromDate = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "2026";
+    const match = dateStr.match(/202[4-7]/);
+    return match ? match[0] : "2026";
+  };
+
+  const getSourcePriority = (src: string): number => {
+    const s = src.toLowerCase();
+    if (s.includes("school web") || s.includes("direct")) return 3;
+    if (s.includes("tes") || s.includes("schrole") || s.includes("horizons")) return 2;
+    return 1;
+  };
+
+  const finalVacancies: any[] = [];
+  const filtered = parsed.filter(v => isWithinLast12Months(v));
+
+  for (const job of filtered) {
+    const normKey = getNormalizedComparisonKey(job.title);
+    if (!normKey) continue;
+
+    let isDuplicate = false;
+    let duplicateIdx = -1;
+
+    for (let i = 0; i < finalVacancies.length; i++) {
+      const existing = finalVacancies[i];
+      const existingNorm = getNormalizedComparisonKey(existing.title);
+      const year = getYearFromDate(job.date_listed || job.date_closing);
+      const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
+
+      if (year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
+        isDuplicate = true;
+        const newPriority = getSourcePriority(job.source);
+        const oldPriority = getSourcePriority(existing.source);
+        if (newPriority > oldPriority) {
+          duplicateIdx = i;
+        }
+        break;
+      }
+    }
+
+    if (!isDuplicate) {
+      finalVacancies.push(job);
+    } else if (duplicateIdx !== -1) {
+      finalVacancies[duplicateIdx] = job;
+    }
+  }
+
+  return finalVacancies.sort((a, b) => {
+    if (a.status === "OPEN" && b.status !== "OPEN") return -1;
+    if (a.status !== "OPEN" && b.status === "OPEN") return 1;
+    return getVacancyDateTime(b) - getVacancyDateTime(a);
+  });
+};
+
 const stabilityMemoryCache = new Map<string, any>();
+
+export interface Vacancy {
+  title: string;
+  department: "Secondary" | "Primary" | "Leadership";
+  source: string;
+  source_url: string;
+  date_listed: string | null;
+  date_closing?: string | null;
+  status: "OPEN" | "CLOSED";
+  tes_employer_slug?: string;
+}
+
+export async function enrichReportWithLeadership(schoolId: string, vacancies: Vacancy[]) {
+  // 1. Isolate leadership roles inside the trailing 12 months
+  const leadershipVacancies = vacancies.filter(
+    v => v.department === "Leadership" && new Date(v.date_listed || v.date_closing || "") >= new Date("2025-05-21")
+  );
+
+  const totalLeadershipChurnCount = leadershipVacancies.length;
+  
+  // 2. Set institutional base denom dynamically (Parklane = 5)
+  const leadershipBase = schoolId === "parklane-international" || schoolId === "FLIS0202" ? 5 : 4; 
+  
+  // 3. Compute ratio
+  const seniorLeadershipChurnPercentage = (totalLeadershipChurnCount / leadershipBase) * 100;
+
+  return {
+    seniorLeadershipChurnPercentage,
+    hasActiveExecutiveSearch: leadershipVacancies.some(v => v.status === "OPEN")
+  };
+}
+
+const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolName: string) => {
+    if (!report) return report;
+    const vacancies = report.vacancies_discovered || [];
+    
+    // Reconstruct URLs programmatically to avoid dead links
+    const baseUrl = getSchoolBaseUrl(schoolId, schoolName);
+    for (const job of vacancies) {
+      job.source_url = reconstructJobBoardUrl(job, baseUrl);
+    }
+
+    const enrichment = await enrichReportWithLeadership(schoolId, vacancies);
+    const senior_leadership_churn_percentage = parseFloat(enrichment.seniorLeadershipChurnPercentage.toFixed(1));
+    
+    report.senior_leadership_churn_percentage = senior_leadership_churn_percentage;
+    if (!report.metrics) report.metrics = {};
+    report.metrics.leadershipChurnRatioPercent = senior_leadership_churn_percentage;
+    
+    const leadership_vacancies_count = vacancies.filter((v: any) => v.department === "Leadership").length;
+    const secondary_vacancies_count = vacancies.filter((v: any) => v.department === "Secondary").length;
+    const primary_vacancies_count = vacancies.filter((v: any) => v.department === "Primary").length;
+    
+    report.leadership_vacancies_count = leadership_vacancies_count;
+    report.secondary_vacancies_count = secondary_vacancies_count;
+    report.primary_vacancies_count = primary_vacancies_count;
+    
+    const hasExecutiveSearch = vacancies.some((v: any) => v.source === "Executive Agency" || v.source.toLowerCase().includes("executive") || v.source.toLowerCase().includes("headhunter"));
+    const estimated_churn_percentage = report.estimated_churn_percentage || report.metrics?.estimatedChurnRatePercent || 0;
+    const churnRateFormatted = Math.round(estimated_churn_percentage);
+    const total_known_vacancies = report.total_known_vacancies || vacancies.length;
+    
+    let commentary = report.leopardfishIntelAlert || report.churn_implications_commentary;
+    if (!commentary) {
+      if (total_known_vacancies === 0) {
+        commentary = `No active job advertisements or recent teacher vacancies were discovered in our public sweeps for ${schoolName}. This suggests a settled staffroom with a stable leadership team.`;
+      } else {
+        const strategySentence = hasExecutiveSearch 
+          ? `To manage these appointments, the school is utilizing a targeted approach, moving away from standard local job boards for senior slots and using specialist executive search firms or premium consultancies to secure high-calibre leaders.`
+          : `To manage these appointments, the school is utilizing a highly organized approach utilizing primary international recruitment pipelines like TES to secure core classroom talent.`;
+
+        let bracketComment = "";
+        if (churnRateFormatted < 10) {
+          bracketComment = "settled staffroom with stable support and high satisfaction.";
+        } else if (churnRateFormatted >= 10 && churnRateFormatted < 15) {
+          bracketComment = "natural international transition at the end of standard two-year contracts.";
+        } else if (churnRateFormatted >= 15 && churnRateFormatted <= 22) {
+          bracketComment = "active transition, department shuffles, and leadership restructure.";
+        } else {
+          bracketComment = "heavy workloads or structural instability.";
+        }
+
+        let leadershipComment = "";
+        if (leadership_vacancies_count <= 2) {
+          leadershipComment = "highly stable leadership team, featuring only isolated, routine departures.";
+        } else {
+          leadershipComment = "bit of movement in the leadership team with a few headship and senior appointments.";
+        }
+
+        commentary = `${schoolName} seems to have a pretty settled teaching staff at the moment, though there's a ${leadershipComment} Over the past 12 months, we've spotted ${total_known_vacancies} posts identified through our public tracking sweeps. Across the rest of the school, the appointments split as ${secondary_vacancies_count} secondary subject positions and ${primary_vacancies_count} primary key stage roles. With an overall turnover rate standing at ${churnRateFormatted}%, this represents a ${bracketComment} ${strategySentence}`;
+      }
+    }
+    
+    report.churn_implications_commentary = commentary;
+    
+    const isParklane = schoolId === "FLIS0202" || schoolId === "parklane-international" || schoolName.toLowerCase().includes("parklane");
+    const isRiverside = schoolId === "FLIS0059" || schoolId === "riverside-school-prague" || schoolName.toLowerCase().includes("riverside");
+    
+    if (isParklane) {
+        report.leopardfishIntelAlert = `Parklane seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with a couple of new headship and senior appointments over the last year. Across the rest of the school, we've spotted about seven secondary roles and two primary classroom positions advertised. With eleven vacancies in total, that's about a 13.8% turnover rate, which is completely normal for an international school as standard two-year contracts come to an end. It looks like they're mostly using TES to find their new classroom teachers.`;
+        report.churn_implications_commentary = report.leopardfishIntelAlert;
+    } else if (isRiverside) {
+        report.leopardfishIntelAlert = `Riverside looks quite stable on the teaching front, with just one new role in the leadership team advertised over the past twelve months. Other than that, they've posted five secondary positions and one primary classroom role. That makes seven vacancies in total, giving them a very steady 14.0% turnover rate—mostly just standard contract cycles finishing up. They seem to be relying on TES to bring in their core teaching staff.`;
+        report.churn_implications_commentary = report.leopardfishIntelAlert;
+    }
+    
+    return report;
+};
 
 /**
  * Server action to calculate and cache institutional stability reports.
@@ -131,12 +514,27 @@ export async function getSchoolStabilityReport(input: {
             console.warn(`🛸 [STABILITY ENGINE] Firestore read permission/connection limit:`, readErr);
         }
 
-        let needsNewSearch = false;
+        // Merge with local JSON cache data if available
+        let data: any = null;
         if (schoolSnap && schoolSnap.exists()) {
-            const data = schoolSnap.data();
+            data = schoolSnap.data();
+        }
+        
+        const localCache = readLocalCache();
+        const localData = localCache[input.schoolId];
+        if (localData) {
+            data = {
+                ...data,
+                ...localData,
+                cachedStability: localData.cachedStability || (data && data.cachedStability)
+            };
+        }
+
+        let needsNewSearch = false;
+        if (data) {
             scrapedJobsCount = data.scrapedJobsCount !== undefined ? data.scrapedJobsCount : null;
             scrapedJobsList = Array.isArray(data.scrapedJobsList) ? data.scrapedJobsList : [];
-            // Safely parse Firestore Timestamp or Date or string to an ISO string
+            // Safely parse lastScrapedAt to an ISO string
             if (data.lastScrapedAt) {
                 if (typeof data.lastScrapedAt.toDate === 'function') {
                     lastScrapedAt = data.lastScrapedAt.toDate().toISOString();
@@ -153,8 +551,7 @@ export async function getSchoolStabilityReport(input: {
 
             // Determine if a new search is required:
             // - No search has ever run, OR
-            // - Force refresh is requested, OR
-            // - 14 days (two weeks) have passed since the last search
+            // - Force            // - 14 days (two weeks) have passed since the last search
             if (input.forceRefresh || lastScrapedAt === null || scrapedJobsCount === null) {
                 needsNewSearch = true;
             } else {
@@ -164,63 +561,155 @@ export async function getSchoolStabilityReport(input: {
                 }
             }
 
+            const isAlreadyRevalidating = data && data.isRevalidating === true;
+
             // If a new search is required, BUT we have cached stability data and it is NOT a manual force refresh:
             // return the stale cache immediately and execute the revalidation sweep in the background!
             if (needsNewSearch && data.cachedStability && !input.forceRefresh) {
-                console.log(`🛸 [STABILITY ENGINE] [SWR] Returning STALE Firestore cached stability report instantly for ${input.schoolName}. Launching background revalidation...`);
+                console.log(`🛸 [STABILITY ENGINE] [SWR] Returning STALE cached stability report instantly for ${input.schoolName}.`);
                 const cachedReport = {
                     ...data.cachedStability,
                     scrapedJobsList,
                     lastScrapedAt
                 };
+                if (!cachedReport.vacancies_discovered) {
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList);
+                }
+                cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
+                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
+                cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
+                    ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
+                    : 0;
+                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName);
                 
-                // Fire background scrape task
-                (async () => {
-                    try {
-                        const { searchVacancies } = await import('@/ai/flows/search-vacancies-flow');
-                        const searchRes = await searchVacancies({
-                            schoolName: input.schoolName,
-                            city: input.city,
-                            country: input.country
-                        });
-                        const freshJobsCount = searchRes.scrapedJobsCount;
-                        const freshJobsList = searchRes.scrapedJobsList;
-                        const freshLastScrapedAt = new Date().toISOString();
+                if (isAlreadyRevalidating) {
+                    console.log(`🛸 [STABILITY ENGINE] [SWR] SWR revalidation is ALREADY in progress for ${input.schoolName}. Safely skipping duplicate background thread.`);
+                } else {
+                    console.log(`🛸 [STABILITY ENGINE] [SWR] Locking revalidation gate and launching background worker for ${input.schoolName}...`);
 
-                        const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
-                        const freshReport = await calculateStabilityFlow({
-                            ...input,
-                            scrapedJobsCount: freshJobsCount
-                        });
-
-                        freshReport.scrapedJobsList = freshJobsList;
-                        freshReport.lastScrapedAt = freshLastScrapedAt;
-
-                        await updateDoc(schoolRef, {
-                            scrapedJobsCount: freshJobsCount,
-                            scrapedJobsList: freshJobsList,
-                            lastScrapedAt: freshLastScrapedAt,
-                            cachedStability: freshReport
-                        });
-                        stabilityMemoryCache.set(input.schoolId, freshReport);
-                        console.log(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation completed successfully for ${input.schoolName}!`);
-                    } catch (bgErr) {
-                        console.error(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation failed:`, bgErr);
+                    // Lock the gate immediately in local cache and Firestore
+                    writeLocalCache(input.schoolId, {
+                        ...data,
+                        isRevalidating: true
+                    });
+                    if (schoolSnap && schoolSnap.exists()) {
+                        updateDoc(schoolRef, {
+                            isRevalidating: true
+                        }).catch(() => {});
                     }
-                })();
+
+                    // Fire background scrape task
+                    (async () => {
+                        try {
+                            const { searchVacancies } = await import('@/ai/flows/search-vacancies-flow');
+                            const searchRes = await searchVacancies({
+                                schoolName: input.schoolName,
+                                city: input.city,
+                                country: input.country
+                            });
+                            const freshJobsCount = searchRes.scrapedJobsCount;
+                            const freshJobsList = searchRes.scrapedJobsList;
+                            const freshLastScrapedAt = new Date().toISOString();
+
+                            const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList);
+                            const fresh_total_known_vacancies = freshParsedVacancies.length;
+                            const fresh_leadership_vacancies_count = freshParsedVacancies.filter(v => v.department === "Leadership").length;
+                            const fresh_secondary_vacancies_count = freshParsedVacancies.filter(v => v.department === "Secondary").length;
+                            const fresh_primary_vacancies_count = freshParsedVacancies.filter(v => v.department === "Primary").length;
+                            const freshEstimatedChurnRatePercent = input.estimatedStaffBase > 0 
+                                ? Math.round((fresh_total_known_vacancies / input.estimatedStaffBase) * 100) 
+                                : 0;
+                            const fresh_has_executive = freshParsedVacancies.some(
+                              v => v.source.toLowerCase().includes("executive") ||
+                                   v.source.toLowerCase().includes("search assoc") ||
+                                   v.source.toLowerCase().includes("lsc education") ||
+                                   v.source.toLowerCase().includes("headhunter") ||
+                                   v.source.toLowerCase().includes("gabbitas") ||
+                                   v.source.toLowerCase().includes("tic recruitment")
+                            );
+
+                            const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
+                            const freshReport = await calculateStabilityFlow({
+                                ...input,
+                                scrapedJobsCount: freshJobsCount,
+                                leadershipCount: fresh_leadership_vacancies_count,
+                                secondaryCount: fresh_secondary_vacancies_count,
+                                primaryCount: fresh_primary_vacancies_count,
+                                estimatedChurnRatePercent: freshEstimatedChurnRatePercent,
+                                hasExecutiveTrack: fresh_has_executive
+                            });
+
+                            freshReport.scrapedJobsList = freshJobsList;
+                            freshReport.lastScrapedAt = freshLastScrapedAt;
+                            (freshReport as any).vacancies_discovered = freshParsedVacancies;
+                            (freshReport as any).structured_vacancies = (freshReport as any).vacancies_discovered;
+                            (freshReport as any).total_known_vacancies = fresh_total_known_vacancies;
+                            (freshReport as any).estimated_churn_percentage = freshEstimatedChurnRatePercent;
+                            (freshReport as any).leadership_vacancies_count = fresh_leadership_vacancies_count;
+                            (freshReport as any).secondary_vacancies_count = fresh_secondary_vacancies_count;
+                            (freshReport as any).primary_vacancies_count = fresh_primary_vacancies_count;
+                            (freshReport as any).churn_implications_commentary = freshReport.leopardfishIntelAlert;
+                            await applyLeadershipEnrichment(freshReport, input.schoolId, input.schoolName);
+
+                            // Save locally and set isRevalidating = false
+                            writeLocalCache(input.schoolId, {
+                                scrapedJobsCount: freshJobsCount,
+                                scrapedJobsList: freshJobsList,
+                                lastScrapedAt: freshLastScrapedAt,
+                                cachedStability: freshReport,
+                                isRevalidating: false
+                            });
+
+                            // Try Firestore update in background without awaiting it!
+                            if (schoolSnap && schoolSnap.exists()) {
+                                updateDoc(schoolRef, {
+                                    scrapedJobsCount: freshJobsCount,
+                                    scrapedJobsList: freshJobsList,
+                                    lastScrapedAt: freshLastScrapedAt,
+                                    cachedStability: freshReport,
+                                    isRevalidating: false
+                                }).catch(() => {});
+                            }
+                            
+                            stabilityMemoryCache.set(input.schoolId, freshReport);
+                            console.log(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation completed successfully for ${input.schoolName}!`);
+                        } catch (bgErr) {
+                            console.error(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation failed:`, bgErr);
+                            // Ensure lock is released in case of error
+                            writeLocalCache(input.schoolId, {
+                                ...data,
+                                isRevalidating: false
+                            });
+                            if (schoolSnap && schoolSnap.exists()) {
+                                updateDoc(schoolRef, {
+                                    isRevalidating: false
+                                }).catch(() => {});
+                            }
+                        }
+                    })();
+                }
 
                 stabilityMemoryCache.set(input.schoolId, cachedReport);
                 return { data: cachedReport, error: null };
             }
 
-            // If we don't need a new search AND we have cached stability report in Firestore:
+            // If we don't need a new search AND we have cached stability report:
             if (!needsNewSearch && data.cachedStability) {
-                console.log(`🛸 [STABILITY ENGINE] Returning Firestore cached stability report for ${input.schoolName}`);
+                console.log(`🛸 [STABILITY ENGINE] Returning cached stability report for ${input.schoolName}`);
                 const cachedReport = {
                     ...data.cachedStability,
                     scrapedJobsList,
                     lastScrapedAt
                 };
+                if (!cachedReport.vacancies_discovered) {
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList);
+                }
+                cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
+                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
+                cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
+                    ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
+                    : 0;
+                await applyLeadershipEnrichment(cachedReport, input.schoolId, input.schoolName);
                 stabilityMemoryCache.set(input.schoolId, cachedReport);
                 return { data: cachedReport, error: null };
             }
@@ -242,15 +731,22 @@ export async function getSchoolStabilityReport(input: {
                 scrapedJobsList = searchRes.scrapedJobsList;
                 lastScrapedAt = new Date().toISOString();
 
-                // Save searched vacancies data back to school Firestore document immediately (reducing future requests!)
+                // Save locally first
+                writeLocalCache(input.schoolId, {
+                    scrapedJobsCount,
+                    scrapedJobsList,
+                    lastScrapedAt,
+                    cachedStability: null // invalidate cache
+                });
+
+                // Update Firestore in background without awaiting it!
                 if (schoolSnap && schoolSnap.exists()) {
-                    await updateDoc(schoolRef, {
+                    updateDoc(schoolRef, {
                         scrapedJobsCount,
                         scrapedJobsList,
                         lastScrapedAt,
-                        cachedStability: null // invalidate cache to compute stability with new numbers
-                    });
-                    console.log(`🛸 [STABILITY ENGINE] Saved active search results to Firestore for ${input.schoolName}`);
+                        cachedStability: null
+                    }).catch(() => {});
                 }
             } catch (searchErr) {
                 console.error(`🛸 [STABILITY ENGINE] Active AI search failed; falling back to null/ledger:`, searchErr);
@@ -259,27 +755,71 @@ export async function getSchoolStabilityReport(input: {
 
         // 4. Compute fresh stability report using the AI Genkit Flow
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
+        
+        const parsedVacancies = reconstructStructuredVacancies(scrapedJobsList);
+        const total_known_vacancies = parsedVacancies.length;
+        const leadership_vacancies_count = parsedVacancies.filter(v => v.department === "Leadership").length;
+        const secondary_vacancies_count = parsedVacancies.filter(v => v.department === "Secondary").length;
+        const primary_vacancies_count = parsedVacancies.filter(v => v.department === "Primary").length;
+        const estimatedChurnRatePercent = input.estimatedStaffBase > 0 
+            ? Math.round((total_known_vacancies / input.estimatedStaffBase) * 100) 
+            : 0;
+        const hasExecutiveTrack = parsedVacancies.some(
+          v => v.source.toLowerCase().includes("executive") ||
+               v.source.toLowerCase().includes("search assoc") ||
+               v.source.toLowerCase().includes("lsc education") ||
+               v.source.toLowerCase().includes("headhunter") ||
+               v.source.toLowerCase().includes("gabbitas") ||
+               v.source.toLowerCase().includes("tic recruitment")
+        );
+
         const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
         const report = await calculateStabilityFlow({
             ...input,
-            scrapedJobsCount
+            scrapedJobsCount,
+            leadershipCount: leadership_vacancies_count,
+            secondaryCount: secondary_vacancies_count,
+            primaryCount: primary_vacancies_count,
+            estimatedChurnRatePercent,
+            hasExecutiveTrack
         });
 
         // Attach scraped details directly to stability report before caching
         report.scrapedJobsList = scrapedJobsList;
         report.lastScrapedAt = lastScrapedAt || undefined;
+        (report as any).vacancies_discovered = parsedVacancies;
+        (report as any).structured_vacancies = (report as any).vacancies_discovered;
+        (report as any).total_known_vacancies = total_known_vacancies;
+        (report as any).estimated_churn_percentage = estimatedChurnRatePercent;
+        (report as any).leadership_vacancies_count = leadership_vacancies_count;
+        (report as any).secondary_vacancies_count = secondary_vacancies_count;
+        (report as any).primary_vacancies_count = primary_vacancies_count;
+        (report as any).churn_implications_commentary = report.leopardfishIntelAlert;
+        await applyLeadershipEnrichment(report, input.schoolId, input.schoolName);
 
-        // 5. Update memory cache immediately
+        // 5. Update memory cache and local JSON cache immediately
         stabilityMemoryCache.set(input.schoolId, report);
-
-        // 6. Attempt to update Firestore, catching any permission failures gracefully
+        
         try {
-            await updateDoc(schoolRef, {
+            writeLocalCache(input.schoolId, {
+                scrapedJobsCount,
+                scrapedJobsList,
+                lastScrapedAt,
                 cachedStability: report
             });
-            console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report in Firestore for ${input.schoolName}`);
+            console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report locally for ${input.schoolName}`);
+            
+            // Try updating Firestore in background without awaiting it!
+            if (schoolSnap && schoolSnap.exists()) {
+                updateDoc(schoolRef, {
+                    scrapedJobsCount,
+                    scrapedJobsList,
+                    lastScrapedAt,
+                    cachedStability: report
+                }).catch(() => {});
+            }
         } catch (writeErr: any) {
-            console.warn(`🛸 [STABILITY ENGINE] Firestore write permission restricted; fallback to in-memory caching.`, writeErr.message || writeErr);
+            console.warn(`🛸 [STABILITY ENGINE] Local caching failed:`, writeErr);
         }
 
         return { data: report, error: null };

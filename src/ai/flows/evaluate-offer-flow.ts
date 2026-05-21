@@ -66,7 +66,7 @@ const evaluateOfferFlow = getAI().defineFlow(
     inputSchema: EvaluateOfferInputSchema,
     outputSchema: EvaluateOfferOutputSchema,
   },
-  async input => {
+  async (input: EvaluateOfferInput) => {
     const {output} = await evaluateOfferPrompt(input);
     return output!;
   }

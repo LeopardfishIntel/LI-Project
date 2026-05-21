@@ -54,7 +54,7 @@ export const moderateIntelligenceFlow = getAI().defineFlow(
     inputSchema: ModerateIntelligenceInputSchema,
     outputSchema: ModerateIntelligenceOutputSchema,
   },
-  async (input) => {
+  async (input: ModerateIntelligenceInput) => {
     const { output } = await prompt(input);
     return output!;
   }

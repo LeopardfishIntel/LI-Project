@@ -86,7 +86,7 @@ const aiSchoolComparisonFlow = getAI().defineFlow(
     inputSchema: AiSchoolComparisonInputSchema,
     outputSchema: AiSchoolComparisonOutputSchema,
   },
-  async input => {
+  async (input: AiSchoolComparisonInput) => {
     const {output} = await comparisonPrompt(input);
     return output!;
   }

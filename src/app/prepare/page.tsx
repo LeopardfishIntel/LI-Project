@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
-import { calculateBudget, canonicalCountry, RATES } from '@/lib/calculations';
+import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileByLabel } from '@/lib/calculations';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
@@ -1233,12 +1233,7 @@ export default function PreparePage() {
                   <Select value={calcStatus} onValueChange={(val: string) => setCalcStatus(val)}>
                     <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-[#fafaf9]"><SelectValue /></SelectTrigger>
                     <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                      <SelectItem value="single">Single</SelectItem>
-                      <SelectItem value="married-dual">Married (dual income)</SelectItem>
-                      <SelectItem value="married-sole">Married (sole earner)</SelectItem>
-                      <SelectItem value="family-1">Family (1 child)</SelectItem>
-                      <SelectItem value="family-2">Family (2 children)</SelectItem>
-                      <SelectItem value="family-3">Family (3+ children)</SelectItem>
+                      {FAMILY_PROFILES.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -2205,12 +2200,7 @@ export default function PreparePage() {
                 <Select value={calcStatus} onValueChange={(val: string) => setCalcStatus(val)}>
                   <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue /></SelectTrigger>
                   <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
-                    <SelectItem value="single">Single</SelectItem>
-                    <SelectItem value="married-dual">Married (dual income)</SelectItem>
-                    <SelectItem value="married-sole">Married (sole earner)</SelectItem>
-                    <SelectItem value="family-1">Family (1 child)</SelectItem>
-                    <SelectItem value="family-2">Family (2 children)</SelectItem>
-                    <SelectItem value="family-3">Family (3+ children)</SelectItem>
+                    {FAMILY_PROFILES.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

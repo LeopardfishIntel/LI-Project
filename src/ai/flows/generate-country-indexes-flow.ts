@@ -30,7 +30,7 @@ export const generateCountryIndexesFlow = getAI().defineFlow({
       competition: z.number().min(0).max(10).describe("Competitiveness of the hiring market (0-10)")
     })
   }),
-}, async (input) => {
+}, async (input: { country: string }) => {
   const { country } = input;
 
   const prompt = `

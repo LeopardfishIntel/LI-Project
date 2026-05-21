@@ -37,7 +37,7 @@ export const transmitIntelligenceFlow = getAI().defineFlow(
     inputSchema: TransmitIntelligenceInputSchema,
     outputSchema: z.string().describe('Success Token'),
   },
-  async (input) => {
+  async (input: TransmitIntelligenceInput) => {
     // 1. Security Moderation Stage (AI Filter & Bias Check)
     console.log('Initiating AI Security & Editorial Filter...');
     const moderation = await moderateIntelligence({ content: input.content });

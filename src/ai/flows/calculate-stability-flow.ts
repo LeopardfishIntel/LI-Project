@@ -30,6 +30,11 @@ const CalculateStabilityInputSchema = z.object({
   country: z.string().optional(),
   inspections: z.string().optional(),
   scrapedJobsCount: z.number().nullable().optional(),
+  leadershipCount: z.number().optional(),
+  secondaryCount: z.number().optional(),
+  primaryCount: z.number().optional(),
+  estimatedChurnRatePercent: z.number().optional(),
+  hasExecutiveTrack: z.boolean().optional(),
 });
 
 export async function calculateStabilityFlow(
@@ -51,6 +56,16 @@ export async function calculateStabilityFlow(
   }
   const deterministicSeed = Math.abs(hash) % 1000000;
 
+  const scrapedJobsCount = input.scrapedJobsCount !== undefined && input.scrapedJobsCount !== null ? input.scrapedJobsCount : 0;
+  const leadershipCount = input.leadershipCount !== undefined ? input.leadershipCount : 0;
+  const secondaryCount = input.secondaryCount !== undefined ? input.secondaryCount : 0;
+  const primaryCount = input.primaryCount !== undefined ? input.primaryCount : 0;
+  
+  const rawChurn = input.estimatedStaffBase > 0 ? (scrapedJobsCount / input.estimatedStaffBase) * 100 : 0;
+  const roundedChurn = input.estimatedChurnRatePercent !== undefined 
+    ? input.estimatedChurnRatePercent 
+    : Math.round(rawChurn);
+
   const ai = getAI();
   const response = await ai.generate({
     model: 'googleai/gemini-2.5-flash',
@@ -59,7 +74,7 @@ export async function calculateStabilityFlow(
       seed: deterministicSeed,
       temperature: 0, // Lock in deterministic generation
     },
-    prompt: `You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
+    prompt: `You are "Antigravity," the core data-science and statistical analysis engine for Leopardfish Intel Recruitment Stability Engine. Your objective is to discover, classify, and generate a 100% accurate commentary ("leopardfishIntelAlert") explaining the Discovery and Stability metrics for the target international school.
 
 [SCHOOL CONTEXT]
 - School ID: ${input.schoolId}
@@ -68,20 +83,48 @@ export async function calculateStabilityFlow(
 - Curriculum: ${input.curriculum || 'Standard International'}
 - Location: ${input.city || 'N/A'}, ${input.country || 'N/A'}
 - Accreditation / Inspections: ${input.inspections || 'N/A'}
-- Hard Data Scraped Jobs Count: ${input.scrapedJobsCount !== undefined && input.scrapedJobsCount !== null ? input.scrapedJobsCount : 'None found'}
+- Hard Data Scraped Jobs Count: ${scrapedJobsCount}
+- Department Vacancy Breakdown: Leadership: ${leadershipCount}, Secondary: ${secondaryCount}, Primary: ${primaryCount}
+- Calculated Turnover Rate: ${roundedChurn}%
+- Has Executive Recruitment Track: ${input.hasExecutiveTrack ? "Yes" : "No"}
 
 [INSTRUCTIONS]
  1. Strictly check if there is a Hard Data Scraped Jobs Count provided in the school context.
-    - If the Hard Data Scraped Jobs Count is "None found" or is not provided (or is 0), you MUST NOT estimate, simulate, or guess any job postings or average yearly adverts! You MUST set averageYearlyTesAdverts to null, set estimatedChurnRatePercent to null, and set leadershipChurnRatioPercent to null.
-    - If and ONLY if a positive Hard Data Scraped Jobs Count is provided (representing a real AI search or cached search), you can use that number for averageYearlyTesAdverts and calculate the metrics accordingly:
-      - estimatedChurnRatePercent: Calculate as (averageYearlyTesAdverts / estimatedStaffBase) * 100. Round to 1 decimal place.
-      - leadershipChurnRatioPercent: If leadership counts are known or estimated from the hard data, calculate it. Otherwise return 0 or null.
-      - lateSeasonUrgencyScore: Strictly assign one of "Proactive", "Standard", or "Reactive" based on recruitment pattern and vacancy distribution. Do not return null if vacancies exist.
-      - riskRating: Assign "Stable", "Healthy", "Caution", or "High Risk" based on the hard data. If no hard data is found, set it to "Stable" or null.
+    - If the Hard Data Scraped Jobs Count is 0 or is not provided, you MUST NOT estimate, simulate, or guess any job postings or average yearly adverts! You MUST set averageYearlyTesAdverts to null, set estimatedChurnRatePercent to null, and set leadershipChurnRatioPercent to null.
+    - If and ONLY if a positive Hard Data Scraped Jobs Count is provided, use that number for averageYearlyTesAdverts and calculate:
+      - estimatedChurnRatePercent: Set precisely to ${roundedChurn}.
+      - leadershipChurnRatioPercent: If leadership counts are known, calculate it. Otherwise return 0 or null.
+      - lateSeasonUrgencyScore: Strictly assign one of "Proactive", "Standard", or "Reactive".
+      - riskRating: Assign "Stable", "Healthy", "Caution", or "High Risk".
 
-2. Return the calculated stability metrics, the short 2-sentence leopardfishIntelAlert explaining the discovery, and metadata.
+ 2. Return the calculated stability metrics, and the leopardfishIntelAlert commentary.
     - If no hard data is found, explain in the leopardfishIntelAlert that no active job advertisements or recent teacher vacancies were discovered in our AI search for this school, reflecting strong institutional retention.
-    - ⚠️ CRITICAL TONE DIRECTIVE: Keep the leopardfishIntelAlert objective, balanced, and highly constructive. When analyzing higher annual recruitment volumes or late-season vacancies, note that they can reflect positive school growth, curriculum expansion, or new specialized departments, but must also be balanced by acknowledging that they may stem from standard teacher churn, leadership shuffles, workload pressures, or staff dissatisfaction. Provide a fair, multi-faceted staffroom pulse. Avoid vague phrases like 'requiring ongoing monitoring'—instead, explain exactly what prospective candidates should monitor or cross-reference (e.g., advising them to cross-examine these vacancies against department-specific retention patterns, late-season recruitment urgency spikes, or direct teacher feedback).
+
+ 3. COMMENTARY RULES & CONSTRAINTS (For leopardfishIntelAlert):
+    - DATA FRAMING RULE: - You MUST explicitly frame the metrics by stating that they represent "posts identified through our public tracking sweeps" or "advertised vacancies caught in our rolling audit" to protect data scope.
+    - TONE & TERMINOLOGY CONSTRAINTS:
+      - Language: Strict, formal, fluent UK English (e.g., use words like whilst, calibre, colour, categorise, unique).
+      - TONE: The tone MUST be that of an experienced British international teacher chatting informally and warmly in a staffroom. Avoid overly formal corporate/business jargon. Keep it natural, conversational, and direct.
+      - BANNED JARGON: Completely ban terms like "turnover volume", "attrition parameters", "recruitment signature", "reactive advertising", "churn rate", "data variables", "standard style", "settled footprint", "notable period of transition within its senior leadership cabinet", "overall estimated staff turnover rate stands at", "senior leadership team", or "senior leadership cabinet".
+      - ENFORCED EDUCATIONAL TERMINOLOGY: You MUST use natural UK school terms:
+        * Vacancies/Advertisements ──► "posts", "classroom roles", or "appointments"
+        * Departments/Divisions   ──► "across the school", "subject positions", or "key stages"
+        * Senior Leadership Layer ──► "leadership team" or "headships" (NEVER use "senior leadership team" or "senior leadership cabinet").
+    - CONDITIONAL CABINET & THRESHOLD LOGIC:
+      - Leadership Layer (Count = ${leadershipCount}):
+        * IF LEADERSHIP IS 0-2 POSTS: Describe the leadership team as "highly stable, featuring only isolated, routine departures."
+        * IF LEADERSHIP IS 3 OR MORE POSTS: You are STRICTLY FORBIDDEN from calling the distribution "balanced" or "stable." You MUST explicitly flag this as a "bit of movement in the leadership team with a few headship and senior appointments."
+      - Turnover Percentage Bracket (Rate = ${roundedChurn}%):
+        * Under 10% [Low]: Describe as a "settled staffroom with stable support and high satisfaction."
+        * 10% to 15% [Moderate]: Describe as a "natural international transition at the end of standard two-year contracts."
+        * 15% to 22% [Elevated]: You MUST use the exact terms: "active transition", "department shuffles", and "leadership restructure."
+        * Over 22% [High]: Describe as "heavy workloads or structural instability."
+    - RECRUITMENT STRATEGY SYNTHESIS RULE:
+      - Evaluate the detected sources and cleanly summarize the hiring strategy in the final sentence:
+        * For Mixed Authority Tracks (when Has Executive Recruitment Track is No): Describe it as a "highly organized approach utilizing primary international recruitment pipelines like TES to secure core classroom talent."
+        * For Executive Tracks (when Has Executive Recruitment Track is Yes): Describe it as a "targeted approach, moving away from standard local job boards for senior slots and using specialist executive search firms or premium consultancies to secure high-calibre leaders."
+
+"Brighton College Abu Dhabi seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with 3 headship and senior appointments identified through our public tracking sweeps over the past 12 months. Across the rest of the school, the remaining appointments split as 19 secondary subject positions and 4 primary roles. Across these 26 tracked posts, the overall turnover rate stands at 16%—mostly just standard contract cycles finishing up, resulting in some department shuffles and a leadership restructure. To manage these appointments, the school is utilizing primary international recruitment pipelines like TES to secure its core classroom talent."
 `
   });
 
@@ -97,7 +140,9 @@ export async function calculateStabilityFlow(
   } else {
     report.metrics.averageYearlyTesAdverts = input.scrapedJobsCount;
     if (input.estimatedStaffBase > 0) {
-      report.metrics.estimatedChurnRatePercent = parseFloat(((input.scrapedJobsCount / input.estimatedStaffBase) * 100).toFixed(1));
+      report.metrics.estimatedChurnRatePercent = input.estimatedChurnRatePercent !== undefined
+        ? input.estimatedChurnRatePercent
+        : parseFloat(((input.scrapedJobsCount / input.estimatedStaffBase) * 100).toFixed(1));
     }
     // 🛡️ Bulletproof Fallback: Ensure lateSeasonUrgencyScore is strictly classified if LLM outputted null
     if (!report.metrics.lateSeasonUrgencyScore) {

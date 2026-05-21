@@ -65,7 +65,7 @@ export const disambiguateSchoolFlow = getAI().defineFlow(
     inputSchema: DisambiguateSchoolInputSchema,
     outputSchema: DisambiguateSchoolOutputSchema,
   },
-  async (input) => {
+  async (input: DisambiguateSchoolInput) => {
     const { output } = await prompt(input);
     return output!;
   }

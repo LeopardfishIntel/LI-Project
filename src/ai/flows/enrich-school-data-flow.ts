@@ -93,7 +93,7 @@ const enrichSchoolDataFlow = getAI().defineFlow(
     inputSchema: EnrichSchoolDataInputSchema,
     outputSchema: EnrichSchoolDataOutputSchema,
   },
-  async input => {
+  async (input: EnrichSchoolDataInput) => {
     const {output} = await enrichSchoolDataPrompt(input);
     return output!;
   }

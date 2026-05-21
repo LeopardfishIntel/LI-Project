@@ -15,12 +15,13 @@ import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { canonicalCountry } from '@/lib/calculations';
+import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier } from '@/lib/calculations';
 
-const RATES: Record<string, number> = {
-    USD: 1.0, CZK: 23.45, AED: 3.67, EUR: 0.92, GBP: 0.79, SAR: 3.75, QAR: 3.64, CHF: 0.88, DKK: 6.85, AZN: 1.70, HKD: 7.82, JPY: 150.2, SGD: 1.34, MYR: 4.7, THB: 35.8, CNY: 7.2, OMR: 0.385,
-    KRW: 1380, VND: 25000, IDR: 16000, KWD: 0.31, BHD: 0.38, EGP: 48, JOD: 0.71, ZAR: 19, MXN: 16.5, COP: 3900
-};
+const RATES: Record<string, number> = {};
+Object.keys(BASE_RATES).forEach(k => {
+    RATES[k] = BASE_RATES[k] / (BASE_RATES.USD || 1.27);
+});
+RATES.USD = 1.0;
 
 const getCurrencyForCity = (city: string, country: string, colCode?: string) => {
     const c = (city || "").toLowerCase();
@@ -42,9 +43,8 @@ const getCurrencyForCity = (city: string, country: string, colCode?: string) => 
 
 
 
-const HOUSEHOLD_OPTIONS = ["Single", "Married (sole earner)", "Married (dual income)", "Family (1 child)", "Family (2 children)", "Family (3 or more)"];
-const ESSENTIALS_MAP: Record<string, number> = { "Single": 650, "Married (sole earner)": 1100, "Married (dual income)": 1100, "Family (1 child)": 1450, "Family (2 children)": 1800, "Family (3 or more)": 2200 };
-const BONUS_REGISTRY: Record<string, number> = { "austria": 0.166, "germany": 0.083, "china": 0.083, "spain": 0.166, "japan": 0.166 };
+const HOUSEHOLD_OPTIONS = FAMILY_PROFILES.map(p => p.value);
+const BONUS_REGISTRY: Record<string, number> = { "austria": 0.166, "germany": 0.083, "china": 0.083, "spain": 0.166, "japan": 0.166, "belgium": 0.166 };
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
@@ -131,16 +131,32 @@ function DecideContent() {
 
     const [mounted, setMounted] = useState(false);
 
-    const { data: schools, isLoading: sLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
-    const { data: colData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
-    const { data: transportIntel } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'transport_intel') : null), [firestore, mounted]));
+    const [schools, setSchools] = useState<any[]>([]);
+    const [colData, setColData] = useState<any[]>([]);
+    const [transportIntel, setTransportIntel] = useState<any[]>([]);
+    const [apiLoading, setApiLoading] = useState(true);
+
     const { data: exchangeRates } = useDoc<any>(useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'exchange_rates') : null), [firestore, mounted]));
+
+    useEffect(() => {
+        if (!mounted) return;
+        setApiLoading(true);
+        fetch('/api/decide-data')
+            .then(res => res.json())
+            .then(data => {
+                if (data.schools) setSchools(data.schools);
+                if (data.colData) setColData(data.colData);
+                if (data.transportIntel) setTransportIntel(data.transportIntel);
+            })
+            .catch(err => console.error("Error loading decide data:", err))
+            .finally(() => setApiLoading(false));
+    }, [mounted]);
 
     const currentRates = useMemo(() => ({ ...RATES, ...(exchangeRates?.usdBase || {}) }), [exchangeRates]);
 
     const [selectedIds, setSelectedIds] = useState<string[]>(['', '', '']);
     const [selectedCountries, setSelectedCountries] = useState<string[]>(['', '', '']);
-    const [familyStatus, setFamilyStatus] = useState("Single");
+    const [familyStatus, setFamilyStatus] = useState("single");
     const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
     const [manualSalaries, setManualSalaries] = useState<boolean[]>([false, false, false]);
     const [adjustments, setAdjustments] = useState(Array(3).fill({ second: '0', other: '0', home: '0' }));
@@ -153,7 +169,7 @@ function DecideContent() {
 
     // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData arrival)
     useEffect(() => {
-        if (!schools || !colData || !mounted) return;
+        if (schools.length === 0 || colData.length === 0 || !mounted) return;
 
         let changed = false;
         const nextSalaries = [...netSalaries];
@@ -165,13 +181,11 @@ function DecideContent() {
             const school = schools.find((s: any) => s.id === id);
             if (!school) return;
 
-            const col = colData.find((c: any) =>
-                normalize(c.city || c.city_name) === normalize(school.city) ||
-                normalize(c.country || c.country_name) === normalize(school.country) ||
-                normalize(c.id) === normalize(school.city)
-            );
+            const sCity = String(getSchoolField(school, ['city', 'town', 'location']) || '');
+            const sCountry = String(getSchoolField(school, ['country', 'region']) || '');
+            const col = findCostOfLiving(sCity, sCountry, colData);
 
-            const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
+            const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
             const rate = currentRates[cCode] || 1.0;
 
             const cleanRange = (school.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
@@ -230,7 +244,10 @@ function DecideContent() {
             const savedAdj = localStorage.getItem('lf_adj_v15');
             const savedFam = localStorage.getItem('lf_fam_v15');
 
-            if (savedFam) setFamilyStatus(savedFam);
+            if (savedFam) {
+                const matched = getProfileByLabel(savedFam);
+                setFamilyStatus(matched.value);
+            }
             if (savedAdj) setAdjustments(JSON.parse(savedAdj));
             setManualSalaries(savedManual);
 
@@ -239,12 +256,10 @@ function DecideContent() {
                 if (id && !savedManual[idx]) {
                     const s = schools.find((item: any) => item.id === id);
                     if (!s) return;
-                    const col = colData.find((c: any) =>
-                        normalize(c.city || c.city_name) === normalize(s.city) ||
-                        normalize(c.country || c.country_name) === normalize(s.country) ||
-                        normalize(c.id) === normalize(s.city)
-                    );
-                    const cCode = getCurrencyForCity(s.city, s.country, col?.currencyCode);
+                    const sCity = String(getSchoolField(s, ['city', 'town', 'location']) || '');
+                    const sCountry = String(getSchoolField(s, ['country', 'region']) || '');
+                    const col = findCostOfLiving(sCity, sCountry, colData);
+                    const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
                     const rate = currentRates[cCode] || 1.0;
 
                     const cleanRange = (s.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
@@ -272,12 +287,10 @@ function DecideContent() {
         const nextIds = [...selectedIds]; nextIds[index] = val; setSelectedIds(nextIds);
         const school = schools?.find((s: any) => s.id === val);
         if (school) {
-            const col = colData?.find((c: any) =>
-                normalize(c.city || c.city_name) === normalize(school.city) ||
-                normalize(c.country || c.country_name) === normalize(school.country) ||
-                normalize(c.id) === normalize(school.city)
-            );
-            const cCode = getCurrencyForCity(school.city, school.country, col?.currencyCode);
+            const sCity = String(getSchoolField(school, ['city', 'town', 'location']) || '');
+            const sCountry = String(getSchoolField(school, ['country', 'region']) || '');
+            const col = findCostOfLiving(sCity, sCountry, colData);
+            const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
             const rate = currentRates[cCode] || 1.0;
 
             // 🎯 MEDIAN SALARY LOGIC (Midpoint of Range)
@@ -360,14 +373,7 @@ function DecideContent() {
             const sCity = String(getSchoolField(school, ['city', 'town', 'location']) || '').toLowerCase().trim();
             const sCountry = canonicalCountry(String(getSchoolField(school, ['country', 'region']) || ''));
 
-            const matches = colData.filter((c: any) => 
-                normalize(c.city || c.city_name) === normalize(sCity) || 
-                normalize(c.country || c.country_name) === normalize(sCountry) ||
-                normalize(c.id) === normalize(sCity) || normalize(c.id) === normalize(sCountry)
-            );
-
-            let col = matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0];
-            
+            let col = findCostOfLiving(sCity, sCountry, colData);
             if (!col && sCity) col = colData.find((c: any) => normalize(c.city || c.city_name) === "regional average" && normalize(c.country || c.country_name) === normalize(sCountry));
 
             const currency = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
@@ -378,8 +384,13 @@ function DecideContent() {
 
             // 🏠 DYNAMIC HOUSING ENGINE
             const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
-            const rentKey = familyStatus === "Single" ? 'rent1br' : (familyStatus.includes("Family") ? 'rent3br' : 'rent2br');
-            const rawRentUSD = parseFloat(col?.[rentKey] || col?.rent1br || "1450");
+            const profile = getProfileByLabel(familyStatus);
+            const pKey = profile.pKey;
+            const scalar = profile.scalar;
+            const personCount = profile.personCount;
+
+            const rentKey = pKey === 'single' ? 'rent1br' : ((pKey === 'family2Children' || pKey === 'family3PlusChildren') ? 'rent3br' : 'rent2br');
+            const rawRentUSD = parseFloat(getCOLField(col, [rentKey]) || getCOLField(col, ['rent1br']) || "1450");
 
             let finalRentUSD = rawRentUSD;
             let housingNote = "Housing is not included in this package";
@@ -391,14 +402,10 @@ function DecideContent() {
             const rentMult = mode === "Budget" ? 0.8 : (mode === "Luxury" ? 1.3 : 1.0);
             if (finalRentUSD > 0) finalRentUSD *= rentMult;
 
-            const pKey = familyStatus.includes("Family") ? (familyStatus.includes("1") ? "family1Child" : familyStatus.includes("2") ? "family2Children" : "family3PlusChildren") : (familyStatus === "Single" ? "single" : "marriedDualIncome");
-            const scalar = familyStatus === "Single" ? 1 : (familyStatus.includes("Married") ? 1.8 : 2.5);
-            const personCount = familyStatus === "Single" ? 1 : (familyStatus.includes("Married") ? 2 : (familyStatus.includes("1") ? 3 : familyStatus.includes("2") ? 4 : 5));
-
             const rentLocal = finalRentUSD * rate;
-            const groceryLocal = getVal(col?.groceries, pKey, scalar) * rate;
-            const utilityLocal = getVal(col?.utilities, pKey, scalar * 0.8) * rate;
-            const connectivityLocal = (getVal(col?.internet, pKey, 1) + (getVal(col?.mobilePhone, pKey, 1) * personCount)) * rate;
+            const groceryLocal = getVal(getCOLField(col, ['groceries', 'food', 'groceriesIndex']), pKey, scalar) * rate;
+            const utilityLocal = getVal(getCOLField(col, ['utilities', 'bills', 'utilitiesMonthly']), pKey, scalar * 0.8) * rate;
+            const connectivityLocal = (getVal(getCOLField(col, ['internet', 'net', 'internetMonthly']), pKey, 1) + (getVal(getCOLField(col, ['mobilePhone', 'mobile', 'sim']), pKey, 1) * personCount)) * rate;
 
             // 🛰️ NEW TRANSPORT INTEL REDIRECTION
             const tIntel = transportIntel?.find((t: any) =>
@@ -406,22 +413,13 @@ function DecideContent() {
                 t.id === canonicalCountry(sCountry).replace(/\s+/g, '-')
             );
 
-            const transportPKeyMap: Record<string, string> = {
-                "Single": "single",
-                "Married (sole earner)": "single",
-                "Married (dual income)": "marriedDualIncome",
-                "Family (1 child)": "family1Child",
-                "Family (2 children)": "family2Children",
-                "Family (3 or more)": "family3PlusChildren"
-            };
-            const transportKey = transportPKeyMap[familyStatus] || "single";
-
+            const transportKey = pKey;
             const transportMap = tIntel?.publicTransport || col?.transport?.publicTransport || col?.publicTransport || col?.transport;
             const transportVal = (typeof transportMap === 'object' && transportMap !== null) ? (transportMap[transportKey] || 0) : (parseFloat(String(transportMap)) || 0);
             const transportLocal = transportVal * rate;
 
             const lifestyleMult = mode === "Budget" ? 0.6 : (mode === "Luxury" ? 1.8 : 1.0);
-            const socialLocal = getVal(col?.diningSocial, pKey, scalar) * rate * lifestyleMult;
+            const socialLocal = getVal(getCOLField(col, ['diningSocial', 'social', 'dining']), pKey, scalar) * rate * lifestyleMult;
             const manualLocal = parseFloat(adjustments[index].home) || 0;
 
             const totalLocalCost = rentLocal + groceryLocal + utilityLocal + connectivityLocal + transportLocal + socialLocal + manualLocal;
@@ -464,7 +462,7 @@ function DecideContent() {
     const topPickId = ranked[0]?.school.id;
     const detailedConclusion = useMemo(() => generateDetailedConclusion(ranked), [ranked]);
 
-    if (!mounted || sLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02] size-10" /></div>;
+    if (!mounted || apiLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02] size-10" /></div>;
 
     return (
         <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#d95f02]">
@@ -488,7 +486,7 @@ function DecideContent() {
                                     <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-0.5">Household</Label>
                                     <Select value={familyStatus} onValueChange={setFamilyStatus}>
                                         <SelectTrigger className="bg-transparent border-none h-4 text-white font-black text-[13px] focus:ring-0 p-0 w-full italic leading-none"><SelectValue placeholder="Status" /></SelectTrigger>
-                                        <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{HOUSEHOLD_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+                                        <SelectContent className="bg-[#1f2937] border-white/10 text-white font-bold text-[11px]">{FAMILY_PROFILES.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
                                     </Select>
                                 </div>
                             </div>
@@ -555,8 +553,9 @@ function DecideContent() {
                                     value={netSalaries[i]}
                                     placeholder="0"
                                     onChange={(e) => {
-                                        const next = [...netSalaries]; next[i] = e.target.value; setNetSalaries(next);
-                                        const nextM = [...manualSalaries]; nextM[i] = true; setManualSalaries(nextM);
+                                        const val = e.target.value;
+                                        const next = [...netSalaries]; next[i] = val; setNetSalaries(next);
+                                        const nextM = [...manualSalaries]; nextM[i] = val !== ""; setManualSalaries(nextM);
                                     }}
                                     className={cn(
                                         "bg-black/40 h-7 w-28 text-right font-black text-[12px] pr-2 rounded-sm",
@@ -653,8 +652,8 @@ function DecideContent() {
 
                                     <div className="grid grid-cols-4 gap-1.5 py-4 h-14 mt-2 border-y border-white/5">
                                         <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#d95f02" />
-                                        <ScoreBadge label="Country" score={data.countryScore} color="#007FFF" />
-                                        <ScoreBadge label="School" score={data.schoolScore} />
+                                        <ScoreBadge label="Country" score={data.countryScore} color="#e2e8f0" />
+                                        <ScoreBadge label="School" score={data.schoolScore} color="#e2e8f0" />
                                         <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
                                             <span className="text-[7px] font-black uppercase text-slate-500 mb-1 leading-none">Validation</span>
                                             {data.school.validated === "Verified" ? (
@@ -677,7 +676,24 @@ function DecideContent() {
                                         </div>
                                         <div className="space-y-1.5 text-[11px] font-bold">
                                             <div className="flex justify-between items-center p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-sm mb-3">
-                                                <span className="text-emerald-400 uppercase text-[9px] font-black tracking-widest">Total Monthly Income</span>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-emerald-400 uppercase text-[9px] font-black tracking-widest">Total Monthly Income</span>
+                                                    {(() => {
+                                                        const bonusKey = String(getSchoolField(data.school, ['country', 'region']) || '').toLowerCase();
+                                                        const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
+                                                        if (bonusPct > 0) {
+                                                            const tooltipText = bonusKey === 'austria' || bonusKey === 'spain' || bonusKey === 'japan' || bonusKey === 'belgium'
+                                                                ? "Includes mandatory 13th and 14th month salary payments (amortized monthly: +16.6%)."
+                                                                : `Includes 13th month salary payment (amortized monthly: +${(bonusPct * 100).toFixed(1)}%).`;
+                                                            return (
+                                                                <Tooltip text={tooltipText}>
+                                                                    <Info className="size-3 text-emerald-400/80 cursor-help hover:text-emerald-300 transition-colors" />
+                                                                </Tooltip>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
+                                                </div>
                                                 <span className="text-emerald-400 text-base font-black italic">{Math.round(data.totalLocalIn).toLocaleString()}</span>
                                             </div>
                                             <div className="flex justify-between text-slate-400 px-1"><span>Accommodation</span><span className="text-white font-black">{Math.round(data.costs.rent).toLocaleString()}</span></div>
@@ -719,6 +735,33 @@ function DecideContent() {
                                                 <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || 0.79)).toLocaleString()}</p>
                                             </div>
                                         </div>
+
+                                        {/* 💱 Currency stability advisory to guide teachers through local currency quirks */}
+                                        {(() => {
+                                            const riskLevel = getMacroRiskTier(data.currency);
+                                            switch (riskLevel) {
+                                                case 1:
+                                                    return (
+                                                        <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
+                                                            Note: Tier 1 Exchange Volatility: Projections utilise spot conversion rates against GBP. Savings are subject to standard, free-floating market currency fluctuations.
+                                                        </p>
+                                                    );
+                                                case 2:
+                                                    return (
+                                                        <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
+                                                            Note: Tier 2 Peg Volatility: Pegged to USD. Savings are exposed to US Dollar trends rather than local market forces. A stronger GBP will contract this total.
+                                                        </p>
+                                                    );
+                                                case 3:
+                                                    return (
+                                                        <p className="text-[11px] text-rose-400/90 font-semibold leading-relaxed mt-1">
+                                                            Note: Tier 3 Macro Risk: High-exposure currency. These metrics require a hard-currency clause (USD/EUR). Base local contracts face extreme purchasing power decay.
+                                                        </p>
+                                                    );
+                                                default:
+                                                    return null;
+                                            }
+                                        })()}
 
                                         {isUnlocked && aiBriefing?.perSchoolBriefs?.[data.school.id] && (
                                             <div className="p-3 bg-sky-500/5 border border-sky-500/20 rounded-sm italic text-[11px] text-slate-300 leading-relaxed mt-2 select-text">

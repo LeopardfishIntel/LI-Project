@@ -72,7 +72,7 @@ const updateCostOfLivingFlow = getAI().defineFlow(
     inputSchema: UpdateCostOfLivingInputSchema,
     outputSchema: UpdateCostOfLivingOutputSchema,
   },
-  async input => {
+  async (input: UpdateCostOfLivingInput) => {
     const {output} = await updateCostOfLivingPrompt(input);
     return output!;
   }

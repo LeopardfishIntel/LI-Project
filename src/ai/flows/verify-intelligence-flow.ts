@@ -53,7 +53,7 @@ export const verifyIntelligenceFlow = getAI().defineFlow(
     inputSchema: VerifyIntelligenceInputSchema,
     outputSchema: VerifyIntelligenceOutputSchema,
   },
-  async (input) => {
+  async (input: VerifyIntelligenceInput) => {
     const { output } = await editorPrompt(input);
     return output!;
   }

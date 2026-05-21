@@ -86,6 +86,74 @@ export function getStrategicScores(countryName: string, region: string) {
   };
 }
 
+export interface FamilyProfileInfo {
+  value: string;
+  label: string;
+  personCount: number;
+  childrenCount: number;
+  scalar: number;
+  ikeaScalar: number;
+  pKey: string;
+}
+
+export const FAMILY_PROFILES: FamilyProfileInfo[] = [
+  { value: "single", label: "Single", personCount: 1, childrenCount: 0, scalar: 1.0, ikeaScalar: 1.0, pKey: "single" },
+  { value: "married-sole", label: "Married (sole earner)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
+  { value: "married-dual", label: "Married (dual income)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
+  { value: "family-1", label: "Family +1", personCount: 3, childrenCount: 1, scalar: 2.3, ikeaScalar: 1.85, pKey: "family1Child" },
+  { value: "family-2", label: "Family +2", personCount: 4, childrenCount: 2, scalar: 2.65, ikeaScalar: 2.2, pKey: "family2Children" },
+  { value: "family-3", label: "Family +3", personCount: 5, childrenCount: 3, scalar: 3.0, ikeaScalar: 2.58, pKey: "family3PlusChildren" },
+];
+
+export function getProfileByLabel(label: string): FamilyProfileInfo {
+  const normalizedLabel = String(label || '').trim().toLowerCase();
+  
+  const profile = FAMILY_PROFILES.find(p => 
+    p.label.toLowerCase() === normalizedLabel || 
+    p.value.toLowerCase() === normalizedLabel ||
+    (normalizedLabel.includes("family") && normalizedLabel.includes("1") && p.value === "family-1") ||
+    (normalizedLabel.includes("family") && normalizedLabel.includes("2") && p.value === "family-2") ||
+    (normalizedLabel.includes("family") && (normalizedLabel.includes("3") || normalizedLabel.includes("more") || normalizedLabel.includes("+3")) && p.value === "family-3") ||
+    (normalizedLabel.includes("sole") && p.value === "married-sole") ||
+    (normalizedLabel.includes("dual") && p.value === "married-dual") ||
+    ((normalizedLabel.includes("couple") || normalizedLabel.includes("married") || normalizedLabel.includes("husband") || normalizedLabel.includes("wife")) && p.value === "married-sole")
+  );
+  
+  return profile || FAMILY_PROFILES[0];
+}
+
+export function getCOLField(data: any, keys: string[]): any {
+  if (!data) return null;
+  const targetKeys = keys.map(k => k.toLowerCase().replace(/[^a-z0-9]/g, ''));
+  const foundKey = Object.keys(data).find(k => targetKeys.includes(k.toLowerCase().replace(/[^a-z0-9]/g, '')));
+  return foundKey ? data[foundKey] : null;
+}
+
+export function findCostOfLiving(city: string, country: string, costOfLivingList: any[]): any {
+  if (!costOfLivingList || costOfLivingList.length === 0) return null;
+  
+  const cleanStr = (s: any) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+  
+  const sCity = cleanStr(city);
+  const sCountry = cleanStr(canonicalCountry(country));
+
+  const matches = costOfLivingList.filter((c: any) => {
+    const cCity = cleanStr(c.city || c.city_name || '');
+    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || ''));
+    const cId = cleanStr(c.id || '');
+    
+    return (
+      (sCity && cCity === sCity) ||
+      (sCountry && cCountry === sCountry) ||
+      (sCity && cId === sCity) ||
+      (sCountry && cId === sCountry)
+    );
+  });
+
+  if (matches.length === 0) return null;
+  return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0] || null;
+}
+
 export const PROFILE_MAP: Record<string, string> = {
   "single": "single",
   "married-dual": "marriedDualIncome",
@@ -151,17 +219,14 @@ export function calculateBudget(params: BudgetParams) {
   } = params;
   
   const targetData = cityData || countryIntel;
-  const profileKey = PROFILE_MAP[calcStatus] || "single";
+  const profile = getProfileByLabel(calcStatus);
+  const profileKey = profile.pKey;
   
   // Person count
-  let personCount = 1;
-  let childrenCount = 0;
-  let scalar = 1.0;
-  let ikeaScalar = 1.0;
-  if (calcStatus === 'married-dual' || calcStatus === 'married-sole') { personCount = 2; scalar = 1.9; ikeaScalar = 1.4; }
-  else if (calcStatus === 'family-1')       { personCount = 3; childrenCount = 1; scalar = 2.3; ikeaScalar = 1.85; }
-  else if (calcStatus === 'family-2')       { personCount = 4; childrenCount = 2; scalar = 2.65; ikeaScalar = 2.2; }
-  else if (calcStatus === 'family-3')       { personCount = 5; childrenCount = 3; scalar = 3.0; ikeaScalar = 2.58; }
+  const personCount = profile.personCount;
+  const childrenCount = profile.childrenCount;
+  const scalar = profile.scalar;
+  const ikeaScalar = profile.ikeaScalar;
 
   const safeParse = (val: any) => { const n = parseFloat(String(val)); return isNaN(n) ? 0 : n; };
   const setupMultiplier = parseInt(setupDays) / 30;
@@ -197,8 +262,8 @@ export function calculateBudget(params: BudgetParams) {
 
   // 2. Rent & Deposit (Scales with payday gap)
   // Base: 1.5 (Deposit) + (setupDays / 30) (Months of rent needed)
-  const rentKey = calcStatus === 'single' ? 'rent1br' : (calcStatus.includes('family-2') || calcStatus.includes('family-3') ? 'rent3br' : 'rent2br');
-  const rentMonthly = usdToDisplay(safeParse(targetData?.[rentKey] || targetData?.rent1br || 2000));
+  const rentKey = profileKey === 'single' ? 'rent1br' : ((profileKey === 'family2Children' || profileKey === 'family3PlusChildren') ? 'rent3br' : 'rent2br');
+  const rentMonthly = usdToDisplay(safeParse(getCOLField(targetData, [rentKey]) || getCOLField(targetData, ['rent1br']) || 2000));
   
   let rentVal = housingOverride !== null ? housingOverride : (rentMonthly * (1.5 + setupMultiplier)); 
   
@@ -212,8 +277,8 @@ export function calculateBudget(params: BudgetParams) {
   }
 
   // 3. Living Costs (Scaled by scalar)
-  const groceriesMonthly = usdToDisplay(getVal(targetData?.groceries, profileKey, scalar));
-  const utilitiesMonthly = usdToDisplay(getVal(targetData?.utilities, profileKey, scalar * 0.8));
+  const groceriesMonthly = usdToDisplay(getVal(getCOLField(targetData, ['groceries', 'food', 'groceriesIndex']), profileKey, scalar));
+  const utilitiesMonthly = usdToDisplay(getVal(getCOLField(targetData, ['utilities', 'bills', 'utilitiesMonthly']), profileKey, scalar * 0.8));
   const livingVal = expenditureOverride !== null ? expenditureOverride : ((groceriesMonthly + utilitiesMonthly) * setupMultiplier);
 
   // 4. Transport
@@ -221,14 +286,14 @@ export function calculateBudget(params: BudgetParams) {
   const isTaxi = transportMode === 'taxi';
   
   const mapType = isDriving ? 'carHire' : 'publicTransport';
-  const transportMap = targetData?.transport?.[mapType] || targetData?.[mapType] || targetData?.transport;
+  const transportMap = targetData?.transport?.[mapType] || getCOLField(targetData, [mapType]) || targetData?.transport;
   const baseTransport = usdToDisplay(getVal(transportMap, profileKey, isDriving ? 1.0 : personCount));
   
   let transportVal = transportOverride !== null ? transportOverride : 0;
   if (transportOverride === null) {
     if (isDriving) {
       // If carHire is missing, we use a heuristic (e.g. 1.8x public transport)
-      const finalBase = (targetData?.transport?.carHire || targetData?.carHire) ? baseTransport : (usdToDisplay(getVal(targetData?.transport?.publicTransport || targetData?.publicTransport, profileKey, personCount)) * 1.8);
+      const finalBase = (targetData?.transport?.carHire || getCOLField(targetData, ['carHire'])) ? baseTransport : (usdToDisplay(getVal(targetData?.transport?.publicTransport || getCOLField(targetData, ['publicTransport']), profileKey, personCount)) * 1.8);
       transportVal = finalBase * setupMultiplier;
     }
     else if (isTaxi) transportVal = (baseTransport * 4) * setupMultiplier;
@@ -402,27 +467,11 @@ export function calculateSurplus(
     cityData = isHousingProvidedOrCityData;
     isHousingProvided = !!isHousingProvidedFallback;
   } else {
-    // Legacy support for string familyStatus
-    const status = String(familyStatusOrAdults).toLowerCase();
+    const profile = getProfileByLabel(familyStatusOrAdults);
+    adults = profile.personCount - profile.childrenCount;
+    children = profile.childrenCount;
     cityData = cityDataOrChildren;
     isHousingProvided = isHousingProvidedOrCityData === true;
-
-    if (status === "single") {
-      adults = 1;
-      children = 0;
-    } else if (status === "couple" || status === "marrieddualincome") {
-      adults = 2;
-      children = 0;
-    } else if (status.includes("family-1")) {
-      adults = 2;
-      children = 1;
-    } else if (status.includes("family-2")) {
-      adults = 2;
-      children = 2;
-    } else if (status.includes("family-3")) {
-      adults = 2;
-      children = 3;
-    }
   }
 
   const totalOut = calculateOutflows(adults, children, cityData, isHousingProvided);
@@ -489,4 +538,29 @@ export function matchesRegion(dbRegion: string, queryRegion: string, countryName
   }
   
   return dbReg.includes(qReg);
+}
+
+/**
+ * 💱 Savings stability checker for teachers
+ * Helps teachers check how stable their savings will be over a three-year adventure abroad.
+ * We group currencies into three categories:
+ * - Tier 1: Standard floating currencies (like the Euro or Swiss Franc) that drift gently up and down.
+ * - Tier 2: Rigid currencies (like the UAE Dirham or Saudi Riyal) pegged to the US Dollar, exposing your savings to US currency trends.
+ * - Tier 3: Volatile currencies (like the Argentine Peso or Egyptian Pound) that can drop in value quickly, making local contracts riskier.
+ */
+export function getMacroRiskTier(currencyCode: string): 1 | 2 | 3 {
+  const code = (currencyCode || '').toUpperCase().trim();
+  
+  // Checking for currencies pegged directly to another major currency
+  if (['AED', 'SAR', 'QAR', 'BHD', 'KWD', 'JOD'].includes(code)) {
+    return 2;
+  }
+  
+  // Checking for currencies that suffer from high inflation or sudden devaluations
+  if (['ARS', 'TRY', 'EGP'].includes(code)) {
+    return 3;
+  }
+  
+  // Standard free-floating global currencies
+  return 1;
 }

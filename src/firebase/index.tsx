@@ -20,6 +20,26 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// 🛡️ FIREBASE APP CHECK SENTRY
+if (typeof window !== 'undefined') {
+  // Enable debug tokens during local development for developer convenience
+  if (process.env.NODE_ENV === 'development') {
+    (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  }
+  
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  if (siteKey) {
+    import("firebase/app-check").then(({ initializeAppCheck, ReCaptchaV3Provider }) => {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(siteKey),
+        isTokenAutoRefreshEnabled: true
+      });
+    }).catch(err => {
+      console.warn("App Check failed to initialize:", err);
+    });
+  }
+}
+
 export { app, db, auth };
 export const useFirestore = () => db;
 

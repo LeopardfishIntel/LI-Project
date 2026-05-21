@@ -166,8 +166,10 @@ function DossierContent() {
       const dbRegion = (country.region || "").toLowerCase().trim();
       return params.regions.some(r => matchesRegion(dbRegion, r, country.country));
     }).map(country => {
-      const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(country.country || ""));
-      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(country.country || ""));
+      const countryName = country.country || "";
+      const countryNameLower = canonicalCountry(countryName);
+      const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(countryName));
+      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(countryName));
       const hasSchools = schools.length > 0;
       
       let fallbackSalary = 2500;
@@ -198,9 +200,6 @@ function DossierContent() {
       if (validSalaries > 1) {
           localAverageSalary = localAverageSalary / validSalaries;
       }
-
-      const countryName = country.country || "";
-      const countryNameLower = canonicalCountry(countryName);
 
       if (['finland', 'sweden'].includes(countryNameLower)) {
           localAverageSalary = localAverageSalary * 0.75;

@@ -81,7 +81,7 @@ const aiSchoolInsightsSummaryFlow = getAI().defineFlow(
     inputSchema: AiSchoolInsightsSummaryInputSchema,
     outputSchema: AiSchoolInsightsSummaryOutputSchema,
   },
-  async input => {
+  async (input: AiSchoolInsightsSummaryInput) => {
     const {output} = await aiSchoolInsightsSummaryPrompt(input);
     return output!;
   }

@@ -1101,12 +1101,12 @@ function DecoderContent() {
                       });
                     */}
                     <div>
-                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center flex-wrap gap-2 leading-relaxed">
+                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center justify-between gap-2 leading-relaxed">
                         <span className="flex items-center gap-2">
                           <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
                         </span>
-                        <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic">
-                          (vacancy searches take a minute or two)
+                        <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic ml-auto">
+                          re-verification takes upto 2 mins
                         </span>
                       </h4>
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#d95f02]/30 pl-4">

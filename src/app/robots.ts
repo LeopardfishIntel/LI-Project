@@ -17,7 +17,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/private/', '/staging-preview/'],
+        disallow: [
+          '/private/',
+          '/staging-preview/',
+          '/decide/',
+          '/financial-forecaster/',
+          '/prepare/',
+          '/profile/'
+        ],
       },
     ],
     sitemap: 'https://leopardfishintel.com/sitemap.xml',
