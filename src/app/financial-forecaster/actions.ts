@@ -621,7 +621,6 @@ export async function getSchoolStabilityReport(input: {
                                 : 0;
                             const fresh_has_executive = freshParsedVacancies.some(
                               v => v.source.toLowerCase().includes("executive") ||
-                                   v.source.toLowerCase().includes("search assoc") ||
                                    v.source.toLowerCase().includes("lsc education") ||
                                    v.source.toLowerCase().includes("headhunter") ||
                                    v.source.toLowerCase().includes("gabbitas") ||
@@ -766,7 +765,6 @@ export async function getSchoolStabilityReport(input: {
             : 0;
         const hasExecutiveTrack = parsedVacancies.some(
           v => v.source.toLowerCase().includes("executive") ||
-               v.source.toLowerCase().includes("search assoc") ||
                v.source.toLowerCase().includes("lsc education") ||
                v.source.toLowerCase().includes("headhunter") ||
                v.source.toLowerCase().includes("gabbitas") ||

@@ -108,7 +108,7 @@ export const searchVacanciesFlow = getAI().defineFlow(
    - If a title requires initiating a registration flow or opening a drop-down form selection array to be seen, DISCARD IT. If a human reviewer cannot visibly read the job title on the primary job board layout, it does not exist.
 
 3. TIER 1: PRIMARY CHANNELS (Surface Verification)
-   - Targets: Main School Web Career Landing Page, TES Live Dashboard, Search Associates Public School Profile.
+   - Targets: Main School Web Career Landing Page, TES Live Dashboard.
    - Action: Map visible role titles exactly as they appear on the surface board layout. Capture accompanying tags like year-cycle markers (e.g., "2026/2027") directly into the title string.
 
 4. TIER 2: LOCAL AGGREGATORS (Shallow Validation Only)

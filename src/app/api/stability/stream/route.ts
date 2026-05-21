@@ -424,7 +424,7 @@ Your primary execution challenges are:
 To maximize execution speed, you MUST treat each phase as an isolated data chunk and stream them to the frontend instantly. Do not buffer or wait for deep queries to finish before outputting earlier segments.
 
 * **Phase 1 (Primary Authority Feed Discovery):** Sweep TES, Schrole, and primary global networks using the school's unique employer slug. Capture live posts and historical winter logs simultaneously. Emits phase: 1. Immediately output live matches to screen.
-* **Phase 2 (Executive Search Sweep):** Target premium consultative networks (Search Associates, LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'. Emits phase: 2.
+* **Phase 2 (Executive Search Sweep):** Target premium consultative networks (LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'. Emits phase: 2.
 * **Phase 3 (Regional Archive Cross-Reference - SPEED FOCUS):** Sweep local boards (e.g., jobs.cz, expats.cz, Indeed, Glassdoor). 
   - *SPEED CONSTRAINT:* SKIM ONLY. Do NOT read deep page text, follow links, or request secondary sub-pages. Extract parameters strictly from the primary header string and metadata date tag found in the initial surface fragment. Limit analysis to the TOP 3 relevant search result snippets per regional board to eliminate latency. Emits phase: 3.
 * **Phase 4 (Consolidation & Staffroom Output):** Final mathematical deduplication and generation of the UK teacher-toned commentary. Emits phase: 4 + final payload.
@@ -515,7 +515,7 @@ To keep execution times low, token counts small, and eliminate text overflow:
           if (src.includes("tes") || src.includes("schrole") || src.includes("horizons") || src.includes("authority")) {
             return 1;
           }
-          if (src.includes("executive") || src.includes("search assoc") || src.includes("lsc") || src.includes("gabbitas") || src.includes("tic") || title.includes("principal") || title.includes("director") || title.includes("headmaster") || title.includes("headmistress")) {
+          if (src.includes("executive") || src.includes("lsc") || src.includes("gabbitas") || src.includes("tic") || title.includes("principal") || title.includes("director") || title.includes("headmaster") || title.includes("headmistress")) {
             return 2;
           }
           if (src.includes("jobs.cz") || src.includes("expat") || src.includes("indeed") || src.includes("glassdoor") || src.includes("local") || src.includes("aggregator")) {
@@ -558,7 +558,7 @@ To keep execution times low, token counts small, and eliminate text overflow:
         sendChunk({ phase: 2, status: "searching", vacancies_discovered: [] });
         const p2JobsAI = await runPhaseSweep(
           2,
-          `Target premium consultative networks (Search Associates, LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'.`
+          `Target premium consultative networks (LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'.`
         );
         const p2Ground = getGroundTruthForPhase(2);
         const p2Jobs = [...p2JobsAI, ...p2Ground].map(job => {
@@ -677,7 +677,6 @@ To keep execution times low, token counts small, and eliminate text overflow:
 
         const hasExecutiveTrack = finalVacancies.some(
           v => v.source.toLowerCase().includes("executive") ||
-               v.source.toLowerCase().includes("search assoc") ||
                v.source.toLowerCase().includes("lsc education") ||
                v.source.toLowerCase().includes("headhunter") ||
                v.source.toLowerCase().includes("gabbitas") ||
