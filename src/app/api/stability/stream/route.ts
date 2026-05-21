@@ -419,7 +419,12 @@ Provide ONLY the raw JSON object.`,
               temperature: 0,
             }
           });
-          const profileObj = JSON.parse(profileResponse.text.trim());
+          let cleanText = profileResponse.text.trim();
+          const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            cleanText = jsonMatch[0];
+          }
+          const profileObj = JSON.parse(cleanText);
           hasPrimary = typeof profileObj.hasPrimary === 'boolean' ? profileObj.hasPrimary : true;
           hasSecondary = typeof profileObj.hasSecondary === 'boolean' ? profileObj.hasSecondary : true;
           phasesSummary = profileObj.phasesSummary || "All-through/K-12";
@@ -655,7 +660,14 @@ To keep execution times low, token counts small, and eliminate text overflow:
         const finalVacancies: Vacancy[] = [];
 
         // Apply temporal boundary filter to allDiscovered
-        const temporalFilteredDiscovered = allDiscovered.map(sanitizeVacancy).filter(isWithinLast12Months);
+        const temporalFilteredDiscovered = allDiscovered
+          .map(sanitizeVacancy)
+          .filter(job => {
+            if (job.source.toLowerCase().includes("search associates") || job.title.toLowerCase().includes("search associates")) {
+              return false;
+            }
+            return isWithinLast12Months(job);
+          });
 
         for (const job of temporalFilteredDiscovered) {
           const normKey = getNormalizedComparisonKey(job.title);

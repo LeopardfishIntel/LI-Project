@@ -30,7 +30,7 @@ const sanitizeVacancyString = (raw: string, currentDateStr: string = "21 May 202
   const source = parts[1] || 'Web';
   const main = parts[0] || raw;
 
-  const parenIdx = main.indexOf('(');
+  const parenIdx = main.lastIndexOf('(');
   let rawTitle = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();
   
   // Title Preservation & Capping:
@@ -40,8 +40,8 @@ const sanitizeVacancyString = (raw: string, currentDateStr: string = "21 May 202
   // Parse parenthetical content
   let parenthetical = '';
   if (parenIdx !== -1) {
-    const closedParenIdx = main.indexOf(')', parenIdx);
-    if (closedParenIdx !== -1) {
+    const closedParenIdx = main.lastIndexOf(')');
+    if (closedParenIdx !== -1 && closedParenIdx > parenIdx) {
       parenthetical = main.substring(parenIdx + 1, closedParenIdx).trim();
     }
   }
@@ -119,7 +119,12 @@ Provide ONLY the raw JSON object.`,
           temperature: 0,
         }
       });
-      const profileObj = JSON.parse(profileResponse.text.trim());
+      let cleanText = profileResponse.text.trim();
+      const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanText = jsonMatch[0];
+      }
+      const profileObj = JSON.parse(cleanText);
       hasPrimary = typeof profileObj.hasPrimary === 'boolean' ? profileObj.hasPrimary : true;
       hasSecondary = typeof profileObj.hasSecondary === 'boolean' ? profileObj.hasSecondary : true;
       phasesSummary = profileObj.phasesSummary || "All-through/K-12";
@@ -289,6 +294,9 @@ For each historical vacancy discovered, construct a beautifully formatted job st
 "Job Title (CycleOrMonth; Posted: DD MMM YYYY; Closes: DD MMM YYYY) - Source"
 
 If the exact posting date is not known, estimate a logical date within their standard recruitment cycle and set 'Posted' and 'Closes' accordingly.
+
+${generalConstraints}
+
 Conform strictly to the following JSON structure:
 {
   "scrapedJobsList": string[]
@@ -408,6 +416,10 @@ Provide ONLY the raw JSON object.`,
     for (const rawJob of allRawJobs) {
       if (!rawJob) continue;
       if (rawJob.toLowerCase().includes("intelligence report") || rawJob.toLowerCase().includes("unable to retrieve")) {
+        continue;
+      }
+      if (rawJob.toLowerCase().includes("search associates") || rawJob.toLowerCase().includes("search-associates")) {
+        console.log(`🛸 [SWEEP ENGINE] Filtering out banned source Search Associates: ${rawJob}`);
         continue;
       }
       const { core, source } = getCoreTitleAndSource(rawJob);

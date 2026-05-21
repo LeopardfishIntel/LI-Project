@@ -159,8 +159,8 @@ const parseJobString = (job: string) => {
   const source = sourcePart[1] || 'Web';
   const main = sourcePart[0] || job;
 
-  // Extract title (everything before the first parenthesis)
-  const parenIdx = main.indexOf('(');
+  // Extract title (everything before the last parenthesis)
+  const parenIdx = main.lastIndexOf('(');
   const title = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();
 
   // Extract posted and closes from parentheticals
