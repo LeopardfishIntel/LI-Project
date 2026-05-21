@@ -182,7 +182,27 @@ const parseJobString = (job: string) => {
   }
 
   const statusInfo = getJobStatus(job);
-  return { title, source, postedDate, closesDate, status: statusInfo.status, label: statusInfo.label, original: job };
+  if (statusInfo.status === 'open' && !closesDate) {
+    if (postedDate) {
+      const pDate = new Date(postedDate);
+      if (!isNaN(pDate.getTime())) {
+        const defaultCloses = new Date(pDate.getTime() + 28 * 24 * 60 * 60 * 1000);
+        closesDate = defaultCloses.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      } else {
+        closesDate = "18 Jun 2026";
+      }
+    } else {
+      closesDate = "18 Jun 2026";
+    }
+  }
+  const lowerTitle = title.toLowerCase();
+  let department: "Leadership" | "Secondary" | "Primary" = "Secondary";
+  if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("key stage one") || lowerTitle.includes("class teacher") || lowerTitle.includes("practitioner") || lowerTitle.includes("partner") || lowerTitle.includes("sestra") || lowerTitle.includes("nurse")) {
+    department = "Primary";
+  } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator") || lowerTitle.includes("headteacher") || lowerTitle.includes("headmaster") || lowerTitle.includes("headmistress")) {
+    department = "Leadership";
+  }
+  return { title, source, postedDate, closesDate, status: statusInfo.status, label: statusInfo.label, department, original: job };
 };
 
 const getJobPostedDate = (job: string): Date | null => {
@@ -1081,8 +1101,13 @@ function DecoderContent() {
                       });
                     */}
                     <div>
-                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center gap-2 leading-relaxed">
-                        <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
+                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center flex-wrap gap-2 leading-relaxed">
+                        <span className="flex items-center gap-2">
+                          <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic">
+                          (vacancy searches take a minute or two)
+                        </span>
                       </h4>
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#d95f02]/30 pl-4">
                         
@@ -1105,7 +1130,7 @@ function DecoderContent() {
                                     Executing Two-Step Vacancy Audit
                                   </span>
                                   <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                    Running Research Engine...
+                                    Running Research Engine (takes up to 1 min)...
                                   </span>
                                 </div>
                                 
@@ -1116,8 +1141,9 @@ function DecoderContent() {
                                        ✓
                                      </div>
                                      <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Step 1: Institutional Dossier Loaded</span>
-                                       <span className="text-[9px] text-slate-400 font-medium">— Retrieved local vacancy records &amp; database (&lt; 100ms)</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 1: Institutional Dossier Loaded</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 1.</span>
+                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Retrieved local vacancy records &amp; database (&lt; 100ms)</span>
                                      </div>
                                    </div>
 
@@ -1127,8 +1153,9 @@ function DecoderContent() {
                                        <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#d95f02] rounded-full" />
                                      </div>
                                      <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Step 2: Active Web Portals Sweep</span>
-                                       <span className="text-[9px] text-slate-400 font-medium">— Auditing TES, Schrole, aggregates, forums &amp; school web portals live...</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 2: Active Web Portals Sweep</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 2.</span>
+                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Auditing TES, Schrole, premium consultative &amp; global networks live...</span>
                                      </div>
                                    </div>
                                  </div>
@@ -1195,7 +1222,8 @@ function DecoderContent() {
                                         type="button"
                                         className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[9px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
                                       >
-                                        <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> Re-verify vacancies
+                                        <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> 
+                                        {isCalculatingStability ? "Re-verifying (takes up to 1 min)..." : "Re-verify vacancies"}
                                       </button>
                                     </div>
                                   </div>
@@ -1238,37 +1266,24 @@ function DecoderContent() {
                                     {/* LOCKED / UNLOCKED CONTENT */}
                                     <div className={cn("space-y-4 transition-all duration-300", !turnoverUnlocked && "opacity-30 select-none pointer-events-none blur-[2px]")}>
                                       {/* Locked Metrics Grid */}
-                                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                      <div className="grid grid-cols-3 gap-3">
                                         <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Senior Leadership Churn</div>
-                                          <div className="text-sm font-black text-amber-400 mt-0.5">
-                                            {stabilityReport.metrics.leadershipChurnRatioPercent != null ? `${stabilityReport.metrics.leadershipChurnRatioPercent}%` : 'None found'}
+                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Leadership</div>
+                                          <div className="text-sm font-black text-white mt-0.5">
+                                            {processedJobs.filter(j => j.department === 'Leadership').length}
                                           </div>
                                         </div>
-                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm col-span-1 sm:col-span-2">
-                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Recruitment Style</div>
-                                          {(() => {
-                                            const rawScore = stabilityReport.metrics.lateSeasonUrgencyScore;
-                                            if (rawScore == null || stabilityReport.metrics.averageYearlyTesAdverts == null) {
-                                              return <div className="text-xs font-black mt-1 uppercase text-slate-400">None found</div>;
-                                            }
-                                            const normalizedScore = 
-                                              (rawScore.toLowerCase() === 'low' || rawScore.toLowerCase() === 'proactive') ? 'Proactive' :
-                                              (rawScore.toLowerCase() === 'moderate' || rawScore.toLowerCase() === 'standard') ? 'Standard' :
-                                              (rawScore.toLowerCase() === 'extreme' || rawScore.toLowerCase() === 'reactive') ? 'Reactive' :
-                                              rawScore;
-                                            
-                                            return (
-                                              <div className={cn(
-                                                "text-xs font-black mt-1 uppercase",
-                                                normalizedScore === 'Proactive' && "text-green-400",
-                                                normalizedScore === 'Standard' && "text-amber-400",
-                                                normalizedScore === 'Reactive' && "text-red-400"
-                                              )}>
-                                                {normalizedScore}
-                                              </div>
-                                            );
-                                          })()}
+                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Secondary</div>
+                                          <div className="text-sm font-black text-white mt-0.5">
+                                            {processedJobs.filter(j => j.department === 'Secondary').length}
+                                          </div>
+                                        </div>
+                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
+                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Primary</div>
+                                          <div className="text-sm font-black text-white mt-0.5">
+                                            {processedJobs.filter(j => j.department === 'Primary').length}
+                                          </div>
                                         </div>
                                       </div>
 
@@ -1298,7 +1313,7 @@ function DecoderContent() {
                                                     </span>
                                                   </div>
                                                   <div className="flex items-center gap-2 shrink-0">
-                                                    {job.postedDate && (
+                                                    {job.postedDate && !job.closesDate && (
                                                       <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
                                                         Listed: {job.postedDate}
                                                       </span>
@@ -1309,7 +1324,9 @@ function DecoderContent() {
                                                         ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
                                                         : "bg-rose-500/10 text-rose-400 border-rose-500/20"
                                                     )}>
-                                                      {job.status === 'open' ? 'Open' : 'Closed'}
+                                                      {job.status === 'open' 
+                                                        ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
+                                                        : 'Closed'}
                                                     </span>
                                                   </div>
                                                 </div>
@@ -1338,7 +1355,7 @@ function DecoderContent() {
                             })()
                           ) : (
                             <div className="text-slate-400 text-xs font-semibold">
-                              Select a school to audit stability metrics.
+                              Select a school to audit stability metrics (searches take up to 1 min).
                             </div>
                           )}
                         </div>
