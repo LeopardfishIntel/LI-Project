@@ -186,32 +186,34 @@ Return a JSON object conforming exactly to this structure:
       }
     };
 
+    const locationSuffix = [input.city, input.country].filter(Boolean).join(" ");
+
     // 🛸 MULTI-PHASE HISTORICAL SEARCH SWEEP LIST
     const sweepPrompts = [
       {
         name: "Phase 1: Live Vacancies Sweep",
         prompt: `Find all active teaching and leadership vacancies publicly advertised for ${input.schoolName} in ${input.city || ''}, ${input.country || ''}.
-Use queries:
-- "${input.schoolName} vacancies"
-- "${input.schoolName} career portal"
-- "${input.schoolName} jobs"`
+Use queries (include the location "${locationSuffix}" to disambiguate from other schools with the same name):
+- "${input.schoolName} ${locationSuffix} vacancies"
+- "${input.schoolName} ${locationSuffix} career portal"
+- "${input.schoolName} ${locationSuffix} jobs"`
       },
       {
         name: "Phase 2: TES & Schrole Historical Archives Sweep",
         prompt: `Find all job vacancies (active or closed) posted by ${input.schoolName} in ${input.city || ''}, ${input.country || ''} in the last 12 months (since May 2025) on international portals.
-Use queries:
-- "${input.schoolName}" site:tes.com OR site:schrole.com OR site:iss.edu
-- "${input.schoolName}" site:ticrecruitment.com OR site:teachaway.com OR site:asq-international.com
-- "${input.schoolName}" site:worldteachers.com OR site:randstad.com`
+Use queries (include the location "${locationSuffix}" to disambiguate from other schools with the same name):
+- "${input.schoolName} ${locationSuffix}" site:tes.com OR site:schrole.com OR site:iss.edu
+- "${input.schoolName} ${locationSuffix}" site:ticrecruitment.com OR site:teachaway.com OR site:asq-international.com
+- "${input.schoolName} ${locationSuffix}" site:worldteachers.com OR site:randstad.com`
       },
       {
         name: "Phase 3: Subject-Specific Deep Sweep",
         prompt: `Perform targeted subject searches for ${input.schoolName} in ${input.city || ''}, ${input.country || ''} to locate specific teaching or leadership openings posted in the last 12 months.
-Use targeted queries:
-- "${input.schoolName}" "Mathematics Teacher" OR "English Teacher"
-- "${input.schoolName}" "SENCO" OR "Student Support" OR "Learning Support"
-- "${input.schoolName}" "Science Teacher" OR "Innovation" OR "Design and Technology"
-- "${input.schoolName}" "Physical Education" OR "Performing Arts"`
+Use targeted queries (include the location "${locationSuffix}" to disambiguate from other schools with the same name):
+- "${input.schoolName} ${locationSuffix}" "Mathematics Teacher" OR "English Teacher"
+- "${input.schoolName} ${locationSuffix}" "SENCO" OR "Student Support" OR "Learning Support"
+- "${input.schoolName} ${locationSuffix}" "Science Teacher" OR "Innovation" OR "Design and Technology"
+- "${input.schoolName} ${locationSuffix}" "Physical Education" OR "Performing Arts"`
       }
     ];
 

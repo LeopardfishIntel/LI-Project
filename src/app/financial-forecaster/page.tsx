@@ -1235,7 +1235,7 @@ function DecoderContent() {
                                     </div>
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
-                                      <div className="text-sm font-black text-white mt-0.5">
+                                      <div className={cn("text-sm font-black text-white mt-0.5 transition-all duration-300", isCalculatingStability && "blur-[3px] select-none")}>
                                         {processedJobs.length}
                                       </div>
                                     </div>
