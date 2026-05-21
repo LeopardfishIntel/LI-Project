@@ -119,12 +119,12 @@ Provide ONLY the raw JSON object.`,
           temperature: 0,
         }
       });
-      let cleanText = profileResponse.text.trim();
-      const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleanText = jsonMatch[0];
+      const rawText = profileResponse.text.trim();
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error(`Failed to extract valid JSON layout from LLM response. Raw text: ${rawText}`);
       }
-      const profileObj = JSON.parse(cleanText);
+      const profileObj = JSON.parse(jsonMatch[0]);
       hasPrimary = typeof profileObj.hasPrimary === 'boolean' ? profileObj.hasPrimary : true;
       hasSecondary = typeof profileObj.hasSecondary === 'boolean' ? profileObj.hasSecondary : true;
       phasesSummary = profileObj.phasesSummary || "All-through/K-12";
