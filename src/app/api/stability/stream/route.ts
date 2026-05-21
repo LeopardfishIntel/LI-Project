@@ -396,7 +396,52 @@ export async function GET(req: NextRequest) {
         const lowerSchool = schoolName.toLowerCase();
         const isPrague = city.toLowerCase() === "prague" || lowerSchool.includes("prague");
         const hasGroundTruth = (lowerSchool.includes("riverside") || lowerSchool.includes("parklane")) && isPrague;
+
+        // 🧠 Pre-flight: Identify target school's educational phases
+        let hasPrimary = true;
+        let hasSecondary = true;
+        let phasesSummary = "All-through/K-12";
+        try {
+          console.log(`🛸 [STREAM SWEEP] Performing pre-flight school profiling for ${schoolName}...`);
+          const profileResponse = await ai.generate({
+            model: "googleai/gemini-2.5-flash",
+            prompt: `Verify the education stages/phases offered by the school "${schoolName}" in "${city}", "${country}".
+Does this school offer Primary/Prep education (typically ages 3-11), Secondary/High School/Sixth Form education (typically ages 11-18/13-19), or is it an All-through school (both)?
+Return ONLY a short JSON response of the form:
+{
+  "hasPrimary": boolean,
+  "hasSecondary": boolean,
+  "phasesSummary": string
+}
+Provide ONLY the raw JSON object.`,
+            config: {
+              responseMimeType: "application/json",
+              temperature: 0,
+            }
+          });
+          const profileObj = JSON.parse(profileResponse.text.trim());
+          hasPrimary = typeof profileObj.hasPrimary === 'boolean' ? profileObj.hasPrimary : true;
+          hasSecondary = typeof profileObj.hasSecondary === 'boolean' ? profileObj.hasSecondary : true;
+          phasesSummary = profileObj.phasesSummary || "All-through/K-12";
+          console.log(`🛸 [STREAM SWEEP] Verified Profile: Primary=${hasPrimary}, Secondary=${hasSecondary} (${phasesSummary})`);
+        } catch (e) {
+          console.error("🛸 [STREAM SWEEP] Pre-flight profiling failed, defaulting to All-through:", e);
+        }
+
         const SYSTEM_PROMPT = `You are "Antigravity," the core intelligence behind the Leopardfish Intel Recruitment Stability Engine. Your objective is to discover, classify, deduplicate, and stream a 100% accurate list of all teaching and leadership vacancies posted by a target international school within the LAST 12 MONTHS ONLY.
+
+### VERIFIED SCHOOL EDUCATIONAL PHASES:
+- Target School: ${schoolName} in ${city}, ${country}
+- Verified Educational Phases Offered:
+  * Primary/Prep section: ${hasPrimary ? "YES" : "NO"}
+  * Secondary/College/High School section: ${hasSecondary ? "YES" : "NO"}
+  * Summary: ${phasesSummary}
+
+*CRITICAL FILTRATION CONSTRAINT:*
+You MUST strictly discard and filter out any discovered job listings or vacancies that belong to an educational stage/phase that this school does NOT offer.
+- If "Primary/Prep section" is NO, you MUST discard and reject any primary school class teacher, primary PE, early years, nursery, kindergarten, key stage 1, key stage 2, or head of primary vacancies.
+- If "Secondary/College/High School section" is NO, you MUST discard and reject any secondary subject teacher (e.g. IGCSE Physics, IB Chemistry), key stage 3, key stage 4, key stage 5, or secondary leadership vacancies.
+- You must ignore all roles from sibling/sister campuses or separate nearby schools that do not match the target school's educational profile.
 
 When querying the Google Search tool, you MUST include the school's location (city and country) in every search query to disambiguate it from other schools with similar or identical names (for example, there are multiple St John's schools).
 

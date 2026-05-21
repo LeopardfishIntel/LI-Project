@@ -97,7 +97,51 @@ export const searchVacanciesFlow = getAI().defineFlow(
   async (input: z.infer<typeof SearchVacanciesInputSchema>) => {
     const ai = getAI();
 
+    // 🧠 Pre-flight: Identify target school's educational phases
+    let hasPrimary = true;
+    let hasSecondary = true;
+    let phasesSummary = "All-through/K-12";
+    try {
+      console.log(`🛸 [SWEEP ENGINE] Performing pre-flight school profiling for ${input.schoolName}...`);
+      const profileResponse = await ai.generate({
+        model: "googleai/gemini-2.5-flash",
+        prompt: `Verify the education stages/phases offered by the school "${input.schoolName}" in "${input.city || ''}", "${input.country || ''}".
+Does this school offer Primary/Prep education (typically ages 3-11), Secondary/High School/Sixth Form education (typically ages 11-18/13-19), or is it an All-through school (both)?
+Return ONLY a short JSON response of the form:
+{
+  "hasPrimary": boolean,
+  "hasSecondary": boolean,
+  "phasesSummary": string
+}
+Provide ONLY the raw JSON object.`,
+        config: {
+          responseMimeType: "application/json",
+          temperature: 0,
+        }
+      });
+      const profileObj = JSON.parse(profileResponse.text.trim());
+      hasPrimary = typeof profileObj.hasPrimary === 'boolean' ? profileObj.hasPrimary : true;
+      hasSecondary = typeof profileObj.hasSecondary === 'boolean' ? profileObj.hasSecondary : true;
+      phasesSummary = profileObj.phasesSummary || "All-through/K-12";
+      console.log(`🛸 [SWEEP ENGINE] Verified Profile: Primary=${hasPrimary}, Secondary=${hasSecondary} (${phasesSummary})`);
+    } catch (e) {
+      console.error("🛸 [SWEEP ENGINE] Pre-flight profiling failed, defaulting to All-through:", e);
+    }
+
     const generalConstraints = `Search & Verification Constraints:
+### VERIFIED SCHOOL EDUCATIONAL PHASES:
+- Target School: ${input.schoolName} in ${input.city || ''}, ${input.country || ''}
+- Verified Educational Phases Offered:
+  * Primary/Prep section: ${hasPrimary ? "YES" : "NO"}
+  * Secondary/College/High School section: ${hasSecondary ? "YES" : "NO"}
+  * Summary: ${phasesSummary}
+
+*CRITICAL FILTRATION CONSTRAINT:*
+You MUST strictly discard and filter out any discovered job listings or vacancies that belong to an educational stage/phase that this school does NOT offer.
+- If "Primary/Prep section" is NO, you MUST discard and reject any primary school class teacher, primary PE, early years, nursery, kindergarten, key stage 1, key stage 2, or head of primary vacancies.
+- If "Secondary/College/High School section" is NO, you MUST discard and reject any secondary subject teacher (e.g. IGCSE Physics, IB Chemistry), key stage 3, key stage 4, key stage 5, or secondary leadership vacancies.
+- You must ignore all roles from sibling/sister campuses or separate nearby schools that do not match the target school's educational profile.
+
 1. Target Roles (Teaching, Support, & Leadership):
    - MUST INCLUDE: All classroom teachers (primary & secondary), specialized subject teachers (e.g., Performing Arts), Senior & Middle Leadership (e.g., High School Leadership - Teaching & Learning), Head of Student Support / SENCOs, Learning Support Teachers, EAL Specialists, and Careers/University Advisors.
    - MUST EXCLUDE: Non-academic local support staff (e.g., bus drivers, building caretakers, gardeners, office receptionists, office staff, finance clerks, IT tech support, sports-only coaches).
