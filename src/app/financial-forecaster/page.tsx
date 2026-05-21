@@ -1313,7 +1313,7 @@ function DecoderContent() {
                                                     </span>
                                                   </div>
                                                   <div className="flex items-center gap-2 shrink-0">
-                                                    {job.postedDate && !job.closesDate && (
+                                                    {job.postedDate && (
                                                       <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
                                                         Listed: {job.postedDate}
                                                       </span>

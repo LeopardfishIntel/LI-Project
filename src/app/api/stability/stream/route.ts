@@ -345,7 +345,6 @@ export function sanitizeVacancy(v: any): Vacancy {
   let date_closing: string | null = v.date_closing ? String(v.date_closing).trim() : null;
 
   if (status === "OPEN") {
-    const isAnchor = date_listed && (date_listed === "21 May 2026" || date_listed.includes("21 May 2026"));
     let extractedDeadline = date_closing;
     if (!extractedDeadline && v.original) {
       const closesPart = v.original.match(/closes:\s*([^;)]+)/i);
@@ -353,14 +352,9 @@ export function sanitizeVacancy(v: any): Vacancy {
         extractedDeadline = closesPart[1].trim();
       }
     }
-    if (isAnchor && extractedDeadline) {
-      date_listed = null;
-      date_closing = extractedDeadline;
-    } else if (extractedDeadline) {
+    if (extractedDeadline) {
       date_closing = extractedDeadline;
     }
-  } else {
-    date_closing = null;
   }
 
   return {
@@ -478,17 +472,18 @@ To keep execution times low, token counts small, and eliminate text overflow:
 * **Token Optimization & Parsing Capping:** Ignore and skip processing long-form block descriptions, legal disclaimers, or school history profiles found in scraped data wrappers. Extract ONLY the target schema variables.
 * **Title Length Validation:** - Cap job title strings to a maximum of 80 characters. Strip away trailing tracking tags or source attribution flags (e.g., remove portal suffixes from the end of title strings).
 * **Whitespace & Formatting:** - Flatten all raw HTML newlines, tabs, and consecutive carriage spaces into a single space character before mapping text to fields.
-* **Asymmetric Timeline Rules (Open vs. Closed Dates):**
-    - For vacancies matching the current tracking day anchor (21 May 2026) with status: "OPEN" that feature an explicit deadline, you MUST suppress and omit the date_listed property entirely (set it to null). 
-    - Instead, capture the exact target application window and map it strictly to date_closing (e.g., "18 Jun 2026").
-    - For archived historical vacancies with status: "CLOSED", you MUST preserve and output the original date_listed day string (e.g., "13 Oct 2025") as the absolute time anchor. Leave date_closing null for closed records.`;
+* **Date & Timeline Extraction Rules:**
+    - You MUST scan the page text, search snippets, and metadata extremely carefully to locate and extract the most accurate **date_listed** (posted date) and **date_closing** (closing date / application deadline / apply by date) for every vacancy.
+    - Keep both the listing date (\`date_listed\`) and closing date (\`date_closing\`) populated. Never suppress the listing date when a closing date is present.
+    - If a vacancy is OPEN but no explicit listing date is found, default \`date_listed\` to "21 May 2026".
+    - If a vacancy is OPEN but no explicit closing date/deadline is found, default \`date_closing\` to "18 Jun 2026" (4 weeks after listing date).`;
 
         const runPhaseSweep = async (phaseNum: number, prompt: string): Promise<Vacancy[]> => {
           console.log(`🛸 [STREAM SWEEP] Running Phase ${phaseNum} for ${schoolName}...`);
           try {
             const response = await ai.generate({
               model: "googleai/gemini-2.5-flash",
-              prompt: `${prompt}\n\nTarget School: ${schoolName} in ${city}, ${country}\n\nReturn your answer ONLY as a JSON object matching this schema:\n{\n  "vacancies_discovered": [\n    {\n      "title": "Job Title",\n      "department": "Secondary" | "Primary" | "Leadership",\n      "source": "Source Name",\n      "source_url": "URL",\n      "date_listed": "DD MMM YYYY",\n      "status": "OPEN" | "CLOSED",\n      "tes_employer_slug": "optional-slug"\n    }\n  ]\n}`,
+              prompt: `${prompt}\n\nTarget School: ${schoolName} in ${city}, ${country}\n\nReturn your answer ONLY as a JSON object matching this schema:\n{\n  "vacancies_discovered": [\n    {\n      "title": "Job Title",\n      "department": "Secondary" | "Primary" | "Leadership",\n      "source": "Source Name",\n      "source_url": "URL",\n      "date_listed": "DD MMM YYYY",\n      "date_closing": "DD MMM YYYY",\n      "status": "OPEN" | "CLOSED",\n      "tes_employer_slug": "optional-slug"\n    }\n  ]\n}`,
               system: SYSTEM_PROMPT,
               config: {
                 tools: [{ googleSearch: {} } as any],
