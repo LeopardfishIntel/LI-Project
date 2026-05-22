@@ -179,15 +179,25 @@ Provide only the reworded text. No intro or outro.`,
     }
 }
 
-const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
-  const isWithinLast12Months = (v: any): boolean => {
+const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: string, city?: string): any[] => {
+  const isWithinLast24Months = (v: any): boolean => {
     const dateStr = v.date_listed || v.date_closing;
     if (!dateStr) return true;
     const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
     const d = new Date(cleanDateStr);
     if (isNaN(d.getTime())) return true;
-    const cutoff = new Date("2025-05-21");
+    const cutoff = new Date("2024-05-21");
     return d >= cutoff;
+  };
+
+  const getRecruitmentCycle = (v: any): "CURRENT" | "HISTORIC_Y1" => {
+    const dateStr = v.date_listed || v.date_closing;
+    if (!dateStr) return "CURRENT";
+    const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
+    const d = new Date(cleanDateStr);
+    if (isNaN(d.getTime())) return "CURRENT";
+    const twelveMonthsAgo = new Date("2025-05-21");
+    return d >= twelveMonthsAgo ? "CURRENT" : "HISTORIC_Y1";
   };
 
   const getVacancyDateTime = (v: any): number => {
@@ -195,7 +205,28 @@ const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
     return isNaN(d.getTime()) ? 0 : d.getTime();
   };
 
+  const lowerSchoolName = schoolName ? schoolName.toLowerCase() : "";
+  const lowerCity = city ? city.toLowerCase() : "";
+  const isPrague = lowerCity.includes("prague") || lowerSchoolName.includes("prague");
+
   const parsed = scrapedList.map(job => {
+    // 🛡️ STRICT TARGET ISOLATION (ANTI-CITY LEAK) Programmatic Filtering
+    const lowerJob = job.toLowerCase();
+    if (isPrague) {
+      if (lowerJob.includes("riverside") && !lowerSchoolName.includes("riverside")) {
+        return null;
+      }
+      if ((lowerJob.includes("parklane") || lowerJob.includes("park lane")) && !lowerSchoolName.includes("parklane") && !lowerSchoolName.includes("park lane")) {
+        return null;
+      }
+      if ((lowerJob.includes("prague british") || lowerJob.includes("pbis")) && !lowerSchoolName.includes("prague british") && !lowerSchoolName.includes("pbis")) {
+        return null;
+      }
+      if ((lowerJob.includes("english college") || lowerJob.includes("ecp")) && !lowerSchoolName.includes("english college") && !lowerSchoolName.includes("ecp")) {
+        return null;
+      }
+    }
+
     const sourcePart = job.split(' - ');
     const source = sourcePart[1] || 'Web';
     const main = sourcePart[0] || job;
@@ -289,7 +320,7 @@ const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
       date_closing_val = null;
     }
 
-    return {
+    const item: any = {
       title,
       department,
       source,
@@ -298,7 +329,9 @@ const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
       date_closing: date_closing_val,
       status
     };
-  });
+    item.recruitmentCycle = getRecruitmentCycle(item);
+    return item;
+  }).filter((v): v is NonNullable<typeof v> => v !== null);
 
   const getNormalizedComparisonKey = (title: string): string => {
     let key = title.replace(/\s*\([^)]*\)/g, "").trim().toLowerCase();
@@ -324,7 +357,7 @@ const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
   };
 
   const finalVacancies: any[] = [];
-  const filtered = parsed.filter(v => isWithinLast12Months(v));
+  const filtered = parsed.filter(v => isWithinLast24Months(v));
 
   for (const job of filtered) {
     const normKey = getNormalizedComparisonKey(job.title);
@@ -339,7 +372,8 @@ const reconstructStructuredVacancies = (scrapedList: string[]): any[] => {
       const year = getYearFromDate(job.date_listed || job.date_closing);
       const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
 
-      if (year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
+      // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season)
+      if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
         isDuplicate = true;
         const newPriority = getSourcePriority(job.source);
         const oldPriority = getSourcePriority(existing.source);
@@ -573,7 +607,7 @@ export async function getSchoolStabilityReport(input: {
                     lastScrapedAt
                 };
                 if (!cachedReport.vacancies_discovered) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList);
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
                 }
                 cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
                 cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
@@ -611,7 +645,7 @@ export async function getSchoolStabilityReport(input: {
                             const freshJobsList = searchRes.scrapedJobsList;
                             const freshLastScrapedAt = new Date().toISOString();
 
-                            const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList);
+                            const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList, input.schoolName, input.city);
                             const fresh_total_known_vacancies = freshParsedVacancies.length;
                             const fresh_leadership_vacancies_count = freshParsedVacancies.filter(v => v.department === "Leadership").length;
                             const fresh_secondary_vacancies_count = freshParsedVacancies.filter(v => v.department === "Secondary").length;
@@ -701,7 +735,7 @@ export async function getSchoolStabilityReport(input: {
                     lastScrapedAt
                 };
                 if (!cachedReport.vacancies_discovered) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList);
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
                 }
                 cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
                 cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
@@ -755,7 +789,7 @@ export async function getSchoolStabilityReport(input: {
         // 4. Compute fresh stability report using the AI Genkit Flow
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
         
-        const parsedVacancies = reconstructStructuredVacancies(scrapedJobsList);
+        const parsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
         const total_known_vacancies = parsedVacancies.length;
         const leadership_vacancies_count = parsedVacancies.filter(v => v.department === "Leadership").length;
         const secondary_vacancies_count = parsedVacancies.filter(v => v.department === "Secondary").length;

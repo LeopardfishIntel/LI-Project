@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";
 import fs from "fs";
+import { db } from "@/firebase/server";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import path from "path";
 
 // 📋 Zod schemas for validation and Gemini output structure
@@ -14,6 +16,7 @@ const VacancySchema = z.object({
   date_closing: z.string().nullable().optional(),
   status: z.enum(["OPEN", "CLOSED"]),
   tes_employer_slug: z.string().optional(),
+  recruitmentCycle: z.enum(["CURRENT", "HISTORIC_Y1"]).optional(),
 });
 
 const VacancyListSchema = z.object({
@@ -397,6 +400,32 @@ export async function GET(req: NextRequest) {
         const isPrague = city.toLowerCase() === "prague" || lowerSchool.includes("prague");
         const hasGroundTruth = (lowerSchool.includes("riverside") || lowerSchool.includes("parklane")) && isPrague;
 
+        let targetOfficialWebsite = "";
+        try {
+          const docRef = doc(db, 'schools', schoolId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            targetOfficialWebsite = docSnap.data().website || docSnap.data().schoolwebsite || "";
+          }
+        } catch (e) {
+          console.warn("🛸 [STREAM SWEEP] Could not fetch school website by ID:", e);
+        }
+
+        if (!targetOfficialWebsite) {
+          try {
+            console.log(`🛸 [STREAM SWEEP] Attempting REST API fallback to fetch school website for ${schoolName}...`);
+            const res = await fetch(`https://firestore.googleapis.com/v1/projects/studio-2840117705-12faa/databases/(default)/documents/schools/${schoolId}`);
+            if (res.ok) {
+              const docData = await res.json();
+              if (docData.fields) {
+                targetOfficialWebsite = docData.fields.website?.stringValue || docData.fields.schoolwebsite?.stringValue || "";
+              }
+            }
+          } catch (restErr) {
+            console.warn("🛸 [STREAM SWEEP] REST API fallback failed too:", restErr);
+          }
+        }
+
         // 🧠 Pre-flight: Identify target school's educational phases
         let hasPrimary = true;
         let hasSecondary = true;
@@ -442,13 +471,20 @@ Provide ONLY the raw JSON object.`,
   * Secondary/College/High School section: ${hasSecondary ? "YES" : "NO"}
   * Summary: ${phasesSummary}
 
+*STRICT TARGET ISOLATION (ANTI-CITY LEAK):*
+- You MUST treat the target school name "${schoolName}" as a hard, non-negotiable search operator constraint.
+- Every single query you execute using the Google Search tool MUST strictly contain the exact school name "${schoolName}" wrapped in escaped double quotes (e.g. \\"${schoolName}\\").
+- You are EXPLICITLY FORBIDDEN from dropping the school name or executing any search query that does not contain the school name, or where the school name is not in quotes.
+- NEVER search for general city-wide or regional terms like "teaching jobs in Prague" or "Czech vacancies". Any query you execute must be strictly anchored to the specific target school "${schoolName}".
+- If a search result snippet or page content mentions a vacancy, you MUST verify that it belongs to the target school "${schoolName}" and NOT to any other school. Discard any vacancies belonging to other schools (e.g. Riverside School, Park Lane, PBIS).
+- If you find zero vacancies matching the target school "${schoolName}", you MUST return an empty array payload \`[]\`. Do not pad or fill the search arrays with extraneous, third-party city vacancies from unrelated regional academies.
+
 *CRITICAL FILTRATION CONSTRAINT:*
 You MUST strictly discard and filter out any discovered job listings or vacancies that belong to an educational stage/phase that this school does NOT offer.
 - If "Primary/Prep section" is NO, you MUST discard and reject any primary school class teacher, primary PE, early years, nursery, kindergarten, key stage 1, key stage 2, or head of primary vacancies.
 - If "Secondary/College/High School section" is NO, you MUST discard and reject any secondary subject teacher (e.g. IGCSE Physics, IB Chemistry), key stage 3, key stage 4, key stage 5, or secondary leadership vacancies.
 - You must ignore all roles from sibling/sister campuses or separate nearby schools that do not match the target school's educational profile.
-
-When querying the Google Search tool, you MUST include the school's location (city and country) in every search query to disambiguate it from other schools with similar or identical names (for example, there are multiple St John's schools).
+- Ignore any vacancies that are from other schools in the same city (e.g. Riverside School Prague or Park Lane International School).
 
 Your primary execution challenges are:
 1. Sourcing data EXCLUSIVELY from primary authority feeds, completely bypassing individual school websites.
@@ -572,18 +608,51 @@ To keep execution times low, token counts small, and eliminate text overflow:
           return 4; // fallback
         };
 
-        const isWithinLast12Months = (v: Vacancy): boolean => {
+        const isWithinLast24Months = (v: Vacancy): boolean => {
           const dateStr = v.date_listed || v.date_closing;
           if (!dateStr) return true;
           const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
           const d = new Date(cleanDateStr);
           if (isNaN(d.getTime())) return true;
-          const cutoff = new Date("2025-05-21");
+          const cutoff = new Date();
+          cutoff.setFullYear(cutoff.getFullYear() - 2);
           return d >= cutoff;
         };
 
-        const activeParklaneGround = parklaneGroundTruth.map(sanitizeVacancy).filter(isWithinLast12Months);
-        const activeRiversideGround = riversideGroundTruth.map(sanitizeVacancy).filter(isWithinLast12Months);
+        const getRecruitmentCycle = (v: Vacancy): "CURRENT" | "HISTORIC_Y1" => {
+          const dateStr = v.date_listed || v.date_closing;
+          if (!dateStr) return "CURRENT";
+          const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
+          const d = new Date(cleanDateStr);
+          if (isNaN(d.getTime())) return "CURRENT";
+          const twelveMonthsAgo = new Date();
+          twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1);
+          return d >= twelveMonthsAgo ? "CURRENT" : "HISTORIC_Y1";
+        };
+
+        const siblingSchools: string[] = [];
+        if (city) {
+          try {
+            const q = query(collection(db, 'schools'), where('city', '==', city));
+            const snap = await getDocs(q);
+            snap.forEach(docSnap => {
+              const data = docSnap.data();
+              const sName = (data.name || data.schoolname || data.school || "").toLowerCase();
+              const targetName = schoolName.toLowerCase();
+              if (sName && sName !== targetName && !targetName.includes(sName) && !sName.includes(targetName)) {
+                siblingSchools.push(sName);
+              }
+            });
+          } catch (err) {
+            console.warn("🛸 [STREAM SWEEP] Could not load sibling schools from Firestore:", err);
+          }
+        }
+        if (siblingSchools.length === 0 && city.toLowerCase() === "prague") {
+          siblingSchools.push("riverside school prague", "park lane international school", "prague british international school", "pbis", "the english college in prague", "ecp");
+        }
+
+        const activeParklaneGround = parklaneGroundTruth.map(sanitizeVacancy).filter(isWithinLast24Months);
+        const activeRiversideGround = riversideGroundTruth.map(sanitizeVacancy).filter(isWithinLast24Months);
 
         const getGroundTruthForPhase = (phaseVal: number): Vacancy[] => {
           if (!hasGroundTruth) return [];
@@ -595,7 +664,12 @@ To keep execution times low, token counts small, and eliminate text overflow:
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: [] });
         const p1JobsAI = await runPhaseSweep(
           1,
-          `Sweep TES, Schrole, and primary global networks using the school's unique employer slug. Capture live posts and historical winter logs simultaneously.`
+          `Sweep TES, Schrole, and primary global networks for the school "${schoolName}".
+You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
+- "\\"${schoolName}\\" vacancies"
+- "\\"${schoolName}\\" career"
+- "\\"${schoolName}\\" jobs"
+- "site:${getSchoolBaseUrl(schoolId, schoolName).replace(/^https?:\/\/(www\.)?/, "")} vacancies"`
         );
         const p1Ground = getGroundTruthForPhase(1);
         const p1Jobs = [...p1JobsAI, ...p1Ground];
@@ -606,7 +680,11 @@ To keep execution times low, token counts small, and eliminate text overflow:
         sendChunk({ phase: 2, status: "searching", vacancies_discovered: [] });
         const p2JobsAI = await runPhaseSweep(
           2,
-          `Target premium consultative networks (LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts. If a match is found, classify source as 'Executive Agency'.`
+          `Target premium consultative networks (LSC Education, Gabbitas, TIC Recruitment) specifically for senior leadership cabinet posts for the school "${schoolName}".
+You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
+- "\\"${schoolName}\\" \\"Leadership\\""
+- "\\"${schoolName}\\" \\"Principal\\""
+- "\\"${schoolName}\\" \\"Director\\""`
         );
         const p2Ground = getGroundTruthForPhase(2);
         const p2Jobs = [...p2JobsAI, ...p2Ground].map(job => {
@@ -661,12 +739,106 @@ To keep execution times low, token counts small, and eliminate text overflow:
 
         // Apply temporal boundary filter to allDiscovered
         const temporalFilteredDiscovered = allDiscovered
-          .map(sanitizeVacancy)
+          .map(job => {
+            const v = sanitizeVacancy(job);
+            v.recruitmentCycle = getRecruitmentCycle(v);
+            return v;
+          })
           .filter(job => {
             if (job.source.toLowerCase().includes("search associates") || job.title.toLowerCase().includes("search associates")) {
               return false;
             }
-            return isWithinLast12Months(job);
+            
+            // 🛡️ STRICT TARGET ISOLATION (ANTI-CITY LEAK) Programmatic Filtering
+            const lowerJobTitle = job.title.toLowerCase();
+            const lowerSchoolName = schoolName.toLowerCase();
+            
+            let isSiblingLeaked = false;
+            for (const sib of siblingSchools) {
+              const cleanSib = sib.replace(/international|school|college|academy|prague/gi, "").trim().toLowerCase();
+              if (cleanSib.length > 2 && lowerJobTitle.includes(cleanSib) && !lowerSchoolName.includes(cleanSib)) {
+                isSiblingLeaked = true;
+                break;
+              }
+            }
+            if (isSiblingLeaked) return false;
+
+            // 🛡️ INSTITUTIONAL DOMAIN ISOLATION & ccTLD GEOGRAPHIC PROTECTION
+            if (job.source_url) {
+              const getCleanDomain = (url: string): string => {
+                let clean = url.replace(/^https?:\/\/(www\.)?/, "");
+                clean = clean.split('/')[0].split(':')[0];
+                return clean.toLowerCase().trim();
+              };
+
+              const getDomainBrand = (domain: string): string => {
+                const parts = domain.replace(/^(www\.)?/, "").split('.');
+                for (const part of parts) {
+                  if (part.length > 2 && !["com", "edu", "org", "net", "sch", "co", "ac", "gov", "school", "academy", "college", "international", "intl"].includes(part)) {
+                    return part;
+                  }
+                }
+                return parts[0] || "";
+              };
+
+              const jobDomain = getCleanDomain(job.source_url);
+              
+              // 1. Same-brand, different-domain collision (e.g. ammanacademy.sch.id vs ammanacademy.edu.jo)
+              if (targetOfficialWebsite) {
+                const targetDomain = getCleanDomain(targetOfficialWebsite);
+                const targetBrand = getDomainBrand(targetDomain);
+                if (targetBrand && targetBrand.length > 2 && jobDomain.includes(targetBrand) && jobDomain !== targetDomain) {
+                  console.log(`🛸 [STREAM SWEEP] Brand Collision: Filtered out same-brand domain leak: ${job.source_url} (target: ${targetDomain})`);
+                  return false;
+                }
+              }
+
+              // 2. ccTLD Country Mismatch Gatekeeper
+              const targetCountryLower = country ? country.toLowerCase() : "";
+              if (targetCountryLower) {
+                const tldMap: Record<string, string> = {
+                  "jordan": "jo",
+                  "czechia": "cz",
+                  "czech republic": "cz",
+                  "oman": "om",
+                  "india": "in",
+                  "japan": "jp",
+                  "china": "cn",
+                  "hong kong": "hk",
+                  "singapore": "sg",
+                  "qatar": "qa",
+                  "uae": "ae",
+                  "united arab emirates": "ae",
+                  "indonesia": "id",
+                  "malaysia": "my",
+                  "thailand": "th",
+                  "germany": "de",
+                  "france": "fr",
+                  "italy": "it",
+                  "greece": "gr",
+                  "spain": "es",
+                  "portugal": "pt",
+                  "switzerland": "ch",
+                  "belgium": "be",
+                  "netherlands": "nl",
+                  "austria": "at",
+                  "norway": "no"
+                };
+                const hostParts = jobDomain.split('.');
+                const lastPart = hostParts[hostParts.length - 1];
+                const targetTld = tldMap[targetCountryLower];
+                
+                if (targetTld) {
+                  const mappedCountry = Object.keys(tldMap).find(key => tldMap[key] === lastPart);
+                  if (mappedCountry && lastPart !== targetTld) {
+                    console.log(`🛸 [STREAM SWEEP] ccTLD Protection: Filtered out mismatch TLD .${lastPart} (${mappedCountry}) for target country ${targetCountryLower} (.${targetTld})`);
+                    return false;
+                  }
+                }
+              }
+            }
+
+             return isWithinLast24Months(job);
           });
 
         for (const job of temporalFilteredDiscovered) {
@@ -682,7 +854,8 @@ To keep execution times low, token counts small, and eliminate text overflow:
             const year = getYearFromDate(job.date_listed || job.date_closing);
             const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
 
-            if (year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
+            // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season)
+            if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
               isDuplicate = true;
               const newPriority = getSourcePriority(job.source);
               const oldPriority = getSourcePriority(existing.source);

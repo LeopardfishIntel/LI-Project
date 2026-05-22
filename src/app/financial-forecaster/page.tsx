@@ -303,8 +303,30 @@ function DecoderContent() {
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
+  const [stabilityCountdown, setStabilityCountdown] = useState(10);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
+
+  // ⏱️ STABILITY CALCULATION COUNTDOWN (starts at 10, lasts 100 seconds, decrements every 10 seconds)
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isCalculatingStability) {
+      setStabilityCountdown(10);
+      interval = setInterval(() => {
+        setStabilityCountdown((prev) => {
+          if (prev <= 1) {
+            return 1;
+          }
+          return prev - 1;
+        });
+      }, 10000);
+    } else {
+      setStabilityCountdown(10);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isCalculatingStability]);
 
 
   
@@ -369,7 +391,9 @@ function DecoderContent() {
       if (
         errMsg.includes("reading 'call'") ||
         errMsg.includes("undefined (reading 'call')") ||
-        errMsg.includes("Failed to fetch")
+        errMsg.includes("Failed to fetch") ||
+        errMsg.includes("Server Action") ||
+        errMsg.includes("not found on the server")
       ) {
         console.warn("Detected Webpack chunk/HMR module mismatch. Reloading page to sync bundles...", err);
         if (typeof window !== 'undefined') {
@@ -1106,7 +1130,7 @@ function DecoderContent() {
                           <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
                         </span>
                         <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic ml-auto">
-                          re-verification takes upto 2 mins
+                          re-verification takes upto 90 secs
                         </span>
                       </h4>
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#d95f02]/30 pl-4">
@@ -1130,7 +1154,7 @@ function DecoderContent() {
                                     Executing Two-Step Vacancy Audit
                                   </span>
                                   <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                    Running Research Engine (takes up to 1 min)...
+                                    Running Research Engine (Countdown: {stabilityCountdown})...
                                   </span>
                                 </div>
                                 
@@ -1223,7 +1247,7 @@ function DecoderContent() {
                                         className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[9px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
                                       >
                                         <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> 
-                                        {isCalculatingStability ? "Re-verifying (takes up to 1 min)..." : "Re-verify vacancies"}
+                                        {isCalculatingStability ? `Re-verifying (Countdown: ${stabilityCountdown})...` : "Re-verify vacancies"}
                                       </button>
                                     </div>
                                   </div>

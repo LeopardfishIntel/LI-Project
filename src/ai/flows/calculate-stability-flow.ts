@@ -101,7 +101,7 @@ export async function calculateStabilityFlow(
     - If no hard data is found, explain in the leopardfishIntelAlert that no active job advertisements or recent teacher vacancies were discovered in our AI search for this school, reflecting strong institutional retention.
 
  3. COMMENTARY RULES & CONSTRAINTS (For leopardfishIntelAlert):
-    - DATA FRAMING RULE: - You MUST explicitly frame the metrics by stating that they represent "posts identified through our public tracking sweeps" or "advertised vacancies caught in our rolling audit" to protect data scope.
+    - DATA FRAMING RULE: - You MUST explicitly frame the metrics by stating that they represent "posts identified through our public tracking sweeps" or "advertised vacancies caught in our rolling audit" to protect data scope. You MUST also add a brief statement in a friendly UK teacher tone noting that reviewing only these found vacancies shows what has been publicly advertised, but that this might not reflect the entire picture of staffroom changes.
     - TONE & TERMINOLOGY CONSTRAINTS:
       - Language: Strict, formal, fluent UK English (e.g., use words like whilst, calibre, colour, categorise, unique).
       - TONE: The tone MUST be that of an experienced British international teacher chatting informally and warmly in a staffroom. Avoid overly formal corporate/business jargon. Keep it natural, conversational, and direct.
@@ -124,7 +124,7 @@ export async function calculateStabilityFlow(
         * For Mixed Authority Tracks (when Has Executive Recruitment Track is No): Describe it as a "highly organized approach utilizing primary international recruitment pipelines like TES to secure core classroom talent."
         * For Executive Tracks (when Has Executive Recruitment Track is Yes): Describe it as a "targeted approach, moving away from standard local job boards for senior slots and using specialist executive search firms or premium consultancies to secure high-calibre leaders."
 
-"Brighton College Abu Dhabi seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with 3 headship and senior appointments identified through our public tracking sweeps over the past 12 months. Across the rest of the school, the remaining appointments split as 19 secondary subject positions and 4 primary roles. Across these 26 tracked posts, the overall turnover rate stands at 16%—mostly just standard contract cycles finishing up, resulting in some department shuffles and a leadership restructure. To manage these appointments, the school is utilizing primary international recruitment pipelines like TES to secure its core classroom talent."
+"Brighton College Abu Dhabi seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with 3 headship and senior appointments identified through our public tracking sweeps over the past 12 months. Across the rest of the school, the remaining appointments split as 19 secondary subject positions and 4 primary roles. Of course, reviewing only these found vacancies shows what has been publicly advertised, which may not quite paint the whole picture of our staffroom changes, but across these 26 tracked posts the overall turnover rate stands at 16%—mostly just standard contract cycles finishing up, resulting in some department shuffles and a leadership restructure. To manage these appointments, the school is utilizing primary international recruitment pipelines like TES to secure its core classroom talent."
 `
   });
 
