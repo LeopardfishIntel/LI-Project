@@ -54,6 +54,9 @@ export default function PreparePage() {
   // 🕹️ State
   const [calcStatus, setCalcStatus] = useState<string>('single');
   const [selectedCountry, setSelectedCountry] = useState<string>('all');
+  const isGulfCountry = useMemo(() => {
+    return ['oman', 'united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'uae'].includes(selectedCountry.toLowerCase());
+  }, [selectedCountry]);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [transportMode, setTransportMode] = useState<'public' | 'drive' | 'taxi'>('public');
   const [pensionRegion, setPensionRegion] = useState<'GB' | 'US'>('GB');
@@ -644,7 +647,14 @@ export default function PreparePage() {
 
     printLine(`• Housing Adjustments: Could you downgrade from a 3-bed residence (${rentVal}) to a smaller flat to reclaim some surplus?`, 8.5, "normal", textMain, 2);
     printLine("• The Partner Variable: If you are moving with a spouse, input a Partner Net Salary. Often, a second income is the difference between \"just surviving\" and \"thriving\".", 8.5, "normal", textMain, 2);
-    printLine(`• The 4x4 Necessity: Notice the Transport field (${transportVal}). In regions like Oman, infrastructure is built for cars; a 4x4 is a non-negotiable "infrastructure tax" for a family. Don't try to "save" money here by pretending you'll take the bus—it won't happen. Downgrading to a sedan will help, but limits your adventures.`, 8.5, "normal", textMain, 2);
+    if (isGulfCountry) {
+      printLine(`• The 4x4 Necessity: Notice the Transport field (${transportVal}). In regions like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, infrastructure is built for cars; a 4x4 is a non-negotiable "infrastructure tax" for a family. Don't try to "save" money here by pretending you'll take the bus—it won't happen. Downgrading to a sedan will help, but limits your adventures.`, 8.5, "normal", textMain, 2);
+    } else {
+      const transitDesc = transportMode === 'public'
+        ? `• Efficient Transit: Notice the Transport field (${transportVal}). In public-transit-friendly hubs like ${selectedCountry !== 'all' ? selectedCountry : 'Prague'}, infrastructure is optimized for comprehensive and highly efficient public transit. A personal vehicle is entirely optional. Opting for public transit keeps your commute affordable and stress-free.`
+        : `• Transit Alternatives: Notice the Transport field (${transportVal}). In public-transit-oriented sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Prague'}, public transportation is highly comprehensive and efficient. While you have selected ${transportMode === 'drive' ? 'driving' : 'taxi'} setup, utilizing the local transit network is often the most cost-effective and reliable default for daily operations.`;
+      printLine(transitDesc, 8.5, "normal", textMain, 2);
+    }
     printLine(`• Home-Country Cuts: Can you reduce your "Home Anchors"? Adjusting your custom commitments might be the only way to make a tight ${incomeVal} salary viable.`, 8.5, "normal", textMain, 8);
 
     printLine(`Peer Advice: Use this page to find your "Breaking Point." If you have to downgrade your lifestyle to a level you'll hate just to save £200 a month, the mission is a fail. Use these results to fuel your negotiation email—if the surplus is too low, you have the data to prove why you need a higher salary step.`, 9, "italic", primary, 10);
@@ -901,7 +911,13 @@ export default function PreparePage() {
                          {[
                            { id: 'A', label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
                            { id: 'B', label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
-                           { id: 'C', label: "The 4x4 necessity", desc: `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` },
+                           { 
+                              id: 'C', 
+                              label: isGulfCountry ? "The 4x4 necessity" : "Transit optimization", 
+                              desc: isGulfCountry 
+                                ? `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` 
+                                : `In transit-oriented sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Prague'}, high-efficiency public transport reduces commuting costs to a fraction of driving expenses (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` 
+                            },
                            { id: 'D', label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
                            { id: 'E', label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
                            { id: 'F', label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
