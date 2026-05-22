@@ -1180,9 +1180,9 @@ function DecoderContent() {
                                        ✓
                                      </div>
                                      <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 1: Institutional Dossier Loaded</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 1: Dossier Loaded</span>
                                        <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 1.</span>
-                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Retrieved local vacancy records &amp; database (&lt; 100ms)</span>
+                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Retrieved local database (&lt; 100ms)</span>
                                      </div>
                                    </div>
 
@@ -1192,9 +1192,9 @@ function DecoderContent() {
                                        <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#d95f02] rounded-full" />
                                      </div>
                                      <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 2: Active Web Portals Sweep</span>
+                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 2: Portals Sweep</span>
                                        <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 2.</span>
-                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Auditing TES, Schrole, premium consultative &amp; global networks live...</span>
+                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Auditing premium consultative &amp; global networks live...</span>
                                      </div>
                                    </div>
                                  </div>
