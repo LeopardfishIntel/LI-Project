@@ -9,7 +9,8 @@ import {
   QueryDocumentSnapshot,
   DocumentData,
   getDoc,
-  setDoc
+  setDoc,
+  addDoc
 } from 'firebase/firestore';
 import { db } from '@/firebase/server';
 
@@ -26,6 +27,25 @@ export type EcoActionState = {
   success: boolean;
   data: any | null;
 };
+
+/**
+ * 🛰️ Action: Log Telemetry Event
+ * Persists user interaction telemetry without storing PII.
+ */
+export async function logTelemetryEventAction(eventName: string, metadata: any, sessionId?: string) {
+  try {
+    await addDoc(collection(db, 'telemetry'), {
+      event_name: eventName,
+      timestamp: new Date().toISOString(),
+      session_id: sessionId || `sess_${Math.random().toString(36).substr(2, 9)}`,
+      metadata: metadata || {}
+    });
+    return { success: true };
+  } catch (e: any) {
+    console.error("Failed to log telemetry event:", e.message || e);
+    return { success: false, error: e.message };
+  }
+}
 
 /**
  * 🛰️ Action: Update Location Cost of Living
@@ -81,7 +101,7 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
 
 /**
  * 🛰️ Action: Get Telemetry Data
- * Pulls the raw node data for the Admin Dashboard.
+ * Pulls the raw node data and aggregates dynamic event telemetry for the Admin Dashboard.
  */
 export async function getTelemetryData() {
   try {
@@ -108,12 +128,20 @@ export async function getTelemetryData() {
       })
     ]);
 
-    const legacyTelemetry = telemetrySnap 
-      ? telemetrySnap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({
-          ...acc,
-          ...d.data()
-        }), {})
-      : {};
+    const legacyTelemetry: any = {};
+    const events: any[] = [];
+
+    if (telemetrySnap) {
+      telemetrySnap.docs.forEach((doc) => {
+        const dData = doc.data();
+        if (dData.event_name) {
+          events.push({ id: doc.id, ...dData });
+        } else {
+          // Merge legacy fields
+          Object.assign(legacyTelemetry, dData);
+        }
+      });
+    }
 
     const pageViewsDoc = pageViewsSnap ? pageViewsSnap.docs.find(d => d.id === 'page_views') : null;
     const pageViews = pageViewsDoc ? pageViewsDoc.data() : {};
@@ -131,6 +159,117 @@ export async function getTelemetryData() {
       pendingEnquiries = legacyTelemetry.pendingEnquiries;
     }
 
+    // --- 📊 Advanced Telemetry Aggregation Engine ---
+    let avgNetSalary = 0;
+    let netSalarySum = 0;
+    let netSalaryCount = 0;
+    let housingDowngrades = 0;
+    let partnerSalaryAdditions = 0;
+
+    let surplusThriving = 0;
+    let surplusLimited = 0;
+    let surplusNegative = 0;
+
+    const checklistCounts: Record<string, number> = {};
+    let emailCopiesCount = 0;
+    let uninsuredWarningsCount = 0;
+
+    const schoolCounts: Record<string, number> = {};
+    const countryCounts: Record<string, number> = {};
+    const redFlagCounts: Record<string, number> = {};
+
+    let authVisits = 0;
+    let guestVisits = 0;
+
+    const dailyVisits: Record<string, number> = {};
+
+    events.forEach((evt) => {
+      const timestamp = evt.timestamp;
+      const meta = evt.metadata || {};
+
+      // Daily Visits Trend
+      if (timestamp) {
+        const dateStr = timestamp.split('T')[0];
+        dailyVisits[dateStr] = (dailyVisits[dateStr] || 0) + 1;
+      }
+
+      // User type breakdown
+      if (meta.user_type === 'authenticated' || meta.isAuthenticated) {
+        authVisits++;
+      } else if (meta.user_type === 'guest' || meta.isAuthenticated === false) {
+        guestVisits++;
+      } else if (evt.event_name === 'page_view') {
+        guestVisits++;
+      }
+
+      if (evt.event_name === 'simulator_dial_adjusted') {
+        if (meta.dial_modified === 'net_salary' && typeof meta.new_value === 'number') {
+          netSalarySum += meta.new_value;
+          netSalaryCount++;
+        }
+        if (meta.dial_modified === 'housing_allowance' && typeof meta.new_value === 'number' && typeof meta.previous_value === 'number' && meta.new_value < meta.previous_value) {
+          housingDowngrades++;
+        }
+        if (meta.dial_modified === 'partner_salary' && typeof meta.new_value === 'number' && meta.new_value > 0) {
+          partnerSalaryAdditions++;
+        }
+        if (meta.resulting_status) {
+          const status = String(meta.resulting_status).toLowerCase();
+          if (status.includes('thriving') || status.includes('green') || status.includes('surplus')) {
+            surplusThriving++;
+          } else if (status.includes('limited') || status.includes('tight')) {
+            surplusLimited++;
+          } else if (status.includes('negative') || status.includes('grim')) {
+            surplusNegative++;
+          }
+        }
+      }
+
+      if (evt.event_name === 'checklist_toggled') {
+        const item = meta.checklist_item || 'unknown';
+        if (meta.checked) {
+          checklistCounts[item] = (checklistCounts[item] || 0) + 1;
+        }
+      }
+
+      if (evt.event_name === 'email_template_copied') {
+        emailCopiesCount++;
+      }
+
+      if (evt.event_name === 'uninsured_warning_viewed') {
+        uninsuredWarningsCount++;
+      }
+
+      if (evt.event_name === 'school_profile_viewed') {
+        const school = meta.school_name || 'unknown';
+        schoolCounts[school] = (schoolCounts[school] || 0) + 1;
+      }
+
+      if (evt.event_name === 'country_query_executed') {
+        const country = meta.country_name || 'unknown';
+        countryCounts[country] = (countryCounts[country] || 0) + 1;
+      }
+
+      if (evt.event_name === 'contract_red_flag_hovered') {
+        const flag = meta.flag_name || 'unknown';
+        redFlagCounts[flag] = (redFlagCounts[flag] || 0) + 1;
+      }
+    });
+
+    avgNetSalary = netSalaryCount > 0 ? Math.round(netSalarySum / netSalaryCount) : 0;
+
+    // Get 7-day sparkline format
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      return d.toISOString().split('T')[0];
+    }).reverse();
+
+    const visitsTrend = last7Days.map(date => ({
+      date: date.substring(5), // MM-DD
+      count: dailyVisits[date] || 0
+    }));
+
     const data = {
       ...legacyTelemetry,
       totalVisits: pageViews.site_visits || 0,
@@ -138,7 +277,28 @@ export async function getTelemetryData() {
       totalSchools: schoolsSnap ? schoolsSnap.size : 0,
       totalLocations: colSnap ? colSnap.size : 0,
       uniqueCountries: uniqueCountries,
-      pendingEnquiries: pendingEnquiries
+      pendingEnquiries: pendingEnquiries,
+      
+      // Dynamic calculations
+      avgNetSalary,
+      housingDowngrades,
+      partnerSalaryAdditions,
+      surplusBreakdown: {
+        thriving: surplusThriving,
+        limited: surplusLimited,
+        negative: surplusNegative
+      },
+      checklistFriction: Object.entries(checklistCounts).map(([item, count]) => ({ item, count })).sort((a,b) => b.count - a.count),
+      emailCopies: emailCopiesCount,
+      uninsuredWarnings: uninsuredWarningsCount,
+      topSchools: Object.entries(schoolCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
+      topCountries: Object.entries(countryCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
+      redFlagHovers: Object.entries(redFlagCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
+      userTypeBreakdown: {
+        authenticated: authVisits,
+        guest: guestVisits
+      },
+      visitsTrend
     };
 
     return { success: true, data };

@@ -508,38 +508,197 @@ export default function AdminCommandPage() {
 
         {/* TAB 5: TELEMETRY */}
         {activeTab === 'telemetry' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-black uppercase tracking-widest text-white italic">Live Telemetry</h2>
-                    <button onClick={loadTelemetry} className="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-white flex items-center gap-2">
+                    <button onClick={loadTelemetry} className="text-[10px] font-black uppercase tracking-widest text-[#d95f02] hover:text-white flex items-center gap-2">
                         {loadingTelemetry ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />} Refresh Data
                     </button>
                 </div>
+                
                 {telemetry && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
+                    <div className="space-y-8">
+                        {/* High Level Cards Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
+                            </div>
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
+                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
+                            </div>
                         </div>
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
+
+                        {/* Traffic Trend and Analytics Breakdown */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Visits Trend Bar Chart */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4 lg:col-span-2">
+                                <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">7-Day Traffic Trend (Daily Visits)</h3>
+                                <div className="flex items-end justify-between h-36 pt-6 px-2">
+                                    {telemetry.visitsTrend?.map((day: any, idx: number) => {
+                                        const maxCount = Math.max(...telemetry.visitsTrend.map((d: any) => d.count), 1);
+                                        const heightPct = (day.count / maxCount) * 100;
+                                        return (
+                                            <div key={idx} className="flex flex-col items-center gap-2 flex-1 group">
+                                                <div className="text-[9px] font-black text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {day.count}
+                                                </div>
+                                                <div 
+                                                    style={{ height: `${Math.max(heightPct, 5)}%` }}
+                                                    className="w-8 bg-purple-500/80 hover:bg-[#d95f02] transition-all duration-200"
+                                                />
+                                                <div className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
+                                                    {day.date}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* User breakdown */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-6 flex flex-col justify-between">
+                                <div className="space-y-4">
+                                    <h3 className="text-xs font-black uppercase text-sky-400 tracking-wider">User Segmentation</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Authenticated</p>
+                                            <p className="text-2xl font-black italic text-sky-400">{telemetry.userTypeBreakdown?.authenticated || 0}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Anonymous Guests</p>
+                                            <p className="text-2xl font-black italic text-slate-400">{telemetry.userTypeBreakdown?.guest || 0}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                                    <div className="space-y-1">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Email Copied</p>
+                                        <p className="text-lg font-black italic text-purple-400">{telemetry.emailCopies || 0}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Uninsured Views</p>
+                                        <p className="text-lg font-black italic text-rose-400">{telemetry.uninsuredWarnings || 0}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
+
+                        {/* Flight Simulator and Surplus Analysis */}
+                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-6">
+                            <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Flight Simulator Insights</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                                <div className="grid grid-cols-3 gap-4 md:col-span-2">
+                                    <div className="border-r border-white/5 pr-4 space-y-1">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Avg Net Salary</p>
+                                        <p className="text-2xl font-black italic text-white">£{telemetry.avgNetSalary?.toLocaleString() || 0}</p>
+                                    </div>
+                                    <div className="border-r border-white/5 pr-4 space-y-1">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Housing Downgrades</p>
+                                        <p className="text-2xl font-black italic text-[#d95f02]">{telemetry.housingDowngrades || 0}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase leading-none">Partner Income Added</p>
+                                        <p className="text-2xl font-black italic text-emerald-400">{telemetry.partnerSalaryAdditions || 0}</p>
+                                    </div>
+                                </div>
+                                
+                                {/* Surplus Status Distribution */}
+                                <div className="space-y-3 md:col-span-1 border-t md:border-t-0 md:border-l border-white/5 pt-4 md:pt-0 md:pl-6">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Surplus Distribution</h4>
+                                    <div className="h-3 w-full bg-slate-800 flex overflow-hidden">
+                                        {(() => {
+                                            const total = (telemetry.surplusBreakdown?.thriving || 0) + (telemetry.surplusBreakdown?.limited || 0) + (telemetry.surplusBreakdown?.negative || 0) || 1;
+                                            const thrivingPct = ((telemetry.surplusBreakdown?.thriving || 0) / total) * 100;
+                                            const limitedPct = ((telemetry.surplusBreakdown?.limited || 0) / total) * 100;
+                                            const negativePct = ((telemetry.surplusBreakdown?.negative || 0) / total) * 100;
+                                            return (
+                                                <>
+                                                    <div style={{ width: `${thrivingPct}%` }} className="bg-emerald-500" title={`Thriving: ${Math.round(thrivingPct)}%`} />
+                                                    <div style={{ width: `${limitedPct}%` }} className="bg-amber-500" title={`Limited: ${Math.round(limitedPct)}%`} />
+                                                    <div style={{ width: `${negativePct}%` }} className="bg-rose-500" title={`Deficit: ${Math.round(negativePct)}%`} />
+                                                </>
+                                            );
+                                        })()}
+                                    </div>
+                                    <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase">
+                                        <span className="flex items-center gap-1"><span className="size-2 bg-emerald-500 block rounded-full" /> Thriving ({telemetry.surplusBreakdown?.thriving || 0})</span>
+                                        <span className="flex items-center gap-1"><span className="size-2 bg-amber-500 block rounded-full" /> Limited ({telemetry.surplusBreakdown?.limited || 0})</span>
+                                        <span className="flex items-center gap-1"><span className="size-2 bg-rose-500 block rounded-full" /> Deficit ({telemetry.surplusBreakdown?.negative || 0})</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
-                        </div>
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
-                        </div>
-                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                            <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
-                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
+
+                        {/* Top Queries and Checklist friction */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {/* Top Schools */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
+                                <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Top Schools Queried</h3>
+                                <div className="space-y-3">
+                                    {telemetry.topSchools?.length > 0 ? (
+                                        telemetry.topSchools.map((item: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
+                                                <span className="text-slate-300 truncate max-w-[150px]">{item.name}</span>
+                                                <span className="text-white bg-white/5 px-2 py-0.5 rounded-sm">{item.count} views</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-[10px] text-slate-500 italic">No school views recorded.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Top Countries */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
+                                <h3 className="text-xs font-black uppercase text-sky-400 tracking-wider">Top Countries Searched</h3>
+                                <div className="space-y-3">
+                                    {telemetry.topCountries?.length > 0 ? (
+                                        telemetry.topCountries.map((item: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
+                                                <span className="text-slate-300 capitalize">{item.name}</span>
+                                                <span className="text-white bg-white/5 px-2 py-0.5 rounded-sm">{item.count} queries</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-[10px] text-slate-500 italic">No country queries recorded.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Checklist Friction */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
+                                <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">Checklist Friction Points</h3>
+                                <div className="space-y-3">
+                                    {telemetry.checklistFriction?.length > 0 ? (
+                                        telemetry.checklistFriction.map((item: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
+                                                <span className="text-slate-300 truncate max-w-[150px]">{item.item}</span>
+                                                <span className="text-[#d95f02] font-black">{item.count} checked</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-[10px] text-slate-500 italic">No checklist toggles recorded.</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

@@ -6,9 +6,10 @@ import {
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
   Briefcase, ChevronDown, RefreshCw, HelpCircle
 } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
+import { logTelemetryEventAction } from '@/app/admin/actions';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -292,6 +293,7 @@ const processAndFilterJobs = (jobs: string[]) => {
 function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState({
     country: "",
@@ -580,6 +582,98 @@ function DecoderContent() {
       countryIntel, uplift13, uplift14
     };
   }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel]);
+
+  // 🛰️ Telemetry: Flight Simulator Dial tracking (Evaluate Page)
+  useEffect(() => {
+    if (!mounted || !activeSchool) return;
+
+    const timer = setTimeout(() => {
+      if (settings.netSalary === "0" && settings.partnerSalary === "0") return;
+
+      const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
+        ? 'Deficit'
+        : (analysis?.rateOfSaving ?? 0) <= 10
+        ? 'Limited Potential'
+        : 'Thriving';
+
+      logTelemetryEventAction('simulator_dial_adjusted', {
+        target_country: activeSchool.country || 'unknown',
+        target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+        deployment_profile: settings.familyStatus,
+        dial_modified: 'net_salary',
+        previous_value: 0,
+        new_value: Number(settings.netSalary) || 0,
+        resulting_surplus_percentage: analysis?.rateOfSaving || 0,
+        resulting_status: resultingStatus,
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest'
+      });
+    }, 1500); // 1.5s debounce
+
+    return () => clearTimeout(timer);
+  }, [settings.netSalary, activeSchool, mounted, user, analysis?.rateOfSaving, settings.familyStatus]);
+
+  useEffect(() => {
+    if (!mounted || !activeSchool || !settings.partnerSalary || settings.partnerSalary === "0") return;
+
+    const timer = setTimeout(() => {
+      const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
+        ? 'Deficit'
+        : (analysis?.rateOfSaving ?? 0) <= 10
+        ? 'Limited Potential'
+        : 'Thriving';
+
+      logTelemetryEventAction('simulator_dial_adjusted', {
+        target_country: activeSchool.country || 'unknown',
+        target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+        deployment_profile: settings.familyStatus,
+        dial_modified: 'partner_salary',
+        previous_value: 0,
+        new_value: Number(settings.partnerSalary) || 0,
+        resulting_surplus_percentage: analysis?.rateOfSaving || 0,
+        resulting_status: resultingStatus,
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest'
+      });
+    }, 1500); // 1.5s debounce
+
+    return () => clearTimeout(timer);
+  }, [settings.partnerSalary, activeSchool, mounted, user, analysis?.rateOfSaving, settings.familyStatus]);
+
+  useEffect(() => {
+    if (!mounted || !activeSchool || overrideBedrooms === null) return;
+
+    const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
+      ? 'Deficit'
+      : (analysis?.rateOfSaving ?? 0) <= 10
+      ? 'Limited Potential'
+      : 'Thriving';
+
+    logTelemetryEventAction('simulator_dial_adjusted', {
+      target_country: activeSchool.country || 'unknown',
+      target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
+      deployment_profile: settings.familyStatus,
+      dial_modified: 'housing_allowance',
+      previous_value: Number(analysis?.standardRentKey?.replace(/\D/g, '')) || 3,
+      new_value: overrideBedrooms,
+      resulting_surplus_percentage: analysis?.rateOfSaving || 0,
+      resulting_status: resultingStatus,
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest'
+    });
+  }, [overrideBedrooms, activeSchool, mounted, user, settings.familyStatus, analysis?.rateOfSaving, analysis?.standardRentKey]);
+
+  // 🛰️ Telemetry: School profile view tracking
+  useEffect(() => {
+    if (!mounted || !activeSchool) return;
+
+    logTelemetryEventAction('school_profile_viewed', {
+      school_name: activeSchool.schoolname || activeSchool.name || 'unknown',
+      country_name: activeSchool.country || 'unknown',
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest'
+    });
+  }, [activeSchool?.id, mounted, user, activeSchool?.schoolname, activeSchool?.name, activeSchool?.country]);
 
   const leopardfishReview = useMemo(() => {
     if (!activeSchool || !analysis) return null;

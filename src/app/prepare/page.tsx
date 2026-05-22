@@ -15,9 +15,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileByLabel } from '@/lib/calculations';
+import { logTelemetryEventAction } from '@/app/admin/actions';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
@@ -49,7 +50,11 @@ const IKEA_KIT_ITEMS = [
 
 export default function PreparePage() {
   const firestore = useFirestore();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+
+  // 🛰️ Relocation Checklist State
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
   // 🕹️ State
   const [calcStatus, setCalcStatus] = useState<string>('single');
@@ -141,6 +146,39 @@ export default function PreparePage() {
   const { data: exchangeRates } = useDoc<any>(
     useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'exchange_rates') : null), [firestore, mounted])
   );
+
+  // 🛰️ Telemetry Helper Functions
+  const toggleChecklistItem = (itemId: string, label: string) => {
+    const isCheckedNow = !checkedItems[itemId];
+    setCheckedItems(prev => ({ ...prev, [itemId]: isCheckedNow }));
+    logTelemetryEventAction('checklist_toggled', {
+      checklist_item: label,
+      checked: isCheckedNow,
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest'
+    });
+  };
+
+  const handleCountryChange = (val: string) => {
+    setSelectedCountry(val);
+    setSelectedSchoolId(null);
+    logTelemetryEventAction('country_query_executed', {
+      country_name: val,
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest'
+    });
+  };
+
+  const handleSchoolChange = (val: string) => {
+    setSelectedSchoolId(val);
+    const schoolName = schools?.find(s => s.id === val)?.schoolname || 'unknown';
+    logTelemetryEventAction('school_profile_viewed', {
+      school_name: schoolName,
+      country_name: selectedCountry,
+      isAuthenticated: !!user,
+      user_type: user ? 'authenticated' : 'guest'
+    });
+  };
 
   const currentRates = useMemo(() => ({ ...RATES, ...(exchangeRates?.gbpBase || {}) }), [exchangeRates]);
 
@@ -1227,7 +1265,7 @@ export default function PreparePage() {
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-[12px] font-bold text-slate-500 italic">1. Which country?</Label>
-                  <Select value={selectedCountry} onValueChange={(val: string) => { setSelectedCountry(val); setSelectedSchoolId(null); }}>
+                  <Select value={selectedCountry} onValueChange={handleCountryChange}>
                     <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-[#fafaf9]"><SelectValue placeholder="Select country..." /></SelectTrigger>
                     <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                       <SelectItem value="all">Everywhere</SelectItem>
@@ -1237,7 +1275,7 @@ export default function PreparePage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-[12px] font-bold text-slate-500 italic">2. Which school?</Label>
-                  <Select value={selectedSchoolId ?? ''} onValueChange={(val: string) => setSelectedSchoolId(val)}>
+                  <Select value={selectedSchoolId ?? ''} onValueChange={handleSchoolChange}>
                     <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-[#fafaf9]"><SelectValue placeholder="Pick your school..." /></SelectTrigger>
                     <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                       {filteredSchools.map(s => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}
@@ -1758,21 +1796,39 @@ export default function PreparePage() {
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
-                      <div className="space-y-1">
-                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Degree Attestation (The "Stamps")</p>
-                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                          <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
-                          <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
-                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
-                        </p>
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="check-attestation"
+                          checked={checkedItems['attestation'] || false}
+                          onChange={() => toggleChecklistItem('attestation', 'Degree Attestation')}
+                          className="mt-1 size-4 rounded-sm border-sky-400/30 bg-black/40 text-sky-400 focus:ring-sky-400/50 accent-sky-400 cursor-pointer"
+                        />
+                        <div className="space-y-1">
+                          <label htmlFor="check-attestation" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Degree Attestation (The "Stamps")</label>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                            <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
+                            <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
+                            <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-1 pt-3 border-t border-sky-400/10">
-                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Criminal Record Checks (Safeguarding)</p>
-                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                          <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
-                          <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
-                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
-                        </p>
+                      <div className="flex items-start gap-3 pt-3 border-t border-sky-400/10">
+                        <input
+                          type="checkbox"
+                          id="check-criminal"
+                          checked={checkedItems['criminal_check'] || false}
+                          onChange={() => toggleChecklistItem('criminal_check', 'Criminal Record Checks')}
+                          className="mt-1 size-4 rounded-sm border-sky-400/30 bg-black/40 text-sky-400 focus:ring-sky-400/50 accent-sky-400 cursor-pointer"
+                        />
+                        <div className="space-y-1">
+                          <label htmlFor="check-criminal" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Criminal Record Checks (Safeguarding)</label>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                            <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
+                            <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
+                            <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1780,21 +1836,39 @@ export default function PreparePage() {
                   {/* Right Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
-                      <div className="space-y-1">
-                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Visas & Work Permits</p>
-                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                          <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
-                          <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
-                          <span className="text-sky-400 uppercase text-[10px] font-black">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
-                        </p>
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="check-visa"
+                          checked={checkedItems['visa_permit'] || false}
+                          onChange={() => toggleChecklistItem('visa_permit', 'Visas & Work Permits')}
+                          className="mt-1 size-4 rounded-sm border-sky-400/30 bg-black/40 text-sky-400 focus:ring-sky-400/50 accent-sky-400 cursor-pointer"
+                        />
+                        <div className="space-y-1">
+                          <label htmlFor="check-visa" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Visas & Work Permits</label>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                            <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
+                            <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
+                            <span className="text-sky-400 uppercase text-[10px] font-black">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-1 pt-3 border-t border-sky-400/10">
-                        <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Embassy Registration & Local ID</p>
-                        <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                          <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
-                          <span className="text-white">Validity:</span> Linked to your visa.<br/>
-                          <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
-                        </p>
+                      <div className="flex items-start gap-3 pt-3 border-t border-sky-400/10">
+                        <input
+                          type="checkbox"
+                          id="check-embassy"
+                          checked={checkedItems['embassy_reg'] || false}
+                          onChange={() => toggleChecklistItem('embassy_reg', 'Embassy Registration & Local ID')}
+                          className="mt-1 size-4 rounded-sm border-sky-400/30 bg-black/40 text-sky-400 focus:ring-sky-400/50 accent-sky-400 cursor-pointer"
+                        />
+                        <div className="space-y-1">
+                          <label htmlFor="check-embassy" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Embassy Registration & Local ID</label>
+                          <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
+                            <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
+                            <span className="text-white">Validity:</span> Linked to your visa.<br/>
+                            <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2092,7 +2166,17 @@ export default function PreparePage() {
       {/* 🛡️ MISSION PHASE: STEP 3E — HEALTH & REGISTRATION */}
       <div className="mb-4 ml-6 md:ml-12 border-l-2 border-sky-400/20 pl-4 md:pl-6">
         <button
-          onClick={() => setStep3eOpen(!step3eOpen)}
+          onClick={() => {
+            const nextState = !step3eOpen;
+            setStep3eOpen(nextState);
+            if (nextState) {
+              logTelemetryEventAction('uninsured_warning_viewed', {
+                target_country: selectedCountry || 'unknown',
+                isAuthenticated: !!user,
+                user_type: user ? 'authenticated' : 'guest'
+              });
+            }
+          }}
           className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
@@ -2190,7 +2274,7 @@ export default function PreparePage() {
               {/* Country */}
               <div className="space-y-1.5">
                 <Label className="text-[12px] font-bold text-slate-400 italic">1. Target Country</Label>
-                <Select value={selectedCountry} onValueChange={(val: string) => { setSelectedCountry(val); setSelectedSchoolId(null); }}>
+                <Select value={selectedCountry} onValueChange={handleCountryChange}>
                   <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue placeholder="Select country..." /></SelectTrigger>
                   <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                     <SelectItem value="all">Everywhere</SelectItem>
@@ -2202,7 +2286,7 @@ export default function PreparePage() {
               {/* School */}
               <div className="space-y-1.5">
                 <Label className="text-[12px] font-bold text-slate-400 italic">2. Target School</Label>
-                <Select value={selectedSchoolId ?? ''} onValueChange={(val: string) => setSelectedSchoolId(val)}>
+                <Select value={selectedSchoolId ?? ''} onValueChange={handleSchoolChange}>
                   <SelectTrigger className="bg-black/40 border-white/10 h-10 text-[12px] font-black italic text-white"><SelectValue placeholder="Pick your school..." /></SelectTrigger>
                   <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold text-xs">
                     {filteredSchools.map(s => <SelectItem key={s.id} value={s.id}>{s.schoolname}</SelectItem>)}
@@ -2234,6 +2318,21 @@ export default function PreparePage() {
                 onClick={() => {
                   setIsConfirmModalOpen(false);
                   downloadBriefingPdf();
+                  const targetSchoolName = schools?.find(s => s.id === selectedSchoolId)?.schoolname || 'unknown';
+                  logTelemetryEventAction('briefing_generated', {
+                    target_country: selectedCountry || 'unknown',
+                    target_school: targetSchoolName,
+                    deployment_profile: calcStatus,
+                    isAuthenticated: !!user,
+                    user_type: user ? 'authenticated' : 'guest'
+                  });
+                  logTelemetryEventAction('email_template_copied', {
+                    target_country: selectedCountry || 'unknown',
+                    target_school: targetSchoolName,
+                    deployment_profile: calcStatus,
+                    isAuthenticated: !!user,
+                    user_type: user ? 'authenticated' : 'guest'
+                  });
                 }}
                 className="w-2/3 bg-[#d95f02] hover:bg-[#d95f02]/90 text-white font-black text-xs uppercase italic rounded-none h-11"
               >

@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useFirestore } from '@/firebase';
+import { useFirestore, useAuth } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
+import { logTelemetryEventAction } from '@/app/admin/actions';
 
 /**
  * @fileOverview A stealth analytics tracker that increments global visit metrics.
@@ -11,6 +12,7 @@ import { setDocumentNonBlocking } from '@/firebase';
  */
 export function AnalyticsTracker() {
   const firestore = useFirestore();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (firestore) {
@@ -21,8 +23,15 @@ export function AnalyticsTracker() {
         { site_visits: increment(1) }, 
         { merge: true }
       );
+
+      // 🛰️ Log page view to telemetry collection
+      logTelemetryEventAction('page_view', {
+        path: typeof window !== 'undefined' ? window.location.pathname : '',
+        isAuthenticated: !!user,
+        user_type: user ? 'authenticated' : 'guest'
+      });
     }
-  }, [firestore]);
+  }, [firestore, user]);
 
   return null;
 }
