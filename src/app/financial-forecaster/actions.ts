@@ -464,6 +464,25 @@ const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolNa
     
     // 🛡️ ISOLATE TO CURRENT (12-MONTH) CYCLES FOR METRICS AND COMMENTARY
     const currentVacancies = vacancies.filter((v: any) => v.recruitmentCycle === "CURRENT");
+    
+    if (currentVacancies.length === 0) {
+      report.category = "INSIGHT_UNAVAILABLE";
+      if (!report.metrics) report.metrics = {};
+      report.metrics.riskRating = "INSIGHT_UNAVAILABLE"; // Keeps structural fields safe
+      report.metrics.averageYearlyTesAdverts = 0;
+      report.metrics.estimatedChurnRatePercent = 0;
+      report.metrics.leadershipChurnRatioPercent = 0;
+      report.estimated_churn_percentage = 0;
+      report.leadership_vacancies_count = 0;
+      report.secondary_vacancies_count = 0;
+      report.primary_vacancies_count = 0;
+      report.total_known_vacancies = 0;
+      report.staffroom_commentary = "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time.";
+      report.churn_implications_commentary = report.staffroom_commentary;
+      report.leopardfishIntelAlert = report.staffroom_commentary;
+      return report;
+    }
+
     const total_known_vacancies = currentVacancies.length;
     
     const leadership_vacancies_count = currentVacancies.filter((v: any) => v.department === "Leadership").length;

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
-  Briefcase, ChevronDown, RefreshCw
+  Briefcase, ChevronDown, RefreshCw, HelpCircle
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -1220,18 +1220,40 @@ function DecoderContent() {
                                   {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
                                   <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                                     <div>
-                                      <div>
-                                        <p className="text-[10px] text-slate-400 font-medium">
-                                          Category:{" "}
-                                          <span className="font-black uppercase text-slate-300">
-                                            {(() => {
-                                              if (churnRate < 10) return "Low Turnover (Stable)";
-                                              if (churnRate <= 15) return "Moderate Turnover (Healthy)";
-                                              if (churnRate <= 22) return "Elevated Turnover (Caution)";
-                                              return "High Turnover (Significant Churn)";
-                                            })()}
-                                          </span>
-                                        </p>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-[10px] text-slate-400 font-medium">Category:</span>
+                                        {(() => {
+                                          const isUnavailable = stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE";
+                                          if (isUnavailable) {
+                                            return (
+                                              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-black uppercase tracking-wider">
+                                                <HelpCircle className="size-3 shrink-0" /> Insight Unavailable
+                                              </span>
+                                            );
+                                          }
+                                          
+                                          let badgeClass = "";
+                                          let label = "";
+                                          if (churnRate < 10) {
+                                            badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                                            label = "Low Turnover (Stable)";
+                                          } else if (churnRate <= 15) {
+                                            badgeClass = "bg-green-500/10 text-green-400 border border-green-500/20";
+                                            label = "Moderate Turnover (Healthy)";
+                                          } else if (churnRate <= 22) {
+                                            badgeClass = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+                                            label = "Elevated Turnover (Caution)";
+                                          } else {
+                                            badgeClass = "bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                                            label = "High Turnover (Significant Churn)";
+                                          }
+                                          
+                                          return (
+                                            <span className={cn("flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-black uppercase tracking-wider", badgeClass)}>
+                                              <Activity className="size-3 shrink-0" /> {label}
+                                            </span>
+                                          );
+                                        })()}
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2 self-start sm:self-center">
@@ -1285,7 +1307,7 @@ function DecoderContent() {
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
                                       <div className="text-sm font-black text-white mt-0.5">
-                                        {churnRate}%
+                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" ? "—" : `${churnRate}%`}
                                       </div>
                                     </div>
                                   </div>
@@ -1336,7 +1358,7 @@ function DecoderContent() {
                                           <details className="group" open>
                                             <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
                                               <span>
-                                                View Discovered Vacancies ({allProcessedJobs.length})
+                                                View Discovered Vacancies ({processedJobs12.length} Current, {historicJobs.length} Historic)
                                                 {activeSchool && (
                                                   <span className="text-slate-300 font-bold tracking-normal normal-case ml-1.5">
                                                     {" "}— {activeSchool.schoolname || activeSchool.school || activeSchool.name}
