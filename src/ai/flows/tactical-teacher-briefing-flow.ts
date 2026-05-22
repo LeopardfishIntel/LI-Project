@@ -11,7 +11,9 @@ const TacticalBriefingInputSchema = z.object({
     age: z.number(),
     familyStatus: z.string(),
     spouseWorking: z.boolean(),
+    children: z.number().optional().describe('Number of children accompanying the candidate'),
   }),
+  country: z.string().optional().describe('The country of the school'),
   currencyCode: z.string().optional().describe('The user requested active currency code, e.g. USD, OMR, AED, etc.'),
   exchangeRate: z.number().optional().describe('The conversion factor from 1 USD to the target currencyCode.'),
   monthlyCostForecast: z.string().optional().describe('Pre-formatted monthly cost forecast string'),
@@ -20,11 +22,45 @@ const TacticalBriefingInputSchema = z.object({
   nonce: z.string().optional(),
 });
 
+const SALARY_INTEL_COUNTRIES = new Set([
+  "austria", "greece", "portugal", "spain", "italy", "germany", "netherlands", 
+  "belgium", "argentina", "brazil", "mexico", "peru", "ecuador", "bolivia", 
+  "philippines", "indonesia", "japan", "china", "angola", "south africa"
+]);
+
+function buildAdvisoryCommentary(input: z.infer<typeof TacticalBriefingInputSchema>) {
+  let additionalAdvisory = "";
+
+  // 1. 13th/14th Month Multiplier Advisory
+  const normCountry = input.country?.toLowerCase().trim() || "";
+  const has13thOr14th = Array.from(SALARY_INTEL_COUNTRIES).some(
+    c => normCountry.includes(c) || (c.length > 3 && normCountry.length > 3 && c.includes(normCountry))
+  );
+  if (has13thOr14th) {
+    additionalAdvisory += `\n\nAdvisory: Because ${input.country || "the target country"} utilizes a 13th and/or 14th-month salary system (or seasonal bonus equivalents), you are highly encouraged to verify the exact structural amount, payroll distribution schedule, and statutory tax reductions with the school's HR department.`;
+  }
+
+  // 2. Dependent Tuition Safeguard
+  const hasDependents = input.userProfile.familyStatus !== 'single' || (input.userProfile.children !== undefined && input.userProfile.children > 0);
+  if (hasDependents) {
+    const numChildren = input.userProfile.children || 0;
+    let tuitionWarning = `\n\nCritical Reminder: Candidates must verify that the contract guarantees a free, fully subsidized tuition seat for every accompanied child.`;
+    if (numChildren > 2) {
+      tuitionWarning += ` This is parameter-critical since you are accompanied by more than two children; please note that the current financial forecaster projections assume zero out-of-pocket school fee liabilities.`;
+    }
+    additionalAdvisory += tuitionWarning;
+  }
+
+  return additionalAdvisory;
+}
+
 export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefingInputSchema>) {
   try {
     const ai = getAI();
     const activeCurrency = input.currencyCode || 'USD';
     const rate = input.exchangeRate || 1;
+    
+    const additionalAdvisory = buildAdvisoryCommentary(input);
 
     // 🎯 1. Flowing 600+ Word Narrative Prompt (Plain Text - Truncation-Free & Highly Reliable)
     const promptText = `
@@ -129,7 +165,7 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     if (briefingText.length < 250) {
       console.warn("[GENKIT] Result briefing was too short (<250 chars), triggering mentor fallback.");
       return {
-        briefing: `Let's talk about ${input.schoolName}. Having been out here myself, I know that moving to a new school is a massive career move that needs some careful planning. Chatting with other teachers on the ground, the day-to-day workload is manageable whilst you find your feet, but it's vital to stay realistic about the transition. We've all been there—it's a mixture of excitement and sorting out endless paperwork, but finding the right professional rhythm is what makes or breaks your first term.\n\nFrom a financial planning perspective, you really want to focus on how the figures balance out alongside your typical lifestyle. Looking at the numbers in the right-hand panel, your Monthly Cost Forecast is ${input.monthlyCostForecast || 'N/A'}, whilst the School Median salary sits at ${input.schoolMedian || 'N/A'}, which leaves you with a lovely Expected Surplus of ${input.expectedSurplus || 'N/A'} to put away. It's a solid balance for someone in your situation, letting you save comfortably without having to pinch every penny or worry about the odd weekend trip away.\n\nWhen it comes to settling in, your choice of neighbourhood is going to make all the difference to your daily happiness. Finding a nice, friendly place near the school will save you from those exhausting daily commutes and let you ease into the local expat community much faster. Setting up a new flat always takes a bit of time and patience, but once you find your local supermarket and get to know the other teachers living nearby, it starts feeling like home in no time.\n\nMy final recommendation? Honestly, this is a fantastic two-year opportunity to build up your savings, gain brilliant international experience, and enjoy a fresh chapter. Get your residency visa sorted as early as you can, keep an open mind, and enjoy the adventure whilst you build your global teaching profile. Wishing you the absolute best of luck with the move, cheers!`,
+        briefing: `Let's talk about ${input.schoolName}. Having been out here myself, I know that moving to a new school is a massive career move that needs some careful planning. Chatting with other teachers on the ground, the day-to-day workload is manageable whilst you find your feet, but it's vital to stay realistic about the transition. We've all been there—it's a mixture of excitement and sorting out endless paperwork, but finding the right professional rhythm is what makes or breaks your first term.\n\nFrom a financial planning perspective, you really want to focus on how the figures balance out alongside your typical lifestyle. Looking at the numbers in the right-hand panel, your Monthly Cost Forecast is ${input.monthlyCostForecast || 'N/A'}, whilst the School Median salary sits at ${input.schoolMedian || 'N/A'}, which leaves you with a lovely Expected Surplus of ${input.expectedSurplus || 'N/A'} to put away. It's a solid balance for someone in your situation, letting you save comfortably without having to pinch every penny or worry about the odd weekend trip away.\n\nWhen it comes to settling in, your choice of neighbourhood is going to make all the difference to your daily happiness. Finding a nice, friendly place near the school will save you from those exhausting daily commutes and let you ease into the local expat community much faster. Setting up a new flat always takes a bit of time and patience, but once you find your local supermarket and get to know the other teachers living nearby, it starts feeling like home in no time.\n\nMy final recommendation? Honestly, this is a fantastic two-year opportunity to build up your savings, gain brilliant international experience, and enjoy a fresh chapter. Get your residency visa sorted as early as you can, keep an open mind, and enjoy the adventure whilst you build your global teaching profile. Wishing you the absolute best of luck with the move, cheers!` + additionalAdvisory,
         currentHead,
         ownership,
       };
@@ -137,7 +173,7 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
 
     console.log(`[GENKIT] Successfully generated dynamic briefing of ${briefingText.split(/\s+/).filter(Boolean).length} words.`);
     return {
-      briefing: briefingText,
+      briefing: briefingText + additionalAdvisory,
       currentHead,
       ownership
     };
@@ -148,8 +184,10 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
       (lowerName.includes('shanghai') || lowerName.includes('pudong') || lowerName.includes('puxi'))) 
       ? 'Mr. Garry Russell' 
       : 'Pending';
+    
+    const additionalAdvisory = buildAdvisoryCommentary(input);
     return {
-      briefing: `Let's talk about ${input.schoolName}. Having been out here myself, I know that moving to a new school is a massive career move that needs some careful planning. Chatting with other teachers on the ground, the day-to-day workload is manageable whilst you find your feet, but it's vital to stay realistic about the transition. We've all been there—it's a mixture of excitement and sorting out endless paperwork, but finding the right professional rhythm is what makes or breaks your first term.\n\nFrom a financial planning perspective, you really want to focus on how the figures balance out alongside your typical lifestyle. Looking at the numbers in the right-hand panel, your Monthly Cost Forecast is ${input.monthlyCostForecast || 'N/A'}, whilst the School Median salary sits at ${input.schoolMedian || 'N/A'}, which leaves you with a lovely Expected Surplus of ${input.expectedSurplus || 'N/A'} to put away. It's a solid balance for someone in your situation, letting you save comfortably without having to pinch every penny or worry about the odd weekend trip away.\n\nWhen it comes to settling in, your choice of neighbourhood is going to make all the difference to your daily happiness. Finding a nice, friendly place near the school will save you from those exhausting daily commutes and let you ease into the local expat community much faster. Setting up a new flat always takes a bit of time and patience, but once you find your local supermarket and get to know the other teachers living nearby, it starts feeling like home in no time.\n\nMy final recommendation? Honestly, this is a fantastic two-year opportunity to build up your savings, gain brilliant international experience, and enjoy a fresh chapter. Get your residency visa sorted as early as you can, keep an open mind, and enjoy the adventure whilst you build your global teaching profile. Wishing you the absolute best of luck with the move, cheers!`,
+      briefing: `Let's talk about ${input.schoolName}. Having been out here myself, I know that moving to a new school is a massive career move that needs some careful planning. Chatting with other teachers on the ground, the day-to-day workload is manageable whilst you find your feet, but it's vital to stay realistic about the transition. We've all been there—it's a mixture of excitement and sorting out endless paperwork, but finding the right professional rhythm is what makes or breaks your first term.\n\nFrom a financial planning perspective, you really want to focus on how the figures balance out alongside your typical lifestyle. Looking at the numbers in the right-hand panel, your Monthly Cost Forecast is ${input.monthlyCostForecast || 'N/A'}, whilst the School Median salary sits at ${input.schoolMedian || 'N/A'}, which leaves you with a lovely Expected Surplus of ${input.expectedSurplus || 'N/A'} to put away. It's a solid balance for someone in your situation, letting you save comfortably without having to pinch every penny or worry about the odd weekend trip away.\n\nWhen it comes to settling in, your choice of neighbourhood is going to make all the difference to your daily happiness. Finding a nice, friendly place near the school will save you from those exhausting daily commutes and let you ease into the local expat community much faster. Setting up a new flat always takes a bit of time and patience, but once you find your local supermarket and get to know the other teachers living nearby, it starts feeling like home in no time.\n\nMy final recommendation? Honestly, this is a fantastic two-year opportunity to build up your savings, gain brilliant international experience, and enjoy a fresh chapter. Get your residency visa sorted as early as you can, keep an open mind, and enjoy the adventure whilst you build your global teaching profile. Wishing you the absolute best of luck with the move, cheers!` + additionalAdvisory,
       currentHead: fallbackHead,
       ownership: 'Independent / Private',
     };

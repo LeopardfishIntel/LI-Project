@@ -333,8 +333,10 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           userProfile: {
             age: 30,
             familyStatus: selectedFamilyStatus,
-            spouseWorking: selectedFamilyStatus === 'couple'
+            spouseWorking: selectedFamilyStatus === 'couple',
+            children: children
           },
+          country: school.country,
           currencyCode: activeCurrencyCode,
           exchangeRate: rateFactor,
           monthlyCostForecast: monthlyCostForecastStr,
