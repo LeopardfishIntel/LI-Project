@@ -895,12 +895,50 @@ You MUST run search queries with the school name enclosed in escaped double quot
           job.source_url = reconstructJobBoardUrl(job, baseUrl);
         }
 
-        const total_known_vacancies = finalVacancies.length;
-        const leadership_vacancies_count = finalVacancies.filter(v => v.department === "Leadership").length;
-        const secondary_vacancies_count = finalVacancies.filter(v => v.department === "Secondary").length;
-        const primary_vacancies_count = finalVacancies.filter(v => v.department === "Primary").length;
-        const estimatedChurnRatePercent = estimatedStaffBase > 0 
-          ? Math.round((total_known_vacancies / estimatedStaffBase) * 100) 
+        // Context flags calculation
+        const currentVacancies = finalVacancies.filter(v => v.recruitmentCycle === "CURRENT");
+        const currentMonth = new Date().getMonth();
+        let recruitmentSeason = "Standard Phase (Feb-Apr Window)";
+        if (currentMonth >= 9 || currentMonth <= 0) {
+          recruitmentSeason = "Early Bird Phase (Oct-Jan Window)";
+        } else if (currentMonth >= 4 && currentMonth <= 7) {
+          recruitmentSeason = "Late-Cycle/Panic Resignations (May-Aug Window)";
+        }
+
+        const expansionRoles = currentVacancies.filter(v => {
+          const lowerTitle = v.title.toLowerCase();
+          return lowerTitle.includes("expansion") || 
+                 lowerTitle.includes("new campus") || 
+                 lowerTitle.includes("additional class") ||
+                 lowerTitle.includes("expanding");
+        });
+        const netNewRolesCount = expansionRoles.length;
+
+        const compositeRoles = currentVacancies.filter(v => {
+          const lowerTitle = v.title.toLowerCase();
+          return lowerTitle.includes("and/or") || 
+                 lowerTitle.includes(" & ") || 
+                 lowerTitle.includes("composite") ||
+                 (lowerTitle.includes("and") && (
+                   lowerTitle.includes("physics") || 
+                   lowerTitle.includes("chemistry") || 
+                   lowerTitle.includes("biology") || 
+                   lowerTitle.includes("science") || 
+                   lowerTitle.includes("business") || 
+                   lowerTitle.includes("economics")
+                 ));
+        });
+        const compositeRolesCount = compositeRoles.length;
+
+        const hasLeadershipVacancies = currentVacancies.some(v => v.department === "Leadership");
+        const hasInternalPromotionsLikely = hasLeadershipVacancies && currentVacancies.length > 2;
+
+        const total_known_vacancies_12 = currentVacancies.length;
+        const leadership_vacancies_count_12 = currentVacancies.filter(v => v.department === "Leadership").length;
+        const secondary_vacancies_count_12 = currentVacancies.filter(v => v.department === "Secondary").length;
+        const primary_vacancies_count_12 = currentVacancies.filter(v => v.department === "Primary").length;
+        const estimatedChurnRatePercent_12 = estimatedStaffBase > 0 
+          ? Math.round((total_known_vacancies_12 / estimatedStaffBase) * 100) 
           : 0;
 
         const hasExecutiveTrack = finalVacancies.some(
@@ -922,20 +960,24 @@ You MUST run search queries with the school name enclosed in escaped double quot
           city,
           country,
           inspections,
-          scrapedJobsCount: total_known_vacancies,
-          leadershipCount: leadership_vacancies_count,
-          secondaryCount: secondary_vacancies_count,
-          primaryCount: primary_vacancies_count,
-          estimatedChurnRatePercent,
+          scrapedJobsCount: total_known_vacancies_12,
+          leadershipCount: leadership_vacancies_count_12,
+          secondaryCount: secondary_vacancies_count_12,
+          primaryCount: primary_vacancies_count_12,
+          estimatedChurnRatePercent: estimatedChurnRatePercent_12,
           hasExecutiveTrack,
+          recruitmentSeason,
+          netNewRolesCount,
+          compositeRolesCount,
+          hasInternalPromotionsLikely,
         });
 
         if (hasGroundTruth) {
           report.metrics.estimatedStaffBase = estimatedStaffBase;
-          report.metrics.averageYearlyTesAdverts = total_known_vacancies;
-          report.metrics.estimatedChurnRatePercent = estimatedChurnRatePercent;
+          report.metrics.averageYearlyTesAdverts = total_known_vacancies_12;
+          report.metrics.estimatedChurnRatePercent = estimatedChurnRatePercent_12;
           
-          const leadershipVacancies = finalVacancies.filter(v => v.department === "Leadership");
+          const leadershipVacancies = currentVacancies.filter(v => v.department === "Leadership");
           const leadershipBase = lowerSchool.includes("parklane") ? 5 : 4;
           const senior_leadership_churn_percentage = leadershipVacancies.length > 0
             ? parseFloat(((leadershipVacancies.length / leadershipBase) * 100).toFixed(1))
@@ -950,7 +992,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
             report.leopardfishIntelAlert = `Riverside looks quite stable on the teaching front, with just one new role in the leadership team advertised over the past twelve months. Other than that, they've posted five secondary positions and one primary classroom role. That makes seven vacancies in total, giving them a very steady 14.0% turnover rate—mostly just standard contract cycles finishing up. They seem to be relying on TES to bring in their core teaching staff.`;
           }
         } else {
-          const leadershipVacancies = finalVacancies.filter(v => v.department === "Leadership");
+          const leadershipVacancies = currentVacancies.filter(v => v.department === "Leadership");
           const leadershipBase = Math.max(3, Math.round(estimatedStaffBase * 0.1));
           const senior_leadership_churn_percentage = leadershipVacancies.length > 0
             ? parseFloat(((leadershipVacancies.length / leadershipBase) * 100).toFixed(1))
@@ -982,12 +1024,12 @@ You MUST run search queries with the school name enclosed in escaped double quot
 
         const reportWithStructured = {
           ...report,
-          total_known_vacancies,
+          total_known_vacancies: total_known_vacancies_12,
           estimated_churn_percentage,
           senior_leadership_churn_percentage,
-          leadership_vacancies_count,
-          secondary_vacancies_count,
-          primary_vacancies_count,
+          leadership_vacancies_count: leadership_vacancies_count_12,
+          secondary_vacancies_count: secondary_vacancies_count_12,
+          primary_vacancies_count: primary_vacancies_count_12,
           churn_implications_commentary,
           vacancies_discovered: finalVacancies,
           structured_vacancies: finalVacancies,
@@ -1020,11 +1062,11 @@ You MUST run search queries with the school name enclosed in escaped double quot
         sendChunk({
           phase: 4,
           status: "complete",
-          total_known_vacancies,
+          total_known_vacancies: total_known_vacancies_12,
           estimated_churn_percentage,
-          leadership_vacancies_count,
-          secondary_vacancies_count,
-          primary_vacancies_count,
+          leadership_vacancies_count: leadership_vacancies_count_12,
+          secondary_vacancies_count: secondary_vacancies_count_12,
+          primary_vacancies_count: primary_vacancies_count_12,
           churn_implications_commentary,
           vacancies_discovered: finalVacancies,
           report: reportWithStructured,

@@ -35,6 +35,10 @@ const CalculateStabilityInputSchema = z.object({
   primaryCount: z.number().optional(),
   estimatedChurnRatePercent: z.number().optional(),
   hasExecutiveTrack: z.boolean().optional(),
+  recruitmentSeason: z.string().optional(),
+  netNewRolesCount: z.number().optional(),
+  compositeRolesCount: z.number().optional(),
+  hasInternalPromotionsLikely: z.boolean().optional(),
 });
 
 export async function calculateStabilityFlow(
@@ -66,6 +70,8 @@ export async function calculateStabilityFlow(
     ? input.estimatedChurnRatePercent 
     : Math.round(rawChurn);
 
+
+
   const ai = getAI();
   const response = await ai.generate({
     model: 'googleai/gemini-2.5-flash',
@@ -87,6 +93,10 @@ export async function calculateStabilityFlow(
 - Department Vacancy Breakdown: Leadership: ${leadershipCount}, Secondary: ${secondaryCount}, Primary: ${primaryCount}
 - Calculated Turnover Rate: ${roundedChurn}%
 - Has Executive Recruitment Track: ${input.hasExecutiveTrack ? "Yes" : "No"}
+- Recruitment Season Context: ${input.recruitmentSeason || 'Unknown'}
+- Net New/Expansion Roles Count: ${input.netNewRolesCount || 0}
+- Composite/Multi-Subject Roles Count: ${input.compositeRolesCount || 0}
+- Internal Promotions/Leadership Cascade Likely: ${input.hasInternalPromotionsLikely ? "Yes" : "No"}
 
 [INSTRUCTIONS]
  1. Strictly check if there is a Hard Data Scraped Jobs Count provided in the school context.
@@ -119,6 +129,11 @@ export async function calculateStabilityFlow(
         * 10% to 15% [Moderate]: Describe as a "natural international transition at the end of standard two-year contracts."
         * 15% to 22% [Elevated]: You MUST use the exact terms: "active transition", "department shuffles", and "leadership restructure."
         * Over 22% [High]: Describe as "heavy workloads or structural instability."
+    - REAL-WORLD CONTEXT RULES:
+      - Growth/Expansion (netNewRolesCount = ${input.netNewRolesCount || 0}): If greater than 0, acknowledge that a portion of these advertisements represent new/expansion growth (programmatic expansions or additions) rather than simple retention loss, adapting the stability tone accordingly.
+      - Seasonality (recruitmentSeason = "${input.recruitmentSeason || 'Unknown'}"): If the season is "Late-Cycle/Panic Resignations (May-Aug Window)", you MUST explicitly note that late-season postings suggest emergency patching or late broken contracts (e.g. visa delays, standard last-minute shuffles).
+      - Subject Dependency & Composite Roles (compositeRolesCount = ${input.compositeRolesCount || 0}): If greater than 0, note that the actual staff count needed is likely slightly lower than the advertisement count because some listings represent composite roles or dual-subject vacancies.
+      - Leadership Cascades (hasInternalPromotionsLikely = ${input.hasInternalPromotionsLikely ? "Yes" : "No"}): If true, point out that classroom role advertisements may be ripples/cascades from internal promotions following the leadership appointments.
     - RECRUITMENT STRATEGY SYNTHESIS RULE:
       - Evaluate the detected sources and cleanly summarize the hiring strategy in the final sentence:
         * For Mixed Authority Tracks (when Has Executive Recruitment Track is No): Describe it as a "highly organized approach utilizing primary international recruitment pipelines like TES to secure core classroom talent."

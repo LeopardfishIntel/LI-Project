@@ -200,7 +200,21 @@ const parseJobString = (job: string) => {
   if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("key stage one") || lowerTitle.includes("class teacher") || lowerTitle.includes("practitioner") || lowerTitle.includes("partner") || lowerTitle.includes("sestra") || lowerTitle.includes("nurse")) {
     department = "Primary";
   } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator") || lowerTitle.includes("headteacher") || lowerTitle.includes("headmaster") || lowerTitle.includes("headmistress")) {
-    department = "Leadership";
+    const isMiddleLeader = 
+      lowerTitle.includes("head of department") || 
+      lowerTitle.includes("head of faculty") || 
+      lowerTitle.includes("head of dept") || 
+      (lowerTitle.includes("head of") && [
+        "science", "math", "english", "music", "art", "drama", "pe", "physical education", 
+        "history", "geography", "biology", "chemistry", "physics", "languages", "mfl", 
+        "french", "spanish", "german", "mandarin", "chinese", "humanities", "computing", 
+        "computer", "ict", "design", "business", "economics", "inclusion", "learning support", 
+        "eal", "sen", "senco", "curriculum", "subject", "year", "grade", "house"
+      ].some(kw => lowerTitle.includes(kw)));
+
+    if (!isMiddleLeader) {
+      department = "Leadership";
+    }
   }
   return { title, source, postedDate, closesDate, status: statusInfo.status, label: statusInfo.label, department, original: job };
 };
@@ -249,18 +263,19 @@ const getJobPostedDate = (job: string): Date | null => {
 
 const processAndFilterJobs = (jobs: string[]) => {
   const today = new Date("2026-05-18");
-  const twelveMonthsAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+  const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
 
   const processed = jobs.map(job => {
     const parsed = parseJobString(job);
     const postedDate = getJobPostedDate(job);
-    return { ...parsed, rawPostedDate: postedDate };
+    const recruitmentCycle = (postedDate && postedDate < new Date("2025-05-21")) ? "HISTORIC_Y1" : "CURRENT";
+    return { ...parsed, rawPostedDate: postedDate, recruitmentCycle };
   });
 
-  // Filter: Keep if postedDate >= twelveMonthsAgo OR if postedDate is null (we assume it's current/within range if it has no explicit old date)
+  // Filter: Keep if postedDate >= twentyFourMonthsAgo OR if postedDate is null
   const filtered = processed.filter(job => {
     if (!job.rawPostedDate) return true;
-    return job.rawPostedDate >= twelveMonthsAgo;
+    return job.rawPostedDate >= twentyFourMonthsAgo;
   });
 
   // Sort: Open jobs first, then closed.
@@ -303,15 +318,15 @@ function DecoderContent() {
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
-  const [stabilityCountdown, setStabilityCountdown] = useState(10);
+    const [stabilityCountdown, setStabilityCountdown] = useState(90);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
 
-  // ⏱️ STABILITY CALCULATION COUNTDOWN (starts at 10, lasts 100 seconds, decrements every 10 seconds)
+  // ⏱️ STABILITY CALCULATION COUNTDOWN (starts at 90, decrements every 1 second)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isCalculatingStability) {
-      setStabilityCountdown(10);
+      setStabilityCountdown(90);
       interval = setInterval(() => {
         setStabilityCountdown((prev) => {
           if (prev <= 1) {
@@ -319,9 +334,9 @@ function DecoderContent() {
           }
           return prev - 1;
         });
-      }, 10000);
+      }, 1000);
     } else {
-      setStabilityCountdown(10);
+      setStabilityCountdown(90);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -1126,14 +1141,14 @@ function DecoderContent() {
                     */}
                     <div>
                       <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center justify-between gap-2 leading-relaxed">
-                        <span className="flex items-center gap-2">
-                          <FileText className="size-4" /> Staff Turnover Guide - (last 12 months)
+                        <span>
+                          Staff Turnover Guide - (last 12 months)
                         </span>
                         <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic ml-auto">
                           re-verification takes upto 90 secs
                         </span>
                       </h4>
-                      <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed border-l-2 border-[#d95f02]/30 pl-4">
+                      <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed">
                         
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
                         <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
@@ -1153,8 +1168,8 @@ function DecoderContent() {
                                     </span>
                                     Executing Two-Step Vacancy Audit
                                   </span>
-                                  <span className="text-[8px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                    Running Research Engine (Countdown: {stabilityCountdown})...
+                                                                    <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
+                                    Running Research Engine ({stabilityCountdown}s)...
                                   </span>
                                 </div>
                                 
@@ -1191,16 +1206,20 @@ function DecoderContent() {
                             </div>
                                           ) : stabilityReport ? (
                             (() => {
-                              const processedJobs = processAndFilterJobs(stabilityReport.scrapedJobsList || []);
+                              const allProcessedJobs = processAndFilterJobs(stabilityReport.scrapedJobsList || []);
+                              const processedJobs12 = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const churnRate = stabilityReport.metrics.estimatedStaffBase 
-                                ? Math.round((processedJobs.length / stabilityReport.metrics.estimatedStaffBase) * 100) 
+                                ? Math.round((processedJobs12.length / stabilityReport.metrics.estimatedStaffBase) * 100) 
                                 : (stabilityReport.metrics.estimatedChurnRatePercent || 0);
+
+                              const currentJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
+                              const historicJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "HISTORIC_Y1");
+
                               return (
                                 <div className="space-y-4">
                                   {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
                                   <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                    <div className="flex items-center gap-2.5">
-                                      <Activity className="size-4 text-[#d95f02]" />
+                                    <div>
                                       <div>
                                         <p className="text-[10px] text-slate-400 font-medium">
                                           Category:{" "}
@@ -1244,10 +1263,10 @@ function DecoderContent() {
                                         onClick={() => loadStabilityReport(true)}
                                         disabled={isCalculatingStability}
                                         type="button"
-                                        className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[9px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
+                                        className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[11px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
                                       >
                                         <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> 
-                                        {isCalculatingStability ? `Re-verifying (Countdown: ${stabilityCountdown})...` : "Re-verify vacancies"}
+                                        {isCalculatingStability ? `Re-verifying (${stabilityCountdown}s)...` : "Re-verify vacancies"}
                                       </button>
                                     </div>
                                   </div>
@@ -1260,7 +1279,7 @@ function DecoderContent() {
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
                                       <div className={cn("text-sm font-black text-white mt-0.5 transition-all duration-300", isCalculatingStability && "blur-[3px] select-none")}>
-                                        {processedJobs.length}
+                                        {processedJobs12.length}
                                       </div>
                                     </div>
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
@@ -1294,67 +1313,118 @@ function DecoderContent() {
                                         <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                           <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Leadership</div>
                                           <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs.filter(j => j.department === 'Leadership').length}
+                                            {processedJobs12.filter(j => j.department === 'Leadership').length}
                                           </div>
                                         </div>
                                         <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                           <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Secondary</div>
                                           <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs.filter(j => j.department === 'Secondary').length}
+                                            {processedJobs12.filter(j => j.department === 'Secondary').length}
                                           </div>
                                         </div>
                                         <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                           <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Primary</div>
                                           <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs.filter(j => j.department === 'Primary').length}
+                                            {processedJobs12.filter(j => j.department === 'Primary').length}
                                           </div>
                                         </div>
                                       </div>
 
                                       {/* 📋 DISCOVERED VACANCIES DROPDOWN / LIST */}
-                                      {turnoverUnlocked && processedJobs.length > 0 && (
+                                      {turnoverUnlocked && allProcessedJobs.length > 0 && (
                                         <div className="border border-white/5 bg-black/10 rounded-sm">
                                           <details className="group" open>
                                             <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
-                                              <span className="flex items-center gap-1.5">
-                                                <Briefcase className="size-3 text-[#d95f02]" />
-                                                View Discovered Vacancies ({processedJobs.length})
+                                              <span>
+                                                View Discovered Vacancies ({allProcessedJobs.length})
+                                                {activeSchool && (
+                                                  <span className="text-slate-300 font-bold tracking-normal normal-case ml-1.5">
+                                                    {" "}— {activeSchool.schoolname || activeSchool.school || activeSchool.name}
+                                                  </span>
+                                                )}
                                               </span>
                                               <ChevronDown className="size-3 text-slate-500 group-open:rotate-180 transition-transform" />
                                             </summary>
-                                            <div className="p-3 border-t border-white/5 space-y-2 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
-                                              {processedJobs.map((job, idx) => (
-                                                <div key={idx} className="flex items-center justify-between gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
-                                                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                                                    <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
-                                                      {String(idx + 1).padStart(2, '0')}
-                                                    </span>
-                                                    <span className="font-bold text-slate-200 truncate" title={job.title}>
-                                                      {job.title}
-                                                    </span>
-                                                    <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
-                                                      {job.source}
-                                                    </span>
-                                                  </div>
-                                                  <div className="flex items-center gap-2 shrink-0">
-                                                    {job.postedDate && (
-                                                      <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
-                                                        Listed: {job.postedDate}
-                                                      </span>
-                                                    )}
-                                                    <span className={cn(
-                                                      "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
-                                                      job.status === 'open' 
-                                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                                                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                                                    )}>
-                                                      {job.status === 'open' 
-                                                        ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
-                                                        : 'Closed'}
-                                                    </span>
-                                                  </div>
+                                            <div className="p-3 border-t border-white/5 space-y-4 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
+                                              {currentJobs.length > 0 && (
+                                                <div className="space-y-2">
+                                                  <div className="text-[9px] font-black uppercase text-teal-400 px-2 pt-1 pb-0.5 tracking-wider border-b border-teal-500/10">Current Cycle (Last 12 Months)</div>
+                                                  {currentJobs.map((job, idx) => (
+                                                    <div key={`current-${idx}`} className="flex items-center justify-between gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
+                                                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                        <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
+                                                          {String(idx + 1).padStart(2, '0')}
+                                                        </span>
+                                                        <span className="font-bold text-slate-200 truncate" title={job.title}>
+                                                          {job.title}
+                                                        </span>
+                                                        <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
+                                                          {job.source}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex items-center gap-2 shrink-0">
+                                                        {job.postedDate && (!job.closesDate || job.status !== 'open') && (
+                                                          <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
+                                                            Listed: {job.postedDate}
+                                                          </span>
+                                                        )}
+                                                        <span className={cn(
+                                                          "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
+                                                          job.status === 'open' 
+                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                                                            : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                                        )}>
+                                                          {job.status === 'open' 
+                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
+                                                            : 'Closed'}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  ))}
                                                 </div>
-                                              ))}
+                                              )}
+                                              
+                                              {currentJobs.length > 0 && historicJobs.length > 0 && (
+                                                <hr className="border-white/5 my-3" />
+                                              )}
+
+                                              {historicJobs.length > 0 && (
+                                                <div className="space-y-2">
+                                                  <div className="text-[9px] font-black uppercase text-[#d95f02] px-2 pt-1 pb-0.5 tracking-wider border-b border-[#d95f02]/10">Historic Cycle (12-24 Months Ago)</div>
+                                                  {historicJobs.map((job, idx) => (
+                                                    <div key={`historic-${idx}`} className="flex items-center justify-between gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
+                                                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                        <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
+                                                          {String(idx + 1).padStart(2, '0')}
+                                                        </span>
+                                                        <span className="font-bold text-slate-200 truncate" title={job.title}>
+                                                          {job.title}
+                                                        </span>
+                                                        <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
+                                                          {job.source}
+                                                        </span>
+                                                      </div>
+                                                      <div className="flex items-center gap-2 shrink-0">
+                                                        {job.postedDate && (!job.closesDate || job.status !== 'open') && (
+                                                          <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
+                                                            Listed: {job.postedDate}
+                                                          </span>
+                                                        )}
+                                                        <span className={cn(
+                                                          "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
+                                                          job.status === 'open' 
+                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                                                            : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                                                        )}>
+                                                          {job.status === 'open' 
+                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
+                                                            : 'Closed'}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              )}
                                             </div>
                                           </details>
                                         </div>
@@ -1363,12 +1433,24 @@ function DecoderContent() {
                                       {/* Churn Implications Alert Box */}
                                       {turnoverUnlocked && stabilityReport.leopardfishIntelAlert && (
                                         <div className="mt-4 p-3 bg-[#d95f02]/5 border border-[#d95f02]/20 rounded-sm">
-                                          <div className="flex gap-2.5">
-                                            <AlertTriangle className="size-4 text-[#d95f02] shrink-0 mt-0.5" />
-                                            <div className="space-y-1">
+                                          <div className="space-y-1 w-full">
+                                            <div className="flex items-center justify-between">
                                               <h5 className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Churn Implications</h5>
-                                              <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic">{stabilityReport.leopardfishIntelAlert}</p>
+                                              <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                  <button type="button" className="text-slate-400 hover:text-white transition-colors">
+                                                    <Info className="size-3.5" />
+                                                  </button>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2 rounded-sm shadow-xl z-50">
+                                                  <p className="text-[10px] font-black uppercase tracking-wider text-[#d95f02] border-b border-white/10 pb-1.5">Data Scope & Limitations</p>
+                                                  <p className="text-[10px] leading-relaxed text-slate-300 font-medium">
+                                                    This rate is based strictly on public vacancy data we've caught over the last twelve months. It's a handy guide, but keep in mind that a single advert can sometimes cover multiple posts (like hiring three Maths teachers with one listing). Plus, plenty of schools recruit quietly through internal promotions, word of mouth, or specialized agencies without putting a public listing up at all. So while it gives a good steer on staffroom movement, it won't show every quiet shuffle behind the scenes!
+                                                  </p>
+                                                </TooltipContent>
+                                              </Tooltip>
                                             </div>
+                                            <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic">{stabilityReport.leopardfishIntelAlert}</p>
                                           </div>
                                         </div>
                                       )}

@@ -304,7 +304,21 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
     if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("key stage one") || lowerTitle.includes("class teacher") || lowerTitle.includes("practitioner") || lowerTitle.includes("partner") || lowerTitle.includes("sestra") || lowerTitle.includes("nurse")) {
       department = "Primary";
     } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator") || lowerTitle.includes("headteacher") || lowerTitle.includes("headmaster") || lowerTitle.includes("headmistress")) {
-      department = "Leadership";
+      const isMiddleLeader = 
+        lowerTitle.includes("head of department") || 
+        lowerTitle.includes("head of faculty") || 
+        lowerTitle.includes("head of dept") || 
+        (lowerTitle.includes("head of") && [
+          "science", "math", "english", "music", "art", "drama", "pe", "physical education", 
+          "history", "geography", "biology", "chemistry", "physics", "languages", "mfl", 
+          "french", "spanish", "german", "mandarin", "chinese", "humanities", "computing", 
+          "computer", "ict", "design", "business", "economics", "inclusion", "learning support", 
+          "eal", "sen", "senco", "curriculum", "subject", "year", "grade", "house"
+        ].some(kw => lowerTitle.includes(kw)));
+
+      if (!isMiddleLeader) {
+        department = "Leadership";
+      }
     }
 
     let date_listed_val: string | null = date_listed || "21 May 2026";
@@ -448,18 +462,30 @@ const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolNa
     if (!report.metrics) report.metrics = {};
     report.metrics.leadershipChurnRatioPercent = senior_leadership_churn_percentage;
     
-    const leadership_vacancies_count = vacancies.filter((v: any) => v.department === "Leadership").length;
-    const secondary_vacancies_count = vacancies.filter((v: any) => v.department === "Secondary").length;
-    const primary_vacancies_count = vacancies.filter((v: any) => v.department === "Primary").length;
+    // 🛡️ ISOLATE TO CURRENT (12-MONTH) CYCLES FOR METRICS AND COMMENTARY
+    const currentVacancies = vacancies.filter((v: any) => v.recruitmentCycle === "CURRENT");
+    const total_known_vacancies = currentVacancies.length;
+    
+    const leadership_vacancies_count = currentVacancies.filter((v: any) => v.department === "Leadership").length;
+    const secondary_vacancies_count = currentVacancies.filter((v: any) => v.department === "Secondary").length;
+    const primary_vacancies_count = currentVacancies.filter((v: any) => v.department === "Primary").length;
     
     report.leadership_vacancies_count = leadership_vacancies_count;
     report.secondary_vacancies_count = secondary_vacancies_count;
     report.primary_vacancies_count = primary_vacancies_count;
+    report.total_known_vacancies = total_known_vacancies;
     
-    const hasExecutiveSearch = vacancies.some((v: any) => v.source === "Executive Agency" || v.source.toLowerCase().includes("executive") || v.source.toLowerCase().includes("headhunter"));
-    const estimated_churn_percentage = report.estimated_churn_percentage || report.metrics?.estimatedChurnRatePercent || 0;
+    const staffBase = report.metrics?.estimatedStaffBase || 50;
+    const estimated_churn_percentage = staffBase > 0 
+        ? Math.round((total_known_vacancies / staffBase) * 100)
+        : 0;
+    
+    report.estimated_churn_percentage = estimated_churn_percentage;
+    report.metrics.averageYearlyTesAdverts = total_known_vacancies;
+    report.metrics.estimatedChurnRatePercent = estimated_churn_percentage;
+    
+    const hasExecutiveSearch = currentVacancies.some((v: any) => v.source === "Executive Agency" || v.source.toLowerCase().includes("executive") || v.source.toLowerCase().includes("headhunter"));
     const churnRateFormatted = Math.round(estimated_churn_percentage);
-    const total_known_vacancies = report.total_known_vacancies || vacancies.length;
     
     let commentary = report.leopardfishIntelAlert || report.churn_implications_commentary;
     if (!commentary) {
@@ -646,12 +672,13 @@ export async function getSchoolStabilityReport(input: {
                             const freshLastScrapedAt = new Date().toISOString();
 
                             const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList, input.schoolName, input.city);
-                            const fresh_total_known_vacancies = freshParsedVacancies.length;
-                            const fresh_leadership_vacancies_count = freshParsedVacancies.filter(v => v.department === "Leadership").length;
-                            const fresh_secondary_vacancies_count = freshParsedVacancies.filter(v => v.department === "Secondary").length;
-                            const fresh_primary_vacancies_count = freshParsedVacancies.filter(v => v.department === "Primary").length;
-                            const freshEstimatedChurnRatePercent = input.estimatedStaffBase > 0 
-                                ? Math.round((fresh_total_known_vacancies / input.estimatedStaffBase) * 100) 
+                            const freshCurrentVacancies = freshParsedVacancies.filter(v => v.recruitmentCycle === "CURRENT");
+                            const fresh_total_known_vacancies_12 = freshCurrentVacancies.length;
+                            const fresh_leadership_vacancies_count_12 = freshCurrentVacancies.filter(v => v.department === "Leadership").length;
+                            const fresh_secondary_vacancies_count_12 = freshCurrentVacancies.filter(v => v.department === "Secondary").length;
+                            const fresh_primary_vacancies_count_12 = freshCurrentVacancies.filter(v => v.department === "Primary").length;
+                            const freshEstimatedChurnRatePercent_12 = input.estimatedStaffBase > 0 
+                                ? Math.round((fresh_total_known_vacancies_12 / input.estimatedStaffBase) * 100) 
                                 : 0;
                             const fresh_has_executive = freshParsedVacancies.some(
                               v => v.source.toLowerCase().includes("executive") ||
@@ -661,26 +688,66 @@ export async function getSchoolStabilityReport(input: {
                                    v.source.toLowerCase().includes("tic recruitment")
                             );
 
+                            const freshCurrentMonth = new Date().getMonth();
+                            let freshRecruitmentSeason = "Standard Phase (Feb-Apr Window)";
+                            if (freshCurrentMonth >= 9 || freshCurrentMonth <= 0) {
+                              freshRecruitmentSeason = "Early Bird Phase (Oct-Jan Window)";
+                            } else if (freshCurrentMonth >= 4 && freshCurrentMonth <= 7) {
+                              freshRecruitmentSeason = "Late-Cycle/Panic Resignations (May-Aug Window)";
+                            }
+
+                            const freshExpansionRoles = freshCurrentVacancies.filter(v => {
+                              const lowerTitle = v.title.toLowerCase();
+                              return lowerTitle.includes("expansion") || 
+                                     lowerTitle.includes("new campus") || 
+                                     lowerTitle.includes("additional class") ||
+                                     lowerTitle.includes("expanding");
+                            });
+                            const freshNetNewRolesCount = freshExpansionRoles.length;
+
+                            const freshCompositeRoles = freshCurrentVacancies.filter(v => {
+                              const lowerTitle = v.title.toLowerCase();
+                              return lowerTitle.includes("and/or") || 
+                                     lowerTitle.includes(" & ") || 
+                                     lowerTitle.includes("composite") ||
+                                     (lowerTitle.includes("and") && (
+                                       lowerTitle.includes("physics") || 
+                                       lowerTitle.includes("chemistry") || 
+                                       lowerTitle.includes("biology") || 
+                                       lowerTitle.includes("science") || 
+                                       lowerTitle.includes("business") || 
+                                       lowerTitle.includes("economics")
+                                     ));
+                            });
+                            const freshCompositeRolesCount = freshCompositeRoles.length;
+
+                            const freshHasLeadershipVacancies = freshCurrentVacancies.some(v => v.department === "Leadership");
+                            const freshHasInternalPromotionsLikely = freshHasLeadershipVacancies && freshCurrentVacancies.length > 2;
+
                             const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
                             const freshReport = await calculateStabilityFlow({
                                 ...input,
-                                scrapedJobsCount: freshJobsCount,
-                                leadershipCount: fresh_leadership_vacancies_count,
-                                secondaryCount: fresh_secondary_vacancies_count,
-                                primaryCount: fresh_primary_vacancies_count,
-                                estimatedChurnRatePercent: freshEstimatedChurnRatePercent,
-                                hasExecutiveTrack: fresh_has_executive
+                                scrapedJobsCount: fresh_total_known_vacancies_12,
+                                leadershipCount: fresh_leadership_vacancies_count_12,
+                                secondaryCount: fresh_secondary_vacancies_count_12,
+                                primaryCount: fresh_primary_vacancies_count_12,
+                                estimatedChurnRatePercent: freshEstimatedChurnRatePercent_12,
+                                hasExecutiveTrack: fresh_has_executive,
+                                recruitmentSeason: freshRecruitmentSeason,
+                                netNewRolesCount: freshNetNewRolesCount,
+                                compositeRolesCount: freshCompositeRolesCount,
+                                hasInternalPromotionsLikely: freshHasInternalPromotionsLikely
                             });
 
                             freshReport.scrapedJobsList = freshJobsList;
                             freshReport.lastScrapedAt = freshLastScrapedAt;
                             (freshReport as any).vacancies_discovered = freshParsedVacancies;
                             (freshReport as any).structured_vacancies = (freshReport as any).vacancies_discovered;
-                            (freshReport as any).total_known_vacancies = fresh_total_known_vacancies;
-                            (freshReport as any).estimated_churn_percentage = freshEstimatedChurnRatePercent;
-                            (freshReport as any).leadership_vacancies_count = fresh_leadership_vacancies_count;
-                            (freshReport as any).secondary_vacancies_count = fresh_secondary_vacancies_count;
-                            (freshReport as any).primary_vacancies_count = fresh_primary_vacancies_count;
+                            (freshReport as any).total_known_vacancies = fresh_total_known_vacancies_12;
+                            (freshReport as any).estimated_churn_percentage = freshEstimatedChurnRatePercent_12;
+                            (freshReport as any).leadership_vacancies_count = fresh_leadership_vacancies_count_12;
+                            (freshReport as any).secondary_vacancies_count = fresh_secondary_vacancies_count_12;
+                            (freshReport as any).primary_vacancies_count = fresh_primary_vacancies_count_12;
                             (freshReport as any).churn_implications_commentary = freshReport.leopardfishIntelAlert;
                             await applyLeadershipEnrichment(freshReport, input.schoolId, input.schoolName);
 
@@ -790,12 +857,13 @@ export async function getSchoolStabilityReport(input: {
         console.log(`🛸 [STABILITY ENGINE] Calculating fresh stability report for ${input.schoolName}...`);
         
         const parsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
-        const total_known_vacancies = parsedVacancies.length;
-        const leadership_vacancies_count = parsedVacancies.filter(v => v.department === "Leadership").length;
-        const secondary_vacancies_count = parsedVacancies.filter(v => v.department === "Secondary").length;
-        const primary_vacancies_count = parsedVacancies.filter(v => v.department === "Primary").length;
-        const estimatedChurnRatePercent = input.estimatedStaffBase > 0 
-            ? Math.round((total_known_vacancies / input.estimatedStaffBase) * 100) 
+        const currentVacancies = parsedVacancies.filter(v => v.recruitmentCycle === "CURRENT");
+        const total_known_vacancies_12 = currentVacancies.length;
+        const leadership_vacancies_count_12 = currentVacancies.filter(v => v.department === "Leadership").length;
+        const secondary_vacancies_count_12 = currentVacancies.filter(v => v.department === "Secondary").length;
+        const primary_vacancies_count_12 = currentVacancies.filter(v => v.department === "Primary").length;
+        const estimatedChurnRatePercent_12 = input.estimatedStaffBase > 0 
+            ? Math.round((total_known_vacancies_12 / input.estimatedStaffBase) * 100) 
             : 0;
         const hasExecutiveTrack = parsedVacancies.some(
           v => v.source.toLowerCase().includes("executive") ||
@@ -805,15 +873,55 @@ export async function getSchoolStabilityReport(input: {
                v.source.toLowerCase().includes("tic recruitment")
         );
 
+        const currentMonth = new Date().getMonth();
+        let recruitmentSeason = "Standard Phase (Feb-Apr Window)";
+        if (currentMonth >= 9 || currentMonth <= 0) {
+          recruitmentSeason = "Early Bird Phase (Oct-Jan Window)";
+        } else if (currentMonth >= 4 && currentMonth <= 7) {
+          recruitmentSeason = "Late-Cycle/Panic Resignations (May-Aug Window)";
+        }
+
+        const expansionRoles = currentVacancies.filter(v => {
+          const lowerTitle = v.title.toLowerCase();
+          return lowerTitle.includes("expansion") || 
+                 lowerTitle.includes("new campus") || 
+                 lowerTitle.includes("additional class") ||
+                 lowerTitle.includes("expanding");
+        });
+        const netNewRolesCount = expansionRoles.length;
+
+        const compositeRoles = currentVacancies.filter(v => {
+          const lowerTitle = v.title.toLowerCase();
+          return lowerTitle.includes("and/or") || 
+                 lowerTitle.includes(" & ") || 
+                 lowerTitle.includes("composite") ||
+                 (lowerTitle.includes("and") && (
+                   lowerTitle.includes("physics") || 
+                   lowerTitle.includes("chemistry") || 
+                   lowerTitle.includes("biology") || 
+                   lowerTitle.includes("science") || 
+                   lowerTitle.includes("business") || 
+                   lowerTitle.includes("economics")
+                 ));
+        });
+        const compositeRolesCount = compositeRoles.length;
+
+        const hasLeadershipVacancies = currentVacancies.some(v => v.department === "Leadership");
+        const hasInternalPromotionsLikely = hasLeadershipVacancies && currentVacancies.length > 2;
+
         const { calculateStabilityFlow } = await import('@/ai/flows/calculate-stability-flow');
         const report = await calculateStabilityFlow({
             ...input,
-            scrapedJobsCount,
-            leadershipCount: leadership_vacancies_count,
-            secondaryCount: secondary_vacancies_count,
-            primaryCount: primary_vacancies_count,
-            estimatedChurnRatePercent,
-            hasExecutiveTrack
+            scrapedJobsCount: total_known_vacancies_12,
+            leadershipCount: leadership_vacancies_count_12,
+            secondaryCount: secondary_vacancies_count_12,
+            primaryCount: primary_vacancies_count_12,
+            estimatedChurnRatePercent: estimatedChurnRatePercent_12,
+            hasExecutiveTrack,
+            recruitmentSeason,
+            netNewRolesCount,
+            compositeRolesCount,
+            hasInternalPromotionsLikely
         });
 
         // Attach scraped details directly to stability report before caching
@@ -821,11 +929,11 @@ export async function getSchoolStabilityReport(input: {
         report.lastScrapedAt = lastScrapedAt || undefined;
         (report as any).vacancies_discovered = parsedVacancies;
         (report as any).structured_vacancies = (report as any).vacancies_discovered;
-        (report as any).total_known_vacancies = total_known_vacancies;
-        (report as any).estimated_churn_percentage = estimatedChurnRatePercent;
-        (report as any).leadership_vacancies_count = leadership_vacancies_count;
-        (report as any).secondary_vacancies_count = secondary_vacancies_count;
-        (report as any).primary_vacancies_count = primary_vacancies_count;
+        (report as any).total_known_vacancies = total_known_vacancies_12;
+        (report as any).estimated_churn_percentage = estimatedChurnRatePercent_12;
+        (report as any).leadership_vacancies_count = leadership_vacancies_count_12;
+        (report as any).secondary_vacancies_count = secondary_vacancies_count_12;
+        (report as any).primary_vacancies_count = primary_vacancies_count_12;
         (report as any).churn_implications_commentary = report.leopardfishIntelAlert;
         await applyLeadershipEnrichment(report, input.schoolId, input.schoolName);
 
