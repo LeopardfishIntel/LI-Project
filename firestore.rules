@@ -176,6 +176,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /telemetry/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /ikea_intel/{docId} {
       allow read: if true;
       allow write: if isAdmin();

@@ -85,33 +85,60 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
  */
 export async function getTelemetryData() {
   try {
-    const [telemetrySnap, pageViewsSnap, schoolsSnap, colSnap] = await Promise.all([
-      getDocs(collection(db, 'telemetry')),
-      getDocs(collection(db, 'app_metrics')),
-      getDocs(collection(db, 'schools')),
-      getDocs(collection(db, 'locations_costOfLiving'))
+    const [telemetrySnap, pageViewsSnap, schoolsSnap, colSnap, enquiriesSnap] = await Promise.all([
+      getDocs(collection(db, 'telemetry')).catch(err => {
+        console.warn("Telemetry collection read failed:", err.message || err);
+        return null;
+      }),
+      getDocs(collection(db, 'app_metrics')).catch(err => {
+        console.warn("App metrics collection read failed:", err.message || err);
+        return null;
+      }),
+      getDocs(collection(db, 'schools')).catch(err => {
+        console.warn("Schools collection read failed:", err.message || err);
+        return null;
+      }),
+      getDocs(collection(db, 'locations_costOfLiving')).catch(err => {
+        console.warn("Locations cost of living collection read failed:", err.message || err);
+        return null;
+      }),
+      getDocs(collection(db, 'enquiries')).catch(err => {
+        console.warn("Enquiries collection read failed:", err.message || err);
+        return null;
+      })
     ]);
 
-    const legacyTelemetry = telemetrySnap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({
-      ...acc,
-      ...d.data()
-    }), {});
+    const legacyTelemetry = telemetrySnap 
+      ? telemetrySnap.docs.reduce((acc: any, d: QueryDocumentSnapshot<DocumentData>) => ({
+          ...acc,
+          ...d.data()
+        }), {})
+      : {};
 
-    const pageViewsDoc = pageViewsSnap.docs.find(d => d.id === 'page_views');
+    const pageViewsDoc = pageViewsSnap ? pageViewsSnap.docs.find(d => d.id === 'page_views') : null;
     const pageViews = pageViewsDoc ? pageViewsDoc.data() : {};
 
     // Calculate unique countries
-    const schoolCountries = schoolsSnap.size > 0 ? schoolsSnap.docs.map((d: any) => d.data().country).filter(Boolean) : [];
-    const colCountries = colSnap.size > 0 ? colSnap.docs.map((d: any) => d.data().country || d.data().country_name).filter(Boolean) : [];
+    const schoolCountries = (schoolsSnap && schoolsSnap.size > 0) ? schoolsSnap.docs.map((d: any) => d.data().country).filter(Boolean) : [];
+    const colCountries = (colSnap && colSnap.size > 0) ? colSnap.docs.map((d: any) => d.data().country || d.data().country_name).filter(Boolean) : [];
     const uniqueCountries = new Set([...schoolCountries, ...colCountries]).size;
+
+    // Calculate pending enquiries count
+    let pendingEnquiries = 0;
+    if (enquiriesSnap) {
+      pendingEnquiries = enquiriesSnap.docs.filter((d: any) => d.data().status === 'pending').length;
+    } else if (legacyTelemetry.pendingEnquiries !== undefined) {
+      pendingEnquiries = legacyTelemetry.pendingEnquiries;
+    }
 
     const data = {
       ...legacyTelemetry,
       totalVisits: pageViews.site_visits || 0,
       comparisons: pageViews.comparisons_made || legacyTelemetry.comparisons || 0,
-      totalSchools: schoolsSnap.size,
-      totalLocations: colSnap.size,
-      uniqueCountries: uniqueCountries
+      totalSchools: schoolsSnap ? schoolsSnap.size : 0,
+      totalLocations: colSnap ? colSnap.size : 0,
+      uniqueCountries: uniqueCountries,
+      pendingEnquiries: pendingEnquiries
     };
 
     return { success: true, data };
