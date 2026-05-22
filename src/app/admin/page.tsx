@@ -519,27 +519,27 @@ export default function AdminCommandPage() {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
                         </div>
                         <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
                             <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
-                            <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
+                            <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
                         </div>
                     </div>
                 )}
