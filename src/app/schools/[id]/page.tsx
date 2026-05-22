@@ -430,38 +430,38 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent"></div>
         <div className="absolute bottom-0 left-0 p-8 container mx-auto">
           <Badge className="bg-primary font-black uppercase tracking-widest text-[10px] mb-4">Tactical Dossier</Badge>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase italic">{name}</h1>
-              <div className="flex items-center text-sm font-black uppercase text-muted-foreground mt-2">
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase italic w-full">{name}</h1>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="flex items-center text-sm font-black uppercase text-muted-foreground">
                 <MapPin className="w-4 h-4 mr-2 text-primary" />
                 <span>{school.city || school.location}, {school.country}</span>
                 <span className="mx-3 opacity-20">|</span>
                 <span className="text-primary/80 tracking-widest font-black">FLIS: {id}</span>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <p className="text-[9px] font-black uppercase text-primary tracking-[0.2em] italic">Currency</p>
-              <div className="flex items-center bg-black/40 p-1 border border-white/5 rounded-sm overflow-hidden">
-                {[
-                  { id: 'USD', label: 'USD' },
-                  { id: 'GBP', label: 'GBP' },
-                  { id: 'EUR', label: 'EUR' },
-                  { id: 'Local', label: localCurrency },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    onClick={() => setCurrency(opt.id)}
-                    className={cn(
-                      "px-3 py-1.5 text-[10px] font-black uppercase transition-all",
-                      currency === opt.id
-                        ? "bg-primary text-black"
-                        : "text-muted-foreground hover:text-white hover:bg-white/5"
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-4">
+                <p className="text-[9px] font-black uppercase text-primary tracking-[0.2em] italic">Currency</p>
+                <div className="flex items-center bg-black/40 p-1 border border-white/5 rounded-sm overflow-hidden">
+                  {[
+                    { id: 'USD', label: 'USD' },
+                    { id: 'GBP', label: 'GBP' },
+                    { id: 'EUR', label: 'EUR' },
+                    { id: 'Local', label: localCurrency },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setCurrency(opt.id)}
+                      className={cn(
+                        "px-3 py-1.5 text-[10px] font-black uppercase transition-all",
+                        currency === opt.id
+                          ? "bg-primary text-black"
+                          : "text-muted-foreground hover:text-white hover:bg-white/5"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
