@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot, DocumentReference, DocumentData } from 'firebase/firestore';
 import { db } from '../index';
+import { applyDulwichCollegeShanghaiOverride } from '../../lib/utils';
 
 export function useDoc<T = DocumentData>(
   pathOrRef: string | DocumentReference<DocumentData> | null | undefined
@@ -23,7 +24,8 @@ export function useDoc<T = DocumentData>(
       finalRef,
       (snapshot) => {
         if (snapshot.exists()) {
-          setData({ id: snapshot.id, ...snapshot.data() } as T);
+          const docData = { id: snapshot.id, ...snapshot.data() };
+          setData(applyDulwichCollegeShanghaiOverride(docData) as T);
         } else {
           setData(null);
         }

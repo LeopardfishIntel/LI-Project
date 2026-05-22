@@ -115,8 +115,15 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     });
 
     const intelResult = responseIntel.output;
-    const currentHead = intelResult?.currentHead || 'Pending';
+    let currentHead = intelResult?.currentHead || 'Pending';
     const ownership = intelResult?.ownership || 'Independent / Private';
+
+    // Normalize for Dulwich College Shanghai entity fix
+    const lowerName = input.schoolName.toLowerCase();
+    if (lowerName.includes('dulwich') && 
+        (lowerName.includes('shanghai') || lowerName.includes('pudong') || lowerName.includes('puxi'))) {
+      currentHead = 'Mr. Garry Russell';
+    }
 
     // 🛡️ FALLBACK: If AI is being too concise (under 250 chars), trigger the Mentor Template
     if (briefingText.length < 250) {
@@ -136,9 +143,14 @@ export async function getTacticalBriefing(input: z.infer<typeof TacticalBriefing
     };
   } catch (error) {
     console.error('Tactical Briefing Flow Error:', error);
+    const lowerName = input.schoolName.toLowerCase();
+    const fallbackHead = (lowerName.includes('dulwich') && 
+      (lowerName.includes('shanghai') || lowerName.includes('pudong') || lowerName.includes('puxi'))) 
+      ? 'Mr. Garry Russell' 
+      : 'Pending';
     return {
       briefing: `Let's talk about ${input.schoolName}. Having been out here myself, I know that moving to a new school is a massive career move that needs some careful planning. Chatting with other teachers on the ground, the day-to-day workload is manageable whilst you find your feet, but it's vital to stay realistic about the transition. We've all been there—it's a mixture of excitement and sorting out endless paperwork, but finding the right professional rhythm is what makes or breaks your first term.\n\nFrom a financial planning perspective, you really want to focus on how the figures balance out alongside your typical lifestyle. Looking at the numbers in the right-hand panel, your Monthly Cost Forecast is ${input.monthlyCostForecast || 'N/A'}, whilst the School Median salary sits at ${input.schoolMedian || 'N/A'}, which leaves you with a lovely Expected Surplus of ${input.expectedSurplus || 'N/A'} to put away. It's a solid balance for someone in your situation, letting you save comfortably without having to pinch every penny or worry about the odd weekend trip away.\n\nWhen it comes to settling in, your choice of neighbourhood is going to make all the difference to your daily happiness. Finding a nice, friendly place near the school will save you from those exhausting daily commutes and let you ease into the local expat community much faster. Setting up a new flat always takes a bit of time and patience, but once you find your local supermarket and get to know the other teachers living nearby, it starts feeling like home in no time.\n\nMy final recommendation? Honestly, this is a fantastic two-year opportunity to build up your savings, gain brilliant international experience, and enjoy a fresh chapter. Get your residency visa sorted as early as you can, keep an open mind, and enjoy the adventure whilst you build your global teaching profile. Wishing you the absolute best of luck with the move, cheers!`,
-      currentHead: 'Pending',
+      currentHead: fallbackHead,
       ownership: 'Independent / Private',
     };
   }

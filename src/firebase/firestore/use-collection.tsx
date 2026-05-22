@@ -7,6 +7,7 @@ import {
   CollectionReference
 } from 'firebase/firestore';
 import { db } from '../index';
+import { applyDulwichCollegeShanghaiOverride } from '../../lib/utils';
 
 /**
  * 🛰️ TACTICAL DATA RETRIEVAL (STABILIZED)
@@ -44,10 +45,10 @@ export function useCollection<T = DocumentData>(
     const unsubscribe = onSnapshot(
       finalQuery,
       (snapshot) => {
-        const docs = snapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id, // Ensure ID is always appended
-        })) as (T & { id: string })[];
+        const docs = snapshot.docs.map((doc) => {
+          const docData = { ...doc.data(), id: doc.id };
+          return applyDulwichCollegeShanghaiOverride(docData);
+        }) as (T & { id: string })[];
         
         setData(docs);
         setIsLoading(false);

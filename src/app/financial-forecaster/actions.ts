@@ -552,6 +552,13 @@ export async function getSchoolStabilityReport(input: {
             throw new Error("Missing school identifier.");
         }
 
+        // Normalize school name input if it is a Dulwich Shanghai campus
+        const lowerInputName = input.schoolName.toLowerCase();
+        if (lowerInputName.includes('dulwich') && 
+            (lowerInputName.includes('shanghai') || lowerInputName.includes('pudong') || lowerInputName.includes('puxi'))) {
+            input.schoolName = 'Dulwich College Shanghai (DCS)';
+        }
+
         // 1. If not forcing a refresh, check in-memory server cache first
         if (!input.forceRefresh && stabilityMemoryCache.has(input.schoolId)) {
             console.log(`🛸 [STABILITY ENGINE] Returning in-memory cached stability report for ${input.schoolName}`);
@@ -588,6 +595,11 @@ export async function getSchoolStabilityReport(input: {
                 ...localData,
                 cachedStability: localData.cachedStability || (data && data.cachedStability)
             };
+        }
+
+        if (data) {
+            const { applyDulwichCollegeShanghaiOverride } = await import('@/lib/utils');
+            data = applyDulwichCollegeShanghaiOverride(data);
         }
 
         let needsNewSearch = false;

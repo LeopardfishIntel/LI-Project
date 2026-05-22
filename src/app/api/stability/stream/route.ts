@@ -375,7 +375,12 @@ export function sanitizeVacancy(v: any): Vacancy {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const schoolId = searchParams.get("schoolId");
-  const schoolName = searchParams.get("schoolName") || "School";
+  let schoolName = searchParams.get("schoolName") || "School";
+  const lowerSchoolName = schoolName.toLowerCase();
+  if (lowerSchoolName.includes('dulwich') && 
+      (lowerSchoolName.includes('shanghai') || lowerSchoolName.includes('pudong') || lowerSchoolName.includes('puxi'))) {
+    schoolName = 'Dulwich College Shanghai (DCS)';
+  }
   const estimatedStaffBase = parseInt(searchParams.get("estimatedStaffBase") || "50", 10);
   const city = searchParams.get("city") || "";
   const country = searchParams.get("country") || "";
