@@ -1168,9 +1168,9 @@ function DecoderContent() {
                                     </span>
                                     Executing Two-Step Vacancy Audit
                                   </span>
-                                                                    <span className="text-[10px] font-bold text-sky-400 uppercase tracking-widest animate-pulse">
-                                    Running Research Engine ({stabilityCountdown}s)...
-                                  </span>
+                                                                    <span className="text-[10px] font-bold text-sky-400 tracking-wider animate-pulse">
+                                      Running Research Engine {stabilityCountdown}
+                                    </span>
                                 </div>
                                 
                                 <div className="space-y-2 pt-0.5">
