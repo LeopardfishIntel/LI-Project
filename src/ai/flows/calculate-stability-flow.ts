@@ -131,7 +131,12 @@ export async function calculateStabilityFlow(
         * Over 22% [High]: Describe as "heavy workloads or structural instability."
     - REAL-WORLD CONTEXT RULES:
       - Growth/Expansion (netNewRolesCount = ${input.netNewRolesCount || 0}): If greater than 0, acknowledge that a portion of these advertisements represent new/expansion growth (programmatic expansions or additions) rather than simple retention loss, adapting the stability tone accordingly.
-      - Seasonality (recruitmentSeason = "${input.recruitmentSeason || 'Unknown'}"): If the season is "Late-Cycle/Panic Resignations (May-Aug Window)", you MUST explicitly note that late-season postings suggest emergency patching or late broken contracts (e.g. visa delays, standard last-minute shuffles).
+      - Seasonality (recruitmentSeason = "${input.recruitmentSeason || 'Unknown'}"):
+        * Analyze the recruitment season context based on the global location of the school. Note that academic calendars vary by region:
+          - Northern Hemisphere (e.g. Europe, Middle East, East Asia/China, North America, Southeast Asia): The academic year starts in Aug/Sep. Main hiring is Feb-Apr. Late-cycle/panic hiring is May-Aug.
+          - Southern Hemisphere (e.g. Australia, New Zealand, South Africa, parts of South America like Brazil, Argentina): The academic year starts in Jan/Feb. Main hiring is Aug-Oct. Late-cycle/panic hiring is Nov-Jan.
+          - April-March Cycles (e.g. Japan, South Korea): The academic year starts in Mar/Apr. Main hiring is Dec-Jan. Late-cycle/panic hiring is Feb-Apr.
+        * If recruitmentSeason indicates a "Late-Cycle/Panic Resignations" window for that calendar, you MUST explicitly note that late-season postings suggest emergency patching, broken contracts, or last-minute shuffles (e.g. visa delays or late resignations) relative to that region's school starting timeline. If it is early/standard phase, note that the school is within its standard hiring window.
       - Subject Dependency & Composite Roles (compositeRolesCount = ${input.compositeRolesCount || 0}): If greater than 0, note that the actual staff count needed is likely slightly lower than the advertisement count because some listings represent composite roles or dual-subject vacancies.
       - Leadership Cascades (hasInternalPromotionsLikely = ${input.hasInternalPromotionsLikely ? "Yes" : "No"}): If true, point out that classroom role advertisements may be ripples/cascades from internal promotions following the leadership appointments.
     - RECRUITMENT STRATEGY SYNTHESIS RULE:

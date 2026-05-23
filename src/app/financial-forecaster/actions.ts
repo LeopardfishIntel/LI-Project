@@ -29,6 +29,44 @@ const writeLocalCache = (schoolId: string, data: any) => {
     console.error("Failed to write local stability cache:", e);
   }
 };
+
+function getRecruitmentSeasonForCountry(country?: string): string {
+  const c = (country || "").toLowerCase().trim();
+  const currentMonth = new Date().getMonth(); // 0 = Jan, 11 = Dec
+
+  const southernHemisphere = [
+    'australia', 'new zealand', 'south africa', 'argentina', 'brazil', 
+    'peru', 'chile', 'uruguay', 'kenya', 'tanzania', 'south-africa', 'new-zealand'
+  ];
+  const aprilMarchCycle = ['japan', 'south korea', 'south-korea'];
+
+  if (southernHemisphere.some(name => c.includes(name))) {
+    if (currentMonth >= 4 && currentMonth <= 7) {
+      return "Early Bird Phase (May-Aug Window) for Southern Hemisphere Calendar (Starts Jan/Feb)";
+    } else if (currentMonth >= 8 && currentMonth <= 9) {
+      return "Standard Phase (Sep-Oct Window) for Southern Hemisphere Calendar (Starts Jan/Feb)";
+    } else {
+      return "Late-Cycle/Panic Resignations (Nov-Jan Window) for Southern Hemisphere Calendar (Starts Jan/Feb)";
+    }
+  } else if (aprilMarchCycle.some(name => c.includes(name))) {
+    if (currentMonth >= 7 && currentMonth <= 10) {
+      return "Early Bird Phase (Aug-Nov Window) for Japanese/Korean Calendar (Starts Mar/Apr)";
+    } else if (currentMonth === 11 || currentMonth <= 0) {
+      return "Standard Phase (Dec-Jan Window) for Japanese/Korean Calendar (Starts Mar/Apr)";
+    } else {
+      return "Late-Cycle/Panic Resignations (Feb-Apr Window) for Japanese/Korean Calendar (Starts Mar/Apr)";
+    }
+  } else {
+    if (currentMonth >= 9 || currentMonth <= 0) {
+      return "Early Bird Phase (Oct-Jan Window)";
+    } else if (currentMonth >= 1 && currentMonth <= 3) {
+      return "Standard Phase (Feb-Apr Window)";
+    } else {
+      return "Late-Cycle/Panic Resignations (May-Aug Window)";
+    }
+  }
+}
+
 interface ScrapedVacancy {
   title: string;
   source: string;
@@ -719,13 +757,7 @@ export async function getSchoolStabilityReport(input: {
                                    v.source.toLowerCase().includes("tic recruitment")
                             );
 
-                            const freshCurrentMonth = new Date().getMonth();
-                            let freshRecruitmentSeason = "Standard Phase (Feb-Apr Window)";
-                            if (freshCurrentMonth >= 9 || freshCurrentMonth <= 0) {
-                              freshRecruitmentSeason = "Early Bird Phase (Oct-Jan Window)";
-                            } else if (freshCurrentMonth >= 4 && freshCurrentMonth <= 7) {
-                              freshRecruitmentSeason = "Late-Cycle/Panic Resignations (May-Aug Window)";
-                            }
+                            const freshRecruitmentSeason = getRecruitmentSeasonForCountry(input.country);
 
                             const freshExpansionRoles = freshCurrentVacancies.filter(v => {
                               const lowerTitle = v.title.toLowerCase();
@@ -904,13 +936,7 @@ export async function getSchoolStabilityReport(input: {
                v.source.toLowerCase().includes("tic recruitment")
         );
 
-        const currentMonth = new Date().getMonth();
-        let recruitmentSeason = "Standard Phase (Feb-Apr Window)";
-        if (currentMonth >= 9 || currentMonth <= 0) {
-          recruitmentSeason = "Early Bird Phase (Oct-Jan Window)";
-        } else if (currentMonth >= 4 && currentMonth <= 7) {
-          recruitmentSeason = "Late-Cycle/Panic Resignations (May-Aug Window)";
-        }
+        const recruitmentSeason = getRecruitmentSeasonForCountry(input.country);
 
         const expansionRoles = currentVacancies.filter(v => {
           const lowerTitle = v.title.toLowerCase();
