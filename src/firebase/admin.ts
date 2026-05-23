@@ -8,7 +8,8 @@ import {
   updateDoc,
   getDoc,
   setDoc,
-  addDoc
+  addDoc,
+  increment
 } from 'firebase/firestore';
 
 let adminDb: any = null;
@@ -130,4 +131,19 @@ export class DatabaseBatch {
 
 export function getAdminDb() {
   return adminDb || clientDb;
+}
+
+// 7. Increment a field atomically
+export async function incrementField(colName: string, docId: string, fieldName: string, value: number = 1) {
+  if (useAdmin()) {
+    const docRef = adminDb.collection(colName).doc(docId);
+    await docRef.set({
+      [fieldName]: admin.firestore.FieldValue.increment(value)
+    }, { merge: true });
+  } else {
+    const docRef = doc(clientDb, colName, docId);
+    await setDoc(docRef, {
+      [fieldName]: increment(value)
+    }, { merge: true });
+  }
 }

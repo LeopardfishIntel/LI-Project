@@ -120,6 +120,7 @@ const generateDetailedConclusion = (ranked: any[]) => {
 };
 
 import { generateDecideBriefing } from '@/ai/flows/decide-briefing-flow';
+import { logTelemetryEventAction } from '@/app/telemetry/actions';
 
 function DecideContent() {
     const router = useRouter();
@@ -341,10 +342,11 @@ function DecideContent() {
             setAiBriefing(briefing);
             setIsUnlocked(true);
 
-            // 🛰️ ANALYTICS UPLINK: Increment comparison counter
-            if (firestore) {
-                setDocumentNonBlocking('app_metrics', 'page_views', { comparisons_made: increment(1) });
-            }
+            // 🛰️ ANALYTICS UPLINK: Increment comparison counter via Server Action
+            logTelemetryEventAction('comparison_made', {
+                benchmarkCurrency: benchmark,
+                familyStatus
+            });
         } catch (e) {
             console.error("AI Briefing failed:", e);
         } finally {

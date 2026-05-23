@@ -1,6 +1,6 @@
 'use server';
 
-import { addDocument } from '@/firebase/admin';
+import { addDocument, incrementField } from '@/firebase/admin';
 import { headers } from 'next/headers';
 
 /**
@@ -23,6 +23,14 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
       client_country: clientCountry,
       metadata: metadata || {}
     });
+
+    // Securely update global counter increments on the server side
+    if (eventName === 'page_view') {
+      await incrementField('app_metrics', 'page_views', 'site_visits', 1);
+    } else if (eventName === 'comparison_made') {
+      await incrementField('app_metrics', 'page_views', 'comparisons_made', 1);
+    }
+
     return { success: true };
   } catch (e: any) {
     console.error("Failed to log telemetry event:", e.message || e);
