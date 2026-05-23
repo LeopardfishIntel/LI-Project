@@ -424,7 +424,7 @@ function DossierContent() {
               </div>
 
               {/* Column 2: Economics & Leopardfish Verdict */}
-              <div className="lg:col-span-5 p-8 border-r border-white/10 flex flex-col h-full bg-black/20">
+              <div className="lg:col-span-4 p-8 border-r border-white/10 flex flex-col h-full bg-black/20">
                 <div className="grid grid-cols-2 gap-4 mb-6 items-end">
                   <div className="space-y-2">
                     <p className="text-[#007FFF] text-[10px] font-bold uppercase tracking-widest">Currency Selector</p>
@@ -481,7 +481,7 @@ function DossierContent() {
               </div>
 
               {/* Column 3: Targets & Smaller Rounded Button */}
-              <div className="lg:col-span-3 p-8 flex flex-col justify-between bg-white/[0.01]">
+              <div className="lg:col-span-4 p-8 flex flex-col justify-between bg-white/[0.01]">
                 <div className="space-y-4">
                   <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">International Schools</p>
                   <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
