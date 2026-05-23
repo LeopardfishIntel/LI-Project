@@ -1,18 +1,13 @@
 'use server';
 
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import {
-  collection,
-  getDocs,
-  doc,
-  writeBatch,
-  updateDoc,
-  QueryDocumentSnapshot,
-  DocumentData,
-  getDoc,
-  setDoc,
-  addDoc
-} from 'firebase/firestore';
-import { db } from '@/firebase/server';
+  getCollectionDocs,
+  getDocument,
+  setDocument,
+  updateDocument,
+  DatabaseBatch
+} from '@/firebase/admin';
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
@@ -53,23 +48,22 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
 
     // 🛰️ COMMIT TO REGISTRY: Actually save the data to Firestore
     const docId = locationName.toLowerCase().replace(/\s+/g, '-');
-    const docRef = doc(db, 'locations_costOfLiving', docId);
-
-    await updateDoc(docRef, {
+    const existing = await getDocument('locations_costOfLiving', docId);
+    const dataToSave = {
       ...res,
       city: locationName,
       country: countryName,
       lastSync: new Date().toISOString()
-    }).catch(async (e) => {
-      // If doc doesn't exist, create it
-      await setDoc(docRef, {
-        ...res,
-        city: locationName,
-        country: countryName,
-        id: docId,
-        lastSync: new Date().toISOString()
+    };
+
+    if (existing.exists()) {
+      await updateDocument('locations_costOfLiving', docId, dataToSave);
+    } else {
+      await setDocument('locations_costOfLiving', docId, {
+        ...dataToSave,
+        id: docId
       });
-    });
+    }
 
     return {
       message: `Updated telemetry for ${locationName} successfully`,
@@ -93,24 +87,24 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
  */
 export async function getTelemetryData() {
   try {
-    const [telemetrySnap, pageViewsSnap, schoolsSnap, colSnap, enquiriesSnap] = await Promise.all([
-      getDocs(collection(db, 'telemetry')).catch(err => {
+    const [telemetryDocs, pageViewsDocs, schoolsDocs, colDocs, enquiriesDocs] = await Promise.all([
+      getCollectionDocs('telemetry').catch(err => {
         console.warn("Telemetry collection read failed:", err.message || err);
         return null;
       }),
-      getDocs(collection(db, 'app_metrics')).catch(err => {
+      getCollectionDocs('app_metrics').catch(err => {
         console.warn("App metrics collection read failed:", err.message || err);
         return null;
       }),
-      getDocs(collection(db, 'schools')).catch(err => {
+      getCollectionDocs('schools').catch(err => {
         console.warn("Schools collection read failed:", err.message || err);
         return null;
       }),
-      getDocs(collection(db, 'locations_costOfLiving')).catch(err => {
+      getCollectionDocs('locations_costOfLiving').catch(err => {
         console.warn("Locations cost of living collection read failed:", err.message || err);
         return null;
       }),
-      getDocs(collection(db, 'enquiries')).catch(err => {
+      getCollectionDocs('enquiries').catch(err => {
         console.warn("Enquiries collection read failed:", err.message || err);
         return null;
       })
@@ -119,8 +113,8 @@ export async function getTelemetryData() {
     const legacyTelemetry: any = {};
     const events: any[] = [];
 
-    if (telemetrySnap) {
-      telemetrySnap.docs.forEach((doc) => {
+    if (telemetryDocs) {
+      telemetryDocs.forEach((doc: any) => {
         const dData = doc.data();
         if (dData.event_name) {
           events.push({ id: doc.id, ...dData });
@@ -131,18 +125,18 @@ export async function getTelemetryData() {
       });
     }
 
-    const pageViewsDoc = pageViewsSnap ? pageViewsSnap.docs.find(d => d.id === 'page_views') : null;
+    const pageViewsDoc = pageViewsDocs ? pageViewsDocs.find((d: any) => d.id === 'page_views') : null;
     const pageViews = pageViewsDoc ? pageViewsDoc.data() : {};
 
     // Calculate unique countries
-    const schoolCountries = (schoolsSnap && schoolsSnap.size > 0) ? schoolsSnap.docs.map((d: any) => d.data().country).filter(Boolean) : [];
-    const colCountries = (colSnap && colSnap.size > 0) ? colSnap.docs.map((d: any) => d.data().country || d.data().country_name).filter(Boolean) : [];
+    const schoolCountries = (schoolsDocs && schoolsDocs.length > 0) ? schoolsDocs.map((d: any) => d.data().country).filter(Boolean) : [];
+    const colCountries = (colDocs && colDocs.length > 0) ? colDocs.map((d: any) => d.data().country || d.data().country_name).filter(Boolean) : [];
     const uniqueCountries = new Set([...schoolCountries, ...colCountries]).size;
 
     // Calculate pending enquiries count
     let pendingEnquiries = 0;
-    if (enquiriesSnap) {
-      pendingEnquiries = enquiriesSnap.docs.filter((d: any) => d.data().status === 'pending').length;
+    if (enquiriesDocs) {
+      pendingEnquiries = enquiriesDocs.filter((d: any) => d.data().status === 'pending').length;
     } else if (legacyTelemetry.pendingEnquiries !== undefined) {
       pendingEnquiries = legacyTelemetry.pendingEnquiries;
     }
@@ -262,8 +256,8 @@ export async function getTelemetryData() {
       ...legacyTelemetry,
       totalVisits: pageViews.site_visits || 0,
       comparisons: pageViews.comparisons_made || legacyTelemetry.comparisons || 0,
-      totalSchools: schoolsSnap ? schoolsSnap.size : 0,
-      totalLocations: colSnap ? colSnap.size : 0,
+      totalSchools: schoolsDocs ? schoolsDocs.length : 0,
+      totalLocations: colDocs ? colDocs.length : 0,
       uniqueCountries: uniqueCountries,
       pendingEnquiries: pendingEnquiries,
       
@@ -302,7 +296,7 @@ export async function getTelemetryData() {
  */
 export async function uploadRegistryJsonAction(data: any[]) {
   try {
-    const batch = writeBatch(db);
+    const batch = new DatabaseBatch();
     const col = 'locations_costOfLiving';
 
     if (!data?.length) return { success: false, error: "Zero records detected in payload" };
@@ -311,7 +305,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
     const isLifestyle = 'lifestyle' in data[0] || 'ikea' in data[0];
 
     if (isTransport || isLifestyle) {
-      const snap = await getDocs(collection(db, col));
+      const snapDocs = await getCollectionDocs(col);
 
       data.forEach(item => {
         // 🛰️ Key Normalization
@@ -319,12 +313,11 @@ export async function uploadRegistryJsonAction(data: any[]) {
         Object.keys(item).forEach(k => { intel[k.toLowerCase().trim()] = item[k]; });
 
         // ✅ Zero-Doubt Filter Logic
-        const targetDocs = snap.docs.filter((d: QueryDocumentSnapshot<DocumentData>) =>
+        const targetDocs = snapDocs.filter((d: any) =>
           d.data().country?.toLowerCase() === intel.country?.toLowerCase()
         );
 
-        targetDocs.forEach((d) => {
-          const ref = doc(db, col, d.id);
+        targetDocs.forEach((d: any) => {
           const update: any = {};
 
           if (isTransport) {
@@ -345,7 +338,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
             });
           }
 
-          batch.set(ref, update, { merge: true });
+          batch.set(col, d.id, update, { merge: true });
         });
       });
 
@@ -371,7 +364,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
       });
 
       const id = normalized.id || (normalized.schoolname || normalized.city || 'entry').toLowerCase().replace(/\s+/g, '-');
-      batch.set(doc(db, targetCol, String(id)), {
+      batch.set(targetCol, String(id), {
         ...normalized,
         lastSync: new Date().toISOString()
       }, { merge: true });
@@ -390,7 +383,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
  */
 export async function uploadIkeaIntelAction(data: any[]) {
   try {
-    const batch = writeBatch(db);
+    const batch = new DatabaseBatch();
     const colName = 'ikea_intel';
 
     if (!data?.length) return { success: false, error: "Zero records detected in payload" };
@@ -440,7 +433,7 @@ export async function uploadIkeaIntelAction(data: any[]) {
         }
       });
 
-      batch.set(doc(db, colName, docId), docData, { merge: true });
+      batch.set(colName, docId, docData, { merge: true });
       count++;
     }
 
@@ -459,7 +452,7 @@ export async function uploadTransportIntelAction(payload: any[]) {
   console.log("🛰️ TRANSPORT UPLOAD INITIATED. Payload length:", payload?.length);
   try {
     const { canonicalCountry } = await import('@/lib/calculations');
-    const batch = writeBatch(db);
+    const batch = new DatabaseBatch();
     const col = 'transport_intel';
 
     if (!Array.isArray(payload) || payload.length < 2) {
@@ -505,7 +498,6 @@ export async function uploadTransportIntelAction(payload: any[]) {
       if (!countryRaw || String(countryRaw).toLowerCase() === 'country') return;
 
       const countryId = canonicalCountry(String(countryRaw)).replace(/\s+/g, '-');
-      const ref = doc(db, col, countryId);
 
       // 🛰️ INDEX-OFFSET PROTOCOL
       const extractGroup = (startIdx: number) => {
@@ -538,7 +530,7 @@ export async function uploadTransportIntelAction(payload: any[]) {
         });
       }
 
-      batch.set(ref, intel, { merge: true });
+      batch.set(col, countryId, intel, { merge: true });
       updateCount++;
     });
 
@@ -558,8 +550,8 @@ export async function uploadTransportIntelAction(payload: any[]) {
 export async function enrichAllSchoolsAction(prevState: any): Promise<BulkEnrichState> {
   const summary = { total: 0, enriched: 0, failed: 0 };
   try {
-    const snap = await getDocs(collection(db, 'schools'));
-    const schools = snap.docs.map((d: QueryDocumentSnapshot<DocumentData>) => ({
+    const snapDocs = await getCollectionDocs('schools');
+    const schools = snapDocs.map((d: any) => ({
       id: d.id,
       ...d.data()
     }));
@@ -576,7 +568,7 @@ export async function enrichAllSchoolsAction(prevState: any): Promise<BulkEnrich
             country: school.country
           });
 
-          await updateDoc(doc(db, 'schools', school.id), {
+          await updateDocument('schools', school.id, {
             summary: res.description,
             description: res.description,
             imageUrl: res.imageUrl || school.imageUrl,
@@ -603,25 +595,23 @@ export async function updateCountryIndexesAction(countryId: string, countryName:
     const { generateCountryIndexesFlow } = await import('@/ai/flows/generate-country-indexes-flow');
     const res = await generateCountryIndexesFlow({ country: countryName });
 
-    const docRef = doc(db, 'locations_costOfLiving', countryId);
-
-    // We update rather than set, as the base cost of living doc should exist
-    await updateDoc(docRef, {
+    const existing = await getDocument('locations_costOfLiving', countryId);
+    const dataToSave = {
       adventureScore: res.adventureScore,
       cultureScore: res.cultureScore,
       careerScore: res.careerScore,
       indexesLastUpdated: new Date().toISOString()
-    }).catch(async (e) => {
-      // If doc doesn't exist, create it with bare minimum
-      await setDoc(docRef, {
+    };
+
+    if (existing.exists()) {
+      await updateDocument('locations_costOfLiving', countryId, dataToSave);
+    } else {
+      await setDocument('locations_costOfLiving', countryId, {
+        ...dataToSave,
         country: countryName,
-        id: countryId,
-        adventureScore: res.adventureScore,
-        cultureScore: res.cultureScore,
-        careerScore: res.careerScore,
-        indexesLastUpdated: new Date().toISOString()
+        id: countryId
       });
-    });
+    }
 
     return { success: true, data: res };
   } catch (e: any) {
@@ -635,8 +625,7 @@ export async function updateCountryIndexesAction(countryId: string, countryName:
  */
 export async function clearCountryIndexesAction(countryId: string) {
   try {
-    const docRef = doc(db, 'locations_costOfLiving', countryId);
-    await updateDoc(docRef, {
+    await updateDocument('locations_costOfLiving', countryId, {
       adventureScore: null,
       cultureScore: null,
       indexesLastUpdated: null

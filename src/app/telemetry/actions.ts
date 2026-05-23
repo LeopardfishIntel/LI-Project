@@ -1,7 +1,6 @@
 'use server';
 
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '@/firebase/server';
+import { addDocument } from '@/firebase/admin';
 
 /**
  * 🛰️ Action: Log Telemetry Event
@@ -9,7 +8,7 @@ import { db } from '@/firebase/server';
  */
 export async function logTelemetryEventAction(eventName: string, metadata: any, sessionId?: string) {
   try {
-    await addDoc(collection(db, 'telemetry'), {
+    await addDocument('telemetry', {
       event_name: eventName,
       timestamp: new Date().toISOString(),
       session_id: sessionId || `sess_${Math.random().toString(36).substring(2, 11)}`,
@@ -21,3 +20,4 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
     return { success: false, error: e.message };
   }
 }
+
