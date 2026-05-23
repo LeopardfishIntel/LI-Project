@@ -159,6 +159,7 @@ export async function getTelemetryData() {
     const schoolCounts: Record<string, number> = {};
     const countryCounts: Record<string, number> = {};
     const redFlagCounts: Record<string, number> = {};
+    const clientCountryCounts: Record<string, number> = {};
 
     let authVisits = 0;
     let guestVisits = 0;
@@ -183,6 +184,10 @@ export async function getTelemetryData() {
       } else if (evt.event_name === 'page_view') {
         guestVisits++;
       }
+
+      // Count client country access
+      const clientCountry = evt.client_country || 'unknown';
+      clientCountryCounts[clientCountry] = (clientCountryCounts[clientCountry] || 0) + 1;
 
       if (evt.event_name === 'simulator_dial_adjusted') {
         if (meta.dial_modified === 'net_salary' && typeof meta.new_value === 'number') {
@@ -275,6 +280,7 @@ export async function getTelemetryData() {
       uninsuredWarnings: uninsuredWarningsCount,
       topSchools: Object.entries(schoolCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
       topCountries: Object.entries(countryCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
+      topClientCountries: Object.entries(clientCountryCounts).map(([name, count]) => ({ name: name.toUpperCase(), count })).sort((a,b) => b.count - a.count).slice(0, 5),
       redFlagHovers: Object.entries(redFlagCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
       userTypeBreakdown: {
         authenticated: authVisits,
