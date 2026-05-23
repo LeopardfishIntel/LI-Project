@@ -177,8 +177,8 @@ service cloud.firestore {
     }
 
     match /telemetry/{docId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
 
     match /ikea_intel/{docId} {
