@@ -318,7 +318,7 @@ function MatrixContent() {
               
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
-                  <span>Country Saving Index</span>
+                  <span>Monthly Saving Index</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
@@ -329,7 +329,7 @@ function MatrixContent() {
                   </Tooltip>
                 </div>
                 <span className="text-[8px] text-slate-500 normal-case tracking-normal mt-0.5">
-                  Est. monthly surplus per teacher
+                  single income only.
                 </span>
               </div>
               
