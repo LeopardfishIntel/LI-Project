@@ -502,9 +502,9 @@ function DossierContent() {
                       const ids = country.schools?.slice(0, 3).map((s: any) => s.id).join(',');
                       router.push(`/decide?ids=${ids}`);
                     }}
-                    className="w-full max-w-[240px] bg-[#d95f02] text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-white transition-all flex items-center justify-between px-6 rounded-full group shadow-2xl"
+                    className="w-full max-w-[240px] bg-black border border-[#d95f02] text-white py-4 font-black text-[13px] hover:bg-[#d95f02] hover:text-black transition-all flex items-center justify-between px-6 rounded-none group shadow-2xl"
                   >
-                    Compare Targets <Scale className="size-4 group-hover:rotate-12 transition-transform" />
+                    Compare Schools <Scale className="size-4 group-hover:rotate-12 transition-transform" />
                   </button>
                 </div>
               </div>
