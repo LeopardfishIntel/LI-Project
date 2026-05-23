@@ -16,6 +16,11 @@ export function AnalyticsTracker() {
 
   useEffect(() => {
     if (firestore) {
+      const path = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (path.startsWith('/admin')) {
+        return;
+      }
+
       const counterRef = doc(firestore, 'app_metrics', 'page_views');
       // Incrementing site_visits by 1 using Firestore atomic increment
       setDocumentNonBlocking(
@@ -26,7 +31,7 @@ export function AnalyticsTracker() {
 
       // 🛰️ Log page view to telemetry collection
       logTelemetryEventAction('page_view', {
-        path: typeof window !== 'undefined' ? window.location.pathname : '',
+        path,
         isAuthenticated: !!user,
         user_type: user ? 'authenticated' : 'guest'
       });

@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FloatingIntelButton } from "@/components/floating-intel-button";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
 
 // Inter is a variable font, so it handles weights 100-900 automatically
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             <Footer />
             <FloatingIntelButton />
+            <AnalyticsTracker />
           </div>
         </Providers>
       </body>
