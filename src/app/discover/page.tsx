@@ -169,11 +169,11 @@ export default function FindYourFitGate() {
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold font-sans">
                   {["single", "married (sole earner)", "married (dual income)", "family (1 child)", "family (2 children)", "family (3 or more)"].map(s => {
                     let display = s.toUpperCase();
-                    if (s === "married (sole earner)") display = "COUPLE (SOLE EARNER)";
-                    if (s === "married (dual income)") display = "COUPLE (DUAL INCOME)";
-                    if (s === "family (1 child)") display = "FAMILY +1";
-                    if (s === "family (2 children)") display = "FAMILY +2";
-                    if (s === "family (3 or more)") display = "FAMILY +3";
+                    if (s === "married (sole earner)") display = "COUPLE (SOLE)";
+                    if (s === "married (dual income)") display = "COUPLE (DUAL)";
+                    if (s === "family (1 child)") display = "2 + 1";
+                    if (s === "family (2 children)") display = "2 + 2";
+                    if (s === "family (3 or more)") display = "2 + 3";
                     return <SelectItem key={s} value={s}>{display}</SelectItem>;
                   })}
                 </SelectContent>
