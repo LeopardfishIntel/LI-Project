@@ -338,7 +338,7 @@ function DossierContent() {
                   <span className="text-[11px] font-bold text-white uppercase italic">{params.status}</span>
                 </div>
                 <div className="flex items-center gap-2 border-l border-white/10 pl-8">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Salary:</span>
+                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Net Monthly:</span>
                   <span className="text-[11px] font-bold text-[#007FFF] uppercase italic">{params.salary}</span>
                 </div>
                 <div className="flex items-center gap-2 border-l border-white/10 pl-8">
