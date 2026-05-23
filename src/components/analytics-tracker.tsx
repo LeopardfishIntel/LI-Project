@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useFirestore, useAuth } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase';
-import { logTelemetryEventAction } from '@/app/admin/actions';
+import { logTelemetryEventAction } from '@/app/telemetry/actions';
 
 /**
  * @fileOverview A stealth analytics tracker that increments global visit metrics.

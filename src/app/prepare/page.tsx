@@ -18,7 +18,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileByLabel } from '@/lib/calculations';
-import { logTelemetryEventAction } from '@/app/admin/actions';
+import { logTelemetryEventAction } from '@/app/telemetry/actions';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 

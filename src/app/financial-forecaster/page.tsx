@@ -9,7 +9,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
-import { logTelemetryEventAction } from '@/app/admin/actions';
+import { logTelemetryEventAction } from '@/app/telemetry/actions';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
