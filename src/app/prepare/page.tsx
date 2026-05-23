@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo, useEffect, useRef, ChangeEvent } from 'react';
 import { jsPDF } from 'jspdf';
-import { 
+import {
   Lock, Banknote, Loader2, Zap, ShoppingCart,
-  Home, Clock, Wallet, Car, Ship, CalendarDays, 
+  Home, Clock, Wallet, Car, Ship, CalendarDays,
   FileText, Landmark, MapPin, Navigation, ArrowRight, ArrowUpRight,
   Stethoscope, Download, Info, Coins, Package, Monitor, Baby, X,
   ChevronDown, ChevronUp, ShieldCheck, Compass, Activity, Globe, Search, Target
@@ -65,7 +65,7 @@ export default function PreparePage() {
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
   const [transportMode, setTransportMode] = useState<'public' | 'drive' | 'taxi'>('public');
   const [pensionRegion, setPensionRegion] = useState<'GB' | 'US'>('GB');
-  const [setupDays, setSetupDays] = useState<string>('45'); 
+  const [setupDays, setSetupDays] = useState<string>('45');
   const [monthlyNetSalary, setMonthlyNetSalary] = useState<number>(3000);
   const [partnerSalary, setPartnerSalary] = useState<number>(0);
   const [arrivalAllowance, setArrivalAllowance] = useState<number>(0);
@@ -222,7 +222,7 @@ export default function PreparePage() {
 
   useEffect(() => {
     if (hasLoadedMemory) {
-      localStorage.setItem('leopardfish-prep-state', JSON.stringify({ 
+      localStorage.setItem('leopardfish-prep-state', JSON.stringify({
         calcStatus, selectedCountry, selectedSchoolId, transportMode, setupDays, arrivalAllowance, monthlyCommitments,
         baggageCount, baggageOverride, shippingCost, uniformOverride, electronicsTotal, electronicsItems,
         docsOverride, housingOverride, expenditureOverride, transportOverride, logisticsOverride, familyOverride, electronicsOverride, ikeaOverride
@@ -237,7 +237,7 @@ export default function PreparePage() {
     if (hasLoadedMemory) {
       const countryChanged = prevCountryRef.current !== selectedCountry;
       const schoolChanged = prevSchoolIdRef.current !== selectedSchoolId;
-      
+
       if (countryChanged || schoolChanged) {
         setBaggageOverride(null);
         setUniformOverride(null);
@@ -280,20 +280,20 @@ export default function PreparePage() {
   }, [selectedCountry, cities]);
 
   const selectedSchool = useMemo(() => schools?.find(s => s.id === selectedSchoolId), [selectedSchoolId, schools]);
-  
+
   const cityData = useMemo(() => {
     if (!selectedSchool || !cities) return null;
     const schoolCity = (selectedSchool.city || '').toLowerCase().trim();
     return cities.find(c => (c.city || '').toLowerCase().trim() === schoolCity) || null;
   }, [selectedSchool, cities]);
-  
+
   const selectedIkea = useMemo(() => {
     if (!selectedCountry || selectedCountry === 'all' || !ikeaIntel) return null;
     const canon = canonicalCountry(selectedCountry);
     const docId = canon.toLowerCase().replace(/\s+/g, '-').trim();
     const cleanCountry = selectedCountry.toLowerCase().trim();
-    return ikeaIntel.find((d: any) => 
-      d.id === docId || 
+    return ikeaIntel.find((d: any) =>
+      d.id === docId ||
       d.id === selectedCountry.toLowerCase().replace(/\s+/g, '-').trim() ||
       (d.country && d.country.toLowerCase().trim() === cleanCountry) ||
       (d.country && d.country.toLowerCase().includes(cleanCountry)) ||
@@ -318,9 +318,9 @@ export default function PreparePage() {
   const budget = useMemo(() => {
     // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const targetCountry = selectedSchool?.country || selectedCountry;
-    const tIntel = transportIntel?.find((t: any) => 
-        canonicalCountry(t.country) === canonicalCountry(targetCountry) || 
-        t.id === canonicalCountry(targetCountry).replace(/\s+/g, '-')
+    const tIntel = transportIntel?.find((t: any) =>
+      canonicalCountry(t.country) === canonicalCountry(targetCountry) ||
+      t.id === canonicalCountry(targetCountry).replace(/\s+/g, '-')
     );
 
     const enrichedCityData = cityData ? { ...cityData, transport: tIntel || cityData.transport } : cityData;
@@ -357,7 +357,7 @@ export default function PreparePage() {
     const targetData = cityData?.[0] || cities?.find((c: any) => canonicalCountry(c.country) === canonicalCountry(selectedCountry)) || cities?.[0];
     const rentKey = calcStatus === 'single' ? 'rent1br' : (calcStatus.includes('family-2') || calcStatus.includes('family-3') ? 'rent3br' : 'rent2br');
     const localCurrency = targetData?.currencyCode || 'USD';
-    
+
     const usdToDisplay = (usd: number) => {
       const displayRate = currency === 'Local' ? (currentRates[localCurrency] || 1.0) : (currentRates[currency] || 1.0);
       return (usd / (currentRates['USD'] || 1.27)) * displayRate;
@@ -380,43 +380,43 @@ export default function PreparePage() {
 
   const downloadIkeaPdf = async () => {
     const doc = new jsPDF();
-    
+
     // Header
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(0, 127, 255); // #007FFF
     doc.text("Leopardfish Intel", 20, 25);
-    
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text("Field Mobilization Unit // Arrive Prepared", 20, 32);
-    
+
     // Line separator
     doc.setDrawColor(230, 230, 230);
     doc.line(20, 38, 190, 38);
-    
+
     // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     const titlePrefix = selectedIkea ? "IKEA Shopping List" : "Startup Inventory";
     doc.text(`${titlePrefix}: ${selectedCountry}`, 20, 50);
-    
+
     doc.setFont("helvetica", "italic");
     doc.setFontSize(11);
     doc.setTextColor(80, 80, 80);
-    const subtext = selectedIkea 
+    const subtext = selectedIkea
       ? "Basic startup essentials: Bedding, kitchenware, and core furniture."
       : "Standard mobilization inventory: Recommended essentials for local sourcing.";
     doc.text(subtext, 20, 58);
-    
+
     // List
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     let y = 75;
-    
+
     // Status label in PDF
     const statusLabel = calcStatus.replace('-', ' ').toUpperCase();
     doc.setFont("helvetica", "bold");
@@ -437,13 +437,13 @@ export default function PreparePage() {
         y = 30;
       }
     });
-    
+
     // Footer
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(180, 180, 180);
     doc.text(`Generated for ${selectedSchool?.schoolname || 'International Deployment'} // Data source: Leopardfish Intel Database`, 20, 285);
-    
+
     doc.save(`Leopardfish_${titlePrefix}_${selectedCountry.replace(/\s+/g, '_')}.pdf`);
   };
   const downloadBriefingPdf = async () => {
@@ -459,77 +459,77 @@ export default function PreparePage() {
     const reportDate = `${new Date().getDate()} ${new Date().toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`;
 
     const drawHeader = (title: string) => {
-        doc.setDrawColor(220, 220, 220);
-        doc.setLineWidth(0.1);
-        doc.line(20, 24, 190, 24);
-        
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        
-        // Left Side: LEOPARDFISH INTEL // SECTION TITLE
-        doc.setTextColor(249, 115, 22); // Orange
-        doc.text("LEOPARDFISH", 20, 20);
-        const orangeWidth = doc.getTextWidth("LEOPARDFISH");
-        
-        doc.setTextColor(56, 189, 248); // Sky Blue
-        doc.text("INTEL", 20 + orangeWidth + 1, 20);
-        const intelWidth = doc.getTextWidth("INTEL");
-        
-        doc.setTextColor(150, 150, 150); // Gray
-        doc.text(` // ${title.toUpperCase()}`, 20 + orangeWidth + intelWidth + 2, 20);
-        
-        // Right Side: REPORT GENERATED: ... // MISSION ID: ...
-        const rightText = `REPORT GENERATED: ${reportDate} // MISSION ID: ${missionId}`;
-        doc.setFontSize(8);
-        doc.setTextColor(120, 120, 120);
-        doc.text(rightText.toUpperCase(), 190, 20, { align: 'right' });
+      doc.setDrawColor(220, 220, 220);
+      doc.setLineWidth(0.1);
+      doc.line(20, 24, 190, 24);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+
+      // Left Side: LEOPARDFISH INTEL // SECTION TITLE
+      doc.setTextColor(249, 115, 22); // Orange
+      doc.text("LEOPARDFISH", 20, 20);
+      const orangeWidth = doc.getTextWidth("LEOPARDFISH");
+
+      doc.setTextColor(56, 189, 248); // Sky Blue
+      doc.text("INTEL", 20 + orangeWidth + 1, 20);
+      const intelWidth = doc.getTextWidth("INTEL");
+
+      doc.setTextColor(150, 150, 150); // Gray
+      doc.text(` // ${title.toUpperCase()}`, 20 + orangeWidth + intelWidth + 2, 20);
+
+      // Right Side: REPORT GENERATED: ... // MISSION ID: ...
+      const rightText = `REPORT GENERATED: ${reportDate} // MISSION ID: ${missionId}`;
+      doc.setFontSize(8);
+      doc.setTextColor(120, 120, 120);
+      doc.text(rightText.toUpperCase(), 190, 20, { align: 'right' });
     };
 
     const drawFooter = (page: number) => {
-        doc.setDrawColor(200, 200, 200);
-        doc.setLineWidth(0.1);
-        doc.line(20, 280, 190, 280);
-        doc.setFontSize(7);
-        doc.setTextColor(textMuted[0], textMuted[1], textMuted[2]);
-        doc.text(`PAGE ${page}`, 20, 287);
-        doc.text("STRICTLY CONFIDENTIAL // PRINTER-FRIENDLY DOSSIER", 190, 287, { align: 'right' });
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.1);
+      doc.line(20, 280, 190, 280);
+      doc.setFontSize(7);
+      doc.setTextColor(textMuted[0], textMuted[1], textMuted[2]);
+      doc.text(`PAGE ${page}`, 20, 287);
+      doc.text("STRICTLY CONFIDENTIAL // PRINTER-FRIENDLY DOSSIER", 190, 287, { align: 'right' });
     };
 
     const printHeading = (text: string, fontSize: number = 10, marginTop: number = 6) => {
-        if (y > 255) {
-            drawFooter(pageCount);
-            doc.addPage();
-            pageCount++;
-            drawHeader("FIELD MANUAL");
-            y = 35;
-        }
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(fontSize);
-        doc.setTextColor(primary[0], primary[1], primary[2]);
-        doc.text(text.toUpperCase(), 20, y);
-        y += (fontSize * 0.4) + marginTop;
+      if (y > 255) {
+        drawFooter(pageCount);
+        doc.addPage();
+        pageCount++;
+        drawHeader("FIELD MANUAL");
+        y = 35;
+      }
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(fontSize);
+      doc.setTextColor(primary[0], primary[1], primary[2]);
+      doc.text(text.toUpperCase(), 20, y);
+      y += (fontSize * 0.4) + marginTop;
     };
 
     const printLine = (text: string, fontSize: number = 9, fontStyle: 'normal' | 'bold' | 'italic' = 'normal', color: number[] = [40, 40, 40], marginTop: number = 4) => {
-        doc.setFont("helvetica", fontStyle);
-        doc.setFontSize(fontSize);
-        doc.setTextColor(color[0], color[1], color[2]);
-        const wrapped = doc.splitTextToSize(text, 170);
-        for (let i = 0; i < wrapped.length; i++) {
-            if (y > 270) {
-                drawFooter(pageCount);
-                doc.addPage();
-                pageCount++;
-                drawHeader("FIELD MANUAL");
-                y = 35;
-                doc.setFont("helvetica", fontStyle);
-                doc.setFontSize(fontSize);
-                doc.setTextColor(color[0], color[1], color[2]);
-            }
-            doc.text(wrapped[i], 20, y);
-            y += fontSize * 0.42;
+      doc.setFont("helvetica", fontStyle);
+      doc.setFontSize(fontSize);
+      doc.setTextColor(color[0], color[1], color[2]);
+      const wrapped = doc.splitTextToSize(text, 170);
+      for (let i = 0; i < wrapped.length; i++) {
+        if (y > 270) {
+          drawFooter(pageCount);
+          doc.addPage();
+          pageCount++;
+          drawHeader("FIELD MANUAL");
+          y = 35;
+          doc.setFont("helvetica", fontStyle);
+          doc.setFontSize(fontSize);
+          doc.setTextColor(color[0], color[1], color[2]);
         }
-        y += marginTop;
+        doc.text(wrapped[i], 20, y);
+        y += fontSize * 0.42;
+      }
+      y += marginTop;
     };
 
     // PAGE 1: COVER & WELCOME
@@ -537,26 +537,26 @@ export default function PreparePage() {
     printHeading("STRICTLY CONFIDENTIAL: INTERNATIONAL DEPLOYMENT DOSSIER", 11, 4);
 
     printHeading("STAFF ROOM BRIEFING: WELCOME TO THE JUMP", 10, 6);
-    const familyStatusLabel = 
+    const familyStatusLabel =
       calcStatus === 'single' ? 'Single' :
-      calcStatus === 'married-dual' ? 'Married (dual income)' :
-      calcStatus === 'married-sole' ? 'Married (sole earner)' :
-      calcStatus === 'family-1' ? 'Family (1 child)' :
-      calcStatus === 'family-2' ? 'Family (2 children)' :
-      calcStatus === 'family-3' ? 'Family (3+ children)' : 'Single';
+        calcStatus === 'married-dual' ? 'Married (dual income)' :
+          calcStatus === 'married-sole' ? 'Married (sole earner)' :
+            calcStatus === 'family-1' ? 'Family (1 child)' :
+              calcStatus === 'family-2' ? 'Family (2 children)' :
+                calcStatus === 'family-3' ? 'Family (3+ children)' : 'Single';
     const schoolLabel = selectedSchool?.schoolname || 'International Deployment';
     const countryLabel = selectedCountry !== 'all' ? selectedCountry : 'International Destination';
 
     const congratulationText = `Congratulations on your upcoming international post at ${schoolLabel} in ${countryLabel}. Navigating the application screening, the time-zone-mangled interviews, and the reference checks is no small feat. As you prepare for deployment as a ${familyStatusLabel} profile, our job now is to decode and translate that contract into a realistic picture of what your life on the ground will actually look like.`;
     printLine(congratulationText, 9, "normal", textMain, 4);
-    
+
     const adjustmentText = `This Leopardfish Intel guide has been dynamically generated for ${countryLabel} using the specific ground-truth data we hold on ${schoolLabel}. Because you are relocating with a ${familyStatusLabel} status, all calculated runways, legal document fees, local housing expectations, and startup buffers have been tailored to fit your household configuration.`;
     printLine(adjustmentText, 9, "normal", textMain, 4);
 
     printLine("Below, we are going to walk through the reality of getting your move right, sorting your paperwork, and planning for costs so that you can survive the first 60 days without the stress that often accompanies an unplanned relocation.", 9, "normal", textMain, 10);
 
     printHeading("TACTICAL ROADMAP: THE SIX PHASES", 10, 4);
-    
+
     const reserveVal = formatCurrency(totalReserve, budget.displayCurrency);
 
     printLine("01. Discover: The Survival Maths", 9, "bold", primary, 1);
@@ -581,9 +581,9 @@ export default function PreparePage() {
     printHeading(`HOUSING SPECTRUM & AUDIT FOR ${selectedCountry.toUpperCase()} AT ${(selectedSchool?.schoolname || 'TARGET SCHOOL').toUpperCase()}`, 9, 2);
     printHeading("THE HOUSING SPECTRUM", 8.5, 2);
     printLine("• Furnished: Sofa, Bed, and Dining table are standard. Verify if it includes \"softs\" like linens and kitchenware.", 8.5, "normal", textMain, 2);
-    
+
     const isOman = selectedCountry.toLowerCase() === 'oman';
-    const unfurnishedText = isOman 
+    const unfurnishedText = isOman
       ? `• Unfurnished: In Oman, this guarantees "White Goods" (Fridge/Stove) only, but requires personal capital for soft goods, bedding, and seating, making a settling-in allowance or IKEA Kit mandatory.`
       : `• Unfurnished: In this region, this guarantees "White Goods" (Fridge/Stove) only, but requires personal capital for soft goods, bedding, and seating.`;
     printLine(unfurnishedText, 8.5, "normal", textMain, 2);
@@ -636,7 +636,7 @@ export default function PreparePage() {
     }
 
     const isZeroHousing = Math.round(budget.housing) === 0 || budget.isSubsidised;
-    const housingText = isZeroHousing 
+    const housingText = isZeroHousing
       ? `• Rent & Secure Deposit: £0 (Fully provided and covered by ${schoolLabel}; no personal upfront cash outlay required for baseline housing).`
       : `• Rent & Secure Deposit: £${Math.round(budget.housing).toLocaleString()} (Covers estimated first month's rent plus a standard local security deposit).`;
 
@@ -670,12 +670,12 @@ export default function PreparePage() {
     printLine("To get a deep understanding of whether this deployment meets your expectations, you need to play with the costs of your new international lifestyle. Head to the evaluate page on our website and complete these steps:", 9, "normal", textMain, 6);
 
     const steps = [
-        "1. Input the Offered Net Salary: Enter the exact figure from your contract into the Monthly Net Salary field.",
-        "2. Plug in the 'Home commitments': Use the Custom Adjustments section to account for every penny that leaves your account for home-country commitments. This includes UK mortgages, student loans, and your Class 3 NI contributions.",
-        "3. Add in any additional partner income or any tutor or management allowances that boost the net salary already entered.",
-        "4. Analyse the Result: The calculator will output your Monthly Disposable Surplus.",
-        `5. Review the surplus: If you are not achieving a 10% surplus (for example, if it is around 7%, e.g., ${surplus7Percent}), the tool will flag this as "Limited Potential".`,
-        "6. This is an invaluable negotiation or budgeting tool: If the surplus is negative or simply \"not enough\" to meet your savings goals, the mission—as currently framed—will not work for you. Adjustments will need to be made or other opportunities considered."
+      "1. Input the Offered Net Salary: Enter the exact figure from your contract into the Monthly Net Salary field.",
+      "2. Plug in the 'Home commitments': Use the Custom Adjustments section to account for every penny that leaves your account for home-country commitments. This includes UK mortgages, student loans, and your Class 3 NI contributions.",
+      "3. Add in any additional partner income or any tutor or management allowances that boost the net salary already entered.",
+      "4. Analyse the Result: The calculator will output your Monthly Disposable Surplus.",
+      `5. Review the surplus: If you are not achieving a 10% surplus (for example, if it is around 7%, e.g., ${surplus7Percent}), the tool will flag this as "Limited Potential".`,
+      "6. This is an invaluable negotiation or budgeting tool: If the surplus is negative or simply \"not enough\" to meet your savings goals, the mission—as currently framed—will not work for you. Adjustments will need to be made or other opportunities considered."
     ];
     steps.forEach(s => printLine(s, 8.5, "normal", textMain, 3));
 
@@ -742,17 +742,17 @@ export default function PreparePage() {
 
     printHeading("Relocation Checklist", 10, 4);
     const checklists = [
-        ["Documentation", ["Visa & work permit applications", "Notarised/Apostilled degree certificates", "Embassy registration for UK citizens", "Criminal record checks (ACRO)"]],
-        ["Accommodation", ["First 14 days of temporary housing confirmed (and payment method checked)", "Local estate agent (Reality) contacts saved", "Rental contract review process understood", "Utility setup (Electricity/Gas) plan in place"]],
-        ["Salary & Banking", ["Confirm first payday (Day 60)", "Set up Revolut/Wise for initial international transfers", "Local bank account application ready", "Budget for 2 months' 'runway' secured"]],
-        ["Health & Family", ["School health insurance start date confirmed", "Emergency hospital locations mapped", "School uniform orders placed", "Childcare subsidy verification"]],
-        ["Transport", ["Local pass/Metro card registration started", "Taxi/Bolt/Uber app downloaded and set up", "International Driving Permit obtained"]],
-        ["Home Comforts", ["IKEA or startup items budgeted", "Electronics voltage check (230V)", "Wi-Fi installation lead times checked"]]
+      ["Documentation", ["Visa & work permit applications", "Notarised/Apostilled degree certificates", "Embassy registration for UK citizens", "Criminal record checks (ACRO)"]],
+      ["Accommodation", ["First 14 days of temporary housing confirmed (and payment method checked)", "Local estate agent (Reality) contacts saved", "Rental contract review process understood", "Utility setup (Electricity/Gas) plan in place"]],
+      ["Salary & Banking", ["Confirm first payday (Day 60)", "Set up Revolut/Wise for initial international transfers", "Local bank account application ready", "Budget for 2 months' 'runway' secured"]],
+      ["Health & Family", ["School health insurance start date confirmed", "Emergency hospital locations mapped", "School uniform orders placed", "Childcare subsidy verification"]],
+      ["Transport", ["Local pass/Metro card registration started", "Taxi/Bolt/Uber app downloaded and set up", "International Driving Permit obtained"]],
+      ["Home Comforts", ["IKEA or startup items budgeted", "Electronics voltage check (230V)", "Wi-Fi installation lead times checked"]]
     ];
     checklists.forEach(([section, items]) => {
-        printLine(section as string, 9, "bold", primary, 2);
-        (items as string[]).forEach(item => printLine(`[ ]  ${item}`, 8.5, "normal", textMain, 2));
-        y += 2;
+      printLine(section as string, 9, "bold", primary, 2);
+      (items as string[]).forEach(item => printLine(`[ ]  ${item}`, 8.5, "normal", textMain, 2));
+      y += 2;
     });
 
     drawFooter(pageCount);
@@ -764,19 +764,19 @@ export default function PreparePage() {
     printHeading("THE SAMPLE HR EMAIL (THE 'ART OF THE PUSHBACK' IN ACTION)", 10, 4);
     printLine("Do not send 15 different emails. Compile your queries into one polite, highly professional message.", 9, "normal", textMain, 4);
     printLine("Subject: Contract Queries & Relocation Logistics - [Your Name]", 8.5, "bold", primary, 2);
-    
+
     const emailBody = [
-        "Dear [HR Contact Name / Head of School],",
-        "Thank you so much for sending the contract through. I am absolutely thrilled about the offer and very excited at the prospect of joining the team in August.",
-        "Before I sign and return the documents, I am just mapping out my logistics and cash flow for the move, and I had a few points of clarification I was hoping you could help me with:",
-        "1. Salary & Placement: Thank you for the initial placement at Step 4. Looking closely at the scale, I noticed my two years doing long-term supply weren't included. Given the classroom management skills built during that time, is there any flexibility for the entry step to be reviewed to reflect my full tenure?",
-        "2. Arrival Cash Flow: Just to help with my personal cash flow planning, on what exact date can I realistically expect my first full salary deposit to clear into my local bank account? Also, regarding the settling-in allowance-is this an additional relocation grant, or is it a pro-rata salary advance for the induction days before the official contract starts?",
-        "3. Temporary Housing: Could you clarify the temporary hotel accommodation upon arrival? Specifically, how many nights are covered, and critically, does the school settle the bill directly or am I expected to pay upfront and claim it back?",
-        "4. Medical Insurance: Can you confirm if my school medical insurance is active from the moment my flight lands, or should I arrange my own temporary travel cover for the induction weeks?",
-        "5. Connections: Would it be possible to be put in touch with a current teacher in my department, or perhaps a teacher who is leaving this summer? I'd love to ask a few practical questions about life on the ground, and see if I might be able to take over an apartment lease or buy some second-hand furniture to make the transition easier!",
-        "Thank you again for all your support during this process. I look forward to hearing from you.",
-        "Kind regards,",
-        "[Your Name]"
+      "Dear [HR Contact Name / Head of School],",
+      "Thank you so much for sending the contract through. I am absolutely thrilled about the offer and very excited at the prospect of joining the team in August.",
+      "Before I sign and return the documents, I am just mapping out my logistics and cash flow for the move, and I had a few points of clarification I was hoping you could help me with:",
+      "1. Salary & Placement: Thank you for the initial placement at Step 4. Looking closely at the scale, I noticed my two years doing long-term supply weren't included. Given the classroom management skills built during that time, is there any flexibility for the entry step to be reviewed to reflect my full tenure?",
+      "2. Arrival Cash Flow: Just to help with my personal cash flow planning, on what exact date can I realistically expect my first full salary deposit to clear into my local bank account? Also, regarding the settling-in allowance-is this an additional relocation grant, or is it a pro-rata salary advance for the induction days before the official contract starts?",
+      "3. Temporary Housing: Could you clarify the temporary hotel accommodation upon arrival? Specifically, how many nights are covered, and critically, does the school settle the bill directly or am I expected to pay upfront and claim it back?",
+      "4. Medical Insurance: Can you confirm if my school medical insurance is active from the moment my flight lands, or should I arrange my own temporary travel cover for the induction weeks?",
+      "5. Connections: Would it be possible to be put in touch with a current teacher in my department, or perhaps a teacher who is leaving this summer? I'd love to ask a few practical questions about life on the ground, and see if I might be able to take over an apartment lease or buy some second-hand furniture to make the transition easier!",
+      "Thank you again for all your support during this process. I look forward to hearing from you.",
+      "Kind regards,",
+      "[Your Name]"
     ];
     emailBody.forEach(line => printLine(line, 8.5, "italic", textMain, 3));
 
@@ -787,11 +787,11 @@ export default function PreparePage() {
   if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02]" /></div>;
 
   return (
-    <div 
+    <div
       className="container mx-auto px-4 md:px-12 py-10 text-white bg-[#020617] min-h-screen font-sans"
       style={{ '--primary': '#d95f02' } as React.CSSProperties}
     >
-      
+
       {/* Header */}
       <div className="mb-4 space-y-1">
         <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
@@ -810,7 +810,7 @@ export default function PreparePage() {
               Your Essential Relocation Briefing. Grounded in Leopardfish Intel.
             </p>
           </div>
-          <Button 
+          <Button
             className="bg-black hover:bg-[#d95f02] hover:text-black text-white border-2 border-[#d95f02] font-black text-xs uppercase italic px-10 h-14 rounded-none transition-all group flex items-center gap-3"
             onClick={() => setIsConfirmModalOpen(true)}
           >
@@ -823,7 +823,7 @@ export default function PreparePage() {
 
       {/* 🛡️ MISSION PHASE: STEP 01 */}
       <div className="mb-4">
-        <button 
+        <button
           onClick={() => setStep1Open(!step1Open)}
           className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
         >
@@ -885,7 +885,7 @@ export default function PreparePage() {
                   Before you sign on the dotted line, you need to look beyond the quoted salary and perform a cold, hard stress test on your lifestyle. The Leopardfish Intel allows you these insights — letting you adjust the numbers to suit your specific circumstances now so you can arrive in {selectedCountry !== 'all' ? selectedCountry : 'Oman'} confident that finances are secure.
                 </p>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-6">
@@ -896,7 +896,7 @@ export default function PreparePage() {
                       <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
                         Navigate to the Evaluate page to play with the costs of your new international lifestyle and complete these steps:
                       </p>
-                      
+
                       {/* Visual Stepper Checklist */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
@@ -921,10 +921,10 @@ export default function PreparePage() {
                         ))}
                       </div>
                     </div>
- 
+
                     {/* Launch Evaluate Dashboard CTA */}
                     <div className="pt-4 flex border-t border-sky-400/10">
-                      <Link 
+                      <Link
                         href="/financial-forecaster"
                         className="bg-black hover:bg-[#d95f02] hover:text-black text-white border-2 border-[#d95f02] font-black text-xs italic px-6 h-12 rounded-none transition-all flex items-center gap-2 justify-center"
                       >
@@ -932,49 +932,49 @@ export default function PreparePage() {
                       </Link>
                     </div>
                   </div>
- 
+
                   {/* Right Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-6">
-                       <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
-                         <Compass className="size-4 text-sky-400" />
-                         <h4 className="text-[14px] font-black uppercase tracking-widest text-white">The 'What-If' Scenarios</h4>
-                       </div>
-                       
-                       <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
-                         If the initial numbers look grim, don't panic. Adjust your inputs to find the "path to surplus" on the Evaluate page:
-                       </p>
-                       
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                         {[
-                           { id: 'A', label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
-                           { id: 'B', label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
-                           { 
-                              id: 'C', 
-                              label: isGulfCountry ? "The 4x4 necessity" : "Transit optimization", 
-                              desc: isGulfCountry 
-                                ? `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` 
-                                : `In transit-oriented sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Prague'}, high-efficiency public transport reduces commuting costs to a fraction of driving expenses (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).` 
-                            },
-                           { id: 'D', label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
-                           { id: 'E', label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
-                           { id: 'F', label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
-                         ].map((item, i) => (
-                           <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:h-[140px]">
-                             <div>
-                               <div className="flex items-center gap-2 mb-2">
-                                 <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
-                                   {item.id}
-                                 </span>
-                                 <p className="text-[12px] font-black text-white uppercase tracking-wider">{item.label}</p>
-                               </div>
-                               <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
-                             </div>
-                           </div>
-                         ))}
-                       </div>
+                      <div className="flex items-center gap-3 border-b border-sky-400/10 pb-3">
+                        <Compass className="size-4 text-sky-400" />
+                        <h4 className="text-[14px] font-black uppercase tracking-widest text-white">The 'What-If' Scenarios</h4>
+                      </div>
+
+                      <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
+                        If the initial numbers look grim, don't panic. Adjust your inputs to find the "path to surplus" on the Evaluate page:
+                      </p>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {[
+                          { id: 'A', label: "Housing adjustments", desc: `Could you downgrade from your current estimate (${formatCurrency(monthlyBudget.rent, budget.displayCurrency)}) to reclaim some surplus?` },
+                          { id: 'B', label: "The partner variable", desc: "If relocating with a partner, input their income. A second salary is often the difference between struggling and thriving." },
+                          {
+                            id: 'C',
+                            label: isGulfCountry ? "The 4x4 necessity" : "Transit optimization",
+                            desc: isGulfCountry
+                              ? `In desert sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Oman'}, a 4x4 vehicle is a non-negotiable family cost (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).`
+                              : `In transit-oriented sectors like ${selectedCountry !== 'all' ? selectedCountry : 'Prague'}, high-efficiency public transport reduces commuting costs to a fraction of driving expenses (approx ${formatCurrency(monthlyBudget.transport, budget.displayCurrency)}).`
+                          },
+                          { id: 'D', label: "Home-country cuts", desc: `Can you reduce your home anchors? Trimming custom commitments is sometimes the only path to a viable surplus.` },
+                          { id: 'E', label: "Utilities spikes", desc: "Air conditioning or winter heating spikes can decimate a tight surplus. Always run a worst-case utility calculation." },
+                          { id: 'F', label: "Runway extension", desc: "If initial savings are low, extend your setup timeline from 45 to 60 days to verify required reserves." }
+                        ].map((item, i) => (
+                          <div key={i} className="p-4 bg-black/40 border border-white/5 hover:border-sky-400/30 transition-all flex flex-col justify-between h-full md:h-[140px]">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="flex items-center justify-center size-5 rounded-full bg-sky-400/10 text-sky-400 font-mono font-black text-[10px] border border-sky-400/30">
+                                  {item.id}
+                                </span>
+                                <p className="text-[12px] font-black text-white uppercase tracking-wider">{item.label}</p>
+                              </div>
+                              <p className="text-[11px] font-bold text-slate-400 leading-snug">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
- 
+
                     <div className="pt-3 border-t border-sky-400/10">
                       <p className="text-[12px] font-bold text-slate-500 leading-relaxed italic">
                         <span className="text-sky-400 font-black uppercase tracking-widest not-italic block mb-1">Peer Advice:</span>
@@ -1011,10 +1011,10 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 {/* Row 1: Side by Side Pay Scale Warnings & Best Practices */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card - Pay Scales Warnings */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-4">
@@ -1065,7 +1065,7 @@ export default function PreparePage() {
 
                 {/* Row 2: Side by Side NDA Clauses & Expert Tip */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card - NDA Clauses */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-3">
@@ -1121,10 +1121,10 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 {/* Row 1: Side by Side Accommodation Warnings & Best Practices */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card - Accommodation Warnings */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-4">
@@ -1175,7 +1175,7 @@ export default function PreparePage() {
 
                 {/* Row 2: Side by Side The Housing Spectrum & Expert Tip */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card - The Housing Spectrum */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-6">
                     <div className="space-y-4">
@@ -1183,7 +1183,7 @@ export default function PreparePage() {
                         <Package className="size-5 text-sky-400" />
                         <h4 className="text-[14px] font-black uppercase tracking-widest text-white">The Housing Spectrum</h4>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="space-y-1">
                           <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Furnished</p>
@@ -1224,7 +1224,7 @@ export default function PreparePage() {
 
       {/* 🛡️ MISSION PHASE: STEP 02 */}
       <div className="mb-6">
-        <button 
+        <button
           onClick={() => setStep2Open(!step2Open)}
           className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
         >
@@ -1243,7 +1243,7 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20">
               <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-                This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions. 
+                This isn't just about the flight; it depends heavily on whether you're landing in a furnished flat or facing an empty apartment in a country where IKEA is a four-hour drive away. Check your contract—'unfurnished' can mean different things in different regions.
                 <span className="block mt-2 text-sky-400/80">
                   The input fields below are dynamic and can be adjusted to suit your specific situation. While current figures represent median LeopardfishIntel regional and school estimates, school-specific benefits (like hotel stays or flight caps) can significantly shift these outcomes. Please adjust data fields to reflect your personalised offer.
                 </span>
@@ -1254,9 +1254,9 @@ export default function PreparePage() {
       </div>
 
       <div className="max-w-7xl mx-auto space-y-5 mb-6">
-        
+
         {/* Tactical Warning Alert Moved Down */}
-        
+
         {/* ROW 1: Details & Dashboard (Height Matched) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 flex">
@@ -1295,9 +1295,9 @@ export default function PreparePage() {
                   <Label className="text-[13px] font-bold text-slate-500 italic">4. Home commitments?</Label>
                   <div className="relative">
                     <Coins className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3 text-sky-400" />
-                    <Input 
-                      type="number" 
-                      value={monthlyCommitments || ''} 
+                    <Input
+                      type="number"
+                      value={monthlyCommitments || ''}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => setMonthlyCommitments(Number(e.target.value))}
                       placeholder="e.g. Loans/Pensions"
                       className="bg-black/40 border-white/10 h-10 pl-7 text-[14px] font-black italic text-[#fafaf9] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -1316,11 +1316,11 @@ export default function PreparePage() {
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   <Zap className="absolute -top-10 -right-10 size-96 opacity-[0.03] rotate-12 text-white" />
                 </div>
-                
+
                 {/* 🛰️ DATA HIERARCHY */}
                 {/* 🛰️ ROW 1: PRIMARY INTELLIGENCE */}
                 <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                  
+
                   {/* Reserve Counter */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -1332,7 +1332,7 @@ export default function PreparePage() {
                     )}>
                       {formatCurrency(totalReserve, budget.displayCurrency)}
                     </p>
-                    
+
                     {/* Tactical Currency Switcher */}
                     <div className="flex bg-black/60 backdrop-blur-md rounded-none p-0.5 border border-white/10 w-fit mt-5">
                       {['GBP', 'USD', 'EUR', 'Local'].map((c) => (
@@ -1378,9 +1378,9 @@ export default function PreparePage() {
                       <Label className="text-[13px] font-bold text-slate-500 italic uppercase tracking-widest">Arrival allowances?</Label>
                       <div className="relative">
                         <Coins className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#d95f02]" />
-                        <Input 
-                          type="number" 
-                          value={arrivalAllowance || ''} 
+                        <Input
+                          type="number"
+                          value={arrivalAllowance || ''}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => setArrivalAllowance(Number(e.target.value))}
                           placeholder="e.g. 1500"
                           className="bg-black/60 border-white/10 h-12 pl-10 text-[14px] font-black italic text-[#fafaf9] rounded-none focus-visible:ring-[#d95f02] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -1394,60 +1394,60 @@ export default function PreparePage() {
 
               {/* 📊 ROW 2 & 3: SECONDARY INPUTS & BREAKDOWN STATS (Consistently Boxed) */}
               <div key={setupDays} className="p-5 lg:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 bg-black/20 border-t border-white/5 animate-in fade-in duration-700 slide-in-from-bottom-1">
-                
+
                 {/* Stat Outputs with Overrides */}
-                <StatItem 
-                  label="Visas & docs" 
-                  value={budget.docs} 
-                  icon={FileText} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label="Visas & docs"
+                  value={budget.docs}
+                  icon={FileText}
+                  currency={budget.displayCurrency}
                   overrideValue={docsOverride}
                   onOverride={(val) => setDocsOverride(val)}
                   info="Estimated legal and processing fees for your specific family profile and region."
                 />
-                <StatItem 
-                  label="Rent & deposit" 
-                  value={budget.housing} 
-                  icon={Home} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label="Rent & deposit"
+                  value={budget.housing}
+                  icon={Home}
+                  currency={budget.displayCurrency}
                   overrideValue={housingOverride}
                   onOverride={(val) => setHousingOverride(val)}
                   info={budget.isSubsidised ? "Subsidised (50%) rate applied. Typically covers first month rent + security deposit." : "Covers estimated first month rent plus security deposit (usually 1.5 months)."}
                   customDisplay={budget.isHousingProvided ? "Covered" : undefined}
                 />
-                <StatItem 
-                  label={`Living (${setupDays} days)`} 
-                  value={budget.expenditure} 
-                  icon={Wallet} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label={`Living (${setupDays} days)`}
+                  value={budget.expenditure}
+                  icon={Wallet}
+                  currency={budget.displayCurrency}
                   overrideValue={expenditureOverride}
                   onOverride={(val) => setExpenditureOverride(val)}
                   info="Covers groceries, utilities, and basic daily essentials scaled for your family size and arrival duration."
                 />
 
-                <StatItem 
-                  label="Logistics" 
-                  value={budget.logistics} 
-                  icon={Package} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label="Logistics"
+                  value={budget.logistics}
+                  icon={Package}
+                  currency={budget.displayCurrency}
                   overrideValue={logisticsOverride}
                   onOverride={(val) => setLogisticsOverride(val)}
                   info="Combined estimate for excess baggage and global shipping costs."
                 />
-                <StatItem 
-                  label="Electronics" 
-                  value={budget.electronics} 
-                  icon={Monitor} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label="Electronics"
+                  value={budget.electronics}
+                  icon={Monitor}
+                  currency={budget.displayCurrency}
                   overrideValue={electronicsOverride}
                   onOverride={(val) => setElectronicsOverride(val)}
                   action={
-                    <button 
+                    <button
                       onClick={(e) => { e.stopPropagation(); setShowElectronicsKit(!showElectronicsKit); }}
                       className={cn(
                         "size-5 rounded-full flex items-center justify-center transition-colors z-10 border",
-                        showElectronicsKit 
-                          ? "bg-rose-500/20 text-rose-400 border-rose-500/30" 
+                        showElectronicsKit
+                          ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
                           : "bg-sky-400/20 text-sky-400 border-sky-400/30 hover:bg-sky-400/40 hover:text-white"
                       )}
                       title={showElectronicsKit ? 'Close Kit Selection' : 'Select Genkit Items'}
@@ -1461,7 +1461,7 @@ export default function PreparePage() {
                 {showElectronicsKit && (
                   <div className="col-span-full mb-2 animate-in slide-in-from-top-2 duration-300">
                     <div className="bg-sky-400/5 border border-sky-400/20 p-4 relative">
-                      <button 
+                      <button
                         onClick={() => setShowElectronicsKit(false)}
                         className="absolute top-3 right-3 text-sky-400 hover:text-white transition-colors"
                       >
@@ -1484,8 +1484,8 @@ export default function PreparePage() {
                             }}
                             className={cn(
                               "p-2 border transition-all flex flex-col items-start gap-1 group/item",
-                              item.selected 
-                                ? "bg-sky-400/10 border-sky-400/30 text-white" 
+                              item.selected
+                                ? "bg-sky-400/10 border-sky-400/30 text-white"
                                 : "bg-black/40 border-white/5 text-slate-500 grayscale hover:grayscale-0 hover:border-white/20"
                             )}
                           >
@@ -1505,33 +1505,33 @@ export default function PreparePage() {
                     </div>
                   </div>
                 )}
-                <StatItem 
-                  label="Transport" 
-                  value={budget.transport} 
-                  icon={Car} 
-                  currency={budget.displayCurrency} 
+                <StatItem
+                  label="Transport"
+                  value={budget.transport}
+                  icon={Car}
+                  currency={budget.displayCurrency}
                   overrideValue={transportOverride}
                   onOverride={(val) => setTransportOverride(val)}
                   info={transportMode === 'drive' ? "Estimated cost for short-term car hire and fuel for your setup period. It is typically too early to purchase a car before residency is granted." : (transportMode === 'taxi' ? "Estimated cost for daily ride-share/taxi trips for the duration of your setup period." : "Estimated cost for public transport passes and initial commute setup.")}
                 />
-                
+
                 {budget.family > 0 && (
-                  <StatItem 
-                    label="Family/Childcare" 
-                    value={budget.family} 
-                    icon={Baby} 
-                    currency={budget.displayCurrency} 
+                  <StatItem
+                    label="Family/Childcare"
+                    value={budget.family}
+                    icon={Baby}
+                    currency={budget.displayCurrency}
                     overrideValue={familyOverride}
                     onOverride={(val) => setFamilyOverride(val)}
                     info="Estimated costs for school uniforms and initial childcare deposits. Rates vary wildly—verify local availability and school subsidies early."
                   />
                 )}
-                
-                <StatItem 
-                  label="IKEA Run" 
-                  value={budget.ikea} 
-                  icon={ShoppingCart} 
-                  currency={budget.displayCurrency} 
+
+                <StatItem
+                  label="IKEA Run"
+                  value={budget.ikea}
+                  icon={ShoppingCart}
+                  currency={budget.displayCurrency}
                   overrideValue={ikeaOverride}
                   onOverride={(val) => setIkeaOverride(val)}
                   info="Estimated cost for initial home essentials and furnishing based on your family profile."
@@ -1542,7 +1542,7 @@ export default function PreparePage() {
 
               {/* 🔄 Reset Row */}
               <div className="px-8 pb-8 flex justify-end">
-                <button 
+                <button
                   onClick={resetToDefaults}
                   className="text-[12px] font-black text-[#d95f02] hover:text-[#00e5ff] uppercase tracking-widest italic transition-colors"
                 >
@@ -1582,7 +1582,7 @@ export default function PreparePage() {
                     return (
                       <>
                         <div className={cn(
-                          "p-2.5 rounded-full", 
+                          "p-2.5 rounded-full",
                           hasIkea ? "bg-green-500/10 text-green-500" : (selectedIkea ? "bg-rose-500/10 text-rose-500" : "bg-[#d95f02]/10 text-[#d95f02]")
                         )}>
                           <ShoppingCart className="size-5" />
@@ -1592,7 +1592,7 @@ export default function PreparePage() {
                             IKEA readiness check: <span className="text-sky-400 underline decoration-sky-400/30 underline-offset-4">{selectedCountry !== 'all' ? selectedCountry : 'Your destination'}</span>
                           </h4>
                           <p className="text-[12px] font-bold text-slate-500 tracking-tight italic mt-1 leading-none">
-                            {selectedIkea 
+                            {selectedIkea
                               ? (hasIkea ? "Verified local IKEA presence." : "Using regional estimates.")
                               : "Standard furnishing estimate."}
                           </p>
@@ -1609,7 +1609,7 @@ export default function PreparePage() {
                       let targetLocalCurrency = selectedIkea['Currency'] || 'USD';
                       if (targetLocalCurrency === 'Local' || targetLocalCurrency === 'local' || !targetLocalCurrency) targetLocalCurrency = 'USD';
                       const activeIkeaCurrency = ikeaDisplayCurrency === 'Local' ? targetLocalCurrency : ikeaDisplayCurrency;
-                      
+
                       const tierMap = [
                         { label: 'Single', key: 'Single', status: 'single' },
                         { label: 'Couple', key: 'Couple', status: 'married-dual' },
@@ -1617,7 +1617,7 @@ export default function PreparePage() {
                         { label: 'Family +2', key: 'Family +2', status: 'family-2' },
                         { label: 'Family +3', key: 'Family +3', status: 'family-3' },
                       ];
-                      
+
                       const activeTier = tierMap.find(t => t.status === calcStatus || (t.status === 'married-dual' && calcStatus === 'married-sole')) || tierMap[0];
                       const usdVal = Number(selectedIkea[activeTier.key]) || 1000;
                       const rate = RATES[activeIkeaCurrency] || 1.0;
@@ -1636,11 +1636,11 @@ export default function PreparePage() {
                             <span className="text-slate-600 font-black text-[12px] uppercase tracking-widest italic flex-shrink-0">CURRENCY:</span>
                             <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm">
                               {['Local', 'GBP', 'USD', 'EUR'].map((c) => (
-                                <button 
+                                <button
                                   key={c}
                                   onClick={() => setIkeaDisplayCurrency(c)}
                                   className={cn(
-                                    "px-2 py-1 text-[12px] font-black tracking-tighter transition-all", 
+                                    "px-2 py-1 text-[12px] font-black tracking-tighter transition-all",
                                     ikeaDisplayCurrency === c ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white"
                                   )}
                                 >
@@ -1655,7 +1655,7 @@ export default function PreparePage() {
 
                           {/* Actions */}
                           <div className="flex items-center gap-2">
-                            <button 
+                            <button
                               onClick={() => setShowIkeaKit(!showIkeaKit)}
                               className={cn(
                                 "h-8 px-4 text-[12px] font-black uppercase italic tracking-widest transition-all border",
@@ -1664,7 +1664,7 @@ export default function PreparePage() {
                             >
                               KIT
                             </button>
-                            <button 
+                            <button
                               onClick={downloadIkeaPdf}
                               className="h-8 bg-sky-400 hover:bg-sky-500 text-black border-none rounded-none text-[12px] font-black italic uppercase px-4 flex items-center gap-2 transition-all"
                             >
@@ -1676,10 +1676,10 @@ export default function PreparePage() {
                     })()}
                   </div>
                 )}
-                
+
                 {!selectedIkea && selectedCountry !== 'all' && (
                   <div className="flex items-center gap-2">
-                    <button 
+                    <button
                       onClick={() => setShowIkeaKit(!showIkeaKit)}
                       className={cn(
                         "h-8 px-4 text-[12px] font-black uppercase italic border transition-all",
@@ -1688,7 +1688,7 @@ export default function PreparePage() {
                     >
                       KIT
                     </button>
-                    <button 
+                    <button
                       onClick={downloadIkeaPdf}
                       className="h-8 px-4 text-[12px] font-black uppercase italic bg-sky-400 text-black hover:bg-white transition-all flex items-center gap-2"
                     >
@@ -1726,7 +1726,7 @@ export default function PreparePage() {
 
 
                 <p className="mt-6 text-[12px] font-bold text-slate-600 uppercase italic tracking-widest border-t border-white/5 pt-3">
-                  {selectedIkea 
+                  {selectedIkea
                     ? "* Note: This is a standardized IKEA field kit. Stock levels may vary by region."
                     : "* Note: This is a recommended essentials inventory for countries without a verified IKEA."}
                 </p>
@@ -1738,7 +1738,7 @@ export default function PreparePage() {
 
       {/* 🛡️ MISSION PHASE: STEP 03 */}
       <div className="mb-6">
-        <button 
+        <button
           onClick={() => setStep3Open(!step3Open)}
           className="w-full text-left p-6 bg-sky-400/5 border border-sky-400/20 hover:border-sky-400/40 relative group transition-all flex items-center justify-between"
         >
@@ -1757,7 +1757,7 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20">
               <p className="text-[15px] font-bold text-slate-300 italic leading-relaxed w-full">
-                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper. 
+                This is where the excitement of the move meets the reality of global bureaucracy. Degree certificates, police checks, and embassy legalisation take time and significant upfront cash—often more than you’d expect for a pile of paper.
                 <span className="block mt-2 text-sky-400/80">
                   Tactical Advice: Start this the second you sign your contract. Do not wait for HR to chase you; a delay in your police check can push your residency permit—and your first payday—back by weeks. If you aren't already legalised, you aren't really moving.
                 </span>
@@ -1792,7 +1792,7 @@ export default function PreparePage() {
                   To navigate the required international paperwork, you need to manage three moving parts: authenticity, validity, and legal right to work.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
@@ -1807,8 +1807,8 @@ export default function PreparePage() {
                         <div className="space-y-1">
                           <label htmlFor="check-attestation" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Degree Attestation (The "Stamps")</label>
                           <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                            <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br/>
-                            <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br/>
+                            <span className="text-white">What:</span> Proving your degree isn't a forgery. Requires a chain of signatures: Notary → Home Government → Host Embassy.<br />
+                            <span className="text-white">Validity:</span> Permanent for that specific country once completed.<br />
                             <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Never send your original degree by standard mail; use tracked couriers only.
                           </p>
                         </div>
@@ -1824,8 +1824,8 @@ export default function PreparePage() {
                         <div className="space-y-1">
                           <label htmlFor="check-criminal" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Criminal Record Checks (Safeguarding)</label>
                           <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                            <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br/>
-                            <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br/>
+                            <span className="text-white">What:</span> A national-level check (e.g., ICPC in the UK, FBI in the US).<br />
+                            <span className="text-white">Validity:</span> 3–6 Months. These are "snapshots," so don't request too early.<br />
                             <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> If you have lived in multiple countries, you may need a check from each one for the last 5–10 years.
                           </p>
                         </div>
@@ -1847,8 +1847,8 @@ export default function PreparePage() {
                         <div className="space-y-1">
                           <label htmlFor="check-visa" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Visas & Work Permits</label>
                           <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                            <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br/>
-                            <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br/>
+                            <span className="text-white">What:</span> The Entry Visa gets you in; the Work Permit lets you stay and get paid.<br />
+                            <span className="text-white">Validity:</span> Length of Contract (usually 1–2 years).<br />
                             <span className="text-sky-400 uppercase text-[10px] font-black">Red Flag:</span> Avoid schools that ask you to work on a "Tourist Visa" while they "fix" the permit. It is illegal.
                           </p>
                         </div>
@@ -1864,8 +1864,8 @@ export default function PreparePage() {
                         <div className="space-y-1">
                           <label htmlFor="check-embassy" className="text-[13px] font-black text-sky-400 uppercase tracking-wider cursor-pointer select-none">Embassy Registration & Local ID</label>
                           <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
-                            <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br/>
-                            <span className="text-white">Validity:</span> Linked to your visa.<br/>
+                            <span className="text-white">What:</span> Registering with your home country and getting a local ID (e.g., Emirates ID, ARC).<br />
+                            <span className="text-white">Validity:</span> Linked to your visa.<br />
                             <span className="text-sky-400/80 uppercase text-[10px] font-black">Teacher Tip:</span> Local IDs are the "key to the city"—you usually cannot get a bank account or home Wi-Fi without one.
                           </p>
                         </div>
@@ -1910,7 +1910,7 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 <div className="flex bg-black/40 p-0.5 border border-white/10 rounded-sm w-fit">
                   <button onClick={() => setTransportMode('public')} className={cn("px-4 py-1.5 text-[12px] font-black uppercase italic transition-all", transportMode === 'public' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}>Public</button>
                   <button onClick={() => setTransportMode('drive')} className={cn("px-4 py-1.5 text-[12px] font-black uppercase italic transition-all", transportMode === 'drive' ? "bg-sky-400 text-black" : "text-slate-500 hover:text-white")}>Driving</button>
@@ -1918,7 +1918,7 @@ export default function PreparePage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-3">
@@ -2005,9 +2005,9 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card - UK Pension Strategy */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
@@ -2018,7 +2018,7 @@ export default function PreparePage() {
                       <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
                         As of April 2026, Class 3 NI is the primary mechanism to protect your UK State Pension.
                       </p>
-                      
+
                       <div className="space-y-3">
                         <div className="space-y-1">
                           <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">Cost: £18.40 / week</p>
@@ -2049,7 +2049,7 @@ export default function PreparePage() {
                       <p className="text-[12px] font-bold text-slate-400 leading-relaxed italic">
                         US educators face the "Windfall Elimination Provision" (WEP) when teaching on local contracts.
                       </p>
-                      
+
                       <div className="space-y-3">
                         <div className="space-y-1">
                           <p className="text-[13px] font-black text-sky-400 uppercase tracking-wider">WEP Risk</p>
@@ -2109,13 +2109,13 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 <p className="text-[14px] font-bold text-slate-300 leading-relaxed">
                   Moving money internationally can cost you 3% to 5% of your salary in hidden bank fees.
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
@@ -2194,13 +2194,13 @@ export default function PreparePage() {
           <div className="mt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="p-6 bg-sky-400/5 border border-sky-400/20 relative group hover:border-sky-400/40 transition-all">
               <div className="space-y-6">
-                
+
                 <p className="text-[14px] font-bold text-slate-300 leading-relaxed">
                   Your medical cover is your most important safety net.
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-                  
+
                   {/* Left Column Card */}
                   <div className="bg-black/40 border border-sky-400/20 p-5 flex flex-col justify-between h-full space-y-4">
                     <div className="space-y-4">
@@ -2247,13 +2247,13 @@ export default function PreparePage() {
           </div>
         )}
       </div>
-        
+
 
       {/* 🚀 PRE-Briefing confirmation overlay modal */}
       {isConfirmModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-[#0b1224] border border-[#d95f02]/30 p-6 max-w-md w-full relative space-y-6 shadow-2xl">
-            <button 
+            <button
               onClick={() => setIsConfirmModalOpen(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
             >
@@ -2307,14 +2307,14 @@ export default function PreparePage() {
             </div>
 
             <div className="flex gap-3 pt-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setIsConfirmModalOpen(false)}
                 className="w-1/3 border-white/10 hover:bg-white/5 text-white font-bold text-xs uppercase italic rounded-none h-11"
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   setIsConfirmModalOpen(false);
                   downloadBriefingPdf();
@@ -2343,16 +2343,16 @@ export default function PreparePage() {
         </div>
       )}
 
-        <div className="h-12" />
-      </div>
+      <div className="h-12" />
+    </div>
   );
 }
 
 // 📎 Helpers
-function StatItem({ 
+function StatItem({
   label, value, icon: Icon, currency, info, overrideValue, onOverride, action, customDisplay
-}: { 
-  label: string, value: number, icon: any, currency: string, info?: string, 
+}: {
+  label: string, value: number, icon: any, currency: string, info?: string,
   overrideValue?: number | null, onOverride?: (val: number | null) => void,
   action?: React.ReactNode, customDisplay?: string
 }) {
@@ -2378,13 +2378,13 @@ function StatItem({
         </div>
         {action}
       </div>
-      
+
       <div className="space-y-1">
         <div className="relative">
           {showCustom ? (
             <div className="flex items-center h-12 bg-sky-500/10 border border-sky-500/30 px-3 text-[14px] font-black uppercase italic text-sky-400 rounded-none w-full">
               {customDisplay}
-              <button 
+              <button
                 onClick={() => onOverride?.(0)}
                 className="ml-auto text-[10px] uppercase font-bold text-slate-500 hover:text-white transition-colors"
                 title="Override value"
@@ -2401,9 +2401,9 @@ function StatItem({
               )}>
                 {currencySymbol}
               </span>
-              <Input 
-                type="number" 
-                value={displayVal || ''} 
+              <Input
+                type="number"
+                value={displayVal || ''}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => onOverride?.(e.target.value ? Number(e.target.value) : null)}
                 className={cn(
                   "bg-black/60 border-white/5 h-12 text-[16px] font-black italic rounded-none focus-visible:ring-[#d95f02] transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
@@ -2412,7 +2412,7 @@ function StatItem({
                 )}
               />
               {customDisplay && (
-                <button 
+                <button
                   onClick={() => onOverride?.(null)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] uppercase font-black text-slate-500 hover:text-sky-400 transition-colors"
                 >
