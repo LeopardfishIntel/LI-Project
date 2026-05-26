@@ -2,17 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/firebase/server';
 import { collection, getDocs } from 'firebase/firestore';
 import { rateLimit } from '@/lib/rate-limit';
-
-// In-memory cache to protect the Firestore database from excessive reads
-type CachedData = {
-  schools: any[];
-  colData: any[];
-  transportIntel: any[];
-  timestamp: number;
-};
-
-let cached: CachedData | null = null;
-const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour cache duration
+import { getCachedDecideData, setCachedDecideData, invalidateDecideCache } from '@/lib/decide-cache';
 
 export async function GET(request: Request) {
   // 1. IP Rate Limiter (30 requests per minute)
@@ -32,12 +22,19 @@ export async function GET(request: Request) {
     );
   }
 
-  const now = Date.now();
-  
-  // 2. Serve from cache if still fresh
-  if (cached && now - cached.timestamp < CACHE_DURATION_MS) {
+  // 2. Parse URL for bypass/clear parameters
+  const { searchParams } = new URL(request.url);
+  const bypass = searchParams.get('bypass') === 'true' || searchParams.get('clear') === 'true';
+
+  if (searchParams.get('clear') === 'true') {
+    invalidateDecideCache();
+  }
+
+  // 3. Serve from cache if still fresh and not bypassed
+  const cachedData = bypass ? null : getCachedDecideData();
+  if (cachedData) {
     return NextResponse.json(
-      { schools: cached.schools, colData: cached.colData, transportIntel: cached.transportIntel },
+      { schools: cachedData.schools, colData: cachedData.colData, transportIntel: cachedData.transportIntel },
       {
         headers: {
           'X-RateLimit-Limit': String(limit),
@@ -49,7 +46,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    // 3. Query Firestore collections on the server-side
+    // 4. Query Firestore collections on the server-side
     const [schoolsSnap, colSnap, transportSnap] = await Promise.all([
       getDocs(collection(db, 'schools')),
       getDocs(collection(db, 'locations_costOfLiving')),
@@ -61,12 +58,7 @@ export async function GET(request: Request) {
     const transportIntel = transportSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
     // Populate Cache
-    cached = {
-      schools,
-      colData,
-      transportIntel,
-      timestamp: now
-    };
+    setCachedDecideData(schools, colData, transportIntel);
 
     return NextResponse.json(
       { schools, colData, transportIntel },
@@ -74,7 +66,7 @@ export async function GET(request: Request) {
         headers: {
           'X-RateLimit-Limit': String(limit),
           'X-RateLimit-Remaining': String(remaining),
-          'X-Cache': 'MISS'
+          'X-Cache': bypass ? 'BYPASS' : 'MISS'
         }
       }
     );

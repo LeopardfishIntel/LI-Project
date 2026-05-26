@@ -8,6 +8,7 @@ import {
   updateDocument,
   DatabaseBatch
 } from '@/firebase/admin';
+import { invalidateDecideCache } from '@/lib/decide-cache';
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
@@ -47,7 +48,12 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
     const res = await updateCostOfLiving({ locationName, countryName } as any);
 
     // 🛰️ COMMIT TO REGISTRY: Actually save the data to Firestore
-    const docId = locationName.toLowerCase().replace(/\s+/g, '-');
+    const docId = locationName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
     const existing = await getDocument('locations_costOfLiving', docId);
     const dataToSave = {
       ...res,
@@ -64,6 +70,9 @@ export async function updateLocationCostOfLivingAction(prevState: any, formData:
         id: docId
       });
     }
+
+    // Invalidate Decide comparison page cache for instant updates
+    invalidateDecideCache();
 
     return {
       message: `Updated telemetry for ${locationName} successfully`,
@@ -349,6 +358,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
       });
 
       await batch.commit();
+      invalidateDecideCache();
       return { success: true, count: data.length };
     }
 
@@ -369,7 +379,18 @@ export async function uploadRegistryJsonAction(data: any[]) {
         else normalized[cleanKey] = item[k]; // Default: lowercase the key
       });
 
-      const id = normalized.id || (normalized.schoolname || normalized.city || 'entry').toLowerCase().replace(/\s+/g, '-');
+      let id = normalized.id;
+      if (!id) {
+        const base = normalized.schoolname || normalized.city || 'entry';
+        id = base
+          .toLowerCase()
+          .trim()
+          .replace(/&/g, 'and')
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/[\s-]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
       batch.set(targetCol, String(id), {
         ...normalized,
         lastSync: new Date().toISOString()
@@ -377,6 +398,7 @@ export async function uploadRegistryJsonAction(data: any[]) {
     });
 
     await batch.commit();
+    invalidateDecideCache();
     return { success: true, count: data.length };
   } catch (e: any) {
     return { success: false, error: e.message };
@@ -411,7 +433,12 @@ export async function uploadIkeaIntelAction(data: any[]) {
 
     let count = 0;
     for (const countryName of countries) {
-      const docId = countryName.toLowerCase().replace(/\s+/g, '-').trim();
+      const docId = countryName
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
       if (!docId) continue;
 
       const docData: any = {
@@ -444,6 +471,7 @@ export async function uploadIkeaIntelAction(data: any[]) {
     }
 
     await batch.commit();
+    invalidateDecideCache();
     return { success: true, count };
   } catch (e: any) {
     return { success: false, error: e.message };
@@ -503,7 +531,12 @@ export async function uploadTransportIntelAction(payload: any[]) {
       const countryRaw = getField(['field1', 'country', 'Country']);
       if (!countryRaw || String(countryRaw).toLowerCase() === 'country') return;
 
-      const countryId = canonicalCountry(String(countryRaw)).replace(/\s+/g, '-');
+      const countryId = canonicalCountry(String(countryRaw))
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 
       // 🛰️ INDEX-OFFSET PROTOCOL
       const extractGroup = (startIdx: number) => {
@@ -541,6 +574,7 @@ export async function uploadTransportIntelAction(payload: any[]) {
     });
 
     await batch.commit();
+    invalidateDecideCache();
     console.log(`✅ TRANSPORT UPLOAD COMPLETE: ${updateCount} documents synchronized.`);
     return { success: true, count: updateCount };
   } catch (error: any) {

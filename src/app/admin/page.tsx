@@ -45,7 +45,7 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'economic' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('schools-data');
+  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('schools-data');
 
   useEffect(() => {
     setMounted(true);
@@ -212,18 +212,14 @@ export default function AdminCommandPage() {
             >
                 Schools Data
             </button>
+
             <button 
                 onClick={() => setActiveTab('col-data')}
                 className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'col-data' ? "bg-[#10b981] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
             >
-                Cost of Living Data
+                Cost of Living Hub
             </button>
-            <button 
-                onClick={() => setActiveTab('economic')}
-                className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'economic' ? "bg-emerald-500 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
-            >
-                Economic AI
-            </button>
+
             <button 
                 onClick={() => setActiveTab('ikea')}
                 className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'ikea' ? "bg-yellow-500 text-black" : "bg-white/5 text-slate-400 hover:bg-white/10")}
@@ -311,49 +307,16 @@ export default function AdminCommandPage() {
             </div>
         )}
 
-        {/* TAB 2: COST OF LIVING INJECTION */}
+        {/* TAB 2: COST OF LIVING HUB */}
         {activeTab === 'col-data' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="lg:col-span-8 space-y-6">
-                    <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl overflow-hidden">
-                    <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                        <FileJson className="size-4 text-emerald-400" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Cost of Living JSON Uplink</span>
-                        </div>
-                        <Terminal className="size-4 text-slate-700" />
-                    </div>
-                    <div className="p-6 space-y-6">
-                        <textarea 
-                            className="w-full h-[450px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#10b981] transition-all resize-none shadow-inner"
-                            placeholder={`[\n  {\n    "id": "FLIC0001",\n    "region": "Middle East",\n    "country": "UAE",\n    "city": "Abu Dhabi",\n    "currencyCode": "AED",\n    "dataCurrency": "USD",\n    "rent1br": "2215.00"\n  }\n]`}
-                            value={colJsonInput}
-                            onChange={(e) => setColJsonInput(e.target.value)}
-                        />
-                        <button 
-                          onClick={handleColUpload}
-                          disabled={loading || !colJsonInput}
-                          className="w-full h-16 bg-[#10b981] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
-                        >
-                          {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Cost of Living Protocol"}
-                        </button>
-                    </div>
-                    </div>
-                    {status && (
-                    <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
-                        {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
-                        <span className="tracking-widest">{status.msg}</span>
-                    </div>
-                    )}
-                </div>
-            </div>
-        )}
-
-        {/* TAB 2: ECONOMIC AI */}
-        {activeTab === 'economic' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="lg:col-span-8 space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* LEFT COLUMN: AI TARGET SWEEPER */}
+                <div className="space-y-6">
                     <div className="bg-[#0b1224] border border-emerald-500/20 rounded-sm shadow-2xl overflow-hidden">
+                        <div className="p-4 bg-black/20 border-b border-white/5 flex items-center gap-2">
+                            <Target className="size-4 text-emerald-400" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">AI Target Sweeper</span>
+                        </div>
                         <div className="p-8">
                             <form action={ecoFormAction} className="space-y-6">
                                 <div className="grid grid-cols-2 gap-6">
@@ -372,6 +335,40 @@ export default function AdminCommandPage() {
                             </form>
                         </div>
                     </div>
+                </div>
+
+                {/* RIGHT COLUMN: BULK JSON UPLINK */}
+                <div className="space-y-6">
+                    <div className="bg-[#0b1224] border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                        <div className="p-4 bg-black/20 border-b border-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <FileJson className="size-4 text-emerald-400" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Cost of Living JSON Uplink</span>
+                            </div>
+                            <Terminal className="size-4 text-slate-700" />
+                        </div>
+                        <div className="p-6 space-y-6">
+                            <textarea 
+                                className="w-full h-[300px] bg-black/60 border border-white/10 p-6 font-mono text-[11px] text-green-400 rounded-sm outline-none focus:border-[#10b981] transition-all resize-none shadow-inner"
+                                placeholder={`[\n  {\n    "id": "FLIC0001",\n    "region": "Middle East",\n    "country": "UAE",\n    "city": "Abu Dhabi",\n    "currencyCode": "AED",\n    "dataCurrency": "USD",\n    "rent1br": "2215.00"\n  }\n]`}
+                                value={colJsonInput}
+                                onChange={(e) => setColJsonInput(e.target.value)}
+                            />
+                            <button 
+                                onClick={handleColUpload}
+                                disabled={loading || !colJsonInput}
+                                className="w-full h-16 bg-[#10b981] text-white font-black uppercase italic tracking-[0.2em] hover:bg-white hover:text-black transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                            >
+                                {loading ? <Loader2 className="animate-spin size-5" /> : "Execute Cost of Living Protocol"}
+                            </button>
+                        </div>
+                    </div>
+                    {status && activeTab === 'col-data' && (
+                        <div className={cn("p-5 rounded-sm border font-black uppercase italic text-xs flex items-center gap-4 animate-in zoom-in-95", status.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500')}>
+                            {status.type === 'success' ? <CheckCircle2 className="size-5" /> : <AlertTriangle className="size-5" />}
+                            <span className="tracking-widest">{status.msg}</span>
+                        </div>
+                    )}
                 </div>
             </div>
         )}

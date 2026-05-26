@@ -16,6 +16,20 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
       headersList.get('x-vercel-ip-country') || 
       'unknown';
 
+    // 🛰️ DIAGNOSTIC: Log headers to see what geolocation info is passed
+    try {
+      const allHeaders: Record<string, string> = {};
+      headersList.forEach((value, key) => {
+        allHeaders[key] = value;
+      });
+      await addDocument('diagnostics_headers', {
+        timestamp: new Date().toISOString(),
+        headers: allHeaders
+      });
+    } catch (diagErr) {
+      console.error("Diagnostics header logging failed:", diagErr);
+    }
+
     await addDocument('telemetry', {
       event_name: eventName,
       timestamp: new Date().toISOString(),

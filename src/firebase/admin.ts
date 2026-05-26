@@ -16,12 +16,26 @@ let adminDb: any = null;
 
 try {
   if (typeof window === 'undefined') {
-    if (!admin.apps.length) {
-      admin.initializeApp({
-        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'studio-2840117705-12faa'
-      });
+    // 🛰️ Local Dev Sentry: Only initialize Admin SDK if credentials are explicitly configured
+    // or if we are running in a Google Cloud hosting environment. Otherwise, gracefully fall back
+    // to the client-side SDK on the server-side to avoid "Could not load default credentials" crashes.
+    const hasCredentials = 
+      process.env.GOOGLE_APPLICATION_CREDENTIALS || 
+      process.env.K_SERVICE || 
+      process.env.GAE_ENV || 
+      process.env.FIREBASE_CONFIG ||
+      process.env.VERCEL;
+
+    if (hasCredentials || process.env.NODE_ENV === 'production') {
+      if (!admin.apps.length) {
+        admin.initializeApp({
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'studio-2840117705-12faa'
+        });
+      }
+      adminDb = admin.firestore();
+    } else {
+      console.log("ℹ️ Admin credentials not detected locally. Using client-side Firestore fallback on server.");
     }
-    adminDb = admin.firestore();
   }
 } catch (err: any) {
   console.warn("Firebase Admin SDK initialization bypassed/failed. Falling back to client-side Firestore:", err.message || err);
