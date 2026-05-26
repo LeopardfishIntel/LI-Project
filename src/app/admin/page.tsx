@@ -513,62 +513,88 @@ export default function AdminCommandPage() {
                     </button>
                 </div>
                 
-                {telemetry && (
-                    <div className="space-y-8">
-                        {/* High Level Cards Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
-                            </div>
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
-                            </div>
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
-                            </div>
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
-                            </div>
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
-                            </div>
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
-                                <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
-                                <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
-                            </div>
-                        </div>
-
-                        {/* Traffic Trend and Analytics Breakdown */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Visits Trend Bar Chart */}
-                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4 lg:col-span-2">
-                                <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">7-Day Traffic Trend (Daily Visits)</h3>
-                                <div className="flex items-end justify-between h-36 pt-6 px-2">
-                                    {telemetry.visitsTrend?.map((day: any, idx: number) => {
-                                        const maxCount = Math.max(...telemetry.visitsTrend.map((d: any) => d.count), 1);
-                                        const heightPct = (day.count / maxCount) * 100;
-                                        return (
-                                            <div key={idx} className="flex flex-col items-center gap-2 flex-1 group">
-                                                <div className="text-[9px] font-black text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    {day.count}
-                                                </div>
-                                                <div 
-                                                    style={{ height: `${Math.max(heightPct, 5)}%` }}
-                                                    className="w-8 bg-purple-500/80 hover:bg-[#d95f02] transition-all duration-200"
-                                                />
-                                                <div className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
-                                                    {day.date}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                {telemetry && (() => {
+                    const total7Days = telemetry.visitsTrend?.reduce((acc: number, d: any) => acc + d.count, 0) || 0;
+                    const dailyAvg = (total7Days / 7).toFixed(1);
+                    const peakDay = telemetry.visitsTrend?.reduce((max: any, d: any) => d.count > max.count ? d : max, { count: 0 });
+                    return (
+                        <div className="space-y-8">
+                            {/* High Level Cards Grid */}
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-purple-400 mb-2">Total Site Visits</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalVisits?.toLocaleString() || 0}</div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-sky-400 mb-2">Briefings Generated</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.comparisons?.toLocaleString() || 0}</div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-[#d95f02] mb-2">Verified Schools</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalSchools?.toLocaleString() || 0}</div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-blue-400 mb-2">Countries Covered</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueCountries?.toLocaleString() || 0}</div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-emerald-400 mb-2">City Cost Profiles</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.totalLocations?.toLocaleString() || 0}</div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm">
+                                    <div className="text-[10px] font-black uppercase text-slate-400 mb-2">Active Enquiries</div>
+                                    <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.pendingEnquiries?.toLocaleString() || 0}</div>
                                 </div>
                             </div>
+
+                            {/* Traffic Trend and Analytics Breakdown */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Visits Trend Bar Chart */}
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4 lg:col-span-2 flex flex-col justify-between">
+                                    <div className="space-y-1">
+                                        <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">7-Day Traffic Trend (Daily Visits)</h3>
+                                        <div className="flex gap-4 text-[9px] font-black uppercase text-slate-500 italic tracking-wider">
+                                            <span>Total 7D: <span className="text-white">{total7Days}</span></span>
+                                            <span>Avg/Day: <span className="text-purple-400">{dailyAvg}</span></span>
+                                            {peakDay?.count > 0 && <span>Peak: <span className="text-[#d95f02]">{peakDay.count} ({peakDay.date})</span></span>}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-end justify-between h-36 pt-6 px-2">
+                                        {telemetry.visitsTrend?.map((day: any, idx: number) => {
+                                            const maxCount = Math.max(...telemetry.visitsTrend.map((d: any) => d.count), 1);
+                                            const heightPct = (day.count / maxCount) * 100;
+                                            const isPeak = day.count === peakDay?.count && peakDay?.count > 0;
+                                            return (
+                                                <div key={idx} className="flex flex-col items-center gap-2 flex-1 group relative">
+                                                    {/* COUNT BADGE */}
+                                                    <div className={cn(
+                                                        "text-[9px] font-black px-1.5 py-0.5 rounded-sm transition-all duration-200",
+                                                        isPeak 
+                                                            ? "bg-[#d95f02] text-white" 
+                                                            : "bg-purple-950/80 border border-purple-500/30 text-purple-300",
+                                                        "opacity-40 group-hover:opacity-100 group-hover:-translate-y-0.5"
+                                                    )}>
+                                                        {day.count}
+                                                    </div>
+                                                    {/* BAR */}
+                                                    <div 
+                                                        style={{ height: `${Math.max(heightPct, 5)}%` }}
+                                                        className={cn(
+                                                            "w-8 rounded-t-sm transition-all duration-300 relative overflow-hidden",
+                                                            isPeak 
+                                                                ? "bg-gradient-to-t from-[#d95f02]/60 to-[#d95f02] hover:brightness-110" 
+                                                                : "bg-gradient-to-t from-purple-600/40 to-purple-500 hover:from-purple-500/60 hover:to-purple-400"
+                                                        )}
+                                                    />
+                                                    {/* DATE */}
+                                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">
+                                                        {day.date}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
 
                             {/* User breakdown */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-6 flex flex-col justify-between">
@@ -715,7 +741,8 @@ export default function AdminCommandPage() {
                             </div>
                         </div>
                     </div>
-                )}
+                    );
+                })()}
             </div>
         )}
       </div>
