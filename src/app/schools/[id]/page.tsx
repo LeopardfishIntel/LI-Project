@@ -35,7 +35,6 @@ import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
 import { calculateSurplus, RATES } from '@/lib/calculations';
 import { logTelemetryEventAction } from '@/app/telemetry/actions';
-import { getSchoolTelemetryStatsAction } from '@/app/admin/actions';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -187,14 +186,39 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   const [stats, setStats] = React.useState<{ views: number, evaluations: number } | null>(null);
 
-  // 🛰️ Retrieve telemetry statistics for the school
+  // 🛰️ Retrieve telemetry statistics for the school client-side
   React.useEffect(() => {
-    if (school) {
-      getSchoolTelemetryStatsAction(school.schoolname || school.name).then(res => {
-        if (res.success) {
-          setStats({ views: res.views, evaluations: res.evaluations });
+    if (school && db) {
+      const fetchStats = async () => {
+        try {
+          const { collection, query, where, getDocs } = await import('firebase/firestore');
+          const telemetryRef = collection(db, 'telemetry');
+          
+          const qViews = query(
+            telemetryRef,
+            where('event_name', '==', 'school_profile_viewed'),
+            where('metadata.school_name', '==', school.schoolname || school.name)
+          );
+          const snapViews = await getDocs(qViews);
+          
+          const qEval = query(
+            telemetryRef,
+            where('event_name', '==', 'briefing_generated'),
+            where('metadata.school_name', '==', school.schoolname || school.name)
+          );
+          const snapEval = await getDocs(qEval);
+          
+          setStats({
+            views: snapViews.size,
+            evaluations: snapEval.size
+          });
+        } catch (err) {
+          console.error("Failed to fetch school telemetry stats client-side:", err);
+          setStats({ views: 0, evaluations: 0 });
         }
-      });
+      };
+      
+      fetchStats();
     }
   }, [school]);
 
