@@ -109,10 +109,16 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
       console.error("Diagnostics header logging failed:", diagErr);
     }
 
+    const visitorId = (metadata && metadata.visitor_id) ? metadata.visitor_id : 'unknown';
+    if (metadata && metadata.visitor_id) {
+      delete metadata.visitor_id;
+    }
+
     await addDocument('telemetry', {
       event_name: eventName,
       timestamp: new Date().toISOString(),
       session_id: sessionId || `sess_${Math.random().toString(36).substring(2, 11)}`,
+      visitor_id: visitorId,
       client_country: clientCountry,
       metadata: metadata || {}
     });

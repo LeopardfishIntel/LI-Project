@@ -254,6 +254,64 @@ export async function getTelemetryData() {
 
     avgNetSalary = netSalaryCount > 0 ? Math.round(netSalarySum / netSalaryCount) : 0;
 
+    // 👥 Unique Visitor Analysis & Grouping Engine
+    const sessionToVisitor: Record<string, string> = {};
+    events.forEach((evt: any) => {
+      const visitorId = evt.visitor_id || evt.metadata?.visitor_id;
+      const sessionId = evt.session_id;
+      if (visitorId && sessionId) {
+        sessionToVisitor[sessionId] = visitorId;
+      }
+    });
+
+    const visitorSessions: Record<string, Set<string>> = {};
+    const visitorPageViews: Record<string, number> = {};
+
+    events.forEach((evt: any) => {
+      const sessionId = evt.session_id || 'unknown';
+      const visitorId = 
+        evt.visitor_id || 
+        evt.metadata?.visitor_id || 
+        sessionToVisitor[sessionId] || 
+        sessionId || 
+        'unknown';
+
+      if (visitorId !== 'unknown') {
+        if (!visitorSessions[visitorId]) {
+          visitorSessions[visitorId] = new Set();
+        }
+        if (sessionId !== 'unknown') {
+          visitorSessions[visitorId].add(sessionId);
+        }
+
+        if (evt.event_name === 'page_view') {
+          visitorPageViews[visitorId] = (visitorPageViews[visitorId] || 0) + 1;
+        }
+      }
+    });
+
+    const uniqueVisitors = Object.keys(visitorSessions).length;
+    let repeatVisitorsCount = 0;
+    let totalSessionsSum = 0;
+
+    Object.entries(visitorSessions).forEach(([visId, sessions]) => {
+      const sessionCount = sessions.size;
+      const pageViewCount = visitorPageViews[visId] || 0;
+      totalSessionsSum += sessionCount;
+
+      if (sessionCount > 1 || pageViewCount > 1) {
+        repeatVisitorsCount++;
+      }
+    });
+
+    const repeatVisitorRate = uniqueVisitors > 0 
+      ? Math.round((repeatVisitorsCount / uniqueVisitors) * 100) 
+      : 0;
+
+    const avgVisitsPerUser = uniqueVisitors > 0 
+      ? (totalSessionsSum / uniqueVisitors).toFixed(1) 
+      : '0.0';
+
     // Get 7-day sparkline format
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date();
@@ -274,6 +332,9 @@ export async function getTelemetryData() {
       totalLocations: colDocs ? colDocs.length : 0,
       uniqueCountries: uniqueCountries,
       pendingEnquiries: pendingEnquiries,
+      uniqueVisitors,
+      repeatVisitorRate,
+      avgVisitsPerUser,
       
       // Dynamic calculations
       avgNetSalary,

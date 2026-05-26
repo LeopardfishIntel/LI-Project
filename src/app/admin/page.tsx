@@ -547,6 +547,37 @@ export default function AdminCommandPage() {
                                 </div>
                             </div>
 
+                            {/* Audience Engagement Metrics */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <div className="text-[10px] font-black uppercase text-sky-400">Unique Visitors</div>
+                                        <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.uniqueVisitors?.toLocaleString() || 0}</div>
+                                    </div>
+                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-right bg-white/5 px-2 py-1 rounded-sm">
+                                        Device Fingerprints
+                                    </div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <div className="text-[10px] font-black uppercase text-purple-400">Engagement Depth</div>
+                                        <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.avgVisitsPerUser || '0.0'} <span className="text-[11px] font-bold text-slate-500 not-italic uppercase tracking-normal">visits/user</span></div>
+                                    </div>
+                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-right bg-white/5 px-2 py-1 rounded-sm">
+                                        Visits Intensity
+                                    </div>
+                                </div>
+                                <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <div className="text-[10px] font-black uppercase text-emerald-400">Retention Loyalty</div>
+                                        <div className="text-2xl font-black italic tracking-tighter text-white">{telemetry.repeatVisitorRate}%</div>
+                                    </div>
+                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-right bg-white/5 px-2 py-1 rounded-sm">
+                                        Repeat Visitor Rate
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Traffic Trend and Analytics Breakdown */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Visits Trend Bar Chart */}
