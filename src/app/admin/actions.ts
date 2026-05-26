@@ -736,3 +736,34 @@ export async function clearCountryIndexesAction(countryId: string) {
     return { success: false, error: e.message };
   }
 }
+
+/**
+ * 🛰️ Action: Get School Telemetry Stats
+ * Aggregates views and evaluation stats for a single school from Firestore.
+ */
+export async function getSchoolTelemetryStatsAction(schoolName: string) {
+  try {
+    const telemetryDocs = await getCollectionDocs('telemetry');
+    if (!telemetryDocs) {
+      return { success: true, views: 0, evaluations: 0 };
+    }
+
+    let views = 0;
+    let evaluations = 0;
+
+    telemetryDocs.forEach((doc: any) => {
+      const data = doc.data();
+      if (data.event_name === 'school_profile_viewed' && data.metadata?.school_name === schoolName) {
+        views++;
+      }
+      if (data.event_name === 'briefing_generated' && data.metadata?.school_name === schoolName) {
+        evaluations++;
+      }
+    });
+
+    return { success: true, views, evaluations };
+  } catch (err: any) {
+    console.error("Failed to query school telemetry stats:", err.message || err);
+    return { success: false, error: err.message, views: 0, evaluations: 0 };
+  }
+}

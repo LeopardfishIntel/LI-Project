@@ -25,6 +25,7 @@ import {
   ShieldAlert,
   User as UserIcon,
   GraduationCap,
+  Eye,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -33,6 +34,8 @@ import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
 import { calculateSurplus, RATES } from '@/lib/calculations';
+import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { getSchoolTelemetryStatsAction } from '@/app/admin/actions';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -181,6 +184,37 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const [stats, setStats] = React.useState<{ views: number, evaluations: number } | null>(null);
+
+  // 🛰️ Retrieve telemetry statistics for the school
+  React.useEffect(() => {
+    if (school) {
+      getSchoolTelemetryStatsAction(school.schoolname || school.name).then(res => {
+        if (res.success) {
+          setStats({ views: res.views, evaluations: res.evaluations });
+        }
+      });
+    }
+  }, [school]);
+
+  // 🛰️ Telemetry: Log page view event when school dossier opens
+  React.useEffect(() => {
+    if (school) {
+      logTelemetryEventAction('school_profile_viewed', {
+        school_name: school.schoolname || school.name
+      });
+    }
+  }, [school]);
+
+  // 🛰️ Telemetry: Log evaluation event when briefing is compiled
+  React.useEffect(() => {
+    if (briefing && school) {
+      logTelemetryEventAction('briefing_generated', {
+        school_name: school.schoolname || school.name
+      });
+    }
+  }, [briefing, school]);
 
   // 🛰️ TACTICAL DATA NORMALIZATION
   const locationId = school?.locationId || ((school?.city && school?.country) ? `${school.city.toLowerCase().trim().replace(/\s+/g, '-')}-${school.country.toLowerCase().trim().replace(/\s+/g, '-')}` : null);
@@ -435,11 +469,20 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase italic w-full">{name}</h1>
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <div className="flex items-center text-sm font-black uppercase text-muted-foreground">
-                <MapPin className="w-4 h-4 mr-2 text-primary" />
-                <span>{school.city || school.location}, {school.country}</span>
-                <span className="mx-3 opacity-20">|</span>
-                <span className="text-primary/80 tracking-widest font-black">FLIS: {id}</span>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center text-sm font-black uppercase text-muted-foreground">
+                  <MapPin className="w-4 h-4 mr-2 text-primary" />
+                  <span>{school.city || school.location}, {school.country}</span>
+                  <span className="mx-3 opacity-20">|</span>
+                  <span className="text-primary/80 tracking-widest font-black">FLIS: {id}</span>
+                </div>
+                {stats && (
+                  <div className="flex items-center text-[9px] font-black uppercase tracking-widest text-slate-400 gap-4 mt-1 bg-black/40 border border-white/5 px-3 py-1 rounded-sm w-fit animate-in fade-in slide-in-from-left-4 duration-300">
+                    <span className="flex items-center gap-1.5"><Eye className="size-3 text-sky-400" /> Views: <span className="text-white">{stats.views}</span></span>
+                    <span className="text-slate-700">|</span>
+                    <span className="flex items-center gap-1.5"><GraduationCap className="size-3 text-emerald-400" /> Evaluated: <span className="text-white">{stats.evaluations}</span></span>
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-4">
                 <p className="text-[9px] font-black uppercase text-primary tracking-[0.2em] italic">Currency</p>
