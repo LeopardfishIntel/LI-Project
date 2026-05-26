@@ -222,23 +222,17 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     }
   }, [school]);
 
-  // 🛰️ Telemetry: Log page view event when school dossier opens
+  const hasLoggedViewRef = React.useRef(false);
+
+  // 🛰️ Telemetry: Log page view event exactly once when school dossier opens
   React.useEffect(() => {
-    if (school) {
+    if (school && !hasLoggedViewRef.current) {
+      hasLoggedViewRef.current = true;
       logTelemetryEventAction('school_profile_viewed', {
         school_name: school.schoolname || school.name
       });
     }
   }, [school]);
-
-  // 🛰️ Telemetry: Log evaluation event when briefing is compiled
-  React.useEffect(() => {
-    if (briefing && school) {
-      logTelemetryEventAction('briefing_generated', {
-        school_name: school.schoolname || school.name
-      });
-    }
-  }, [briefing, school]);
 
   // 🛰️ TACTICAL DATA NORMALIZATION
   const locationId = school?.locationId || ((school?.city && school?.country) ? `${school.city.toLowerCase().trim().replace(/\s+/g, '-')}-${school.country.toLowerCase().trim().replace(/\s+/g, '-')}` : null);
@@ -319,6 +313,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           const cacheAgeDays = cacheAgeMs / (1000 * 60 * 60 * 24);
           if (cacheAgeDays <= 7) {
             console.log(`[INTEL BANK] Cache hit for currency ${activeCurrencyCode} and profile ${selectedFamilyStatus} is fresh (${cacheAgeDays.toFixed(1)} days old). Serving immediately.`);
+            
+            // 🛰️ Telemetry: Log evaluation event once on fresh cache hit
+            logTelemetryEventAction('briefing_generated', {
+              school_name: school.schoolname || school.name
+            });
             return;
           }
           
@@ -412,6 +411,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             generatedAt: new Date().toISOString()
           };
           setBriefing(briefingPayload);
+
+          // 🛰️ Telemetry: Log evaluation event once on fresh AI generation
+          logTelemetryEventAction('briefing_generated', {
+            school_name: school.schoolname || school.name
+          });
 
           // 🏦 Bank in Firestore (Only if it's NOT a fallback template)
           const isNewFallback = result.briefing.includes("primary focus has to be the balance between the offered salary");
