@@ -1238,7 +1238,10 @@ function DecoderContent() {
                         <span>
                           Staff Turnover Guide - (last 12 months)
                         </span>
-                        <span className="text-[10px] text-slate-400 font-medium tracking-normal normal-case italic ml-auto">
+                        <span className={cn(
+                          "text-[11px] text-slate-400 font-medium tracking-normal normal-case ml-auto transition-all",
+                          (isCalculatingStability || stabilityReport?.isUpdating) && "animate-pulse text-[#d95f02] font-semibold"
+                        )}>
                           re-verification takes upto 90 secs
                         </span>
                       </h4>
