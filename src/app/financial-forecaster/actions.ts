@@ -217,7 +217,18 @@ Provide only the reworded text. No intro or outro.`,
     }
 }
 
+const cleanScrapedJobsList = (jobs: string[], schoolName?: string): string[] => {
+  const lowerSchoolName = schoolName ? schoolName.toLowerCase() : "";
+  if (lowerSchoolName.includes("sultan")) {
+    return jobs.filter(job => 
+      !(job.toLowerCase().includes("principal") && job.toLowerCase().includes("anthony millard"))
+    );
+  }
+  return jobs;
+};
+
 const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: string, city?: string): any[] => {
+  const cleanedList = cleanScrapedJobsList(scrapedList, schoolName);
   const isWithinLast24Months = (v: any): boolean => {
     const dateStr = v.date_listed || v.date_closing;
     if (!dateStr) return true;
@@ -247,7 +258,7 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
   const lowerCity = city ? city.toLowerCase() : "";
   const isPrague = lowerCity.includes("prague") || lowerSchoolName.includes("prague");
 
-  const parsed = scrapedList.map(job => {
+  const parsed = cleanedList.map(job => {
     // 🛡️ STRICT TARGET ISOLATION (ANTI-CITY LEAK) Programmatic Filtering
     const lowerJob = job.toLowerCase();
     if (isPrague) {
@@ -741,8 +752,8 @@ export async function getSchoolStabilityReport(input: {
                                 city: input.city,
                                 country: input.country
                             });
-                            const freshJobsCount = searchRes.scrapedJobsCount;
-                            const freshJobsList = searchRes.scrapedJobsList;
+                            const freshJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
+                            const freshJobsCount = freshJobsList.length;
                             const freshLastScrapedAt = new Date().toISOString();
 
                             const freshParsedVacancies = reconstructStructuredVacancies(freshJobsList, input.schoolName, input.city);
@@ -895,8 +906,8 @@ export async function getSchoolStabilityReport(input: {
                     city: input.city,
                     country: input.country
                 });
-                scrapedJobsCount = searchRes.scrapedJobsCount;
-                scrapedJobsList = searchRes.scrapedJobsList;
+                scrapedJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
+                scrapedJobsCount = scrapedJobsList.length;
                 lastScrapedAt = new Date().toISOString();
 
                 // Save locally first
