@@ -11,12 +11,11 @@ export function middleware(request: NextRequest) {
   const session = request.cookies.get('__session')?.value;
   const { pathname } = request.nextUrl;
 
-  // 1. DEFINE PROTECTED ZONES
+  // 1. DEFINE PROTECTED ZONES (Excluding schools to allow public beta testing access)
   const isProtectedRoute = 
     pathname.startsWith('/admin') || 
     pathname.startsWith('/dashboard') || 
-    pathname.startsWith('/profile') ||
-    pathname.startsWith('/schools');
+    pathname.startsWith('/profile');
 
   // 2. GUEST REDIRECT: Kick unauthorized users to signup
   if (isProtectedRoute && !session) {
@@ -45,7 +44,6 @@ export const config = {
     '/admin/:path*',
     '/dashboard/:path*',
     '/profile/:path*',
-    '/schools/:path*',
     '/signup',
   ],
 };
