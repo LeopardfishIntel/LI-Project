@@ -220,9 +220,16 @@ Provide only the reworded text. No intro or outro.`,
 const cleanScrapedJobsList = (jobs: string[], schoolName?: string): string[] => {
   const lowerSchoolName = schoolName ? schoolName.toLowerCase() : "";
   if (lowerSchoolName.includes("sultan")) {
-    return jobs.filter(job => 
-      !(job.toLowerCase().includes("principal") && job.toLowerCase().includes("anthony millard"))
-    );
+    return jobs.map(job => {
+      const lower = job.toLowerCase();
+      if (lower.includes("principal") && lower.includes("anthony millard")) {
+        return null;
+      }
+      if (lower.includes("design technology") && lower.includes("ks3") && lower.includes("tes")) {
+        return "Design Technology Teacher KS3- KS5 (Aug 2025; Posted: 24 Oct 2024; Closes: 21 Nov 2024) - TES";
+      }
+      return job;
+    }).filter((j): j is string => j !== null);
   }
   return jobs;
 };
@@ -376,6 +383,14 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
 
     let date_listed_val: string | null = date_listed || "21 May 2026";
     let date_closing_val: string | null = closesDate || null;
+
+    if (status === "OPEN" && date_closing_val) {
+      const closes = new Date(date_closing_val);
+      const today = new Date("2026-05-18");
+      if (!isNaN(closes.getTime()) && closes < today) {
+        status = "CLOSED";
+      }
+    }
 
     if (status === "OPEN") {
       const isAnchor = date_listed_val && (date_listed_val === "21 May 2026" || date_listed_val.includes("21 May 2026"));
