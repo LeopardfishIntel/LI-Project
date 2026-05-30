@@ -420,11 +420,15 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           // 🏦 Bank in Firestore (Only if it's NOT a fallback template)
           const isNewFallback = result.briefing.includes("primary focus has to be the balance between the offered salary");
           if (db && !isNewFallback) {
-            const schoolRef = doc(db, 'schools', school.id);
-            await updateDoc(schoolRef, {
-              [`cachedBriefings.${cacheKey}`]: briefingPayload
-            });
-            console.log(`[INTEL BANK] Successfully banked school briefing in database for cache key ${cacheKey}.`);
+            try {
+              const schoolRef = doc(db, 'schools', school.id);
+              await updateDoc(schoolRef, {
+                [`cachedBriefings.${cacheKey}`]: briefingPayload
+              });
+              console.log(`[INTEL BANK] Successfully banked school briefing in database for cache key ${cacheKey}.`);
+            } catch (bankErr) {
+              console.warn("[INTEL BANK] Failed to bank school briefing client-side (insufficient permissions for non-admin). Displaying briefing anyway:", bankErr);
+            }
           } else if (isNewFallback) {
             console.log("[INTEL BANK] Skipped banking fallback briefing in database.");
           }
