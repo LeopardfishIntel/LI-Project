@@ -1314,7 +1314,7 @@ function DecoderContent() {
                                   {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
                                   <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                                     <div>
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-2 flex-wrap">
                                         <span className="text-[10px] text-slate-400 font-medium">Category:</span>
                                         {(() => {
                                           const isUnavailable = stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE";
@@ -1348,6 +1348,16 @@ function DecoderContent() {
                                             </span>
                                           );
                                         })()}
+
+                                        {stabilityReport.isUpdating && (
+                                          <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-black uppercase tracking-wider animate-pulse ml-1">
+                                            <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                                            </span>
+                                            🔄 Syncing fresh data...
+                                          </span>
+                                        )}
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2 self-start sm:self-center">

@@ -680,12 +680,12 @@ export async function getSchoolStabilityReport(input: {
 
             // Determine if a new search is required:
             // - No search has ever run, OR
-            // - Force            // - 14 days (two weeks) have passed since the last search
+            // - Force            // - 21 days (three weeks) have passed since the last search
             if (input.forceRefresh || lastScrapedAt === null || scrapedJobsCount === null) {
                 needsNewSearch = true;
             } else {
                 const daysElapsed = (Date.now() - new Date(lastScrapedAt).getTime()) / (1000 * 60 * 60 * 24);
-                if (daysElapsed >= 14) {
+                if (daysElapsed >= 21) {
                     needsNewSearch = true;
                 }
             }
@@ -699,7 +699,8 @@ export async function getSchoolStabilityReport(input: {
                 const cachedReport = {
                     ...data.cachedStability,
                     scrapedJobsList,
-                    lastScrapedAt
+                    lastScrapedAt,
+                    isUpdating: true
                 };
                 if (!cachedReport.vacancies_discovered) {
                     cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
