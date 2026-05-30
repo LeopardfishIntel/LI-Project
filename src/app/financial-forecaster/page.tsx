@@ -477,11 +477,19 @@ function DecoderContent() {
   useEffect(() => {
     const salaryVal = getSchoolField(activeSchool, ['salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
-      const cleanRange = String(salaryVal).replace(/,/g, '').replace(/\.\d+/g, '');
+      const cleanRange = String(salaryVal)
+        .replace(/,/g, '')
+        .replace(/\.\d+/g, '')
+        .replace(/k/gi, '000');
       const range = cleanRange.match(/\d+/g);
       const min = range ? parseInt(range[0]) : 0;
       const max = range && range.length > 1 ? parseInt(range[1]) : min;
-      const median = Math.round((min + max) / 2);
+      let median = Math.round((min + max) / 2);
+
+      // Annual to Monthly Conversion (if the parsed median exceeds 10,000, divide by 12)
+      if (median >= 10000) {
+        median = Math.round(median / 12);
+      }
 
       setSettings(prev => ({ ...prev, netSalary: Math.round(usdToLocal(median)).toString() }));
     }
