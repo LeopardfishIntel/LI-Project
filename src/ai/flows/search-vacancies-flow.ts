@@ -28,9 +28,13 @@ export async function searchVacancies(input: {
 
 const sanitizeVacancyString = (raw: string, currentDateStr: string = "21 May 2026"): string => {
   if (!raw) return raw;
-  const parts = raw.split(' - ');
-  const source = parts[1] || 'Web';
-  const main = parts[0] || raw;
+  const lastDashIdx = raw.lastIndexOf(' - ');
+  let main = raw;
+  let source = 'Web';
+  if (lastDashIdx !== -1) {
+    main = raw.substring(0, lastDashIdx).trim();
+    source = raw.substring(lastDashIdx + 3).trim();
+  }
 
   const parenIdx = main.lastIndexOf('(');
   let rawTitle = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();

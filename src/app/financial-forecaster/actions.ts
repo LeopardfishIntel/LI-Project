@@ -265,9 +265,13 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
       }
     }
 
-    const sourcePart = job.split(' - ');
-    const source = sourcePart[1] || 'Web';
-    const main = sourcePart[0] || job;
+    const lastDashIdx = job.lastIndexOf(' - ');
+    let main = job;
+    let source = 'Web';
+    if (lastDashIdx !== -1) {
+      main = job.substring(0, lastDashIdx).trim();
+      source = job.substring(lastDashIdx + 3).trim();
+    }
 
     // Extract title (everything before the first parenthesis)
     const parenIdx = main.indexOf('(');
