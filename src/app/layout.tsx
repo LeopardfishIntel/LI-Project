@@ -26,6 +26,10 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Leopardfish Intel | Strategic Insight for International Educators',
   description: 'Military-grade precision intel for international educators.',
+  robots: {
+    index: false,
+    follow: false,
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
