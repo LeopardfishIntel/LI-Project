@@ -45,7 +45,7 @@ function EconomicSubmitButton() {
 
 export default function AdminCommandPage() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('schools-data');
+  const [activeTab, setActiveTab] = useState<'schools-data' | 'col-data' | 'telemetry' | 'ikea' | 'matrix' | 'transport'>('col-data');
 
   useEffect(() => {
     setMounted(true);
@@ -206,12 +206,12 @@ export default function AdminCommandPage() {
 
         {/* TACTICAL TABS */}
         <div className="flex flex-wrap gap-4 border-b border-white/10 pb-4">
-            <button 
+            {/* <button 
                 onClick={() => setActiveTab('schools-data')}
                 className={cn("px-6 py-2 text-[11px] font-black uppercase tracking-widest transition-all rounded-sm", activeTab === 'schools-data' ? "bg-[#d95f02] text-white" : "bg-white/5 text-slate-400 hover:bg-white/10")}
             >
                 Schools Data
-            </button>
+            </button> */}
 
             <button 
                 onClick={() => setActiveTab('col-data')}
