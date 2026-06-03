@@ -44,8 +44,8 @@ export default function Header() {
 
   const links = [
     { name: "Discover", href: "/find-your-fit" },
-    { name: "Evaluate", href: "/financial-forecaster" },
-    { name: "Decide", href: "/decide" },
+    { name: "Evaluate a School", href: "/financial-forecaster" },
+    { name: "Compare Schools", href: "/decide" },
     { name: "Prepare", href: "/prepare" },
   ];
 
