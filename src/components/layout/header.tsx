@@ -47,7 +47,6 @@ export default function Header() {
     { name: "Evaluate", href: "/financial-forecaster" },
     { name: "Decide", href: "/decide" },
     { name: "Prepare", href: "/prepare" },
-    { name: "Connect", href: "/enquiry" },
   ];
 
   return (
