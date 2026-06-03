@@ -88,11 +88,8 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
     }
 
     if (isLocalhost) {
-      if (clientCountry && clientCountry !== 'unknown') {
-        clientCountry = `Localhost (${clientCountry})`;
-      } else {
-        clientCountry = 'Localhost (Dev)';
-      }
+      // Exclude localhost/dev environment traffic from telemetry DB to keep analytics clean
+      return { success: true };
     }
 
     // 🛰️ DIAGNOSTIC: Log headers to see what geolocation info is passed
