@@ -585,7 +585,10 @@ function DecoderContent() {
     const connectivityCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1) + (getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount));
 
     // 🛰️ NESTED TRANSPORT PROTOCOL
-    const mapType = transportMode === "P" ? "publicTransport" : "carPurchase";
+    const isCar = transportMode === "C";
+    const transportMap = isCar
+      ? (tIntel?.carHire || activeCOL?.transport?.carPurchase || activeCOL?.carPurchase || activeCOL?.transport?.carHire || activeCOL?.carHire)
+      : (tIntel?.publicTransport || activeCOL?.transport?.publicTransport || activeCOL?.publicTransport);
 
     // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const transportPKeyMap: Record<string, string> = {
@@ -594,12 +597,13 @@ function DecoderContent() {
       "Married (dual income)": "marriedDualIncome",
       "Family +1": "family1Child",
       "Family +2": "family2Children",
-      "Family +3": "family3Children"
+      "Family +3": "family3PlusChildren"
     };
     const transportKey = transportPKeyMap[settings.familyStatus] || "single";
 
-    const transportMap = tIntel?.[mapType] || activeCOL?.transport?.[mapType] || activeCOL?.[mapType] || activeCOL?.transport;
-    const transportVal = (typeof transportMap === 'object' && transportMap !== null) ? (transportMap[transportKey] || 0) : (parseFloat(String(transportMap)) || 0);
+    const transportVal = (typeof transportMap === 'object' && transportMap !== null)
+      ? (transportMap[transportKey] !== undefined ? safeParse(transportMap[transportKey]) : safeParse(transportMap["family3Children"] || 0))
+      : (parseFloat(String(transportMap)) || 0);
     const transportCost = usdToLocal(transportVal);
     const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar));
     const manualCost = safeParse(manualAdjustments);
