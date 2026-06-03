@@ -533,9 +533,18 @@ function DecoderContent() {
       return safeParse(data) * mult; // Scalar fallback
     };
 
-    const housingStatus = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
+    const housingStatusRaw = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
+    const isHousingProvidedByDefault = housingStatusRaw.includes('provided');
+
+    let isProvided = false;
+    if (overrideBedrooms === 4) {
+      isProvided = true;
+    } else if (overrideBedrooms === null && isHousingProvidedByDefault) {
+      isProvided = true;
+    }
+
     const standardRentKey = status === "Single" ? 'rent1br' : (status.includes("Family") ? 'rent3br' : 'rent2br');
-    const activeRentKey = overrideBedrooms !== null ? `rent${overrideBedrooms}br` : standardRentKey;
+    const activeRentKey = (overrideBedrooms !== null && overrideBedrooms !== 4) ? `rent${overrideBedrooms}br` : standardRentKey;
 
     // 🏠 PROPERTY ADVICE LOGIC
     const propertyLabels: Record<string, string> = { 
@@ -544,7 +553,7 @@ function DecoderContent() {
       'rent2br': "2-Bed Residence", 
       'rent3br': "3-Bed Residence" 
     };
-    const propertyLabel = propertyLabels[activeRentKey] || "Standard Residence";
+    const propertyLabel = isProvided ? "Provided" : (propertyLabels[activeRentKey] || "Standard Residence");
 
     const getF = (data: any, keys: string[]) => {
       const targetKeys = keys.map(k => k.toLowerCase().replace(/\s+/g, ''));
@@ -553,17 +562,19 @@ function DecoderContent() {
     };
 
     let baseRentUSD = 0;
-    if (overrideBedrooms === 0) {
+    if (isProvided) {
+      baseRentUSD = 0;
+    } else if (overrideBedrooms === 0) {
       const rent3brVal = safeParse(getF(activeCOL, ['rent3br']) || getF(activeCOL, ['rent2br']) || getF(activeCOL, ['rent1br']) || 0);
       baseRentUSD = rent3brVal / 3;
     } else {
       baseRentUSD = safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br']) || 0);
     }
 
-    const rentCost = housingStatus?.includes('provided') ? 0 : usdToLocal(baseRentUSD);
+    const rentCost = usdToLocal(baseRentUSD);
 
     let canDownsize = false;
-    if (!housingStatus?.includes('provided') && overrideBedrooms === null) {
+    if (!isProvided && overrideBedrooms === null) {
       if (activeRentKey === 'rent3br' || activeRentKey === 'rent2br') {
         canDownsize = true;
       }
@@ -583,7 +594,7 @@ function DecoderContent() {
       "Married (dual income)": "marriedDualIncome",
       "Family +1": "family1Child",
       "Family +2": "family2Children",
-      "Family +3": "family3PlusChildren"
+      "Family +3": "family3Children"
     };
     const transportKey = transportPKeyMap[settings.familyStatus] || "single";
 
@@ -603,7 +614,10 @@ function DecoderContent() {
     return {
       costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, transport: transportCost, social: socialCost, manual: manualCost },
       propertyLabel, canDownsize, standardRentKey,
-      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, housingStatus, currency, reliability: activeCOL?.dataReliabilityScore,
+      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, 
+      housingStatus: isProvided ? 'provided' : 'custom',
+      isHousingProvidedByDefault,
+      currency, reliability: activeCOL?.dataReliabilityScore,
       countryIntel, uplift13, uplift14
     };
   }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel]);
@@ -948,21 +962,15 @@ function DecoderContent() {
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
                               <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
-                              {analysis?.propertyLabel && (
-                                <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
-                                  {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
-                                </span>
-                              )}
                             </div>
 
-                            {analysis?.housingStatus !== 'provided' && (
-                              <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                                <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", overrideBedrooms === 0 ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
-                                <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
-                                <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
-                                <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
-                              </div>
-                            )}
+                            <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
+                              <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
+                              <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
+                              <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
+                              <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
+                              <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
+                            </div>
 
                             <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "italic")}>
                               {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
