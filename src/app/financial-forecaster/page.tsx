@@ -1209,16 +1209,19 @@ function DecoderContent() {
                             </button>
                           )}
 
-                          {(overrideBedrooms || uplift13 || uplift14) && (
+                          {(overrideBedrooms !== null || uplift13 || uplift14) && (
                             <button
                               onClick={() => {
                                 setOverrideBedrooms(null);
                                 setUplift13(false);
                                 setUplift14(false);
                               }}
-                              className="mt-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-white underline underline-offset-4"
+                              className="mt-3 flex items-center gap-2 px-3 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white rounded-sm hover:bg-slate-700 hover:border-slate-600 transition-all"
                             >
-                              Reset to Standard Baseline
+                              <RefreshCw className="size-3.5" />
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                Reset to Standard Baseline
+                              </span>
                             </button>
                           )}
                         </div>

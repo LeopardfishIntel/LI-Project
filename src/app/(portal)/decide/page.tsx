@@ -476,6 +476,9 @@ function DecideContent() {
                         <div>
                             <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-[#007FFF] uppercase tracking-[0.2em] hover:text-white transition-colors mb-1"><ArrowLeft className="size-3" /> Back</button>
                             <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-[#d95f02] italic uppercase leading-none">Compare & Decide</h1>
+                            <p className="mt-2 text-xs text-slate-400 font-medium max-w-xl">
+                                Currencies are standardised to allow international comparison. For Local currency analysis please see the <span className="cursor-pointer text-[#007FFF] hover:underline" onClick={() => router.push('/financial-forecaster')}>Evaluate a School</span> page.
+                            </p>
                         </div>
 
                         <div className="flex flex-col md:flex-row items-stretch gap-2 w-full md:w-auto">
