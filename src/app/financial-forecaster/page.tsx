@@ -310,7 +310,7 @@ function DecoderContent() {
   const [responsibilityAllowance, setResponsibilityAllowance] = useState("0");
   const [extraIncome, setExtraIncome] = useState("0");
   const [manualAdjustments, setManualAdjustments] = useState("0");
-  const [transportMode, setTransportMode] = useState<"P" | "C" | "T">("P");
+  const [transportMode, setTransportMode] = useState<"P" | "C">("P");
   const [benchmark, setBenchmark] = useState("GBP");
   const [overrideBedrooms, setOverrideBedrooms] = useState<number | null>(null);
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
@@ -585,7 +585,7 @@ function DecoderContent() {
     const connectivityCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1) + (getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount));
 
     // 🛰️ NESTED TRANSPORT PROTOCOL
-    const mapType = transportMode === "P" ? "publicTransport" : (transportMode === "C" ? "carPurchase" : "taxi");
+    const mapType = transportMode === "P" ? "publicTransport" : "carPurchase";
 
     // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const transportPKeyMap: Record<string, string> = {
@@ -1025,7 +1025,6 @@ function DecoderContent() {
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
                               <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Bus +</button>
                               <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Car Hire</button>
-                              <button onClick={() => setTransportMode("T")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "T" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Taxi</button>
                             </div>
                             <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                           </div>
