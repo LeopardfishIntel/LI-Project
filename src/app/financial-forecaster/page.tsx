@@ -538,7 +538,12 @@ function DecoderContent() {
     const activeRentKey = overrideBedrooms !== null ? `rent${overrideBedrooms}br` : standardRentKey;
 
     // 🏠 PROPERTY ADVICE LOGIC
-    const propertyLabels: Record<string, string> = { 'rent1br': "1-Bed Residence", 'rent2br': "2-Bed Residence", 'rent3br': "3-Bed Residence" };
+    const propertyLabels: Record<string, string> = { 
+      'rent0br': "Shared",
+      'rent1br': "1-Bed Residence", 
+      'rent2br': "2-Bed Residence", 
+      'rent3br': "3-Bed Residence" 
+    };
     const propertyLabel = propertyLabels[activeRentKey] || "Standard Residence";
 
     const getF = (data: any, keys: string[]) => {
@@ -547,7 +552,15 @@ function DecoderContent() {
       return foundKey ? data[foundKey] : null;
     };
 
-    const rentCost = housingStatus?.includes('provided') ? 0 : usdToLocal(safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br'])));
+    let baseRentUSD = 0;
+    if (overrideBedrooms === 0) {
+      const rent3brVal = safeParse(getF(activeCOL, ['rent3br']) || getF(activeCOL, ['rent2br']) || getF(activeCOL, ['rent1br']) || 0);
+      baseRentUSD = rent3brVal / 3;
+    } else {
+      baseRentUSD = safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br']) || 0);
+    }
+
+    const rentCost = housingStatus?.includes('provided') ? 0 : usdToLocal(baseRentUSD);
 
     let canDownsize = false;
     if (!housingStatus?.includes('provided') && overrideBedrooms === null) {
@@ -931,17 +944,31 @@ function DecoderContent() {
                     <div className="space-y-3">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <div className="flex items-center gap-2">
-                          <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
-                          {analysis?.propertyLabel && (
-                            <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
-                              {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
+                        <div className="flex flex-col gap-1.5 w-full">
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
+                              {analysis?.propertyLabel && (
+                                <span className="px-1.5 py-0.5 rounded-sm bg-white/5 border border-white/10 text-[8px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
+                                  {analysis.propertyLabel.replace(/ RESIDENCE/i, '')}
+                                </span>
+                              )}
+                            </div>
+
+                            {analysis?.housingStatus !== 'provided' && (
+                              <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
+                                <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", overrideBedrooms === 0 ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
+                                <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
+                                <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
+                                <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
+                              </div>
+                            )}
+
+                            <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "italic")}>
+                              {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
                             </span>
-                          )}
+                          </div>
                         </div>
-                        <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "italic")}>
-                          {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
-                        </span>
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
