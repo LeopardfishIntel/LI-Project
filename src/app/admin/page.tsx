@@ -795,8 +795,8 @@ export default function AdminCommandPage() {
                             )}
                         </div>
 
-                        {/* Top Queries Listings */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                        {/* Top Queries Listings - Row 1 */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {/* Top Schools */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
                                 <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Top 20 Schools</h3>
@@ -804,7 +804,7 @@ export default function AdminCommandPage() {
                                     {telemetry.topSchools?.length > 0 ? (
                                         telemetry.topSchools.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 truncate max-w-[100px]" title={item.name}>{i + 1}. {item.name}</span>
+                                                <span className="text-slate-300 truncate max-w-[130px]" title={item.name}>{i + 1}. {item.name}</span>
                                                 <div className="flex gap-2 text-[9px] font-black">
                                                     <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} views</span>
                                                     <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
@@ -824,7 +824,7 @@ export default function AdminCommandPage() {
                                     {telemetry.topCountries?.length > 0 ? (
                                         telemetry.topCountries.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 capitalize truncate max-w-[100px]">{i + 1}. {item.name}</span>
+                                                <span className="text-slate-300 capitalize truncate max-w-[130px]" title={item.name}>{i + 1}. {item.name}</span>
                                                 <div className="flex gap-2 text-[9px] font-black">
                                                     <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} searches</span>
                                                     <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
@@ -844,7 +844,7 @@ export default function AdminCommandPage() {
                                     {telemetry.topRegions?.length > 0 ? (
                                         telemetry.topRegions.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 capitalize truncate max-w-[100px]">{i + 1}. {item.name}</span>
+                                                <span className="text-slate-300 capitalize truncate max-w-[130px]" title={item.name}>{i + 1}. {item.name}</span>
                                                 <div className="flex gap-2 text-[9px] font-black">
                                                     <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} views</span>
                                                     <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
@@ -856,7 +856,10 @@ export default function AdminCommandPage() {
                                     )}
                                 </div>
                             </div>
+                        </div>
 
+                        {/* Top Queries Listings - Row 2 */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Accessing Countries */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
                                 <h3 className="text-xs font-black uppercase text-emerald-400 tracking-wider">Accessing Countries</h3>
@@ -864,7 +867,7 @@ export default function AdminCommandPage() {
                                     {telemetry.topClientCountries?.length > 0 ? (
                                         telemetry.topClientCountries.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 uppercase truncate max-w-[100px]">{item.name}</span>
+                                                <span className="text-slate-300 uppercase truncate max-w-[150px]">{item.name}</span>
                                                 <div className="flex gap-2 text-[9px] font-black">
                                                     <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} visits</span>
                                                     <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
@@ -884,7 +887,7 @@ export default function AdminCommandPage() {
                                     {telemetry.checklistFriction?.length > 0 ? (
                                         telemetry.checklistFriction.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 truncate max-w-[120px]" title={item.item}>{item.item}</span>
+                                                <span className="text-slate-300 truncate max-w-[180px]" title={item.item}>{item.item}</span>
                                                 <span className="text-[#d95f02] font-black">{item.count} checked</span>
                                             </div>
                                         ))
