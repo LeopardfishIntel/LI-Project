@@ -645,7 +645,7 @@ function DecoderContent() {
         deployment_profile: settings.familyStatus,
         dial_modified: 'net_salary',
         previous_value: 0,
-        new_value: Number(settings.netSalary) || 0,
+        new_value: Math.round((Number(settings.netSalary) || 0) / (currentRates[currency] || 1.0)),
         resulting_surplus_percentage: analysis?.rateOfSaving || 0,
         resulting_status: resultingStatus,
         isAuthenticated: !!user,
@@ -655,7 +655,7 @@ function DecoderContent() {
     }, 1500); // 1.5s debounce
 
     return () => clearTimeout(timer);
-  }, [settings.netSalary, activeSchool, mounted, user, analysis?.rateOfSaving, settings.familyStatus]);
+  }, [settings.netSalary, activeSchool, mounted, user, analysis?.rateOfSaving, settings.familyStatus, currency, currentRates]);
 
   useEffect(() => {
     if (!mounted || !activeSchool || !settings.partnerSalary || settings.partnerSalary === "0") return;
