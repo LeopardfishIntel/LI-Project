@@ -9,6 +9,7 @@ import {
   DatabaseBatch
 } from '@/firebase/admin';
 import { invalidateDecideCache } from '@/lib/decide-cache';
+import { canonicalCountry } from '@/lib/calculations';
 
 // 🏷️ Explicit Interfaces for Admin Intelligence
 export type BulkEnrichState = {
@@ -165,19 +166,65 @@ export async function getTelemetryData() {
     let emailCopiesCount = 0;
     let uninsuredWarningsCount = 0;
 
-    const schoolCounts: Record<string, number> = {};
-    const countryCounts: Record<string, number> = {};
+    const schoolStats: Record<string, { raw: number; visitors: Set<string> }> = {};
+    const countryStats: Record<string, { raw: number; visitors: Set<string> }> = {};
+    const clientCountryStats: Record<string, { raw: number; visitors: Set<string> }> = {};
+    const regionStats: Record<string, { raw: number; visitors: Set<string> }> = {};
     const redFlagCounts: Record<string, number> = {};
-    const clientCountryCounts: Record<string, number> = {};
 
     let authVisits = 0;
     let guestVisits = 0;
 
     const dailyVisits: Record<string, number> = {};
 
+    // 👥 Unique Visitor Analysis & Grouping Engine (Pre-mapped)
+    const sessionToVisitor: Record<string, string> = {};
+    events.forEach((evt: any) => {
+      const visitorId = evt.visitor_id || evt.metadata?.visitor_id;
+      const sessionId = evt.session_id;
+      if (visitorId && sessionId) {
+        sessionToVisitor[sessionId] = visitorId;
+      }
+    });
+
+    // Map country names to regions from costOfLiving docs
+    const countryToRegionMap: Record<string, string> = {};
+    if (colDocs) {
+      colDocs.forEach((doc: any) => {
+        const data = doc.data();
+        if (data.country) {
+          const cName = data.country.toLowerCase().trim();
+          if (data.region) {
+            countryToRegionMap[cName] = data.region.trim();
+          }
+        }
+      });
+    }
+
+    // Map school names to countries & regions
+    const schoolToCountryAndRegion: Record<string, { country: string; region: string }> = {};
+    if (schoolsDocs) {
+      schoolsDocs.forEach((doc: any) => {
+        const data = doc.data();
+        const sName = (data.schoolname || data.name || '').toLowerCase().trim();
+        const sCountry = (data.country || '').trim();
+        const sRegion = countryToRegionMap[sCountry.toLowerCase().trim()] || '';
+        if (sName) {
+          schoolToCountryAndRegion[sName] = { country: sCountry, region: sRegion };
+        }
+      });
+    }
+
     events.forEach((evt) => {
       const timestamp = evt.timestamp;
       const meta = evt.metadata || {};
+      const sessionId = evt.session_id || 'unknown';
+      const visitorId = 
+        evt.visitor_id || 
+        evt.metadata?.visitor_id || 
+        sessionToVisitor[sessionId] || 
+        sessionId || 
+        'unknown';
 
       // Daily Visits Trend
       if (timestamp) {
@@ -196,7 +243,15 @@ export async function getTelemetryData() {
 
       // Count client country access
       const clientCountry = evt.client_country || 'unknown';
-      clientCountryCounts[clientCountry] = (clientCountryCounts[clientCountry] || 0) + 1;
+      if (clientCountry !== 'unknown') {
+        if (!clientCountryStats[clientCountry]) {
+          clientCountryStats[clientCountry] = { raw: 0, visitors: new Set() };
+        }
+        clientCountryStats[clientCountry].raw++;
+        if (visitorId !== 'unknown') {
+          clientCountryStats[clientCountry].visitors.add(visitorId);
+        }
+      }
 
       if (evt.event_name === 'simulator_dial_adjusted') {
         if (meta.dial_modified === 'net_salary' && typeof meta.new_value === 'number') {
@@ -238,12 +293,99 @@ export async function getTelemetryData() {
 
       if (evt.event_name === 'school_profile_viewed') {
         const school = meta.school_name || 'unknown';
-        schoolCounts[school] = (schoolCounts[school] || 0) + 1;
+        if (school !== 'unknown') {
+          if (!schoolStats[school]) {
+            schoolStats[school] = { raw: 0, visitors: new Set() };
+          }
+          schoolStats[school].raw++;
+          if (visitorId !== 'unknown') {
+            schoolStats[school].visitors.add(visitorId);
+          }
+
+          // Attribute country and region
+          const mapping = schoolToCountryAndRegion[school.toLowerCase().trim()];
+          if (mapping) {
+            const { country, region } = mapping;
+            if (country) {
+              const cKey = country;
+              if (!countryStats[cKey]) {
+                countryStats[cKey] = { raw: 0, visitors: new Set() };
+              }
+              countryStats[cKey].raw++;
+              if (visitorId !== 'unknown') {
+                countryStats[cKey].visitors.add(visitorId);
+              }
+            }
+            if (region) {
+              const rKey = region;
+              if (!regionStats[rKey]) {
+                regionStats[rKey] = { raw: 0, visitors: new Set() };
+              }
+              regionStats[rKey].raw++;
+              if (visitorId !== 'unknown') {
+                regionStats[rKey].visitors.add(visitorId);
+              }
+            }
+          }
+        }
       }
 
       if (evt.event_name === 'country_query_executed') {
         const country = meta.country_name || 'unknown';
-        countryCounts[country] = (countryCounts[country] || 0) + 1;
+        if (country !== 'unknown') {
+          const cKey = country;
+          if (!countryStats[cKey]) {
+            countryStats[cKey] = { raw: 0, visitors: new Set() };
+          }
+          countryStats[cKey].raw++;
+          if (visitorId !== 'unknown') {
+            countryStats[cKey].visitors.add(visitorId);
+          }
+
+          const region = countryToRegionMap[country.toLowerCase().trim()];
+          if (region) {
+            if (!regionStats[region]) {
+              regionStats[region] = { raw: 0, visitors: new Set() };
+            }
+            regionStats[region].raw++;
+            if (visitorId !== 'unknown') {
+              regionStats[region].visitors.add(visitorId);
+            }
+          }
+        }
+      }
+
+      if (evt.event_name === 'page_view') {
+        const path = meta.path || '';
+        if (path.startsWith('/discover/') && !path.startsWith('/discover/matrix')) {
+          const slug = path.split('/discover/')[1]?.split('?')[0];
+          if (slug) {
+            const cleanSlug = slug.replace(/-/g, ' ');
+            const matchedCOL = colDocs?.find((d: any) => canonicalCountry(d.data().country) === canonicalCountry(cleanSlug));
+            const countryName = matchedCOL ? matchedCOL.data().country : cleanSlug;
+            if (countryName) {
+              const countryKey = countryName;
+              if (!countryStats[countryKey]) {
+                countryStats[countryKey] = { raw: 0, visitors: new Set() };
+              }
+              countryStats[countryKey].raw++;
+              if (visitorId !== 'unknown') {
+                countryStats[countryKey].visitors.add(visitorId);
+              }
+
+              const region = countryToRegionMap[countryKey.toLowerCase().trim()];
+              if (region) {
+                if (!regionStats[region]) {
+                  regionStats[region] = { raw: 0, visitors: new Set() };
+                }
+                regionStats[region].raw++;
+                if (visitorId !== 'unknown') {
+                  regionStats[region].visitors.add(visitorId);
+                }
+              }
+            }
+          }
+        }
       }
 
       if (evt.event_name === 'contract_red_flag_hovered') {
@@ -253,16 +395,6 @@ export async function getTelemetryData() {
     });
 
     avgNetSalary = netSalaryCount > 0 ? Math.round(netSalarySum / netSalaryCount) : 0;
-
-    // 👥 Unique Visitor Analysis & Grouping Engine
-    const sessionToVisitor: Record<string, string> = {};
-    events.forEach((evt: any) => {
-      const visitorId = evt.visitor_id || evt.metadata?.visitor_id;
-      const sessionId = evt.session_id;
-      if (visitorId && sessionId) {
-        sessionToVisitor[sessionId] = visitorId;
-      }
-    });
 
     const visitorSessions: Record<string, Set<string>> = {};
     const visitorPageViews: Record<string, number> = {};
@@ -348,10 +480,6 @@ export async function getTelemetryData() {
       checklistFriction: Object.entries(checklistCounts).map(([item, count]) => ({ item, count })).sort((a,b) => b.count - a.count),
       emailCopies: emailCopiesCount,
       uninsuredWarnings: uninsuredWarningsCount,
-      topSchools: Object.entries(schoolCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
-      topCountries: Object.entries(countryCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
-      topClientCountries: Object.entries(clientCountryCounts).map(([name, count]) => ({ name: name.toUpperCase(), count })).sort((a,b) => b.count - a.count).slice(0, 5),
-      redFlagHovers: Object.entries(redFlagCounts).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 5),
       userTypeBreakdown: {
         authenticated: authVisits,
         guest: guestVisits
@@ -359,7 +487,101 @@ export async function getTelemetryData() {
       visitsTrend
     };
 
-    return { success: true, data };
+    const mapStatsList = (statsRecord: Record<string, { raw: number; visitors: Set<string> }>) => {
+      return Object.entries(statsRecord)
+        .map(([name, val]) => ({
+          name,
+          raw: val.raw,
+          unique: val.visitors.size
+        }))
+        .sort((a, b) => b.raw - a.raw);
+    };
+
+    const topSchools = mapStatsList(schoolStats).slice(0, 20);
+    const topCountries = mapStatsList(countryStats).slice(0, 20);
+    const topRegions = mapStatsList(regionStats).slice(0, 20);
+    const topClientCountries = Object.entries(clientCountryStats)
+      .map(([name, val]) => ({
+        name: name.toUpperCase(),
+        raw: val.raw,
+        unique: val.visitors.size
+      }))
+      .sort((a, b) => b.raw - a.raw)
+      .slice(0, 20);
+
+    const redFlagHovers = Object.entries(redFlagCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 20);
+
+    // Ensure all schools in database are included in full list
+    const allSchoolsMap: Record<string, { name: string; raw: number; unique: number }> = {};
+    if (schoolsDocs) {
+      schoolsDocs.forEach((doc: any) => {
+        const sName = doc.data().schoolname || doc.data().name || 'Unknown';
+        allSchoolsMap[sName.toLowerCase().trim()] = { name: sName, raw: 0, unique: 0 };
+      });
+    }
+    Object.entries(schoolStats).forEach(([name, val]) => {
+      allSchoolsMap[name.toLowerCase().trim()] = {
+        name,
+        raw: val.raw,
+        unique: val.visitors.size
+      };
+    });
+    const allSchools = Object.values(allSchoolsMap).sort((a, b) => b.raw - a.raw);
+
+    // Ensure all countries in database are included
+    const allCountriesMap: Record<string, { name: string; raw: number; unique: number }> = {};
+    if (colDocs) {
+      colDocs.forEach((doc: any) => {
+        const cName = doc.data().country;
+        if (cName) {
+          allCountriesMap[cName.toLowerCase().trim()] = { name: cName, raw: 0, unique: 0 };
+        }
+      });
+    }
+    Object.entries(countryStats).forEach(([name, val]) => {
+      allCountriesMap[name.toLowerCase().trim()] = {
+        name,
+        raw: val.raw,
+        unique: val.visitors.size
+      };
+    });
+    const allCountries = Object.values(allCountriesMap).sort((a, b) => b.raw - a.raw);
+
+    // Ensure all regions are included
+    const allRegionsMap: Record<string, { name: string; raw: number; unique: number }> = {};
+    if (colDocs) {
+      colDocs.forEach((doc: any) => {
+        const rName = doc.data().region;
+        if (rName) {
+          allRegionsMap[rName.toLowerCase().trim()] = { name: rName, raw: 0, unique: 0 };
+        }
+      });
+    }
+    Object.entries(regionStats).forEach(([name, val]) => {
+      allRegionsMap[name.toLowerCase().trim()] = {
+        name,
+        raw: val.raw,
+        unique: val.visitors.size
+      };
+    });
+    const allRegions = Object.values(allRegionsMap).sort((a, b) => b.raw - a.raw);
+
+    const finalData = {
+      ...data,
+      topSchools,
+      topCountries,
+      topRegions,
+      topClientCountries,
+      redFlagHovers,
+      allSchools,
+      allCountries,
+      allRegions
+    };
+
+    return { success: true, data: finalData };
   } catch (e: any) {
     console.error("Telemetry uplink failed:", e.message || e);
     return { success: false, data: null };

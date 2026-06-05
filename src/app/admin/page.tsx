@@ -72,6 +72,8 @@ export default function AdminCommandPage() {
 
   const [telemetry, setTelemetry] = useState<any>(null);
   const [loadingTelemetry, setLoadingTelemetry] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFilter, setSearchFilter] = useState<'All' | 'Schools' | 'Countries' | 'Regions'>('All');
 
   // Matrix AI State
   const [matrixCountryId, setMatrixCountryId] = useState('');
@@ -701,17 +703,112 @@ export default function AdminCommandPage() {
                             </div>
                         </div>
 
-                        {/* Top Queries and Checklist friction */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {/* Telemetry Query System */}
+                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div className="space-y-1">
+                                    <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Telemetry Query System</h3>
+                                    <p className="text-[10px] text-slate-400">Search raw views and unique visitors for any school, country, or region.</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    {(['All', 'Schools', 'Countries', 'Regions'] as const).map((type) => (
+                                        <button
+                                            key={type}
+                                            onClick={() => setSearchFilter(type)}
+                                            className={cn(
+                                                "px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all rounded-sm border",
+                                                searchFilter === type
+                                                    ? "bg-[#d95f02] border-[#d95f02] text-white"
+                                                    : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                                            )}
+                                        >
+                                            {type}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Type school, country or region name..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full bg-black/40 border border-white/10 h-10 px-4 rounded-sm text-sm font-bold text-white placeholder-slate-500 focus:outline-none focus:border-[#d95f02]/60"
+                                />
+                                {searchQuery && (
+                                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-3 text-[10px] font-black uppercase text-slate-500 hover:text-white">
+                                        Clear
+                                    </button>
+                                )}
+                            </div>
+
+                            {searchQuery.trim().length > 0 && (
+                                <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar space-y-2 pt-2 border-t border-white/5">
+                                    {(() => {
+                                        const queryLower = searchQuery.toLowerCase().trim();
+                                        const matches: any[] = [];
+                                        
+                                        if (searchFilter === 'All' || searchFilter === 'Schools') {
+                                            telemetry.allSchools?.forEach((s: any) => {
+                                                if (s.name.toLowerCase().includes(queryLower)) {
+                                                    matches.push({ ...s, type: 'School', color: 'text-[#d95f02]' });
+                                                }
+                                            });
+                                        }
+                                        if (searchFilter === 'All' || searchFilter === 'Countries') {
+                                            telemetry.allCountries?.forEach((c: any) => {
+                                                if (c.name.toLowerCase().includes(queryLower)) {
+                                                    matches.push({ ...c, type: 'Country', color: 'text-sky-400' });
+                                                }
+                                            });
+                                        }
+                                        if (searchFilter === 'All' || searchFilter === 'Regions') {
+                                            telemetry.allRegions?.forEach((r: any) => {
+                                                if (r.name.toLowerCase().includes(queryLower)) {
+                                                    matches.push({ ...r, type: 'Region', color: 'text-purple-400' });
+                                                }
+                                            });
+                                        }
+
+                                        matches.sort((a, b) => b.raw - a.raw);
+
+                                        if (matches.length === 0) {
+                                            return <p className="text-[10px] text-slate-500 italic">No matches found for "{searchQuery}".</p>;
+                                        }
+
+                                        return matches.map((match: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={cn("text-[8px] uppercase px-1.5 py-0.5 bg-white/5 rounded-sm", match.color)}>
+                                                        {match.type}
+                                                    </span>
+                                                    <span className="text-slate-200 capitalize">{match.name}</span>
+                                                </div>
+                                                <div className="flex gap-4 text-[10px] font-black">
+                                                    <span className="text-white"><span className="text-slate-500 not-italic">Raw:</span> {match.raw}</span>
+                                                    <span className="text-emerald-400"><span className="text-slate-500 not-italic">Unique:</span> {match.unique}</span>
+                                                </div>
+                                            </div>
+                                        ));
+                                    })()}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Top Queries Listings */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                             {/* Top Schools */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
-                                <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Top Schools Queried</h3>
-                                <div className="space-y-3">
+                                <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider">Top 20 Schools</h3>
+                                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                     {telemetry.topSchools?.length > 0 ? (
                                         telemetry.topSchools.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 truncate max-w-[150px]">{item.name}</span>
-                                                <span className="text-white bg-white/5 px-2 py-0.5 rounded-sm">{item.count} views</span>
+                                                <span className="text-slate-300 truncate max-w-[100px]" title={item.name}>{i + 1}. {item.name}</span>
+                                                <div className="flex gap-2 text-[9px] font-black">
+                                                    <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} views</span>
+                                                    <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
@@ -722,13 +819,16 @@ export default function AdminCommandPage() {
 
                             {/* Top Countries */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
-                                <h3 className="text-xs font-black uppercase text-sky-400 tracking-wider">Top Countries Searched</h3>
-                                <div className="space-y-3">
+                                <h3 className="text-xs font-black uppercase text-sky-400 tracking-wider">Top 20 Countries</h3>
+                                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                     {telemetry.topCountries?.length > 0 ? (
                                         telemetry.topCountries.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 capitalize">{item.name}</span>
-                                                <span className="text-white bg-white/5 px-2 py-0.5 rounded-sm">{item.count} queries</span>
+                                                <span className="text-slate-300 capitalize truncate max-w-[100px]">{i + 1}. {item.name}</span>
+                                                <div className="flex gap-2 text-[9px] font-black">
+                                                    <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} searches</span>
+                                                    <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
@@ -737,15 +837,38 @@ export default function AdminCommandPage() {
                                 </div>
                             </div>
 
+                            {/* Top Regions */}
+                            <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
+                                <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">Top 20 Regions</h3>
+                                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {telemetry.topRegions?.length > 0 ? (
+                                        telemetry.topRegions.map((item: any, i: number) => (
+                                            <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
+                                                <span className="text-slate-300 capitalize truncate max-w-[100px]">{i + 1}. {item.name}</span>
+                                                <div className="flex gap-2 text-[9px] font-black">
+                                                    <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} views</span>
+                                                    <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-[10px] text-slate-500 italic">No region views recorded.</p>
+                                    )}
+                                </div>
+                            </div>
+
                             {/* Accessing Countries */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
                                 <h3 className="text-xs font-black uppercase text-emerald-400 tracking-wider">Accessing Countries</h3>
-                                <div className="space-y-3">
+                                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                     {telemetry.topClientCountries?.length > 0 ? (
                                         telemetry.topClientCountries.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 uppercase">{item.name}</span>
-                                                <span className="text-white bg-white/5 px-2 py-0.5 rounded-sm">{item.count} visits</span>
+                                                <span className="text-slate-300 uppercase truncate max-w-[100px]">{item.name}</span>
+                                                <div className="flex gap-2 text-[9px] font-black">
+                                                    <span className="text-white bg-white/5 px-1.5 py-0.5 rounded-sm">{item.raw} visits</span>
+                                                    <span className="text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-1.5 py-0.5 rounded-sm">{item.unique} u</span>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
@@ -756,12 +879,12 @@ export default function AdminCommandPage() {
 
                             {/* Checklist Friction */}
                             <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-4">
-                                <h3 className="text-xs font-black uppercase text-purple-400 tracking-wider">Checklist Friction Points</h3>
-                                <div className="space-y-3">
+                                <h3 className="text-xs font-black uppercase text-pink-400 tracking-wider">Checklist Friction</h3>
+                                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                     {telemetry.checklistFriction?.length > 0 ? (
                                         telemetry.checklistFriction.map((item: any, i: number) => (
                                             <div key={i} className="flex justify-between items-center text-[11px] font-bold border-b border-white/5 pb-2">
-                                                <span className="text-slate-300 truncate max-w-[150px]">{item.item}</span>
+                                                <span className="text-slate-300 truncate max-w-[120px]" title={item.item}>{item.item}</span>
                                                 <span className="text-[#d95f02] font-black">{item.count} checked</span>
                                             </div>
                                         ))
