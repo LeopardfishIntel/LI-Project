@@ -120,7 +120,7 @@ const generateDetailedConclusion = (ranked: any[]) => {
 };
 
 import { generateDecideBriefing } from '@/ai/flows/decide-briefing-flow';
-import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { logTelemetryEvent } from '@/lib/telemetry';
 
 function DecideContent() {
     const router = useRouter();
@@ -128,7 +128,7 @@ function DecideContent() {
     const searchParams = useSearchParams();
 
     // 🎯 TACTICAL IDENTITY GRAB
-    const { customId, isAdmin } = useUser();
+    const { user, customId, isAdmin } = useUser();
 
     const [mounted, setMounted] = useState(false);
 
@@ -343,9 +343,10 @@ function DecideContent() {
             setIsUnlocked(true);
 
             // 🛰️ ANALYTICS UPLINK: Increment comparison counter via Server Action
-            logTelemetryEventAction('comparison_made', {
+            logTelemetryEvent('comparison_made', {
                 benchmarkCurrency: benchmark,
-                familyStatus
+                familyStatus,
+                user_email: user?.email
             });
         } catch (e) {
             console.error("AI Briefing failed:", e);

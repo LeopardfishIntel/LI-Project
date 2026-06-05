@@ -2,16 +2,18 @@
 
 import { useEffect } from 'react';
 import { useAuth } from '@/firebase';
-import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { logTelemetryEvent } from '@/lib/telemetry';
 
 /**
  * @fileOverview A stealth analytics tracker that increments global visit metrics.
  * Runs on every page open to provide real-time field engagement data.
  */
 export function AnalyticsTracker() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
+    if (loading) return;
+
     const path = typeof window !== 'undefined' ? window.location.pathname : '';
     if (path.startsWith('/admin')) {
       return;
@@ -33,13 +35,14 @@ export function AnalyticsTracker() {
     }
 
     // 🛰️ Log page view to telemetry collection (server handles atomic metrics increment)
-    logTelemetryEventAction('page_view', {
+    logTelemetryEvent('page_view', {
       path,
       isAuthenticated: !!user,
       user_type: user ? 'authenticated' : 'guest',
-      visitor_id: visitorId
+      visitor_id: visitorId,
+      user_email: user?.email
     });
-  }, [user]);
+  }, [user, loading]);
 
   return null;
 }

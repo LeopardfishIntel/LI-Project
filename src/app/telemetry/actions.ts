@@ -92,6 +92,12 @@ export async function logTelemetryEventAction(eventName: string, metadata: any, 
       return { success: true };
     }
 
+    const userEmail = metadata?.user_email || metadata?.email || '';
+    if (userEmail === 'fred@leopardfish.intel' || metadata?.visitor_id === 'FLI007' || metadata?.userId === 'FLI007') {
+      // Exclude Fred FLI007's telemetry events
+      return { success: true };
+    }
+
     // 🛰️ DIAGNOSTIC: Log headers to see what geolocation info is passed
     try {
       const allHeaders: Record<string, string> = {};

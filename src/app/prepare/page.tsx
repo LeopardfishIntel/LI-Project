@@ -18,7 +18,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileByLabel } from '@/lib/calculations';
-import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { logTelemetryEvent } from '@/lib/telemetry';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
@@ -151,32 +151,35 @@ export default function PreparePage() {
   const toggleChecklistItem = (itemId: string, label: string) => {
     const isCheckedNow = !checkedItems[itemId];
     setCheckedItems(prev => ({ ...prev, [itemId]: isCheckedNow }));
-    logTelemetryEventAction('checklist_toggled', {
+    logTelemetryEvent('checklist_toggled', {
       checklist_item: label,
       checked: isCheckedNow,
       isAuthenticated: !!user,
-      user_type: user ? 'authenticated' : 'guest'
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
     });
   };
 
   const handleCountryChange = (val: string) => {
     setSelectedCountry(val);
     setSelectedSchoolId(null);
-    logTelemetryEventAction('country_query_executed', {
+    logTelemetryEvent('country_query_executed', {
       country_name: val,
       isAuthenticated: !!user,
-      user_type: user ? 'authenticated' : 'guest'
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
     });
   };
 
   const handleSchoolChange = (val: string) => {
     setSelectedSchoolId(val);
     const schoolName = schools?.find(s => s.id === val)?.schoolname || 'unknown';
-    logTelemetryEventAction('school_profile_viewed', {
+    logTelemetryEvent('school_profile_viewed', {
       school_name: schoolName,
       country_name: selectedCountry,
       isAuthenticated: !!user,
-      user_type: user ? 'authenticated' : 'guest'
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
     });
   };
 
@@ -2170,10 +2173,11 @@ export default function PreparePage() {
             const nextState = !step3eOpen;
             setStep3eOpen(nextState);
             if (nextState) {
-              logTelemetryEventAction('uninsured_warning_viewed', {
+              logTelemetryEvent('uninsured_warning_viewed', {
                 target_country: selectedCountry || 'unknown',
                 isAuthenticated: !!user,
-                user_type: user ? 'authenticated' : 'guest'
+                user_type: user ? 'authenticated' : 'guest',
+                user_email: user?.email
               });
             }
           }}
@@ -2319,19 +2323,21 @@ export default function PreparePage() {
                   setIsConfirmModalOpen(false);
                   downloadBriefingPdf();
                   const targetSchoolName = schools?.find(s => s.id === selectedSchoolId)?.schoolname || 'unknown';
-                  logTelemetryEventAction('briefing_generated', {
+                  logTelemetryEvent('briefing_generated', {
                     target_country: selectedCountry || 'unknown',
                     target_school: targetSchoolName,
                     deployment_profile: calcStatus,
                     isAuthenticated: !!user,
-                    user_type: user ? 'authenticated' : 'guest'
+                    user_type: user ? 'authenticated' : 'guest',
+                    user_email: user?.email
                   });
-                  logTelemetryEventAction('email_template_copied', {
+                  logTelemetryEvent('email_template_copied', {
                     target_country: selectedCountry || 'unknown',
                     target_school: targetSchoolName,
                     deployment_profile: calcStatus,
                     isAuthenticated: !!user,
-                    user_type: user ? 'authenticated' : 'guest'
+                    user_type: user ? 'authenticated' : 'guest',
+                    user_email: user?.email
                   });
                 }}
                 className="w-2/3 bg-[#d95f02] hover:bg-[#d95f02]/90 text-white font-black text-xs uppercase italic rounded-none h-11"

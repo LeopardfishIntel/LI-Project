@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { useDoc, useFirestore, useMemoFirebase, db } from '@/firebase';
+import { useDoc, useFirestore, useMemoFirebase, db, useAuth } from '@/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import type { School, LocationCostOfLiving } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,7 +34,7 @@ import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
 import { calculateSurplus, RATES } from '@/lib/calculations';
-import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { logTelemetryEvent } from '@/lib/telemetry';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -133,6 +133,7 @@ function BriefingConsoleLoader() {
 
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
+  const { user } = useAuth();
 
   // FIXED: Standardize hook usage for Isomorphic Bridge
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
@@ -228,11 +229,12 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   React.useEffect(() => {
     if (school && !hasLoggedViewRef.current) {
       hasLoggedViewRef.current = true;
-      logTelemetryEventAction('school_profile_viewed', {
-        school_name: school.schoolname || school.name
+      logTelemetryEvent('school_profile_viewed', {
+        school_name: school.schoolname || school.name,
+        user_email: user?.email
       });
     }
-  }, [school]);
+  }, [school, user]);
 
   // 🛰️ TACTICAL DATA NORMALIZATION
   const locationId = school?.locationId || ((school?.city && school?.country) ? `${school.city.toLowerCase().trim().replace(/\s+/g, '-')}-${school.country.toLowerCase().trim().replace(/\s+/g, '-')}` : null);
@@ -315,8 +317,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
             console.log(`[INTEL BANK] Cache hit for currency ${activeCurrencyCode} and profile ${selectedFamilyStatus} is fresh (${cacheAgeDays.toFixed(1)} days old). Serving immediately.`);
             
             // 🛰️ Telemetry: Log evaluation event once on fresh cache hit
-            logTelemetryEventAction('briefing_generated', {
-              school_name: school.schoolname || school.name
+            logTelemetryEvent('briefing_generated', {
+              school_name: school.schoolname || school.name,
+              user_email: user?.email
             });
             return;
           }
@@ -413,8 +416,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           setBriefing(briefingPayload);
 
           // 🛰️ Telemetry: Log evaluation event once on fresh AI generation
-          logTelemetryEventAction('briefing_generated', {
-            school_name: school.schoolname || school.name
+          logTelemetryEvent('briefing_generated', {
+            school_name: school.schoolname || school.name,
+            user_email: user?.email
           });
 
           // 🏦 Bank in Firestore (Only if it's NOT a fallback template)

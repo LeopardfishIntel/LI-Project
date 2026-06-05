@@ -9,7 +9,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
-import { logTelemetryEventAction } from '@/app/telemetry/actions';
+import { logTelemetryEvent } from '@/lib/telemetry';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -639,7 +639,7 @@ function DecoderContent() {
         ? 'Limited Potential'
         : 'Thriving';
 
-      logTelemetryEventAction('simulator_dial_adjusted', {
+      logTelemetryEvent('simulator_dial_adjusted', {
         target_country: activeSchool.country || 'unknown',
         target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
         deployment_profile: settings.familyStatus,
@@ -649,7 +649,8 @@ function DecoderContent() {
         resulting_surplus_percentage: analysis?.rateOfSaving || 0,
         resulting_status: resultingStatus,
         isAuthenticated: !!user,
-        user_type: user ? 'authenticated' : 'guest'
+        user_type: user ? 'authenticated' : 'guest',
+        user_email: user?.email
       });
     }, 1500); // 1.5s debounce
 
@@ -666,7 +667,7 @@ function DecoderContent() {
         ? 'Limited Potential'
         : 'Thriving';
 
-      logTelemetryEventAction('simulator_dial_adjusted', {
+      logTelemetryEvent('simulator_dial_adjusted', {
         target_country: activeSchool.country || 'unknown',
         target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
         deployment_profile: settings.familyStatus,
@@ -676,7 +677,8 @@ function DecoderContent() {
         resulting_surplus_percentage: analysis?.rateOfSaving || 0,
         resulting_status: resultingStatus,
         isAuthenticated: !!user,
-        user_type: user ? 'authenticated' : 'guest'
+        user_type: user ? 'authenticated' : 'guest',
+        user_email: user?.email
       });
     }, 1500); // 1.5s debounce
 
@@ -692,7 +694,7 @@ function DecoderContent() {
       ? 'Limited Potential'
       : 'Thriving';
 
-    logTelemetryEventAction('simulator_dial_adjusted', {
+    logTelemetryEvent('simulator_dial_adjusted', {
       target_country: activeSchool.country || 'unknown',
       target_school: activeSchool.schoolname || activeSchool.name || 'unknown',
       deployment_profile: settings.familyStatus,
@@ -702,7 +704,8 @@ function DecoderContent() {
       resulting_surplus_percentage: analysis?.rateOfSaving || 0,
       resulting_status: resultingStatus,
       isAuthenticated: !!user,
-      user_type: user ? 'authenticated' : 'guest'
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
     });
   }, [overrideBedrooms, activeSchool, mounted, user, settings.familyStatus, analysis?.rateOfSaving, analysis?.standardRentKey]);
 
@@ -710,11 +713,12 @@ function DecoderContent() {
   useEffect(() => {
     if (!mounted || !activeSchool) return;
 
-    logTelemetryEventAction('school_profile_viewed', {
+    logTelemetryEvent('school_profile_viewed', {
       school_name: activeSchool.schoolname || activeSchool.name || 'unknown',
       country_name: activeSchool.country || 'unknown',
       isAuthenticated: !!user,
-      user_type: user ? 'authenticated' : 'guest'
+      user_type: user ? 'authenticated' : 'guest',
+      user_email: user?.email
     });
   }, [activeSchool?.id, mounted, user, activeSchool?.schoolname, activeSchool?.name, activeSchool?.country]);
 
