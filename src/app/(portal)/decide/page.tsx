@@ -787,19 +787,19 @@ function DecideContent() {
                                                 case 1:
                                                     return (
                                                         <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: Tier 1 Exchange Volatility: Projections utilise spot conversion rates against GBP. Savings are subject to standard, free-floating market currency fluctuations.
+                                                            Note: Free-floating currency. These estimates use live conversion rates. Your actual savings will shift slightly up or down with standard exchange rate changes.
                                                         </p>
                                                     );
                                                 case 2:
                                                     return (
                                                         <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: Tier 2 Peg Volatility: Pegged to USD. Savings are exposed to US Dollar trends rather than local market forces. A stronger GBP will contract this total.
+                                                            Note: Pegged to the US Dollar. Because this currency is locked to the USD, your savings will follow US exchange rate trends. If the Pound gets stronger, your converted savings total will shrink.
                                                         </p>
                                                     );
                                                 case 3:
                                                     return (
                                                         <p className="text-[11px] text-rose-400/90 font-semibold leading-relaxed mt-1">
-                                                            Note: Tier 3 Macro Risk: High-exposure currency. These metrics require a hard-currency clause (USD/EUR). Base local contracts face extreme purchasing power decay.
+                                                            Note: Highly volatile currency. Local currency contracts here are risky due to high inflation. To protect your savings, you should request a contract pegged to a stable currency like USD or EUR.
                                                         </p>
                                                     );
                                                 default:
