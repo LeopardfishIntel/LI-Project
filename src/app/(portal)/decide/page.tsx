@@ -791,19 +791,19 @@ function DecideContent() {
                                                 case 1:
                                                     return (
                                                         <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: Free-floating currency. These estimates use live conversion rates. Your actual savings will shift slightly up or down with standard exchange rate changes.
+                                                            Note: {data.currency} is a free-floating currency. These estimates use live conversion rates. Your actual savings will shift slightly up or down with standard exchange rate changes.
                                                         </p>
                                                     );
                                                 case 2:
                                                     return (
                                                         <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: Pegged to the US Dollar. Because this currency is locked to the USD, your savings will follow US exchange rate trends. If the Pound gets stronger, your converted savings total will shrink.
+                                                            Note: {data.currency} is pegged to the US Dollar. Because this currency is locked to the USD, your savings will follow US exchange rate trends. If the Pound gets stronger, your converted savings total will shrink.
                                                         </p>
                                                     );
                                                 case 3:
                                                     return (
                                                         <p className="text-[11px] text-rose-400/90 font-semibold leading-relaxed mt-1">
-                                                            Note: Highly volatile currency. Local currency contracts here are risky due to high inflation. To protect your savings, you should request a contract pegged to a stable currency like USD or EUR.
+                                                            Note: {data.currency} is a highly volatile currency. Local currency contracts here are risky due to high inflation. To protect your savings, you should request a contract pegged to a stable currency like USD or EUR.
                                                         </p>
                                                     );
                                                 default:
