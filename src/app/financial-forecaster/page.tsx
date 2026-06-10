@@ -316,6 +316,7 @@ function DecoderContent() {
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
+  const [lifestyleMode, setLifestyleMode] = useState<"Budget" | "Balanced" | "Luxury">("Balanced");
   
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
@@ -464,11 +465,29 @@ function DecoderContent() {
 
   const tIntel = useMemo(() => {
     if (!activeSchool || !transportIntel) return null;
-    const sCountry = canonicalCountry(String(getSchoolField(activeSchool, ['country', 'region']) || ''));
-    return transportIntel.find((t: any) =>
-      canonicalCountry(t.country || '') === sCountry ||
-      t.id === sCountry.replace(/\s+/g, '-')
-    );
+    const slugify = (str: string) => (str || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const rawCountry = getSchoolField(activeSchool, ['country', 'region']) || '';
+    const rawCity = getSchoolField(activeSchool, ['city', 'town', 'location']) || '';
+    const countrySlug = slugify(canonicalCountry(String(rawCountry)));
+    const citySlug = slugify(String(rawCity));
+    const expectedId = citySlug ? `${countrySlug}-${citySlug}` : countrySlug;
+
+    let match = transportIntel.find((t: any) => t.id === expectedId);
+    if (match) return match;
+
+    match = transportIntel.find((t: any) => t.id === countrySlug);
+    if (match) return match;
+
+    match = transportIntel.find((t: any) => t.id.startsWith(countrySlug + '-'));
+    return match || null;
   }, [activeSchool, transportIntel]);
 
   const currency = activeCOL?.currencyCode || (settings.country === "Portugal" ? "EUR" : "GBP");
@@ -561,6 +580,10 @@ function DecoderContent() {
       return foundKey ? data[foundKey] : null;
     };
 
+    const rentMult = lifestyleMode === "Budget" ? 0.8 : (lifestyleMode === "Luxury" ? 1.3 : 1.0);
+    const groceryMult = lifestyleMode === "Budget" ? 0.9 : (lifestyleMode === "Luxury" ? 1.1 : 1.0);
+    const lifestyleMult = lifestyleMode === "Budget" ? 0.6 : (lifestyleMode === "Luxury" ? 1.8 : 1.0);
+
     let baseRentUSD = 0;
     if (isProvided) {
       baseRentUSD = 0;
@@ -571,7 +594,7 @@ function DecoderContent() {
       baseRentUSD = safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br']) || 0);
     }
 
-    const rentCost = usdToLocal(baseRentUSD);
+    const rentCost = usdToLocal(baseRentUSD * rentMult);
 
     let canDownsize = false;
     if (!isProvided && overrideBedrooms === null) {
@@ -580,7 +603,7 @@ function DecoderContent() {
       }
     }
 
-    const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food']), pKey, scalar));
+    const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food']), pKey, scalar) * groceryMult);
     const utilitiesCost = usdToLocal(getVal(getF(activeCOL, ['utilities', 'bills']), pKey, scalar * 0.8));
     const connectivityCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1) + (getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount));
 
@@ -605,7 +628,7 @@ function DecoderContent() {
       ? (transportMap[transportKey] !== undefined ? safeParse(transportMap[transportKey]) : safeParse(transportMap["family3Children"] || 0))
       : (parseFloat(String(transportMap)) || 0);
     const transportCost = usdToLocal(transportVal);
-    const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar));
+    const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar) * lifestyleMult);
     const manualCost = safeParse(manualAdjustments);
 
     const totalOut = rentCost + groceriesCost + utilitiesCost + connectivityCost + transportCost + socialCost + manualCost;
@@ -624,7 +647,7 @@ function DecoderContent() {
       currency, reliability: activeCOL?.dataReliabilityScore,
       countryIntel, uplift13, uplift14
     };
-  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel]);
+  }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel, lifestyleMode]);
 
   // 🛰️ Telemetry: Flight Simulator Dial tracking (Evaluate Page)
   useEffect(() => {
@@ -876,6 +899,24 @@ function DecoderContent() {
               </Select>
             </div>
 
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Lifestyle Mode</label>
+              <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/10 w-full justify-between">
+                {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setLifestyleMode(mode)}
+                    className={cn(
+                      "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider transition-all italic flex-1 text-center",
+                      lifestyleMode === mode ? "bg-slate-300 text-slate-950 shadow-[0_0_10px_rgba(148,163,184,0.1)] rounded-sm" : "text-slate-500 hover:text-slate-300"
+                    )}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="pt-3 border-t border-white/5 space-y-3">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed mb-2">Monthly net salary ({currency})</label>
@@ -969,7 +1010,7 @@ function DecoderContent() {
                         <div className="flex flex-col gap-1.5 w-full">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Estimated market rent based on your specific household profile.</TooltipContent></Tooltip>
+                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`Estimated market rent based on your specific household profile.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+30%"})` : ""}`}</TooltipContent></Tooltip>
                             </div>
 
                             <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
@@ -988,7 +1029,7 @@ function DecoderContent() {
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Standard food and household supply indices for your household size.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`Standard food and household supply indices for your household size.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-10%" : "+10%"})` : ""}`}</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.groceries || 0).toLocaleString()}</span>
                       </div>
 
@@ -1040,7 +1081,7 @@ function DecoderContent() {
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">A discretionary guide for dining out, cultural activities, and general socialising.</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-40%" : "+80%"})` : ""}`}</TooltipContent></Tooltip>
                         <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.social || 0).toLocaleString()}</span>
                       </div>
 

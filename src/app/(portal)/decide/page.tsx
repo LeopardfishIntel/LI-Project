@@ -406,15 +406,32 @@ function DecideContent() {
             if (finalRentUSD > 0) finalRentUSD *= rentMult;
 
             const rentLocal = finalRentUSD * rate;
-            const groceryLocal = getVal(getCOLField(col, ['groceries', 'food', 'groceriesIndex']), pKey, scalar) * rate;
+            const groceryMult = mode === "Budget" ? 0.9 : (mode === "Luxury" ? 1.1 : 1.0);
+            const groceryLocal = getVal(getCOLField(col, ['groceries', 'food', 'groceriesIndex']), pKey, scalar) * rate * groceryMult;
             const utilityLocal = getVal(getCOLField(col, ['utilities', 'bills', 'utilitiesMonthly']), pKey, scalar * 0.8) * rate;
             const connectivityLocal = (getVal(getCOLField(col, ['internet', 'net', 'internetMonthly']), pKey, 1) + (getVal(getCOLField(col, ['mobilePhone', 'mobile', 'sim']), pKey, 1) * personCount)) * rate;
 
             // 🛰️ NEW TRANSPORT INTEL REDIRECTION
-            const tIntel = transportIntel?.find((t: any) =>
-                canonicalCountry(t.country || '') === canonicalCountry(sCountry) ||
-                t.id === canonicalCountry(sCountry).replace(/\s+/g, '-')
-            );
+            const slugify = (str: string) => (str || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/[\s-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+
+            const countrySlug = slugify(sCountry);
+            const citySlug = slugify(sCity);
+            const expectedId = citySlug ? `${countrySlug}-${citySlug}` : countrySlug;
+
+            let tIntel = transportIntel?.find((t: any) => t.id === expectedId);
+            if (!tIntel && transportIntel) {
+                tIntel = transportIntel.find((t: any) => t.id === countrySlug);
+            }
+            if (!tIntel && transportIntel) {
+                tIntel = transportIntel.find((t: any) => t.id.startsWith(countrySlug + '-'));
+            }
 
             const transportKey = pKey;
             const transportMap = tIntel?.publicTransport || col?.transport?.publicTransport || col?.publicTransport || col?.transport;
@@ -702,11 +719,26 @@ function DecideContent() {
                                                 </div>
                                                 <span className="text-emerald-400 text-base font-black italic">{Math.round(data.totalLocalIn).toLocaleString()}</span>
                                             </div>
-                                            <div className="flex justify-between text-slate-400 px-1"><span>Accommodation</span><span className="text-white font-black">{Math.round(data.costs.rent).toLocaleString()}</span></div>
-                                            <div className="flex justify-between text-slate-400 px-1"><span>Groceries</span><span className="text-white font-black">{Math.round(data.costs.groceries).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1">
+                                                <Tooltip text={`Estimated rent based on specific household profile.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-20%" : "+30%"})` : ""}`}>
+                                                    <span className="cursor-help border-b border-dotted border-slate-500">Accommodation</span>
+                                                </Tooltip>
+                                                <span className="text-white font-black">{Math.round(data.costs.rent).toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex justify-between text-slate-400 px-1">
+                                                <Tooltip text={`Estimated grocery and food budget.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-10%" : "+10%"})` : ""}`}>
+                                                    <span className="cursor-help border-b border-dotted border-slate-500">Groceries</span>
+                                                </Tooltip>
+                                                <span className="text-white font-black">{Math.round(data.costs.groceries).toLocaleString()}</span>
+                                            </div>
                                             <div className="flex justify-between text-slate-400 px-1"><span>Utilities & Net</span><span className="text-white font-black">{Math.round(data.costs.utilities + data.costs.connectivity).toLocaleString()}</span></div>
                                             <div className="flex justify-between text-slate-400 px-1"><span>Transport</span><span className="text-white font-black">{Math.round(data.costs.transport).toLocaleString()}</span></div>
-                                            <div className="flex justify-between text-slate-400 px-1 border-b border-white/5 pb-2"><span>Social & Other</span><span className="text-white font-black">{Math.round(data.costs.social).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1 border-b border-white/5 pb-2">
+                                                <Tooltip text={`Discretionary leisure, dining, and socialising budget.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-40%" : "+80%"})` : ""}`}>
+                                                    <span className="cursor-help border-b border-dotted border-slate-500">Social & Other</span>
+                                                </Tooltip>
+                                                <span className="text-white font-black">{Math.round(data.costs.social).toLocaleString()}</span>
+                                            </div>
                                         </div>
                                         <div className="pt-2 flex justify-between items-center px-1">
                                             <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Total Monthly Outgoings</span>

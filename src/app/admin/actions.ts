@@ -792,9 +792,17 @@ export async function uploadTransportIntelAction(payload: any[]) {
     };
 
     const carHireIdx = findIndex(['car hire']);
-    const taxiIdx = findIndex(['taxi']);
     const publicTransportIdx = findIndex(['public transport', 'bus']);
-    const carPurchaseIdx = findIndex(['car purchase']);
+    const bestOptionDriverIdx = findIndex(['best option driver']);
+    const bestOptionNoDriverIdx = findIndex(['best option no driver']);
+    const slugify = (str: string) => str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
 
     dataRows.forEach((row, idx) => {
       const rowKeys = Object.keys(row);
@@ -811,48 +819,40 @@ export async function uploadTransportIntelAction(payload: any[]) {
         return isNaN(parsed) ? 0 : parsed;
       };
 
-      const countryRaw = getField(['field1', 'country', 'Country']);
-      if (!countryRaw || String(countryRaw).toLowerCase() === 'country') return;
+      const field1Raw = getField(['field1', 'country', 'Country']);
+      if (!field1Raw || String(field1Raw).toLowerCase() === 'country') return;
 
-      const countryId = canonicalCountry(String(countryRaw))
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/[\s-]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+      const parts = String(field1Raw).split('-');
+      const countryRaw = parts[0]?.trim() || '';
+      const cityRaw = parts[1]?.trim() || '';
+
+      const countrySlug = slugify(canonicalCountry(countryRaw));
+      const citySlug = slugify(cityRaw);
+
+      const docId = citySlug ? `${countrySlug}-${citySlug}` : countrySlug;
 
       // 🛰️ INDEX-OFFSET PROTOCOL
       const extractGroup = (startIdx: number) => {
         if (startIdx === -1) return { single: 0, marriedDualIncome: 0, family1Child: 0, family2Children: 0, family3PlusChildren: 0 };
         return {
-          single: safeInt(row[rowKeys[startIdx]]),
-          marriedDualIncome: safeInt(row[rowKeys[startIdx + 1]]),
-          family1Child: safeInt(row[rowKeys[startIdx + 2]]),
-          family2Children: safeInt(row[rowKeys[startIdx + 3]]),
-          family3PlusChildren: safeInt(row[rowKeys[startIdx + 4]]),
+          single: safeInt(row[allKeys[startIdx]]),
+          marriedDualIncome: safeInt(row[allKeys[startIdx + 1]]),
+          family1Child: safeInt(row[allKeys[startIdx + 2]]),
+          family2Children: safeInt(row[allKeys[startIdx + 3]]),
+          family3PlusChildren: safeInt(row[allKeys[startIdx + 4]]),
         };
       };
 
       const intel = {
-        country: String(countryRaw),
+        country: countryRaw,
+        city: cityRaw,
         carHire: extractGroup(carHireIdx),
-        taxi: extractGroup(taxiIdx),
         publicTransport: extractGroup(publicTransportIdx),
-        carPurchase: extractGroup(carPurchaseIdx),
-        bestOptionDriver: getField(['field22', 'best option driver']) || row[rowKeys[21]] || "",
-        bestOptionNoDriver: getField(['field23', 'best option no driver']) || row[rowKeys[22]] || "",
+        bestOptionDriver: getField(['field12', 'field22', 'best option driver']) || (bestOptionDriverIdx !== -1 ? row[allKeys[bestOptionDriverIdx]] : "") || "",
+        bestOptionNoDriver: getField(['field13', 'field23', 'best option no driver']) || (bestOptionNoDriverIdx !== -1 ? row[allKeys[bestOptionNoDriverIdx]] : "") || "",
         lastUpdated: new Date().toISOString()
       };
-
-      if (idx < 2 || countryId.includes('argentina') || countryId.includes('czech')) {
-        console.log(`🛰️ DATA TRACE [${countryId}]:`, {
-          bus_single: intel.publicTransport.single,
-          bus_married: intel.publicTransport.marriedDualIncome,
-          car_single: intel.carHire.single
-        });
-      }
-
-      batch.set(col, countryId, intel, { merge: true });
+      batch.set(col, docId, intel, { merge: true });
       updateCount++;
     });
 

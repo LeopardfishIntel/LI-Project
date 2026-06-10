@@ -164,11 +164,29 @@ export const getCountryStats = unstable_cache(
       
       const colData = colSnap.docs.map(doc => {
         const data = doc.data() as any;
-        const country = canonicalCountry(data.country || data.country_name || '');
-        const transport = transportData.find((t: any) => 
-          canonicalCountry(t.country) === country || 
-          t.id === country.replace(/\s+/g, '-')
-        );
+        const slugify = (str: string) => (str || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/[\s-]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+
+        const rawCountry = data.country || data.country_name || '';
+        const rawCity = data.city || data.city_name || '';
+        const countrySlug = slugify(canonicalCountry(String(rawCountry)));
+        const citySlug = slugify(String(rawCity));
+        const expectedId = citySlug ? `${countrySlug}-${citySlug}` : countrySlug;
+
+        let transport = transportData.find((t: any) => t.id === expectedId);
+        if (!transport) {
+          transport = transportData.find((t: any) => t.id === countrySlug);
+        }
+        if (!transport) {
+          transport = transportData.find((t: any) => t.id.startsWith(countrySlug + '-'));
+        }
+
         return { 
           id: doc.id, 
           ...data, 

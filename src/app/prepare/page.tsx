@@ -321,10 +321,27 @@ export default function PreparePage() {
   const budget = useMemo(() => {
     // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const targetCountry = selectedSchool?.country || selectedCountry;
-    const tIntel = transportIntel?.find((t: any) =>
-      canonicalCountry(t.country) === canonicalCountry(targetCountry) ||
-      t.id === canonicalCountry(targetCountry).replace(/\s+/g, '-')
-    );
+    const targetCity = selectedSchool?.city || '';
+    const slugify = (str: string) => (str || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const countrySlug = slugify(canonicalCountry(String(targetCountry)));
+    const citySlug = slugify(String(targetCity));
+    const expectedId = citySlug ? `${countrySlug}-${citySlug}` : countrySlug;
+
+    let tIntel = transportIntel?.find((t: any) => t.id === expectedId);
+    if (!tIntel && transportIntel) {
+      tIntel = transportIntel.find((t: any) => t.id === countrySlug);
+    }
+    if (!tIntel && transportIntel) {
+      tIntel = transportIntel.find((t: any) => t.id.startsWith(countrySlug + '-'));
+    }
 
     const enrichedCityData = cityData ? { ...cityData, transport: tIntel || cityData.transport } : cityData;
     const enrichedCountryIntel = countryIntel ? { ...countryIntel, transport: tIntel || countryIntel.transport } : countryIntel;
