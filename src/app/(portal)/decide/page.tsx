@@ -835,16 +835,20 @@ function DecideContent() {
                         </div>
                     ))}
                 </div>
-                {/* TOP PICK EXPLAINER + CTA — compact strip */}
+
+                {/* 🎯 Always Visible: Match % Explainer */}
+                <div className="flex items-start gap-3 mt-6 p-4 bg-white/[0.02] border border-white/10 rounded-sm">
+                    <Target className="size-4 text-[#d95f02] shrink-0 mt-0.5" />
+                    <div>
+                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-200 leading-none mb-1.5">How the top pick is decided</p>
+                        <p className="text-[12px] text-slate-300 font-bold leading-normal">The winner is the highest overall Match %. Surplus, academic rep, city safety and workload are all weighted equally.</p>
+                    </div>
+                </div>
+
+                {/* TOP PICK CTA — compact strip */}
                 {!isUnlocked ? (
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4 p-4 bg-[#d95f02]/5 border border-dashed border-[#d95f02]/20 rounded-sm">
-                        <div className="flex items-start gap-3 flex-1">
-                            <Target className="size-3.5 text-[#f5f5f5] shrink-0 mt-0.5" />
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-[#f5f5f5] leading-none mb-1">How the top pick is decided</p>
-                                <p className="text-[11px] text-slate-500 italic leading-snug">The winner is the highest overall Match %. Surplus, academic rep, city safety and workload are all weighted equally.</p>
-                            </div>
-                        </div>
+                        <p className="text-xs text-slate-400 font-bold">Ready for the deep dive? Access our custom location intelligence briefings for your chosen locations.</p>
                         <button
                             onClick={handleUnlockIntelligence}
                             disabled={isGenerating || ranked.length < 2}
