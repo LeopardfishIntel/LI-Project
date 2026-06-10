@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier } from '@/lib/calculations';
 
 const RATES: Record<string, number> = {};
@@ -51,13 +52,16 @@ const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/
 // --- UI COMPONENTS ---
 
 const Tooltip = ({ text, children }: { text: string, children: React.ReactNode }) => (
-    <div className="group relative inline-block">
-        {children}
-        <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 hidden group-hover:block z-[100] w-64 p-3 bg-slate-900 border border-white/20 text-[11px] text-slate-100 rounded-md shadow-2xl pointer-events-none leading-relaxed">
-            {text}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900" />
-        </div>
-    </div>
+    <TooltipProvider delayDuration={100}>
+        <RadixTooltip>
+            <TooltipTrigger asChild>
+                {children}
+            </TooltipTrigger>
+            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
+                {text}
+            </TooltipContent>
+        </RadixTooltip>
+    </TooltipProvider>
 );
 
 const ScoreBadge = ({ label, score, color = "#007FFF" }: { label: string, score: string | number, color?: string }) => (

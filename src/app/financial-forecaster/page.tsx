@@ -906,7 +906,7 @@ function DecoderContent() {
                   <TooltipTrigger asChild>
                     <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl">
+                  <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
                     Stress test your savings. Switch between Budget (modest digs & supermarket basics), Balanced (comfy flat & Friday pub pints), or Luxury (swanky pad & dining out).
                   </TooltipContent>
                 </Tooltip>
