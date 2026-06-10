@@ -616,7 +616,13 @@ function DecideContent() {
 
                                     {/* ⚡ CARD-SPECIFIC LIFESTYLE SELECTOR */}
                                     <div className="mt-2 p-1.5 bg-white/5 border border-white/5 rounded-sm flex items-center justify-between">
-                                        <span className="text-[9px] font-black uppercase text-slate-500 italic tracking-wider">Lifestyle Mode</span>
+                                        <div className="flex items-center gap-1">
+                                            <Tooltip text="Stress test your savings. Switch between Budget (modest digs & supermarket basics), Balanced (comfy flat & Friday pub pints), or Luxury (swanky pad & dining out).">
+                                                <span className="text-[9px] font-black uppercase text-slate-500 italic tracking-wider cursor-help border-b border-dotted border-slate-500 flex items-center gap-1">
+                                                    Lifestyle Mode <Info className="size-2.5 text-sky-400 inline" />
+                                                </span>
+                                            </Tooltip>
+                                        </div>
                                         <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/5">
                                             {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
                                                 <button

@@ -900,7 +900,17 @@ function DecoderContent() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Lifestyle Mode</label>
+              <div className="flex items-center gap-1.5 mb-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Lifestyle Mode</label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl">
+                    Stress test your savings. Switch between Budget (modest digs & supermarket basics), Balanced (comfy flat & Friday pub pints), or Luxury (swanky pad & dining out).
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/10 w-full justify-between">
                 {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
                   <button
