@@ -1668,7 +1668,7 @@ function DecoderContent() {
                                       )}
 
                                       {/* Churn Implications Alert Box */}
-                                      {turnoverUnlocked && stabilityReport.leopardfishIntelAlert && (
+                                      {false && turnoverUnlocked && stabilityReport.leopardfishIntelAlert && (
                                         <div className="mt-4 p-3 bg-[#d95f02]/5 border border-[#d95f02]/20 rounded-sm">
                                           <div className="space-y-1 w-full">
                                             <div className="flex items-center justify-between">
