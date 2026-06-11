@@ -4,8 +4,11 @@ import { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
-  Briefcase, ChevronDown, RefreshCw, HelpCircle
+  Briefcase, ChevronDown, RefreshCw, HelpCircle,
+  Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users,
+  HeartPulse, Laptop, Building
 } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
@@ -53,6 +56,23 @@ const SALARY_INTEL: Record<string, { has13th: boolean, has14th: boolean, note?: 
   "china": { has13th: true, has14th: false, note: "Chinese New Year bonus." },
   "angola": { has13th: true, has14th: false, note: "Standard holiday allowance." },
   "south africa": { has13th: true, has14th: false, note: "Often paid as a Christmas bonus." }
+};
+
+const ACRONYMS: Record<string, string> = {
+  'CIS': 'Council of International Schools',
+  'WASC': 'Western Association of Schools and Colleges',
+  'NEASC': 'New England Association of Schools and Colleges',
+  'COBIS': 'Council of British International Schools',
+  'BSME': 'British Schools in the Middle East',
+  'FOBISIA': 'Federation of British International Schools in Asia',
+  'KHDA': 'Knowledge and Human Development Authority',
+  'ADEK': 'Abu Dhabi Department of Education and Knowledge',
+};
+
+const categorizeInsurance = (val: string) => {
+  if (!val || val === '—') return 'Unknown';
+  if (val.toLowerCase().includes('comp') || val.toLowerCase().includes('full')) return 'Comprehensive';
+  return val;
 };
 
 const formatCountry = (c: string) => c.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -321,7 +341,7 @@ function DecoderContent() {
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
   const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
-  const [briefingRequested, setBriefingRequested] = useState(false);
+  const [briefingRequested, setBriefingRequested] = useState(true);
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
@@ -531,6 +551,9 @@ function DecoderContent() {
     else if (status === "Family +2") { personCount = 4; scalar = 2.65; pKey = "family2Children"; }
     else if (status === "Family +3") { personCount = 5; scalar = 3.0; pKey = "family3PlusChildren"; }
 
+    const adults = (status === "Single") ? 1 : 2;
+    const children = status === "Family +1" ? 1 : (status === "Family +2" ? 2 : (status === "Family +3" ? 3 : 0));
+
     const sCountry = canonicalCountry(String(getSchoolField(activeSchool, ['country', 'region']) || ''));
     const countryIntel = SALARY_INTEL[sCountry] || null;
 
@@ -605,7 +628,11 @@ function DecoderContent() {
 
     const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food']), pKey, scalar) * groceryMult);
     const utilitiesCost = usdToLocal(getVal(getF(activeCOL, ['utilities', 'bills']), pKey, scalar * 0.8));
-    const connectivityCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1) + (getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount));
+    
+    // Split connectivity Cost
+    const internetCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1));
+    const mobileCost = usdToLocal(getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount);
+    const connectivityCost = internetCost + mobileCost;
 
     // 🛰️ NESTED TRANSPORT PROTOCOL
     const isCar = transportMode === "C";
@@ -629,9 +656,14 @@ function DecoderContent() {
       : (parseFloat(String(transportMap)) || 0);
     const transportCost = usdToLocal(transportVal);
     const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar) * lifestyleMult);
+    
+    // Medical gaps cost
+    const medicalVal = (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * adults + (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * 0.5 * children;
+    const medicalCost = usdToLocal(medicalVal);
+    
     const manualCost = safeParse(manualAdjustments);
 
-    const totalOut = rentCost + groceriesCost + utilitiesCost + connectivityCost + transportCost + socialCost + manualCost;
+    const totalOut = rentCost + groceriesCost + utilitiesCost + connectivityCost + transportCost + socialCost + medicalCost + manualCost;
     const surplus = totalIn - totalOut;
     const rateOfSaving = totalIn > 0 ? Math.round((surplus / totalIn) * 100) : 0;
 
@@ -639,7 +671,7 @@ function DecoderContent() {
     const surplusBenchmark = (surplus / (currentRates[currency] || 1.0)) * (currentRates[benchmark] || 1.0);
 
     return {
-      costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, transport: transportCost, social: socialCost, manual: manualCost },
+      costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, internet: internetCost, mobile: mobileCost, transport: transportCost, social: socialCost, medical: medicalCost, manual: manualCost },
       propertyLabel, canDownsize, standardRentKey,
       totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, 
       housingStatus: isProvided ? 'provided' : 'custom',
@@ -648,6 +680,20 @@ function DecoderContent() {
       countryIntel, uplift13, uplift14
     };
   }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel, lifestyleMode]);
+
+  const surplusValStr = useMemo(() => {
+    return Math.round(analysis?.surplus || 0).toLocaleString();
+  }, [analysis?.surplus]);
+
+  const surplusFontSizes = useMemo(() => {
+    if (surplusValStr.length > 9) {
+      return { number: "text-3xl", currency: "text-base" };
+    }
+    if (surplusValStr.length > 7) {
+      return { number: "text-4xl", currency: "text-lg" };
+    }
+    return { number: "text-5xl", currency: "text-xl" };
+  }, [surplusValStr]);
 
   // 🛰️ Telemetry: Flight Simulator Dial tracking (Evaluate Page)
   useEffect(() => {
@@ -1015,84 +1061,185 @@ function DecoderContent() {
                   <div className="space-y-4">
                     <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
                     <div className="space-y-3">
-
+                      {/* Monthly Rent */}
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <div className="flex flex-col gap-1.5 w-full">
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Accommodation</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`Estimated market rent based on your specific household profile.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+30%"})` : ""}`}</TooltipContent></Tooltip>
-                            </div>
-
-                            <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                              <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
-                              <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
-                              <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
-                              <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
-                              <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1.5 py-0.5 text-[8px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
-                            </div>
-
-                            <span className={cn("text-[14px] font-black tabular-nums text-white", analysis?.housingStatus === 'provided' && "italic")}>
-                              {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
-                            </span>
-                          </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Home className="w-4 h-4 text-orange-500 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Monthly Rent
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+30%"})` : ""}`}
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
-                      </div>
-
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Groceries</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`Standard food and household supply indices for your household size.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-10%" : "+10%"})` : ""}`}</TooltipContent></Tooltip>
-                        <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.groceries || 0).toLocaleString()}</span>
-                      </div>
-
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Utilities</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Monthly averages for electricity, heating, water, and waste management.</TooltipContent></Tooltip>
-                        <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.utilities || 0).toLocaleString()}</span>
-                      </div>
-
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Internet and sim</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Includes standard home broadband and one SIM card per person in the home.</TooltipContent></Tooltip>
-                        <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.connectivity || 0).toLocaleString()}</span>
-                      </div>
-
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <div className="flex flex-col gap-1.5 w-full">
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-1.5">
-                              <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Transport</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.</TooltipContent></Tooltip>
-
-                              {activeCOL?.transport && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <div className="flex items-center justify-center bg-white/5 border border-white/10 p-0.5 rounded-sm cursor-help hover:bg-white/10 transition-colors">
-                                      <Info className="size-2.5 text-sky-400" />
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="bottom" className="bg-[#0b1224] border-[#d95f02]/30 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50">
-                                    <div className="flex items-start gap-2">
-                                      <Zap className="size-3 text-[#d95f02] shrink-0 mt-0.5" />
-                                      <span className="leading-relaxed font-medium italic">
-                                        {transportMode === "P" ?
-                                          (tIntel?.bestOptionNoDriver || activeCOL?.transport?.bestOptionNoDriver || "Standard transit network.") :
-                                          (tIntel?.bestOptionDriver || activeCOL?.transport?.bestOptionDriver || "Vehicle ownership/hire recommended.")
-                                        }
-                                      </span>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
-                            </div>
-                            
-                            <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10">
-                              <button onClick={() => setTransportMode("P")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Public Transport</button>
-                              <button onClick={() => setTransportMode("C")} className={cn("px-1.5 text-[8px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Car Hire</button>
-                            </div>
-                            <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
-                          </div>
+                        
+                        <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
+                          <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
+                          <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
+                          <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
+                          <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
+                          <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
                         </div>
+                        
+                        <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0", analysis?.housingStatus === 'provided' && "italic")}>
+                          {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
+                        </span>
                       </div>
 
+                      {/* Utilities */}
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <Tooltip><TooltipTrigger asChild><span className="text-xs font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal">Leisure & social</span></TooltipTrigger><TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">{`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-40%" : "+80%"})` : ""}`}</TooltipContent></Tooltip>
-                        <span className="text-[14px] font-black tabular-nums text-white">{currency} {Math.round(analysis?.costs.social || 0).toLocaleString()}</span>
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-yellow-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Utilities
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              Monthly averages for electricity, heating, water, and waste management.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.utilities || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* High-Speed Internet */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Wifi className="w-4 h-4 text-blue-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                High-Speed Internet
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              Includes standard home broadband internet connection.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.internet || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* Mobile data */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Smartphone className="w-4 h-4 text-purple-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Mobile data
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              Includes mobile SIM cards for members of the household.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.mobile || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* Monthly Groceries */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Utensils className="w-4 h-4 text-amber-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Monthly Groceries
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              {`Standard food and household supply indices for your household size.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-10%" : "+10%"})` : ""}`}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.groceries || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* Dining & social */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Coffee className="w-4 h-4 text-orange-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Dining & social
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              {`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-40%" : "+80%"})` : ""}`}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.social || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* Transport */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2 shrink-0">
+                          <TramFront className="w-4 h-4 text-rose-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Transport
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              Switch between Public Transit, Car ownership, or Taxi/Ride-hailing.
+                            </TooltipContent>
+                          </Tooltip>
+
+                          {activeCOL?.transport && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center justify-center bg-white/5 border border-white/10 p-0.5 rounded-sm cursor-help hover:bg-white/10 transition-colors">
+                                  <Info className="size-2.5 text-sky-400" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom" className="bg-[#0b1224] border-[#d95f02]/30 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50">
+                                <div className="flex items-start gap-2">
+                                  <Zap className="size-3 text-[#d95f02] shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed font-medium italic">
+                                    {transportMode === "P" ?
+                                      (tIntel?.bestOptionNoDriver || activeCOL?.transport?.bestOptionNoDriver || "Standard transit network.") :
+                                      (tIntel?.bestOptionDriver || activeCOL?.transport?.bestOptionDriver || "Vehicle ownership/hire recommended.")
+                                    }
+                                  </span>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                        
+                        <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
+                          <button onClick={() => setTransportMode("P")} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Transit</button>
+                          <button onClick={() => setTransportMode("C")} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Car Hire</button>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
+                      </div>
+
+                      {/* Medical gaps */}
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <div className="flex items-center gap-2">
+                          <Stethoscope className="w-4 h-4 text-red-400 shrink-0" />
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                Medical gaps
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                              Estimated out-of-pocket medical and dental expenses.
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.medical || 0).toLocaleString()}</span>
                       </div>
 
                       {/* RESTORED: Custom Adjustments Box from Screenshot */}
@@ -1128,14 +1275,14 @@ function DecoderContent() {
                     <div className="space-y-5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <span className="text-xs font-black text-slate-400 uppercase tracking-wider leading-normal">Monthly net base</span>
-                        <span className="text-[14px] font-black text-white">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
+                        <span className="text-[13px] font-black text-white whitespace-nowrap shrink-0">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
                         <div className="flex items-center gap-2">
                           <Banknote className="size-4 text-slate-400" />
-                          <span className="text-xs font-black text-slate-400 uppercase tracking-wider leading-normal">Additional Income</span>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Additional Income</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[9px] font-black text-slate-600">{currency}</span>
@@ -1153,7 +1300,7 @@ function DecoderContent() {
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
                             {BENCHMARKS.map(b => (
-                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[8px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
+                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[10px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
                             ))}
                           </div>
                           <p className="text-xs font-black text-[#d95f02] uppercase tracking-[0.25em] italic leading-normal">Monthly Disposable Surplus</p>
@@ -1161,9 +1308,9 @@ function DecoderContent() {
 
                         <div className="flex flex-col items-end">
                           <div className="flex items-baseline gap-2 leading-tight">
-                            <span className="text-xl font-black text-white/50">{currency}</span>
-                            <span className={cn("text-5xl font-black tracking-tighter tabular-nums text-white leading-tight", (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
-                              {Math.round(analysis?.surplus || 0).toLocaleString()}
+                            <span className={cn("font-black text-white/50 transition-all duration-300", surplusFontSizes.currency)}>{currency}</span>
+                            <span className={cn("font-black tracking-tighter tabular-nums text-white leading-tight transition-all duration-300", surplusFontSizes.number, (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
+                              {surplusValStr}
                               {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#d95f02] ml-1">*</span>}
                             </span>
                           </div>
@@ -1242,7 +1389,7 @@ function DecoderContent() {
                                       </button>
                                     )}
                                   </div>
-                                  <p className="mt-2 text-[8px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
+                                  <p className="mt-2 text-[10px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
                                     Please confirm your specific offer includes these payments
                                   </p>
                                 </div>
@@ -1341,6 +1488,171 @@ function DecoderContent() {
                         lastUpdated: z.string()
                       });
                     */}
+                    {/* SECTION: ELIGIBILITY & EXPECTED SURPLUS SIDE-BY-SIDE */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 border-b border-white/5 pb-6">
+                      {/* LEFT: Eligibility & Visas */}
+                      <div className="space-y-4 relative overflow-hidden">
+                        <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Eligibility & Visas</p>
+                        
+                        <div className="space-y-4">
+                          <div className="flex gap-4">
+                            <ShieldCheck className="size-5 text-rose-500 mt-1 shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest mb-1">Visa & Deployment Intel</p>
+                              <div className="text-xs font-bold text-slate-300 space-y-2">
+                                <p>{activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.'}</p>
+                                <div className="pt-2 border-t border-white/5 text-xs text-muted-foreground font-medium flex flex-col gap-1.5">
+                                  {(activeReq?.max_age_f || activeReq?.max_age_m) && (
+                                    <span>• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
+                                  )}
+                                  {activeReq?.max_age_notes && (
+                                    <span className="leading-tight">• {activeReq.max_age_notes}</span>
+                                  )}
+                                  {(activeReq?.min_age || activeReq?.min_age_notes) && (
+                                    <span>• Min Age: {activeReq.min_age_notes || activeReq.min_age || '21'}</span>
+                                  )}
+                                  {(activeSchool as any).dependent_visa_notes && (
+                                    <span>• Dependents: {(activeSchool as any).dependent_visa_notes}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4">
+                            <Award className="size-5 text-yellow-500 mt-1 shrink-0" />
+                            <div className="flex-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest mb-1">Candidate Qualifications</p>
+                              <div className="text-xs font-bold text-slate-300 space-y-2">
+                                <p>{activeSchool.intel?.minQualifications || activeReq?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.'}</p>
+                                <div className="pt-2 border-t border-white/5 text-xs text-muted-foreground font-medium flex flex-col gap-1.5">
+                                  {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
+                                    <span className="leading-tight">• Degree: {activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req}</span>
+                                  )}
+                                  {(activeReq?.license_req || (activeSchool as any).license_req) && (
+                                    <span className="leading-tight">• License: {activeReq?.license_req || (activeSchool as any).license_req}</span>
+                                  )}
+                                  {(activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience) && (
+                                    <span>• Exp Required: {activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience} Years</span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* RIGHT: Expected Surplus */}
+                      <div className="space-y-6 relative overflow-hidden border-t border-white/5 pt-6 lg:border-t-0 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-8">
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                          <TrendingUp className="size-16 text-[#d95f02]" />
+                        </div>
+
+                        <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest italic">3. Expected Surplus</p>
+
+                        {(() => {
+                          const surplus = analysis?.surplus ?? 0;
+                          const expenses = analysis?.totalOut ?? 0;
+                          const isLoss = surplus < 0;
+                          const costsColor = isLoss ? '#b91c1c' : '#1e293b';
+
+                          let statusLabel = 'Single Teacher';
+                          if (settings.familyStatus === "Married (sole earner)") {
+                            statusLabel = "Couple (Sole Earner)";
+                          } else if (settings.familyStatus === "Married (dual income)") {
+                            statusLabel = "Dual Income Couple";
+                          } else if (settings.familyStatus === "Family +1") {
+                            statusLabel = "Family (1 Child)";
+                          } else if (settings.familyStatus === "Family +2") {
+                            statusLabel = "Family (2 Children)";
+                          } else if (settings.familyStatus === "Family +3") {
+                            statusLabel = "Family (3+ Children)";
+                          }
+
+                          return (
+                            <>
+                              <div className="flex items-center gap-2 text-[#d95f02]/70">
+                                <Users className="size-4 text-[#d95f02]" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Status: {statusLabel}</span>
+                              </div>
+
+                              <div className="space-y-6">
+                                <div className="relative flex flex-col items-center">
+                                  <div className="h-44 w-full -mb-16">
+                                    {mounted ? (
+                                      <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                          <Pie
+                                            data={[
+                                              { name: 'Monthly Costs', value: expenses },
+                                              { name: 'Surplus Potential', value: Math.max(0, surplus) }
+                                            ]}
+                                            cx="50%"
+                                            cy="70%"
+                                            startAngle={180}
+                                            endAngle={0}
+                                            innerRadius={65}
+                                            outerRadius={85}
+                                            paddingAngle={2}
+                                            dataKey="value"
+                                            stroke="none"
+                                            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                                            labelLine={false}
+                                          >
+                                            <Cell fill={costsColor} />
+                                            <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                                          </Pie>
+                                          <RechartsTooltip
+                                            contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px', fontSize: '10px', color: '#fff' }}
+                                          />
+                                        </PieChart>
+                                      </ResponsiveContainer>
+                                    ) : (
+                                      <div className="h-full w-full flex items-center justify-center">
+                                        <span className="text-[10px] font-mono text-slate-500 tracking-widest animate-pulse">PREPARING CHART DATA...</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="text-center relative z-10 mt-6 space-y-0">
+                                    <p className={cn(
+                                      "text-[9px] font-black uppercase tracking-[0.2em] opacity-80",
+                                      isLoss ? "text-rose-500" : "text-[#d95f02]"
+                                    )}>{isLoss ? "Expected Deficit" : "Expected Surplus"}</p>
+                                    <p className="text-2xl font-black text-white tracking-tighter italic">
+                                      {surplus < 0 ? '-' : ''}{currency} {Math.round(Math.abs(surplus)).toLocaleString()}
+                                      <span className="text-xs text-muted-foreground ml-1 not-italic font-normal uppercase opacity-40">/mo</span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* 🛡️ TACTICAL LEDGER */}
+                                <div className="grid grid-cols-2 gap-px bg-white/5 border border-white/5 rounded-sm overflow-hidden">
+                                  <div className="bg-[#020617]/40 p-4 space-y-1">
+                                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.15em]">Outflows</p>
+                                    <p className="text-lg font-black text-white tracking-tight italic">
+                                      {currency} {Math.round(expenses).toLocaleString()}
+                                    </p>
+                                  </div>
+                                  <div className={cn(
+                                    "p-4 space-y-1 border-l border-white/5 text-right",
+                                    isLoss ? "bg-rose-500/5 text-[#f43f5e]" : "bg-[#10B981]/5 text-[#10B981]"
+                                  )}>
+                                    <p className={cn(
+                                      "text-[9px] font-black uppercase tracking-[0.15em]",
+                                      isLoss ? "text-[#f43f5e]" : "text-[#10B981]"
+                                    )}>{isLoss ? "Deficit" : "Surplus"}</p>
+                                    <p className="text-lg font-black tracking-tight italic">
+                                      {surplus < 0 ? '-' : ''}{currency} {Math.round(Math.abs(surplus)).toLocaleString()}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+
                     <div>
                       <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center justify-between gap-2 leading-relaxed">
                         <span>
@@ -1592,7 +1904,7 @@ function DecoderContent() {
                                                         <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
                                                           {String(idx + 1).padStart(2, '0')}
                                                         </span>
-                                                        <span className="font-bold text-slate-200 truncate" title={job.title}>
+                                                        <span className="font-bold text-slate-300 truncate" title={job.title}>
                                                           {job.title}
                                                         </span>
                                                         <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
@@ -1606,7 +1918,7 @@ function DecoderContent() {
                                                           </span>
                                                         )}
                                                         <span className={cn(
-                                                          "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
+                                                          "text-[10px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
                                                           job.status === 'open' 
                                                             ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
                                                             : "bg-rose-500/10 text-rose-400 border-rose-500/20"
@@ -1706,7 +2018,7 @@ function DecoderContent() {
                     </div>
 
                     {/* 🛰️ PREMIUM DYNAMIC BRIEFING NARRATIVE */}
-                    {cachedBriefingText && briefingRequested ? (
+                    {cachedBriefingText && (
                       <div className="pt-6 border-t border-white/5 space-y-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -1736,118 +2048,115 @@ function DecoderContent() {
                           )}
                         </div>
                       </div>
-                    ) : (
-                      <div className="pt-6 border-t border-white/5">
-                        <button
-                          onClick={() => {
-                            if (cachedBriefingText) {
-                              setBriefingRequested(true);
-                            } else {
-                              router.push(`/schools/${activeSchool.id}`);
-                            }
-                          }}
-                          className="text-[10px] font-black text-teal-400 hover:text-white transition-colors uppercase tracking-widest flex items-center gap-2 bg-teal-500/5 hover:bg-teal-500/10 border border-teal-500/10 hover:border-teal-500/40 px-3 py-2 rounded-sm"
-                        >
-                          <Zap className="size-3 text-[#d95f02] animate-pulse" /> Request Leopardfish School Analysis
-                        </button>
-                      </div>
                     )}
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-8 pt-6 border-t border-white/5">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Non-contact</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.noncontacttime || "---"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Contractual non-contact time expressed as a percentage of a full teaching timetable.</TooltipContent>
-                  </Tooltip>
+                {(() => {
+                  const matrixItems = [
+                    {
+                      key: 'profit',
+                      label: 'Profit Status',
+                      icon: <Building className="size-5 text-sky-400" />,
+                      value: (activeSchool as any).profitstatus || (activeSchool as any).profit_status || 'For-Profit'
+                    },
+                    {
+                      key: 'housing',
+                      label: 'Housing Provision',
+                      icon: <Home className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.housing?.value || activeSchool.housingprovision || '—'
+                    },
+                    {
+                      key: 'health',
+                      label: 'Health Coverage',
+                      icon: <HeartPulse className="size-5 text-sky-400" />,
+                      value: categorizeInsurance((activeSchool.intel?.healthInsurance || activeSchool.healthcoverage || '—') as string)
+                    },
+                    {
+                      key: 'curriculum',
+                      label: 'Curriculum',
+                      icon: <BookOpen className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.curriculum || activeSchool.curriculum || '—'
+                    },
+                    {
+                      key: 'ratio',
+                      label: 'Ratio',
+                      icon: <Users className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.studentTeacherRatio || activeSchool.staffstudentratio || '—'
+                    },
+                    {
+                      key: 'classSize',
+                      label: 'Class Size',
+                      icon: <Building className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.classSize || activeSchool.classsize || '—'
+                    },
+                    {
+                      key: 'contact',
+                      label: 'Non-Contact Time',
+                      icon: <Clock className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.nonContactTime || (activeSchool as any).noncontacttime || '—'
+                    },
+                    {
+                      key: 'tech',
+                      label: 'Tech Ecosystem',
+                      icon: <Laptop className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.technologyEcosystem || (activeSchool as any).techecosystem || 'Standard'
+                    },
+                    {
+                      key: 'accreditation',
+                      label: 'Accreditation',
+                      icon: <Award className="size-5 text-sky-400" />,
+                      value: activeSchool.intel?.accreditation || (activeSchool as any).approvals || 'International'
+                    },
+                  ];
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Activity className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Health coverage</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.healthcoverage || "Standard"}</p>
+                  return (
+                    <div className="mt-8 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                      <div className="bg-[#1f2937]/25 border border-white/5 rounded-sm p-5 space-y-5">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="size-4 text-[#d95f02]" />
+                          <span className="text-xs font-black uppercase tracking-widest text-[#d95f02]">Staff Room Intelligence</span>
+                        </div>
+                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
+                          {matrixItems.map(item => (
+                            <li key={item.key} className="flex items-start">
+                              <div className="mr-4 mt-1 text-sky-400 shrink-0">
+                                {item.icon}
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">{item.label}</p>
+                                <div className={cn(
+                                  "text-sm font-black tracking-tighter",
+                                  /\d/.test(item.value?.toString() || "") ? "text-white" : "text-slate-300"
+                                )}>
+                                  {item.key === 'accreditation' ? (
+                                    <div className="flex flex-wrap gap-1">
+                                      {item.value?.toString().split(/,\s*/).map((acc: string, i: number) => (
+                                        <Tooltip key={i}>
+                                          <TooltipTrigger asChild>
+                                            <span className="cursor-help border-b border-white/20 hover:border-[#d95f02] transition-colors font-black">
+                                              {acc}
+                                              {i < item.value!.toString().split(/,\s*/).length - 1 && ","}
+                                            </span>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="bg-black border-white/10 text-[11px] font-bold text-white px-3 py-1.5 shadow-2xl">
+                                            {ACRONYMS[acc.trim()] || 'International Accreditation'}
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    item.value?.toString()
+                                  )}
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The level of private or state medical insurance provided within this school's contract.</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Curriculum</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.curriculum || "---"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The primary teaching and assessment framework used for delivery at this school.</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <ShieldCheck className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Accreditations</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.approvals || "Standard"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">External quality assurance and professional body memberships such as COBIS, HMC, or BSO.</TooltipContent>
-                  </Tooltip>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mt-2.5">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Clock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Work/life</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.worklifescore || "---"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Our internal rating for work-life balance based on direct teacher feedback and workload audit.</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <BookOpen className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Academic</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.academicscore || "---"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">The academic rigour, student attainment levels, and university placement success of the school.</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Target className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Expected retirement</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">
-                          {activeReq ? `M: ${activeReq.max_age_m} | F: ${activeReq.max_age_f}` : "---"}
-                        </p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">Legal and hiring retirement ages as specified by the local host country regulations.</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="bg-black/50 p-4 text-center border border-white/5 group rounded-sm cursor-help hover:bg-white/[0.02] transition-colors">
-                        <Lock className="size-4 mx-auto mb-2.5 text-slate-400 transition-transform group-hover:scale-110" />
-                        <p className="text-[10px] font-black text-[#d95f02] uppercase tracking-widest leading-relaxed mb-2">Security/Safety</p>
-                        <p className="text-sm font-black text-slate-400 italic leading-normal">{activeSchool.city?.toLowerCase() === "prague" ? "9.8" : "High"}</p>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">National and local safety rating derived from the Global Peace Index and Crime Index data.</TooltipContent>
-                  </Tooltip>
-                </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
