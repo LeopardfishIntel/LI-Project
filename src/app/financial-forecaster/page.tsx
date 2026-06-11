@@ -342,6 +342,7 @@ function DecoderContent() {
   const [isRewording, setIsRewording] = useState(false);
   const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
   const [briefingRequested, setBriefingRequested] = useState(true);
+  const [surplusDisplayCurrency, setSurplusDisplayCurrency] = useState<"USD" | "GBP" | "EUR" | "Local">("Local");
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
@@ -1548,13 +1549,39 @@ function DecoderContent() {
                           <TrendingUp className="size-16 text-[#d95f02]" />
                         </div>
 
-                        <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest italic">3. Expected Surplus</p>
+                        <div className="flex items-center justify-between gap-4">
+                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest italic">3. Expected Surplus</p>
+                          <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
+                            {["USD", "GBP", "EUR", "Local"].map(curr => (
+                              <button
+                                key={curr}
+                                onClick={() => setSurplusDisplayCurrency(curr as any)}
+                                className={cn(
+                                  "px-2 py-0.5 text-[9px] font-black rounded-sm transition-all uppercase",
+                                  surplusDisplayCurrency === curr
+                                    ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm"
+                                    : "text-slate-400 hover:text-teal-400"
+                                )}
+                              >
+                                {curr}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
                         {(() => {
                           const surplus = analysis?.surplus ?? 0;
                           const expenses = analysis?.totalOut ?? 0;
                           const isLoss = surplus < 0;
                           const costsColor = isLoss ? '#b91c1c' : '#1e293b';
+
+                          const displayCurrency = surplusDisplayCurrency === "Local" ? currency : surplusDisplayCurrency;
+                          const conversionRate = displayCurrency === currency
+                            ? 1.0
+                            : (1.0 / (currentRates[currency] || 1.0)) * (currentRates[displayCurrency] || 1.0);
+
+                          const displaySurplus = surplus * conversionRate;
+                          const displayExpenses = expenses * conversionRate;
 
                           let statusLabel = 'Single Teacher';
                           if (settings.familyStatus === "Married (sole earner)") {
@@ -1584,8 +1611,8 @@ function DecoderContent() {
                                         <PieChart>
                                           <Pie
                                             data={[
-                                              { name: 'Monthly Costs', value: expenses },
-                                              { name: 'Surplus Potential', value: Math.max(0, surplus) }
+                                              { name: 'Monthly Costs', value: Math.round(displayExpenses) },
+                                              { name: 'Surplus Potential', value: Math.max(0, Math.round(displaySurplus)) }
                                             ]}
                                             cx="50%"
                                             cy="70%"
@@ -1619,7 +1646,7 @@ function DecoderContent() {
                                       isLoss ? "text-rose-500" : "text-[#d95f02]"
                                     )}>{isLoss ? "Expected Deficit" : "Expected Surplus"}</p>
                                     <p className="text-2xl font-black text-white tracking-tighter italic">
-                                      {surplus < 0 ? '-' : ''}{currency} {Math.round(Math.abs(surplus)).toLocaleString()}
+                                      {displaySurplus < 0 ? '-' : ''}{displayCurrency} {Math.round(Math.abs(displaySurplus)).toLocaleString()}
                                       <span className="text-xs text-muted-foreground ml-1 not-italic font-normal uppercase opacity-40">/mo</span>
                                     </p>
                                   </div>
@@ -1630,7 +1657,7 @@ function DecoderContent() {
                                   <div className="bg-[#020617]/40 p-4 space-y-1">
                                     <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.15em]">Outflows</p>
                                     <p className="text-lg font-black text-white tracking-tight italic">
-                                      {currency} {Math.round(expenses).toLocaleString()}
+                                      {displayCurrency} {Math.round(displayExpenses).toLocaleString()}
                                     </p>
                                   </div>
                                   <div className={cn(
@@ -1642,7 +1669,7 @@ function DecoderContent() {
                                       isLoss ? "text-[#f43f5e]" : "text-[#10B981]"
                                     )}>{isLoss ? "Deficit" : "Surplus"}</p>
                                     <p className="text-lg font-black tracking-tight italic">
-                                      {surplus < 0 ? '-' : ''}{currency} {Math.round(Math.abs(surplus)).toLocaleString()}
+                                      {displaySurplus < 0 ? '-' : ''}{displayCurrency} {Math.round(Math.abs(displaySurplus)).toLocaleString()}
                                     </p>
                                   </div>
                                 </div>
