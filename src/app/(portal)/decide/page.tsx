@@ -462,7 +462,7 @@ function DecideContent() {
                 school, surplusLocal, totalLocalIn, totalLocalCost, currency, rate, matchPercentage: matchScore, workload, housingNote, provision,
                 countryScore: (rawSafety / 10).toFixed(1), schoolScore: (careerW / 3).toFixed(1),
                 surplusUSD: surplusLocal / rate, savingsRate: totalLocalIn > 0 ? Math.round((surplusLocal / totalLocalIn) * 100) : 0,
-                surplusBenchmark: (surplusLocal / rate) * (currentRates[benchmark] || 0.79),
+                surplusBenchmark: (surplusLocal / rate) * (currentRates[benchmark] || (benchmark === 'EUR' ? 0.93 : benchmark === 'USD' ? 1.0 : 0.79)),
                 savings3Year: surplusLocal * 36,
                 costs: {
                     rent: rentLocal,
@@ -523,7 +523,7 @@ function DecideContent() {
                                 <div className="flex flex-col justify-center">
                                     <Label className="text-[8px] font-black uppercase text-slate-500 tracking-[0.1em] italic leading-none mb-1.5">Benchmark</Label>
                                     <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
-                                        {(['GBP', 'USD'] as const).map((cur) => (
+                                        {(['GBP', 'USD', 'EUR'] as const).map((cur) => (
                                             <button
                                                 key={cur}
                                                 onClick={() => setBenchmark(cur)}
@@ -780,7 +780,7 @@ function DecideContent() {
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <p className="text-[12px] font-bold text-slate-400 italic leading-none">Projected assets at contract end.</p>
-                                                <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || 0.79)).toLocaleString()}</p>
+                                                <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || (benchmark === 'EUR' ? 0.93 : benchmark === 'USD' ? 1.0 : 0.79))).toLocaleString()}</p>
                                             </div>
                                         </div>
 
