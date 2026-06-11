@@ -840,8 +840,8 @@ function DecideContent() {
                 <div className="flex items-start gap-3 mt-6 p-4 bg-white/[0.02] border border-white/10 rounded-sm">
                     <Target className="size-4 text-[#d95f02] shrink-0 mt-0.5" />
                     <div>
-                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-200 leading-none mb-1.5">How the top pick is decided</p>
-                        <p className="text-[12px] text-slate-300 font-bold leading-normal">The winner is the highest overall Match %. Surplus, academic rep, city safety and workload are all weighted equally.</p>
+                        <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1.5">How the top pick is decided</p>
+                        <p className="text-[12px] text-slate-100 font-semibold leading-normal">The winner is the highest overall Match %. Surplus, academic rep, city safety and workload are all weighted equally.</p>
                     </div>
                 </div>
 
