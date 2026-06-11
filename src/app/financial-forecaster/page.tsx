@@ -976,7 +976,17 @@ function DecoderContent() {
 
             <div className="pt-3 border-t border-white/5 space-y-3">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed mb-2">Monthly net salary ({currency})</label>
+                <div className="flex items-center gap-1.5 mb-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed">Monthly net salary ({currency})</label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
+                      Based on a median salary for a qualified teacher with five years experience.
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
               </div>
               {settings.familyStatus !== "Single" && settings.familyStatus !== "Married (sole earner)" && (
