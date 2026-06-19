@@ -60,7 +60,29 @@ export default function FindYourFitPage() {
     regions: [] as string[],
   });
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const savedProfile = localStorage.getItem('lf_profile');
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        setFormData(prev => ({
+          ...prev,
+          age: parsed.age || prev.age,
+          familyStatus: parsed.familyStatus || prev.familyStatus,
+          currentCity: parsed.location || parsed.currentCity || prev.currentCity,
+          currentSalary: parsed.salary || parsed.currentSalary || prev.currentSalary,
+          experience: parsed.experience || prev.experience,
+          currency: parsed.currency || prev.currency,
+          qualifications: parsed.qualifications || prev.qualifications,
+          objectives: parsed.objectives || parsed.goals || prev.objectives,
+          regions: parsed.regions || prev.regions,
+        }));
+      }
+    } catch (e) {
+      console.warn("Failed to load saved profile:", e);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +90,23 @@ export default function FindYourFitPage() {
     if (formData.regions.length === 0) return;
     if (formData.qualifications.length === 0 || formData.qualifications.includes('None')) return;
     setIsPending(true);
+
+    try {
+      const profileToSave = {
+        age: formData.age,
+        familyStatus: formData.familyStatus,
+        location: formData.currentCity,
+        salary: formData.currentSalary,
+        experience: formData.experience,
+        currency: formData.currency,
+        qualifications: formData.qualifications,
+        goals: formData.objectives,
+        regions: formData.regions
+      };
+      localStorage.setItem('lf_profile', JSON.stringify(profileToSave));
+    } catch (err) {
+      console.warn("Failed to save profile:", err);
+    }
 
     const params = new URLSearchParams({
       age: formData.age,
