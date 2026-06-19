@@ -58,9 +58,21 @@ DATABASE CONTEXT (teacherRequirements, locations_costOfLiving, and schools data)
 {{{availableSchools}}}
 
 TASK:
-For every country processed in the matching database context, you must run three strict rule checks against the 'teacherRequirements' database schema and return up to 5 recommended countries.
+For every country processed in the matching database context, you must run three strict rule checks against the 'teacherRequirements' database schema and return the baseline row followed by 3 to 5 recommended countries.
 
-STRICT RULE CHECKS:
+INJECTION OF THE CURRENT JOB BASELINE ROW:
+You must explicitly generate a static anchor row as the absolute first item in the recommendations array payload before listing any destination countries. This row serves as the baseline benchmark for the entire matrix.
+
+[BASELINE GENERATION LOGIC]
+- Identify the user's input variables: user_current_city and user_current_monthly_saving_index.
+- For this specific anchor item, format the object parameters strictly as follows:
+  * Set countryName to exactly: "CURRENT JOB (user_current_city)" (replacing "user_current_city" with the actual value of user_current_city, e.g. "CURRENT JOB (London)").
+  * Set monthlySavingIndex to the string representation of user_current_monthly_saving_index (e.g. if the value is 2500, format it as a formatted currency string like "£2,500" or similar, or simply convert the number to its exact string equivalent).
+  * Set savingsScore, careerScore, and cultureScore metrics strictly to 0.0.
+  * Set hasBarrier strictly to FALSE.
+  * Set barrierMessage strictly to an empty string "".
+
+STRICT RULE CHECKS (for destination countries):
 
 A. VISA AGE GATE RULE:
 Compare the user's age range (user_age_range) against the destination country's "max_age_m" and "max_age_f" values in the database.
@@ -89,6 +101,11 @@ SCORE ASSIGNMENTS:
 - careerScore: Assign a float score from 0.0 to 9.9 based on academic score and career density.
 - cultureScore: Assign a float score from 0.0 to 9.9 based on culture/lifestyle index.
 - monthlySavingIndex: Provide a string representation of estimated monthly savings, e.g., '£2,403', or '$1,500', converted appropriately based on country finance.
+
+[ARRAY STRUCTURE ENFORCEMENT]
+The final returned recommendations array block MUST follow this chronological sequence:
+1. Item: The Current Job Baseline Anchor Object as the absolute first item in the array.
+2. Items [1] through: The 3 to 5 recommended international destination countries sorted in descending order based on their financial alignment score.
 
 Ensure the output is strictly in the specified JSON format. No fluff. No markdown wrapping outside the schema.`
   });
