@@ -1559,7 +1559,7 @@ function DecoderContent() {
                           <TrendingUp className="size-16 text-[#d95f02]" />
                         </div>
 
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex flex-col gap-2 items-start">
                           <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest italic">3. Expected Surplus</p>
                           <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
                             {["USD", "GBP", "EUR", "Local"].map(curr => (
