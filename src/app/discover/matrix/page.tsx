@@ -6,7 +6,7 @@ import {
   ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
-import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores, matchesRegion } from '@/lib/calculations';
+import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores, matchesRegion, findCostOfLiving } from '@/lib/calculations';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
@@ -132,6 +132,58 @@ function MatrixContent() {
     const goals = (searchParams.get('goals') || "culture").toLowerCase().split(',').filter(Boolean);
     return { regions, salary, status, goals };
   }, [searchParams, mounted]);
+
+  const baselineRow = useMemo(() => {
+    if (!params || !data) return null;
+    
+    const currentCityName = searchParams.get('currentLocation') || '';
+    if (!currentCityName) return null;
+    
+    const currentCityData = findCostOfLiving(currentCityName, '', data.colData);
+    if (!currentCityData) return null;
+    
+    const countryName = currentCityData.country || 'Unknown';
+    const countryKeyLower = canonicalCountry(countryName);
+    
+    const salaryParts = params.salary.split(' ');
+    const userCurrency = salaryParts[0] || 'USD';
+    const userSalaryVal = parseFloat(salaryParts[1]?.replace(/,/g, '')) || parseFloat(params.salary.replace(/[^0-9.]/g, '')) || 0;
+    
+    const resolvedCurrency = userCurrency === 'Local' ? (currentCityData.finances?.currency || currentCityData.currencyCode || 'USD') : userCurrency;
+    const rateToUSD = (RATES['USD'] || 1.27) / (RATES[resolvedCurrency] || 1.0);
+    const userSalaryUSD = userSalaryVal * rateToUSD;
+    
+    const currentCityIsGulf = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryKeyLower);
+    const rawSurplus = calculateSurplus(userSalaryUSD, params.status, currentCityData, currentCityIsGulf);
+    
+    const savingsScore = calculateLocalSavingsScore(userSalaryUSD, params.status, currentCityData, currentCityIsGulf);
+    
+    const cAverages = data.countrySchoolAverages[countryKeyLower];
+    let dynamicCareer = 7.0;
+    if (cAverages && cAverages.count > 0) {
+      const base = cAverages.totalScore / cAverages.count; 
+      const densityBonus = Math.min(1.5, cAverages.count * 0.1); 
+      const avgSchoolSize = cAverages.totalStudents / cAverages.count;
+      const sizeBonus = Math.min(1.0, (avgSchoolSize / 1500));
+      dynamicCareer = base + densityBonus + sizeBonus;
+    }
+    const careerScore = currentCityData.careerScore || Number(Math.min(9.9, dynamicCareer).toFixed(1));
+    
+    const intelScores = deriveIntelligenceScores(currentCityData, null);
+    const cultureScore = currentCityData.cultureScore || intelScores.culture;
+    const adventureScore = currentCityData.adventureScore || intelScores.adventure;
+    
+    return {
+      country: `CURRENT JOB (${currentCityName.toUpperCase()})`,
+      rawSurplus,
+      scores: {
+        savings: savingsScore,
+        career: careerScore,
+        adventure: adventureScore,
+        culture: cultureScore
+      }
+    };
+  }, [params, data, searchParams]);
 
   const sortedCountries = useMemo(() => {
     if (!params || !data) return [];
@@ -384,6 +436,57 @@ function MatrixContent() {
 
             {/* Table Rows */}
             <div className="flex flex-col">
+              {/* CURRENT JOB BASELINE ANCHOR ROW */}
+              {baselineRow && (
+                <div className="flex flex-col lg:grid lg:grid-cols-9 items-stretch bg-black/40 border-b-2 border-[#007FFF]/30 py-4 lg:py-0 relative shadow-[0_4px_20px_rgba(0,127,255,0.05)]">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-[#007FFF]" />
+                  <div className="lg:col-span-3 flex items-center pr-6 p-4 lg:relative lg:h-[56px] overflow-hidden">
+                    <div className="flex flex-row items-center gap-4 w-full relative h-full">
+                      <span className="text-xl font-black italic text-[#007FFF] w-6 shrink-0 z-10 relative">📍</span>
+                      <span className="text-sm font-black uppercase text-slate-300 tracking-tighter truncate w-full italic">
+                        {baselineRow.country}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-2 flex items-center px-4 pb-4 lg:pb-0 lg:p-4 lg:border-l border-white/5 lg:pl-6 border-b border-white/5 lg:border-b-0 mb-2 lg:mb-0">
+                    {(() => {
+                      const conversionFactor = (RATES[benchmark] || 1) / (RATES['USD'] || 1.27);
+                      let displayVal = baselineRow.rawSurplus * conversionFactor;
+                      let sym = benchmark === 'GBP' ? '£' : (benchmark === 'EUR' ? '€' : '$');
+                      
+                      return (
+                        <div className="flex flex-col lg:flex-row lg:items-center gap-1 w-full">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
+                          <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#007FFF]">
+                            {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
+                          </span>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  <div className="grid grid-cols-4 lg:col-span-4 lg:grid lg:grid-cols-4 lg:w-full">
+                    <div className="flex flex-col justify-center items-center p-4 lg:border-l border-white/5">
+                      <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Savings</span>
+                      <span className="text-xl font-black italic text-slate-500">{baselineRow.scores.savings.toFixed(1)}</span>
+                    </div>
+                    <div className="flex flex-col justify-center items-center p-4">
+                      <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Career</span>
+                      <span className="text-xl font-black italic text-slate-500">{baselineRow.scores.career.toFixed(1)}</span>
+                    </div>
+                    <div className="flex flex-col justify-center items-center p-4">
+                      <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Adv</span>
+                      <span className="text-xl font-black italic text-slate-500">{baselineRow.scores.adventure.toFixed(1)}</span>
+                    </div>
+                    <div className="flex flex-col justify-center items-center p-4">
+                      <span className="text-[9px] text-slate-500 font-bold uppercase mb-1 lg:hidden">Culture</span>
+                      <span className="text-xl font-black italic text-slate-500">{baselineRow.scores.culture.toFixed(1)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {sortedCountries.length === 0 ? (
                 <div className="p-12 text-center text-slate-500 font-bold uppercase tracking-widest italic">
                   No targets found for the specified regions.
