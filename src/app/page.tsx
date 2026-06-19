@@ -129,8 +129,8 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-10">
-            <TacticalButton href="/find-your-fit/" label="Find Your Fit" className="w-60 h-16" />
-            <TacticalButton href="/decide/" label="Check Your Offer" className="w-60 h-16" />
+            <TacticalButton href="https://www.leopardfishintel.com/financial-forecaster/" label="Evaluate A School" className="w-60 h-16" />
+            <TacticalButton href="/decide/" label="Compare schools" className="w-60 h-16" />
           </div>
 
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
