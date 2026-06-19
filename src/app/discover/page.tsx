@@ -152,7 +152,7 @@ export default function FindYourFitGate() {
                   <Check className="size-4 text-[#007FFF] opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-[#0b1224] border-white/10 text-white w-[280px]">
-                  {["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "EU State", "None"].map(q => (
+                  {["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "EU State", "IB Trained", "Masters Degree", "Tefl/Celta", "None"].map(q => (
                     <DropdownMenuCheckboxItem key={q} checked={profile.qualifications.some(item => item.toLowerCase() === q.toLowerCase())} onCheckedChange={() => toggleArrayItem('qualifications', q)} className="font-bold uppercase">{q}</DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>

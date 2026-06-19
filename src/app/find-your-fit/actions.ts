@@ -69,7 +69,7 @@ export async function findFitAction(
       age: parsedAge,
       qualifications: qualifications || "Not specified",
       currentLocation: currentCity || "Global",
-      currentSalary: String(formData.get("currentSalary") || "Not specified"),
+      currentSalary: formData.get("currentSalary") ? `${formData.get("currency") || ""} ${formData.get("currentSalary")}`.trim() : "Not specified",
       experience: String(formData.get("experience") || "0"),
       subject: "General", 
       preferredRegions: regions || "Global",

@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { 
   Loader2, Zap, MapPin, Target, GraduationCap, 
-  Compass, User, Trophy, Wallet, Briefcase, ShieldCheck, AlertTriangle 
+  Compass, User, Trophy, Wallet, Briefcase, ShieldCheck, AlertTriangle, Info
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
-const QUALS = ["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "EU State", "None"];
+const QUALS = ["UK (QTS)", "US State", "ANZ Reg", "SA SACE", "EU State", "IB Trained", "Masters Degree", "Tefl/Celta", "None"];
 const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas"];
 const MISSION_OBJECTIVES = ["Savings", "Career Progression", "Adventure", "Culture"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
@@ -53,6 +54,7 @@ export default function FindYourFitPage() {
   const [formData, setFormData] = useState({
     age: '35-49', familyStatus: 'Single', 
     currentCity: '', currentSalary: '', experience: '',
+    currency: 'GBP',
     qualifications: [] as string[],
     objectives: [] as string[],
     regions: [] as string[],
@@ -70,7 +72,7 @@ export default function FindYourFitPage() {
     const params = new URLSearchParams({
       age: formData.age,
       regions: formData.regions.join(','),
-      salary: formData.currentSalary, // We rely on currency being typed into the box or we just pass the raw value
+      salary: `${formData.currency} ${formData.currentSalary}`,
       status: formData.familyStatus,
       qualifications: formData.qualifications.join(','),
       goals: formData.objectives.join(','),
@@ -171,8 +173,21 @@ export default function FindYourFitPage() {
               <Input name="currentCity" required value={formData.currentCity} onChange={e => setFormData({...formData, currentCity: e.target.value})} placeholder="E.G. LONDON, UK" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current Salary <span className="text-red-500">*</span></label>
-              <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. £45,000" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
+              <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current Monthly Net Take-Home Salary <span className="text-red-500">*</span></label>
+              <div className="flex gap-2">
+                <div className="w-24 shrink-0">
+                  <Select value={formData.currency} onValueChange={(v) => setFormData({...formData, currency: v})}>
+                    <SelectTrigger className="bg-black/40 border-white/10 h-12 text-xs font-bold uppercase rounded-none focus:border-[#d95f02] transition-all"><SelectValue placeholder="Currency" /></SelectTrigger>
+                    <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
+                      <SelectItem value="GBP">GBP (£)</SelectItem>
+                      <SelectItem value="USD">USD ($)</SelectItem>
+                      <SelectItem value="EUR">EUR (€)</SelectItem>
+                      <SelectItem value="Local">Local</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. 3,500" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all flex-1" />
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Years Experience <span className="text-red-500">*</span></label>
@@ -227,6 +242,7 @@ export default function FindYourFitPage() {
           {/* DATA CHANNEL */}
           <input type="hidden" name="age" value={formData.age} />
           <input type="hidden" name="familyStatus" value={formData.familyStatus} />
+          <input type="hidden" name="currency" value={formData.currency} />
           {formData.qualifications.map(q => <input key={q} type="hidden" name="qualifications_cb" value={q} />)}
           {formData.objectives.map(o => <input key={o} type="hidden" name="objectives_cb" value={o} />)}
           {formData.regions.map(r => <input key={r} type="hidden" name="regions_cb" value={r} />)}

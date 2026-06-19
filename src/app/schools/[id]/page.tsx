@@ -636,7 +636,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                           {[
                             'UK (QTS)', 'US State', 'ANZ Reg', 'SA SACE', 
-                            'EU State', 'None'
+                            'EU State', 'IB Trained', 'Masters Degree', 'Tefl/Celta', 'None'
                           ].map((qual) => {
                             const isSelected = selectedQualification === qual;
                             return (
