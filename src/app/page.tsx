@@ -269,10 +269,10 @@ export default function Home() {
               Informed decisions start with Leopardfish Intel—the gold standard for indexed school and financial data.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <TacticalButton href="/find-your-fit/" label="Discover" className="w-48 h-14" />
-              <TacticalButton href="/financial-forecaster/" label="Evaluate" className="w-48 h-14" />
-              <TacticalButton href="/decide/" label="Decide" className="w-48 h-14" />
-              <TacticalButton href="/prepare/" label="Prepare" className="w-48 h-14" />
+              <TacticalButton href="/find-your-fit" label="Discover" className="w-48 h-14" />
+              <TacticalButton href="/financial-forecaster" label="Evaluate a School" className="w-48 h-14" />
+              <TacticalButton href="/decide" label="Compare Schools" className="w-48 h-14" />
+              <TacticalButton href="/prepare" label="Prepare" className="w-48 h-14" />
             </div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest max-w-4xl leading-relaxed">
               * All data is adjusted for local tax jurisdictions and when known includes benefit quantifiers (Flights, CPD, Insurance) for a total compensation view. Refer to page footer for full disclosure.
