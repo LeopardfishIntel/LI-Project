@@ -64,25 +64,15 @@ export async function findFitAction(
       console.warn("Failed to fetch full Firebase intel context:", dbError);
     }
 
-    // 🎯 FULL ALIGNMENT: Mapping all required fields
+    const qualificationsArray = formData.getAll("qualifications_cb") as string[];
+
     const input: FindYourFitInput = {
-      age: parsedAge,
-      qualifications: qualifications || "Not specified",
-      currentLocation: currentCity || "Global",
-      currentSalary: formData.get("currentSalary") ? `${formData.get("currency") || ""} ${formData.get("currentSalary")}`.trim() : "Not specified",
-      experience: String(formData.get("experience") || "0"),
-      subject: "General", 
-      preferredRegions: regions || "Global",
-      
-      preferences: `STRICT MISSION PARAMETERS: 
-      1. Primary Objectives: ${selectedObjectives.join(", ")}. 
-      2. ${isJapanResident ? "EXCLUDE JAPAN from all recommendations (Asset is currently stationed there)." : "No regional exclusions."} 
-      3. Use the provided Global Intelligence Database to filter and select the exact top 5 best-fit countries based strictly on age requirements, qualifications, and curriculum matches.`,
-      
-      preferredCurriculums: "British, IB, International",
-      goal: mapObjectivesToGoal(selectedObjectives),
+      user_age_range: rawAge,
+      user_years_experience: Number(formData.get("experience")) || 0,
+      user_qualifications: qualificationsArray,
+      user_current_city: currentCity || "Global",
+      user_current_monthly_saving_index: Number(formData.get("currentSalary")) || 0,
       availableSchools: databaseContext || "[]",
-      familyStatus: String(formData.get("familyStatus") || "Single"),
     };
 
     const result = await findYourFit(input);

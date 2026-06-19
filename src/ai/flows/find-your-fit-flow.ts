@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Intelligence flow for Teacher-Location matching.
+ * @fileOverview Intelligence flow for Teacher-Location matching and data validation.
  */
 
 import { getAI } from '@/ai/genkit';
@@ -8,47 +8,36 @@ import { z } from 'zod';
 
 // 1. Define the Input Schema
 const FindYourFitInputSchema = z.object({
-  age: z.any().describe("User age bracket."),
-  qualifications: z.any().describe('Teaching qualifications (e.g. PGCE, QTS).'),
-  currentLocation: z.string().describe("User's current city/country.").optional(),
-  currentSalary: z.string().describe("Current annual salary for benchmarking.").optional(),
-  experience: z.string().describe('Years of professional teaching experience.'),
-  subject: z.string().describe('Primary teaching subject.').optional(),
-  preferredRegions: z.any().describe("Target regions selected by the user.").optional(),
-  preferences: z.any().describe('Mission objectives and specific user constraints.').optional(),
-  preferredCurriculums: z.string().describe("Preferred school curriculums.").optional(),
-  goal: z.string().describe("The primary driver for the move.").optional(),
-  availableSchools: z.string().describe("JSON string of current vacancies.").optional(),
-  familyStatus: z.string().describe("Family status for benefit/visa analysis."),
+  user_age_range: z.string().describe("User age range bracket (e.g., '35-49')."),
+  user_years_experience: z.number().describe("Years of teaching experience."),
+  user_qualifications: z.array(z.string()).describe("Qualifications array."),
+  user_current_city: z.string().describe("User's current city."),
+  user_current_monthly_saving_index: z.number().describe("Monthly saving index."),
+  availableSchools: z.string().describe("JSON string of cost of living and requirements database context.").optional(),
 });
 
 export type FindYourFitInput = z.infer<typeof FindYourFitInputSchema>;
 
-// 2. Define the Output Schema
+// 2. Define the Output Schema (Zod Alignment)
 const FindYourFitOutputSchema = z.object({
   recommendations: z.array(
     z.object({
-      name: z.string().describe('Recommended country or region.'),
-      fitScore: z.number().describe('Fit percentage score from 0.0 to 9.9.'),
-      executiveSummary: z.string().describe('A warm, colleague-to-colleague summary of why this is a strong match.'),
-      objectiveAlignment: z.string().describe('Specific, short reason why this country fulfills their chosen Mission Objectives (Savings, Career Progression, Adventure, or Balance).'),
-      visaAndAgeRequirements: z.string().describe('Explicit focus on max/min age limits, degree, and licensing rules based on the provided Firebase data.'),
-      lifestyleAndSafety: z.string().describe('Honest pros/cons regarding safety and expat life for their specific family status.'),
-      recommendedSchools: z.array(z.object({
-          id: z.string(),
-          name: z.string(),
-          reasoning: z.string().describe('Why this specific school fits.')
-      })).describe('List of top matching schools (up to 10 if available).').optional(),
+      countryName: z.string().describe("Recommended country Name."),
+      monthlySavingIndex: z.string().describe("Estimated monthly saving index (e.g., '£2,403')."),
+      savingsScore: z.number().describe("Savings score from 0.0 to 9.9."),
+      careerScore: z.number().describe("Career score from 0.0 to 9.9."),
+      cultureScore: z.number().describe("Culture score from 0.0 to 9.9."),
+      hasBarrier: z.boolean().describe("True if the user has a statutory barrier/hurdle for a working visa in this country."),
+      barrierMessage: z.string().describe("Populate ONLY if hasBarrier is true. Max 120 words. No fluff. Dictate exactly what the statutory hurdle or restriction is.")
     })
-  ),
+  )
 });
 
 export type FindYourFitOutput = z.infer<typeof FindYourFitOutputSchema>;
 
-// 4. The Flow Execution
+// 3. The Flow Execution
 export async function findYourFit(input: FindYourFitInput) {
   const ai = getAI();
-  const isProduction = process.env.NODE_ENV === 'production';
   
   // Define the prompt dynamically inside the function
   const findYourFitPrompt = ai.definePrompt({
@@ -56,34 +45,52 @@ export async function findYourFit(input: FindYourFitInput) {
     model: 'googleai/gemini-2.5-flash',
     input: { schema: FindYourFitInputSchema },
     output: { schema: FindYourFitOutputSchema },
-    prompt: `You are an expert career adviser specialising in international teaching opportunities. Speak in a warm, prospective teacher colleague tone using British English.
-    
-    TASK: Analyse the teacher's profile and the Global Intelligence Database to recommend up to 5 suitable countries (minimum 3).
-    
-    CONSTRAINTS & RULES:
-    - TARGET REGIONS: You MUST strictly filter your recommendations to ONLY include countries within the user's Target Regions ({{{preferredRegions}}}). If Target Regions is 'Global' or empty, you may recommend anywhere.
-    - If the "Current Location" is Japan, you MUST NOT recommend Japan.
-    - Use descriptive British English (e.g., 'considerable experience', 'suitable honours').
-    - Your tone should be supportive and professional ("peer-to-peer").
-    - FIT SCORE: Assign a realistic fit score between 0.0 and 9.9 based on the alignment of their objectives, experience, and the country's offerings.
-    - OBJECTIVES MATCH: You MUST provide a specific, short reason why this country directly satisfies their selected Mission Objectives ({{{preferences}}}). Explain how it fulfills multiple objectives if provided.
-    - VISA & AGE: You MUST explicitly locate the specific country within the "teacherRequirements" section of the database. Extract the EXACT max age limit, minimum degree requirements, and years of experience needed for a visa in that country. 
-    - GENDER VISA RULES: We do not know the user's gender. If the database specifies different age limits or rules for males and females (e.g. max_age_m and max_age_f), you MUST quote both.
-    - SCHOOLS: Include up to 10 matching schools from the "schools" section of the database for each country. If there are fewer, list all that match. Ensure these schools are actually located in the recommended country.
-    - SAFETY: Address current safety and lifestyle specifically for their family status ({{{familyStatus}}}).
-    
-    User Profile:
-    - Age: {{{age}}}
-    - Family Status: {{{familyStatus}}}
-    - Qualifications: {{{qualifications}}}
-    - Experience: {{{experience}}} Years
-    - Subject: {{{subject}}}
-    - Current Location: {{{currentLocation}}}
-    - Target Regions: {{{preferredRegions}}}
-    - Objectives: {{{preferences}}}
+    prompt: `You are a cold, precise data validation script. Speak only in exact data analysis terms. You are forbidden from generating generic descriptive paragraphs.
 
-    Global Intelligence Database (Cost of Living, Requirements, Schools):
-    {{{availableSchools}}}`,
+INPUTS:
+- user_age_range: "{{user_age_range}}"
+- user_years_experience: {{user_years_experience}}
+- user_qualifications: {{user_qualifications}}
+- user_current_city: "{{user_current_city}}"
+- user_current_monthly_saving_index: {{user_current_monthly_saving_index}}
+
+DATABASE CONTEXT (teacherRequirements, locations_costOfLiving, and schools data):
+{{{availableSchools}}}
+
+TASK:
+For every country processed in the matching database context, you must run three strict rule checks against the 'teacherRequirements' database schema and return up to 5 recommended countries.
+
+STRICT RULE CHECKS:
+
+A. VISA AGE GATE RULE:
+Compare the user's age range (user_age_range) against the destination country's "max_age_m" and "max_age_f" values in the database.
+- Determine the upper limit of the user's age bracket:
+  - '25-34' is 34
+  - '35-49' is 49
+  - '50-54' is 54
+  - '55-60' is 60
+  - '61-64' is 64
+  - '65+' is 75 (or upper retirement age)
+- Compare this upper limit to the destination country's max_age_m and max_age_f.
+- If the upper limit is within 5 years of the legal retirement limit (either max_age_m or max_age_f), or exceeds it, you MUST set hasBarrier to TRUE.
+- If hasBarrier is TRUE, populate barrierMessage with a short, clinical explanation of the Ministry of Education's retirement rules for new foreign working visas in that country.
+
+B. EXPERIENCE GATE RULE:
+Compare the user's experience (user_years_experience) against the destination country's required experience. Use the "exp_years_Req" property from the database schema (or parse the minimum required years from "exp_notes" if "exp_years_Req" is not defined or is 0).
+- If the user's input tenure (user_years_experience) is less than the statutory requirement to clear a legal teaching visa in that country, you MUST set hasBarrier to TRUE.
+- If hasBarrier is TRUE, populate barrierMessage detailing the non-negotiable legal experience deficit.
+
+C. NATIONALITY / PERMIT REGISTRY ROUTE RULE:
+- If the user's qualifications (user_qualifications) includes 'SA_SACE', 'SA SACE', or 'None' (case-insensitive, matching with or without underscores/spaces) and the destination country's region in the database is 'Europe', you MUST set hasBarrier to TRUE.
+- If hasBarrier is TRUE, populate barrierMessage specifying that severe non-EU labor market market-testing requirements apply, creating a highly restrictive path for corporate work permit sponsorships.
+
+SCORE ASSIGNMENTS:
+- savingsScore: Assign a float score from 0.0 to 9.9 based on cost of living and monthly savings index.
+- careerScore: Assign a float score from 0.0 to 9.9 based on academic score and career density.
+- cultureScore: Assign a float score from 0.0 to 9.9 based on culture/lifestyle index.
+- monthlySavingIndex: Provide a string representation of estimated monthly savings, e.g., '£2,403', or '$1,500', converted appropriately based on country finance.
+
+Ensure the output is strictly in the specified JSON format. No fluff. No markdown wrapping outside the schema.`
   });
 
   const { output } = await findYourFitPrompt(input);

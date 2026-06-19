@@ -91,22 +91,12 @@ export async function findFitAction(
 ): Promise<FitFinderState> {
   try {
     const input: FindYourFitInput = {
-      age: Number(formData.get("age")) || 35,
-      qualifications: formData.getAll("qualifications_cb").join(", "),
-      currentLocation: formData.get("currentLocation")?.toString() || "Not Specified",
-      currentSalary: String(formData.get("currentSalary") || ""),
-      experience: `${formData.get("experience") || "0"} years`,
-      subject: String(formData.get("subject") || "General"),
-      preferredRegions: formData.getAll("regions_cb").join(", "),
-      preferences: `STRICT MISSION: 
-      1. Return 5 countries. 
-      2. START reasoning with [RATING: X.X/10].
-      3. Use headers: // ECONOMICS, // LIFESTYLE, // CAREER, and // SAFETY.
-      4. SAFETY: Include current 2026 ranking from World Population Review.`, 
-      preferredCurriculums: formData.getAll("curriculum_cb").join(", "),
-      goal: mapGoalToEnum(formData.get("goal")?.toString() || "culture"),
+      user_age_range: formData.get("age")?.toString() || "35-49",
+      user_years_experience: Number(formData.get("experience")) || 0,
+      user_qualifications: formData.getAll("qualifications_cb") as string[],
+      user_current_city: formData.get("currentLocation")?.toString() || "Not Specified",
+      user_current_monthly_saving_index: Number(formData.get("currentSalary")) || 0,
       availableSchools: formData.get("availableSchools") as string || "[]",
-      familyStatus: String(formData.get("familyStatus") || "single"),
     };
 
     const result = await findYourFit(input);
