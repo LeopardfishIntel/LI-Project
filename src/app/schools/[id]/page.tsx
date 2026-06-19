@@ -183,6 +183,19 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   React.useEffect(() => {
     setMounted(true);
+    try {
+      const savedProfile = localStorage.getItem('lf_profile');
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        if (parsed.qualifications && Array.isArray(parsed.qualifications) && parsed.qualifications.length > 0) {
+          setSelectedQualification(parsed.qualifications[0]);
+        } else if (typeof parsed.qualifications === 'string') {
+          setSelectedQualification(parsed.qualifications);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load qualification from profile:", e);
+    }
   }, []);
 
   const [stats, setStats] = React.useState<{ views: number, evaluations: number } | null>(null);
@@ -643,7 +656,17 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                               <button
                                 key={qual}
                                 type="button"
-                                onClick={() => setSelectedQualification(qual)}
+                                onClick={() => {
+                                  setSelectedQualification(qual);
+                                  try {
+                                    const savedProfile = localStorage.getItem('lf_profile');
+                                    let parsed = savedProfile ? JSON.parse(savedProfile) : {};
+                                    parsed.qualifications = [qual];
+                                    localStorage.setItem('lf_profile', JSON.stringify(parsed));
+                                  } catch (e) {
+                                    console.warn("Failed to save qualification to profile:", e);
+                                  }
+                                }}
                                 className={cn(
                                   "py-3 text-[10px] font-bold border transition-all rounded-sm",
                                   isSelected
