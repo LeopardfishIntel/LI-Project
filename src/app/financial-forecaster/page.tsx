@@ -983,7 +983,7 @@ function DecoderContent() {
                       <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
                     </TooltipTrigger>
                     <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
-                      Based on a median salary for a qualified teacher with five years experience.
+                      Based on a median salary for a qualified teacher with five years experience. If you have an offer, input this here.
                     </TooltipContent>
                   </Tooltip>
                 </div>
