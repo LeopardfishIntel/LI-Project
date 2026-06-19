@@ -118,16 +118,21 @@ export default function FindYourFitPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         
         {/* BRITISH HEADINGS */}
-        <div className="flex justify-between items-end border-b-2 border-[#d95f02]/20 pb-4">
-          <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
-              Find your <span className="text-[#d95f02]">fit</span>
-            </h1>
-            <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] mt-1">
-              Intel Intake // Ver. 2026.04
-            </p>
+        <div className="flex flex-col gap-4 border-b-2 border-[#d95f02]/20 pb-4">
+          <div className="flex justify-between items-end">
+            <div>
+              <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
+                Find your <span className="text-[#d95f02]">fit</span>
+              </h1>
+              <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] mt-1">
+                Intel Intake // Ver. 2026.04
+              </p>
+            </div>
+            <span className="text-[#007FFF] text-[10px] font-black uppercase tracking-widest italic">Status: Ready</span>
           </div>
-          <span className="text-[#007FFF] text-[10px] font-black uppercase tracking-widest italic">Status: Ready</span>
+          <p className="text-xs text-slate-400 font-medium max-w-2xl leading-relaxed italic">
+            Leopardfish Intel wants to help you find the best fit for your specific situation. To do this accurately, we need a few baseline details regarding your background. This allows us to provide authentic, personalized recommendations.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
