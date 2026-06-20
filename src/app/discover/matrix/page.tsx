@@ -593,51 +593,31 @@ function MatrixContent() {
                   const isLast = idx === Math.min(sortedCountries.length, limit) - 1;
                   return (
                   <div key={idx} className="flex flex-col lg:grid lg:grid-cols-9 items-stretch hover:bg-white/[0.02] transition-colors group border-b border-white/5 last:border-b-0 py-4 lg:py-0">
-                    <div className="lg:col-span-3 flex items-center pr-6 p-4 lg:relative lg:h-[56px] overflow-hidden group/btn cursor-default">
-                      <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 w-full relative h-full">
-                        <div className="flex items-center justify-between w-full lg:w-auto">
-                          <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">{idx + 1}</span>
-                          <button 
-                            onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
-                            className="lg:hidden bg-[#d95f02] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-2 shadow-lg hover:bg-white"
-                          >
-                            Generate <ChevronRight className="size-3" />
-                          </button>
-                        </div>
-                        
-                        <div className="relative flex-1 h-full flex items-center w-full">
-                          {/* Sliding Text */}
-                          <span className="lg:absolute left-0 text-2xl lg:text-xl font-black uppercase text-white tracking-tighter transition-all duration-300 lg:group-hover/btn:-translate-y-10 lg:group-hover/btn:opacity-0 truncate w-full flex items-center gap-2">
-                            {country.country}
-                            {country.warnings && country.warnings.length > 0 && (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="cursor-help inline-flex items-center" onClick={(e) => e.stopPropagation()}>
-                                    <AlertTriangle className="size-4 text-amber-500 animate-pulse" />
-                                  </span>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                                  <div className="space-y-2">
-                                    <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
-                                    <ul className="list-disc pl-3 space-y-1 text-slate-300">
-                                      {country.warnings.map((w: string, idx: number) => (
-                                        <li key={idx} className="leading-tight">{w}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                </TooltipContent>
-                              </Tooltip>
-                            )}
-                          </span>
-                          
-                          {/* Sliding Button (Desktop) */}
-                          <button 
-                            onClick={() => router.push(`/discover/${country.slug}?${searchParams.toString()}`)}
-                            className="hidden lg:flex absolute left-0 translate-y-10 opacity-0 group-hover/btn:translate-y-0 group-hover/btn:opacity-100 transition-all duration-300 bg-[#d95f02] text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-sm items-center gap-3 shadow-lg hover:bg-white shrink-0 pointer-events-auto"
-                          >
-                            Generate Report <ChevronRight className="size-3" />
-                          </button>
-                        </div>
+                    <div className="lg:col-span-3 flex items-center pr-6 p-4 lg:relative lg:h-[56px] overflow-hidden cursor-default">
+                      <div className="flex flex-row items-center gap-4 w-full relative h-full">
+                        <span className="text-xl font-black italic text-slate-700 w-6 shrink-0 z-10 relative">{idx + 1}</span>
+                        <span className="text-2xl lg:text-xl font-black uppercase text-white tracking-tighter truncate w-full flex items-center gap-2">
+                          {country.country}
+                          {country.warnings && country.warnings.length > 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help inline-flex items-center" onClick={(e) => e.stopPropagation()}>
+                                  <AlertTriangle className="size-4 text-amber-500 animate-pulse" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                                <div className="space-y-2">
+                                  <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
+                                  <ul className="list-disc pl-3 space-y-1 text-slate-300">
+                                    {country.warnings.map((w: string, idx: number) => (
+                                      <li key={idx} className="leading-tight">{w}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </span>
                       </div>
                     </div>
 
