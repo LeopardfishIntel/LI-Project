@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
-  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight
+  ArrowLeft, Compass, Wallet, Zap, Coffee, Info, Target, ChevronRight, AlertTriangle
 } from 'lucide-react';
 import { getCountryStats } from '../actions';
 import { calculateSavingsScore, calculateLocalSavingsScore, calculateSurplus, RATES, canonicalCountry, getStrategicScores, matchesRegion, findCostOfLiving } from '@/lib/calculations';
@@ -194,6 +194,15 @@ function MatrixContent() {
     const salaryNum = parseInt(params.salary.replace(/[^0-9]/g, '')) || 60000;
     const primaryGoal = params.goals[0] || 'culture';
 
+    let userExp = 0;
+    try {
+      const savedProfile = localStorage.getItem('lf_profile');
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        userExp = parseInt(parsed.experience) || 0;
+      }
+    } catch (e) {}
+
     // 🛡️ UNIQUENESS REPAIR: Group by Country to prevent duplicates (e.g. Zurich/Geneva both showing 'Switzerland')
     const countryGroups: Record<string, any> = {};
     data.colData.forEach((c: any) => {
@@ -298,6 +307,66 @@ function MatrixContent() {
         primaryScore = (scores.savings + scores.career + scores.adventure + scores.culture) / 4;
       }
 
+      const req = (data.reqsData || []).find((r: any) => canonicalCountry(r.country || r.id) === countryKeyLower);
+      const warnings: string[] = [];
+      if (req) {
+        // 1. Visa Restrictions (Hard Age Limit)
+        const maxAge = Math.min(req.max_age_m || 99, req.max_age_f || 99);
+        if (maxAge < 99) {
+          const userAgeLimit = (() => {
+            const ageStr = params.age || "35";
+            if (ageStr.includes('25-34')) return 34;
+            if (ageStr.includes('35-49')) return 49;
+            if (ageStr.includes('50-54')) return 54;
+            if (ageStr.includes('55-60')) return 60;
+            if (ageStr.includes('61-64')) return 64;
+            if (ageStr.includes('65+')) return 75;
+            const parsed = parseInt(ageStr);
+            return isNaN(parsed) ? 35 : parsed;
+          })();
+          if (userAgeLimit >= maxAge - 5) {
+            warnings.push(`Hard age limit. The ministry runs a strict retirement wall at ${maxAge}. If you are over that line, they simply will not sponsor a new work visa, no matter how good your CV is.`);
+          }
+        }
+
+        // 2. Critical Security Alerts
+        if (req.isSecurityAlert) {
+          warnings.push("Serious safety warnings. The UK government advises against travel here. The big catch is that these active alerts usually render your expat health and emergency evacuation insurance completely void.");
+        }
+
+        // 3. Currency Traps
+        if (['argentina', 'egypt', 'south-africa', 'south africa'].includes(countryKeyLower)) {
+          warnings.push("Getting your money home is a proper nightmare. Local rules make it incredibly tough to convert your earnings into sterling and wire them back to a UK bank account.");
+        }
+
+        // 4. Unmarried Partner Visa Restrictions
+        const isFamilyStatus = params.status && params.status !== 'single';
+        const isMiddleEast = ['united arab emirates', 'saudi arabia', 'qatar', 'kuwait', 'bahrain', 'oman', 'saudi-arabia'].includes(countryKeyLower);
+        if (isFamilyStatus && isMiddleEast) {
+          warnings.push("Local laws do not recognize unmarried partner visa sponsorship.");
+        }
+
+        // 5. Subject-to-Degree Match Constraints (The Qualification Lock)
+        const isStrictDegreeMatch = ['united arab emirates', 'saudi arabia', 'qatar', 'kuwait', 'bahrain', 'oman', 'china', 'saudi-arabia'].includes(countryKeyLower);
+        if (isStrictDegreeMatch) {
+          warnings.push("Strict local ministry alignment rules require your degree major to precisely match your teaching subject.");
+        }
+
+        // 6. Experience Gate Rule
+        if (req.exp_years_Req && userExp < req.exp_years_Req) {
+          warnings.push(`Experience Hurdle: This country strictly requires a minimum of ${req.exp_years_Req} years of teaching experience for work permit sponsorship.`);
+        }
+
+        // 7. Non-EU qualifications targeting Europe
+        if (req.region === 'Europe') {
+          const quals = params.qualifications || [];
+          const hasNonEuQual = quals.some((q: string) => q.toLowerCase().includes('sace') || q.toLowerCase() === 'none');
+          if (hasNonEuQual) {
+            warnings.push("Sponsorship Hurdle: Non-EU qualifications (e.g., SA SACE or None) face highly restrictive labor market testing in Europe.");
+          }
+        }
+      }
+
       return {
         country: countryName,
         slug: countryName.toLowerCase().replace(/\s+/g, '-').replace('&', 'and'),
@@ -305,7 +374,8 @@ function MatrixContent() {
         primaryScore,
         rawSurplus,
         localCurrency: c.finances?.currency || 'USD',
-        exchangeRate: Number(c.finances?.exchangeRate) || 1
+        exchangeRate: Number(c.finances?.exchangeRate) || 1,
+        warnings
       };
     })
     .filter((m): m is any => m !== null)
@@ -537,8 +607,27 @@ function MatrixContent() {
                         
                         <div className="relative flex-1 h-full flex items-center w-full">
                           {/* Sliding Text */}
-                          <span className="lg:absolute left-0 text-2xl lg:text-xl font-black uppercase text-white tracking-tighter transition-all duration-300 lg:group-hover/btn:-translate-y-10 lg:group-hover/btn:opacity-0 truncate w-full">
+                          <span className="lg:absolute left-0 text-2xl lg:text-xl font-black uppercase text-white tracking-tighter transition-all duration-300 lg:group-hover/btn:-translate-y-10 lg:group-hover/btn:opacity-0 truncate w-full flex items-center gap-2">
                             {country.country}
+                            {country.warnings && country.warnings.length > 0 && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help inline-flex items-center" onClick={(e) => e.stopPropagation()}>
+                                    <AlertTriangle className="size-4 text-amber-500 animate-pulse" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                                  <div className="space-y-2">
+                                    <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
+                                    <ul className="list-disc pl-3 space-y-1 text-slate-300">
+                                      {country.warnings.map((w: string, idx: number) => (
+                                        <li key={idx} className="leading-tight">{w}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
                           </span>
                           
                           {/* Sliding Button (Desktop) */}
