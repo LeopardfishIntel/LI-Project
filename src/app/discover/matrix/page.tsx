@@ -130,7 +130,10 @@ function MatrixContent() {
     const salary = searchParams.get('salary') || "USD 60000";
     const status = (searchParams.get('status') || "single").toLowerCase();
     const goals = (searchParams.get('goals') || "culture").toLowerCase().split(',').filter(Boolean);
-    return { regions, salary, status, goals };
+    const age = searchParams.get('age') || "";
+    const qualifications = (searchParams.get('qualifications') || "").split(',').filter(Boolean);
+    const currentLocation = searchParams.get('currentLocation') || "";
+    return { regions, salary, status, goals, age, qualifications, currentLocation };
   }, [searchParams, mounted]);
 
   const baselineRow = useMemo(() => {
@@ -322,18 +325,42 @@ function MatrixContent() {
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic text-white flex items-center gap-4">
                 <Target className="size-10 text-[#007FFF]" /> Mission Matrix
               </h1>
-              <div className="flex items-center gap-4 mt-3 flex-wrap">
-                <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
+              <div className="flex items-center gap-x-4 gap-y-2 mt-3 flex-wrap">
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
                   Priority Drivers: <span className="text-[#d95f02]">{params.goals.join(', ')}</span>
                 </p>
                 <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
-                <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
                   Profile Basis: <span className="text-[#007FFF]">{params.status ? params.status.replace('-', ' ') : "Unknown"}</span>
                 </p>
                 <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
-                <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[11px]">
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
                   Selected Regions: <span className="text-sky-400">{params.regions.length > 0 ? params.regions.join(', ') : "All"}</span>
                 </p>
+                {params.age && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Age Range: <span className="text-emerald-400">{params.age}</span>
+                    </p>
+                  </>
+                )}
+                {params.qualifications.length > 0 && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Qualifications: <span className="text-purple-400">{params.qualifications.join(', ')}</span>
+                    </p>
+                  </>
+                )}
+                {params.currentLocation && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Baseline: <span className="text-amber-400">{params.currentLocation.toUpperCase()} ({params.salary})</span>
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
