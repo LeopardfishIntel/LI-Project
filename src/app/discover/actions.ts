@@ -76,6 +76,47 @@ export async function getLiveSecurityIntelligence(country: string) {
   }
 }
 
+export const getLiveSecurityAlert = unstable_cache(
+  async (country: string) => {
+    const c = canonicalCountry(country);
+    const slug = c.toLowerCase().replace(/\s+/g, '-');
+    const url = `https://www.gov.uk/foreign-travel-advice/${slug}`;
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(url, { 
+        next: { revalidate: 1209600 }, // 14 days
+        signal: controller.signal,
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+      });
+      clearTimeout(id);
+      if (!res.ok) return { isAlert: false };
+      const html = await res.text();
+      const textContext = html.substring(0, 2000).replace(/<[^>]*>?/gm, '').toLowerCase();
+
+      const prompt = `
+        Analyze the following UK Foreign Travel Advice summary for ${country}:
+        "${textContext}"
+        
+        Does the UK government currently advise against all travel, or all but essential travel, to the whole country or major parts of it?
+        Respond with exactly: {"isAlert": true} or {"isAlert": false}. No other text.
+      `;
+      const { text } = await getAI().generate({
+        model: gemini15Pro,
+        prompt: prompt,
+        config: { responseMimeType: 'application/json' }
+      });
+      const parsed = JSON.parse(text);
+      return { isAlert: !!parsed?.isAlert };
+    } catch {
+      const highRisk = ['egypt', 'jordan'].includes(c);
+      return { isAlert: highRisk };
+    }
+  },
+  ['country-security-alerts-v2'],
+  { revalidate: 1209600 }
+);
+
 const mapGoalToEnum = (goal: string): "saving" | "adventure" | "growth" | "culture" => {
   const lowGoal = goal.toLowerCase();
   if (lowGoal.includes('saving')) return 'saving';
@@ -114,6 +155,17 @@ export const getCountryStats = unstable_cache(
       const colSnap = await getDocs(collection(db, 'locations_costOfLiving'));
       const transportSnap = await getDocs(collection(db, 'transport_intel'));
       const transportData = transportSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      const reqsSnap = await getDocs(collection(db, 'teacher_requirements'));
+      const reqsDataRaw = reqsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      const reqsData = await Promise.all(reqsDataRaw.map(async (req: any) => {
+        const alertRes = await getLiveSecurityAlert(req.country || req.id);
+        return {
+          ...req,
+          isSecurityAlert: alertRes.isAlert
+        };
+      }));
       
       const countrySchoolAverages: Record<string, { totalScore: number, count: number, totalSalary: number, salaryCount: number, totalStudents: number }> = {};
       schoolsSnap.docs.forEach(doc => {
@@ -184,12 +236,12 @@ export const getCountryStats = unstable_cache(
         };
       });
       
-      return { colData, countrySchoolAverages };
+      return { colData, countrySchoolAverages, reqsData };
     } catch (e) {
       console.error("Failed to fetch country stats:", e);
-      return { colData: [], countrySchoolAverages: {} };
+      return { colData: [], countrySchoolAverages: {}, reqsData: [] };
     }
   },
-  ['country-stats-matrix-v2'],
+  ['country-stats-matrix-v3'],
   { revalidate: 86400, tags: ['matrix'] }
 );
