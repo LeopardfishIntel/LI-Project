@@ -403,7 +403,7 @@ function MatrixContent() {
                       <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                     </TooltipTrigger>
                     <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal">
-                      Based on standard school packages and accommodation allowances. These can vary substantially; check contract offers carefully.
+                      The estimated cash left over (or lost) each month after local living costs, bills, and groceries are subtracted. Local rent prices is added in if it is not provided by the school.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -419,7 +419,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Proprietary index scoring savings potential based on net average salary against regular local outgoings.
+                    A global 0 to 9.9 financial rating based on your cash surplus. A score of exactly 4.0 means breaking even. Scores above 4.0 indicate savings potential.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -431,7 +431,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Index tracking professional development, leadership pathways, and international school density.
+                    Tracks professional mobility and leadership pathways. We reward cities with lots of school (for easy external job-hopping) and larger schools (for internal promotions).
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -443,7 +443,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Heuristics measuring travel accessibility, regional flight networks, and local activities.
+                    Measures lifestyle accessibility, regional travel infrastructure, flight hubs, and the availability of local outdoor or leisure activities.
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -455,7 +455,7 @@ function MatrixContent() {
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                    Scoring based on cultural richness, lifestyle compatibility, and integration with the host nation's community.
+                    Measures daily lifestyle compatibility, expat integration, and cultural footprint—including UNESCO heritage density, civic spaces, and cosmopolitan social scenes.
                   </TooltipContent>
                 </Tooltip>
               </div>
