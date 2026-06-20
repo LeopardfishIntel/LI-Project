@@ -383,7 +383,7 @@ export function calculateSavingsScore(salaryNum: number, familyStatus: string, c
   
   // Base 4.0 + up to 6 points based on ratio
   let rawScore = 4.0 + (ratio * 15);
-  rawScore = Math.max(0.0, Math.min(9.9, rawScore));
+  rawScore = Math.min(9.9, rawScore);
   
   return Number(rawScore.toFixed(1));
 }
@@ -485,7 +485,7 @@ export function calculateSurplus(
 export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any, isHousingProvided: boolean = false): number {
   const surplus = calculateSurplus(localNetUSD, familyStatus, cityData, isHousingProvided);
   let rawScore = 4.0 + (surplus / 960);
-  rawScore = Math.max(0.0, Math.min(9.9, rawScore));
+  rawScore = Math.min(9.9, rawScore);
   
   return Number(rawScore.toFixed(1));
 }
