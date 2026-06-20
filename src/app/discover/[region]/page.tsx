@@ -30,6 +30,36 @@ function deriveIntelligenceScores(country: any, finances: any) {
     return getStrategicScores(name, region);
 }
 
+function isCurriculumMatch(schoolCurriculum: string, userQuals: string[]): boolean {
+  if (!schoolCurriculum || !userQuals || userQuals.length === 0) return false;
+  const sc = schoolCurriculum.toLowerCase();
+  return userQuals.some(qual => {
+    const q = qual.toLowerCase();
+    if (q.includes('uk (qts)') && (sc.includes('british') || sc.includes('uk') || sc.includes('english') || sc.includes('a-level'))) {
+      return true;
+    }
+    if (q.includes('us state') && (sc.includes('us') || sc.includes('ap') || sc.includes('american'))) {
+      return true;
+    }
+    if (q.includes('anz reg') && (sc.includes('australian') || sc.includes('anz') || sc.includes('nz'))) {
+      return true;
+    }
+    if (q.includes('sa sace') && (sc.includes('south african') || sc.includes('sace'))) {
+      return true;
+    }
+    if (q.includes('eu state') && (sc.includes('french') || sc.includes('german') || sc.includes('spanish') || sc.includes('italian') || sc.includes('european') || sc.includes('national'))) {
+      return true;
+    }
+    if (q.includes('ib trained') && (sc.includes('ib') || sc.includes('international baccalaureate'))) {
+      return true;
+    }
+    if (q.includes('tefl/celta') && (sc.includes('tefl') || sc.includes('celta') || sc.includes('eal') || sc.includes('esl'))) {
+      return true;
+    }
+    return false;
+  });
+}
+
 function getScoreRationale(metric: string, score: number, country: string, region: string) {
   const c = (country || "").toLowerCase();
   const r = (region || "").toLowerCase();
@@ -151,7 +181,8 @@ function DossierContent() {
     const status = (searchParams.get('status') || "single").toLowerCase();
     const goals = (searchParams.get('goals') || "").toLowerCase().split(',').filter(Boolean);
     const currentLocation = searchParams.get('currentLocation') || "";
-    return { regions, age, rawAge, salary, status, goals, currentLocation };
+    const qualifications = (searchParams.get('qualifications') || "").split(',').filter(Boolean);
+    return { regions, age, rawAge, salary, status, goals, currentLocation, qualifications };
   }, [searchParams, mounted]);
 
   const { data: finData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
@@ -328,27 +359,42 @@ function DossierContent() {
             <div key={idx} className="flex flex-col border border-white/10 bg-black/40 hover:border-[#d95f02]/50 transition-all shadow-2xl overflow-hidden">
               
               {/* Profile Summary Bar */}
-              <div className="w-full bg-white/[0.03] border-b border-white/10 px-8 py-3 flex flex-wrap items-center gap-x-8 gap-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Base:</span>
-                  <span className="text-[11px] font-bold text-white uppercase italic">{params.currentLocation || "Not Set"}</span>
-                </div>
-                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Profile:</span>
-                  <span className="text-[11px] font-bold text-white uppercase italic">{params.status}</span>
-                </div>
-                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Net Monthly:</span>
-                  <span className="text-[11px] font-bold text-[#007FFF] uppercase italic">{params.salary}</span>
-                </div>
-                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Age:</span>
-                  <span className="text-[11px] font-bold text-white uppercase italic">{params.rawAge}</span>
-                </div>
-                <div className="flex items-center gap-2 border-l border-white/10 pl-8">
-                  <span className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Focus:</span>
-                  <span className="text-[11px] font-bold text-[#d95f02] uppercase italic">{params.goals.join(', ')}</span>
-                </div>
+              <div className="w-full bg-white/[0.03] border-b border-white/10 px-8 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                  Priority Drivers: <span className="text-[#d95f02]">{params.goals.join(', ')}</span>
+                </p>
+                <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                  Profile Basis: <span className="text-[#007FFF]">{params.status ? params.status.replace('-', ' ') : "Unknown"}</span>
+                </p>
+                <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                  Selected Regions: <span className="text-sky-400">{params.regions.length > 0 ? params.regions.join(', ') : "All"}</span>
+                </p>
+                {params.rawAge && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Age Range: <span className="text-emerald-400">{params.rawAge}</span>
+                    </p>
+                  </>
+                )}
+                {params.qualifications && params.qualifications.length > 0 && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Qualifications: <span className="text-purple-400">{params.qualifications.join(', ')}</span>
+                    </p>
+                  </>
+                )}
+                {params.currentLocation && (
+                  <>
+                    <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
+                    <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
+                      Baseline: <span className="text-amber-400">{params.currentLocation.toUpperCase()} ({params.salary})</span>
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
@@ -423,7 +469,7 @@ function DossierContent() {
                 </div>
               </div>
 
-              {/* Column 2: Economics & Leopardfish Verdict */}
+              {/* Column 2: Economics */}
               <div className="lg:col-span-4 p-8 border-r border-white/10 flex flex-col h-full bg-black/20">
                 <div className="grid grid-cols-2 gap-4 mb-6 items-end">
                   <div className="space-y-2">
@@ -449,7 +495,7 @@ function DossierContent() {
                   </div>
                 </div>
 
-                <div className="py-5 border-y border-white/5 grid grid-cols-4 gap-2 mb-6">
+                <div className="py-5 border-t border-white/5 grid grid-cols-4 gap-2 mb-6">
                   {[
                     { label: 'Adventure', val: country.suitability.adventure, icon: Compass },
                     { label: 'Savings', val: country.suitability.savings, icon: Banknote },
@@ -462,39 +508,69 @@ function DossierContent() {
                     </div>
                   ))}
                 </div>
-
-                <div className="p-8 bg-[#d95f02]/5 border-l-2 border-[#d95f02]/50 flex-grow flex flex-col justify-center space-y-4">
-                  <div className="flex justify-between items-center pb-4 border-b border-[#d95f02]/20">
-                    <p className="text-[#d95f02] text-[13px] font-black uppercase tracking-[0.3em]">Leopardfish Verdict</p>
-                    <span className="text-[#d95f02] font-black text-[11px] italic bg-[#d95f02]/20 px-3 py-1 rounded-full border border-[#d95f02]/30 tracking-tight">Match: {country.fitScore}%</span>
-                  </div>
-                  
-                  <div className="space-y-4 pt-2">
-                    <p className="text-[14px] text-white leading-relaxed font-bold tracking-tight italic">
-                      {country.verdict}
-                    </p>
-                    <p className="text-[14px] text-white leading-relaxed font-bold tracking-tight italic">
-                      {country.alignment}
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Column 3: Targets & Smaller Rounded Button */}
               <div className="lg:col-span-4 p-8 flex flex-col justify-between bg-white/[0.01]">
                 <div className="space-y-4">
                   <p className="text-[#007FFF] text-[11px] font-bold uppercase tracking-widest">International Schools</p>
-                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                    {country.schools?.map((s: any, i: number) => (
-                      <button key={i} className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#d95f02] text-left transition-all">
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="font-black text-white text-[12px] uppercase truncate pr-2">{s.schoolname}</span>
-                          <span className="font-black text-[#007FFF] text-[12px]">{s.totalscore}</span>
+                  
+                  {(() => {
+                    const perfectFitSchools = (country.schools || []).filter((s: any) => isCurriculumMatch(s.curriculum, params.qualifications));
+                    const otherSchools = (country.schools || []).filter((s: any) => !isCurriculumMatch(s.curriculum, params.qualifications));
+
+                    return (
+                      <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        {/* Perfect Fit Section */}
+                        <div className="space-y-3">
+                          <p className="text-emerald-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 border-b border-emerald-500/20 pb-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Perfect Fit (Curriculum Match)
+                          </p>
+                          {perfectFitSchools.length === 0 ? (
+                            <p className="text-[10px] text-slate-500 italic pl-3 uppercase tracking-wider">No matching curriculum schools found.</p>
+                          ) : (
+                            perfectFitSchools.map((s: any, i: number) => (
+                              <button 
+                                key={i} 
+                                onClick={() => router.push(`/schools/${s.id}?${searchParams.toString()}`)}
+                                className="w-full p-4 bg-emerald-500/5 border border-emerald-500/20 hover:border-emerald-400 text-left transition-all rounded-sm block group/btn"
+                              >
+                                <div className="flex justify-between items-start mb-2">
+                                  <span className="font-black text-white text-[12px] uppercase truncate pr-2 group-hover/btn:text-emerald-400 transition-colors">{s.schoolname}</span>
+                                  <span className="font-black text-emerald-400 text-[12px]">{s.totalscore}</span>
+                                </div>
+                                <span className="text-[8px] font-black uppercase text-emerald-300 bg-emerald-400/10 px-2 py-0.5 border border-emerald-400/20">{s.curriculum || "IB / British"}</span>
+                              </button>
+                            ))
+                          )}
                         </div>
-                        <span className="text-[9px] font-black uppercase text-[#d95f02] bg-[#d95f02]/10 px-2 py-1 border border-[#d95f02]/20">{s.curriculum || "IB / British"}</span>
-                      </button>
-                    ))}
-                  </div>
+
+                        {/* Other Options Section */}
+                        <div className="space-y-3 pt-2">
+                          <p className="text-slate-500 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 border-b border-white/10 pb-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-slate-500"></span> Other Options (Other Curriculums)
+                          </p>
+                          {otherSchools.length === 0 ? (
+                            <p className="text-[10px] text-slate-500 italic pl-3 uppercase tracking-wider">No other curriculum schools found.</p>
+                          ) : (
+                            otherSchools.map((s: any, i: number) => (
+                              <button 
+                                key={i} 
+                                onClick={() => router.push(`/schools/${s.id}?${searchParams.toString()}`)}
+                                className="w-full p-4 bg-white/5 border border-white/10 hover:border-[#d95f02] text-left transition-all rounded-sm block group/btn"
+                              >
+                                <div className="flex justify-between items-start mb-2">
+                                  <span className="font-black text-white text-[12px] uppercase truncate pr-2 group-hover/btn:text-[#d95f02] transition-colors">{s.schoolname}</span>
+                                  <span className="font-black text-slate-400 text-[12px]">{s.totalscore}</span>
+                                </div>
+                                <span className="text-[8px] font-black uppercase text-slate-500 bg-white/5 px-2 py-0.5 border border-white/10">{s.curriculum || "IB / British"}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="mt-8 flex justify-center">
                   <button 
