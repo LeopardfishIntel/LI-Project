@@ -128,12 +128,13 @@ function MatrixContent() {
     if (!mounted) return null;
     const regions = (searchParams.get('regions') || "").toLowerCase().split(',').filter(Boolean);
     const salary = searchParams.get('salary') || "USD 60000";
+    const partnerSalary = searchParams.get('partnerSalary') || "";
     const status = (searchParams.get('status') || "single").toLowerCase();
     const goals = (searchParams.get('goals') || "culture").toLowerCase().split(',').filter(Boolean);
     const age = searchParams.get('age') || "";
     const qualifications = (searchParams.get('qualifications') || "").split(',').filter(Boolean);
     const currentLocation = searchParams.get('currentLocation') || "";
-    return { regions, salary, status, goals, age, qualifications, currentLocation };
+    return { regions, salary, partnerSalary, status, goals, age, qualifications, currentLocation };
   }, [searchParams, mounted]);
 
   const baselineRow = useMemo(() => {
@@ -155,11 +156,24 @@ function MatrixContent() {
     const resolvedCurrency = userCurrency === 'Local' ? (currentCityData.finances?.currency || currentCityData.currencyCode || 'USD') : userCurrency;
     const rateToUSD = (RATES['USD'] || 1.27) / (RATES[resolvedCurrency] || 1.0);
     const userSalaryUSD = userSalaryVal * rateToUSD;
+
+    let partnerSalaryUSD = 0;
+    if (params.partnerSalary) {
+      const partnerParts = params.partnerSalary.split(' ');
+      const partnerCurrency = partnerParts[0] || 'USD';
+      const partnerSalaryVal = parseFloat(partnerParts[1]?.replace(/,/g, '')) || parseFloat(params.partnerSalary.replace(/[^0-9.]/g, '')) || 0;
+      
+      const resolvedPartnerCurrency = partnerCurrency === 'Local' ? (currentCityData.finances?.currency || currentCityData.currencyCode || 'USD') : partnerCurrency;
+      const partnerRateToUSD = (RATES['USD'] || 1.27) / (RATES[resolvedPartnerCurrency] || 1.0);
+      partnerSalaryUSD = partnerSalaryVal * partnerRateToUSD;
+    }
+
+    const totalSalaryUSD = userSalaryUSD + partnerSalaryUSD;
     
     const currentCityIsGulf = ['united arab emirates', 'qatar', 'saudi arabia', 'kuwait', 'bahrain', 'oman', 'china'].includes(countryKeyLower);
-    const rawSurplus = calculateSurplus(userSalaryUSD, params.status, currentCityData, currentCityIsGulf);
+    const rawSurplus = calculateSurplus(totalSalaryUSD, params.status, currentCityData, currentCityIsGulf);
     
-    const savingsScore = calculateLocalSavingsScore(userSalaryUSD, params.status, currentCityData, currentCityIsGulf);
+    const savingsScore = calculateLocalSavingsScore(totalSalaryUSD, params.status, currentCityData, currentCityIsGulf);
     
     const cAverages = data.countrySchoolAverages[countryKeyLower];
     let dynamicCareer = 7.0;
@@ -613,7 +627,7 @@ function MatrixContent() {
                                 <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
                               </TooltipTrigger>
                               <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[11px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
-                                Based on your actual entered salary of {params.salary}, not a country-wide median or average.
+                                Based on your actual entered salary of {params.salary}{params.partnerSalary ? ` + partner salary of ${params.partnerSalary}` : ''}, not a country-wide median or average.
                               </TooltipContent>
                             </Tooltip>
                           </div>

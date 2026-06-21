@@ -55,6 +55,8 @@ export default function FindYourFitPage() {
     age: '35-49', familyStatus: 'Single', 
     currentCity: '', currentSalary: '', experience: '',
     currency: 'GBP',
+    partnerSalary: '',
+    partnerCurrency: 'GBP',
     qualifications: [] as string[],
     objectives: [] as string[],
     regions: [] as string[],
@@ -74,6 +76,8 @@ export default function FindYourFitPage() {
           currentSalary: parsed.salary || parsed.currentSalary || prev.currentSalary,
           experience: parsed.experience || prev.experience,
           currency: parsed.currency || prev.currency,
+          partnerSalary: parsed.partnerSalary || '',
+          partnerCurrency: parsed.partnerCurrency || 'GBP',
           qualifications: parsed.qualifications || prev.qualifications,
           objectives: parsed.objectives || parsed.goals || prev.objectives,
           regions: parsed.regions || prev.regions,
@@ -99,6 +103,8 @@ export default function FindYourFitPage() {
         salary: formData.currentSalary,
         experience: formData.experience,
         currency: formData.currency,
+        partnerSalary: formData.familyStatus !== 'Single' ? formData.partnerSalary : '',
+        partnerCurrency: formData.partnerCurrency,
         qualifications: formData.qualifications,
         goals: formData.objectives,
         regions: formData.regions
@@ -112,6 +118,7 @@ export default function FindYourFitPage() {
       age: formData.age,
       regions: formData.regions.join(','),
       salary: `${formData.currency} ${formData.currentSalary}`,
+      partnerSalary: formData.familyStatus !== 'Single' && formData.partnerSalary ? `${formData.partnerCurrency} ${formData.partnerSalary}` : '',
       status: formData.familyStatus,
       qualifications: formData.qualifications.join(','),
       goals: formData.objectives.join(','),
@@ -210,32 +217,56 @@ export default function FindYourFitPage() {
           </div>
 
           {/* 3. CURRENT ROLE & FINANCES */}
-          <div className="grid md:grid-cols-3 gap-6 border-y border-white/5 py-8">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current City <span className="text-red-500">*</span></label>
-              <Input name="currentCity" required value={formData.currentCity} onChange={e => setFormData({...formData, currentCity: e.target.value})} placeholder="E.G. LONDON, UK" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current Monthly Net Take-Home Salary <span className="text-red-500">*</span></label>
-              <div className="flex gap-2">
-                <div className="w-24 shrink-0">
-                  <Select value={formData.currency} onValueChange={(v) => setFormData({...formData, currency: v})}>
-                    <SelectTrigger className="bg-black/40 border-white/10 h-12 text-xs font-bold uppercase rounded-none focus:border-[#d95f02] transition-all"><SelectValue placeholder="Currency" /></SelectTrigger>
-                    <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
-                      <SelectItem value="GBP">GBP (£)</SelectItem>
-                      <SelectItem value="USD">USD ($)</SelectItem>
-                      <SelectItem value="EUR">EUR (€)</SelectItem>
-                      <SelectItem value="Local">Local</SelectItem>
-                    </SelectContent>
-                  </Select>
+          <div className="space-y-6 border-y border-white/5 py-8">
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current City <span className="text-red-500">*</span></label>
+                <Input name="currentCity" required value={formData.currentCity} onChange={e => setFormData({...formData, currentCity: e.target.value})} placeholder="E.G. LONDON, UK" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Current Monthly Net Take-Home Salary <span className="text-red-500">*</span></label>
+                <div className="flex gap-2">
+                  <div className="w-24 shrink-0">
+                    <Select value={formData.currency} onValueChange={(v) => setFormData({...formData, currency: v})}>
+                      <SelectTrigger className="bg-black/40 border-white/10 h-12 text-xs font-bold uppercase rounded-none focus:border-[#d95f02] transition-all"><SelectValue placeholder="Currency" /></SelectTrigger>
+                      <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
+                        <SelectItem value="GBP">GBP (£)</SelectItem>
+                        <SelectItem value="USD">USD ($)</SelectItem>
+                        <SelectItem value="EUR">EUR (€)</SelectItem>
+                        <SelectItem value="Local">Local</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. 3,500" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all flex-1" />
                 </div>
-                <Input name="currentSalary" required value={formData.currentSalary} onChange={e => setFormData({...formData, currentSalary: e.target.value})} placeholder="E.G. 3,500" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all flex-1" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Years Experience <span className="text-red-500">*</span></label>
+                <Input name="experience" required type="number" min="0" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} placeholder="E.G. 12" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Years Experience <span className="text-red-500">*</span></label>
-              <Input name="experience" required type="number" min="0" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} placeholder="E.G. 12" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all" />
-            </div>
+
+            {formData.familyStatus !== 'Single' && (
+              <div className="grid md:grid-cols-3 gap-6 pt-4 border-t border-white/5 animate-in slide-in-from-top duration-300">
+                <div className="space-y-2 md:col-start-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase flex items-center gap-2 italic tracking-widest">Partner / Other Net Monthly Income</label>
+                  <div className="flex gap-2">
+                    <div className="w-24 shrink-0">
+                      <Select value={formData.partnerCurrency} onValueChange={(v) => setFormData({...formData, partnerCurrency: v})}>
+                        <SelectTrigger className="bg-black/40 border-white/10 h-12 text-xs font-bold uppercase rounded-none focus:border-[#d95f02] transition-all"><SelectValue placeholder="Currency" /></SelectTrigger>
+                        <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
+                          <SelectItem value="GBP">GBP (£)</SelectItem>
+                          <SelectItem value="USD">USD ($)</SelectItem>
+                          <SelectItem value="EUR">EUR (€)</SelectItem>
+                          <SelectItem value="Local">Local</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Input name="partnerSalary" value={formData.partnerSalary} onChange={e => setFormData({...formData, partnerSalary: e.target.value})} placeholder="E.G. 2,000" className="bg-black/40 border-white/10 h-12 text-white font-bold rounded-none uppercase text-xs italic focus:border-[#d95f02] transition-all flex-1" />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 4. QUALIFICATIONS & REGIONS */}
