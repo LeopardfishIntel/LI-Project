@@ -604,7 +604,9 @@ function MatrixContent() {
                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
                           <div className="flex items-center gap-1">
                             <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#007FFF]">
-                              {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
+                              {Math.round(displayVal) < 0 
+                                ? `-${sym}${Math.abs(Math.round(displayVal)).toLocaleString()}` 
+                                : `${sym}${Math.round(displayVal).toLocaleString()}`}
                             </span>
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -708,7 +710,9 @@ function MatrixContent() {
                           <div className="flex flex-col lg:flex-row lg:items-center gap-1 w-full">
                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
                             <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#d95f02]">
-                              {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
+                              {Math.round(displayVal) < 0 
+                                ? `-${sym}${Math.abs(Math.round(displayVal)).toLocaleString()}` 
+                                : `${sym}${Math.round(displayVal).toLocaleString()}`}
                             </span>
                           </div>
                         );
