@@ -652,7 +652,8 @@ export async function getSchoolStabilityReport(input: {
             return { data: stabilityMemoryCache.get(input.schoolId), error: null };
         }
 
-        const { doc, getDoc, updateDoc } = await import('firebase/firestore');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const { updateDocument } = await import('@/firebase/admin');
         const { db } = await import('@/firebase/server');
 
         const schoolRef = doc(db, 'schools', input.schoolId);
@@ -753,9 +754,9 @@ export async function getSchoolStabilityReport(input: {
                         isRevalidating: true
                     });
                     if (schoolSnap && schoolSnap.exists()) {
-                        updateDoc(schoolRef, {
+                        updateDocument('schools', input.schoolId, {
                             isRevalidating: true
-                        }).catch(() => {});
+                        }).catch((err) => console.error("Failed to update isRevalidating flag:", err));
                     }
 
                     // Fire background scrape task
@@ -856,13 +857,13 @@ export async function getSchoolStabilityReport(input: {
 
                             // Try Firestore update in background without awaiting it!
                             if (schoolSnap && schoolSnap.exists()) {
-                                updateDoc(schoolRef, {
+                                updateDocument('schools', input.schoolId, {
                                     scrapedJobsCount: freshJobsCount,
                                     scrapedJobsList: freshJobsList,
                                     lastScrapedAt: freshLastScrapedAt,
                                     cachedStability: freshReport,
                                     isRevalidating: false
-                                }).catch(() => {});
+                                }).catch((err) => console.error("Failed to update school stability details:", err));
                             }
                             
                             stabilityMemoryCache.set(input.schoolId, freshReport);
@@ -875,9 +876,9 @@ export async function getSchoolStabilityReport(input: {
                                 isRevalidating: false
                             });
                             if (schoolSnap && schoolSnap.exists()) {
-                                updateDoc(schoolRef, {
+                                updateDocument('schools', input.schoolId, {
                                     isRevalidating: false
-                                }).catch(() => {});
+                                }).catch((err) => console.error("Failed to reset isRevalidating flag:", err));
                             }
                         }
                     })();
@@ -935,12 +936,12 @@ export async function getSchoolStabilityReport(input: {
 
                 // Update Firestore in background without awaiting it!
                 if (schoolSnap && schoolSnap.exists()) {
-                    updateDoc(schoolRef, {
+                    updateDocument('schools', input.schoolId, {
                         scrapedJobsCount,
                         scrapedJobsList,
                         lastScrapedAt,
                         cachedStability: null
-                    }).catch(() => {});
+                    }).catch((err) => console.error("Failed to update scraped jobs list:", err));
                 }
             } catch (searchErr) {
                 console.error(`🛸 [STABILITY ENGINE] Active AI search failed; falling back to null/ledger:`, searchErr);
@@ -1039,12 +1040,12 @@ export async function getSchoolStabilityReport(input: {
             
             // Try updating Firestore in background without awaiting it!
             if (schoolSnap && schoolSnap.exists()) {
-                updateDoc(schoolRef, {
+                updateDocument('schools', input.schoolId, {
                     scrapedJobsCount,
                     scrapedJobsList,
                     lastScrapedAt,
                     cachedStability: report
-                }).catch(() => {});
+                }).catch((err) => console.error("Failed to cache fresh stability report:", err));
             }
         } catch (writeErr: any) {
             console.warn(`🛸 [STABILITY ENGINE] Local caching failed:`, writeErr);

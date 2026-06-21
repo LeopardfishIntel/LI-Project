@@ -1940,19 +1940,19 @@ function DecoderContent() {
                                                 <div className="space-y-2">
                                                   <div className="text-[9px] font-black uppercase text-teal-400 px-2 pt-1 pb-0.5 tracking-wider border-b border-teal-500/10">Current Cycle (Last 12 Months)</div>
                                                   {currentJobs.map((job, idx) => (
-                                                    <div key={`current-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
+                                                    <div key={`current-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 py-2 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
                                                       <div className="flex items-center gap-2 min-w-0 flex-1">
                                                         <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
                                                           {String(idx + 1).padStart(2, '0')}
                                                         </span>
-                                                        <span className="font-bold text-slate-300 truncate" title={job.title}>
-                                                          {job.title}
+                                                        <span className="font-bold text-slate-300 truncate flex-1 min-w-0 block" title={job.title}>
+                                                          {job.title || "Unknown Position"}
                                                         </span>
                                                         <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
                                                           {job.source}
                                                         </span>
                                                       </div>
-                                                      <div className="flex items-center gap-2 ml-5 sm:ml-0 shrink-0 self-end sm:self-auto">
+                                                      <div className="flex items-center gap-2 shrink-0 justify-between sm:justify-end pl-5 sm:pl-0 w-full sm:w-auto">
                                                         {job.postedDate && (!job.closesDate || job.status !== 'open') && (
                                                           <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
                                                             Listed: {job.postedDate}
@@ -1982,19 +1982,19 @@ function DecoderContent() {
                                                 <div className="space-y-2">
                                                   <div className="text-[9px] font-black uppercase text-[#d95f02] px-2 pt-1 pb-0.5 tracking-wider border-b border-[#d95f02]/10">Historic Cycle (12-24 Months Ago)</div>
                                                   {historicJobs.map((job, idx) => (
-                                                    <div key={`historic-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 py-1.5 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
+                                                    <div key={`historic-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 py-2 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
                                                       <div className="flex items-center gap-2 min-w-0 flex-1">
                                                         <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
                                                           {String(idx + 1).padStart(2, '0')}
                                                         </span>
-                                                        <span className="font-bold text-slate-200 truncate" title={job.title}>
-                                                          {job.title}
+                                                        <span className="font-bold text-slate-200 truncate flex-1 min-w-0 block" title={job.title}>
+                                                          {job.title || "Unknown Position"}
                                                         </span>
                                                         <span className="text-[9px] text-slate-500 font-medium shrink-0 px-1 bg-white/5 rounded-sm">
                                                           {job.source}
                                                         </span>
                                                       </div>
-                                                      <div className="flex items-center gap-2 ml-5 sm:ml-0 shrink-0 self-end sm:self-auto">
+                                                      <div className="flex items-center gap-2 shrink-0 justify-between sm:justify-end pl-5 sm:pl-0 w-full sm:w-auto">
                                                         {job.postedDate && (!job.closesDate || job.status !== 'open') && (
                                                           <span className="text-[9px] text-slate-400 font-medium bg-black/30 px-1.5 py-0.5 border border-white/5 rounded-sm">
                                                             Listed: {job.postedDate}
