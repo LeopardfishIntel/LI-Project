@@ -605,7 +605,7 @@ function MatrixContent() {
                                   <AlertTriangle className="size-4 text-amber-500 animate-pulse" />
                                 </span>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal whitespace-normal">
                                 <div className="space-y-2">
                                   <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
                                   <ul className="list-disc pl-3 space-y-1 text-slate-300">
