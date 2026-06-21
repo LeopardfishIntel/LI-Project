@@ -1073,32 +1073,36 @@ function DecoderContent() {
                     <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
                     <div className="space-y-3">
                       {/* Monthly Rent */}
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <div className="flex items-center gap-2 shrink-0">
-                          <Home className="w-4 h-4 text-orange-500 shrink-0" />
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
-                                Monthly Rent
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                              {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+30%"})` : ""}`}
-                            </TooltipContent>
-                          </Tooltip>
+                      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0 border-b border-white/5 pb-2">
+                        <div className="flex justify-between items-center w-full lg:w-auto lg:contents">
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Home className="w-4 h-4 text-orange-500 shrink-0" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                  Monthly Rent
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                                {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+30%"})` : ""}`}
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          
+                          <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap lg:order-3 lg:ml-auto", analysis?.housingStatus === 'provided' && "italic")}>
+                            {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
+                          </span>
                         </div>
                         
-                        <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
-                          <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
-                          <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
-                          <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
-                          <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
-                          <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
+                        <div className="flex justify-end lg:justify-center w-full lg:w-auto lg:order-2 lg:flex-1 lg:px-4">
+                          <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
+                            <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
+                            <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
+                            <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
+                            <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
+                            <button onClick={() => setOverrideBedrooms(3)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 3 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent3br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>3BR</button>
+                          </div>
                         </div>
-                        
-                        <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0", analysis?.housingStatus === 'provided' && "italic")}>
-                          {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
-                        </span>
                       </div>
 
                       {/* Utilities */}
