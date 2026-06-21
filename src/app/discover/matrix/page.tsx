@@ -508,7 +508,7 @@ function MatrixContent() {
 
             {/* Table Header - Sticky & Layered */}
             <div className="hidden lg:grid grid-cols-9 sticky top-0 z-20 border-b border-white/10 bg-[#0b1224] text-[10px] font-black uppercase tracking-widest text-slate-500">
-              <div className="col-span-3 flex items-center p-4 text-[#007FFF]">Deployment Target (Click to Gen Report)</div>
+              <div className="col-span-3 flex items-center p-4 text-[#007FFF]">Deployment Target</div>
               
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
