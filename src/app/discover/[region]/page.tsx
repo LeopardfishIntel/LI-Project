@@ -178,11 +178,12 @@ function DossierContent() {
     const ageMatch = rawAge.match(/\d+/);
     const age = ageMatch ? parseInt(ageMatch[0]) : 35;
     const salary = searchParams.get('salary') || "USD 60000";
+    const partnerSalary = searchParams.get('partnerSalary') || "";
     const status = (searchParams.get('status') || "single").toLowerCase();
     const goals = (searchParams.get('goals') || "").toLowerCase().split(',').filter(Boolean);
     const currentLocation = searchParams.get('currentLocation') || "";
     const qualifications = (searchParams.get('qualifications') || "").split(',').filter(Boolean);
-    return { regions, age, rawAge, salary, status, goals, currentLocation, qualifications };
+    return { regions, age, rawAge, salary, partnerSalary, status, goals, currentLocation, qualifications };
   }, [searchParams, mounted]);
 
   const { data: finData } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
@@ -391,7 +392,10 @@ function DossierContent() {
                   <>
                     <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
                     <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
-                      Baseline: <span className="text-amber-400">{params.currentLocation.toUpperCase()} ({params.salary})</span>
+                      Baseline: <span className="text-amber-400">
+                        {params.currentLocation.toUpperCase()} ({params.salary}
+                        {params.partnerSalary ? ` + ${params.partnerSalary} Joint` : ''})
+                      </span>
                     </p>
                   </>
                 )}

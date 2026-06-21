@@ -486,7 +486,10 @@ function MatrixContent() {
                   <>
                     <div className="h-1 w-1 bg-white/20 rounded-full hidden sm:block" />
                     <p className="text-slate-400 font-black uppercase tracking-[0.25em] text-[10px]">
-                      Baseline: <span className="text-amber-400">{params.currentLocation.toUpperCase()} ({params.salary})</span>
+                      Baseline: <span className="text-amber-400">
+                        {params.currentLocation.toUpperCase()} ({params.salary}
+                        {params.partnerSalary ? ` + ${params.partnerSalary} Joint` : ''})
+                      </span>
                     </p>
                   </>
                 )}
