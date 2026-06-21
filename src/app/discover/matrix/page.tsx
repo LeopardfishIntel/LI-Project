@@ -523,7 +523,9 @@ function MatrixContent() {
                   </Tooltip>
                 </div>
                 <span className="text-[8px] text-slate-500 normal-case tracking-normal mt-0.5">
-                  single income only.
+                  {params.status && params.status !== 'single' 
+                    ? `${params.status.replace(/-/g, ' ')} basis (single income package).` 
+                    : 'single income only.'}
                 </span>
               </div>
               
@@ -600,9 +602,19 @@ function MatrixContent() {
                       return (
                         <div className="flex flex-col lg:flex-row lg:items-center gap-1 w-full">
                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest lg:hidden">Est. Monthly Surplus</span>
-                          <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#007FFF]">
-                            {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
-                          </span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-3xl lg:text-xl font-black tracking-tighter text-[#007FFF]">
+                              {sym}{Math.max(0, Math.round(displayVal)).toLocaleString()}
+                            </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[11px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal">
+                                Based on your actual entered salary of {params.salary}, not a country-wide median or average.
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
                         </div>
                       );
                     })()}
