@@ -203,6 +203,15 @@ function MatrixContent() {
       }
     } catch (e) {}
 
+    const currentCityName = params.currentLocation || '';
+    let baselineCountryKey = '';
+    if (currentCityName) {
+      const currentCityData = findCostOfLiving(currentCityName, '', data.colData);
+      if (currentCityData) {
+        baselineCountryKey = canonicalCountry(currentCityData.country || 'Unknown');
+      }
+    }
+
     // 🛡️ UNIQUENESS REPAIR: Group by Country to prevent duplicates (e.g. Zurich/Geneva both showing 'Switzerland')
     const countryGroups: Record<string, any> = {};
     data.colData.forEach((c: any) => {
@@ -228,6 +237,9 @@ function MatrixContent() {
         
         // Skip if no matching cost-of-living data in the selected regions
         if (!c) return null;
+
+        // Skip if this is the country of the current job baseline (so we don't duplicate it in the targets)
+        if (baselineCountryKey && countryKey === baselineCountryKey) return null;
 
         const countryName = c.country || countryKey.charAt(0).toUpperCase() + countryKey.slice(1);
       
@@ -467,7 +479,7 @@ function MatrixContent() {
               
               <div className="col-span-2 flex flex-col justify-center p-4 border-l border-white/5 pl-6">
                 <div className="flex items-center gap-1">
-                  <span>Monthly Saving Index</span>
+                  <span>Monthly Median Saving Projection</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
