@@ -320,7 +320,7 @@ function MatrixContent() {
       }
 
       const req = (data.reqsData || []).find((r: any) => canonicalCountry(r.country || r.id) === countryKeyLower);
-      const warnings: string[] = [];
+      const warnings: any[] = [];
       if (req) {
         // 1. Visa Restrictions (Hard Age Limit)
         const maxAge = Math.min(req.max_age_m || 99, req.max_age_f || 99);
@@ -343,7 +343,13 @@ function MatrixContent() {
 
         // 2. Critical Security Alerts
         if (req.isSecurityAlert) {
-          warnings.push("Serious safety warnings. The UK government advises against travel here. The big catch is that these active alerts usually render your expat health and emergency evacuation insurance completely void.");
+          let detail = req.securityAlertDetail || "Serious safety warnings. The UK government advises against travel here.";
+          if (!detail.endsWith('.')) detail += '.';
+          const text = `${detail} Note that active alerts usually render your expat health and emergency evacuation insurance completely void.`;
+          warnings.push({
+            text,
+            link: req.securityAlertUrl
+          });
         }
 
         // 3. Currency Traps
@@ -621,8 +627,25 @@ function MatrixContent() {
                                 <div className="space-y-2">
                                   <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
                                   <ul className="list-disc pl-3 space-y-1 text-slate-300">
-                                    {country.warnings.map((w: string, idx: number) => (
-                                      <li key={idx} className="leading-tight">{w}</li>
+                                    {country.warnings.map((w: any, idx: number) => (
+                                      <li key={idx} className="leading-tight">
+                                        {typeof w === 'string' ? w : (
+                                          <span>
+                                            {w.text}
+                                            {w.link && (
+                                              <a 
+                                                href={w.link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="underline text-sky-400 hover:text-sky-300 ml-1 inline-block"
+                                                onClick={(e) => e.stopPropagation()}
+                                              >
+                                                UK Gov Advice
+                                              </a>
+                                            )}
+                                          </span>
+                                        )}
+                                      </li>
                                     ))}
                                   </ul>
                                 </div>

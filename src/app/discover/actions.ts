@@ -90,7 +90,7 @@ export const getLiveSecurityAlert = unstable_cache(
         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
       });
       clearTimeout(id);
-      if (!res.ok) return { isAlert: false };
+      if (!res.ok) return { isAlert: false, url, detail: "" };
       const html = await res.text();
       const textContext = html.substring(0, 2000).replace(/<[^>]*>?/gm, '').toLowerCase();
 
@@ -99,7 +99,13 @@ export const getLiveSecurityAlert = unstable_cache(
         "${textContext}"
         
         Does the UK government currently advise against all travel, or all but essential travel, to the whole country or major parts of it?
-        Respond with exactly: {"isAlert": true} or {"isAlert": false}. No other text.
+        Also extract any brief 1-sentence detail of specific regions affected (e.g. for Egypt: "Advises against all but essential travel to parts of the country including Sinai and the Western Desert; Cairo is okay", or for other countries list their specific affected regions).
+        
+        Respond with a JSON object in this exact format:
+        {
+          "isAlert": true/false,
+          "detail": "A very brief 1-sentence summary of specific regions affected, or empty string if none."
+        }
       `;
       const { text } = await getAI().generate({
         model: gemini15Pro,
@@ -107,13 +113,20 @@ export const getLiveSecurityAlert = unstable_cache(
         config: { responseMimeType: 'application/json' }
       });
       const parsed = JSON.parse(text);
-      return { isAlert: !!parsed?.isAlert };
+      return { 
+        isAlert: !!parsed?.isAlert,
+        url,
+        detail: parsed?.detail || ""
+      };
     } catch {
       const highRisk = ['egypt', 'jordan'].includes(c);
-      return { isAlert: highRisk };
+      const detail = c === 'egypt'
+        ? "Advises against all but essential travel to Sinai and Western Desert near Libyan border; Cairo is okay."
+        : (highRisk ? "Advises against travel to specific regions of the country." : "");
+      return { isAlert: highRisk, url, detail };
     }
   },
-  ['country-security-alerts-v2'],
+  ['country-security-alerts-v3'],
   { revalidate: 1209600 }
 );
 
@@ -163,7 +176,9 @@ export const getCountryStats = unstable_cache(
         const alertRes = await getLiveSecurityAlert(req.country || req.id);
         return {
           ...req,
-          isSecurityAlert: alertRes.isAlert
+          isSecurityAlert: alertRes.isAlert,
+          securityAlertUrl: alertRes.url || '',
+          securityAlertDetail: alertRes.detail || ''
         };
       }));
       
