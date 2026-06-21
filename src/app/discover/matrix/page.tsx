@@ -337,7 +337,10 @@ function MatrixContent() {
             return isNaN(parsed) ? 35 : parsed;
           })();
           if (userAgeLimit >= maxAge - 5) {
-            warnings.push(`Hard age limit. The ministry runs a strict retirement wall at ${maxAge}. If you are over that line, they simply will not sponsor a new work visa, no matter how good your CV is.`);
+            warnings.push({
+              type: 'Visa',
+              text: `Hard age limit. The ministry runs a strict retirement wall at ${maxAge}. If you are over that line, they simply will not sponsor a new work visa, no matter how good your CV is.`
+            });
           }
         }
 
@@ -347,6 +350,7 @@ function MatrixContent() {
           if (!detail.endsWith('.')) detail += '.';
           const text = `${detail} Note that active alerts usually render your expat health and emergency evacuation insurance completely void.`;
           warnings.push({
+            type: 'Security',
             text,
             link: req.securityAlertUrl
           });
@@ -354,25 +358,37 @@ function MatrixContent() {
 
         // 3. Currency Traps
         if (['argentina', 'egypt', 'south-africa', 'south africa'].includes(countryKeyLower)) {
-          warnings.push("Getting your money home is a proper nightmare. Local rules make it incredibly tough to convert your earnings into sterling and wire them back to a UK bank account.");
+          warnings.push({
+            type: 'Currency',
+            text: "Getting your money home is a proper nightmare. Local rules make it incredibly tough to convert your earnings into sterling and wire them back to a UK bank account."
+          });
         }
 
         // 4. Unmarried Partner Visa Restrictions
         const isFamilyStatus = params.status && params.status !== 'single';
         const isMiddleEast = ['united arab emirates', 'saudi arabia', 'qatar', 'kuwait', 'bahrain', 'oman', 'saudi-arabia'].includes(countryKeyLower);
         if (isFamilyStatus && isMiddleEast) {
-          warnings.push("Local laws do not recognize unmarried partner visa sponsorship.");
+          warnings.push({
+            type: 'Visa',
+            text: "Local laws do not recognize unmarried partner visa sponsorship."
+          });
         }
 
         // 5. Subject-to-Degree Match Constraints (The Qualification Lock)
         const isStrictDegreeMatch = ['united arab emirates', 'saudi arabia', 'qatar', 'kuwait', 'bahrain', 'oman', 'china', 'saudi-arabia'].includes(countryKeyLower);
         if (isStrictDegreeMatch) {
-          warnings.push("Strict local ministry alignment rules require your degree major to precisely match your teaching subject.");
+          warnings.push({
+            type: 'Visa',
+            text: "Strict local ministry alignment rules require your degree major to precisely match your teaching subject."
+          });
         }
 
         // 6. Experience Gate Rule
         if (req.exp_years_Req && userExp < req.exp_years_Req) {
-          warnings.push(`Experience Hurdle: This country strictly requires a minimum of ${req.exp_years_Req} years of teaching experience for work permit sponsorship.`);
+          warnings.push({
+            type: 'Visa',
+            text: `Experience Hurdle: This country strictly requires a minimum of ${req.exp_years_Req} years of teaching experience for work permit sponsorship.`
+          });
         }
 
         // 7. Non-EU qualifications targeting Europe
@@ -380,8 +396,19 @@ function MatrixContent() {
           const quals = params.qualifications || [];
           const hasNonEuQual = quals.some((q: string) => q.toLowerCase().includes('sace') || q.toLowerCase() === 'none');
           if (hasNonEuQual) {
-            warnings.push("Sponsorship Hurdle: Non-EU qualifications (e.g., SA SACE or None) face highly restrictive labor market testing in Europe.");
+            warnings.push({
+              type: 'Visa',
+              text: "Sponsorship Hurdle: Non-EU qualifications (e.g., SA SACE or None) face highly restrictive labor market testing in Europe."
+            });
           }
+        }
+
+        // 8. General Visa Friction Bottlenecks (Notorious work visa delay countries)
+        if (['saudi arabia', 'saudi-arabia', 'china', 'kuwait'].includes(countryKeyLower)) {
+          warnings.push({
+            type: 'Visa',
+            text: "This country has a highly complex, bureaucratic work visa process with notorious processing delays and strict document attestation requirements."
+          });
         }
       }
 
@@ -623,15 +650,18 @@ function MatrixContent() {
                                   <AlertTriangle className="size-4 text-amber-500 animate-pulse" />
                                 </span>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[10px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal whitespace-normal">
+                              <TooltipContent className="bg-[#0b1224] border border-white/10 text-slate-300 text-[11px] p-3 max-w-xs shadow-xl shadow-black/50 z-50 rounded-sm leading-relaxed normal-case tracking-normal font-normal whitespace-normal">
                                 <div className="space-y-2">
-                                  <p className="font-bold text-amber-500 uppercase tracking-wider text-[9px] border-b border-white/10 pb-1">Warning alerts</p>
-                                  <ul className="list-disc pl-3 space-y-1 text-slate-300">
-                                    {country.warnings.map((w: any, idx: number) => (
-                                      <li key={idx} className="leading-tight">
-                                        {typeof w === 'string' ? w : (
+                                  <p className="font-bold text-amber-500 tracking-wider text-[10px] border-b border-white/10 pb-1">Warning Alerts</p>
+                                  <ul className="list-disc pl-3 space-y-1.5 text-slate-300">
+                                    {country.warnings.map((w: any, idx: number) => {
+                                      const type = w.type || 'Visa';
+                                      const text = w.text || w;
+                                      return (
+                                        <li key={idx} className="leading-tight text-slate-300">
+                                          <strong className="text-white font-bold">{type}: </strong>
                                           <span>
-                                            {w.text}
+                                            {text}
                                             {w.link && (
                                               <a 
                                                 href={w.link} 
@@ -644,9 +674,9 @@ function MatrixContent() {
                                               </a>
                                             )}
                                           </span>
-                                        )}
-                                      </li>
-                                    ))}
+                                        </li>
+                                      );
+                                    })}
                                   </ul>
                                 </div>
                               </TooltipContent>
