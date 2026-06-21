@@ -507,7 +507,7 @@ function MatrixContent() {
               </div>
 
               <div className={cn("flex justify-center items-center gap-2 p-4 border-x-2 border-t-2 border-transparent", (params.goals.some((g:string) => g.toLowerCase().includes('career')) || params.goals.some((g:string) => g.toLowerCase().includes('growth'))) && "border-[#d95f02] bg-[#d95f02]/10 text-white shadow-[inset_0_2px_10px_rgba(249,115,22,0.1)]")}>
-                <Zap className="size-3 text-sky-400" /> Career
+                Career
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="cursor-help"><Info className="size-3 text-slate-500 hover:text-white transition-colors" /></span>
