@@ -1042,10 +1042,10 @@ function DecoderContent() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
                   
                   {/* Step 1 */}
-                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                  <div className="step-card-01 bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F26522]/10 text-[#F26522] border border-[#F26522]/20">01</span>
-                      <Target className="size-4 text-[#F26522]" />
+                      <span className="step-number-badge text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">01</span>
+                      <Target className="step-icon size-4 text-slate-400 opacity-70" />
                     </div>
                     <div>
                       <h4 className="text-[14px] font-semibold text-white">Select Target</h4>
