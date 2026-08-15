@@ -6,7 +6,7 @@ import {
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
   Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users,
-  HeartPulse, Laptop, Building
+  HeartPulse, Laptop, Building, Sliders, BarChart3
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
@@ -1010,7 +1010,62 @@ function DecoderContent() {
         {/* Dashboard Area */}
         <div className="flex-1 lg:ml-72 p-4 md:p-6">
           {!activeSchool ? (
-            <div className="h-[70vh] flex flex-col items-center justify-center opacity-10 space-y-4"><Zap className="size-20" /><p className="font-black uppercase tracking-[0.5em] text-sm">Awaiting tactical match</p></div>
+            <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
+              <div className="w-full max-w-[680px] bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-xl p-8 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                
+                {/* Hero Section */}
+                <div className="space-y-3 text-left">
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight">
+                    Unlock Deep School & <span className="text-[#F26522]">Financial Intelligence</span>
+                  </h2>
+                  <p className="text-sm md:text-[15px] text-slate-400 font-medium leading-relaxed">
+                    Select your target country and school on the left to instantly calculate net savings, cost of living breakdowns, and lifestyle matches.
+                  </p>
+                </div>
+
+                {/* 3-Step Mini Guide Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                  
+                  {/* Step 1 */}
+                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F26522]/10 text-[#F26522] border border-[#F26522]/20">01</span>
+                      <Target className="size-4 text-[#F26522]" />
+                    </div>
+                    <div>
+                      <h4 className="text-[14px] font-bold text-white">Select Target</h4>
+                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Pick a country and school from search settings.</p>
+                    </div>
+                  </div>
+
+                  {/* Step 2 */}
+                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">02</span>
+                      <Sliders className="size-4 text-slate-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-[14px] font-bold text-white">Adjust Profile</h4>
+                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Set family status and expected net monthly salary.</p>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">03</span>
+                      <BarChart3 className="size-4 text-slate-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-[14px] font-bold text-white">Analyze Match</h4>
+                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Compare savings potential and lifestyle intelligence.</p>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
               <div className="bg-[#0b1224] border border-white/5 p-5 md:p-6 shadow-2xl relative rounded-sm">
