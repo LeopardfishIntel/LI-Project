@@ -1061,7 +1061,7 @@ function DecoderContent() {
                     </div>
                     <div>
                       <h4 className="text-[14px] font-semibold text-white">Adjust Profile</h4>
-                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Adjust family Status and Lifestyle mode.</p>
+                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Adjust family status and lifestyle mode.</p>
                     </div>
                   </div>
 
