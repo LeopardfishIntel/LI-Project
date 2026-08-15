@@ -1072,7 +1072,7 @@ function DecoderContent() {
                       <BarChart3 className="size-4 text-slate-400" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-semibold text-white">Analyze Match</h4>
+                      <h4 className="text-[14px] font-semibold text-white">Compare Option</h4>
                       <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Review estimated savings and lifestyle fit.</p>
                     </div>
                   </div>
