@@ -1032,7 +1032,7 @@ function DecoderContent() {
                   {/* Opinion & Data Disclaimer Badge */}
                   <div className="flex items-center justify-center gap-2 mt-1 mb-2">
                     <p className="text-[12px] italic text-[#64748B] leading-normal font-medium max-w-[540px]">
-                      Metrics are independent estimates derived from community submissions and model projections.
+                      Metrics are independent estimates derived from community submissions and projections.
                     </p>
                   </div>
                 </div>
