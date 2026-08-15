@@ -163,20 +163,24 @@ export default function FindYourFitPage() {
       )}
       <div className="max-w-5xl mx-auto space-y-6">
         
+        {/* BRITISH HEADINGS */}
+        <div className="flex justify-between items-end border-b-2 border-[#d95f02]/20 pb-4">
+          <div>
+            <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] mt-1">
+              Intel Intake // Ver. 2026.04
+            </p>
+          </div>
+          <span className="text-[#007FFF] text-[10px] font-black uppercase tracking-widest italic">Status: Ready</span>
+        </div>
+
         <form onSubmit={handleSubmit} className="bg-[#0b1224]/90 border border-white/5 p-8 md:p-12 space-y-10 shadow-2xl relative">
           <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]/30" />
 
-          {/* BRITISH HEADINGS */}
-          <div className="flex justify-between items-end border-b border-white/5 pb-4 mb-4">
-            <div>
-              <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
-                Find your <span className="text-[#d95f02]">fit</span>
-              </h1>
-              <p className="text-slate-500 font-black uppercase tracking-widest text-[9px] mt-1">
-                Intel Intake // Ver. 2026.04
-              </p>
-            </div>
-            <span className="text-[#007FFF] text-[10px] font-black uppercase tracking-widest italic">Status: Ready</span>
+          {/* Heading inside the card/box */}
+          <div className="border-b border-white/5 pb-4 mb-4">
+            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic leading-none">
+              Find your <span className="text-[#d95f02]">fit</span>
+            </h1>
           </div>
 
           <p className="text-sm text-slate-300 font-medium max-w-3xl leading-relaxed border-b border-white/5 pb-6">
