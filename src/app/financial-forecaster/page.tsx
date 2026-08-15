@@ -1014,19 +1014,25 @@ function DecoderContent() {
               <div className="w-full max-w-[680px] bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-xl p-8 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 
                 {/* Hero Section */}
-                <div className="space-y-3 text-left">
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-[1.2]">
-                    Explore School Profiles & <span className="text-[#F26522]">Financial Estimates</span>
-                  </h2>
-                  <p className="text-sm md:text-[15px] text-[#94A3B8] font-medium leading-relaxed">
-                    Select a country and school to preview projected net savings, estimated costs of living, and community-driven lifestyle insights.
+                <div className="flex flex-col items-center text-center gap-4">
+                  <div className="hero-header-group flex flex-col items-center text-center gap-2 select-none w-full">
+                    <span className="font-mono text-[13px] font-bold tracking-[2px] text-[#F26522]">
+                      LEOPARDFISH INTEL
+                    </span>
+                    <h2 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
+                      School Profiles & Financial Estimates
+                    </h2>
+                  </div>
+                  
+                  <p className="text-sm md:text-[14px] text-[#94A3B8] font-medium leading-relaxed max-w-[540px]">
+                    Select a target country and school to evaluate estimated net savings, cost of living breakdowns, and community insights.
                   </p>
                   
                   {/* Opinion & Data Disclaimer Badge */}
-                  <div className="flex items-center gap-2 mt-4 mb-6">
+                  <div className="flex items-center justify-center gap-2 mt-1 mb-2">
                     <Info className="size-[14px] text-[#94A3B8] shrink-0" />
-                    <p className="text-[12px] italic text-[#64748B] leading-normal font-medium">
-                      Note: All calculations are independent estimates based on user submissions and historical data. Packages should be verified directly with hiring schools.
+                    <p className="text-[12px] italic text-[#64748B] leading-normal font-medium max-w-[540px]">
+                      Note: Metrics are independent estimates derived from community submissions and model projections.
                     </p>
                   </div>
                 </div>
