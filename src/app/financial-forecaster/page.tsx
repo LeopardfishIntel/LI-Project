@@ -1073,7 +1073,7 @@ function DecoderContent() {
                     </div>
                     <div>
                       <h4 className="text-[14px] font-semibold text-white">Compare Options</h4>
-                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Review estimated savings and lifestyle fit.</p>
+                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Click to view your projected savings and lifestyle match.</p>
                     </div>
                   </div>
 
