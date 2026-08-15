@@ -1015,12 +1015,20 @@ function DecoderContent() {
                 
                 {/* Hero Section */}
                 <div className="space-y-3 text-left">
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight">
-                    Unlock Deep School & <span className="text-[#F26522]">Financial Intelligence</span>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white leading-[1.2]">
+                    Explore School Profiles & <span className="text-[#F26522]">Financial Estimates</span>
                   </h2>
-                  <p className="text-sm md:text-[15px] text-slate-400 font-medium leading-relaxed">
-                    Select your target country and school on the left to instantly calculate net savings, cost of living breakdowns, and lifestyle matches.
+                  <p className="text-sm md:text-[15px] text-[#94A3B8] font-medium leading-relaxed">
+                    Select a country and school to preview projected net savings, estimated costs of living, and community-driven lifestyle insights.
                   </p>
+                  
+                  {/* Opinion & Data Disclaimer Badge */}
+                  <div className="flex items-center gap-2 mt-4 mb-6">
+                    <Info className="size-[14px] text-[#94A3B8] shrink-0" />
+                    <p className="text-[12px] italic text-[#64748B] leading-normal font-medium">
+                      Note: All calculations are independent estimates based on user submissions and historical data. Packages should be verified directly with hiring schools.
+                    </p>
+                  </div>
                 </div>
 
                 {/* 3-Step Mini Guide Grid */}
@@ -1033,8 +1041,8 @@ function DecoderContent() {
                       <Target className="size-4 text-[#F26522]" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-white">Select Target</h4>
-                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Pick a country and school from search settings.</p>
+                      <h4 className="text-[14px] font-semibold text-white">Select Target</h4>
+                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Select a target country and school.</p>
                     </div>
                   </div>
 
@@ -1045,20 +1053,20 @@ function DecoderContent() {
                       <Sliders className="size-4 text-slate-400" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-white">Adjust Profile</h4>
-                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Set family status and expected net monthly salary.</p>
+                      <h4 className="text-[14px] font-semibold text-white">Adjust Profile</h4>
+                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Adjust household details & base salary.</p>
                     </div>
                   </div>
 
-                  {/* Step 3 */}
+                  {/* Step-3 */}
                   <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">03</span>
                       <BarChart3 className="size-4 text-slate-400" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-white">Analyze Match</h4>
-                      <p className="text-[12px] text-[#64748B] mt-1 leading-normal">Compare savings potential and lifestyle intelligence.</p>
+                      <h4 className="text-[14px] font-semibold text-white">Analyze Match</h4>
+                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Review estimated savings and lifestyle fit.</p>
                     </div>
                   </div>
 
