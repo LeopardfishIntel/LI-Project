@@ -1016,9 +1016,9 @@ function DecoderContent() {
                 {/* Hero Section */}
                 <div className="flex flex-col items-center text-center gap-4">
                   <div className="hero-header-group flex flex-col items-center text-center gap-2 select-none w-full">
-                    <span className="font-mono text-[13px] font-bold tracking-[2px] text-[#F26522]">
-                      LEOPARDFISH INTEL
-                    </span>
+                    <h1 className="brand-title text-[13px] font-sans font-bold tracking-[2px] uppercase">
+                      <span className="brand-orange text-[#D96B27]">Leopardfish</span><span className="brand-blue text-[#0073E6]">Intel</span>
+                    </h1>
                     <h2 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
                       School Profiles & Financial Estimates
                     </h2>
