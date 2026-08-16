@@ -507,16 +507,6 @@ export default function FeaturedJobsPage() {
                       <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
                         Source: {job.source}
                       </span>
-                      
-                      <a 
-                        href={job.source_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#d95f02] hover:text-white hover:bg-[#d95f02] border border-[#d95f02] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(249,115,22,0.05)]"
-                      >
-                        Apply / Website
-                        <ArrowUpRight className="size-3.5" />
-                      </a>
                     </div>
                   </div>
                 ))}
