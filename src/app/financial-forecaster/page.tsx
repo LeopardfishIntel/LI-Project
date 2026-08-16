@@ -373,18 +373,7 @@ function DecoderContent() {
 
 
   
-  // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
-  useEffect(() => {
-    if (settings.country.toLowerCase() === "oman") {
-      setTransportMode("C");
-    }
-  }, [settings.country]);
-
   useEffect(() => { setMounted(true); }, []);
-
-  useEffect(() => {
-    setBriefingRequested(false);
-  }, [settings.schoolId]);
 
   const { data: allSchools } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
   const { data: costOfLiving } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
@@ -402,6 +391,34 @@ function DecoderContent() {
   };
 
   const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
+
+  // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
+  useEffect(() => {
+    if (settings.country.toLowerCase() === "oman") {
+      setTransportMode("C");
+    }
+  }, [settings.country]);
+ 
+   useEffect(() => {
+     if (mounted && allSchools && allSchools.length > 0) {
+       const params = new URLSearchParams(window.location.search);
+       const urlSchoolId = params.get('schoolId') || params.get('id');
+       if (urlSchoolId) {
+         const found = allSchools.find((s: any) => s.id === urlSchoolId);
+         if (found) {
+           setSettings(prev => ({
+             ...prev,
+             schoolId: found.id,
+             country: found.country || found.region || ""
+           }));
+         }
+       }
+     }
+   }, [mounted, allSchools]);
+ 
+   useEffect(() => {
+     setBriefingRequested(false);
+   }, [settings.schoolId]);
 
   const loadStabilityReport = useCallback(async (force: boolean = false) => {
     if (!activeSchool) return;
