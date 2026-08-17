@@ -432,7 +432,7 @@ export default function FeaturedJobsPage() {
 
             {/* Empty State */}
             {!loadingSchools && !loadingCol && filteredJobs.length === 0 && (
-              <div className="bg-[#1E293B] border border-[#334155] p-12 text-center rounded-sm space-y-4">
+              <div className="bg-[#243147] border border-[#334155] p-12 text-center rounded-sm space-y-4">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Vacancies Spotted</h3>
@@ -445,11 +445,11 @@ export default function FeaturedJobsPage() {
 
             {/* Jobs Grid */}
             {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 {filteredJobs.map((job, idx) => (
                   <div 
                     key={job.schoolId + "-" + job.title + "-" + idx}
-                    className="bg-[#1E293B] border border-[#334155] p-6 rounded-sm shadow-xl relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
+                    className="bg-[#243147] border border-[#334155] p-6 rounded-sm shadow-xl relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
                   >
                     {/* Top Accents */}
                     <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
