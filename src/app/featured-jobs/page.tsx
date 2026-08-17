@@ -269,7 +269,7 @@ export default function FeaturedJobsPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/5 pb-6 gap-4">
           <div className="space-y-2">
             <div className="brand-title text-2xl md:text-3xl font-sans font-bold tracking-wide">
-              <span className="brand-orange text-[#D96B27]">Leopardfish</span><span className="brand-blue text-[#0073E6]">Intel</span>
+              <span className="brand-orange text-[#FF6B35]">Leopardfish</span><span className="brand-blue text-[#0073E6]">Intel</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic leading-none text-white">
               Featured Vacancies
@@ -281,7 +281,7 @@ export default function FeaturedJobsPage() {
           
           <button 
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden flex items-center gap-2 bg-[#0b1224] border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#d95f02]"
+            className="md:hidden flex items-center gap-2 bg-[#0b1224] border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#FF6B35]"
           >
             <SlidersHorizontal className="size-4" />
             Filters ({selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)})
@@ -308,7 +308,7 @@ export default function FeaturedJobsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Title, school, country..."
-                  className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 pl-4 pr-10 text-sm focus:border-[#d95f02] outline-none"
+                  className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 pl-4 pr-10 text-sm focus:border-[#FF6B35] outline-none"
                 />
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function FeaturedJobsPage() {
               <select 
                 value={minSavings}
                 onChange={(e) => setMinSavings(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#d95f02] outline-none font-bold"
+                className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#FF6B35] outline-none font-bold"
               >
                 <option value={0}>Any Savings</option>
                 <option value={500}>Min $500 / mo</option>
@@ -346,7 +346,7 @@ export default function FeaturedJobsPage() {
                     className={cn(
                       "flex-1 py-2 text-xs font-bold border transition-all",
                       minRating === rating 
-                        ? "bg-[#d95f02] border-[#d95f02] text-white" 
+                        ? "bg-[#FF6B35] border-[#FF6B35] text-white" 
                         : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
                     )}
                   >
@@ -394,7 +394,7 @@ export default function FeaturedJobsPage() {
                     className={cn(
                       "px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all",
                       selectedSubjects.includes(sub)
-                        ? "bg-[#D96B27]/20 border-[#D96B27] text-[#D96B27]"
+                        ? "bg-[#D96B27]/20 border-[#D96B27] text-[#FF6B35]"
                         : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
                     )}
                   >
@@ -425,14 +425,14 @@ export default function FeaturedJobsPage() {
             {/* Loading States */}
             {(loadingSchools || loadingCol) && (
               <div className="h-96 flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="animate-spin size-10 text-[#d95f02]" />
+                <Loader2 className="animate-spin size-10 text-[#FF6B35]" />
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Compiling Active Listings...</p>
               </div>
             )}
 
             {/* Empty State */}
             {!loadingSchools && !loadingCol && filteredJobs.length === 0 && (
-              <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-4">
+              <div className="bg-[#1E293B] border border-[#334155] p-12 text-center rounded-sm space-y-4">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Vacancies Spotted</h3>
@@ -449,10 +449,10 @@ export default function FeaturedJobsPage() {
                 {filteredJobs.map((job, idx) => (
                   <div 
                     key={job.schoolId + "-" + job.title + "-" + idx}
-                    className="bg-[#0b1224]/50 border border-white/5 p-6 rounded-sm shadow-xl relative hover:border-[#d95f02]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
+                    className="bg-[#1E293B] border border-[#334155] p-6 rounded-sm shadow-xl relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
                   >
                     {/* Top Accents */}
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#0073E6]/20 group-hover:bg-[#d95f02]/60 transition-all duration-300" />
+                    <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
                     
                     <div className="space-y-4">
                       {/* Top Badges & Meta */}
@@ -463,18 +463,18 @@ export default function FeaturedJobsPage() {
                         
                         {/* Closing date */}
                         <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                          <Calendar className="size-3.5 text-[#d95f02]" />
+                          <Calendar className="size-3.5 text-[#FF6B35]" />
                           <span>Closes: {job.date_closing || "Rolling"}</span>
                         </div>
                       </div>
 
                       {/* Job Title & School Name */}
                       <div className="space-y-2 text-left">
-                        <h3 className="text-xl font-bold tracking-tight text-white leading-tight">
+                        <h3 className="text-xl font-bold tracking-tight text-[#F8FAFC] leading-tight">
                           {job.title}
                         </h3>
                         <div className="flex flex-col gap-1">
-                          <span className="text-sm font-semibold text-[#0073E6] tracking-tight flex items-center gap-1.5">
+                          <span className="text-sm font-semibold text-[#38BDF8] tracking-tight flex items-center gap-1.5">
                             <Building className="size-3.5" /> {job.schoolName}
                           </span>
                           <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
@@ -494,7 +494,7 @@ export default function FeaturedJobsPage() {
                         </div>
                         <div className="space-y-0.5">
                           <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Est. Savings</span>
-                          <div className="flex items-center gap-1 text-xs font-bold text-[#D96B27]">
+                          <div className="flex items-center gap-1 text-xs font-bold text-[#FF6B35]">
                             <Coins className="size-3" />
                             <span>${job.savingsPotential.toLocaleString()} / mo</span>
                           </div>
@@ -510,7 +510,7 @@ export default function FeaturedJobsPage() {
                       
                       <a 
                         href={`/financial-forecaster?schoolId=${job.schoolId}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#d95f02] hover:text-white hover:bg-[#d95f02] border border-[#d95f02] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(249,115,22,0.05)]"
+                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#d95f02] border border-[#d95f02] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
                       >
                         Evaluate School
                         <ArrowUpRight className="size-3.5" />
