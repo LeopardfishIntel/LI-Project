@@ -108,7 +108,7 @@ const formatDeterministicDate = (input: any) => {
 };
 
 const getJobStatus = (job: string): { status: 'open' | 'closed'; hasDeadline: boolean; label: string } => {
-  const today = new Date("2026-05-18");
+  const today = new Date();
   
   // Find all parenthetical blocks in the string
   const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
@@ -275,7 +275,7 @@ const getJobPostedDate = (job: string): Date | null => {
 
   // 3. Fallbacks based on start date or cycle mentions
   const lower = content.toLowerCase();
-  const today = new Date("2026-05-18");
+  const today = new Date();
   if (lower.includes('2025')) {
     return new Date("2025-01-01");
   }
@@ -287,7 +287,7 @@ const getJobPostedDate = (job: string): Date | null => {
 };
 
 const processAndFilterJobs = (jobs: string[]) => {
-  const today = new Date("2026-05-18");
+  const today = new Date();
   const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
 
   const processed = jobs.map(job => {

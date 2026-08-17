@@ -386,7 +386,7 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
 
     if (status === "OPEN" && date_closing_val) {
       const closes = new Date(date_closing_val);
-      const today = new Date("2026-05-18");
+      const today = new Date();
       if (!isNaN(closes.getTime()) && closes < today) {
         status = "CLOSED";
       }
@@ -748,16 +748,20 @@ export async function getSchoolStabilityReport(input: {
                 } else {
                     console.log(`🛸 [STABILITY ENGINE] [SWR] Locking revalidation gate and launching background worker for ${input.schoolName}...`);
 
-                    // Lock the gate immediately in local cache and Firestore
-                    writeLocalCache(input.schoolId, {
-                        ...data,
-                        isRevalidating: true
-                    });
-                    if (schoolSnap && schoolSnap.exists()) {
-                        updateDocument('schools', input.schoolId, {
-                            isRevalidating: true
-                        }).catch((err) => console.error("Failed to update isRevalidating flag:", err));
-                    }
+                    // Lock the gate immediately in local cache and Firestore, clearing stale jobs
+                     writeLocalCache(input.schoolId, {
+                         ...data,
+                         isRevalidating: true,
+                         scrapedJobsList: [],
+                         scrapedJobsCount: 0
+                     });
+                     if (schoolSnap && schoolSnap.exists()) {
+                         updateDocument('schools', input.schoolId, {
+                             isRevalidating: true,
+                             scrapedJobsList: [],
+                             scrapedJobsCount: 0
+                         }).catch((err) => console.error("Failed to update isRevalidating flag:", err));
+                     }
 
                     // Fire background scrape task
                     (async () => {

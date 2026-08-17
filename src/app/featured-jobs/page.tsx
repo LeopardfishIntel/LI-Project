@@ -68,7 +68,7 @@ export default function FeaturedJobsPage() {
     if (!schoolsData || schoolsData.length === 0) return [];
 
     const jobsList: StructuredJob[] = [];
-    const today = new Date("2026-05-18"); // App date anchor
+    const today = new Date();
 
     schoolsData.forEach((school: any) => {
       const scrapedList = Array.isArray(school.scrapedJobsList) ? school.scrapedJobsList : [];
