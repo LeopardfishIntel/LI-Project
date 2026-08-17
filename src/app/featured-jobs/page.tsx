@@ -3,9 +3,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users
 } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
+import { useTeacher } from '@/firebase/firestore/use-teacher';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry } from '@/lib/calculations';
@@ -43,6 +44,8 @@ interface StructuredJob {
 export default function FeaturedJobsPage() {
   const firestore = useFirestore();
   const [mounted, setMounted] = useState(false);
+  const { user } = useAuth();
+  const { data: teacherProfile } = useTeacher(user?.uid || "");
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,11 +53,42 @@ export default function FeaturedJobsPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [minSavings, setMinSavings] = useState<number>(0);
   const [minRating, setMinRating] = useState<number>(0);
+  const [familyStatus, setFamilyStatus] = useState<string>("Single");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Auto-fill family status if registered or returning user
+  useEffect(() => {
+    if (teacherProfile?.familyStatus) {
+      const dbStatus = String(teacherProfile.familyStatus).trim();
+      const lowerStatus = dbStatus.toLowerCase();
+      
+      if (lowerStatus.includes("single")) {
+        setFamilyStatus("Single");
+      } else if (lowerStatus.includes("sole earner")) {
+        setFamilyStatus("Married (sole earner)");
+      } else if (lowerStatus.includes("dual income")) {
+        setFamilyStatus("Married (dual income)");
+      } else if (lowerStatus.includes("couple") || lowerStatus.includes("married")) {
+        setFamilyStatus("Married (sole earner)");
+      } else if (lowerStatus.includes("+1") || lowerStatus.includes("1 child")) {
+        setFamilyStatus("Family +1");
+      } else if (lowerStatus.includes("+2") || lowerStatus.includes("2 children")) {
+        setFamilyStatus("Family +2");
+      } else if (lowerStatus.includes("+3") || lowerStatus.includes("3 children") || lowerStatus.includes("3+")) {
+        setFamilyStatus("Family +3");
+      } else if (lowerStatus.includes("family")) {
+        setFamilyStatus("Family +1");
+      } else {
+        const options = ["Single", "Married (sole earner)", "Married (dual income)", "Family +1", "Family +2", "Family +3"];
+        const matched = options.find(o => o.toLowerCase() === lowerStatus);
+        if (matched) setFamilyStatus(matched);
+      }
+    }
+  }, [teacherProfile]);
 
   // Fetch Firestore Data
   const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
@@ -84,6 +118,27 @@ export default function FeaturedJobsPage() {
         normalize(c.id) === sCity || normalize(c.id) === sCountry
       ) : null;
 
+      // Match Family status scaling multiplier
+      let rentKey = "rent1br";
+      let scalar = 1.0;
+      
+      if (familyStatus === "Single") {
+        rentKey = "rent1br";
+        scalar = 1.0;
+      } else if (familyStatus === "Married (sole earner)" || familyStatus === "Married (dual income)") {
+        rentKey = "rent2br";
+        scalar = 1.9;
+      } else if (familyStatus === "Family +1") {
+        rentKey = "rent3br";
+        scalar = 2.3;
+      } else if (familyStatus === "Family +2") {
+        rentKey = "rent3br";
+        scalar = 2.65;
+      } else if (familyStatus === "Family +3") {
+        rentKey = "rent3br";
+        scalar = 3.0;
+      }
+
       // Savings Potential Calculation
       const baseSalary = parseSalary(school.salaryRange || school.salary || school.netbase);
       let rentCost = 0;
@@ -91,16 +146,16 @@ export default function FeaturedJobsPage() {
 
       if (matchedCol) {
         const isProvided = String(school.housingprovision || "").toLowerCase().includes("provided");
-        rentCost = isProvided ? 0 : (matchedCol.rent1br || 0);
-        otherCost = (matchedCol.groceries || 0) + 
+        rentCost = isProvided ? 0 : (matchedCol[rentKey] || 0);
+        otherCost = ((matchedCol.groceries || 0) + 
                     (matchedCol.utilities || 0) + 
                     (matchedCol.mobilePhone || 0) + 
                     (matchedCol.internet || 0) + 
-                    (matchedCol.diningSocial || 0);
+                    (matchedCol.diningSocial || 0)) * scalar;
       } else {
         // Fallbacks
         rentCost = String(school.housingprovision || "").toLowerCase().includes("provided") ? 0 : 1200;
-        otherCost = 800; // estimated standard cost of living
+        otherCost = 800 * scalar; // estimated standard cost of living
       }
 
       const calculatedSavings = Math.max(0, Math.round(baseSalary - rentCost - otherCost));
@@ -175,7 +230,7 @@ export default function FeaturedJobsPage() {
           title,
           department,
           source,
-          source_url: school.website || `https://www.google.com/search?q=${encodeURIComponent(school.schoolname + ' jobs')}`,
+          source_url: school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
           date_listed: date_listed_val,
           date_closing: date_closing_val,
           status,
@@ -197,7 +252,7 @@ export default function FeaturedJobsPage() {
       if (!b.date_closing) return -1;
       return new Date(a.date_closing).getTime() - new Date(b.date_closing).getTime();
     });
-  }, [schoolsData, colData]);
+  }, [schoolsData, colData, familyStatus]);
 
   // Derived filters data
   const availableCurriculums = useMemo(() => {
@@ -313,6 +368,25 @@ export default function FeaturedJobsPage() {
               </div>
             </div>
 
+            {/* Family Status Filter */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                <Users className="size-3.5" /> Family Status
+              </label>
+              <select 
+                value={familyStatus}
+                onChange={(e) => setFamilyStatus(e.target.value)}
+                className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#FF6B35] outline-none font-bold"
+              >
+                <option value="Single">Single</option>
+                <option value="Married (sole earner)">Married (sole earner)</option>
+                <option value="Married (dual income)">Married (dual income)</option>
+                <option value="Family +1">Family +1 Child</option>
+                <option value="Family +2">Family +2 Children</option>
+                <option value="Family +3">Family +3+ Children</option>
+              </select>
+            </div>
+
             {/* Savings Potential Filter */}
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
@@ -394,7 +468,7 @@ export default function FeaturedJobsPage() {
                     className={cn(
                       "px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all",
                       selectedSubjects.includes(sub)
-                        ? "bg-[#D96B27]/20 border-[#D96B27] text-[#FF6B35]"
+                        ? "bg-[#D96B27]/20 border-[#D96B27] text-[#D96B27]"
                         : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
                     )}
                   >
@@ -412,6 +486,7 @@ export default function FeaturedJobsPage() {
                 setSelectedSubjects([]);
                 setMinSavings(0);
                 setMinRating(0);
+                setFamilyStatus("Single");
               }}
               className="w-full h-11 border border-white/10 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all rounded-md"
             >
@@ -432,7 +507,7 @@ export default function FeaturedJobsPage() {
 
             {/* Empty State */}
             {!loadingSchools && !loadingCol && filteredJobs.length === 0 && (
-              <div className="bg-[#243147] border border-[#334155] p-12 text-center rounded-sm space-y-4">
+              <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-4">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Vacancies Spotted</h3>
@@ -493,7 +568,7 @@ export default function FeaturedJobsPage() {
                           </div>
                         </div>
                         <div className="space-y-0.5">
-                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Est. Savings</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Est. Savings ({familyStatus})</span>
                           <div className="flex items-center gap-1 text-xs font-bold text-[#FF6B35]">
                             <Coins className="size-3" />
                             <span>${job.savingsPotential.toLocaleString()} / mo</span>
@@ -510,7 +585,7 @@ export default function FeaturedJobsPage() {
                       
                       <a 
                         href={`/financial-forecaster?schoolId=${job.schoolId}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#d95f02] border border-[#d95f02] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
+                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
                       >
                         Evaluate School
                         <ArrowUpRight className="size-3.5" />
