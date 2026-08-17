@@ -54,6 +54,7 @@ export default function FeaturedJobsPage() {
   const [minSavings, setMinSavings] = useState<number>(0);
   const [minRating, setMinRating] = useState<number>(0);
   const [familyStatus, setFamilyStatus] = useState<string>("Single");
+  const [sortBy, setSortBy] = useState<string>("Projected Savings");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -246,12 +247,7 @@ export default function FeaturedJobsPage() {
       });
     });
 
-    // Sort by closing date nearest first
-    return jobsList.sort((a, b) => {
-      if (!a.date_closing) return 1;
-      if (!b.date_closing) return -1;
-      return new Date(a.date_closing).getTime() - new Date(b.date_closing).getTime();
-    });
+    return jobsList;
   }, [schoolsData, colData, familyStatus]);
 
   // Derived filters data
@@ -300,6 +296,29 @@ export default function FeaturedJobsPage() {
       return true;
     });
   }, [allJobs, searchQuery, selectedCurriculums, selectedSubjects, minSavings, minRating]);
+
+  // Sort Logic
+  const sortedJobs = useMemo(() => {
+    const jobs = [...filteredJobs];
+    if (sortBy === "Projected Savings") {
+      return jobs.sort((a, b) => b.savingsPotential - a.savingsPotential);
+    } else if (sortBy === "School Score") {
+      return jobs.sort((a, b) => b.schoolRating - a.schoolRating);
+    } else if (sortBy === "Most recent") {
+      return jobs.sort((a, b) => {
+        const dateA = a.date_listed ? new Date(a.date_listed).getTime() : 0;
+        const dateB = b.date_listed ? new Date(b.date_listed).getTime() : 0;
+        return dateB - dateA;
+      });
+    } else if (sortBy === "Oldest (by closing date)") {
+      return jobs.sort((a, b) => {
+        if (!a.date_closing) return 1;
+        if (!b.date_closing) return -1;
+        return new Date(a.date_closing).getTime() - new Date(b.date_closing).getTime();
+      });
+    }
+    return jobs;
+  }, [filteredJobs, sortBy]);
 
   // Toggle Filters helper
   const handleCurriculumToggle = (cur: string) => {
@@ -487,6 +506,7 @@ export default function FeaturedJobsPage() {
                 setMinSavings(0);
                 setMinRating(0);
                 setFamilyStatus("Single");
+                setSortBy("Projected Savings");
               }}
               className="w-full h-11 border border-white/10 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all rounded-md"
             >
@@ -502,6 +522,29 @@ export default function FeaturedJobsPage() {
               <div className="h-96 flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="animate-spin size-10 text-[#FF6B35]" />
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Compiling Active Listings...</p>
+              </div>
+            )}
+
+            {/* Sort & Count Header */}
+            {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  Showing {filteredJobs.length} active vacancies
+                </span>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sort By:</span>
+                  <select 
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="bg-black/40 border border-white/10 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                  >
+                    <option value="Projected Savings">Projected Savings</option>
+                    <option value="School Score">School Score</option>
+                    <option value="Most recent">Most Recent</option>
+                    <option value="Oldest (by closing date)">Oldest (by closing date)</option>
+                  </select>
+                </div>
               </div>
             )}
 
@@ -521,7 +564,7 @@ export default function FeaturedJobsPage() {
             {/* Jobs Grid */}
             {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
               <div className="grid grid-cols-1 gap-6">
-                {filteredJobs.map((job, idx) => (
+                {sortedJobs.map((job, idx) => (
                   <div 
                     key={job.schoolId + "-" + job.title + "-" + idx}
                     className="bg-[#243147] border border-[#334155] p-6 rounded-sm shadow-xl relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
@@ -580,7 +623,14 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Actions Row */}
                     <div className="flex justify-between items-center pt-4 border-t border-white/5 gap-2">
                       <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
-                        Source: {job.source}
+                        Source: <a 
+                          href={job.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
+                        >
+                          {job.source}
+                        </a>
                       </span>
                       
                       <a 
