@@ -567,79 +567,85 @@ export default function FeaturedJobsPage() {
                 {sortedJobs.map((job, idx) => (
                   <div 
                     key={job.schoolId + "-" + job.title + "-" + idx}
-                    className="bg-[#243147] border border-[#334155] p-6 rounded-sm shadow-xl relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-6"
+                    className="bg-[#243147] border border-[#334155] px-6 py-4 rounded-sm shadow-md relative hover:border-[#FF6B35]/30 transition-all duration-300 group flex flex-col justify-between space-y-3"
                   >
                     {/* Top Accents */}
                     <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
                     
-                    <div className="space-y-4">
-                      {/* Top Badges & Meta */}
-                      <div className="flex justify-between items-start gap-2">
-                        <span className="text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/10 px-2.5 py-1 text-slate-400 rounded-sm">
-                          {job.curriculum}
-                        </span>
-                        
-                        {/* Closing date */}
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium">
-                          <Calendar className="size-3.5 text-[#FF6B35]" />
-                          <span>Closes: {job.date_closing || "Rolling"}</span>
-                        </div>
-                      </div>
-
-                      {/* Job Title & School Name */}
-                      <div className="space-y-2 text-left">
-                        <h3 className="text-xl font-bold tracking-tight text-[#F8FAFC] leading-tight">
+                    {/* Top Header Block */}
+                    <div className="flex justify-between items-start w-full gap-4">
+                      {/* Left Header Title & Subheader */}
+                      <div className="space-y-1 text-left flex-1">
+                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight">
                           {job.title}
                         </h3>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-sm font-semibold text-[#38BDF8] tracking-tight flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 font-medium">
+                          <span className="text-sm font-semibold text-[#38BDF8] tracking-tight flex items-center gap-1">
                             <Building className="size-3.5" /> {job.schoolName}
                           </span>
-                          <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
                             <MapPin className="size-3.5" /> {job.city}, {job.country}
+                          </span>
+                          <span>•</span>
+                          <span className="bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-400">
+                            [{job.curriculum}]
                           </span>
                         </div>
                       </div>
 
-                      {/* School Scoring */}
-                      <div className="grid grid-cols-2 gap-4 bg-black/20 p-3 rounded-md text-left">
-                        <div className="space-y-0.5">
-                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">School Score</span>
-                          <div className="flex items-center gap-1 text-xs font-bold text-white">
-                            <Star className="size-3 text-amber-500 fill-amber-500" />
-                            <span>{job.schoolRating ? `${job.schoolRating}/10` : "N/A"}</span>
-                          </div>
-                        </div>
-                        <div className="space-y-0.5">
-                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Est. Savings ({familyStatus})</span>
-                          <div className="flex items-center gap-1 text-xs font-bold text-[#FF6B35]">
-                            <Coins className="size-3" />
-                            <span>${job.savingsPotential.toLocaleString()} / mo</span>
-                          </div>
-                        </div>
+                      {/* Right Header Deadline */}
+                      <div className="flex items-center gap-1 text-[11px] text-slate-400 font-semibold shrink-0 pt-1">
+                        <Calendar className="size-3.5 text-[#FF6B35]" />
+                        <span>Closes: {job.date_closing || "Rolling"}</span>
                       </div>
                     </div>
 
-                    {/* Bottom Actions Row */}
-                    <div className="flex justify-between items-center pt-4 border-t border-white/5 gap-2">
-                      <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
-                        Source: <a 
+                    <div className="border-t border-white/5 my-1" />
+
+                    {/* Bottom Metrics & Actions Block */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full pt-1">
+                      {/* Left Column: Source Link */}
+                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0">
+                        SOURCE:&nbsp;
+                        <a 
                           href={job.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
                         >
-                          {job.source}
+                          {job.source.toUpperCase()}
                         </a>
-                      </span>
-                      
-                      <a 
-                        href={`/financial-forecaster?schoolId=${job.schoolId}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
-                      >
-                        Evaluate School
-                        <ArrowUpRight className="size-3.5" />
-                      </a>
+                      </div>
+
+                      {/* Center Column: Metric Pills */}
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        <span 
+                          title="Data Reliability & Completeness Score" 
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 border border-white/5 rounded-full text-xs font-bold text-white cursor-help shrink-0"
+                        >
+                          <Star className="size-3 text-amber-500 fill-amber-500" />
+                          <span>{job.schoolRating ? `${job.schoolRating}/10` : "N/A"} Reliability</span>
+                        </span>
+                        
+                        <span 
+                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 border border-white/5 rounded-full text-xs font-bold text-[#FF6B35] shrink-0"
+                        >
+                          <Coins className="size-3" />
+                          <span>${job.savingsPotential.toLocaleString()}/mo Est. Savings</span>
+                        </span>
+                      </div>
+
+                      {/* Right Column: CTA Button */}
+                      <div className="shrink-0">
+                        <a 
+                          href={`/financial-forecaster?schoolId=${job.schoolId}`}
+                          className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
+                        >
+                          Evaluate School
+                          <ArrowUpRight className="size-3.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
