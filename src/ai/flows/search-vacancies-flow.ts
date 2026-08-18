@@ -299,6 +299,8 @@ You MUST run search queries with the school name enclosed in escaped double quot
         name: "Phase 2: TES & Schrole Historical Archives Sweep",
         prompt: `Find all job vacancies (active or closed) posted strictly by the school "${input.schoolName}" in the last 12 months (since May 2025) on international portals.
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
+- "\\"${input.schoolName}\\" site:tes.com/jobs/vacancy"
+- "\\"${input.schoolName}\\" site:tes.com/jobs/employer"
 - "\\"${input.schoolName}\\" site:tes.com"
 - "\\"${input.schoolName}\\" site:schrole.com"
 - "\\"${input.schoolName}\\" site:iss.edu"

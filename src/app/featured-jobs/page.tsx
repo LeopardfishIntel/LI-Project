@@ -385,7 +385,16 @@ export default function FeaturedJobsPage() {
         title: jobData.title,
         department,
         source: jobData.sourceName || "Web",
-        source_url: jobData.applyUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
+        source_url: (() => {
+          let url = jobData.applyUrl;
+          if (!url || url === 'https://www.tes.com/jobs/browse/international' || url === 'https://www.tes.com/jobs/browse/international/') {
+            if (jobData.sourceName?.toLowerCase().includes('tes')) {
+              return `https://www.tes.com/jobs/browse/international?keywords=${encodeURIComponent(school.schoolname)}`;
+            }
+            return school.website || `https://www.google.com/search?q=${encodeURIComponent(school.schoolname + ' jobs')}`;
+          }
+          return url;
+        })(),
         date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
         date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling",
         status: jobData.status,
