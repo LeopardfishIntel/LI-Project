@@ -74,12 +74,18 @@ interface ScrapedVacancy {
   tes_employer_slug?: string;
 }
 
-function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string): string {
+function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string, schoolName?: string): string {
   const sourceNormalized = vacancy.source.toLowerCase();
   const cleanedTitle = vacancy.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
 
   // 1. TES Link Reconstruction Heuristics
   if (sourceNormalized.includes('tes')) {
+    // Preserve precise advert deep-links or employer portal URLs scraped directly
+    if (vacancy.source_url && vacancy.source_url.startsWith('http') && vacancy.source_url.includes('tes.com/jobs/')) {
+      if (!vacancy.source_url.endsWith('/jobs/browse/international') && !vacancy.source_url.endsWith('/jobs/browse/international/')) {
+        return vacancy.source_url;
+      }
+    }
     // If the engine extracted the explicit employer code block, route straight to their live portal overview
     if (vacancy.tes_employer_slug) {
       return `https://www.tes.com/jobs/employer/${vacancy.tes_employer_slug}`;
@@ -88,7 +94,10 @@ function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string):
     if (schoolBaseUrl.includes('parklane')) {
       return `https://www.tes.com/jobs/employer/parklane-international-school-1065604`;
     }
-    // If all else fails, use TES search directory parameterized specifically to international school positions
+    // Route to school search on TES rather than a generic landing page
+    if (schoolName) {
+      return `https://www.tes.com/jobs/browse/international?keywords=${encodeURIComponent(schoolName)}`;
+    }
     return `https://www.tes.com/jobs/browse/international`;
   }
 
@@ -528,7 +537,7 @@ const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolNa
     // Reconstruct URLs programmatically to avoid dead links
     const baseUrl = getSchoolBaseUrl(schoolId, schoolName);
     for (const job of vacancies) {
-      job.source_url = reconstructJobBoardUrl(job, baseUrl);
+      job.source_url = reconstructJobBoardUrl(job, baseUrl, schoolName);
     }
 
     const enrichment = await enrichReportWithLeadership(schoolId, vacancies);
@@ -877,8 +886,8 @@ export async function getSchoolStabilityReport(input: {
                                      const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                                      const admin = await import('firebase-admin');
                                      const subcolJobs = freshParsedVacancies.map(v => {
-                                         const closes = v.date_closing ? new Date(v.date_closing) : new Date();
-                                         if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                                         const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
+                                         if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
                                          
                                          const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
                                          return {
@@ -968,8 +977,8 @@ export async function getSchoolStabilityReport(input: {
                 scrapedJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
                  const freshParsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
                  const subcolJobs = freshParsedVacancies.map(v => {
-                     const closes = v.date_closing ? new Date(v.date_closing) : new Date();
-                     if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                     const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
+                     if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
                      
                      const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
                      return {
@@ -1108,8 +1117,8 @@ export async function getSchoolStabilityReport(input: {
                      const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                      const admin = await import('firebase-admin');
                      const subcolJobs = parsedVacancies.map(v => {
-                         const closes = v.date_closing ? new Date(v.date_closing) : new Date();
-                         if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                         const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
+                         if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
                          
                          const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
                          return {
