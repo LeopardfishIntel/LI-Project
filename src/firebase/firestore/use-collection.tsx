@@ -46,7 +46,7 @@ export function useCollection<T = DocumentData>(
       finalQuery,
       (snapshot) => {
         const docs = snapshot.docs.map((doc) => {
-          const docData = { ...doc.data(), id: doc.id };
+          const docData = { ...doc.data(), id: doc.id, ref: doc.ref };
           return applyDulwichCollegeShanghaiOverride(docData);
         }) as (T & { id: string })[];
         
