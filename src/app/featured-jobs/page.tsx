@@ -256,6 +256,20 @@ export default function FeaturedJobsPage() {
     }
   };
 
+  const handleUpdateClosingDate = async (schoolId: string, jobId: string, dateStr: string) => {
+    if (!dateStr) return;
+    try {
+      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
+      const parsedDate = new Date(dateStr);
+      const { Timestamp } = await import('firebase/firestore');
+      await updateDoc(ref, {
+        closingDate: Timestamp.fromDate(parsedDate)
+      });
+    } catch (err) {
+      console.error("Failed to update job closing date:", err);
+    }
+  };
+
   // Process & Extract Open Vacancies from current active tab
   const allJobs = useMemo(() => {
     const activeJobsData = activeTab === 'admin_staging' ? adminJobsData : publicJobsData;
@@ -901,9 +915,25 @@ export default function FeaturedJobsPage() {
                       </div>
 
                       {/* Right Header Deadline */}
-                      <div className="flex items-center gap-1 text-[11px] text-slate-400 font-semibold shrink-0 pt-1">
+                      <div className="flex items-center gap-2 text-[11px] text-slate-400 font-semibold shrink-0 pt-1">
                         <Calendar className="size-3.5 text-[#FF6B35]" />
-                        <span>Closes: {job.date_closing || "Rolling"}</span>
+                        {activeTab === 'admin_staging' ? (
+                          <div className="flex items-center gap-1">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
+                            <input
+                              type="date"
+                              value={
+                                job.closesDateRaw
+                                  ? job.closesDateRaw.toISOString().substring(0, 10)
+                                  : ""
+                              }
+                              onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
+                              className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                            />
+                          </div>
+                        ) : (
+                          <span>Closes: {job.date_closing || "Rolling"}</span>
+                        )}
                       </div>
                     </div>
 
