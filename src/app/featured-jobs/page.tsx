@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
@@ -23,6 +23,7 @@ const parseSalary = (val: any): number => {
 };
 
 interface StructuredJob {
+  id: string;
   title: string;
   department: string;
   source: string;
@@ -38,6 +39,7 @@ interface StructuredJob {
   country: string;
   savingsPotential: number; // calculated USD/month
   schoolWebsite: string;
+  paidInUSD?: boolean;
 }
 
 export default function FeaturedJobsPage() {
@@ -45,6 +47,8 @@ export default function FeaturedJobsPage() {
   const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
   const { data: teacherProfile } = useTeacher(user?.uid || "");
+  const [isAdminUser, setIsAdminUser] = useState(false);
+  const [activeTab, setActiveTab] = useState<'public' | 'admin_staging'>('public');
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,6 +67,20 @@ export default function FeaturedJobsPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Determine admin user state via token claims or teacher profile role
+  useEffect(() => {
+    if (user) {
+      user.getIdTokenResult().then((idTokenResult) => {
+        setIsAdminUser(!!idTokenResult.claims.admin);
+      }).catch(() => {});
+    } else {
+      setIsAdminUser(false);
+    }
+  }, [user]);
+
+  // Fallback to check document profile roles
+  const calculatedIsAdmin = isAdminUser || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
 
   // Auto-fill family status if registered or returning user
   useEffect(() => {
@@ -96,11 +114,18 @@ export default function FeaturedJobsPage() {
 
   // Fetch Firestore Data (Collection Group Query)
   const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
-  const jobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'active')) : null), [firestore, mounted]);
+  
+  // Query 1: Public Approved Jobs
+  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved')) : null), [firestore, mounted]);
+  
+  // Query 2: Admin Staged Pending Review Jobs
+  const adminJobsQuery = useMemoFirebase(() => (mounted && firestore && calculatedIsAdmin ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review')) : null), [firestore, mounted, calculatedIsAdmin]);
+  
   const colQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]);
 
   const { data: schoolsData, isLoading: loadingSchools } = useCollection<any>(schoolsQuery);
-  const { data: jobsData, isLoading: loadingJobs } = useCollection<any>(jobsQuery);
+  const { data: publicJobsData, isLoading: loadingPublicJobs } = useCollection<any>(publicJobsQuery);
+  const { data: adminJobsData, isLoading: loadingAdminJobs } = useCollection<any>(adminJobsQuery);
   const { data: colData, isLoading: loadingCol } = useCollection<any>(colQuery);
 
   const schoolsMap = useMemo(() => {
@@ -185,14 +210,42 @@ export default function FeaturedJobsPage() {
     }
   };
 
-  // Process & Extract Open Vacancies from all schools
+  // Admin Actions
+  const handleApproveJob = async (schoolId: string, jobId: string) => {
+    try {
+      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
+      await updateDoc(ref, {
+        status: 'approved',
+        reviewedAt: new Date(),
+        reviewedBy: user?.uid || "admin"
+      });
+    } catch (err) {
+      console.error("Failed to approve job:", err);
+    }
+  };
+
+  const handleRemoveJob = async (schoolId: string, jobId: string) => {
+    try {
+      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
+      await updateDoc(ref, {
+        status: 'rejected',
+        reviewedAt: new Date(),
+        reviewedBy: user?.uid || "admin"
+      });
+    } catch (err) {
+      console.error("Failed to reject job:", err);
+    }
+  };
+
+  // Process & Extract Open Vacancies from current active tab
   const allJobs = useMemo(() => {
-    if (!jobsData || !schoolsData || schoolsData.length === 0) return [];
+    const activeJobsData = activeTab === 'admin_staging' ? adminJobsData : publicJobsData;
+    if (!activeJobsData || !schoolsData || schoolsData.length === 0) return [];
 
     const jobsList: StructuredJob[] = [];
     const today = new Date();
 
-    jobsData.forEach((jobDoc: any) => {
+    activeJobsData.forEach((jobDoc: any) => {
       const jobData = jobDoc;
       const schoolId = jobDoc.ref?.parent?.parent?.id;
       if (!schoolId) return;
@@ -210,9 +263,11 @@ export default function FeaturedJobsPage() {
         }
       }
 
-      // Filter: Keep ONLY currently open/active jobs
-      if (closesDate && closesDate < today) return;
-      if (jobData.status === 'expired') return;
+      // Filter: Keep ONLY currently open/active jobs (public feed only)
+      if (activeTab === 'public') {
+        if (closesDate && closesDate < today) return;
+        if (jobData.status !== 'approved') return;
+      }
 
       // Match Cost of Living for this school to estimate savings potential
       const sCity = normalize(school.city || school.town || school.location || "");
@@ -281,6 +336,7 @@ export default function FeaturedJobsPage() {
         }
 
         jobsList.push({
+          id: jobData.id,
           title: jobData.title,
           department,
           source: jobData.sourceName || "Web",
@@ -295,13 +351,14 @@ export default function FeaturedJobsPage() {
           city: school.city || "",
           country: school.country || "",
           savingsPotential: calculatedSavings,
-          schoolWebsite: school.website || ""
+          schoolWebsite: school.website || "",
+          paidInUSD: school.paidInUSD
         });
       }
     });
 
     return jobsList;
-  }, [jobsData, schoolsData, colData, familyStatus, schoolsMap]);
+  }, [publicJobsData, adminJobsData, schoolsData, colData, familyStatus, schoolsMap, activeTab]);
 
   // Derived filters data
   const availableCurriculums = useMemo(() => {
@@ -406,13 +463,38 @@ export default function FeaturedJobsPage() {
             </p>
           </div>
           
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden flex items-center gap-2 bg-[#0b1224] border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#FF6B35]"
-          >
-            <SlidersHorizontal className="size-4" />
-            Filters ({selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)})
-          </button>
+          <div className="flex gap-3">
+            {calculatedIsAdmin && (
+              <div className="flex bg-[#0b1224] border border-white/10 p-1 rounded-sm">
+                <button
+                  onClick={() => setActiveTab('public')}
+                  className={cn(
+                    "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+                    activeTab === 'public' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
+                  )}
+                >
+                  Live Feed
+                </button>
+                <button
+                  onClick={() => setActiveTab('admin_staging')}
+                  className={cn(
+                    "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1",
+                    activeTab === 'admin_staging' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
+                  )}
+                >
+                  Staging ({adminJobsData?.length || 0})
+                </button>
+              </div>
+            )}
+            
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="md:hidden flex items-center gap-2 bg-[#0b1224] border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#FF6B35]"
+            >
+              <SlidersHorizontal className="size-4" />
+              Filters ({selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)})
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -571,7 +653,7 @@ export default function FeaturedJobsPage() {
           <main className="flex-1 w-full space-y-6">
             
             {/* Loading States */}
-            {(loadingSchools || loadingJobs || loadingCol) && (
+            {(loadingSchools || (loadingPublicJobs || loadingAdminJobs) || loadingCol) && (
               <div className="h-96 flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="animate-spin size-10 text-[#FF6B35]" />
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Compiling Active Listings...</p>
@@ -579,7 +661,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Sort & Count Header */}
-            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length > 0 && (
+            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length > 0 && (
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4 w-full">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -620,7 +702,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Empty State */}
-            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length === 0 && (
+            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length === 0 && (
               <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
@@ -681,7 +763,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Jobs Grid */}
-            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length > 0 && (
+            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length > 0 && (
               <div className="grid grid-cols-1 gap-6">
                 {sortedJobs.map((job, idx) => (
                   <div 
@@ -695,8 +777,13 @@ export default function FeaturedJobsPage() {
                     <div className="flex justify-between items-start w-full gap-4">
                       {/* Left Header Title & Subheader */}
                       <div className="space-y-1 text-left flex-1">
-                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight">
+                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex items-center gap-2">
                           {job.title}
+                          {activeTab === 'admin_staging' && (
+                            <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                              Pending Review
+                            </span>
+                          )}
                         </h3>
                         <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 font-medium">
                           <span className="text-sm font-semibold text-[#38BDF8] tracking-tight flex items-center gap-1">
@@ -753,17 +840,50 @@ export default function FeaturedJobsPage() {
                           <Coins className="size-3" />
                           <span>${job.savingsPotential.toLocaleString()}/mo Est. Savings</span>
                         </span>
+
+                        {/* Volatile Market Guardrails visual badge */}
+                        {(job.country === "Argentina") && !job.paidInUSD && (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-xs font-bold text-amber-500 shrink-0">
+                            ⚠️ Volatile Market (0.25x Surplus Applied)
+                          </span>
+                        )}
                       </div>
 
-                      {/* Right Column: CTA Button */}
-                      <div className="shrink-0">
-                        <a 
-                          href={`/financial-forecaster?schoolId=${job.schoolId}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
-                        >
-                          Evaluate School
-                          <ArrowUpRight className="size-3.5" />
-                        </a>
+                      {/* Right Column: CTA or Admin Controls */}
+                      <div className="shrink-0 flex items-center gap-2">
+                        {activeTab === 'admin_staging' ? (
+                          <>
+                            <button
+                              onClick={() => handleApproveJob(job.schoolId, job.id)}
+                              className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-green-500 hover:text-white hover:bg-green-500 border border-green-500 px-3 py-2 rounded-sm transition-all"
+                              title="Approve job listing and publish to live feed"
+                            >
+                              <Check className="size-3.5" /> Approve
+                            </button>
+                            <button
+                              onClick={() => handleRemoveJob(job.schoolId, job.id)}
+                              className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-rose-500 hover:text-white hover:bg-rose-500 border border-rose-500 px-3 py-2 rounded-sm transition-all"
+                              title="Reject job listing (soft delete)"
+                            >
+                              <Trash2 className="size-3.5" /> Remove
+                            </button>
+                            <button
+                              onClick={() => handleRefreshSchool(job.schoolId, job.schoolName, job.city, job.country)}
+                              className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#38BDF8] hover:text-white hover:bg-[#38BDF8] border border-[#38BDF8] px-3 py-2 rounded-sm transition-all"
+                              title="Force sync live sweep in background"
+                            >
+                              <RefreshCw className="size-3.5" /> Force Sync
+                            </button>
+                          </>
+                        ) : (
+                          <a 
+                            href={`/financial-forecaster?schoolId=${job.schoolId}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
+                          >
+                            Evaluate School
+                            <ArrowUpRight className="size-3.5" />
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>

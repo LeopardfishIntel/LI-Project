@@ -887,7 +887,7 @@ export async function getSchoolStabilityReport(input: {
                                              sourceName: v.source,
                                              applyUrl: v.source_url || "",
                                              closingDate: closes,
-                                             status: 'active'
+                                             status: 'pending_review'
                                          };
                                      });
                                      await saveScrapedJobs(input.schoolId, subcolJobs);
@@ -978,7 +978,7 @@ export async function getSchoolStabilityReport(input: {
                          sourceName: v.source,
                          applyUrl: v.source_url || "",
                          closingDate: closes,
-                         status: 'active'
+                         status: 'pending_review'
                      };
                  });
                 scrapedJobsCount = scrapedJobsList.length;
@@ -1118,7 +1118,7 @@ export async function getSchoolStabilityReport(input: {
                              sourceName: v.source,
                              applyUrl: v.source_url || "",
                              closingDate: closes,
-                             status: 'active'
+                             status: 'pending_review'
                          };
                      });
                      await saveScrapedJobs(input.schoolId, subcolJobs);

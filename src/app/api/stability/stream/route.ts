@@ -1062,7 +1062,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
               sourceName: v.source,
               applyUrl: v.source_url || "",
               closingDate: closes,
-              status: 'active'
+              status: 'pending_review'
             };
           });
           (async () => {

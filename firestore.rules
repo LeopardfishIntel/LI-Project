@@ -185,5 +185,13 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // =====================================================================
+    // Jobs Subcollection Security Rules
+    // =====================================================================
+    match /{path=**}/jobs/{jobId} {
+      allow read: if resource.data.status == 'approved' && resource.data.closingDate >= request.time;
+      allow read, write: if isAdmin();
+    }
   }
 }
