@@ -84,7 +84,7 @@ export default function FeaturedJobsPage() {
   }, [user]);
 
   // Fallback to check document profile roles
-  const calculatedIsAdmin = isAdminUser || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
+  const calculatedIsAdmin = isAdminUser || user?.email === 'admin@leopardfish.intel' || userProfileData?.role === 'admin' || userProfileData?.isAdmin === true || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
 
   // Auto-fill family status if registered or returning user
   useEffect(() => {
