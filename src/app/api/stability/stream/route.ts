@@ -1050,15 +1050,28 @@ You MUST run search queries with the school name enclosed in escaped double quot
         });
 
         try {
-          const { doc, updateDoc } = await import("firebase/firestore");
-          const { db: firestoreDb } = await import("@/firebase/server");
-          const schoolRef = doc(firestoreDb, "schools", schoolId);
-          updateDoc(schoolRef, {
-            scrapedJobsCount: finalVacancies.length,
-            scrapedJobsList: scrapedJobsListString,
-            lastScrapedAt: report.lastScrapedAt,
-            cachedStability: reportWithStructured,
-          }).catch(() => {});
+          const { saveScrapedJobs, updateDocument } = await import("@/firebase/admin");
+          const subcolJobs = finalVacancies.map(v => {
+            const closes = v.date_closing ? new Date(v.date_closing) : new Date();
+            if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+            
+            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+            return {
+              id: jobId,
+              title: v.title,
+              sourceName: v.source,
+              applyUrl: v.source_url || "",
+              closingDate: closes,
+              status: 'active'
+            };
+          });
+          (async () => {
+              await saveScrapedJobs(schoolId, subcolJobs);
+              await updateDocument("schools", schoolId, {
+                lastScrapedAt: report.lastScrapedAt,
+                cachedStability: reportWithStructured,
+              });
+          })().catch((err) => console.error("Stream update fail:", err));
         } catch (dbErr) {
           console.warn("Firestore background update fail in stream API:", dbErr);
         }

@@ -161,3 +161,66 @@ export async function incrementField(colName: string, docId: string, fieldName: 
     }, { merge: true });
   }
 }
+
+export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
+  const dbInstance = getAdminDb();
+  const isAdmin = useAdmin();
+
+  if (isAdmin) {
+    const jobsCol = dbInstance.collection('schools').doc(schoolId).collection('jobs');
+    const snap = await jobsCol.get();
+    const batch = dbInstance.batch();
+    snap.docs.forEach((doc: any) => batch.delete(doc.ref));
+    await batch.commit();
+
+    const writeBatch = dbInstance.batch();
+    for (const job of jobs) {
+      const ref = jobsCol.doc(job.id);
+      let firestoreClosingDate = job.closingDate;
+      if (!(firestoreClosingDate instanceof admin.firestore.Timestamp)) {
+        const d = new Date(job.closingDate || Date.now() + 30 * 24 * 60 * 60 * 1000);
+        firestoreClosingDate = admin.firestore.Timestamp.fromDate(d);
+      }
+      writeBatch.set(ref, {
+        id: job.id,
+        title: job.title,
+        sourceName: job.sourceName,
+        applyUrl: job.applyUrl,
+        closingDate: firestoreClosingDate,
+        scrapedAt: admin.firestore.Timestamp.now(),
+        status: job.status || 'active',
+        salaryRaw: job.salaryRaw || ""
+      });
+    }
+    await writeBatch.commit();
+  } else {
+    const { collection, getDocs, doc, writeBatch: fbWriteBatch, Timestamp } = await import('firebase/firestore');
+    const parentRef = doc(clientDb, 'schools', schoolId);
+    const jobsCol = collection(parentRef, 'jobs');
+    const snap = await getDocs(jobsCol);
+    const batchDel = fbWriteBatch(clientDb);
+    snap.docs.forEach(d => batchDel.delete(d.ref));
+    await batchDel.commit();
+
+    const batchAdd = fbWriteBatch(clientDb);
+    for (const job of jobs) {
+      const ref = doc(jobsCol, job.id);
+      let firestoreClosingDate = job.closingDate;
+      if (!(firestoreClosingDate instanceof Timestamp)) {
+        const d = new Date(job.closingDate || Date.now() + 30 * 24 * 60 * 60 * 1000);
+        firestoreClosingDate = Timestamp.fromDate(d);
+      }
+      batchAdd.set(ref, {
+        id: job.id,
+        title: job.title,
+        sourceName: job.sourceName,
+        applyUrl: job.applyUrl,
+        closingDate: firestoreClosingDate,
+        scrapedAt: Timestamp.now(),
+        status: job.status || 'active',
+        salaryRaw: job.salaryRaw || ""
+      });
+    }
+    await batchAdd.commit();
+  }
+}

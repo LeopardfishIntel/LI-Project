@@ -33,7 +33,9 @@ export async function GET() {
     // Select the 15 oldest schools
     const targets = sorted.slice(0, 15);
 
-    // Trigger sweeps in background
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    // Trigger sweeps in background by pushing to the scrape worker queue
     for (const target of targets) {
       // Wring out cache immediately in Firestore
       await updateDocument('schools', target.id, {
@@ -42,13 +44,17 @@ export async function GET() {
         isRevalidating: true
       });
 
-      getSchoolStabilityReport({
-        schoolId: target.id,
-        schoolName: target.name,
-        estimatedStaffBase: 0,
-        city: target.city,
-        country: target.country
-      }).catch(err => console.error("Background daily sweep failed for:", target.name, err));
+      // Push task to Cloud Tasks queue endpoint
+      fetch(`${baseUrl}/api/tasks/scrape-worker`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          schoolId: target.id,
+          schoolName: target.name,
+          city: target.city,
+          country: target.country
+        })
+      }).catch(err => console.error("Failed to enqueue Cloud Task for daily sweep target:", target.name, err));
     }
 
     return NextResponse.json({

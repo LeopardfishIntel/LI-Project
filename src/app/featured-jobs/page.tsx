@@ -7,10 +7,9 @@ import {
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
-import { collection, doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry } from '@/lib/calculations';
-import { getSchoolStabilityReport } from '@/app/financial-forecaster/actions';
 
 // A helper to normalize strings for matching
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
@@ -23,7 +22,6 @@ const parseSalary = (val: any): number => {
   return isNaN(parsed) ? 0 : parsed;
 };
 
-// Reconstruct active vacancy details using the Staff Turnover Guide search protocols
 interface StructuredJob {
   title: string;
   department: string;
@@ -96,23 +94,125 @@ export default function FeaturedJobsPage() {
     }
   }, [teacherProfile]);
 
-  // Fetch Firestore Data
+  // Fetch Firestore Data (Collection Group Query)
   const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
+  const jobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'active')) : null), [firestore, mounted]);
   const colQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]);
 
   const { data: schoolsData, isLoading: loadingSchools } = useCollection<any>(schoolsQuery);
+  const { data: jobsData, isLoading: loadingJobs } = useCollection<any>(jobsQuery);
   const { data: colData, isLoading: loadingCol } = useCollection<any>(colQuery);
+
+  const schoolsMap = useMemo(() => {
+    if (!schoolsData) return {};
+    return schoolsData.reduce((acc: any, school: any) => {
+      acc[school.id] = school;
+      return acc;
+    }, {});
+  }, [schoolsData]);
+
+  // Handle manual verify & sync for a single school via Cloud Task queue worker
+  const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
+    setRefreshingSchools(prev => ({ ...prev, [schoolId]: true }));
+    try {
+      const docRef = doc(db, 'schools', schoolId);
+      await updateDoc(docRef, {
+        isRevalidating: true
+      });
+
+      await fetch('/api/tasks/scrape-worker', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          schoolId,
+          schoolName,
+          city,
+          country
+        })
+      });
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    } finally {
+      setTimeout(() => {
+        setRefreshingSchools(prev => ({ ...prev, [schoolId]: false }));
+      }, 6000);
+    }
+  };
+
+  // Handle batch verify & sync for all visible filtered schools in parallel via Cloud Task queue worker
+  const handleSyncAllVisible = async () => {
+    setIsSyncingAll(true);
+    const uniqueSchools = Array.from(new Set(filteredJobs.map(j => JSON.stringify({
+      schoolId: j.schoolId,
+      schoolName: j.schoolName,
+      city: j.city,
+      country: j.country
+    })))).map(s => JSON.parse(s));
+
+    try {
+      await Promise.all(uniqueSchools.map(async (school) => {
+        setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: true }));
+        try {
+          const docRef = doc(db, 'schools', school.schoolId);
+          await updateDoc(docRef, {
+            isRevalidating: true
+          });
+
+          await fetch('/api/tasks/scrape-worker', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              schoolId: school.schoolId,
+              schoolName: school.schoolName,
+              city: school.city,
+              country: school.country
+            })
+          });
+        } catch (err) {
+          console.error("Refresh failed for:", school.schoolName, err);
+        } finally {
+          setTimeout(() => {
+            setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: false }));
+          }, 6000);
+        }
+      }));
+    } catch (err) {
+      console.error("Batch sync failed:", err);
+    } finally {
+      setTimeout(() => {
+        setIsSyncingAll(false);
+      }, 6000);
+    }
+  };
 
   // Process & Extract Open Vacancies from all schools
   const allJobs = useMemo(() => {
-    if (!schoolsData || schoolsData.length === 0) return [];
+    if (!jobsData || !schoolsData || schoolsData.length === 0) return [];
 
     const jobsList: StructuredJob[] = [];
     const today = new Date();
 
-    schoolsData.forEach((school: any) => {
-      const scrapedList = Array.isArray(school.scrapedJobsList) ? school.scrapedJobsList : [];
-      if (scrapedList.length === 0) return;
+    jobsData.forEach((jobDoc: any) => {
+      const jobData = jobDoc;
+      const schoolId = jobDoc.ref?.parent?.parent?.id;
+      if (!schoolId) return;
+
+      const school = schoolsMap[schoolId];
+      if (!school) return;
+
+      // Extract closing date
+      let closesDate: Date | null = null;
+      if (jobData.closingDate) {
+        if (jobData.closingDate.seconds) {
+          closesDate = new Date(jobData.closingDate.seconds * 1000);
+        } else {
+          closesDate = new Date(jobData.closingDate);
+        }
+      }
+
+      // Filter: Keep ONLY currently open/active jobs
+      if (closesDate && closesDate < today) return;
+      if (jobData.status === 'expired') return;
 
       // Match Cost of Living for this school to estimate savings potential
       const sCity = normalize(school.city || school.town || school.location || "");
@@ -151,89 +251,29 @@ export default function FeaturedJobsPage() {
       let otherCost = 0;
 
       if (matchedCol) {
-        const isProvided = String(school.housingprovision || "").toLowerCase().includes("provided");
+        const isProvided = String(school.housingprovision || "").toLowerCase().includes("provided") || school.housingProvided === true;
         rentCost = isProvided ? 0 : (matchedCol[rentKey] || 0);
+        
+        // Volatile Market Guardrails (e.g. Argentine Peso ARS)
+        const isVolatile = school.country === "Argentina" || (school.currency && school.currency === "ARS");
+        const paidInUSD = school.paidInUSD === true;
+        const volatileMultiplier = (isVolatile && !paidInUSD) ? 0.25 : 1.0;
+
         otherCost = ((matchedCol.groceries || 0) + 
                     (matchedCol.utilities || 0) + 
                     (matchedCol.mobilePhone || 0) + 
                     (matchedCol.internet || 0) + 
                     (matchedCol.diningSocial || 0)) * scalar;
-      } else {
-        // Fallbacks
-        rentCost = String(school.housingprovision || "").toLowerCase().includes("provided") ? 0 : 1200;
-        otherCost = 800 * scalar; // estimated standard cost of living
-      }
-
-      const calculatedSavings = Math.max(0, Math.round(baseSalary - rentCost - otherCost));
-
-      // Parse individual vacancy strings
-      scrapedList.forEach((jobStr: string) => {
-        // Reconstruct structured data (similar to reconstructStructuredVacancies)
-        let jobUrl = "";
-        let workingStr = jobStr;
-        const urlParts = jobStr.split(" || ");
-        if (urlParts.length > 1) {
-          workingStr = urlParts[0].trim();
-          jobUrl = urlParts[1].trim();
-        }
-
-        const lastDashIdx = workingStr.lastIndexOf(' - ');
-        let main = workingStr;
-        let source = 'Web';
-        if (lastDashIdx !== -1) {
-          main = workingStr.substring(0, lastDashIdx).trim();
-          source = workingStr.substring(lastDashIdx + 3).trim();
-        }
-
-        const parenIdx = main.indexOf('(');
-        const rawTitle = parenIdx !== -1 ? main.substring(0, parenIdx).trim() : main.trim();
-        let title = rawTitle.replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim();
-
-        // Caps at 80 characters
-        if (title.length > 80) title = title.substring(0, 80).trim();
-
-        const parentheticalMatches = [...jobStr.matchAll(/\(([^)]+)\)/g)];
-        let date_listed = '';
-        let closesDate = '';
-        if (parentheticalMatches.length > 0) {
-          const dateParenthetical = parentheticalMatches.find(m => {
-            const text = m[1].toLowerCase();
-            return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
-          }) || parentheticalMatches[parentheticalMatches.length - 1];
-          
-          const content = dateParenthetical[1];
-          const parts = content.split(';').map(s => s.trim());
-          const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
-          if (postedPart) date_listed = postedPart.replace(/posted:\s*/i, '').trim();
-          const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
-          if (closesPart) closesDate = closesPart.replace(/closes:\s*/i, '').trim();
-        }
-
-        // Status classification: check closing date
-        let status = "OPEN";
-        if (jobStr.toLowerCase().includes("closes:") && !jobStr.toLowerCase().includes("posted:")) {
-          status = "CLOSED";
-        }
-        if (/202[4-5]|archive|cycle/i.test(jobStr)) {
-          status = "CLOSED";
-        }
-
-        const date_listed_val = date_listed || "21 May 2026";
-        const date_closing_val = closesDate || null;
-
-        if (status === "OPEN" && date_closing_val) {
-          const closes = new Date(date_closing_val);
-          if (!isNaN(closes.getTime()) && closes < today) {
-            status = "CLOSED";
-          }
-        }
-
-        // Filter: Keep ONLY currently open jobs
-        if (status !== "OPEN") return;
+        
+        // Outgoings Formula: Outgoings = (Base Living Cost * Family Status Multiplier) + Rent Expense
+        const adjustedOutgoings = otherCost + rentCost;
+        
+        let calculatedSavings = Math.max(0, Math.round(baseSalary - adjustedOutgoings));
+        calculatedSavings = Math.round(calculatedSavings * volatileMultiplier);
 
         // Determine department
         let department = "Secondary";
-        const lowerTitle = title.toLowerCase();
+        const lowerTitle = jobData.title.toLowerCase();
         if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
           department = "Primary";
         } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
@@ -241,13 +281,13 @@ export default function FeaturedJobsPage() {
         }
 
         jobsList.push({
-          title,
+          title: jobData.title,
           department,
-          source,
-          source_url: jobUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
-          date_listed: date_listed_val,
-          date_closing: date_closing_val,
-          status,
+          source: jobData.sourceName || "Web",
+          source_url: jobData.applyUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
+          date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
+          date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling",
+          status: jobData.status,
           schoolId: school.id,
           schoolName: school.schoolname,
           schoolRating: parseFloat(school.academicscore || school.rating || "0"),
@@ -257,11 +297,11 @@ export default function FeaturedJobsPage() {
           savingsPotential: calculatedSavings,
           schoolWebsite: school.website || ""
         });
-      });
+      }
     });
 
     return jobsList;
-  }, [schoolsData, colData, familyStatus]);
+  }, [jobsData, schoolsData, colData, familyStatus, schoolsMap]);
 
   // Derived filters data
   const availableCurriculums = useMemo(() => {
@@ -332,78 +372,6 @@ export default function FeaturedJobsPage() {
     }
     return jobs;
   }, [filteredJobs, sortBy]);
-
-  // Handle manual verify & sync for a single school
-  const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
-    setRefreshingSchools(prev => ({ ...prev, [schoolId]: true }));
-    try {
-      const docRef = doc(db, 'schools', schoolId);
-      await updateDoc(docRef, {
-        scrapedJobsList: [],
-        scrapedJobsCount: null,
-        isRevalidating: true
-      });
-
-      await getSchoolStabilityReport({
-        schoolId,
-        schoolName,
-        estimatedStaffBase: 0,
-        city,
-        country
-      });
-    } catch (err) {
-      console.error("Refresh failed:", err);
-    } finally {
-      setTimeout(() => {
-        setRefreshingSchools(prev => ({ ...prev, [schoolId]: false }));
-      }, 6000);
-    }
-  };
-
-  // Handle batch verify & sync for all visible filtered schools in parallel
-  const handleSyncAllVisible = async () => {
-    setIsSyncingAll(true);
-    const uniqueSchools = Array.from(new Set(filteredJobs.map(j => JSON.stringify({
-      schoolId: j.schoolId,
-      schoolName: j.schoolName,
-      city: j.city,
-      country: j.country
-    })))).map(s => JSON.parse(s));
-
-    try {
-      await Promise.all(uniqueSchools.map(async (school) => {
-        setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: true }));
-        try {
-          const docRef = doc(db, 'schools', school.schoolId);
-          await updateDoc(docRef, {
-            scrapedJobsList: [],
-            scrapedJobsCount: null,
-            isRevalidating: true
-          });
-
-          await getSchoolStabilityReport({
-            schoolId: school.schoolId,
-            schoolName: school.schoolName,
-            estimatedStaffBase: 0,
-            city: school.city,
-            country: school.country
-          });
-        } catch (err) {
-          console.error("Refresh failed for:", school.schoolName, err);
-        } finally {
-          setTimeout(() => {
-            setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: false }));
-          }, 6000);
-        }
-      }));
-    } catch (err) {
-      console.error("Batch sync failed:", err);
-    } finally {
-      setTimeout(() => {
-        setIsSyncingAll(false);
-      }, 6000);
-    }
-  };
 
   // Toggle Filters helper
   const handleCurriculumToggle = (cur: string) => {
@@ -603,7 +571,7 @@ export default function FeaturedJobsPage() {
           <main className="flex-1 w-full space-y-6">
             
             {/* Loading States */}
-            {(loadingSchools || loadingCol) && (
+            {(loadingSchools || loadingJobs || loadingCol) && (
               <div className="h-96 flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="animate-spin size-10 text-[#FF6B35]" />
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Compiling Active Listings...</p>
@@ -611,7 +579,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Sort & Count Header */}
-            {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
+            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length > 0 && (
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4 w-full">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -652,7 +620,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Empty State */}
-            {!loadingSchools && !loadingCol && filteredJobs.length === 0 && (
+            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length === 0 && (
               <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
@@ -662,7 +630,7 @@ export default function FeaturedJobsPage() {
                   </p>
                 </div>
 
-                {/* Recommendation 2: Scan School for vacancies if they exist in DB but aren't scanned */}
+                {/* Scan School for vacancies if they exist in DB but aren't scanned */}
                 {searchQuery.trim().length > 0 && schoolsData && (
                   (() => {
                     const queryLower = searchQuery.toLowerCase();
@@ -713,7 +681,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Jobs Grid */}
-            {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
+            {!loadingSchools && !loadingJobs && !loadingCol && filteredJobs.length > 0 && (
               <div className="grid grid-cols-1 gap-6">
                 {sortedJobs.map((job, idx) => (
                   <div 
