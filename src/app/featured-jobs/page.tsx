@@ -164,12 +164,20 @@ export default function FeaturedJobsPage() {
       // Parse individual vacancy strings
       scrapedList.forEach((jobStr: string) => {
         // Reconstruct structured data (similar to reconstructStructuredVacancies)
-        const lastDashIdx = jobStr.lastIndexOf(' - ');
-        let main = jobStr;
+        let jobUrl = "";
+        let workingStr = jobStr;
+        const urlParts = jobStr.split(" || ");
+        if (urlParts.length > 1) {
+          workingStr = urlParts[0].trim();
+          jobUrl = urlParts[1].trim();
+        }
+
+        const lastDashIdx = workingStr.lastIndexOf(' - ');
+        let main = workingStr;
         let source = 'Web';
         if (lastDashIdx !== -1) {
-          main = jobStr.substring(0, lastDashIdx).trim();
-          source = jobStr.substring(lastDashIdx + 3).trim();
+          main = workingStr.substring(0, lastDashIdx).trim();
+          source = workingStr.substring(lastDashIdx + 3).trim();
         }
 
         const parenIdx = main.indexOf('(');
@@ -231,7 +239,7 @@ export default function FeaturedJobsPage() {
           title,
           department,
           source,
-          source_url: school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
+          source_url: jobUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
           date_listed: date_listed_val,
           date_closing: date_closing_val,
           status,

@@ -283,12 +283,20 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
       }
     }
 
-    const lastDashIdx = job.lastIndexOf(' - ');
-    let main = job;
+    let jobUrl = "";
+    let workingStr = job;
+    const urlParts = job.split(" || ");
+    if (urlParts.length > 1) {
+      workingStr = urlParts[0].trim();
+      jobUrl = urlParts[1].trim();
+    }
+
+    const lastDashIdx = workingStr.lastIndexOf(' - ');
+    let main = workingStr;
     let source = 'Web';
     if (lastDashIdx !== -1) {
-      main = job.substring(0, lastDashIdx).trim();
-      source = job.substring(lastDashIdx + 3).trim();
+      main = workingStr.substring(0, lastDashIdx).trim();
+      source = workingStr.substring(lastDashIdx + 3).trim();
     }
 
     // Extract title (everything before the first parenthesis)
@@ -406,7 +414,7 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
       title,
       department,
       source,
-      source_url: "",
+      source_url: jobUrl || "",
       date_listed: date_listed_val,
       date_closing: date_closing_val,
       status

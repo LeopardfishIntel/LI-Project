@@ -203,12 +203,13 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
 12. Deep-Link Snippet Preservation:
     - Never guess or truncate a job board path. Search engine result objects include tracking tokens or job keys in the URL mapping (e.g., \`/jobs/vacancy/title-token-123456\`). You must pull this exact, full token array into the JSON structure. If the path is hidden or encrypted, extract the core platform identifier or corporate slug instead.
 
-13. Add Metadata and Discovery Source to Each Vacancy:
-    - For every vacancy, inspect the search snippet to locate its publication/posting date and explicit closing/deadline date.
+13. Add Metadata, Discovery Source, and Vacancy URL to Each Vacancy:
+    - For every vacancy, inspect the search snippets/results to locate its publication/posting date, explicit closing/deadline date, and the specific link/URL of the vacancy page (e.g. 'https://www.bayanschool.edu.bh/page/view/92' or 'https://www.tes.com/jobs/vacancy/...').
     - Inside the job title parentheses, format these details exactly as: '(StartCycleOrMonth; Posted: DD MMM YYYY; Closes: DD MMM YYYY)' (e.g. '(Aug 2026; Posted: 15 Apr 2026; Closes: 13 May 2026)'). 
     - If no explicit closing date is found but a posting date is found, calculate a closing date exactly 4 weeks (28 days) after the posting date and append it as 'Closes: [Calculated Date]'.
     - If no dates are found in the snippet, just list the start cycle (e.g. '(Aug 2026)').
-    - Finally, append the discovery source to the end, e.g. '- TES', '- Schrole', '- School Web'.
+    - Append the discovery source to the end, e.g. '- TES', '- Schrole', '- School Web'.
+    - Crucially, append the exact deep link/URL where the job was found to the end of the string using a double pipe ' || ' separator, e.g. '- TES || https://www.tes.com/jobs/vacancy/maths-123456' or '- School Web || https://www.bayanschool.edu.bh/page/view/92'. If no specific job URL is found, append the school website or search URL instead.
 
 14. Institutional Phase & Section Matching:
     - You MUST cross-verify if the target school actually operates the education phase (Primary/Prep vs. Secondary/College) matching the discovered vacancy.
@@ -217,7 +218,7 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
 Return a JSON object conforming exactly to this structure:
 {
   "scrapedJobsCount": number,
-  "scrapedJobsList": string[] // e.g. ["Teacher of Maths (Aug 2026; Posted: 15 Apr 2026; Closes: 13 May 2026) - TES", "Head of Lower Prep (Aug 2026) - School Web"]
+  "scrapedJobsList": string[] // e.g. ["Teacher of Maths (Aug 2026; Posted: 15 Apr 2026; Closes: 13 May 2026) - TES || https://www.tes.com/jobs/vacancy/maths-123", "Head of Lower Prep (Aug 2026) - School Web || https://www.schoolsite.com/jobs/prep"]
 }
 
 *SYSTEM OUTPUT FORMAT COMPLIANCE (ZERO EXTRANEOUS CHARACTERS):*
