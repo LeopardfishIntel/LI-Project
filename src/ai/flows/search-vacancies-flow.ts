@@ -1,6 +1,6 @@
+'use server';
 import { validatePhaseMatching, matchSchoolEntity } from '@/lib/crawler/entityMatcher';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
-'use server';
 
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";

@@ -1,5 +1,5 @@
-import { resolveVacancyUrl } from '@/lib/crawler/urlResolver';
 "use client";
+import { resolveVacancyUrl } from '@/lib/crawler/urlResolver';
 
 import { useState, useEffect, useMemo } from 'react';
 import { 

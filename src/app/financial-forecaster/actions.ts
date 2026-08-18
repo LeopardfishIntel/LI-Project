@@ -1,5 +1,5 @@
-import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 'use server';
+import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 
 import fs from 'fs';
 import path from 'path';
