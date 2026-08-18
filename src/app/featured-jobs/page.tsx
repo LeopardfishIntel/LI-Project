@@ -40,6 +40,8 @@ interface StructuredJob {
   savingsPotential: number; // calculated USD/month
   schoolWebsite: string;
   paidInUSD?: boolean;
+  scrapedAtRaw?: any;
+  closesDateRaw?: Date | null;
 }
 
 export default function FeaturedJobsPage() {
@@ -265,7 +267,14 @@ export default function FeaturedJobsPage() {
 
       // Filter: Keep ONLY currently open/active jobs (public feed only)
       if (activeTab === 'public') {
-        if (closesDate && closesDate < today) return;
+        if (closesDate && closesDate < today) {
+          // Auto-transition expired approved jobs to 'expired'
+          if (jobData.status === 'approved') {
+            const ref = doc(db, 'schools', schoolId, 'jobs', jobData.id);
+            updateDoc(ref, { status: 'expired' }).catch(() => {});
+          }
+          return;
+        }
         if (jobData.status !== 'approved') return;
       }
 
@@ -352,7 +361,9 @@ export default function FeaturedJobsPage() {
           country: school.country || "",
           savingsPotential: calculatedSavings,
           schoolWebsite: school.website || "",
-          paidInUSD: school.paidInUSD
+          paidInUSD: school.paidInUSD,
+          scrapedAtRaw: jobData.scrapedAt,
+          closesDateRaw: closesDate
         });
       }
     });
@@ -777,8 +788,47 @@ export default function FeaturedJobsPage() {
                     <div className="flex justify-between items-start w-full gap-4">
                       {/* Left Header Title & Subheader */}
                       <div className="space-y-1 text-left flex-1">
-                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex items-center gap-2">
+                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex flex-wrap items-center gap-2">
                           {job.title}
+                          {(() => {
+                            const now = new Date();
+                            
+                            // 1. NEW Badge Condition: (now - scrapedAt) <= 3 days (72 hours)
+                            let isNew = false;
+                            if (job.scrapedAtRaw) {
+                              const scrapedTime = job.scrapedAtRaw.seconds 
+                                ? job.scrapedAtRaw.seconds * 1000 
+                                : new Date(job.scrapedAtRaw).getTime();
+                              if ((now.getTime() - scrapedTime) <= 3 * 24 * 60 * 60 * 1000) {
+                                isNew = true;
+                              }
+                            }
+
+                            // 2. CLOSING SOON Badge Condition: (closingDate - now) <= 5 days AND closingDate > now
+                            let isClosingSoon = false;
+                            if (job.closesDateRaw) {
+                              const closesTime = job.closesDateRaw.getTime();
+                              const diffTime = closesTime - now.getTime();
+                              if (diffTime > 0 && diffTime <= 5 * 24 * 60 * 60 * 1000) {
+                                isClosingSoon = true;
+                              }
+                            }
+
+                            return (
+                              <>
+                                {isNew && (
+                                  <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse">
+                                    NEW
+                                  </span>
+                                )}
+                                {isClosingSoon && (
+                                  <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                                    CLOSING SOON
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
                           {activeTab === 'admin_staging' && (
                             <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
                               Pending Review

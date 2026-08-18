@@ -392,6 +392,53 @@ function DecoderContent() {
 
   const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
 
+  const schoolJobsQuery = useMemoFirebase(() => (mounted && firestore && activeSchool?.id ? collection(firestore, 'schools', activeSchool.id, 'jobs') : null), [firestore, mounted, activeSchool?.id]);
+  const { data: schoolJobsData } = useCollection<any>(schoolJobsQuery);
+
+  const allProcessedJobs = useMemo(() => {
+    if (!schoolJobsData) return [];
+    const today = new Date();
+    const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
+
+    return schoolJobsData.map((job: any) => {
+      const closes = job.closingDate?.seconds 
+        ? new Date(job.closingDate.seconds * 1000) 
+        : new Date(job.closingDate || Date.now());
+      const scraped = job.scrapedAt?.seconds 
+        ? new Date(job.scrapedAt.seconds * 1000) 
+        : new Date(job.scrapedAt || Date.now());
+
+      const isExpired = closes < today || job.status === 'expired' || job.status === 'rejected';
+      const recruitmentCycle = (closes < new Date("2025-05-21")) ? "HISTORIC_Y1" : "CURRENT";
+      
+      // Determine department
+      let department = "Secondary";
+      const lowerTitle = (job.title || "").toLowerCase();
+      if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
+        department = "Primary";
+      } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
+        department = "Leadership";
+      }
+
+      return {
+        title: job.title,
+        source: job.sourceName || "Web",
+        postedDate: scraped.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        closesDate: closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        status: isExpired ? 'closed' : 'open',
+        department,
+        recruitmentCycle,
+        rawPostedDate: scraped,
+        rawClosesDate: closes
+      };
+    }).filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
+      .sort((a, b) => {
+        if (a.status === 'open' && b.status !== 'open') return -1;
+        if (a.status !== 'open' && b.status === 'open') return 1;
+        return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
+      });
+  }, [schoolJobsData]);
+
   // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
   useEffect(() => {
     if (settings.country.toLowerCase() === "oman") {
@@ -1850,7 +1897,7 @@ function DecoderContent() {
                             </div>
                                           ) : stabilityReport ? (
                             (() => {
-                              const allProcessedJobs = processAndFilterJobs(stabilityReport.scrapedJobsList || []);
+                              // Read pre-calculated allProcessedJobs from component scope
                               const processedJobs12 = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const churnRate = stabilityReport.metrics.estimatedStaffBase 
                                 ? Math.round((processedJobs12.length / stabilityReport.metrics.estimatedStaffBase) * 100) 
