@@ -1,3 +1,4 @@
+import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
 'use server';
 
 import { getAI } from "@/ai/genkit";
@@ -283,41 +284,29 @@ Return a JSON object conforming exactly to this structure:
 
     const schoolDomain = getSchoolDomain(input.schoolName);
 
+    const tier1Queries = buildTier1Queries(input.schoolName, schoolDomain);
+    const tier2Queries = buildTier2Queries(input.schoolName);
+    const tier3Queries = buildTier3SubjectQueries(input.schoolName);
+
     // 🛸 MULTI-PHASE HISTORICAL SEARCH SWEEP LIST
     const sweepPrompts = [
       {
         name: "Phase 1: Live Vacancies Sweep",
         prompt: `Find all active teaching and leadership vacancies publicly advertised strictly for the target school "${input.schoolName}".
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
-- "\\"${input.schoolName}\\" vacancies"
-- "\\"${input.schoolName}\\" career"
-- "\\"${input.schoolName}\\" jobs"
-- "site:${schoolDomain} vacancies"
-- "site:${schoolDomain} jobs"`
+${tier1Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
       },
       {
         name: "Phase 2: TES & Schrole Historical Archives Sweep",
         prompt: `Find all job vacancies (active or closed) posted strictly by the school "${input.schoolName}" in the last 12 months (since May 2025) on international portals.
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
-- "\\"${input.schoolName}\\" site:tes.com/jobs/vacancy"
-- "\\"${input.schoolName}\\" site:tes.com/jobs/employer"
-- "\\"${input.schoolName}\\" site:tes.com"
-- "\\"${input.schoolName}\\" site:schrole.com"
-- "\\"${input.schoolName}\\" site:iss.edu"
-- "\\"${input.schoolName}\\" site:ticrecruitment.com"
-- "\\"${input.schoolName}\\" site:teachaway.com"
-- "\\"${input.schoolName}\\" site:asq-international.com"
-- "\\"${input.schoolName}\\" site:worldteachers.com"`
+${tier2Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
       },
       {
         name: "Phase 3: Subject-Specific Deep Sweep",
         prompt: `Perform targeted subject searches strictly for the school "${input.schoolName}" to locate specific teaching or leadership openings posted in the last 12 months.
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
-- "\\"${input.schoolName}\\" \\"Mathematics\\""
-- "\\"${input.schoolName}\\" \\"English\\""
-- "\\"${input.schoolName}\\" \\"SENCO\\""
-- "\\"${input.schoolName}\\" \\"Science\\""
-- "\\"${input.schoolName}\\" \\"Physical Education\\""`
+${tier3Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
       }
     ];
 

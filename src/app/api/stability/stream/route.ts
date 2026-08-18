@@ -1,3 +1,4 @@
+import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
 import { NextRequest } from "next/server";
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";
@@ -676,14 +677,13 @@ To keep execution times low, token counts small, and eliminate text overflow:
 
         // 🛸 PHASE 1: Primary Authority Feed Discovery (TES, Schrole, Teacher Horizons, etc.)
         sendChunk({ phase: 1, status: "searching", vacancies_discovered: [] });
+        const schoolDomainClean = getSchoolBaseUrl(schoolId, schoolName);
+        const p1Queries = buildTier1Queries(schoolName, schoolDomainClean);
         const p1JobsAI = await runPhaseSweep(
           1,
           `Sweep TES, Schrole, and primary global networks for the school "${schoolName}".
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
-- "\\"${schoolName}\\" vacancies"
-- "\\"${schoolName}\\" career"
-- "\\"${schoolName}\\" jobs"
-- "site:${getSchoolBaseUrl(schoolId, schoolName).replace(/^https?:\/\/(www\.)?/, "")} vacancies"`
+${p1Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
         );
         const p1Ground = getGroundTruthForPhase(1);
         const p1Jobs = [...p1JobsAI, ...p1Ground];
