@@ -764,11 +764,15 @@ export async function getSchoolStabilityReport(input: {
                          scrapedJobsCount: 0
                      });
                      if (schoolSnap && schoolSnap.exists()) {
-                         updateDocument('schools', input.schoolId, {
-                             isRevalidating: true,
-                             scrapedJobsList: [],
-                             scrapedJobsCount: 0
-                         }).catch((err) => console.error("Failed to update isRevalidating flag:", err));
+                         (async () => {
+                             const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                             await saveScrapedJobs(input.schoolId, []);
+                             await updateDocument('schools', input.schoolId, {
+                                 isRevalidating: true,
+                                 revalidationStatus: 'syncing',
+                                 revalidationError: null
+                             });
+                         })().catch((err) => console.error("Failed to clear jobs subcollection on revalidation:", err));
                      }
 
                     // Fire background scrape task
@@ -868,15 +872,35 @@ export async function getSchoolStabilityReport(input: {
                             });
 
                             // Try Firestore update in background without awaiting it!
-                            if (schoolSnap && schoolSnap.exists()) {
-                                updateDocument('schools', input.schoolId, {
-                                    scrapedJobsCount: freshJobsCount,
-                                    scrapedJobsList: freshJobsList,
-                                    lastScrapedAt: freshLastScrapedAt,
-                                    cachedStability: freshReport,
-                                    isRevalidating: false
-                                }).catch((err) => console.error("Failed to update school stability details:", err));
-                            }
+                             if (schoolSnap && schoolSnap.exists()) {
+                                 (async () => {
+                                     const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                                     const admin = await import('firebase-admin');
+                                     const subcolJobs = freshParsedVacancies.map(v => {
+                                         const closes = v.date_closing ? new Date(v.date_closing) : new Date();
+                                         if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                                         
+                                         const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                                         return {
+                                             id: jobId,
+                                             title: v.title,
+                                             sourceName: v.source,
+                                             applyUrl: v.source_url || "",
+                                             closingDate: closes,
+                                             status: 'active'
+                                         };
+                                     });
+                                     await saveScrapedJobs(input.schoolId, subcolJobs);
+                                     await updateDocument('schools', input.schoolId, {
+                                         lastScrapedAt: freshLastScrapedAt,
+                                         cachedStability: freshReport,
+                                         isRevalidating: false,
+                                         revalidationStatus: 'success',
+                                         revalidationError: null,
+                                         revalidationCompletedAt: admin.firestore.Timestamp.now()
+                                     });
+                                 })().catch((err) => console.error("Failed to update school stability details:", err));
+                             }
                             
                             stabilityMemoryCache.set(input.schoolId, freshReport);
                             console.log(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation completed successfully for ${input.schoolName}!`);
@@ -887,11 +911,18 @@ export async function getSchoolStabilityReport(input: {
                                 ...data,
                                 isRevalidating: false
                             });
-                            if (schoolSnap && schoolSnap.exists()) {
-                                updateDocument('schools', input.schoolId, {
-                                    isRevalidating: false
-                                }).catch((err) => console.error("Failed to reset isRevalidating flag:", err));
-                            }
+                             if (schoolSnap && schoolSnap.exists()) {
+                                 (async () => {
+                                     const admin = await import('firebase-admin');
+                                     const { updateDocument } = await import('@/firebase/admin');
+                                     await updateDocument('schools', input.schoolId, {
+                                         isRevalidating: false,
+                                         revalidationStatus: 'failed',
+                                         revalidationError: bgErr instanceof Error ? bgErr.message : String(bgErr),
+                                         revalidationCompletedAt: admin.firestore.Timestamp.now()
+                                     });
+                                 })().catch((err) => console.error("Failed to reset isRevalidating flag:", err));
+                             }
                         }
                     })();
                 }
@@ -935,6 +966,21 @@ export async function getSchoolStabilityReport(input: {
                     country: input.country
                 });
                 scrapedJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
+                 const freshParsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
+                 const subcolJobs = freshParsedVacancies.map(v => {
+                     const closes = v.date_closing ? new Date(v.date_closing) : new Date();
+                     if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                     
+                     const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                     return {
+                         id: jobId,
+                         title: v.title,
+                         sourceName: v.source,
+                         applyUrl: v.source_url || "",
+                         closingDate: closes,
+                         status: 'active'
+                     };
+                 });
                 scrapedJobsCount = scrapedJobsList.length;
                 lastScrapedAt = new Date().toISOString();
 
@@ -947,14 +993,20 @@ export async function getSchoolStabilityReport(input: {
                 });
 
                 // Update Firestore in background without awaiting it!
-                if (schoolSnap && schoolSnap.exists()) {
-                    updateDocument('schools', input.schoolId, {
-                        scrapedJobsCount,
-                        scrapedJobsList,
-                        lastScrapedAt,
-                        cachedStability: null
-                    }).catch((err) => console.error("Failed to update scraped jobs list:", err));
-                }
+                 if (schoolSnap && schoolSnap.exists()) {
+                     (async () => {
+                         const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                         const admin = await import('firebase-admin');
+                         await saveScrapedJobs(input.schoolId, subcolJobs);
+                         await updateDocument('schools', input.schoolId, {
+                             lastScrapedAt,
+                             cachedStability: null,
+                             revalidationStatus: 'success',
+                             revalidationError: null,
+                             revalidationCompletedAt: admin.firestore.Timestamp.now()
+                         });
+                     })().catch((err) => console.error("Failed to update scraped jobs list:", err));
+                 }
             } catch (searchErr) {
                 console.error(`🛸 [STABILITY ENGINE] Active AI search failed; falling back to null/ledger:`, searchErr);
             }
@@ -1051,14 +1103,34 @@ export async function getSchoolStabilityReport(input: {
             console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report locally for ${input.schoolName}`);
             
             // Try updating Firestore in background without awaiting it!
-            if (schoolSnap && schoolSnap.exists()) {
-                updateDocument('schools', input.schoolId, {
-                    scrapedJobsCount,
-                    scrapedJobsList,
-                    lastScrapedAt,
-                    cachedStability: report
-                }).catch((err) => console.error("Failed to cache fresh stability report:", err));
-            }
+             if (schoolSnap && schoolSnap.exists()) {
+                 (async () => {
+                     const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                     const admin = await import('firebase-admin');
+                     const subcolJobs = parsedVacancies.map(v => {
+                         const closes = v.date_closing ? new Date(v.date_closing) : new Date();
+                         if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+                         
+                         const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                         return {
+                             id: jobId,
+                             title: v.title,
+                             sourceName: v.source,
+                             applyUrl: v.source_url || "",
+                             closingDate: closes,
+                             status: 'active'
+                         };
+                     });
+                     await saveScrapedJobs(input.schoolId, subcolJobs);
+                     await updateDocument('schools', input.schoolId, {
+                         lastScrapedAt,
+                         cachedStability: report,
+                         revalidationStatus: 'success',
+                         revalidationError: null,
+                         revalidationCompletedAt: admin.firestore.Timestamp.now()
+                     });
+                 })().catch((err) => console.error("Failed to cache fresh stability report:", err));
+             }
         } catch (writeErr: any) {
             console.warn(`🛸 [STABILITY ENGINE] Local caching failed:`, writeErr);
         }

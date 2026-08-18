@@ -658,7 +658,7 @@ export default function FeaturedJobsPage() {
                                 <p className="text-xs font-bold text-white leading-tight">{school.schoolname}</p>
                                 <p className="text-[10px] text-slate-500">{school.city}, {school.country}</p>
                               </div>
-                              {refreshingSchools[school.id] ? (
+                              {refreshingSchools[school.id] || school.revalidationStatus === 'syncing' ? (
                                 <span className="flex items-center gap-1 text-[10px] text-[#FF6B35] font-bold uppercase">
                                   <Loader2 className="animate-spin size-3" /> Syncing
                                 </span>
