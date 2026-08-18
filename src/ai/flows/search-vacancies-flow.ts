@@ -200,8 +200,9 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
     - When crawling December and January index history, you MUST analyze the full textual content of search snippets, metadata caches, and PDF job descriptions.
     - Do NOT classify a vacancy based entirely on the primary header string if the deep text reveals a hybrid/split assignment.
     - If a listing is primarily titled "Humanities Teacher" but contains explicit curriculum mentions of Geography, History, Economics, or Business Studies, capture the listing under its exact, full hybrid scope: e.g., "Humanities Teacher (Geography / History)" or "Teacher of Business and Economics". Do not collapse or drop these winter roles.
-12. Deep-Link Snippet Preservation:
+12. Deep-Link Snippet Preservation & Sidebar Leak Prevention:
     - Never guess or truncate a job board path. Search engine result objects include tracking tokens or job keys in the URL mapping (e.g., \`/jobs/vacancy/title-token-123456\`). You must pull this exact, full token array into the JSON structure. If the path is hidden or encrypted, extract the core platform identifier or corporate slug instead.
+    - Crucially, search engine results often contain sidebar listings, recommended jobs, footer ads, or related links for other schools (e.g. Eaton Square Prep School, Brighton College UK) that are completely unrelated to the target school. You MUST strictly ignore these. Any extracted job title and URL MUST belong directly to the target school. If a URL or snippet redirects or references a different institution, discard it immediately.
 
 13. Add Metadata, Discovery Source, and Vacancy URL to Each Vacancy:
     - For every vacancy, inspect the search snippets/results to locate its publication/posting date, explicit closing/deadline date, and the specific link/URL of the vacancy page (e.g. 'https://www.bayanschool.edu.bh/page/view/92' or 'https://www.tes.com/jobs/vacancy/...').
