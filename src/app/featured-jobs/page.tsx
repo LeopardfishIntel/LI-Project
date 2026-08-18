@@ -120,17 +120,17 @@ export default function FeaturedJobsPage() {
   const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
   
   // Query 1: Public Approved Jobs
-  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved')) : null), [firestore, mounted]);
+  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved'), where('closingDate', '>=', new Date())) : null), [firestore, mounted]);
   
   // Query 2: Admin Staged Pending Review Jobs
   const adminJobsQuery = useMemoFirebase(() => (mounted && firestore && calculatedIsAdmin ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review')) : null), [firestore, mounted, calculatedIsAdmin]);
   
   const colQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]);
 
-  const { data: schoolsData, isLoading: loadingSchools } = useCollection<any>(schoolsQuery);
-  const { data: publicJobsData, isLoading: loadingPublicJobs } = useCollection<any>(publicJobsQuery);
-  const { data: adminJobsData, isLoading: loadingAdminJobs } = useCollection<any>(adminJobsQuery);
-  const { data: colData, isLoading: loadingCol } = useCollection<any>(colQuery);
+  const { data: schoolsData, isLoading: loadingSchools, error: errorSchools } = useCollection<any>(schoolsQuery);
+  const { data: publicJobsData, isLoading: loadingPublicJobs, error: errorPublic } = useCollection<any>(publicJobsQuery);
+  const { data: adminJobsData, isLoading: loadingAdminJobs, error: errorAdmin } = useCollection<any>(adminJobsQuery);
+  const { data: colData, isLoading: loadingCol, error: errorCol } = useCollection<any>(colQuery);
 
   const schoolsMap = useMemo(() => {
     if (!schoolsData) return {};
@@ -546,6 +546,17 @@ export default function FeaturedJobsPage() {
             </button>
           </div>
         </div>
+
+        {/* Debug errors */}
+        {(errorSchools || errorPublic || errorAdmin || errorCol) && (
+          <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-sm text-red-400 text-xs font-mono space-y-1">
+            <h4 className="font-bold uppercase">Uplink Database Warnings:</h4>
+            {errorSchools && <p>Schools Error: {errorSchools.message}</p>}
+            {errorPublic && <p>Public Jobs Error: {errorPublic.message}</p>}
+            {errorAdmin && <p>Staging Jobs Error: {errorAdmin.message}</p>}
+            {errorCol && <p>Cost of Living Error: {errorCol.message}</p>}
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row gap-8 items-start">
           
