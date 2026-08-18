@@ -5,11 +5,12 @@ import {
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
   Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users
 } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useAuth, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
-import { collection } from 'firebase/firestore';
+import { collection, doc, updateDoc } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry } from '@/lib/calculations';
+import { getSchoolStabilityReport } from '@/app/financial-forecaster/actions';
 
 // A helper to normalize strings for matching
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
@@ -56,6 +57,9 @@ export default function FeaturedJobsPage() {
   const [familyStatus, setFamilyStatus] = useState<string>("Single");
   const [sortBy, setSortBy] = useState<string>("Projected Savings");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Refresh loading states
+  const [refreshingSchools, setRefreshingSchools] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setMounted(true);
@@ -97,6 +101,36 @@ export default function FeaturedJobsPage() {
 
   const { data: schoolsData, isLoading: loadingSchools } = useCollection<any>(schoolsQuery);
   const { data: colData, isLoading: loadingCol } = useCollection<any>(colQuery);
+
+  // Handle manual verify & sync
+  const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
+    setRefreshingSchools(prev => ({ ...prev, [schoolId]: true }));
+    try {
+      // 1. Wipe the Firestore fields to trigger background search
+      const docRef = doc(db, 'schools', schoolId);
+      await updateDoc(docRef, {
+        scrapedJobsList: [],
+        scrapedJobsCount: null,
+        isRevalidating: true
+      });
+
+      // 2. Call the server action to kick off the background worker
+      await getSchoolStabilityReport({
+        schoolId,
+        schoolName,
+        estimatedStaffBase: 0,
+        city,
+        country
+      });
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    } finally {
+      // Keep syncing indicator for a few seconds to let search finish
+      setTimeout(() => {
+        setRefreshingSchools(prev => ({ ...prev, [schoolId]: false }));
+      }, 6000);
+    }
+  };
 
   // Process & Extract Open Vacancies from all schools
   const allJobs = useMemo(() => {
@@ -614,16 +648,33 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full pt-1">
                       {/* Left Column: Source Link */}
-                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0">
-                        SOURCE:&nbsp;
-                        <a 
-                          href={job.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
-                        >
-                          {job.source.toUpperCase()}
-                        </a>
+                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0 gap-2">
+                        <span>SOURCE:&nbsp;
+                          <a 
+                            href={job.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
+                          >
+                            {job.source.toUpperCase()}
+                          </a>
+                        </span>
+                        
+                        <span className="text-slate-600 text-xs">|</span>
+                        
+                        {refreshingSchools[job.schoolId] ? (
+                          <span className="flex items-center gap-1 text-[10px] text-[#FF6B35] font-bold uppercase">
+                            <Loader2 className="animate-spin size-3" /> Syncing
+                          </span>
+                        ) : (
+                          <button 
+                            onClick={() => handleRefreshSchool(job.schoolId, job.schoolName, job.city, job.country)}
+                            className="text-[10px] text-slate-500 hover:text-[#FF6B35] font-bold uppercase transition-colors"
+                            title="Verify and force refresh active listings for this academy"
+                          >
+                            Verify & Sync
+                          </button>
+                        )}
                       </div>
 
                       {/* Center Column: Metric Pills */}
