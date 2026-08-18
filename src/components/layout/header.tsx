@@ -43,10 +43,10 @@ export default function Header() {
   }, []);
 
   const links = [
-    { name: "Discover", href: "/find-your-fit" },
-    { name: "Evaluate a School", href: "/financial-forecaster" },
     { name: "Featured Jobs", href: "/featured-jobs" },
+    { name: "Evaluate a School", href: "/financial-forecaster" },
     { name: "Compare Schools", href: "/decide" },
+    { name: "Discover", href: "/find-your-fit" },
     { name: "Prepare", href: "/prepare" },
   ];
 
