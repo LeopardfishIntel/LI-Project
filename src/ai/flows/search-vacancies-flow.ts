@@ -1,3 +1,4 @@
+import { validatePhaseMatching, matchSchoolEntity } from '@/lib/crawler/entityMatcher';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
 'use server';
 
@@ -655,6 +656,17 @@ Provide ONLY the raw JSON object.`,
       }
 
       const { core, source } = getCoreTitleAndSource(rawJob);
+
+      // 🛡️ EDUCATIONAL PHASE VALIDATION (Primary vs Secondary)
+      const phaseCheck = validatePhaseMatching({
+        isSecondaryOnly: hasSecondary && !hasPrimary,
+        isPrimaryOnly: hasPrimary && !hasSecondary
+      }, core);
+
+      if (!phaseCheck.isPhaseValid) {
+        console.log(`🛸 [SWEEP ENGINE] Phase Validation: ${phaseCheck.reason}: ${rawJob}`);
+        continue;
+      }
       const normKey = getNormalizedComparisonKey(core);
       if (!normKey) continue;
 

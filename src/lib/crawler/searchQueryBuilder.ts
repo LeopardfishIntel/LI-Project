@@ -74,8 +74,25 @@ export function buildTier1Queries(schoolName: string, schoolDomain: string): str
  * Tier 2: Dedicated International Job Portal & Aggregator queries
  * Splits deep paths for portals like TES into root site: operators + quoted subpaths.
  */
-export function buildTier2Queries(schoolName: string): string[] {
-  return [
+export function buildTier2Queries(
+  schoolName: string, 
+  options: { aliases?: string[]; tesEmployerSlug?: string; tesOrganizationId?: string; schroleAccountId?: string } = {}
+): string[] {
+  const queries: string[] = [];
+
+  // Direct platform ID / slug query if available
+  if (options.tesEmployerSlug) {
+    queries.push(`site:tes.com "${options.tesEmployerSlug}"`);
+  }
+  if (options.tesOrganizationId) {
+    queries.push(`site:tes.com "${options.tesOrganizationId}"`);
+  }
+  if (options.schroleAccountId) {
+    queries.push(`site:schrole.com "${options.schroleAccountId}"`);
+  }
+
+  // Canonical name portal queries
+  queries.push(
     formatGroundingSiteQuery(schoolName, 'tes.com/jobs/vacancy'),
     formatGroundingSiteQuery(schoolName, 'tes.com/jobs/employer'),
     formatGroundingSiteQuery(schoolName, 'tes.com'),
@@ -84,8 +101,19 @@ export function buildTier2Queries(schoolName: string): string[] {
     formatGroundingSiteQuery(schoolName, 'ticrecruitment.com'),
     formatGroundingSiteQuery(schoolName, 'teachaway.com'),
     formatGroundingSiteQuery(schoolName, 'asq-international.com'),
-    formatGroundingSiteQuery(schoolName, 'worldteachers.com'),
-  ];
+    formatGroundingSiteQuery(schoolName, 'worldteachers.com')
+  );
+
+  // Alias queries
+  const aliases = options.aliases || [];
+  for (const alias of aliases) {
+    queries.push(
+      formatGroundingSiteQuery(alias, 'tes.com/jobs/vacancy'),
+      formatGroundingSiteQuery(alias, 'tes.com/jobs/employer')
+    );
+  }
+
+  return queries;
 }
 
 /**

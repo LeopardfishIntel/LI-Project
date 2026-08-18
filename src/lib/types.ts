@@ -72,6 +72,10 @@ export interface School {
   videoUrl?: string | null;
   websiteUrl?: string | null;
   website?: string | null;
+  aliases?: string[];
+  tesOrganizationId?: string;
+  schroleAccountId?: string;
+  tesEmployerSlug?: string;
   intel?: SchoolIntel;
   costOfLiving?: LocationCostOfLiving;
   rating?: Rating;
