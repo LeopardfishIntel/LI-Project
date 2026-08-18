@@ -328,6 +328,7 @@ export default function FeaturedJobsPage() {
       const baseSalary = parseSalary(school.salaryRange || school.salary || school.netbase);
       let rentCost = 0;
       let otherCost = 0;
+      let calculatedSavings = 0;
 
       if (matchedCol) {
         const isProvided = String(school.housingprovision || "").toLowerCase().includes("provided") || school.housingProvided === true;
@@ -347,40 +348,43 @@ export default function FeaturedJobsPage() {
         // Outgoings Formula: Outgoings = (Base Living Cost * Family Status Multiplier) + Rent Expense
         const adjustedOutgoings = otherCost + rentCost;
         
-        let calculatedSavings = Math.max(0, Math.round(baseSalary - adjustedOutgoings));
+        calculatedSavings = Math.max(0, Math.round(baseSalary - adjustedOutgoings));
         calculatedSavings = Math.round(calculatedSavings * volatileMultiplier);
-
-        // Determine department
-        let department = "Secondary";
-        const lowerTitle = jobData.title.toLowerCase();
-        if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
-          department = "Primary";
-        } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
-          department = "Leadership";
-        }
-
-        jobsList.push({
-          id: jobData.id,
-          title: jobData.title,
-          department,
-          source: jobData.sourceName || "Web",
-          source_url: jobData.applyUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
-          date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
-          date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling",
-          status: jobData.status,
-          schoolId: school.id,
-          schoolName: school.schoolname,
-          schoolRating: parseFloat(school.academicscore || school.rating || "0"),
-          curriculum: school.curriculum || "British",
-          city: school.city || "",
-          country: school.country || "",
-          savingsPotential: calculatedSavings,
-          schoolWebsite: school.website || "",
-          paidInUSD: school.paidInUSD,
-          scrapedAtRaw: jobData.scrapedAt,
-          closesDateRaw: closesDate
-        });
+      } else {
+        // Fallback calculations if no cost of living entries match
+        calculatedSavings = Math.max(0, Math.round(baseSalary));
       }
+
+      // Determine department
+      let department = "Secondary";
+      const lowerTitle = jobData.title.toLowerCase();
+      if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
+        department = "Primary";
+      } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
+        department = "Leadership";
+      }
+
+      jobsList.push({
+        id: jobData.id,
+        title: jobData.title,
+        department,
+        source: jobData.sourceName || "Web",
+        source_url: jobData.applyUrl || school.website || ("https://www.google.com/search?q=" + encodeURIComponent(school.schoolname + ' jobs')),
+        date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
+        date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling",
+        status: jobData.status,
+        schoolId: school.id,
+        schoolName: school.schoolname,
+        schoolRating: parseFloat(school.academicscore || school.rating || "0"),
+        curriculum: school.curriculum || "British",
+        city: school.city || "",
+        country: school.country || "",
+        savingsPotential: calculatedSavings,
+        schoolWebsite: school.website || "",
+        paidInUSD: school.paidInUSD,
+        scrapedAtRaw: jobData.scrapedAt,
+        closesDateRaw: closesDate
+      });
     });
 
     return jobsList;
