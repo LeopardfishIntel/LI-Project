@@ -846,9 +846,10 @@ export async function getSchoolStabilityReport(input: {
                                  (async () => {
                                      const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                                      const admin = await import('firebase-admin');
+                                     const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
                                      const subcolJobs = freshParsedVacancies.map(v => {
-                                         const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
-                                         if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
+                                         const rawClosing = v.closesDate || v.date_closing || null;
+                                         const triage = triageVacancyLifecycle(rawClosing);
                                          
                                          const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
                                          return {
@@ -856,8 +857,9 @@ export async function getSchoolStabilityReport(input: {
                                              title: v.title,
                                              sourceName: v.source,
                                              applyUrl: v.source_url || "",
-                                             closingDate: closes,
-                                             status: 'pending_review'
+                                             closingDate: triage.closingDate,
+                                             isRollingDeadline: triage.isRollingDeadline,
+                                             status: triage.status
                                          };
                                      });
                                      await saveScrapedJobs(input.schoolId, subcolJobs);

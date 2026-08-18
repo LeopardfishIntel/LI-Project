@@ -1,3 +1,4 @@
+import { triageVacancyLifecycle } from '@/lib/crawler/dateParser';
 import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
 import { NextRequest } from "next/server";
@@ -1022,8 +1023,8 @@ You MUST run search queries with the school name enclosed in escaped double quot
         try {
           const { saveScrapedJobs, updateDocument } = await import("@/firebase/admin");
           const subcolJobs = finalVacancies.map(v => {
-            const closes = v.date_closing ? new Date(v.date_closing) : new Date();
-            if (!v.date_closing) closes.setDate(closes.getDate() + 45);
+            const rawClosing = v.date_closing || (v as any).closesDate || null;
+            const triage = triageVacancyLifecycle(rawClosing);
             
             const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
             return {
@@ -1031,8 +1032,9 @@ You MUST run search queries with the school name enclosed in escaped double quot
               title: v.title,
               sourceName: v.source,
               applyUrl: v.source_url || "",
-              closingDate: closes,
-              status: closes < new Date() ? 'expired' : 'pending_review'
+              closingDate: triage.closingDate,
+              isRollingDeadline: triage.isRollingDeadline,
+              status: triage.status
             };
           });
           (async () => {

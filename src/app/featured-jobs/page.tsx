@@ -43,6 +43,7 @@ interface StructuredJob {
   paidInUSD?: boolean;
   scrapedAtRaw?: any;
   closesDateRaw?: Date | null;
+  isRollingDeadline?: boolean;
 }
 
 export default function FeaturedJobsPage() {
@@ -258,14 +259,21 @@ export default function FeaturedJobsPage() {
   };
 
   const handleUpdateClosingDate = async (schoolId: string, jobId: string, dateStr: string) => {
-    if (!dateStr) return;
     try {
       const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
-      const parsedDate = new Date(dateStr);
       const { Timestamp } = await import('firebase/firestore');
-      await updateDoc(ref, {
-        closingDate: Timestamp.fromDate(parsedDate)
-      });
+      if (!dateStr) {
+        await updateDoc(ref, {
+          closingDate: null,
+          isRollingDeadline: true
+        });
+      } else {
+        const parsedDate = new Date(dateStr);
+        await updateDoc(ref, {
+          closingDate: Timestamp.fromDate(parsedDate),
+          isRollingDeadline: false
+        });
+      }
     } catch (err) {
       console.error("Failed to update job closing date:", err);
     }
@@ -393,7 +401,7 @@ export default function FeaturedJobsPage() {
           sourceName: jobData.sourceName
         }),
         date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
-        date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling",
+        date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling / Open Until Filled",
         status: jobData.status,
         schoolId: school.id,
         schoolName: school.schoolname,
@@ -405,7 +413,8 @@ export default function FeaturedJobsPage() {
         schoolWebsite: school.website || "",
         paidInUSD: school.paidInUSD,
         scrapedAtRaw: jobData.scrapedAt,
-        closesDateRaw: closesDate
+        closesDateRaw: closesDate,
+        isRollingDeadline: jobData.isRollingDeadline ?? !closesDate
       });
     });
 
@@ -894,6 +903,11 @@ export default function FeaturedJobsPage() {
                                 {isClosingSoon && (
                                   <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
                                     CLOSING SOON
+                                  </span>
+                                )}
+                                {(job.isRollingDeadline || !job.closesDateRaw) && (
+                                  <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
+                                    <RefreshCw className="size-2.5" /> ROLLING / OPEN UNTIL FILLED
                                   </span>
                                 )}
                               </>
