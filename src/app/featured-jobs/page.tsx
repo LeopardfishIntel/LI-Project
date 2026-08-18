@@ -333,6 +333,33 @@ export default function FeaturedJobsPage() {
     return jobs;
   }, [filteredJobs, sortBy]);
 
+  // Handle manual verify & sync for a single school
+  const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
+    setRefreshingSchools(prev => ({ ...prev, [schoolId]: true }));
+    try {
+      const docRef = doc(db, 'schools', schoolId);
+      await updateDoc(docRef, {
+        scrapedJobsList: [],
+        scrapedJobsCount: null,
+        isRevalidating: true
+      });
+
+      await getSchoolStabilityReport({
+        schoolId,
+        schoolName,
+        estimatedStaffBase: 0,
+        city,
+        country
+      });
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    } finally {
+      setTimeout(() => {
+        setRefreshingSchools(prev => ({ ...prev, [schoolId]: false }));
+      }, 6000);
+    }
+  };
+
   // Handle batch verify & sync for all visible filtered schools in parallel
   const handleSyncAllVisible = async () => {
     setIsSyncingAll(true);
@@ -626,14 +653,62 @@ export default function FeaturedJobsPage() {
 
             {/* Empty State */}
             {!loadingSchools && !loadingCol && filteredJobs.length === 0 && (
-              <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-4">
+              <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Vacancies Spotted</h3>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies Found</h3>
                   <p className="text-xs text-slate-400 max-w-md mx-auto">
-                    No active job listings match your current filters. Try relaxing savings thresholds or broadening the subject selections.
+                    No active job listings match your current filters in the live database.
                   </p>
                 </div>
+
+                {/* Recommendation 2: Scan School for vacancies if they exist in DB but aren't scanned */}
+                {searchQuery.trim().length > 0 && schoolsData && (
+                  (() => {
+                    const queryLower = searchQuery.toLowerCase();
+                    const unscannedSchools = schoolsData.filter((school: any) => {
+                      const name = (school.schoolname || "").toLowerCase();
+                      const city = (school.city || "").toLowerCase();
+                      const country = (school.country || "").toLowerCase();
+                      const matches = name.includes(queryLower) || city.includes(queryLower) || country.includes(queryLower);
+                      
+                      const hasJobs = Array.isArray(school.scrapedJobsList) && school.scrapedJobsList.length > 0;
+                      return matches && !hasJobs;
+                    });
+
+                    if (unscannedSchools.length === 0) return null;
+
+                    return (
+                      <div className="border-t border-white/5 pt-6 space-y-3 text-left max-w-lg mx-auto">
+                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest text-center">
+                          We found matching schools in our registry. Scan them for live jobs:
+                        </h4>
+                        <div className="space-y-2.5">
+                          {unscannedSchools.slice(0, 5).map((school: any) => (
+                            <div key={school.id} className="flex justify-between items-center bg-black/30 border border-white/5 px-4 py-2.5 rounded-sm">
+                              <div>
+                                <p className="text-xs font-bold text-white leading-tight">{school.schoolname}</p>
+                                <p className="text-[10px] text-slate-500">{school.city}, {school.country}</p>
+                              </div>
+                              {refreshingSchools[school.id] ? (
+                                <span className="flex items-center gap-1 text-[10px] text-[#FF6B35] font-bold uppercase">
+                                  <Loader2 className="animate-spin size-3" /> Syncing
+                                </span>
+                              ) : (
+                                <button
+                                  onClick={() => handleRefreshSchool(school.id, school.schoolname, school.city || "", school.country || "")}
+                                  className="text-[10px] bg-[#FF6B35]/10 text-[#FF6B35] border border-[#FF6B35]/30 hover:bg-[#FF6B35] hover:text-white px-3 py-1 rounded-sm font-black uppercase tracking-wider transition-all"
+                                >
+                                  Scan School
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
               </div>
             )}
 
