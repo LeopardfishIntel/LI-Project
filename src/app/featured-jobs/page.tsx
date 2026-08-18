@@ -5,7 +5,7 @@ import {
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
   Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw
 } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase, useAuth, db } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
 import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
@@ -49,6 +49,8 @@ export default function FeaturedJobsPage() {
   const [mounted, setMounted] = useState(false);
   const { user } = useAuth();
   const { data: teacherProfile } = useTeacher(user?.uid || "");
+  const userDocQuery = useMemoFirebase(() => (mounted && firestore && user?.uid ? doc(firestore, 'users', user.uid) : null), [firestore, mounted, user?.uid]);
+  const { data: userProfileData } = useDoc<any>(userDocQuery);
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [activeTab, setActiveTab] = useState<'public' | 'admin_staging'>('public');
 
