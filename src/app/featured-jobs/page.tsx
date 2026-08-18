@@ -212,6 +212,21 @@ export default function FeaturedJobsPage() {
     }
   };
 
+  const [isSweeping, setIsSweeping] = useState(false);
+
+  const handleRunFullSweep = async () => {
+    setIsSweeping(true);
+    try {
+      await fetch('/api/daily-sweep', { method: 'GET' });
+    } catch (err) {
+      console.error("Failed to run daily sweep:", err);
+    } finally {
+      setTimeout(() => {
+        setIsSweeping(false);
+      }, 5000);
+    }
+  };
+
   // Admin Actions
   const handleApproveJob = async (schoolId: string, jobId: string) => {
     try {
@@ -476,26 +491,44 @@ export default function FeaturedJobsPage() {
           
           <div className="flex gap-3">
             {calculatedIsAdmin && (
-              <div className="flex bg-[#0b1224] border border-white/10 p-1 rounded-sm">
+              <>
                 <button
-                  onClick={() => setActiveTab('public')}
-                  className={cn(
-                    "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
-                    activeTab === 'public' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
-                  )}
+                  onClick={handleRunFullSweep}
+                  disabled={isSweeping}
+                  className="bg-[#D96B27]/10 hover:bg-[#D96B27] border border-[#D96B27]/30 text-[#D96B27] hover:text-white px-4 py-2 text-xs font-black uppercase tracking-wider transition-all rounded-sm flex items-center gap-1.5"
                 >
-                  Live Feed
-                </button>
-                <button
-                  onClick={() => setActiveTab('admin_staging')}
-                  className={cn(
-                    "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1",
-                    activeTab === 'admin_staging' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
+                  {isSweeping ? (
+                    <>
+                      <Loader2 className="animate-spin size-3.5" /> Sweeping
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="size-3.5" /> Run DB Sweep
+                    </>
                   )}
-                >
-                  Staging ({adminJobsData?.length || 0})
                 </button>
-              </div>
+
+                <div className="flex bg-[#0b1224] border border-white/10 p-1 rounded-sm">
+                  <button
+                    onClick={() => setActiveTab('public')}
+                    className={cn(
+                      "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+                      activeTab === 'public' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
+                    )}
+                  >
+                    Live Feed
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('admin_staging')}
+                    className={cn(
+                      "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1",
+                      activeTab === 'admin_staging' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
+                    )}
+                  >
+                    Staging ({adminJobsData?.length || 0})
+                  </button>
+                </div>
+              </>
             )}
             
             <button 
