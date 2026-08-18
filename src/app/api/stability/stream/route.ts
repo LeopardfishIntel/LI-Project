@@ -1,3 +1,4 @@
+import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
 import { NextRequest } from "next/server";
 import { getAI } from "@/ai/genkit";
@@ -236,53 +237,13 @@ interface ScrapedVacancy {
 }
 
 export function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string, schoolName?: string): string {
-  const sourceNormalized = vacancy.source.toLowerCase();
-  const cleanedTitle = vacancy.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-
-  // 1. TES Link Reconstruction Heuristics
-  if (sourceNormalized.includes('tes')) {
-    // Preserve precise advert deep-links or employer portal URLs scraped directly
-    if (vacancy.source_url && vacancy.source_url.startsWith('http') && vacancy.source_url.includes('tes.com/jobs/')) {
-      if (!vacancy.source_url.endsWith('/jobs/browse/international') && !vacancy.source_url.endsWith('/jobs/browse/international/')) {
-        return vacancy.source_url;
-      }
-    }
-    // If the engine extracted the explicit employer code block, route straight to their live portal overview
-    if (vacancy.tes_employer_slug) {
-      return `https://www.tes.com/jobs/employer/${vacancy.tes_employer_slug}`;
-    }
-    // Hardcoded fallback override for known entities (e.g., Parklane) to prevent generic homepages
-    if (schoolBaseUrl.includes('parklane')) {
-      return `https://www.tes.com/jobs/employer/parklane-international-school-1065604`;
-    }
-    // Route to school search on TES rather than a generic landing page
-    if (schoolName) {
-      return `https://www.tes.com/jobs/browse/international?keywords=${encodeURIComponent(schoolName)}`;
-    }
-    return `https://www.tes.com/jobs/browse/international`;
-  }
-
-  // 2. School Web Direct Subdirectory Protection
-  if (sourceNormalized.includes('school web') || sourceNormalized.includes('portal')) {
-    const rootUrlClean = schoolBaseUrl.replace(/\/$/, '');
-    
-    // Catch cases where the engine lazily passed the bare homepage root
-    if (!vacancy.source_url || vacancy.source_url === schoolBaseUrl || vacancy.source_url === `${schoolBaseUrl}/`) {
-      return `${rootUrlClean}/about-us/job-opportunities/`; 
-    }
-    return vacancy.source_url;
-  }
-
-  // 3. Regional Aggregators (Jobs.cz / Expats.cz / Indeed)
-  if (sourceNormalized.includes('jobs.cz') || sourceNormalized.includes('expats')) {
-    if (vacancy.source_url && vacancy.source_url.startsWith('http')) {
-      return vacancy.source_url; // Retain cached crawling footprint strings if present
-    }
-    // Fall back directly to localized search strings rather than landing them on empty global homepages
-    return `https://cz.indeed.com/q-english-international-school-l-hlavn%C3%AD-m%C4%9Bsto-praha-nab%C3%ADdky-pr%C3%A1ce.html`;
-  }
-
-  return vacancy.source_url || `${schoolBaseUrl.replace(/\/$/, '')}/vacancies`;
+  return resolveVacancyUrl({
+    rawHref: vacancy.source_url,
+    employerHref: vacancy.tes_employer_slug ? `https://www.tes.com/jobs/employer/${vacancy.tes_employer_slug}` : null,
+    schoolWebsite: schoolBaseUrl,
+    schoolName: schoolName,
+    sourceName: vacancy.source
+  });
 }
 
 export function getSchoolBaseUrl(schoolId: string, schoolName: string): string {
