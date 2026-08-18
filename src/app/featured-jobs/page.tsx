@@ -84,7 +84,7 @@ export default function FeaturedJobsPage() {
   }, [user]);
 
   // Fallback to check document profile roles
-  const calculatedIsAdmin = isAdminUser || user?.email === 'admin@leopardfish.intel' || userProfileData?.role === 'admin' || userProfileData?.isAdmin === true || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
+  const calculatedIsAdmin = isAdminUser || user?.email === 'admin@leopardfish.intel' || user?.email === 'roger@leopardfishintel.com' || user?.email?.endsWith('@leopardfishintel.com') || userProfileData?.role === 'admin' || userProfileData?.isAdmin === true || (teacherProfile as any)?.role === 'admin' || (teacherProfile as any)?.isAdmin === true;
 
   // Auto-fill family status if registered or returning user
   useEffect(() => {
@@ -531,7 +531,7 @@ export default function FeaturedJobsPage() {
                       activeTab === 'admin_staging' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
                     )}
                   >
-                    Staging ({adminJobsData?.length || 0})
+                    Pending ({adminJobsData?.length || 0})
                   </button>
                 </div>
               </>
@@ -553,7 +553,7 @@ export default function FeaturedJobsPage() {
             <h4 className="font-bold uppercase">Uplink Database Warnings:</h4>
             {errorSchools && <p>Schools Error: {errorSchools.message}</p>}
             {errorPublic && <p>Public Jobs Error: {errorPublic.message}</p>}
-            {errorAdmin && <p>Staging Jobs Error: {errorAdmin.message}</p>}
+            {errorAdmin && <p>Pending Jobs Error: {errorAdmin.message}</p>}
             {errorCol && <p>Cost of Living Error: {errorCol.message}</p>}
           </div>
         )}
