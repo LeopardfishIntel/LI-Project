@@ -60,6 +60,7 @@ export default function FeaturedJobsPage() {
   
   // Refresh loading states
   const [refreshingSchools, setRefreshingSchools] = useState<Record<string, boolean>>({});
+  const [isSyncingAll, setIsSyncingAll] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -101,36 +102,6 @@ export default function FeaturedJobsPage() {
 
   const { data: schoolsData, isLoading: loadingSchools } = useCollection<any>(schoolsQuery);
   const { data: colData, isLoading: loadingCol } = useCollection<any>(colQuery);
-
-  // Handle manual verify & sync
-  const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
-    setRefreshingSchools(prev => ({ ...prev, [schoolId]: true }));
-    try {
-      // 1. Wipe the Firestore fields to trigger background search
-      const docRef = doc(db, 'schools', schoolId);
-      await updateDoc(docRef, {
-        scrapedJobsList: [],
-        scrapedJobsCount: null,
-        isRevalidating: true
-      });
-
-      // 2. Call the server action to kick off the background worker
-      await getSchoolStabilityReport({
-        schoolId,
-        schoolName,
-        estimatedStaffBase: 0,
-        city,
-        country
-      });
-    } catch (err) {
-      console.error("Refresh failed:", err);
-    } finally {
-      // Keep syncing indicator for a few seconds to let search finish
-      setTimeout(() => {
-        setRefreshingSchools(prev => ({ ...prev, [schoolId]: false }));
-      }, 6000);
-    }
-  };
 
   // Process & Extract Open Vacancies from all schools
   const allJobs = useMemo(() => {
@@ -362,6 +333,51 @@ export default function FeaturedJobsPage() {
     return jobs;
   }, [filteredJobs, sortBy]);
 
+  // Handle batch verify & sync for all visible filtered schools in parallel
+  const handleSyncAllVisible = async () => {
+    setIsSyncingAll(true);
+    const uniqueSchools = Array.from(new Set(filteredJobs.map(j => JSON.stringify({
+      schoolId: j.schoolId,
+      schoolName: j.schoolName,
+      city: j.city,
+      country: j.country
+    })))).map(s => JSON.parse(s));
+
+    try {
+      await Promise.all(uniqueSchools.map(async (school) => {
+        setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: true }));
+        try {
+          const docRef = doc(db, 'schools', school.schoolId);
+          await updateDoc(docRef, {
+            scrapedJobsList: [],
+            scrapedJobsCount: null,
+            isRevalidating: true
+          });
+
+          await getSchoolStabilityReport({
+            schoolId: school.schoolId,
+            schoolName: school.schoolName,
+            estimatedStaffBase: 0,
+            city: school.city,
+            country: school.country
+          });
+        } catch (err) {
+          console.error("Refresh failed for:", school.schoolName, err);
+        } finally {
+          setTimeout(() => {
+            setRefreshingSchools(prev => ({ ...prev, [school.schoolId]: false }));
+          }, 6000);
+        }
+      }));
+    } catch (err) {
+      console.error("Batch sync failed:", err);
+    } finally {
+      setTimeout(() => {
+        setIsSyncingAll(false);
+      }, 6000);
+    }
+  };
+
   // Toggle Filters helper
   const handleCurriculumToggle = (cur: string) => {
     setSelectedCurriculums(prev => 
@@ -569,10 +585,28 @@ export default function FeaturedJobsPage() {
 
             {/* Sort & Count Header */}
             {!loadingSchools && !loadingCol && filteredJobs.length > 0 && (
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Showing {filteredJobs.length} active vacancies
-                </span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4 w-full">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Showing {filteredJobs.length} active vacancies
+                  </span>
+                  
+                  <span className="text-slate-700">|</span>
+                  
+                  {isSyncingAll ? (
+                    <span className="flex items-center gap-1.5 text-xs text-[#FF6B35] font-black uppercase tracking-wider">
+                      <Loader2 className="animate-spin size-3.5" /> Syncing Listings
+                    </span>
+                  ) : (
+                    <button
+                      onClick={handleSyncAllVisible}
+                      className="text-xs text-[#FF6B35] hover:text-white font-black uppercase tracking-wider transition-colors flex items-center gap-1.5"
+                      title="Force refresh vacancies for all currently listed schools"
+                    >
+                      Verify & Sync Listings
+                    </button>
+                  )}
+                </div>
                 
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sort By:</span>
@@ -648,33 +682,16 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full pt-1">
                       {/* Left Column: Source Link */}
-                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0 gap-2">
-                        <span>SOURCE:&nbsp;
-                          <a 
-                            href={job.source_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
-                          >
-                            {job.source.toUpperCase()}
-                          </a>
-                        </span>
-                        
-                        <span className="text-slate-600 text-xs">|</span>
-                        
-                        {refreshingSchools[job.schoolId] ? (
-                          <span className="flex items-center gap-1 text-[10px] text-[#FF6B35] font-bold uppercase">
-                            <Loader2 className="animate-spin size-3" /> Syncing
-                          </span>
-                        ) : (
-                          <button 
-                            onClick={() => handleRefreshSchool(job.schoolId, job.schoolName, job.city, job.country)}
-                            className="text-[10px] text-slate-500 hover:text-[#FF6B35] font-bold uppercase transition-colors"
-                            title="Verify and force refresh active listings for this academy"
-                          >
-                            Verify & Sync
-                          </button>
-                        )}
+                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0">
+                        SOURCE:&nbsp;
+                        <a 
+                          href={job.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
+                        >
+                          {job.source.toUpperCase()}
+                        </a>
                       </div>
 
                       {/* Center Column: Metric Pills */}
