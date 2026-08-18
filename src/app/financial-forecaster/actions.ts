@@ -724,7 +724,7 @@ export async function getSchoolStabilityReport(input: {
                 needsNewSearch = true;
             } else {
                 const daysElapsed = (Date.now() - new Date(lastScrapedAt).getTime()) / (1000 * 60 * 60 * 24);
-                if (daysElapsed >= 4) {
+                if (daysElapsed >= 1) {
                     needsNewSearch = true;
                 }
             }
