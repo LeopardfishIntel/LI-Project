@@ -22,9 +22,9 @@ export function useCollection<T = DocumentData>(
 
   // 🛡️ MEMOIZATION SHIELD: 
   // We extract a stable key from the query to prevent re-running on every render.
-  const queryMemoKey = typeof pathOrQuery === 'string' 
-    ? pathOrQuery 
-    : (pathOrQuery as any)?._query?.path?.toString() || 'static-query';
+  const queryMemoKey = pathOrQuery 
+    ? (typeof pathOrQuery === 'string' ? pathOrQuery : ((pathOrQuery as any)?._query?.path?.toString() || 'active-query'))
+    : 'null-query';
 
   useEffect(() => {
     // 1. Initial State Guard
