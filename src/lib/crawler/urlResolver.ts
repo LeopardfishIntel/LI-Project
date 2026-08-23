@@ -24,14 +24,54 @@ const TRACKING_QUERY_PARAMS = new Set([
   'cmpid'
 ]);
 
+export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
+  'waytogulf.com',
+  'optioncarriere.com',
+  'optioncarriere',
+  'jobrapido.com',
+  'jobrapido',
+  'jooble.org',
+  'jooble.com',
+  'bebee.com',
+  'whatjobs.com',
+  'adzuna.com',
+  'adzuna.co.uk',
+  'bayt.com',
+  'naukrigulf.com',
+  'gulftalent.com',
+  'monstergulf.com',
+  'tanqeeb.com',
+  'careerjet.com',
+  'indeed.com',
+  'glassdoor.com',
+  'qling.ai',
+  'talent.com',
+  'neuvoo.com',
+  'ziprecruiter.com',
+  'drjobs.ae',
+  'edarabia.com/jobs',
+  'learn4good.com',
+  'allfreightjobs.com'
+];
+
 /**
- * Checks if a URL points to a non-job content page (news articles, blog posts, press releases, etc.).
- * Strictly blocks Schrole news and blog articles from being ingested as vacancies.
+ * Checks if a URL originates from a third-party job aggregator (which scrap/mirror phantom listings).
+ */
+export function isThirdPartyAggregatorUrl(urlStr: string | null | undefined): boolean {
+  if (!urlStr) return false;
+  const lower = urlStr.toLowerCase();
+  return THIRD_PARTY_AGGREGATOR_DOMAINS.some(domain => lower.includes(domain));
+}
+
+/**
+ * Checks if a URL points to a non-job content page (news articles, blog posts, press releases, or third-party aggregators).
+ * Strictly blocks Schrole news, blog articles, and aggregator phantom listings from being ingested as vacancies.
  */
 export function isBlockedContentUrl(urlStr: string | null | undefined): boolean {
   if (!urlStr) return false;
   const lower = urlStr.toLowerCase();
-  return lower.includes('schrole.com/news/') || 
+  return isThirdPartyAggregatorUrl(urlStr) ||
+         lower.includes('schrole.com/news/') || 
          lower.includes('/blog/') || 
          lower.includes('/news/') ||
          lower.includes('/articles/') ||

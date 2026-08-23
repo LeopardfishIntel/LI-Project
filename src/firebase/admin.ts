@@ -709,16 +709,57 @@ const BLOG_NEWS_PATH_REGEX = /\/(news|blog|blogs|articles|press|archives|weekly-
 /**
  * Checks if a candidate URL points to a blog, news roundup, or unparameterized portal
  */
+export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
+  'waytogulf.com',
+  'optioncarriere.com',
+  'optioncarriere',
+  'jobrapido.com',
+  'jobrapido',
+  'jooble.org',
+  'jooble.com',
+  'bebee.com',
+  'whatjobs.com',
+  'adzuna.com',
+  'adzuna.co.uk',
+  'bayt.com',
+  'naukrigulf.com',
+  'gulftalent.com',
+  'monstergulf.com',
+  'tanqeeb.com',
+  'careerjet.com',
+  'indeed.com',
+  'glassdoor.com',
+  'qling.ai',
+  'talent.com',
+  'neuvoo.com',
+  'ziprecruiter.com',
+  'drjobs.ae',
+  'edarabia.com/jobs',
+  'learn4good.com',
+  'allfreightjobs.com'
+];
+
+export function isThirdPartyAggregatorUrl(urlStr: string | null | undefined): boolean {
+  if (!urlStr) return false;
+  const lower = urlStr.toLowerCase();
+  return THIRD_PARTY_AGGREGATOR_DOMAINS.some(domain => lower.includes(domain));
+}
+
 export function isExcludedNewsOrBlogUrl(url: string): boolean {
   if (!url || typeof url !== 'string') return true;
   const clean = url.trim().toLowerCase();
 
-  // 1. Check for news, blog, press, archives path segments
+  // 1. Check for third-party job aggregators (phantom mirror listings)
+  if (isThirdPartyAggregatorUrl(clean)) {
+    return true;
+  }
+
+  // 2. Check for news, blog, press, archives path segments
   if (BLOG_NEWS_PATH_REGEX.test(clean)) {
     return true;
   }
 
-  // 2. Schrole specific check: must contain active vacancy routes
+  // 3. Schrole specific check: must contain active vacancy routes
   if (clean.includes('schrole.com')) {
     const isSchroleVacancy = clean.includes('/app/') || clean.includes('/vacancy/') || clean.includes('/job/') || clean.includes('/jobs/');
     if (!isSchroleVacancy) {
@@ -772,16 +813,23 @@ export function isHistoricalExpiredJob(params: {
  * - If 404, 410, or redirects to root domain / generic home -> 'delisted'
  * - If 200 OK -> 'approved'
  */
-async function verifyJobUrlHttp(url: string): Promise<{ isValid: boolean; status: 'approved' | 'delisted'; finalUrl: string }> {
+export interface JobUrlVerificationResult {
+  isValid: boolean;
+  status: 'approved' | 'delisted';
+  finalUrl: string;
+  delistReason?: string;
+}
+
+export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationResult> {
   if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url.trim())) {
-    return { isValid: false, status: 'delisted', finalUrl: url || '' };
+    return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: url || '' };
   }
 
   const cleanUrl = url.trim();
 
-  // 🚫 Reject blog posts, press releases, weekly roundups, and invalid portal routes
-  if (isExcludedNewsOrBlogUrl(cleanUrl)) {
-    return { isValid: false, status: 'delisted', finalUrl: cleanUrl };
+  // 🚫 Reject third-party aggregators, blog posts, press releases, and invalid routes
+  if (isExcludedNewsOrBlogUrl(cleanUrl) || isThirdPartyAggregatorUrl(cleanUrl)) {
+    return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: cleanUrl };
   }
 
   const controller = new AbortController();
@@ -862,18 +910,18 @@ async function verifyJobUrlHttp(url: string): Promise<{ isValid: boolean; status
           }
         } catch {}
 
-        if (isRedirectToRoot) {
-          return { isValid: false, status: 'delisted', finalUrl: headless.finalUrl };
+        if (isRedirectToRoot || isThirdPartyAggregatorUrl(headless.finalUrl)) {
+          return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
         }
 
         return { isValid: true, status: 'approved', finalUrl: headless.finalUrl };
       } else if (headless.status === 404 || headless.status === 410) {
-        return { isValid: false, status: 'delisted', finalUrl: headless.finalUrl };
+        return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
       }
     }
 
-    if (statusCode === 404 || statusCode === 410 || statusCode >= 500) {
-      return { isValid: false, status: 'delisted', finalUrl };
+    if (statusCode === 404 || statusCode === 410 || statusCode >= 500 || isThirdPartyAggregatorUrl(finalUrl)) {
+      return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
     }
 
     // Check if redirected to root domain without query params
@@ -888,23 +936,26 @@ async function verifyJobUrlHttp(url: string): Promise<{ isValid: boolean; status
     } catch {}
 
     if (isRedirectToRoot) {
-      return { isValid: false, status: 'delisted', finalUrl };
+      return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
     }
 
     if (statusCode >= 200 && statusCode < 300) {
       return { isValid: true, status: 'approved', finalUrl };
     }
 
-    return { isValid: false, status: 'delisted', finalUrl };
+    return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
   } catch {
     clearTimeout(timeoutId);
     // Fallback to Headless Browser on network/timeout failure
     console.log(`🛡️ [VERIFIER] Network fetch failed for ${cleanUrl}. Invoking managed headless browser fallback...`);
     const headless = await scrapeWithManagedBrowserFallback(cleanUrl);
     if (headless.success && headless.status >= 200 && headless.status < 400 && !headless.isBlocked) {
+      if (isThirdPartyAggregatorUrl(headless.finalUrl)) {
+        return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
+      }
       return { isValid: true, status: 'approved', finalUrl: headless.finalUrl };
     }
-    return { isValid: false, status: 'delisted', finalUrl: cleanUrl };
+    return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: cleanUrl };
   }
 }
 

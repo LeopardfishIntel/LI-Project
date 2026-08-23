@@ -4,7 +4,8 @@ import {
   isGenericRootUrl, 
   resolveVacancyUrl, 
   extractUrlFromScrapedString,
-  isBlockedContentUrl
+  isBlockedContentUrl,
+  isThirdPartyAggregatorUrl
 } from './urlResolver';
 
 function runTests() {
@@ -144,6 +145,45 @@ function runTests() {
     sanitizeUrl('https://www.tes.com/jobs/vacancy/biology-teacher-12345'),
     'https://www.tes.com/jobs/vacancy/biology-teacher-12345',
     'sanitizeUrl allows legitimate vacancy advert URLs'
+  );
+
+  // 11. Third-Party Job Aggregators (Phantom / Mirror Listings)
+  assertEqual(
+    isThirdPartyAggregatorUrl('https://www.waytogulf.com/jobs/oman/cheltenham-muscat/'),
+    true,
+    'isThirdPartyAggregatorUrl flags waytogulf.com'
+  );
+  assertEqual(
+    isThirdPartyAggregatorUrl('https://www.optioncarriere.com/emploi-professeur-anglais.html'),
+    true,
+    'isThirdPartyAggregatorUrl flags optioncarriere.com'
+  );
+  assertEqual(
+    isThirdPartyAggregatorUrl('https://www.jobrapido.com/job/international-school/'),
+    true,
+    'isThirdPartyAggregatorUrl flags jobrapido.com'
+  );
+  assertEqual(
+    isThirdPartyAggregatorUrl('https://www.tes.com/jobs/vacancy/maths-teacher-12345'),
+    false,
+    'isThirdPartyAggregatorUrl allows verified TES domain'
+  );
+  assertEqual(
+    sanitizeUrl('https://www.waytogulf.com/jobs/oman/teaching-job?utm_source=aggregator'),
+    null,
+    'sanitizeUrl strictly rejects third-party aggregator URLs'
+  );
+
+  // 12. Fallback cascade rejects aggregator link and falls back to official school portal
+  const resolvedWithAggregator = resolveVacancyUrl({
+    rawHref: 'https://www.waytogulf.com/jobs/oman/cheltenham-maths',
+    schoolWebsite: 'https://www.cheltenhammuscat.com',
+    schoolName: 'Cheltenham Muscat'
+  });
+  assertEqual(
+    resolvedWithAggregator,
+    'https://www.cheltenhammuscat.com/',
+    'resolveVacancyUrl rejects aggregator and falls back to verified school website'
   );
 
   console.log(`\n📊 URL Resolver Test Summary: ${passed} passed, ${failed} failed.`);
