@@ -630,27 +630,18 @@ export async function getSchoolStabilityReport(input: {
             return { data: stabilityMemoryCache.get(input.schoolId), error: null };
         }
 
-        const { doc, getDoc } = await import('firebase/firestore');
-        const { updateDocument } = await import('@/firebase/admin');
-        const { db } = await import('@/firebase/server');
+        const { getDocument, updateDocument } = await import('@/firebase/admin');
 
-        const schoolRef = doc(db, 'schools', input.schoolId);
-        let schoolSnap: any = null;
+        let data: any = null;
         let scrapedJobsCount: number | null = null;
         let scrapedJobsList: string[] = [];
         let lastScrapedAt: string | null = null;
 
-        // 2. Read from Firestore
+        // 2. Read from Firestore via Admin SDK
         try {
-            schoolSnap = await getDoc(schoolRef);
+            data = await getDocument('schools', input.schoolId);
         } catch (readErr) {
             console.warn(`🛸 [STABILITY ENGINE] Firestore read permission/connection limit:`, readErr);
-        }
-
-        // Merge with local JSON cache data if available
-        let data: any = null;
-        if (schoolSnap && schoolSnap.exists()) {
-            data = schoolSnap.data();
         }
         
         const localCache = readLocalCache();
