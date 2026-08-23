@@ -6,7 +6,7 @@ import { parseClosingDate } from '@/lib/crawler/dateParser';
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
@@ -234,6 +234,19 @@ export default function FeaturedJobsPage() {
   };
 
   // Admin Actions
+  const handleMoveToPending = async (schoolId: string, jobId: string) => {
+    try {
+      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
+      await updateDoc(ref, {
+        status: 'pending_review',
+        reviewedAt: new Date(),
+        reviewedBy: user?.uid || "admin"
+      });
+    } catch (err) {
+      console.error("Failed to move job to pending:", err);
+    }
+  };
+
   const handleApproveJob = async (schoolId: string, jobId: string) => {
     try {
       const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
@@ -1095,13 +1108,24 @@ export default function FeaturedJobsPage() {
                             </button>
                           </>
                         ) : (
-                          <a 
-                            href={`/financial-forecaster?schoolId=${job.schoolId}`}
-                            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
-                          >
+                          <div className="flex items-center gap-2">
+                            {calculatedIsAdmin && (
+                              <button
+                                onClick={() => handleMoveToPending(job.schoolId, job.id)}
+                                className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-400/40 px-3 py-2 rounded-sm transition-all"
+                                title="Unpublish from live feed and move to Staging / Pending Review"
+                              >
+                                <Clock className="size-3.5" /> Move to Pending
+                              </button>
+                            )}
+                            <a 
+                              href={`/financial-forecaster?schoolId=${job.schoolId}`}
+                              className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
+                            >
                             Evaluate School
                             <ArrowUpRight className="size-3.5" />
                           </a>
+                          </div>
                         )}
                       </div>
                     </div>
