@@ -724,7 +724,7 @@ export async function getSchoolStabilityReport(input: {
                          scrapedJobsList: [],
                          scrapedJobsCount: 0
                      });
-                     if (schoolSnap && schoolSnap.exists()) {
+                     if (data) {
                          (async () => {
                              const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                              await saveScrapedJobs(input.schoolId, []);
@@ -833,7 +833,7 @@ export async function getSchoolStabilityReport(input: {
                             });
 
                             // Try Firestore update in background without awaiting it!
-                             if (schoolSnap && schoolSnap.exists()) {
+                             if (data) {
                                  (async () => {
                                      const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                                      const admin = await import('firebase-admin');
@@ -874,7 +874,7 @@ export async function getSchoolStabilityReport(input: {
                                 ...data,
                                 isRevalidating: false
                             });
-                             if (schoolSnap && schoolSnap.exists()) {
+                             if (data) {
                                  (async () => {
                                      const admin = await import('firebase-admin');
                                      const { updateDocument } = await import('@/firebase/admin');
@@ -956,7 +956,7 @@ export async function getSchoolStabilityReport(input: {
                 });
 
                 // Update Firestore in background without awaiting it!
-                 if (schoolSnap && schoolSnap.exists()) {
+                 if (data) {
                      (async () => {
                          const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                          const admin = await import('firebase-admin');
@@ -1066,7 +1066,7 @@ export async function getSchoolStabilityReport(input: {
             console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report locally for ${input.schoolName}`);
             
             // Try updating Firestore in background without awaiting it!
-             if (schoolSnap && schoolSnap.exists()) {
+             if (data) {
                  (async () => {
                      const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
                      const admin = await import('firebase-admin');
