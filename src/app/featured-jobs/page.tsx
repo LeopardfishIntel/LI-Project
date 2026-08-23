@@ -123,7 +123,7 @@ export default function FeaturedJobsPage() {
   const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
   
   // Query 1: Public Approved Jobs
-  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved'), where('closingDate', '>=', new Date())) : null), [firestore, mounted]);
+  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved')) : null), [firestore, mounted]);
   
   // Query 2: Admin Staged Pending Review Jobs
   const adminJobsQuery = useMemoFirebase(() => (mounted && firestore && calculatedIsAdmin ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review')) : null), [firestore, mounted, calculatedIsAdmin]);
@@ -453,7 +453,7 @@ export default function FeaturedJobsPage() {
       });
     };
 
-    // 1. Process from live Firestore Subcollection Queries
+    // Process strictly from live Firestore Subcollection Queries (Pure Database Binding)
     if (activeJobsData && activeJobsData.length > 0) {
       activeJobsData.forEach((jobDoc: any) => {
         const schoolId = jobDoc.ref?.parent?.parent?.id;
@@ -461,18 +461,6 @@ export default function FeaturedJobsPage() {
         const school = schoolsMap[schoolId];
         if (!school) return;
         processCandidateJob(jobDoc, school, false);
-      });
-    }
-
-    // 2. Process embedded structured_vacancies / vacancies_discovered from school documents (if in public mode)
-    if (activeTab === 'public' && schoolsData) {
-      schoolsData.forEach((school: any) => {
-        const embedded = school.structured_vacancies || school.vacancies_discovered || school.cachedStability?.structured_vacancies || [];
-        if (Array.isArray(embedded) && embedded.length > 0) {
-          embedded.forEach((item: any) => {
-            processCandidateJob(item, school, true);
-          });
-        }
       });
     }
     return jobsList;
