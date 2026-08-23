@@ -1,5 +1,6 @@
 "use client";
-import { resolveVacancyUrl } from '@/lib/crawler/urlResolver';
+import { resolveVacancyUrl, isBlockedContentUrl } from '@/lib/crawler/urlResolver';
+import { parseClosingDate } from '@/lib/crawler/dateParser';
 
 import { useState, useEffect, useMemo } from 'react';
 import { 
@@ -282,20 +283,36 @@ export default function FeaturedJobsPage() {
   // Process & Extract Open Vacancies from current active tab
   const allJobs = useMemo(() => {
     const activeJobsData = activeTab === 'admin_staging' ? adminJobsData : publicJobsData;
-    if (!activeJobsData || !schoolsData || schoolsData.length === 0) return [];
+    if (!schoolsData || schoolsData.length === 0) return [];
 
     const jobsList: StructuredJob[] = [];
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const seenJobKeys = new Set<string>();
 
-    activeJobsData.forEach((jobDoc: any) => {
-      const jobData = jobDoc;
-      const schoolId = jobDoc.ref?.parent?.parent?.id;
-      if (!schoolId) return;
+    const processCandidateJob = (jobData: any, school: any, isEmbedded = false) => {
+      if (!jobData || !school) return;
+      const schoolId = school.id;
 
-      const school = schoolsMap[schoolId];
-      if (!school) return;
+      // 🛡️ STRICT CRITERIA 1: Status Check (Reject CLOSED / EXPIRED / DELISTED)
+      const rawStatus = String(jobData.status || '').toUpperCase();
+      if (rawStatus === 'CLOSED' || rawStatus === 'EXPIRED' || rawStatus === 'DELISTED' || rawStatus === 'REJECTED') {
+        return;
+      }
+      if (activeTab === 'public' && !isEmbedded && jobData.status !== 'approved') {
+        return;
+      }
+      if (activeTab === 'admin_staging' && !isEmbedded && jobData.status !== 'pending_review') {
+        return;
+      }
 
-      // Extract closing date
+      // 🛡️ STRICT CRITERIA 2: Recruitment Cycle (Reject HISTORIC_Y1 or legacy cycles)
+      const cycle = String(jobData.recruitmentCycle || '').toUpperCase();
+      if (cycle === 'HISTORIC_Y1' || cycle.startsWith('HISTORIC')) {
+        return;
+      }
+
+      // 🛡️ STRICT CRITERIA 3: Closing Date (Null/Rolling OR >= Today)
       let closesDate: Date | null = null;
       if (jobData.closingDate) {
         if (jobData.closingDate.seconds) {
@@ -303,20 +320,43 @@ export default function FeaturedJobsPage() {
         } else {
           closesDate = new Date(jobData.closingDate);
         }
+      } else if (jobData.date_closing) {
+        const parsed = parseClosingDate(jobData.date_closing);
+        closesDate = parsed.closingDate;
       }
 
-      // Filter: Keep ONLY currently open/active jobs (public feed only)
-      if (activeTab === 'public') {
-        if (closesDate && closesDate < today) {
-          // Auto-transition expired approved jobs to 'expired'
-          if (jobData.status === 'approved') {
+      if (closesDate && !isNaN(closesDate.getTime())) {
+        if (closesDate.getTime() < today.getTime()) {
+          // Auto-transition expired approved jobs in subcollections
+          if (!isEmbedded && jobData.status === 'approved' && schoolId && jobData.id) {
             const ref = doc(db, 'schools', schoolId, 'jobs', jobData.id);
             updateDoc(ref, { status: 'expired' }).catch(() => {});
           }
           return;
         }
-        if (jobData.status !== 'approved') return;
       }
+
+      // 🛡️ STRICT CRITERIA 4: Blocked News/Blog/Articles & Invalid Parameter Redirects
+      const rawSourceUrl = jobData.source_url || jobData.applyUrl || jobData.directUrl || jobData.url || '';
+      if (rawSourceUrl && isBlockedContentUrl(rawSourceUrl)) {
+        return;
+      }
+
+      const resolvedUrl = resolveVacancyUrl({
+        rawHref: rawSourceUrl,
+        schoolWebsite: school.website,
+        schoolName: school.schoolname || school.name,
+        sourceName: jobData.sourceName || jobData.source
+      });
+
+      if (isBlockedContentUrl(resolvedUrl)) {
+        return;
+      }
+
+      // Deduplication by unique job key
+      const jobKey = `${schoolId}_${(jobData.title || '').toLowerCase().trim()}_${(jobData.department || '').toLowerCase()}`;
+      if (seenJobKeys.has(jobKey)) return;
+      seenJobKeys.add(jobKey);
 
       // Match Cost of Living for this school to estimate savings potential
       const sCity = normalize(school.city || school.town || school.location || "");
@@ -381,8 +421,8 @@ export default function FeaturedJobsPage() {
       }
 
       // Determine department
-      let department = "Secondary";
-      const lowerTitle = jobData.title.toLowerCase();
+      let department = jobData.department || "Secondary";
+      const lowerTitle = (jobData.title || '').toLowerCase();
       if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
         department = "Primary";
       } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
@@ -390,21 +430,16 @@ export default function FeaturedJobsPage() {
       }
 
       jobsList.push({
-        id: jobData.id,
-        title: jobData.title,
+        id: jobData.id || `emb_${schoolId}_${Math.random().toString(36).substring(2, 7)}`,
+        title: jobData.title || 'Teaching Vacancy',
         department,
-        source: jobData.sourceName || "Web",
-        source_url: resolveVacancyUrl({
-          rawHref: jobData.applyUrl,
-          schoolWebsite: school.website,
-          schoolName: school.schoolname,
-          sourceName: jobData.sourceName
-        }),
-        date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds * 1000).toLocaleDateString() : null,
+        source: jobData.sourceName || jobData.source || "Web",
+        source_url: resolvedUrl,
+        date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds ? jobData.scrapedAt.seconds * 1000 : jobData.scrapedAt).toLocaleDateString() : (jobData.date_listed || null),
         date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling / Open Until Filled",
-        status: jobData.status,
+        status: jobData.status || 'approved',
         schoolId: school.id,
-        schoolName: school.schoolname,
+        schoolName: school.schoolname || school.name,
         schoolRating: parseFloat(school.academicscore || school.rating || "0"),
         curriculum: school.curriculum || "British",
         city: school.city || "",
@@ -416,8 +451,30 @@ export default function FeaturedJobsPage() {
         closesDateRaw: closesDate,
         isRollingDeadline: jobData.isRollingDeadline ?? !closesDate
       });
-    });
+    };
 
+    // 1. Process from live Firestore Subcollection Queries
+    if (activeJobsData && activeJobsData.length > 0) {
+      activeJobsData.forEach((jobDoc: any) => {
+        const schoolId = jobDoc.ref?.parent?.parent?.id;
+        if (!schoolId) return;
+        const school = schoolsMap[schoolId];
+        if (!school) return;
+        processCandidateJob(jobDoc, school, false);
+      });
+    }
+
+    // 2. Process embedded structured_vacancies / vacancies_discovered from school documents (if in public mode)
+    if (activeTab === 'public' && schoolsData) {
+      schoolsData.forEach((school: any) => {
+        const embedded = school.structured_vacancies || school.vacancies_discovered || school.cachedStability?.structured_vacancies || [];
+        if (Array.isArray(embedded) && embedded.length > 0) {
+          embedded.forEach((item: any) => {
+            processCandidateJob(item, school, true);
+          });
+        }
+      });
+    }
     return jobsList;
   }, [publicJobsData, adminJobsData, schoolsData, colData, familyStatus, schoolsMap, activeTab]);
 
