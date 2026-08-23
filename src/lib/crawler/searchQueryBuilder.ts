@@ -95,13 +95,9 @@ export function buildTier2Queries(
   queries.push(
     formatGroundingSiteQuery(schoolName, 'tes.com/jobs/vacancy'),
     formatGroundingSiteQuery(schoolName, 'tes.com/jobs/employer'),
-    formatGroundingSiteQuery(schoolName, 'tes.com'),
     formatGroundingSiteQuery(schoolName, 'schrole.com'),
-    formatGroundingSiteQuery(schoolName, 'iss.edu'),
-    formatGroundingSiteQuery(schoolName, 'ticrecruitment.com'),
-    formatGroundingSiteQuery(schoolName, 'teachaway.com'),
-    formatGroundingSiteQuery(schoolName, 'asq-international.com'),
-    formatGroundingSiteQuery(schoolName, 'worldteachers.com')
+    formatGroundingSiteQuery(schoolName, 'searchassociates.com'),
+    formatGroundingSiteQuery(schoolName, 'iss.edu')
   );
 
   // Alias queries

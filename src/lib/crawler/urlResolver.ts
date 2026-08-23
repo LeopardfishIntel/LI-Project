@@ -40,6 +40,7 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'naukrigulf.com',
   'gulftalent.com',
   'monstergulf.com',
+  'monster.com',
   'tanqeeb.com',
   'careerjet.com',
   'indeed.com',
@@ -49,9 +50,20 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'neuvoo.com',
   'ziprecruiter.com',
   'drjobs.ae',
-  'edarabia.com/jobs',
+  'edarabia.com',
   'learn4good.com',
-  'allfreightjobs.com'
+  'allfreightjobs.com',
+  'jora.com',
+  'jobstreet.com',
+  'schooljobs.in',
+  'internationalschoolcommunity.com',
+  'linkedin.com',
+  'simplyhired.com',
+  'jobisjob.com',
+  'recruit.net',
+  'careeronestop.org',
+  'workopolis.com',
+  'vertexaisearch.cloud.google.com'
 ];
 
 /**
