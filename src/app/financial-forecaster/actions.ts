@@ -833,37 +833,46 @@ export async function getSchoolStabilityReport(input: {
                             });
 
                             // Try Firestore update in background without awaiting it!
-                             if (data) {
-                                 (async () => {
-                                     const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
-                                     const admin = await import('firebase-admin');
-                                     const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
-                                     const subcolJobs = freshParsedVacancies.map(v => {
-                                         const rawClosing = v.closesDate || v.date_closing || null;
-                                         const triage = triageVacancyLifecycle(rawClosing);
-                                         
-                                         const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
-                                         return {
-                                             id: jobId,
-                                             title: v.title,
-                                             sourceName: v.source,
-                                             applyUrl: v.source_url || "",
-                                             closingDate: triage.closingDate,
-                                             isRollingDeadline: triage.isRollingDeadline,
-                                             status: triage.status
-                                         };
-                                     });
-                                     await saveScrapedJobs(input.schoolId, subcolJobs);
-                                     await updateDocument('schools', input.schoolId, {
-                                         lastScrapedAt: freshLastScrapedAt,
-                                         cachedStability: freshReport,
-                                         isRevalidating: false,
-                                         revalidationStatus: 'success',
-                                         revalidationError: null,
-                                         revalidationCompletedAt: admin.firestore.Timestamp.now()
-                                     });
-                                 })().catch((err) => console.error("Failed to update school stability details:", err));
-                             }
+                            if (data) {
+                                (async () => {
+                                    const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                                    const admin = await import('firebase-admin');
+                                    const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
+                                    
+                                    // STRICT FILTER: Only save CURRENT recruitment cycle jobs with valid future closing dates
+                                    const subcolJobs = freshParsedVacancies
+                                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle))
+                                        .map(v => {
+                                            const rawClosing = v.closesDate || v.date_closing || null;
+                                            const triage = triageVacancyLifecycle(rawClosing);
+                                            
+                                            // Skip past expired vacancies
+                                            if (triage.status === 'expired') return null;
+
+                                            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                                            return {
+                                                id: jobId,
+                                                title: v.title,
+                                                sourceName: v.source,
+                                                applyUrl: v.source_url || "",
+                                                closingDate: triage.closingDate,
+                                                isRollingDeadline: triage.isRollingDeadline,
+                                                status: 'approved'
+                                            };
+                                        })
+                                        .filter(Boolean);
+
+                                    await saveScrapedJobs(input.schoolId, subcolJobs);
+                                    await updateDocument('schools', input.schoolId, {
+                                        lastScrapedAt: freshLastScrapedAt,
+                                        cachedStability: freshReport,
+                                        isRevalidating: false,
+                                        revalidationStatus: 'success',
+                                        revalidationError: null,
+                                        revalidationCompletedAt: admin.firestore.Timestamp.now()
+                                    });
+                                })().catch((err) => console.error("Failed to update school stability details:", err));
+                            }
                             
                             stabilityMemoryCache.set(input.schoolId, freshReport);
                             console.log(`🛸 [STABILITY ENGINE] [BACKGROUND] Background SWR revalidation completed successfully for ${input.schoolName}!`);
@@ -1066,34 +1075,45 @@ export async function getSchoolStabilityReport(input: {
             console.log(`🛸 [STABILITY ENGINE] Successfully cached stability report locally for ${input.schoolName}`);
             
             // Try updating Firestore in background without awaiting it!
-             if (data) {
-                 (async () => {
-                     const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
-                     const admin = await import('firebase-admin');
-                     const subcolJobs = parsedVacancies.map(v => {
-                         const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
-                         if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
-                         
-                         const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
-                         return {
-                             id: jobId,
-                             title: v.title,
-                             sourceName: v.source,
-                             applyUrl: v.source_url || "",
-                             closingDate: closes,
-                             status: 'pending_review'
-                         };
-                     });
-                     await saveScrapedJobs(input.schoolId, subcolJobs);
-                     await updateDocument('schools', input.schoolId, {
-                         lastScrapedAt,
-                         cachedStability: report,
-                         revalidationStatus: 'success',
-                         revalidationError: null,
-                         revalidationCompletedAt: admin.firestore.Timestamp.now()
-                     });
-                 })().catch((err) => console.error("Failed to cache fresh stability report:", err));
-             }
+            if (data) {
+                (async () => {
+                    const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                    const admin = await import('firebase-admin');
+                    const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
+
+                    // STRICT FILTER: Only save CURRENT recruitment cycle jobs with valid future closing dates
+                    const subcolJobs = parsedVacancies
+                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle))
+                        .map(v => {
+                            const rawClosing = v.closesDate || v.date_closing || null;
+                            const triage = triageVacancyLifecycle(rawClosing);
+                            
+                            // Skip past expired vacancies
+                            if (triage.status === 'expired') return null;
+
+                            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                            return {
+                                id: jobId,
+                                title: v.title,
+                                sourceName: v.source,
+                                applyUrl: v.source_url || "",
+                                closingDate: triage.closingDate,
+                                isRollingDeadline: triage.isRollingDeadline,
+                                status: 'approved'
+                            };
+                        })
+                        .filter(Boolean);
+
+                    await saveScrapedJobs(input.schoolId, subcolJobs);
+                    await updateDocument('schools', input.schoolId, {
+                        lastScrapedAt,
+                        cachedStability: report,
+                        revalidationStatus: 'success',
+                        revalidationError: null,
+                        revalidationCompletedAt: admin.firestore.Timestamp.now()
+                    });
+                })().catch((err) => console.error("Failed to cache fresh stability report:", err));
+            }
         } catch (writeErr: any) {
             console.warn(`🛸 [STABILITY ENGINE] Local caching failed:`, writeErr);
         }
