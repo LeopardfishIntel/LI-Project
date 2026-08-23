@@ -1,5 +1,6 @@
 'use server';
 import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
+import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 
 import fs from 'fs';
 import path from 'path';
@@ -841,7 +842,7 @@ export async function getSchoolStabilityReport(input: {
                                     
                                     // STRICT FILTER: Only save CURRENT recruitment cycle jobs with valid future closing dates
                                     const subcolJobs = freshParsedVacancies
-                                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle))
+                                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
                                         .map(v => {
                                             const rawClosing = v.closesDate || v.date_closing || null;
                                             const triage = triageVacancyLifecycle(rawClosing);
@@ -1083,7 +1084,7 @@ export async function getSchoolStabilityReport(input: {
 
                     // STRICT FILTER: Only save CURRENT recruitment cycle jobs with valid future closing dates
                     const subcolJobs = parsedVacancies
-                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle))
+                        .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
                         .map(v => {
                             const rawClosing = v.closesDate || v.date_closing || null;
                             const triage = triageVacancyLifecycle(rawClosing);

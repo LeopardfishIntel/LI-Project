@@ -1,5 +1,6 @@
 "use client";
 import { resolveVacancyUrl, isBlockedContentUrl } from '@/lib/crawler/urlResolver';
+import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 import { parseClosingDate } from '@/lib/crawler/dateParser';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -334,6 +335,11 @@ export default function FeaturedJobsPage() {
           }
           return;
         }
+      }
+
+      // 🛡️ STRICT CRITERIA: Exclude non-teaching support jobs (nurse, admissions officer, admin exec, etc.)
+      if (isSupportOrNonTeachingRole(jobData.title)) {
+        return;
       }
 
       // 🛡️ STRICT CRITERIA 4: Blocked News/Blog/Articles & Invalid Parameter Redirects

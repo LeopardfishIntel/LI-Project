@@ -1,6 +1,7 @@
 'use server';
 import { validatePhaseMatching, matchSchoolEntity } from '@/lib/crawler/entityMatcher';
 import { buildTier1Queries, buildTier2Queries, buildTier3SubjectQueries } from '@/lib/crawler/searchQueryBuilder';
+import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 
 import { getAI } from "@/ai/genkit";
 import { z } from "zod";
@@ -170,7 +171,7 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
 
 1. Target Roles (Teaching, Support, & Leadership):
    - MUST INCLUDE: All classroom teachers (primary & secondary), specialized subject teachers (e.g., Performing Arts), Senior & Middle Leadership (e.g., High School Leadership - Teaching & Learning), Head of Student Support / SENCOs, Learning Support Teachers, EAL Specialists, and Careers/University Advisors.
-   - MUST EXCLUDE: Non-academic local support staff (e.g., bus drivers, building caretakers, gardeners, office receptionists, office staff, finance clerks, IT tech support, sports-only coaches).
+   - MUST EXCLUDE: All non-teaching operational and support roles (e.g., School Nurses, Clinic staff, Admissions Officers/Executives, Admin Executives, Receptionists, Office Secretaries, Finance/Accounting staff, HR, IT technicians, Drivers, Security guards, Facilities, Cleaners, and Sports-only auxiliary coaches).
 
 2. STRICT PUBLIC VISIBILITY BOUNDARY:
    - You are STRICTLY FORBIDDEN from parsing underlying application drop-down menus, multi-step registration forms, or unlinked sub-directories (e.g., separate regional language alliance pages or partner frameworks).
