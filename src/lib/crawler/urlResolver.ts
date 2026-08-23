@@ -25,6 +25,20 @@ const TRACKING_QUERY_PARAMS = new Set([
 ]);
 
 /**
+ * Checks if a URL points to a non-job content page (news articles, blog posts, press releases, etc.).
+ * Strictly blocks Schrole news and blog articles from being ingested as vacancies.
+ */
+export function isBlockedContentUrl(urlStr: string | null | undefined): boolean {
+  if (!urlStr) return false;
+  const lower = urlStr.toLowerCase();
+  return lower.includes('schrole.com/news/') || 
+         lower.includes('/blog/') || 
+         lower.includes('/news/') ||
+         lower.includes('/articles/') ||
+         lower.includes('schrole.com/blog');
+}
+
+/**
  * Checks if a string contains un-hydrated template placeholders.
  */
 export function hasTemplatePlaceholder(urlStr: string): boolean {
@@ -63,7 +77,7 @@ export function isGenericRootUrl(urlStr: string): boolean {
 export function sanitizeUrl(rawUrl: string | null | undefined): string | null {
   if (!rawUrl || typeof rawUrl !== 'string') return null;
   const trimmed = rawUrl.trim();
-  if (!trimmed || hasTemplatePlaceholder(trimmed)) return null;
+  if (!trimmed || hasTemplatePlaceholder(trimmed) || isBlockedContentUrl(trimmed)) return null;
 
   // Ensure protocol
   let urlToParse = trimmed;
@@ -92,7 +106,9 @@ export function sanitizeUrl(rawUrl: string | null | undefined): string | null {
       parsed.hash = '';
     }
 
-    return parsed.toString();
+    const finalClean = parsed.toString();
+    if (isBlockedContentUrl(finalClean)) return null;
+    return finalClean;
   } catch {
     return null;
   }

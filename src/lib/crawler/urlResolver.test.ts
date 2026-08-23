@@ -3,7 +3,8 @@ import {
   hasTemplatePlaceholder, 
   isGenericRootUrl, 
   resolveVacancyUrl, 
-  extractUrlFromScrapedString 
+  extractUrlFromScrapedString,
+  isBlockedContentUrl
 } from './urlResolver';
 
 function runTests() {
@@ -121,6 +122,28 @@ function runTests() {
       extractedUrl: 'https://www.tes.com/jobs/vacancy/maths-12345'
     },
     'extractUrlFromScrapedString extracts clean text and sanitized destination URL'
+  );
+
+  // 10. Blocked Content URL (Schrole News, Blogs, Articles)
+  assertEqual(
+    isBlockedContentUrl('https://www.schrole.com/news/why-join-our-international-school-community/'),
+    true,
+    'isBlockedContentUrl flags schrole.com/news/'
+  );
+  assertEqual(
+    isBlockedContentUrl('https://www.school.com/blog/2024-annual-recap/'),
+    true,
+    'isBlockedContentUrl flags /blog/'
+  );
+  assertEqual(
+    sanitizeUrl('https://www.schrole.com/news/vienna-school-updates/?utm_source=rss'),
+    null,
+    'sanitizeUrl rejects schrole news URLs'
+  );
+  assertEqual(
+    sanitizeUrl('https://www.tes.com/jobs/vacancy/biology-teacher-12345'),
+    'https://www.tes.com/jobs/vacancy/biology-teacher-12345',
+    'sanitizeUrl allows legitimate vacancy advert URLs'
   );
 
   console.log(`\n📊 URL Resolver Test Summary: ${passed} passed, ${failed} failed.`);

@@ -186,6 +186,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /search_cache/{docId} {
+      allow read, write: if true;
+    }
+
     // =====================================================================
     // Jobs Subcollection Security Rules
     // =====================================================================
