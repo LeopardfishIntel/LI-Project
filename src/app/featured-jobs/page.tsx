@@ -433,7 +433,17 @@ export default function FeaturedJobsPage() {
         id: jobData.id || `emb_${schoolId}_${Math.random().toString(36).substring(2, 7)}`,
         title: jobData.title || 'Teaching Vacancy',
         department,
-        source: jobData.sourceName || jobData.source || "Web",
+        source: (() => {
+          const lowerUrl = resolvedUrl.toLowerCase();
+          if (lowerUrl.includes('tes.com')) return 'TES';
+          if (school.website && lowerUrl.includes(new URL(school.website.startsWith('http') ? school.website : 'https://' + school.website).hostname.replace(/^www./, ''))) {
+            return 'Official School Website';
+          }
+          if (lowerUrl.includes('schoolrecruiter.com') || lowerUrl.includes('schrole.com') || lowerUrl.includes('searchassociates.com')) {
+            return 'Direct School ATS';
+          }
+          return jobData.sourceName || jobData.source || 'Official Source';
+        })(),
         source_url: resolvedUrl,
         date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds ? jobData.scrapedAt.seconds * 1000 : jobData.scrapedAt).toLocaleDateString() : (jobData.date_listed || null),
         date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling / Open Until Filled",
@@ -913,7 +923,15 @@ export default function FeaturedJobsPage() {
                       {/* Left Header Title & Subheader */}
                       <div className="space-y-1 text-left flex-1">
                         <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex flex-wrap items-center gap-2">
-                          {job.title}
+                          <a 
+                            href={job.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-[#FF6B35] transition-colors duration-200 cursor-pointer"
+                            title="View official vacancy listing (opens in new tab)"
+                          >
+                            {job.title}
+                          </a>
                           {(() => {
                             const now = new Date();
                             

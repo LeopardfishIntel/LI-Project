@@ -170,31 +170,38 @@ export interface ResolveVacancyUrlOptions {
 export function resolveVacancyUrl(options: ResolveVacancyUrlOptions): string {
   const { rawHref, employerHref, searchHref, schoolWebsite, schoolName, sourceName } = options;
 
-  // 1. Direct Advert Link (Tier 1)
   const cleanRawHref = sanitizeUrl(rawHref);
-  if (cleanRawHref && !isGenericRootUrl(cleanRawHref)) {
+  const isAggregator = cleanRawHref ? isThirdPartyAggregatorUrl(cleanRawHref) : false;
+  const cleanSchoolWeb = sanitizeUrl(schoolWebsite);
+  const cleanEmployerHref = sanitizeUrl(employerHref);
+  const cleanSearchHref = sanitizeUrl(searchHref);
+
+  // 1. Direct Non-Aggregator Link (Official School ATS, verified direct advert, TES direct link)
+  if (cleanRawHref && !isGenericRootUrl(cleanRawHref) && !isAggregator) {
     return cleanRawHref;
   }
 
-  // 2. Employer Hub Link (Tier 2)
-  const cleanEmployerHref = sanitizeUrl(employerHref);
-  if (cleanEmployerHref && !isGenericRootUrl(cleanEmployerHref)) {
-    return cleanEmployerHref;
-  }
-
-  // 3. Search Query Link (Tier 3)
-  const cleanSearchHref = sanitizeUrl(searchHref);
-  if (cleanSearchHref) {
-    return cleanSearchHref;
-  }
-
-  // 4. Official School Website Landing Page
-  const cleanSchoolWeb = sanitizeUrl(schoolWebsite);
+  // 2. Official School Website / Careers Page (Prioritized above aggregators)
   if (cleanSchoolWeb) {
     return cleanSchoolWeb;
   }
 
-  // 5. Targeted Query Fallback (Search Engine)
+  // 3. Official TES Employer Hub Link
+  if (cleanEmployerHref && !isGenericRootUrl(cleanEmployerHref)) {
+    return cleanEmployerHref;
+  }
+
+  // 4. Fallback to raw aggregator link if no school website is available
+  if (cleanRawHref && !isGenericRootUrl(cleanRawHref)) {
+    return cleanRawHref;
+  }
+
+  // 5. Parameterized Search Query Link
+  if (cleanSearchHref) {
+    return cleanSearchHref;
+  }
+
+  // 6. Targeted TES / Google Search Fallback
   const targetSchool = (schoolName || '').trim();
   const targetSource = (sourceName || 'vacancies').trim();
 
@@ -229,4 +236,63 @@ export function extractUrlFromScrapedString(rawJobString: string): { cleanJobStr
     cleanJobString: rawJobString.trim(),
     extractedUrl: null
   };
+}
+
+
+/**
+ * Computes a quality/priority score for a destination application URL.
+ * Prioritizes Official School Websites and TES over generic third-party aggregator mirrors.
+ * Score range:
+ * - 100: Official School Website (matching school domain) or direct School ATS (SchoolRecruiter, Schrole, SearchAssociates)
+ * - 90: Direct TES Vacancy (tes.com/jobs/vacancy/...)
+ * - 85: Direct TES Employer Hub (tes.com/jobs/employer/...)
+ * - 80: TES Parameterized Search (tes.com/jobs/browse/...)
+ * - 50: Standard verified portal
+ * - 10: Aggregators / mirrors (Indeed, LinkedIn, Glassdoor, etc.)
+ */
+export function getUrlSourceScore(url: string | null | undefined, schoolWebsite?: string | null): number {
+  if (!url) return 0;
+  const lower = url.toLowerCase();
+
+  // 1. Official School Website Domain match
+  if (schoolWebsite) {
+    try {
+      const cleanSchoolWeb = schoolWebsite.startsWith('http') ? schoolWebsite : `https://${schoolWebsite}`;
+      const schoolHost = new URL(cleanSchoolWeb).hostname.replace(/^www\./, '');
+      if (schoolHost && lower.includes(schoolHost)) {
+        return 100;
+      }
+    } catch {}
+  }
+
+  // 2. Direct School ATS Platforms
+  if (lower.includes('schoolrecruiter.com') || 
+      lower.includes('schrole.com/jobs/') || 
+      lower.includes('searchassociates.com') || 
+      lower.includes('veracross.com') || 
+      lower.includes('openapply.com')) {
+    return 95;
+  }
+
+  // 3. TES Direct Vacancies
+  if (lower.includes('tes.com/jobs/vacancy/')) {
+    return 90;
+  }
+
+  // 4. TES Employer Hub
+  if (lower.includes('tes.com/jobs/employer/')) {
+    return 85;
+  }
+
+  // 5. TES International Search
+  if (lower.includes('tes.com')) {
+    return 80;
+  }
+
+  // 6. Deprioritized Aggregators
+  if (isThirdPartyAggregatorUrl(url)) {
+    return 10;
+  }
+
+  return 50;
 }
