@@ -853,9 +853,9 @@ export default function FeaturedJobsPage() {
               <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies Found</h3>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies</h3>
                   <p className="text-xs text-slate-400 max-w-md mx-auto">
-                    No active job listings match your current filters in the live database.
+                    No active vacancies currently match your search filters.
                   </p>
                 </div>
 
