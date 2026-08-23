@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getCollectionDocs, updateDocument } from '@/firebase/admin';
-import { getSchoolStabilityReport } from '@/app/financial-forecaster/actions';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const limitParam = searchParams.get('limit');
+    const forceAll = searchParams.get('force') === 'true';
+
     const schools = await getCollectionDocs('schools');
+    const now = Date.now();
+    const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
     
     // Parse and sort by lastScrapedAt (null/oldest first)
     const sorted = schools.map((s: any) => {
       const data = s.data();
-      let lastScraped = null;
+      let lastScraped: number | null = null;
       if (data.lastScrapedAt) {
         if (data.lastScrapedAt.seconds) {
           lastScraped = data.lastScrapedAt.seconds * 1000;
@@ -19,9 +24,9 @@ export async function GET() {
       }
       return {
         id: s.id,
-        name: data.schoolname || "",
-        city: data.city || "",
-        country: data.country || "",
+        name: data.schoolname || data.name || '',
+        city: data.city || '',
+        country: data.country || '',
         lastScraped
       };
     }).sort((a: any, b: any) => {
@@ -30,39 +35,57 @@ export async function GET() {
       return a.lastScraped - b.lastScraped;
     });
 
-    // Select the 15 oldest schools
-    const targets = sorted.slice(0, 15);
+    // Filter to schools that haven't been swept in >24 hours (or never swept)
+    const staleSchools = sorted.filter((s: any) => {
+      if (forceAll) return true;
+      if (s.lastScraped === null) return true;
+      return (now - s.lastScraped) >= TWENTY_FOUR_HOURS_MS;
+    });
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    let targets = staleSchools;
+    if (limitParam && limitParam !== 'all') {
+      const limitNum = parseInt(limitParam, 10);
+      if (!isNaN(limitNum) && limitNum > 0) {
+        targets = staleSchools.slice(0, limitNum);
+      }
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+    console.log(`📡 [DAILY SWEEP] Triggering 24h automated sweep for ${targets.length} schools (total stale: ${staleSchools.length}/${schools.length})...`);
 
     // Trigger sweeps in background by pushing to the scrape worker queue
     for (const target of targets) {
-      // Wring out cache immediately in Firestore
+      // Mark revalidating in Firestore
       await updateDocument('schools', target.id, {
-        scrapedJobsList: [],
-        scrapedJobsCount: null,
         isRevalidating: true
       });
 
-      // Push task to Cloud Tasks queue endpoint
+      // Push task to worker endpoint
       fetch(`${baseUrl}/api/tasks/scrape-worker`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           schoolId: target.id,
           schoolName: target.name,
           city: target.city,
           country: target.country
         })
-      }).catch(err => console.error("Failed to enqueue Cloud Task for daily sweep target:", target.name, err));
+      }).catch(err => console.error('Failed to enqueue scrape worker for target:', target.name, err));
     }
 
     return NextResponse.json({
       success: true,
-      triggered: targets.length,
-      schools: targets.map((t: any) => t.name)
+      totalSchoolsInDatabase: schools.length,
+      staleSchoolsCount: staleSchools.length,
+      triggeredCount: targets.length,
+      schools: targets.map((t: any) => ({
+        id: t.id,
+        name: t.name,
+        lastScraped: t.lastScraped ? new Date(t.lastScraped).toISOString() : 'never'
+      }))
     });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message });
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
