@@ -319,6 +319,19 @@ function DecoderContent() {
   const firestore = useFirestore();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<{
+    jobId?: string;
+    jobTitle?: string;
+    department?: string;
+    curriculum?: string;
+    applyUrl?: string;
+    closesDate?: string;
+    savingsPotential?: number;
+    schoolRating?: string;
+    source?: string;
+    city?: string;
+    country?: string;
+  } | null>(null);
   const [settings, setSettings] = useState({
     country: "",
     schoolId: "",
