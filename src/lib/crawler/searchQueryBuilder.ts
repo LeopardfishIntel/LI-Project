@@ -87,10 +87,11 @@ export function buildTier2Queries(
     queries.push(`site:tes.com "${options.tesOrganizationId}"`);
   }
 
-  // Canonical name portal queries (Focused exclusively on TES verified adverts)
+  // Canonical name portal queries (Focused on TES & Guardian Jobs verified adverts)
   queries.push(
     formatGroundingSiteQuery(schoolName, "tes.com/jobs/vacancy"),
-    formatGroundingSiteQuery(schoolName, "tes.com/jobs/employer")
+    formatGroundingSiteQuery(schoolName, "tes.com/jobs/employer"),
+    formatGroundingSiteQuery(schoolName, "jobs.theguardian.com")
   );
 
   // Alias queries
