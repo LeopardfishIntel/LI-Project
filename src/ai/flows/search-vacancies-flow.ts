@@ -230,6 +230,13 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
     - You MUST cross-verify if the target school actually operates the education phase (Primary/Prep vs. Secondary/College) matching the discovered vacancy.
     - If the target school is a "College", "Gymnasium", "Senior School", or "High School" catering exclusively to secondary/sixth-form students (such as English College in Prague), you MUST discard and filter out any discovered primary/prep/early-years/preschool roles (such as "Primary School Teacher" or "Head of Primary School") as these are misattributions to other local primary campuses.
 
+15. School Agent & Confidential Blind Vacancy Handling:
+    - If crawling an Approved School Agent (e.g. Edvectus, Teacher Horizons, Search Associates, ISS, Schrole, ISC Research), adverts often do not disclose the specific client school name (e.g. "Primary Teacher – British International School in Dubai").
+    - In these cases:
+      * Use the agency entity name (e.g., "Edvectus (Client School - Dubai, UAE)").
+      * Extract the host Country and City from the job snippet/description so the evaluation engine can calculate living costs.
+      * Capture curriculum markers (e.g. British, IB, US) and compensation perks (e.g. accommodation, tax-free salary) from the text.
+
 Return a JSON object conforming exactly to this structure:
 {
   "scrapedJobsCount": number,

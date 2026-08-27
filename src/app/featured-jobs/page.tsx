@@ -378,8 +378,8 @@ export default function FeaturedJobsPage() {
       seenJobKeys.add(jobKey);
 
       // Match Cost of Living for this school to estimate savings potential
-      const sCity = normalize(school.city || school.town || school.location || "");
-      const sCountry = canonicalCountry(school.country || school.region || "");
+      const sCity = normalize(jobData.city || jobData.analysisData?.city || school.city || school.town || school.location || "");
+      const sCountry = canonicalCountry(jobData.country || jobData.analysisData?.country || school.country || school.region || "");
       
       const matchedCol = colData ? colData.find((c: any) =>
         normalize(c.city || c.city_name) === sCity ||
@@ -995,6 +995,11 @@ export default function FeaturedJobsPage() {
                               </>
                             );
                           })()}
+                          {schoolId.startsWith('AGNT') && (
+                            <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
+                              🏷️ School Agent Placement
+                            </span>
+                          )}
                           {activeTab === 'admin_staging' && (
                             <span className="bg-amber-500/10 border border-amber-500/20 text-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
                               Pending Review
