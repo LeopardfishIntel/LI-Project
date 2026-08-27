@@ -46,6 +46,22 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /\bmaintenance\b.*\b(technician|worker|assistant|officer|staff)\b/i,
   /\bgardener\b/i,
   
+  // Development / Alumni / Fundraising
+  /\b(director|manager|lead|officer)\s+of\s+development\b/i,
+  /\bdevelopment\s+(director|manager|officer|associate|lead)\b/i,
+  /\balumni\b.*\b(officer|coordinator|director|manager|relations)\b/i,
+  /\bfundraising\b/i,
+
+  // Cover Supervisors & Auxiliary Classroom Aides / Assistants
+  /\bcover\s+supervisor\b/i,
+  /\b(teaching|learning|classroom|educational|specialist|1:1|preschool)\s+assistant\b/i,
+  /\bassistant\s+teacher\b/i,
+  /\bpersonal\s+assistant\b/i,
+  /\bpa\s+to\b/i,
+  
+  // Clinical / Auxiliary Therapists
+  /\b(speech|language|occupational|physical)\s+therapist\b/i,
+
   // Sports-only auxiliary (non-teaching)
   /\b(swimming|football|basketball|tennis)\s+coach\b/i,
   /\blifeguard\b/i
@@ -58,11 +74,15 @@ export function isSupportOrNonTeachingRole(title: string | null | undefined): bo
   if (!title) return false;
   const cleanTitle = title.trim();
   
-  // Explicit safeguard: Never exclude Academic Teachers or Academic Heads even if they teach Economics / Business / Accounting
-  if (/\b(teacher|educator|instructor|lecturer|professor|faculty|head\s+of\s+department|hod|principal|head\s+of\s+school|headteacher|senco)\b/i.test(cleanTitle) &&
-      !/\b(assistant\s+teacher|teaching\s+assistant|substitute|admissions|secretary|receptionist|nurse|driver|cleaner)\b/i.test(cleanTitle)) {
-    // If it is explicitly a Teacher of Business/Economics/Accounting, allow it
-    if (/\bteacher\b/i.test(cleanTitle)) return false;
+  // Whitelist explicit academic leadership & classroom teacher exceptions that might have conflicting words
+  if (/\b(head\s+of\s+(school|secondary|primary|academics|curriculum|department|sixth\s+form|lower|middle|upper|eyfs|ks[1-5]|early\s+years))\b/i.test(cleanTitle)) {
+    return false;
+  }
+  if (/\b(principal|vice\s+principal|assistant\s+principal|deputy\s+head|director\s+of\s+studies|academic\s+director)\b/i.test(cleanTitle)) {
+    return false;
+  }
+  if (/\b(teacher|educator|instructor|lecturer|professor|faculty)\b/i.test(cleanTitle) && !/\b(assistant\s+teacher|teaching\s+assistant)\b/i.test(cleanTitle)) {
+    return false;
   }
 
   return NON_TEACHING_SUPPORT_PATTERNS.some(pattern => pattern.test(cleanTitle));
