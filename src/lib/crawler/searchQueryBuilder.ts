@@ -1,7 +1,7 @@
 /**
  * 🛰️ SEARCH QUERY BUILDER (GOOGLE SEARCH GROUNDING OPTIMIZED)
  * Formats crawler search queries to comply strictly with Google Search Grounding API syntax.
- * Focuses exclusively on direct school websites and verified TES vacancy adverts.
+ * Queries structured across Direct School Web, Primary Job Boards, and Approved School Agents.
  */
 
 export interface FormattedSiteOperator {
@@ -57,7 +57,7 @@ export function formatGroundingSiteQuery(schoolName: string, siteInput: string, 
 }
 
 /**
- * Tier 1: School Web Primary Landing Page queries
+ * Tier 1: Direct School Website Primary Careers Pages
  */
 export function buildTier1Queries(schoolName: string, schoolDomain: string): string[] {
   const { rootDomain } = formatSiteOperator(schoolDomain);
@@ -71,9 +71,9 @@ export function buildTier1Queries(schoolName: string, schoolDomain: string): str
 }
 
 /**
- * Tier 2: Dedicated TES Vacancy & Official School Portal queries
+ * Tier 2: Dedicated Primary Job Boards (TES & Guardian Jobs)
  */
-export function buildTier2Queries(
+export function buildTier2JobBoardQueries(
   schoolName: string, 
   options: { aliases?: string[]; tesEmployerSlug?: string; tesOrganizationId?: string } = {}
 ): string[] {
@@ -87,7 +87,7 @@ export function buildTier2Queries(
     queries.push(`site:tes.com "${options.tesOrganizationId}"`);
   }
 
-  // Canonical name portal queries (Focused on TES & Guardian Jobs verified adverts)
+  // Canonical name job board queries
   queries.push(
     formatGroundingSiteQuery(schoolName, "tes.com/jobs/vacancy"),
     formatGroundingSiteQuery(schoolName, "tes.com/jobs/employer"),
@@ -107,8 +107,27 @@ export function buildTier2Queries(
 }
 
 /**
- * Tier 3 / Subject-Specific Deep Sweep queries
+ * Tier 3: Approved School Agents & International Recruitment Consultancies
+ * (Edvectus, Schrole, Search Associates, Teacher Horizons, ISS, ISC Research)
  */
-export function buildTier3SubjectQueries(schoolName: string, subjects: string[] = ["Mathematics", "English", "SENCO", "Science", "Physical Education"]): string[] {
+export function buildTier3SchoolAgentQueries(schoolName: string): string[] {
+  return [
+    formatGroundingSiteQuery(schoolName, "edvectus.com"),
+    formatGroundingSiteQuery(schoolName, "schrole.com"),
+    formatGroundingSiteQuery(schoolName, "searchassociates.com"),
+    formatGroundingSiteQuery(schoolName, "teacherhorizons.com"),
+    formatGroundingSiteQuery(schoolName, "iss.edu"),
+    formatGroundingSiteQuery(schoolName, "iscresearch.com")
+  ];
+}
+
+// Backward compatibility alias
+export const buildTier2Queries = buildTier2JobBoardQueries;
+
+/**
+ * Tier 4 / Subject-Specific Deep Sweep queries
+ */
+export function buildTier4SubjectQueries(schoolName: string, subjects: string[] = ["Mathematics", "English", "SENCO", "Science", "Physical Education"]): string[] {
   return subjects.map(subject => `"${schoolName}" "${subject}"`);
 }
+export const buildTier3SubjectQueries = buildTier4SubjectQueries;

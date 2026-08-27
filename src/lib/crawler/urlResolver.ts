@@ -24,6 +24,24 @@ const TRACKING_QUERY_PARAMS = new Set([
   'cmpid'
 ]);
 
+export const APPROVED_JOB_BOARDS_DOMAINS = [
+  'tes.com',
+  'jobs.theguardian.com',
+  'guardianjobs.com',
+  'guardianjobs.co.uk'
+];
+
+export const APPROVED_SCHOOL_AGENTS_DOMAINS = [
+  'edvectus.com',
+  'edvectus.co.uk',
+  'schrole.com',
+  'searchassociates.com',
+  'teacherhorizons.com',
+  'iss.edu',
+  'iscresearch.com',
+  'internationalschoolcommunity.com'
+];
+
 export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'waytogulf.com',
   'optioncarriere.com',
@@ -56,7 +74,6 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'jora.com',
   'jobstreet.com',
   'schooljobs.in',
-  'internationalschoolcommunity.com',
   'linkedin.com',
   'simplyhired.com',
   'jobisjob.com',
@@ -74,12 +91,6 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'expertini.net',
   'expertini.org',
   'expertini',
-  'schrole.com',
-  'schrole',
-  'searchassociates.com',
-  'searchassociates',
-  'teacherhorizons.com',
-  'iss.edu',
   'instagram.com',
   'twitter.com',
   'x.com'

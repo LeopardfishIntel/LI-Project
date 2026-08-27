@@ -152,7 +152,7 @@ Provide ONLY the raw JSON object.`,
 
 *STRICT SOURCE EXCLUSION (ANTI-SOCIAL MEDIA, NO FACEBOOK & NO AGGREGATORS/EXPERTINI):*
 - You are EXPLICITLY FORBIDDEN from using Facebook (facebook.com), Instagram, Twitter/X, LinkedIn posts, or social media groups as a vacancy source or URL.
-- You are EXPLICITLY FORBIDDEN from using third-party ATS/aggregators like Schrole, Search Associates, Teacher Horizons, ISS, Expertini, Jooble, Adzuna, Bayt, Indeed, Glassdoor, or scrapers. Only direct official School Websites, direct TES vacancy adverts, and Guardian Jobs (jobs.theguardian.com) are permitted.
+- You are EXPLICITLY FORBIDDEN from using third-party ATS/aggregators like Schrole, Search Associates, Teacher Horizons, ISS, Expertini, Jooble, Adzuna, Bayt, Indeed, Glassdoor, or scrapers. Only direct official School Websites, direct Primary Job Boards (TES, Guardian Jobs), and Approved School Agents (Edvectus, Schrole, Search Associates, Teacher Horizons, ISS, ISC Research) are permitted. All generic third-party scrapers (Indeed, Glassdoor, Expertini, Bayt, etc.) are strictly forbidden.
 - NEVER extract or output an Expertini or aggregator link as a vacancy URL. Discard all third-party mirror listings immediately.
 
 *STRICT TARGET ISOLATION (ANTI-CITY LEAK):*
@@ -223,7 +223,7 @@ Refer to phases summary. You MUST strictly discard and filter out any discovered
     - Inside the job title parentheses, format these details exactly as: '(StartCycleOrMonth; Posted: DD MMM YYYY; Closes: DD MMM YYYY)' (e.g. '(Aug 2026; Posted: 15 Apr 2026; Closes: 13 May 2026)'). 
     - If no explicit closing date is found but a posting date is found, calculate a closing date exactly 4 weeks (28 days) after the posting date and append it as 'Closes: [Calculated Date]'.
     - If no dates are found in the snippet, just list the start cycle (e.g. '(Aug 2026)').
-    - Append the discovery source to the end, e.g. '- TES', '- Schrole', '- School Web'.
+    - Append the discovery source to the end, e.g. '- TES', '- Guardian Jobs', '- Edvectus', '- Schrole', '- Search Associates', '- Teacher Horizons', '- ISS', '- ISC Research', '- School Web'.
     - Crucially, append the exact deep link/URL where the job was found to the end of the string using a double pipe ' || ' separator, e.g. '- TES || https://www.tes.com/jobs/vacancy/maths-123456' or '- School Web || https://www.bayanschool.edu.bh/page/view/92'. If no specific job URL is found, append the school website or search URL instead.
 
 14. Institutional Phase & Section Matching:
