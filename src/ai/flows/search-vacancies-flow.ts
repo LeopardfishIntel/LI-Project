@@ -433,6 +433,8 @@ Provide ONLY the raw JSON object.`,
 
     const getNormalizedComparisonKey = (title: string): string => {
       let key = title.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
+      const esc = (s: string) => s.replace(/[.*+?^$\{\}()|\[\]\\]/g, '\\    const getNormalizedComparisonKey = (title: string): string => {
+      let key = title.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase();
       if (input.schoolName) {
         const words = input.schoolName.toLowerCase().split(/\s+/).filter(w => w.length > 3);
         for (const word of words) {
@@ -440,7 +442,15 @@ Provide ONLY the raw JSON object.`,
         }
       }
       if (input.city) key = key.replace(new RegExp(input.city.toLowerCase(), 'g'), '');
-      if (input.country) key = key.replace(new RegExp(input.country.toLowerCase(), 'g'), '');
+      if (input.country) key = key.replace(new RegExp(input.country.toLowerCase(), 'g'), '');');
+      if (input.schoolName) {
+        const words = input.schoolName.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        for (const word of words) {
+          key = key.replace(new RegExp(esc(word), 'g'), '');
+        }
+      }
+      if (input.city) key = key.replace(new RegExp(esc(input.city.toLowerCase()), 'g'), '');
+      if (input.country) key = key.replace(new RegExp(esc(input.country.toLowerCase()), 'g'), '');
 
       key = key.replace(/august/g, 'aug').replace(/january/g, 'jan').replace(/december/g, 'dec').replace(/october/g, 'oct').replace(/march/g, 'mar');
       key = key.replace(/learning\s+support\s+assistant/g, 'lsa').replace(/special\s+educational\s+needs\s+coordinator/g, 'senco').replace(/special\s+educational\s+needs/g, 'sen').replace(/head\s+of\s+student\s+support/g, 'senco').replace(/english\s+as\s+an\s+additional\s+language/g, 'eal').replace(/mathematics/g, 'maths').replace(/physical\s+education/g, 'pe').replace(/design\s+and\s+technology/g, 'dt');
