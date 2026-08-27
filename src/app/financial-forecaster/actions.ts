@@ -940,20 +940,26 @@ export async function getSchoolStabilityReport(input: {
                 });
                 scrapedJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
                  const freshParsedVacancies = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
-                 const subcolJobs = freshParsedVacancies.map(v => {
-                     const closes = (v.closesDate || v.date_closing) ? new Date(v.closesDate || v.date_closing) : new Date();
-                     if (!v.closesDate && !v.date_closing) closes.setDate(closes.getDate() + 45);
-                     
-                     const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
-                     return {
-                         id: jobId,
-                         title: v.title,
-                         sourceName: v.source,
-                         applyUrl: v.source_url || "",
-                         closingDate: closes,
-                         status: 'pending_review'
-                     };
-                 });
+                 const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
+                 const subcolJobs = freshParsedVacancies
+                     .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
+                     .map(v => {
+                         const rawClosing = v.closesDate || v.date_closing || null;
+                         const triage = triageVacancyLifecycle(rawClosing);
+                         if (triage.status === 'expired') return null;
+
+                         const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                         return {
+                             id: jobId,
+                             title: v.title,
+                             sourceName: v.source,
+                             applyUrl: v.source_url || "",
+                             closingDate: triage.closingDate,
+                             isRollingDeadline: triage.isRollingDeadline,
+                             status: 'approved'
+                         };
+                     })
+                     .filter(Boolean);
                 scrapedJobsCount = scrapedJobsList.length;
                 lastScrapedAt = new Date().toISOString();
 

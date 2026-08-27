@@ -1167,8 +1167,12 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
     });
 
     const writeBatch = dbInstance.batch();
+    const { isSupportOrNonTeachingRole } = await import('@/lib/crawler/roleClassifier');
     for (const rawJob of jobs) {
       if (!rawJob || !rawJob.id) continue;
+      if (isSupportOrNonTeachingRole(rawJob.title)) {
+        continue;
+      }
       const job = normalizeJobData(rawJob, schoolData);
       const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject);
       const applyUrl = rawJob.applyUrl || rawJob.source_url || "";
@@ -1250,6 +1254,14 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
         status = 'expired';
       } else if (!isFuture) {
         status = 'expired';
+      }
+      
+      // 🛡️ STRICT CURRENT ADVERT ENFORCEMENT: Never write expired, past-date, or delisted jobs to live database
+      if (!isFuture || status === 'expired' || status === 'delisted' || histCheck.isHistoricalExpired) {
+        if (existing) {
+          writeBatch.delete(ref);
+        }
+        continue;
       } else if (hasDirectUrl) {
         const httpCheck = await verifyJobUrlHttp(applyUrl);
         if (httpCheck.status === 'delisted') {
