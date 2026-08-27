@@ -150,9 +150,10 @@ Provide ONLY the raw JSON object.`,
   * Secondary/College/High School section: ${hasSecondary ? "YES" : "NO"}
   * Summary: ${phasesSummary}
 
-*STRICT SOURCE EXCLUSION (ANTI-SOCIAL MEDIA & NO FACEBOOK):*
-- You are EXPLICITLY FORBIDDEN from using Facebook (facebook.com), Instagram, Twitter/X, or social media group posts as a vacancy source or URL.
-- NEVER extract or output a Facebook link as a vacancy URL. Discard all social media listings immediately.
+*STRICT SOURCE EXCLUSION (ANTI-SOCIAL MEDIA, NO FACEBOOK & NO AGGREGATORS/EXPERTINI):*
+- You are EXPLICITLY FORBIDDEN from using Facebook (facebook.com), Instagram, Twitter/X, LinkedIn posts, or social media groups as a vacancy source or URL.
+- You are EXPLICITLY FORBIDDEN from using Expertini (expertini.com, *.expertini.com), Jooble, Adzuna, Bayt, Indeed, Glassdoor, or any third-party scraper/aggregator.
+- NEVER extract or output an Expertini or aggregator link as a vacancy URL. Discard all third-party mirror listings immediately.
 
 *STRICT TARGET ISOLATION (ANTI-CITY LEAK):*
 - You MUST treat the target school name "${input.schoolName}" as a hard, non-negotiable search operator constraint.

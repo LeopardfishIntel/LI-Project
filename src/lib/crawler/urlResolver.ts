@@ -70,6 +70,10 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'fb.com',
   'fb.me',
   'facebook.net',
+  'expertini.com',
+  'expertini.net',
+  'expertini.org',
+  'expertini',
   'instagram.com',
   'twitter.com',
   'x.com'
