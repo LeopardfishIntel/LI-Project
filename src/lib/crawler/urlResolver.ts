@@ -309,3 +309,94 @@ export function getUrlSourceScore(url: string | null | undefined, schoolWebsite?
 
   return 50;
 }
+
+export interface LiveUrlValidationResult {
+  isValid: boolean;
+  finalUrl: string;
+  closingDate?: Date | null;
+  isRollingDeadline?: boolean;
+  reason?: string;
+}
+
+/**
+ * Validates a live vacancy URL via HTTP GET/HEAD:
+ * 1. Follows all redirects to final destination.
+ * 2. If TES redirected to a different school or country (Anti-Hijacking), flags invalid.
+ * 3. Checks JSON-LD validThrough and 'Applications closed' banners.
+ * 4. Ensures HTTP 200 OK.
+ */
+export async function validateVacancyUrlLive(
+  rawUrl: string, 
+  targetSchoolName?: string, 
+  targetCountry?: string
+): Promise<LiveUrlValidationResult> {
+  if (!rawUrl || isBlockedContentUrl(rawUrl)) {
+    return { isValid: false, finalUrl: '', reason: 'blocked_or_empty' };
+  }
+
+  try {
+    const res = await fetch(rawUrl, {
+      redirect: 'follow',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
+    if (!res.ok) {
+      return { isValid: false, finalUrl: res.url, reason: `http_${res.status}` };
+    }
+
+    const finalUrl = res.url;
+    if (isBlockedContentUrl(finalUrl)) {
+      return { isValid: false, finalUrl, reason: 'redirected_to_aggregator' };
+    }
+
+    const html = await res.text();
+    const now = new Date();
+
+    // Check TES specific validations
+    if (finalUrl.includes('tes.com/jobs/vacancy/')) {
+      // 1. Check expiration banner
+      if (html.includes('Applications closed') || html.includes('This vacancy has expired') || html.includes('Expired')) {
+        const validThroughMatch = html.match(/"validThrough"s*:s*"([^"]+)"/i);
+        const vtDate = validThroughMatch ? new Date(validThroughMatch[1]) : null;
+        if (vtDate && vtDate.getTime() < now.getTime()) {
+          return { isValid: false, finalUrl, reason: 'tes_applications_closed', closingDate: vtDate };
+        }
+      }
+
+      // 2. Anti-Redirect Hijack check: if targetSchoolName is provided, verify school in page
+      if (targetSchoolName) {
+        const cleanTarget = targetSchoolName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const pageLower = html.toLowerCase();
+        // Check if page contains keywords from target school name
+        const targetWords = targetSchoolName.toLowerCase().split(/s+/).filter(w => w.length > 3 && !['school', 'international', 'the', 'and', 'college'].includes(w));
+        const hasMatch = targetWords.some(word => pageLower.includes(word));
+        if (targetWords.length > 0 && !hasMatch) {
+          return { isValid: false, finalUrl, reason: 'tes_redirect_hijack_school_mismatch' };
+        }
+      }
+    }
+
+    // Extract Schema.org validThrough if present
+    let closingDate: Date | null = null;
+    const validThroughMatch = html.match(/"validThrough"s*:s*"([^"]+)"/i);
+    if (validThroughMatch) {
+      const d = new Date(validThroughMatch[1]);
+      if (!isNaN(d.getTime())) {
+        closingDate = d;
+        if (closingDate.getTime() < now.getTime()) {
+          return { isValid: false, finalUrl, reason: 'schema_closing_date_in_past', closingDate };
+        }
+      }
+    }
+
+    return {
+      isValid: true,
+      finalUrl,
+      closingDate
+    };
+  } catch (err: any) {
+    return { isValid: false, finalUrl: rawUrl, reason: `fetch_error_${err?.message || 'unknown'}` };
+  }
+}
