@@ -1146,6 +1146,90 @@ function DecoderContent() {
             </div>
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
+              {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
+              {selectedOpportunity && (
+                <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-2 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
+                    <div className="space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="bg-[#FF6B35]/20 border border-[#FF6B35]/50 text-[#FF6B35] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-1.5 shadow-[0_0_10px_rgba(255,107,53,0.2)]">
+                          <Sparkles className="size-3 text-[#FF6B35]" /> EVALUATING OPPORTUNITY
+                        </span>
+                        {selectedOpportunity.curriculum && (
+                          <span className="bg-white/5 border border-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
+                            [{selectedOpportunity.curriculum}]
+                          </span>
+                        )}
+                        {selectedOpportunity.department && (
+                          <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                            {selectedOpportunity.department}
+                          </span>
+                        )}
+                      </div>
+
+                      <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
+                        {selectedOpportunity.jobTitle}
+                      </h1>
+
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 font-medium">
+                        <span className="text-sm font-semibold text-[#38BDF8] tracking-tight flex items-center gap-1">
+                          <Building className="size-3.5" /> {getSchoolField(activeSchool, ['schoolname', 'name', 'school'])}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="size-3.5" /> {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                      {selectedOpportunity.applyUrl && (
+                        <a
+                          href={selectedOpportunity.applyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-sm transition-all shadow-[0_0_15px_rgba(255,107,53,0.3)] hover:scale-[1.02]"
+                        >
+                          Apply for Role
+                          <ArrowUpRight className="size-4" />
+                        </a>
+                      )}
+                      <button
+                        onClick={() => router.push('/featured-jobs')}
+                        className="inline-flex items-center gap-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white px-3 py-2.5 text-xs font-bold uppercase tracking-wider rounded-sm transition-all"
+                      >
+                        <ArrowLeft className="size-3.5" /> All Vacancies
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
+                    <div className="flex flex-wrap items-center gap-3">
+                      {selectedOpportunity.closesDate && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
+                          <Calendar className="size-3.5 text-[#FF6B35]" />
+                          <span>Closes: {selectedOpportunity.closesDate}</span>
+                        </span>
+                      )}
+                      {selectedOpportunity.savingsPotential !== undefined && (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-[#FF6B35]/30 rounded-full text-xs font-bold text-[#FF6B35]">
+                          <Coins className="size-3.5" />
+                          <span>${selectedOpportunity.savingsPotential.toLocaleString()}/mo Est. Savings</span>
+                        </span>
+                      )}
+                      {selectedOpportunity.source && (
+                        <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
+                          SOURCE: <span className="text-slate-300">{selectedOpportunity.source.toUpperCase()}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] italic text-slate-400 font-medium">
+                      Estimated financial surplus and lifestyle projections below are tailored for this opportunity.
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="bg-[#0b1224] border border-white/5 p-5 md:p-6 shadow-2xl relative rounded-sm">
 
                 {/* Header Row */}
