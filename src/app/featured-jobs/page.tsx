@@ -1119,7 +1119,7 @@ export default function FeaturedJobsPage() {
                               </button>
                             )}
                             <a 
-                              href={`/financial-forecaster?schoolId=${job.schoolId}&jobId=${job.id}&jobTitle=${encodeURIComponent(job.title)}&department=${encodeURIComponent(job.department || '')}&curriculum=${encodeURIComponent(job.curriculum || '')}&applyUrl=${encodeURIComponent(job.source_url || job.applyUrl || '')}&closesDate=${encodeURIComponent(job.date_closing || '')}&savingsPotential=${job.savingsPotential || 0}&schoolRating=${job.schoolRating || ''}&source=${encodeURIComponent(job.source || '')}&city=${encodeURIComponent(job.city || '')}&country=${encodeURIComponent(job.country || '')}`}
+                              href={`/financial-forecaster?schoolId=${job.schoolId}&jobId=${job.id}&jobTitle=${encodeURIComponent(job.title)}&department=${encodeURIComponent(job.department || '')}&curriculum=${encodeURIComponent(job.curriculum || '')}&applyUrl=${encodeURIComponent(job.source_url || (job as any).applyUrl || '')}&closesDate=${encodeURIComponent(job.date_closing || '')}&savingsPotential=${job.savingsPotential || 0}&schoolRating=${job.schoolRating || ''}&source=${encodeURIComponent(job.source || '')}&city=${encodeURIComponent(job.city || '')}&country=${encodeURIComponent(job.country || '')}`}
                               className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
                             >
                             Evaluate Opportunity
