@@ -64,7 +64,15 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'careeronestop.org',
   'workopolis.com',
   'vertexaisearch.cloud.google.com',
-  'globalschoolscout.com'
+  'globalschoolscout.com',
+  'facebook.com',
+  'm.facebook.com',
+  'fb.com',
+  'fb.me',
+  'facebook.net',
+  'instagram.com',
+  'twitter.com',
+  'x.com'
 ];
 
 /**

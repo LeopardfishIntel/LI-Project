@@ -150,6 +150,10 @@ Provide ONLY the raw JSON object.`,
   * Secondary/College/High School section: ${hasSecondary ? "YES" : "NO"}
   * Summary: ${phasesSummary}
 
+*STRICT SOURCE EXCLUSION (ANTI-SOCIAL MEDIA & NO FACEBOOK):*
+- You are EXPLICITLY FORBIDDEN from using Facebook (facebook.com), Instagram, Twitter/X, or social media group posts as a vacancy source or URL.
+- NEVER extract or output a Facebook link as a vacancy URL. Discard all social media listings immediately.
+
 *STRICT TARGET ISOLATION (ANTI-CITY LEAK):*
 - You MUST treat the target school name "${input.schoolName}" as a hard, non-negotiable search operator constraint.
 - You are EXPLICITLY FORBIDDEN from dropping the school name or widening the search parameters to city-wide or regional levels (such as general "teaching jobs in Prague", "Czech vacancies", "teachers in Abu Dhabi").
