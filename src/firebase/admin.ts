@@ -1262,15 +1262,28 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
           writeBatch.delete(ref);
         }
         continue;
-      } else if (hasDirectUrl) {
+      }
+
+      // 🛡️ NO LINK -> NO LISTING MANDATE: If no valid direct URL, discard/delete immediately
+      if (!hasDirectUrl) {
+        if (existing) {
+          writeBatch.delete(ref);
+        }
+        continue;
+      }
+
+      // 🛡️ EXPLICIT EXPIRY DATE MANDATE:
+      // If no explicit closing date is specified, route to pending_review for manual checking
+      if (!isExplicitDateProvided || isRolling) {
+        status = 'pending_review';
+      } else {
         const httpCheck = await verifyJobUrlHttp(applyUrl);
         if (httpCheck.status === 'delisted') {
-          status = 'delisted';
+          if (existing) writeBatch.delete(ref);
+          continue;
         } else {
           status = 'approved';
         }
-      } else if (!status) {
-        status = 'pending_review';
       }
 
       const firstDiscoveredAt = existing?.firstDiscoveredAt || rawJob.firstDiscoveredAt || now;

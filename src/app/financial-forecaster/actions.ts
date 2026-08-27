@@ -850,6 +850,12 @@ export async function getSchoolStabilityReport(input: {
                                             // Skip past expired vacancies
                                             if (triage.status === 'expired') return null;
 
+                                            const hasLink = Boolean(v.source_url && typeof v.source_url === 'string' && v.source_url.trim().length > 0 && !v.source_url.includes('undefined') && !v.source_url.includes('null'));
+                                            if (!hasLink) return null;
+
+                                            // If no explicit closing date, queue to pending_review for admin checking
+                                            const status = triage.isRollingDeadline ? 'pending_review' : 'approved';
+
                                             const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
                                             return {
                                                 id: jobId,
@@ -858,7 +864,7 @@ export async function getSchoolStabilityReport(input: {
                                                 applyUrl: v.source_url || "",
                                                 closingDate: triage.closingDate,
                                                 isRollingDeadline: triage.isRollingDeadline,
-                                                status: 'approved'
+                                                status
                                             };
                                         })
                                         .filter(Boolean);
