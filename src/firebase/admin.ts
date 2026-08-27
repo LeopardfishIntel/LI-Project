@@ -935,7 +935,7 @@ export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationR
       }
     } catch {}
 
-    if (isRedirectToRoot) {
+    if (isRedirectToRoot || isGenericRootUrl(finalUrl) || isGenericRootUrl(cleanUrl)) {
       return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
     }
 
