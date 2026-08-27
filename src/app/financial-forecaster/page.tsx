@@ -6,7 +6,8 @@ import {
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
   Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users,
-  HeartPulse, Laptop, Building, Sliders, BarChart3
+  HeartPulse, Laptop, Building, Sliders, BarChart3,
+  Sparkles, ArrowUpRight, MapPin, Calendar, Star
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
