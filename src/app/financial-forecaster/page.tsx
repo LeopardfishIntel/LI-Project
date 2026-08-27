@@ -463,6 +463,24 @@ function DecoderContent() {
      if (mounted && allSchools && allSchools.length > 0) {
        const params = new URLSearchParams(window.location.search);
        const urlSchoolId = params.get('schoolId') || params.get('id');
+       const jobTitle = params.get('jobTitle');
+       
+       if (jobTitle) {
+         setSelectedOpportunity({
+           jobId: params.get('jobId') || undefined,
+           jobTitle,
+           department: params.get('department') || undefined,
+           curriculum: params.get('curriculum') || undefined,
+           applyUrl: params.get('applyUrl') || undefined,
+           closesDate: params.get('closesDate') || undefined,
+           savingsPotential: params.get('savingsPotential') ? Number(params.get('savingsPotential')) : undefined,
+           schoolRating: params.get('schoolRating') || undefined,
+           source: params.get('source') || undefined,
+           city: params.get('city') || undefined,
+           country: params.get('country') || undefined
+         });
+       }
+
        if (urlSchoolId) {
          const found = allSchools.find((s: any) => s.id === urlSchoolId);
          if (found) {
