@@ -621,11 +621,11 @@ export default function FeaturedJobsPage() {
                   <button
                     onClick={() => setActiveTab('public')}
                     className={cn(
-                      "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+                      "px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1",
                       activeTab === 'public' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
                     )}
                   >
-                    Live Feed
+                    Live Feed ({publicJobsData?.length || 0})
                   </button>
                   <button
                     onClick={() => setActiveTab('admin_staging')}
