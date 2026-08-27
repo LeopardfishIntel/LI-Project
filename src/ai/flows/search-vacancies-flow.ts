@@ -162,6 +162,11 @@ Provide ONLY the raw JSON object.`,
 - Check the source URLs, paths, and metadata. If a listing belongs to a school of the same name in a DIFFERENT country (e.g. Amman Academy in Indonesia vs Amman Academy in Jordan), you MUST discard it immediately.
 - Pay close attention to country-code top-level domains (ccTLDs) like ".id" (Indonesia), ".cz" (Czechia), etc.
 
+*CRITICAL: STATIC SCHOOL WEBPAGE DISAMBIGUATION & APPOINTMENT CROSS-CHECK:*
+- Schools frequently leave static HTML vacancy pages (e.g. '/careers-head-of-secondary-school.html' or '/careers-principal.html') online on their server for years after a position has already been filled.
+- You MUST cross-reference search snippets, external recruitment records, and executive search postings (Search Associates, TES, GRC, RSAcademics, Schrole, press releases) to verify if the role has already been filled or if its application deadline has passed (e.g. if the deadline was in late 2025 like November 2025, or if an appointee has already been announced for the academic year).
+- If external recruitment records or announcements show that the deadline passed or an educator was already appointed, you MUST discard the listing. NEVER output an already-filled role as an active vacancy.
+
 *CRITICAL FILTRATION CONSTRAINT:*
 Refer to phases summary. You MUST strictly discard and filter out any discovered job listings or vacancies that belong to an educational stage/phase that this school does NOT offer.
 - If "Primary/Prep section" is NO, you MUST discard and reject any primary school class teacher, primary PE, early years, nursery, kindergarten, key stage 1, key stage 2, or head of primary vacancies.
