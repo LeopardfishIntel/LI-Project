@@ -74,6 +74,12 @@ export const THIRD_PARTY_AGGREGATOR_DOMAINS = [
   'expertini.net',
   'expertini.org',
   'expertini',
+  'schrole.com',
+  'schrole',
+  'searchassociates.com',
+  'searchassociates',
+  'teacherhorizons.com',
+  'iss.edu',
   'instagram.com',
   'twitter.com',
   'x.com'

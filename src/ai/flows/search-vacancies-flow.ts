@@ -152,7 +152,7 @@ Provide ONLY the raw JSON object.`,
 
 *STRICT SOURCE EXCLUSION (ANTI-SOCIAL MEDIA, NO FACEBOOK & NO AGGREGATORS/EXPERTINI):*
 - You are EXPLICITLY FORBIDDEN from using Facebook (facebook.com), Instagram, Twitter/X, LinkedIn posts, or social media groups as a vacancy source or URL.
-- You are EXPLICITLY FORBIDDEN from using Expertini (expertini.com, *.expertini.com), Jooble, Adzuna, Bayt, Indeed, Glassdoor, or any third-party scraper/aggregator.
+- You are EXPLICITLY FORBIDDEN from using third-party ATS/aggregators like Schrole, Search Associates, Teacher Horizons, ISS, Expertini, Jooble, Adzuna, Bayt, Indeed, Glassdoor, or scrapers. Only direct official School Websites and direct TES vacancy adverts are permitted.
 - NEVER extract or output an Expertini or aggregator link as a vacancy URL. Discard all third-party mirror listings immediately.
 
 *STRICT TARGET ISOLATION (ANTI-CITY LEAK):*
@@ -309,7 +309,7 @@ You MUST run search queries with the school name enclosed in escaped double quot
 ${tier1Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`
       },
       {
-        name: "Phase 2: TES & Schrole Historical Archives Sweep",
+        name: "Phase 2: Dedicated TES Vacancies Sweep",
         prompt: `Find all job vacancies (active or closed) posted strictly by the school "${input.schoolName}" in the last 12 months (since May 2025) on international portals.
 You MUST run search queries with the school name enclosed in escaped double quotes to treat it as a hard, non-negotiable search operator constraint:
 ${tier2Queries.map(q => `- ${JSON.stringify(q)}`).join('\n')}`

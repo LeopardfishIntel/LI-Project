@@ -1,7 +1,7 @@
 /**
  * 🛰️ SEARCH QUERY BUILDER (GOOGLE SEARCH GROUNDING OPTIMIZED)
  * Formats crawler search queries to comply strictly with Google Search Grounding API syntax.
- * Prevents filtering errors caused by attaching deep paths directly to the `site:` operator.
+ * Focuses exclusively on direct school websites and verified TES vacancy adverts.
  */
 
 export interface FormattedSiteOperator {
@@ -15,8 +15,8 @@ export interface FormattedSiteOperator {
  * Example: 'tes.com/jobs/vacancy' -> { rootDomain: 'tes.com', pathKeyword: 'jobs/vacancy' }
  */
 export function formatSiteOperator(siteInput: string): FormattedSiteOperator {
-  const cleanInput = siteInput.replace(/^https?:\/\//, '').replace(/^www\./, '');
-  const slashIdx = cleanInput.indexOf('/');
+  const cleanInput = siteInput.replace(/^https?:\/\//, "").replace(/^www\./, "");
+  const slashIdx = cleanInput.indexOf("/");
 
   if (slashIdx === -1) {
     return {
@@ -27,7 +27,7 @@ export function formatSiteOperator(siteInput: string): FormattedSiteOperator {
   }
 
   const rootDomain = cleanInput.substring(0, slashIdx);
-  const path = cleanInput.substring(slashIdx + 1).replace(/\/$/, '');
+  const path = cleanInput.substring(slashIdx + 1).replace(/\/$/, "");
 
   return {
     rawDomain: siteInput,
@@ -71,12 +71,11 @@ export function buildTier1Queries(schoolName: string, schoolDomain: string): str
 }
 
 /**
- * Tier 2: Dedicated International Job Portal & Aggregator queries
- * Splits deep paths for portals like TES into root site: operators + quoted subpaths.
+ * Tier 2: Dedicated TES Vacancy & Official School Portal queries
  */
 export function buildTier2Queries(
   schoolName: string, 
-  options: { aliases?: string[]; tesEmployerSlug?: string; tesOrganizationId?: string; schroleAccountId?: string } = {}
+  options: { aliases?: string[]; tesEmployerSlug?: string; tesOrganizationId?: string } = {}
 ): string[] {
   const queries: string[] = [];
 
@@ -87,25 +86,19 @@ export function buildTier2Queries(
   if (options.tesOrganizationId) {
     queries.push(`site:tes.com "${options.tesOrganizationId}"`);
   }
-  if (options.schroleAccountId) {
-    queries.push(`site:schrole.com "${options.schroleAccountId}"`);
-  }
 
-  // Canonical name portal queries
+  // Canonical name portal queries (Focused exclusively on TES verified adverts)
   queries.push(
-    formatGroundingSiteQuery(schoolName, 'tes.com/jobs/vacancy'),
-    formatGroundingSiteQuery(schoolName, 'tes.com/jobs/employer'),
-    formatGroundingSiteQuery(schoolName, 'schrole.com'),
-    formatGroundingSiteQuery(schoolName, 'searchassociates.com'),
-    formatGroundingSiteQuery(schoolName, 'iss.edu')
+    formatGroundingSiteQuery(schoolName, "tes.com/jobs/vacancy"),
+    formatGroundingSiteQuery(schoolName, "tes.com/jobs/employer")
   );
 
   // Alias queries
   const aliases = options.aliases || [];
   for (const alias of aliases) {
     queries.push(
-      formatGroundingSiteQuery(alias, 'tes.com/jobs/vacancy'),
-      formatGroundingSiteQuery(alias, 'tes.com/jobs/employer')
+      formatGroundingSiteQuery(alias, "tes.com/jobs/vacancy"),
+      formatGroundingSiteQuery(alias, "tes.com/jobs/employer")
     );
   }
 
