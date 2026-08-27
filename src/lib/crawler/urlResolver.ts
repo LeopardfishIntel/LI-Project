@@ -114,11 +114,34 @@ export function hasTemplatePlaceholder(urlStr: string): boolean {
 /**
  * Checks if a URL is a generic, unparameterized root directory page.
  */
+const GENERIC_DIRECTORY_PATHS = new Set([
+  '',
+  '/',
+  '/employment',
+  '/careers',
+  '/jobs',
+  '/vacancies',
+  '/join-us',
+  '/work-with-us',
+  '/careers/vacancies',
+  '/about/careers',
+  '/about-us/careers',
+  '/working-at-vis',
+  '/working-at-vis/vacancies',
+  '/careers/job-openings',
+  '/life-at-bsj/careers',
+  '/jobs/browse/international'
+]);
+
 export function isGenericRootUrl(urlStr: string): boolean {
   if (!urlStr) return true;
   try {
     const parsed = new URL(urlStr);
     const pathClean = parsed.pathname.replace(/\/$/, '');
+    
+    if (GENERIC_DIRECTORY_PATHS.has(pathClean.toLowerCase()) || !pathClean) {
+      return true;
+    }
     
     // Check known generic directories that lack specific school or job context
     if (parsed.hostname.includes('tes.com') && (pathClean === '/jobs/browse/international' || pathClean === '/jobs' || pathClean === '')) {
