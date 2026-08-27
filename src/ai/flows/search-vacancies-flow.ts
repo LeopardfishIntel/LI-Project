@@ -250,7 +250,7 @@ Return a JSON object conforming exactly to this structure:
 *CRITICAL*: If you find zero vacancies matching these criteria, you MUST still return a valid, parsable JSON object conforming strictly to this JSON structure with "scrapedJobsCount" set to 0 and "scrapedJobsList" set to []. DO NOT return plain text conversational notes, markdown explanations, or descriptions. You must return ONLY the raw JSON object conforming to the rules above.`;
 
     const parseResponse = (text: string): { scrapedJobsList: string[] } => {
-      let cleanText = text.trim();
+      let cleanText = text.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
       const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanText = jsonMatch[0];
@@ -609,7 +609,8 @@ Provide ONLY the raw JSON object.`,
           const urlMatch = lowerJob.match(/([a-z0-9-]+\.[a-z0-9.-]+)/i);
           if (urlMatch) {
             const jobDomain = urlMatch[1].toLowerCase().trim();
-            if (jobDomain.includes(targetBrand) && jobDomain !== targetDomain && !["tes.com", "schrole.com", "teacherhorizons.com", "indeed.com", "glassdoor.com", "guardianjobs.com"].includes(jobDomain)) {
+            const cleanJobDomain = getCleanDomain(jobDomain);
+            if (cleanJobDomain.includes(targetBrand) && cleanJobDomain !== targetDomain && !["tes.com", "schrole.com", "teacherhorizons.com", "edvectus.com", "edvectus.co.uk", "searchassociates.com", "iss.edu", "iscresearch.com", "guardianjobs.com", "jobs.theguardian.com"].includes(cleanJobDomain)) {
               console.log(`🛸 [SWEEP ENGINE] Brand Collision: Filtered out same-brand domain leak in raw string: ${jobDomain} (target: ${targetDomain})`);
               continue;
             }
