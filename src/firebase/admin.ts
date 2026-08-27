@@ -939,6 +939,32 @@ export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationR
       return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
     }
 
+    // 🚫 Check for Expired / Closed Notice or Past validThrough in page HTML
+    if (responseText) {
+      const schemaMatch = responseText.match(/"validThrough":"(\d{4}-\d{2}-\d{2})[^"]*"/i);
+      if (schemaMatch) {
+        const validDate = new Date(schemaMatch[1]);
+        if (validDate < new Date()) {
+          return { isValid: false, status: "delisted", delistReason: "expired_on_page", finalUrl };
+        }
+      }
+      const expiredPatterns = [
+        /<span[^>]*>Expired<\/span>/i,
+        /badge[^>]*>Expired/i,
+        /this vacancy has closed/i,
+        /this job has expired/i,
+        /applications for this position have closed/i,
+        /applications are now closed/i,
+        /this position has been filled/i,
+        /no longer accepting applications/i,
+        /this vacancy is no longer available/i
+      ];
+      for (const p of expiredPatterns) {
+        if (p.test(responseText)) {
+          return { isValid: false, status: "delisted", delistReason: "expired_on_page", finalUrl };
+        }
+      }
+    }
     if (statusCode >= 200 && statusCode < 300) {
       return { isValid: true, status: 'approved', finalUrl };
     }
