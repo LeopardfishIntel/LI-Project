@@ -1,11 +1,37 @@
 /**
- * 🛰️ ROLE CLASSIFIER & ACADEMIC TEACHING FILTER
- * Filters out non-teaching operational, administrative, medical, executive corporate, and facility support roles.
+ * 🛰️ ROLE CLASSIFIER & K-12 ACADEMIC TEACHING FILTER
+ *
+ * Enforces strict Gate 2 role classification:
+ *   - Fix 2.1: Enforce K-12 Academic Roles (Early Years, Primary, Secondary, Subject Specialists, Leadership)
+ *   - Fix 2.2: Block Non-K-12 Institutions (University Faculty, Commercial Tutoring, Adult ESL, Corporate Training)
+ *   - Blocks Teaching Assistants (TA), Relief/Supply/Substitute Teachers, PTA, support staff & non-job titles.
  */
 
 const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
-  // Medical / Nursing
-  /\b(nurse|nursing|clinic|doctor)\b/i,
+  // Procurement / Facilities / Health & Safety / Corporate Analytics / Leadership Development
+  /\b(procurement|facilities|facility|safety|health\s*&\s*safety|analytics|insights|leadership\s+development|community\s+service)\b/i,
+  
+  // House Parent / Residential / Boarding Staff
+  /\b(house\s+parent|boarding\s+parent|residence\s+staff|residential\s+assistant)\b/i,
+
+  // Medical / Nursing (Multilingual)
+  /\b(enfermera|nurse|nursing|physiotherapist|wellbeing\s+officer)\b/i,
+
+  // Standalone Sports Coaches (Non-PE Teachers)
+  /\b(coach\s+padel|coach\s+basketball|hek\s+coach|volleyball\s+coach|rugby\s+coach)\b/i,
+
+  // Placeholder / Talent Pool / Control pages
+  /\b(control\s+school|talent\s+pool|share\s+your\s+profile)\b/i,
+
+  // Teaching Assistants / Educational Assistants / Classroom Assistants / Instructional Assistants
+  /\b(teaching\s+assistants?|teacher\s+assistants?|educational\s+assistants?|classroom\s+assistants?|instructional\s+assistants?|learning\s+support\s+assistants?|lsa)\b/i,
+  /\b(assistant\s+teachers?|ta\s+instructional|ta)\b/i,
+
+  // Relief / Substitute / Supply / Temporary Cover Teachers
+  /\b(relief\s+teachers?|substitute\s+teachers?|supply\s+teachers?|cover\s+teachers?\s*\(relief\))\b/i,
+
+  // Medical / Nursing / Counseling
+  /\b(nurse|nursing|clinic|doctor|physiotherapist|counselor|wellbeing\s+officer)\b/i,
   
   // Executive / Corporate Leadership (Non-Academic)
   /\b(cfo|chief\s+financial\s+officer|coo|chief\s+operating\s+officer|cio|chief\s+information\s+officer|chief\s+commercial\s+officer)\b/i,
@@ -35,55 +61,63 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /\b(hr|human\s+resources)\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
   /\boperations\b.*\b(officer|executive|assistant|associate|coordinator|manager|director|lead)\b/i,
   
-  // IT Technician / Facilities / Transport / Security
+  // IT Technician / Facilities / Transport / Security / Lab Technicians
+  /\b(technician|lab\s+technician|science\s+technician|physics\s+technician|chemistry\s+technician|dt\s+technician|design\s+technology\s+technician|art\s+technician|it\s+technician)\b/i,
   /\b(it|ict)\s+(technician|support|helpdesk|administrator|network\s+engineer)\b/i,
   /\b(bus\s+)?driver\b/i,
-  /\bsecurity\s+(guard|officer)\b/i,
-  /\bguard\b/i,
-  /\bcleaner\b/i,
   /\bcaretaker\b/i,
   /\bjanitor\b/i,
-  /\bmaintenance\b.*\b(technician|worker|assistant|officer|staff)\b/i,
-  /\bgardener\b/i,
-  
-  // Development / Alumni / Fundraising
-  /\b(director|manager|lead|officer)\s+of\s+development\b/i,
-  /\bdevelopment\s+(director|manager|officer|associate|lead)\b/i,
-  /\balumni\b.*\b(officer|coordinator|director|manager|relations)\b/i,
-  /\bfundraising\b/i,
+  /\bguard\b/i,
+  /\bsecurity\s+(officer|guard|staff)\b/i,
 
-  // Cover Supervisors & Auxiliary Classroom Aides / Assistants
-  /\bcover\s+supervisor\b/i,
-  /\b(teaching|learning|classroom|educational|specialist|1:1|preschool)\s+assistant\b/i,
-  /\bassistant\s+teacher\b/i,
-  /\bpersonal\s+assistant\b/i,
-  /\bpa\s+to\b/i,
-  
-  // Clinical / Auxiliary Therapists
-  /\b(speech|language|occupational|physical)\s+therapist\b/i,
+  // PTA / Parent Teacher Associations / Alumni / Non-Job Community Bodies
+  /\b(parent\s+teacher\s+association|pta|parent\s+association|parents?\s+association|parent\s+body|alumni\s+association|friends\s+of\s+the\s+school)\b/i,
 
-  // Sports-only auxiliary (non-teaching)
-  /\b(swimming|football|basketball|tennis)\s+coach\b/i,
-  /\blifeguard\b/i
+  // Student Events / Conferences / Competitions / Non-Job Pages
+  /\b(conference|symposium|summit|competition|olympiad|student\s+science\s+conference|student\s+conference|global\s+perspective)\b/i,
+
+  // Generic Non-Position Page Titles
+  /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities)\b/i,
 ];
 
 /**
- * Returns true if a job title represents a non-academic/support role that should be excluded.
+ * FIX 2.2: NON-K-12 INSTITUTIONAL PATTERNS
+ * Rejects roles from higher education, commercial tutoring franchises, adult language centers,
+ * and corporate training programs sharing ATS platforms.
  */
-export function isSupportOrNonTeachingRole(title: string | null | undefined): boolean {
-  if (!title) return false;
+const NON_K12_INSTITUTION_PATTERNS: RegExp[] = [
+  // Higher Education / University Faculty
+  /\b(university|college|polytechnic|higher\s+education)\b.*\b(professor|adjunct|lecturer|postdoc|researcher|dean|provost|chancellor)\b/i,
+  /\b(professor|adjunct\s+faculty|postdoctoral|research\s+fellow|dean\s+of\s+faculty|provost)\b/i,
+
+  // Commercial Tutoring Centers / Test Prep Franchises
+  /\b(kumon|c2\s+education|sylvan|eye\s+level|mathnasium)\b/i,
+  /\b(private\s+tutor|cram\s+school|test\s+prep\s+tutor|sat\s+prep\s+tutor|gre\s+tutor)\b/i,
+
+  // Adult Language Institutes / Corporate Training
+  /\b(adult\s+esl|adult\s+language|corporate\s+language|business\s+english\s+trainer|corporate\s+trainer)\b/i,
+  /\b(language\s+institute|language\b.*\bcenter)\b.*\b(adults?|corporate)\b/i,
+
+  // Commercial EdTech Corporate Positions
+  /\b(edtech|e-learning|learning\s+platform)\b.*\b(account\s+executive|sales\s+manager|content\s+writer)\b/i
+];
+
+export function isNonK12InstitutionRole(title: string | null | undefined): boolean {
+  if (!title || typeof title !== 'string') return false;
   const cleanTitle = title.trim();
-  
-  // Whitelist explicit academic leadership & classroom teacher exceptions that might have conflicting words
-  if (/\b(head\s+of\s+(school|secondary|primary|academics|curriculum|department|sixth\s+form|lower|middle|upper|eyfs|ks[1-5]|early\s+years))\b/i.test(cleanTitle)) {
-    return false;
-  }
-  if (/\b(principal|vice\s+principal|assistant\s+principal|deputy\s+head|director\s+of\s+studies|academic\s+director)\b/i.test(cleanTitle)) {
-    return false;
-  }
-  if (/\b(teacher|educator|instructor|lecturer|professor|faculty)\b/i.test(cleanTitle) && !/\b(assistant\s+teacher|teaching\s+assistant)\b/i.test(cleanTitle)) {
-    return false;
+  if (!cleanTitle) return false;
+
+  return NON_K12_INSTITUTION_PATTERNS.some(pat => pat.test(cleanTitle));
+}
+
+export function isSupportOrNonTeachingRole(title: string | null | undefined): boolean {
+  if (!title || typeof title !== 'string') return true;
+  const cleanTitle = title.trim();
+  if (!cleanTitle) return true;
+
+  if (isNonK12InstitutionRole(cleanTitle)) {
+    return true;
   }
 
-  return NON_TEACHING_SUPPORT_PATTERNS.some(pattern => pattern.test(cleanTitle));
+  return NON_TEACHING_SUPPORT_PATTERNS.some(pat => pat.test(cleanTitle));
 }

@@ -1,12 +1,20 @@
 "use client";
-import { resolveVacancyUrl, isBlockedContentUrl } from '@/lib/crawler/urlResolver';
-import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
+/**
+ * 🛸 PIPELINE 4 — HIGH-SPEED UI ENGINE
+ *
+ * Reads pre-scrubbed, pre-enriched documents from `featured_jobs_cache`
+ * (maintained by Pipelines 1–3). Zero joins, zero server-side role/URL
+ * filtering — all of that is done once at write-time.
+ *
+ * The only client-side computation retained is the family-status savings
+ * multiplier, applied to the pre-computed `savingsPotentialSingle` baseline.
+ */
 import { parseClosingDate } from '@/lib/crawler/dateParser';
 
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, Globe
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
@@ -14,33 +22,120 @@ import { collection, doc, updateDoc, collectionGroup, query, where } from 'fireb
 import { cn } from '@/lib/utils';
 import { canonicalCountry } from '@/lib/calculations';
 
+const cleanSchoolName = (raw: string): string => {
+  if (!raw) return "";
+  let clean = raw.trim();
+  if (clean.includes(",")) {
+    clean = clean.split(",")[0].trim();
+  }
+  if (clean.length > 60) {
+    clean = clean.substring(0, 60).replace(/[-,\s]+$/, "").trim();
+  }
+  return clean;
+};
+
 // A helper to normalize strings for matching
+const formatDateCustom = (dateInput: any): string => {
+  if (!dateInput) return "";
+  const dt = typeof dateInput === "object" && dateInput instanceof Date ? dateInput : new Date(dateInput);
+  if (isNaN(dt.getTime())) return String(dateInput);
+  const day = dt.getDate();
+  const month = dt.toLocaleDateString("en-GB", { month: "long" });
+  const year = dt.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
+const getCleanSourceLabel = (sourceStr: string, applyUrlStr: string): string => {
+  const url = (applyUrlStr || "").toLowerCase();
+  if (url.includes("tes.com")) return "TES";
+  if (url.includes("schrole.com")) return "Schrole";
+  if (url.includes("searchassociates.com")) return "Search Associates";
+  if (url.includes("teacherhorizons.com")) return "Teacher Horizons";
+  if (url.includes("guardianjobs") || url.includes("theguardian.com")) return "Guardian Jobs";
+  if (url.includes("edvectus")) return "Edvectus";
+  if (url.includes("teachaway")) return "Teach Away";
+  if (url.includes("eteach")) return "eTeach";
+  if (url.includes("lever.co")) return "Lever ATS";
+  if (url.includes("greenhouse.io")) return "Greenhouse ATS";
+  if (url.includes("workday")) return "Workday ATS";
+  if (url.includes("bamboohr")) return "BambooHR ATS";
+  
+  if (sourceStr && sourceStr.length > 0 && sourceStr.length < 25 && !sourceStr.includes("(") && !sourceStr.includes("Posted:")) {
+    return sourceStr;
+  }
+  return "School Web";
+};
+
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
 // A helper to parse salary numbers (e.g., "$4,150.00" -> 4150)
 const parseSalary = (val: any): number => {
   if (!val) return 0;
-  const str = String(val).replace(/[^0-9.]/g, '');
+  const str = String(val).replace(/[^0-9.]/g, "");
   const parsed = parseFloat(str);
   return isNaN(parsed) ? 0 : parsed;
 };
 
+// Deterministic fixed reference ID generator (replaces sequential rank numbers)
+const getFixedJobRef = (job: any): string => {
+  if (!job) return "REF-1000";
+  const str = job.id || job.jobFingerprint || job.applyUrl || job.title || "";
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const code = Math.abs(hash % 9000) + 1000;
+  return "REF-" + code;
+};
+
+/** Shape of a document in the `featured_jobs_cache` flat collection. */
+interface FeaturedJobCacheDoc {
+  id: string;
+  title: string;
+  source: string;
+  applyUrl: string;
+  datePosted: string | null;
+  closingDate: string | null;
+  closingDateMillis: number | null;
+  schoolId: string;
+  schoolName: string;
+  city: string;
+  country: string;
+  status: string;
+  ingestedAtMillis: number;
+  isRollingDeadline: boolean;
+  // Fields populated by Pipeline 2
+  searchTokens?: string[];
+  savingsPotentialSingle?: number;
+  department?: string;
+  curriculum?: string;
+  schoolRating?: number;
+  schoolWebsite?: string;
+  isVolatileMarket?: boolean;
+  paidInUSD?: boolean;
+}
+
+/** Fully-resolved job shape consumed by the UI. */
 interface StructuredJob {
   id: string;
   title: string;
   department: string;
   source: string;
+  sources?: string[];
   source_url: string;
+  sourceUrls?: Record<string, string>;
   date_listed: string | null;
   date_closing: string | null;
   status: string;
   schoolId: string;
   schoolName: string;
-  schoolRating: number; // based on academic score
+  schoolRating: number;
   curriculum: string;
   city: string;
   country: string;
-  savingsPotential: number; // calculated USD/month
+  /** Dynamic savings — family-status multiplier applied to savingsPotentialSingle */
+  savingsPotential: number;
   schoolWebsite: string;
   paidInUSD?: boolean;
   scrapedAtRaw?: any;
@@ -60,6 +155,7 @@ export default function FeaturedJobsPage() {
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSourceEngine, setSelectedSourceEngine] = useState<string>("ALL");
   const [selectedCurriculums, setSelectedCurriculums] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [minSavings, setMinSavings] = useState<number>(0);
@@ -120,21 +216,38 @@ export default function FeaturedJobsPage() {
     }
   }, [teacherProfile]);
 
-  // Fetch Firestore Data (Collection Group Query)
-  const schoolsQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]);
-  
-  // Query 1: Public Approved Jobs
-  const publicJobsQuery = useMemoFirebase(() => (mounted && firestore ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'approved')) : null), [firestore, mounted]);
-  
-  // Query 2: Admin Staged Pending Review Jobs
-  const adminJobsQuery = useMemoFirebase(() => (mounted && firestore && calculatedIsAdmin ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review')) : null), [firestore, mounted, calculatedIsAdmin]);
-  
-  const colQuery = useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]);
+  // ── Pipeline 4 Queries ─────────────────────────────────────────────────────
+  // Query 1: Pre-enriched cache documents (approved public feed) — single flat collection, no joins
+  const cacheQuery = useMemoFirebase(
+    () => (mounted && firestore
+      ? query(collection(firestore, 'featured_jobs_cache'), where('status', '==', 'approved'))
+      : null),
+    [firestore, mounted]
+  );
 
-  const { data: schoolsData, isLoading: loadingSchools, error: errorSchools } = useCollection<any>(schoolsQuery);
-  const { data: publicJobsData, isLoading: loadingPublicJobs, error: errorPublic } = useCollection<any>(publicJobsQuery);
+  // Query 2: Admin staging — still reads from subcollections (source of truth)
+  const adminJobsQuery = useMemoFirebase(
+    () => (mounted && firestore && calculatedIsAdmin
+      ? query(collectionGroup(firestore, 'jobs'), where('status', '==', 'pending_review'))
+      : null),
+    [firestore, mounted, calculatedIsAdmin]
+  );
+
+  // Schools collection — only needed for admin staging tab school metadata join
+  const schoolsQuery = useMemoFirebase(
+    () => (mounted && firestore && calculatedIsAdmin ? collection(firestore, 'schools') : null),
+    [firestore, mounted, calculatedIsAdmin]
+  );
+
+  const { data: cacheData, isLoading: loadingCache, error: errorCache } = useCollection<any>(cacheQuery);
   const { data: adminJobsData, isLoading: loadingAdminJobs, error: errorAdmin } = useCollection<any>(adminJobsQuery);
-  const { data: colData, isLoading: loadingCol, error: errorCol } = useCollection<any>(colQuery);
+  const { data: schoolsData, isLoading: loadingSchools, error: errorSchools } = useCollection<any>(schoolsQuery);
+
+  // Aliases for loading/error state used in JSX (preserved for JSX compat)
+  const loadingPublicJobs = loadingCache;
+  const errorPublic = errorCache;
+  const loadingCol = false;   // No longer needed — enrichment is pre-computed
+  const errorCol = null;
 
   const schoolsMap = useMemo(() => {
     if (!schoolsData) return {};
@@ -143,6 +256,16 @@ export default function FeaturedJobsPage() {
       return acc;
     }, {});
   }, [schoolsData]);
+
+  // Family-status savings multipliers (applied client-side to savingsPotentialSingle)
+  const FAMILY_MULTIPLIER: Record<string, number> = {
+    'Single': 1.0,
+    'Married (sole earner)': 1.9,
+    'Married (dual income)': 1.9,
+    'Family +1': 2.3,
+    'Family +2': 2.65,
+    'Family +3': 3.0,
+  };
 
   // Handle manual verify & sync for a single school via Cloud Task queue worker
   const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
@@ -236,12 +359,25 @@ export default function FeaturedJobsPage() {
   // Admin Actions
   const handleMoveToPending = async (schoolId: string, jobId: string) => {
     try {
-      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
-      await updateDoc(ref, {
+      // 1. Update pre-enriched cache document
+      const cacheRef = doc(db, 'featured_jobs_cache', jobId);
+      await updateDoc(cacheRef, {
         status: 'pending_review',
         reviewedAt: new Date(),
         reviewedBy: user?.uid || "admin"
       });
+
+      // 2. Update subcollection document if present
+      try {
+        const subRef = doc(db, 'schools', schoolId, 'jobs', jobId);
+        await updateDoc(subRef, {
+          status: 'pending_review',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {
+        /* subcollection document may not exist for cache-only items */
+      }
     } catch (err) {
       console.error("Failed to move job to pending:", err);
     }
@@ -249,12 +385,21 @@ export default function FeaturedJobsPage() {
 
   const handleApproveJob = async (schoolId: string, jobId: string) => {
     try {
-      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
-      await updateDoc(ref, {
+      const cacheRef = doc(db, 'featured_jobs_cache', jobId);
+      await updateDoc(cacheRef, {
         status: 'approved',
         reviewedAt: new Date(),
         reviewedBy: user?.uid || "admin"
       });
+
+      try {
+        const subRef = doc(db, 'schools', schoolId, 'jobs', jobId);
+        await updateDoc(subRef, {
+          status: 'approved',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {}
     } catch (err) {
       console.error("Failed to approve job:", err);
     }
@@ -262,12 +407,21 @@ export default function FeaturedJobsPage() {
 
   const handleRemoveJob = async (schoolId: string, jobId: string) => {
     try {
-      const ref = doc(db, 'schools', schoolId, 'jobs', jobId);
-      await updateDoc(ref, {
+      const cacheRef = doc(db, 'featured_jobs_cache', jobId);
+      await updateDoc(cacheRef, {
         status: 'rejected',
         reviewedAt: new Date(),
         reviewedBy: user?.uid || "admin"
       });
+
+      try {
+        const subRef = doc(db, 'schools', schoolId, 'jobs', jobId);
+        await updateDoc(subRef, {
+          status: 'rejected',
+          reviewedAt: new Date(),
+          reviewedBy: user?.uid || "admin"
+        });
+      } catch (e) {}
     } catch (err) {
       console.error("Failed to reject job:", err);
     }
@@ -294,211 +448,191 @@ export default function FeaturedJobsPage() {
     }
   };
 
-  // Process & Extract Open Vacancies from current active tab
+  // ── Process & Extract Open Vacancies ──────────────────────────────────────
   const allJobs = useMemo(() => {
-    const activeJobsData = activeTab === 'admin_staging' ? adminJobsData : publicJobsData;
-    if (!schoolsData || schoolsData.length === 0) return [];
-
-    const jobsList: StructuredJob[] = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayMs = today.getTime();
     const seenJobKeys = new Set<string>();
+    const seenUrls = new Set<string>();
+    const jobsList: StructuredJob[] = [];
 
-    const processCandidateJob = (jobData: any, school: any, isEmbedded = false) => {
-      if (!jobData || !school) return;
-      const schoolId = school.id;
+    // ── PUBLIC TAB: read from pre-enriched featured_jobs_cache ───────────────
+    if (activeTab === 'public') {
+      if (!cacheData || cacheData.length === 0) return [];
 
-      // 🛡️ STRICT CRITERIA 1: Status Check (Reject CLOSED / EXPIRED / DELISTED)
-      const rawStatus = String(jobData.status || '').toUpperCase();
-      if (rawStatus === 'CLOSED' || rawStatus === 'EXPIRED' || rawStatus === 'DELISTED' || rawStatus === 'REJECTED') {
-        return;
-      }
-      if (activeTab === 'public' && !isEmbedded && jobData.status !== 'approved') {
-        return;
-      }
-      if (activeTab === 'admin_staging' && !isEmbedded && jobData.status !== 'pending_review') {
-        return;
-      }
+      const familyScalar = FAMILY_MULTIPLIER[familyStatus] ?? 1.0;
 
-      // 🛡️ STRICT CRITERIA 2: Recruitment Cycle (Reject HISTORIC_Y1 or legacy cycles)
-      const cycle = String(jobData.recruitmentCycle || '').toUpperCase();
-      if (cycle === 'HISTORIC_Y1' || cycle.startsWith('HISTORIC')) {
-        return;
-      }
+      cacheData.forEach((cacheDoc: FeaturedJobCacheDoc) => {
+        // MULTI-ENGINE SOURCE FILTER
+        const sourceUpper = String(cacheDoc.source || '').toUpperCase();
+        const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
+        const isTes = sourceUpper === 'TES' && applyUrlLower.includes('tes.com/jobs/vacancy/');
+        const isNae = sourceUpper === 'NORD ANGLIA' && applyUrlLower.includes('careers.nordangliaeducation.com/job/');
+        if (!isTes && !isNae) return;
+        // Status guard (janitor may not have run yet for very stale docs)
+        const rawStatus = String(cacheDoc.status || '').toUpperCase();
+        if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
 
-      // 🛡️ STRICT CRITERIA 3: Closing Date (Null/Rolling OR >= Today)
-      let closesDate: Date | null = null;
-      if (jobData.closingDate) {
-        if (jobData.closingDate.seconds) {
-          closesDate = new Date(jobData.closingDate.seconds * 1000);
-        } else {
-          closesDate = new Date(jobData.closingDate);
-        }
-      } else if (jobData.date_closing) {
-        const parsed = parseClosingDate(jobData.date_closing);
-        closesDate = parsed.closingDate;
-      }
+        // Closing date guard
+        if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) return;
 
-      if (closesDate && !isNaN(closesDate.getTime())) {
-        if (closesDate.getTime() < today.getTime()) {
-          // Auto-transition expired approved jobs in subcollections
-          if (!isEmbedded && jobData.status === 'approved' && schoolId && jobData.id) {
-            const ref = doc(db, 'schools', schoolId, 'jobs', jobData.id);
-            updateDoc(ref, { status: 'expired' }).catch(() => {});
+        // Deduplication by unique applyUrl & title + schoolId
+        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower) seenUrls.add(applyUrlLower);
+
+        const jobKey = `${cacheDoc.schoolId.toLowerCase()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
+        const newSrc = cacheDoc.source || "Official Source";
+
+        if (seenJobKeys.has(jobKey)) {
+          // Dual listing detected! Append source and URL to existing job record
+          const existing = jobsList.find(j => `${j.schoolId.toLowerCase()}_${j.title.toLowerCase().trim()}` === jobKey);
+          if (existing) {
+            if (!existing.sources) existing.sources = [existing.source];
+            if (!existing.sources.includes(newSrc)) existing.sources.push(newSrc);
+            if (!existing.sourceUrls) existing.sourceUrls = { [existing.source]: existing.source_url };
+            if (cacheDoc.applyUrl) existing.sourceUrls[newSrc] = cacheDoc.applyUrl;
           }
           return;
         }
-      }
+        seenJobKeys.add(jobKey);
 
-      // 🛡️ STRICT CRITERIA: Exclude non-teaching support jobs (nurse, admissions officer, admin exec, etc.)
-      if (isSupportOrNonTeachingRole(jobData.title)) {
-        return;
-      }
+        // Apply family-status multiplier to pre-computed single baseline
+        const baseline = cacheDoc.savingsPotentialSingle ?? 0;
+        const savingsPotential = Math.max(0, Math.round(baseline * familyScalar));
 
-      // 🛡️ STRICT CRITERIA 4: Blocked News/Blog/Articles & Invalid Parameter Redirects
-      const rawSourceUrl = jobData.source_url || jobData.applyUrl || jobData.directUrl || jobData.url || '';
-      if (rawSourceUrl && isBlockedContentUrl(rawSourceUrl)) {
-        return;
-      }
+        let closesDate: Date | null = null;
+        if (cacheDoc.closingDateMillis) {
+          closesDate = new Date(cacheDoc.closingDateMillis);
+        } else if (cacheDoc.closingDate) {
+          const parsed = parseClosingDate(cacheDoc.closingDate);
+          closesDate = parsed.closingDate;
+        }
 
-      const resolvedUrl = resolveVacancyUrl({
-        rawHref: rawSourceUrl,
-        schoolWebsite: school.website,
-        schoolName: school.schoolname || school.name,
-        sourceName: jobData.sourceName || jobData.source
+        jobsList.push({
+          id: cacheDoc.id,
+          title: cacheDoc.title || 'Teaching Vacancy',
+          department: cacheDoc.department || 'Secondary',
+          source: cacheDoc.source || 'Official Source',
+          source_url: cacheDoc.applyUrl || '',
+          date_listed: cacheDoc.datePosted
+            ? formatDateCustom(cacheDoc.datePosted)
+            : formatDateCustom(cacheDoc.ingestedAtMillis || Date.now()),
+          date_closing: closesDate
+            ? formatDateCustom(closesDate)
+            : 'Rolling',
+          status: cacheDoc.status,
+          schoolId: cacheDoc.schoolId,
+          schoolName: cleanSchoolName(cacheDoc.schoolName),
+          schoolRating: cacheDoc.schoolRating ?? 0,
+          curriculum: cacheDoc.curriculum || 'British',
+          city: cacheDoc.city || '',
+          country: cacheDoc.country || '',
+          savingsPotential,
+          schoolWebsite: cacheDoc.schoolWebsite || '',
+          paidInUSD: cacheDoc.paidInUSD,
+          scrapedAtRaw: cacheDoc.ingestedAtMillis
+            ? { seconds: Math.floor(cacheDoc.ingestedAtMillis / 1000) }
+            : null,
+          closesDateRaw: closesDate,
+          isRollingDeadline: cacheDoc.isRollingDeadline ?? !closesDate,
+        });
       });
 
-      if (isBlockedContentUrl(resolvedUrl)) {
-        return;
-      }
+      return jobsList;
+    }
 
-      // Deduplication by unique job key
-      const jobKey = `${schoolId}_${(jobData.title || '').toLowerCase().trim()}_${(jobData.department || '').toLowerCase()}`;
+    // ── ADMIN STAGING TAB: reads from subcollections (source of truth) ────────
+    if (!adminJobsData || adminJobsData.length === 0) return [];
+
+    adminJobsData.forEach((jobDoc: any) => {
+      const schoolId = jobDoc.ref?.parent?.parent?.id;
+      if (!schoolId) return;
+      const school = schoolsMap[schoolId];
+
+      const rawStatus = String(jobDoc.status || '').toUpperCase();
+      if (rawStatus === 'CLOSED' || rawStatus === 'EXPIRED' || rawStatus === 'REJECTED') return;
+
+      const cycle = String(jobDoc.recruitmentCycle || '').toUpperCase();
+      if (cycle === 'HISTORIC_Y1' || cycle.startsWith('HISTORIC')) return;
+
+      let closesDate: Date | null = null;
+      if (jobDoc.closingDate?.seconds) {
+        closesDate = new Date(jobDoc.closingDate.seconds * 1000);
+      } else if (jobDoc.closingDate) {
+        closesDate = new Date(jobDoc.closingDate);
+      } else if (jobDoc.date_closing) {
+        const parsed = parseClosingDate(jobDoc.date_closing);
+        closesDate = parsed.closingDate;
+      }
+      if (closesDate && !isNaN(closesDate.getTime()) && closesDate.getTime() < todayMs) return;
+
+      const jobKey = `${schoolId}_${(jobDoc.title || '').toLowerCase().trim()}`;
       if (seenJobKeys.has(jobKey)) return;
       seenJobKeys.add(jobKey);
 
-      // Match Cost of Living for this school to estimate savings potential
-      const sCity = normalize(jobData.city || jobData.analysisData?.city || school.city || school.town || school.location || "");
-      const sCountry = canonicalCountry(jobData.country || jobData.analysisData?.country || school.country || school.region || "");
-      
-      const matchedCol = colData ? colData.find((c: any) =>
-        normalize(c.city || c.city_name) === sCity ||
-        canonicalCountry(c.country || '') === sCountry ||
-        normalize(c.id) === sCity || normalize(c.id) === sCountry
-      ) : null;
-
-      // Match Family status scaling multiplier
-      let rentKey = "rent1br";
-      let scalar = 1.0;
-      
-      if (familyStatus === "Single") {
-        rentKey = "rent1br";
-        scalar = 1.0;
-      } else if (familyStatus === "Married (sole earner)" || familyStatus === "Married (dual income)") {
-        rentKey = "rent2br";
-        scalar = 1.9;
-      } else if (familyStatus === "Family +1") {
-        rentKey = "rent3br";
-        scalar = 2.3;
-      } else if (familyStatus === "Family +2") {
-        rentKey = "rent3br";
-        scalar = 2.65;
-      } else if (familyStatus === "Family +3") {
-        rentKey = "rent3br";
-        scalar = 3.0;
-      }
-
-      // Savings Potential Calculation
-      const baseSalary = parseSalary(school.salaryRange || school.salary || school.netbase);
-      let rentCost = 0;
-      let otherCost = 0;
-      let calculatedSavings = 0;
-
-      if (matchedCol) {
-        const isProvided = String(school.housingprovision || "").toLowerCase().includes("provided") || school.housingProvided === true;
-        rentCost = isProvided ? 0 : (matchedCol[rentKey] || 0);
-        
-        // Volatile Market Guardrails (e.g. Argentine Peso ARS)
-        const isVolatile = school.country === "Argentina" || (school.currency && school.currency === "ARS");
-        const paidInUSD = school.paidInUSD === true;
-        const volatileMultiplier = (isVolatile && !paidInUSD) ? 0.25 : 1.0;
-
-        otherCost = ((matchedCol.groceries || 0) + 
-                    (matchedCol.utilities || 0) + 
-                    (matchedCol.mobilePhone || 0) + 
-                    (matchedCol.internet || 0) + 
-                    (matchedCol.diningSocial || 0)) * scalar;
-        
-        // Outgoings Formula: Outgoings = (Base Living Cost * Family Status Multiplier) + Rent Expense
-        const adjustedOutgoings = otherCost + rentCost;
-        
-        calculatedSavings = Math.max(0, Math.round(baseSalary - adjustedOutgoings));
-        calculatedSavings = Math.round(calculatedSavings * volatileMultiplier);
-      } else {
-        // Fallback calculations if no cost of living entries match
-        calculatedSavings = Math.max(0, Math.round(baseSalary));
-      }
-
-      // Determine department
-      let department = jobData.department || "Secondary";
-      const lowerTitle = (jobData.title || '').toLowerCase();
-      if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
-        department = "Primary";
-      } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
-        department = "Leadership";
+      const rawSourceUrl = jobDoc.applyUrl || jobDoc.source_url || '';
+      const lowerTitle = (jobDoc.title || '').toLowerCase();
+      let department = jobDoc.department || 'Secondary';
+      if (lowerTitle.includes('primary') || lowerTitle.includes('prep') || lowerTitle.includes('early years') ||
+          lowerTitle.includes('eyfs') || lowerTitle.includes('kindergarten') || lowerTitle.includes('ks1')) {
+        department = 'Primary';
+      } else if (lowerTitle.includes('head') || lowerTitle.includes('director') || lowerTitle.includes('principal') ||
+          lowerTitle.includes('coordinator')) {
+        department = 'Leadership';
       }
 
       jobsList.push({
-        id: jobData.id || `emb_${schoolId}_${Math.random().toString(36).substring(2, 7)}`,
-        title: jobData.title || 'Teaching Vacancy',
+        id: jobDoc.id || schoolId + '_' + Math.random().toString(36).substring(2, 7),
+        title: jobDoc.title || 'Teaching Vacancy',
         department,
-        source: (() => {
-          const lowerUrl = resolvedUrl.toLowerCase();
-          if (lowerUrl.includes('tes.com')) return 'TES';
-          if (school.website && lowerUrl.includes(new URL(school.website.startsWith('http') ? school.website : 'https://' + school.website).hostname.replace(/^www./, ''))) {
-            return 'Official School Website';
-          }
-          if (lowerUrl.includes('schoolrecruiter.com') || lowerUrl.includes('schrole.com') || lowerUrl.includes('searchassociates.com')) {
-            return 'Direct School ATS';
-          }
-          return jobData.sourceName || jobData.source || 'Official Source';
-        })(),
-        source_url: resolvedUrl,
-        date_listed: jobData.scrapedAt ? new Date(jobData.scrapedAt.seconds ? jobData.scrapedAt.seconds * 1000 : jobData.scrapedAt).toLocaleDateString() : (jobData.date_listed || null),
-        date_closing: closesDate ? closesDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : "Rolling / Open Until Filled",
-        status: jobData.status || 'approved',
-        schoolId: school.id,
-        schoolName: school.schoolname || school.name,
-        schoolRating: parseFloat(school.academicscore || school.rating || "0"),
-        curriculum: school.curriculum || "British",
-        city: school.city || "",
-        country: school.country || "",
-        savingsPotential: calculatedSavings,
-        schoolWebsite: school.website || "",
-        paidInUSD: school.paidInUSD,
-        scrapedAtRaw: jobData.scrapedAt,
+        source: jobDoc.sourceName || jobDoc.source || 'Official Source',
+        source_url: rawSourceUrl,
+        date_listed: jobDoc.scrapedAt
+          ? new Date(jobDoc.scrapedAt.seconds ? jobDoc.scrapedAt.seconds * 1000 : jobDoc.scrapedAt).toLocaleDateString()
+          : (jobDoc.date_listed || null),
+        date_closing: closesDate
+          ? formatDateCustom(closesDate)
+          : 'Rolling',
+        status: jobDoc.status || 'pending_review',
+        schoolId: schoolId,
+        schoolName: school?.schoolname || school?.name || jobDoc.schoolName || '',
+        schoolRating: parseFloat(school?.academicscore || school?.rating || '0'),
+        curriculum: school?.curriculum || 'British',
+        city: school?.city || jobDoc.city || '',
+        country: school?.country || jobDoc.country || '',
+        savingsPotential: 0, // Not pre-computed for pending — admin reviews raw data
+        schoolWebsite: school?.website || '',
+        paidInUSD: school?.paidInUSD,
+        scrapedAtRaw: jobDoc.scrapedAt,
         closesDateRaw: closesDate,
-        isRollingDeadline: jobData.isRollingDeadline ?? !closesDate
+        isRollingDeadline: jobDoc.isRollingDeadline ?? !closesDate,
       });
-    };
+    });
 
-    // Process strictly from live Firestore Subcollection Queries (Pure Database Binding)
-    if (activeJobsData && activeJobsData.length > 0) {
-      activeJobsData.forEach((jobDoc: any) => {
-        const schoolId = jobDoc.ref?.parent?.parent?.id;
-        if (!schoolId) return;
-        const school = schoolsMap[schoolId];
-        if (!school) return;
-        processCandidateJob(jobDoc, school, false);
-      });
-    }
     return jobsList;
-  }, [publicJobsData, adminJobsData, schoolsData, colData, familyStatus, schoolsMap, activeTab]);
+  }, [cacheData, adminJobsData, schoolsMap, familyStatus, activeTab, FAMILY_MULTIPLIER]);
 
   // Derived filters data
   const availableCurriculums = useMemo(() => {
     const list = allJobs.map(j => j.curriculum);
     return Array.from(new Set(list)).filter(Boolean).sort();
+  }, [allJobs]);
+
+  // Public job count for admin tab badge (raw cache size, not filtered)
+  // Public job count for admin tab badge (raw cache size, not filtered)
+  const publicJobsCount = cacheData?.length ?? 0;
+
+  // Search Engine Protocol counts for header buttons
+  const engineCounts = useMemo(() => {
+    let tes = 0;
+    let nae = 0;
+    allJobs.forEach(j => {
+      const srcUpper = String(j.source || "").toUpperCase();
+      if (srcUpper === "TES") tes++;
+      else if (srcUpper === "NORD ANGLIA") nae++;
+    });
+    return { tes, nae, total: allJobs.length };
   }, [allJobs]);
 
   const availableSubjects = [
@@ -537,6 +671,13 @@ export default function FeaturedJobsPage() {
 
       // Minimum Rating match
       if (job.schoolRating < minRating) return false;
+
+      // Search Engine Protocol Filter
+      if (selectedSourceEngine !== "ALL") {
+        const jobSrcUpper = String(job.source || "").toUpperCase();
+        if (selectedSourceEngine === "TES" && jobSrcUpper !== "TES") return false;
+        if (selectedSourceEngine === "NORD ANGLIA" && jobSrcUpper !== "NORD ANGLIA") return false;
+      }
 
       return true;
     });
@@ -593,8 +734,8 @@ export default function FeaturedJobsPage() {
             <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic leading-none text-white">
               Featured Vacancies
             </h1>
-            <p className="text-sm text-slate-400 font-medium">
-              Live school vacancies processed and analyzed with active recruitment trackers.
+            <p className="text-sm text-slate-300 font-normal leading-relaxed max-w-3xl">
+              We curate active international school jobs across the globe and break down the real numbers—tax-adjusted pay, local living costs, and net savings—so you know exactly what your package is worth before you apply.
             </p>
           </div>
           
@@ -612,7 +753,7 @@ export default function FeaturedJobsPage() {
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="size-3.5" /> Run DB Sweep
+                      <RefreshCw className="size-3.5" /> Run DB Sweep + Janitor
                     </>
                   )}
                 </button>
@@ -625,7 +766,7 @@ export default function FeaturedJobsPage() {
                       activeTab === 'public' ? "bg-[#FF6B35] text-white" : "text-slate-400 hover:text-white"
                     )}
                   >
-                    Live Feed ({publicJobsData?.length || 0})
+                    Live Feed ({publicJobsCount})
                   </button>
                   <button
                     onClick={() => setActiveTab('admin_staging')}
@@ -651,13 +792,12 @@ export default function FeaturedJobsPage() {
         </div>
 
         {/* Debug errors */}
-        {(errorSchools || errorPublic || errorAdmin || errorCol) && (
+        {(errorSchools || errorPublic || errorAdmin) && (
           <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-sm text-red-400 text-xs font-mono space-y-1">
             <h4 className="font-bold uppercase">Uplink Database Warnings:</h4>
             {errorSchools && <p>Schools Error: {errorSchools.message}</p>}
-            {errorPublic && <p>Public Jobs Error: {errorPublic.message}</p>}
+            {errorPublic && <p>Cache Feed Error: {errorPublic.message}</p>}
             {errorAdmin && <p>Pending Jobs Error: {errorAdmin.message}</p>}
-            {errorCol && <p>Cost of Living Error: {errorCol.message}</p>}
           </div>
         )}
 
@@ -724,29 +864,7 @@ export default function FeaturedJobsPage() {
               </select>
             </div>
 
-            {/* School Rating Filter */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                <Star className="size-3.5" /> Minimum Academic Score
-              </label>
-              <div className="flex gap-2">
-                {[0, 6, 7, 8, 9].map((rating) => (
-                  <button
-                    key={rating}
-                    type="button"
-                    onClick={() => setMinRating(rating)}
-                    className={cn(
-                      "flex-1 py-2 text-xs font-bold border transition-all",
-                      minRating === rating 
-                        ? "bg-[#FF6B35] border-[#FF6B35] text-white" 
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
-                    )}
-                  >
-                    {rating === 0 ? "Any" : `${rating}+`}
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Curriculum Filter */}
             <div className="space-y-3">
@@ -817,15 +935,52 @@ export default function FeaturedJobsPage() {
           <main className="flex-1 w-full space-y-6">
             
             {/* Loading States */}
-            {(loadingSchools || (loadingPublicJobs || loadingAdminJobs) || loadingCol) && (
+            {(loadingPublicJobs || (calculatedIsAdmin && loadingAdminJobs)) && (
               <div className="h-96 flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="animate-spin size-10 text-[#FF6B35]" />
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Compiling Active Listings...</p>
               </div>
             )}
 
+            {/* Search Engine Selection Protocol Control Bar */}
+            {!(loadingPublicJobs || loadingAdminJobs) && (
+              <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl">
+                <div className="flex items-center gap-2">
+                  <Globe className="size-4 text-[#FF6B35]" />
+                  <span className="text-xs font-black text-white uppercase tracking-wider">
+                    Select Search Engine Protocol:
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    { id: "ALL", label: `All Vacancies (${engineCounts.total})` },
+                    { id: "TES", label: `TES Search (${engineCounts.tes})` },
+                    { id: "NORD ANGLIA", label: `Nord Anglia Search (${engineCounts.nae})` }
+                  ].map((engine) => (
+                    <button
+                      key={engine.id}
+                      type="button"
+                      onClick={() => setSelectedSourceEngine(engine.id)}
+                      className={cn(
+                        "px-4 py-2 rounded-md text-xs font-black transition-all uppercase tracking-wider flex items-center gap-2 border shadow-sm cursor-pointer",
+                        selectedSourceEngine === engine.id
+                          ? "bg-[#FF6B35] border-[#FF6B35] text-white shadow-md shadow-[#FF6B35]/20"
+                          : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800/60"
+                      )}
+                    >
+                      {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
+                      {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
+                      {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
+                      {engine.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Sort & Count Header */}
-            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length > 0 && (
+            {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length > 0 && (
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4 w-full">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -866,7 +1021,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Empty State */}
-            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length === 0 && (
+            {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length === 0 && (
               <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
                 <AlertCircle className="size-12 text-slate-600 mx-auto" />
                 <div className="space-y-1">
@@ -927,7 +1082,7 @@ export default function FeaturedJobsPage() {
             )}
 
             {/* Jobs Grid */}
-            {!loadingSchools && !(loadingPublicJobs || loadingAdminJobs) && !loadingCol && filteredJobs.length > 0 && (
+            {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length > 0 && (
               <div className="grid grid-cols-1 gap-6">
                 {sortedJobs.map((job, idx) => (
                   <div 
@@ -942,6 +1097,9 @@ export default function FeaturedJobsPage() {
                       {/* Left Header Title & Subheader */}
                       <div className="space-y-1 text-left flex-1">
                         <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex flex-wrap items-center gap-2">
+                          <span className="bg-slate-800/80 border border-slate-700/60 text-slate-400 px-2 py-0.5 text-[11px] font-mono font-medium rounded-sm shrink-0 tracking-wider">
+                            ID: {getFixedJobRef(job)}
+                          </span>
                           <a 
                             href={job.source_url}
                             target="_blank"
@@ -982,6 +1140,30 @@ export default function FeaturedJobsPage() {
                                     NEW
                                   </span>
                                 )}
+                                {/* Multi-Engine Dual Source Badges */}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  {(job.sources && job.sources.length > 0 ? job.sources : [job.source]).map((src) => {
+                                    const srcUpper = String(src).toUpperCase();
+                                    const srcUrl = (job.sourceUrls && job.sourceUrls[src]) || job.source_url;
+                                    return (
+                                      <a
+                                        key={src}
+                                        href={srcUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={cn(
+                                          "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
+                                          srcUpper === "NORD ANGLIA"
+                                            ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                                            : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
+                                        )}
+                                        title={`Open official ${src} vacancy link (opens in new tab)`}
+                                      >
+                                        {src} ↗
+                                      </a>
+                                    );
+                                  })}
+                                </div>
                                 {isClosingSoon && (
                                   <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
                                     CLOSING SOON
@@ -989,13 +1171,13 @@ export default function FeaturedJobsPage() {
                                 )}
                                 {(job.isRollingDeadline || !job.closesDateRaw) && (
                                   <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
-                                    <RefreshCw className="size-2.5" /> ROLLING / OPEN UNTIL FILLED
+                                    <Clock className="size-2.5" /> ROLLING DEADLINE
                                   </span>
                                 )}
                               </>
                             );
                           })()}
-                          {schoolId.startsWith('AGNT') && (
+                          {job.schoolId.startsWith('AGNT') && (
                             <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
                               🏷️ School Agent Placement
                             </span>
@@ -1039,7 +1221,7 @@ export default function FeaturedJobsPage() {
                             />
                           </div>
                         ) : (
-                          <span>Closes: {job.date_closing || "Rolling"}</span>
+                          <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
                         )}
                       </div>
                     </div>
@@ -1057,19 +1239,12 @@ export default function FeaturedJobsPage() {
                           rel="noopener noreferrer"
                           className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
                         >
-                          {job.source.toUpperCase()}
+                          {getCleanSourceLabel(job.source, job.source_url).toUpperCase()}
                         </a>
                       </div>
 
                       {/* Center Column: Metric Pills */}
                       <div className="flex flex-wrap items-center justify-center gap-3">
-                        <span 
-                          title="Data Reliability & Completeness Score" 
-                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 border border-white/5 rounded-full text-xs font-bold text-white cursor-help shrink-0"
-                        >
-                          <Star className="size-3 text-amber-500 fill-amber-500" />
-                          <span>{job.schoolRating ? `${job.schoolRating}/10` : "N/A"} Reliability</span>
-                        </span>
                         
                         <span 
                           className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 border border-white/5 rounded-full text-xs font-bold text-[#FF6B35] shrink-0"
