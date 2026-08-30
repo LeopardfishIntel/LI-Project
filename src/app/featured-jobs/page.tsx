@@ -622,7 +622,7 @@ export default function FeaturedJobsPage() {
 
   // Public job count for admin tab badge (raw cache size, not filtered)
   // Public job count for admin tab badge (raw cache size, not filtered)
-  const publicJobsCount = cacheData?.length ?? 0;
+  const publicJobsCount = allJobs.length;
 
   // Search Engine Protocol counts for header buttons
   const engineCounts = useMemo(() => {
