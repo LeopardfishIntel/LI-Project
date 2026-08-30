@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 /**
  * 🛸 PIPELINE 4 — HIGH-SPEED UI ENGINE
  *
@@ -627,13 +628,13 @@ export default function FeaturedJobsPage() {
   const engineCounts = useMemo(() => {
     let tes = 0;
     let nae = 0;
-    allJobs.forEach(j => {
-      const srcUpper = String(j.source || "").toUpperCase();
+    cacheData?.forEach((cacheDoc: any) => {
+      const srcUpper = String(cacheDoc.source || "").toUpperCase();
       if (srcUpper === "TES") tes++;
       else if (srcUpper === "NORD ANGLIA") nae++;
     });
-    return { tes, nae, total: allJobs.length };
-  }, [allJobs]);
+    return { tes, nae, total: cacheData?.length ?? 0 };
+  }, [cacheData]);
 
   const availableSubjects = [
     "Maths", "Science", "Physics", "Chemistry", "Biology", 
@@ -675,8 +676,10 @@ export default function FeaturedJobsPage() {
       // Search Engine Protocol Filter
       if (selectedSourceEngine !== "ALL") {
         const jobSrcUpper = String(job.source || "").toUpperCase();
-        if (selectedSourceEngine === "TES" && jobSrcUpper !== "TES") return false;
-        if (selectedSourceEngine === "NORD ANGLIA" && jobSrcUpper !== "NORD ANGLIA") return false;
+        const hasTes = jobSrcUpper === "TES" || job.sources?.includes("TES");
+        const hasNae = jobSrcUpper === "NORD ANGLIA" || job.sources?.includes("Nord Anglia");
+        if (selectedSourceEngine === "TES" && !hasTes) return false;
+        if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
       }
 
       return true;

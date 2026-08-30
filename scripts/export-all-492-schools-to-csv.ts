@@ -34,7 +34,7 @@ async function exportSchoolsToCsv() {
 
   const rows: string[] = [headers.join(',')];
 
-  snap.docs.forEach((doc) => {
+  snap.docs.forEach((doc: any) => {
     const s = doc.data();
     const sid = doc.id;
     const name = s.schoolname || s.name || s.schoolName || '';
