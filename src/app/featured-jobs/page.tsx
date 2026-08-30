@@ -957,9 +957,9 @@ export default function FeaturedJobsPage() {
 
                 <div className="flex flex-wrap items-center gap-2">
                   {[
-                    { id: "ALL", label: `All Vacancies (${engineCounts.total})` },
-                    { id: "TES", label: `TES Search (${engineCounts.tes})` },
-                    { id: "NORD ANGLIA", label: `Nord Anglia Search (${engineCounts.nae})` }
+                    { id: "ALL", label: "All Vacancies" },
+                    { id: "TES", label: "TES" },
+                    { id: "NORD ANGLIA", label: "Nord Anglia" }
                   ].map((engine) => (
                     <button
                       key={engine.id}
