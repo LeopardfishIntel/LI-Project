@@ -29,8 +29,8 @@ const features = [
 
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
 const COUNTER_FALLBACKS = {
-  schools: 125,
-  countries: 30,
+  schools: 251,
+  countries: 45,
   visits: 1525,
   comparisons: 303
 };
@@ -66,13 +66,18 @@ export default function Home() {
   // 🌍 CALCULATED METRICS
   const isAnyLoading = sLoading || cLoading || mLoading;
 
-  const schoolCount = schoolsData?.length || COUNTER_FALLBACKS.schools;
+  const schoolCount = useMemo(() => {
+    if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.schools;
+    const unique = new Set(schoolsData.map(s => (s.name || s.schoolname || s.id).toLowerCase().trim()));
+    return unique.size || COUNTER_FALLBACKS.schools;
+  }, [schoolsData]);
+
   const countryCount = useMemo(() => {
-    const fromSchools = schoolsData?.map(s => s.country).filter(Boolean) || [];
-    const fromCol = colData?.map(c => c.country || c.country_name).filter(Boolean) || [];
-    const unique = new Set([...fromSchools, ...fromCol]);
-    return unique.size || COUNTER_FALLBACKS.countries;
-  }, [schoolsData, colData]);
+    if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.countries;
+    const uniqueSchools = Array.from(new Map(schoolsData.map(s => [(s.name || s.schoolname || s.id).toLowerCase().trim(), s])).values());
+    const countries = new Set(uniqueSchools.map(s => s.country).filter(Boolean));
+    return countries.size || COUNTER_FALLBACKS.countries;
+  }, [schoolsData]);
 
   const visitsCount = metrics?.site_visits || COUNTER_FALLBACKS.visits;
   const comparisonsCount = metrics?.comparisons_made || COUNTER_FALLBACKS.comparisons;
