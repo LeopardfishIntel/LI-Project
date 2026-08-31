@@ -60,6 +60,26 @@ export function parseClosingDate(rawDateStr: string | null | undefined): ParsedC
     return { closingDate: null, isRollingDeadline: true };
   }
 
+  // DD/MM/YYYY Format (e.g. "10/09/2026" or "09/10/2026")
+  const dmyMatch = clean.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  if (dmyMatch) {
+    const d = parseInt(dmyMatch[1], 10);
+    const m = parseInt(dmyMatch[2], 10) - 1;
+    const y = parseInt(dmyMatch[3], 10);
+    if (m >= 0 && m <= 11 && d >= 1 && d <= 31) {
+      const date = new Date(y, m, d);
+      if (!isNaN(date.getTime())) {
+        return { closingDate: date, isRollingDeadline: false };
+      }
+    }
+  }
+
+  // Textual phrase extraction (e.g. "deadline for applications is 9 September 2026")
+  const phraseMatch = clean.match(/(?:deadline|closing date|apply by|applications is|until)\s+(?:is\s+)?(\d{1,2}\s+[a-z]+\s+\d{4})/i);
+  if (phraseMatch) {
+    return parseClosingDate(phraseMatch[1]);
+  }
+
   // ISO Format: YYYY-MM-DD
   const isoMatch = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
   if (isoMatch) {

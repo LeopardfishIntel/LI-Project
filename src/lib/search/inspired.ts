@@ -1,6 +1,6 @@
-import { getAdminDb } from '@/firebase/admin';
-import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
-import { chromium } from 'playwright';
+import { getAdminDb } from "@/firebase/admin";
+import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { chromium } from "playwright";
 
 export interface InspiredJobMatch {
   jobId: string;
@@ -12,21 +12,13 @@ export interface InspiredJobMatch {
   country: string;
   source: string;
   datePosted?: string | null;
+  closingDate?: string | null;
 }
 
-/**
- * 🛸 INSPIRED EDUCATION DB-RESTRICTED SEARCH ENGINE
- *
- * Scrapes live vacancies from Inspired Education portal (jobs.inspirededu.com)
- * and strictly filters returned positions to match ONLY schools registered in our database.
- *
- * @param query Optional search query string
- * @returns Array of InspiredJobMatch objects grounded in DB schools
- */
 export async function searchInspiredDbSchools(query: string = ""): Promise<InspiredJobMatch[]> {
   try {
     const db = getAdminDb();
-    if (!db || typeof db.collection !== 'function') {
+    if (!db || typeof db.collection !== "function") {
       console.warn("⚠️ Admin SDK Firestore unavailable for Inspired DB search.");
       return [];
     }
@@ -37,7 +29,7 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
       .map((d: any) => ({ id: d.id, ...d.data() }))
       .filter((s: any) => {
         const str = JSON.stringify(s).toLowerCase();
-        return str.includes("inspired");
+        return str.includes("inspired") || (s.ownership && s.ownership.toLowerCase().includes("inspired"));
       });
 
     if (dbSchools.length === 0) {
@@ -45,75 +37,100 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
       return [];
     }
 
-    // 2. Fetch live vacancies using Playwright headless browser
+    // Build targeted search terms from DB schools and aliases
+    const searchTerms: string[] = query ? [query] : ["PaRK", "Alfragide", "King", "St George", "Heritage", "ACG", "Brookhouse", "Downe House", "St John", "Lisbon"];
+    if (!query) {
+      dbSchools.forEach((s: any) => {
+        const sName = s.name || s.schoolname || "";
+        if (sName) searchTerms.push(sName);
+        const aliases = Array.isArray(s.aliases) ? s.aliases : [];
+        aliases.forEach((a: string) => { if (a && a.length >= 3) searchTerms.push(a); });
+      });
+    }
+
+    // Clean & deduplicate search terms
+    const uniqueTerms = Array.from(new Set(searchTerms.map((t) => t.trim()))).filter((t) => t.length >= 3);
+
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
+    const rawJobsMap = new Map<string, { title: string; href: string; location: string; schoolName: string; text: string }>();
 
-    const searchUrl = query 
-      ? `https://jobs.inspirededu.com/search-jobs/${encodeURIComponent(query)}`
-      : "https://jobs.inspirededu.com/search-jobs";
+    // Execute direct URL search queries for each targeted school term
+    for (const term of uniqueTerms) {
+      try {
+        const searchUrl = `https://jobs.inspirededu.com/search-jobs/${encodeURIComponent(term)}`;
+        await page.goto(searchUrl, { waitUntil: "networkidle", timeout: 25000 }).catch(() => {});
+        await page.waitForTimeout(1500);
 
-    await page.goto(searchUrl, { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
-    await page.waitForTimeout(2000);
+        const extracted = await page.evaluate(() => {
+          const titleLinks = Array.from(document.querySelectorAll("a.jobTitle-link, a[href*='/job/']"));
+          const items: Array<{ title: string; href: string; location: string; schoolName: string; text: string }> = [];
 
-    const rawJobs = await page.evaluate(() => {
-      const titleLinks = Array.from(document.querySelectorAll("a.jobTitle-link"));
-      
-      return titleLinks.map(a => {
-        const href = (a as HTMLAnchorElement).href || "";
-        const title = a.textContent?.trim() || "";
+          titleLinks.forEach((a) => {
+            const href = (a as HTMLAnchorElement).href || "";
+            const title = a.textContent?.trim() || "";
+            if (!href || !title || title.length < 3) return;
 
-        let container = a.parentElement;
-        for (let i = 0; i < 6; i++) {
-          if (container && container.textContent && container.textContent.includes("Location")) {
-            break;
+            const row = a.closest("tr") || a.closest(".job-tile") || a.closest("div[class*='job']") || a.parentElement?.parentElement;
+            const rowText = row ? row.textContent?.replace(/\s+/g, " ").trim() || "" : "";
+
+            const locMatch = rowText.match(/Location\s+([^\n\r|]+?)(?=\s+School|\s+Job|\s+Type|\s+Contract|\s+Closing|$)/i);
+            const schoolMatch = rowText.match(/School Name\s+([^\n\r|]+?)(?=\s+Title|\s+Select|\s+Job|\s+Type|\s+Contract|\s+Closing|$)/i);
+
+            items.push({
+              title,
+              href,
+              location: locMatch ? locMatch[1].trim() : "",
+              schoolName: schoolMatch ? schoolMatch[1].trim() : "",
+              text: rowText,
+            });
+          });
+
+          return items;
+        });
+
+        extracted.forEach((item) => {
+          if (!rawJobsMap.has(item.href)) {
+            rawJobsMap.set(item.href, item);
           }
-          if (container) container = container.parentElement;
-        }
-
-        const containerText = container ? container.textContent || "" : "";
-        const locMatch = containerText.match(/Location\s+([^\n\r]+?)(?=\s+School|\s+Job|\s+Type|$)/i);
-        const schoolMatch = containerText.match(/School Name\s+([^\n\r]+?)(?=\s+Title|\s+Select|\s+Job|\s+Type|$)/i);
-
-        return {
-          title,
-          href,
-          location: locMatch ? locMatch[1].trim() : "",
-          schoolName: schoolMatch ? schoolMatch[1].trim() : ""
-        };
-      });
-    });
+        });
+      } catch (err) {
+        console.warn(`⚠️ Error searching term "${term}":`, err);
+      }
+    }
 
     await browser.close();
 
-    // Deduplicate by applyUrl
-    const uniqueJobs = Array.from(new Map(rawJobs.map(j => [j.href, j])).values());
+    const uniqueJobs = Array.from(rawJobsMap.values());
     const matches: InspiredJobMatch[] = [];
 
-    // 3. Match against DB schools only
+    // Match against DB schools strictly
     for (const job of uniqueJobs) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
 
-      const jSchool = (job.schoolName || "").toLowerCase();
-      const jLoc = (job.location || "").toLowerCase();
-      const jTitle = (job.title || "").toLowerCase();
+      const fullText = `${job.title} ${job.schoolName} ${job.location} ${job.text}`.toLowerCase();
 
       const matchedSchool = dbSchools.find((s: any) => {
         const sName = (s.name || s.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 4) return false;
+        if (!sName || sName.length < 3) return false;
 
-        const matchSchoolName = jSchool && (jSchool.includes(sName) || sName.includes(jSchool));
-        const matchTitleName = jTitle.includes(sName);
-        
-        const sCity = (s.city || "").toLowerCase().trim();
-        const matchLoc = sCity && sCity.length > 3 && jLoc.includes(sCity);
+        if (fullText.includes(sName)) return true;
 
-        return matchSchoolName || matchTitleName || (matchLoc && jSchool.length > 0 && jSchool.includes(sName));
+        const aliases: string[] = Array.isArray(s.aliases) ? s.aliases : [];
+        if (aliases.some((a) => a && a.length >= 3 && fullText.includes(String(a).toLowerCase().trim()))) {
+          return true;
+        }
+
+        return false;
       });
 
       if (matchedSchool) {
         const seqMatch = job.href.match(/\/(\d+)\/?$/);
         const jobId = seqMatch ? seqMatch[1] : `inspired_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+        // Closing date extraction from rowText
+        const closingMatch = job.text.match(/Closing Date\s+([^\n\r|]+?)(?=\s+Location|\s+School|\s+Select|$)/i);
+        const closingDateRaw = closingMatch ? closingMatch[1].trim() : null;
 
         matches.push({
           jobId,
@@ -124,12 +141,13 @@ export async function searchInspiredDbSchools(query: string = ""): Promise<Inspi
           city: matchedSchool.city || "",
           country: matchedSchool.country || "",
           source: "Inspired Education",
-          datePosted: new Date().toISOString()
+          datePosted: new Date().toISOString(),
+          closingDate: closingDateRaw,
         });
       }
     }
 
-    console.log(`🛸 [INSPIRED ENGINE] Found ${matches.length} DB-grounded vacancies for query "${query}".`);
+    console.log(`🛸 [INSPIRED ENGINE] Found ${matches.length} DB-grounded vacancies across Inspired schools.`);
     return matches;
   } catch (err: any) {
     console.error("❌ Error in searchInspiredDbSchools:", err?.message || err);

@@ -5,7 +5,7 @@ import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
-  Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users,
+  Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users, Building2, HeartHandshake,
   HeartPulse, Laptop, Building, Sliders, BarChart3,
   Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2
 } from 'lucide-react';
@@ -2532,6 +2532,60 @@ function DecoderContent() {
                     </div>
                   );
                 })()}
+
+                {/* 🛡️ EVALUATE A SCHOOL RESULT COMMITMENTS & DISCLAIMER */}
+                <div className="mt-10 border-t border-white/10 pt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="bg-gradient-to-b from-[#161d28]/90 to-[#0f141d]/90 border border-white/10 rounded-xl p-6 md:p-8 shadow-2xl backdrop-blur-md space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      
+                      {/* Section 1: Financial Clarity & Peace of Mind */}
+                      <div className="space-y-3 flex flex-col">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+                            <ShieldCheck className="size-5" />
+                          </div>
+                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
+                            Financial Clarity &amp; Peace of Mind
+                          </h4>
+                        </div>
+                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
+                          Moving abroad is a big step, and our salary and savings tools are built to help you plan with confidence. Because every contract, housing allowance, and local tax setup is unique, always double-check the final offer details and visa requirements directly with the school before signing.
+                        </p>
+                      </div>
+
+                      {/* Section 2: Real Jobs at Trusted Schools */}
+                      <div className="space-y-3 flex flex-col">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 shrink-0">
+                            <Building2 className="size-5" />
+                          </div>
+                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
+                            Real Jobs at Trusted Schools
+                          </h4>
+                        </div>
+                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
+                          Searching for international teaching roles shouldn&apos;t feel like a guessing game. We only publish active vacancies from genuine schools currently in our databases — so you won&apos;t waste time on expired posts or mystery agencies.
+                        </p>
+                      </div>
+
+                      {/* Section 3: A Welcome Space for Every Educator */}
+                      <div className="space-y-3 flex flex-col">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+                            <HeartHandshake className="size-5" />
+                          </div>
+                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
+                            A Welcome Space for Every Educator
+                          </h4>
+                        </div>
+                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
+                          Great schools are built on diverse perspectives. We are deeply committed to fairness and expect every institution on our platform to treat teachers with equity, dignity, and respect.
+                        </p>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}

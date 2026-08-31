@@ -19,7 +19,8 @@ export interface TeachAwayJobMatch {
  * 🛸 TEACH AWAY DB-RESTRICTED SEARCH ENGINE
  *
  * Scrapes live postings from Teach Away (teachaway.com/teaching-jobs-abroad)
- * and strictly enforces DB primacy: surfaces ONLY postings matching schools registered
+ * using employer route URLs, targeted location filters, and TRPC inputs.
+ * Strictly enforces DB primacy: surfaces ONLY postings matching schools registered
  * in our 251 FLIS Firestore database.
  *
  * @param query Optional search query string
@@ -33,98 +34,112 @@ export async function searchTeachAwayDbSchools(query: string = ""): Promise<Teac
       return [];
     }
 
-    // 1. DB PRIMACY SHORT-CIRCUIT: Load valid schools from DB
+    // 1. DB PRIMACY: Load valid schools from DB that use Teach Away
     const snap = await db.collection("schools").get();
-    let dbSchools = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+    let dbSchools = snap.docs
+      .map((d: any) => ({ id: d.id, ...d.data() }))
+      .filter((s: any) => {
+        const agency = String(s.agency || "").toLowerCase();
+        const str = JSON.stringify(s).toLowerCase();
+        return agency.includes("teach away") || agency.includes("teachaway") || str.includes("teachaway");
+      });
 
-    const queryLower = (query || "").toLowerCase().trim();
-    if (queryLower) {
+    if (query.trim()) {
+      const qLower = query.toLowerCase().trim();
       dbSchools = dbSchools.filter((s: any) => {
         const sName = (s.name || s.schoolname || "").toLowerCase();
         const sCity = (s.city || "").toLowerCase();
         const sCountry = (s.country || "").toLowerCase();
-        const sAliases = (s.aliases || []).map((a: string) => String(a || "").toLowerCase());
+        const aliases = (s.aliases || []).map((a: string) => String(a || "").toLowerCase());
 
-        return (
-          sName.includes(queryLower) ||
-          sCity.includes(queryLower) ||
-          sCountry.includes(queryLower) ||
-          sAliases.some((a: string) => a.includes(queryLower))
-        );
+        return sName.includes(qLower) || sCity.includes(qLower) || sCountry.includes(qLower) || aliases.some((a: string) => a.includes(qLower));
       });
     }
 
-    // Zero ghost schools short-circuit
     if (dbSchools.length === 0) {
       console.log(`ℹ️ [TEACH AWAY ENGINE] 0 DB schools match query "${query}". Short-circuiting.`);
       return [];
     }
 
-    // 2. Fetch live vacancies from Teach Away using Playwright + Cheerio
+    // 2. Build targeted search URLs based on known employer routes and country hubs
+    const targetUrls: string[] = [
+      "https://www.teachaway.com/teaching-jobs-abroad/gems-education",
+      "https://www.teachaway.com/teaching-jobs-abroad/aldar-education",
+      "https://www.teachaway.com/teaching-jobs-abroad/taaleem",
+      "https://www.teachaway.com/teaching-jobs-abroad/qatar-foundation",
+      "https://www.teachaway.com/teaching-jobs-abroad/inspired-education",
+      "https://www.teachaway.com/teaching-jobs-abroad/bloom-education",
+      "https://www.teachaway.com/teaching-jobs-abroad/united-arab-emirates",
+      "https://www.teachaway.com/teaching-jobs-abroad/saudi-arabia",
+      "https://www.teachaway.com/teaching-jobs-abroad/qatar",
+      "https://www.teachaway.com/teaching-jobs-abroad/kuwait",
+      "https://www.teachaway.com/teaching-jobs-abroad/vietnam",
+      "https://www.teachaway.com/teaching-jobs-abroad/all-countries/certified-teacher/any-subject/any-level"
+    ];
+
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
+    const rawJobsMap = new Map<string, { title: string; href: string; company: string; location: string; text: string }>();
 
-    const searchUrl = "https://www.teachaway.com/teaching-jobs-abroad";
-    await page.goto(searchUrl, { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
-    await page.waitForTimeout(2000);
+    for (const url of targetUrls) {
+      try {
+        await page.goto(url, { waitUntil: "networkidle", timeout: 25000 }).catch(() => {});
+        await page.waitForTimeout(2000);
 
-    const html = await page.content();
-    const $ = cheerio.load(html);
+        const html = await page.content();
+        const $ = cheerio.load(html);
 
-    const rawJobs: Array<{ title: string; href: string; company: string; location: string }> = [];
+        $("a[href*='/teaching-jobs-abroad/'], a[href*='/job/']").each((_, el) => {
+          const href = $(el).attr("href") || "";
+          const title = $(el).text().trim();
+          const parentText = $(el).closest("div, article, li, tr").text().trim().replace(/\s+/g, " ");
 
-    $("a[href*='/teaching-jobs-abroad/'], a[href*='/job/']").each((_, el) => {
-      const href = $(el).attr("href") || "";
-      const title = $(el).text().trim();
-      const parentText = $(el).closest("div, article, li, tr").text().trim().replace(/\s+/g, " ");
+          if (href && title && title.length > 3 && !title.toLowerCase().includes("view all") && !title.toLowerCase().includes("teaching jobs") && !title.toLowerCase().includes("certified")) {
+            const fullHref = href.startsWith("http") ? href : `https://www.teachaway.com${href}`;
+            
+            const compMatch = parentText.match(/School:\s*([^|\n]+)/i) || parentText.match(/Company:\s*([^|\n]+)/i);
+            const locMatch = parentText.match(/Location:\s*([^|\n]+)/i);
 
-      if (href && title && title.length > 3 && !title.toLowerCase().includes("view all") && !title.toLowerCase().includes("teaching jobs")) {
-        const fullHref = href.startsWith("http") ? href : `https://www.teachaway.com${href}`;
-        
-        // Extract company / location from parent text snippet
-        const compMatch = parentText.match(/School:\s*([^|\n]+)/i) || parentText.match(/Company:\s*([^|\n]+)/i);
-        const locMatch = parentText.match(/Location:\s*([^|\n]+)/i);
-
-        rawJobs.push({
-          title,
-          href: fullHref,
-          company: compMatch ? compMatch[1].trim() : title,
-          location: locMatch ? locMatch[1].trim() : parentText.substring(0, 100)
+            rawJobsMap.set(fullHref, {
+              title,
+              href: fullHref,
+              company: compMatch ? compMatch[1].trim() : title,
+              location: locMatch ? locMatch[1].trim() : parentText.substring(0, 100),
+              text: parentText
+            });
+          }
         });
+      } catch (err) {
+        console.warn(`⚠️ Error scraping ${url}:`, err);
       }
-    });
+    }
 
     await browser.close();
 
-    // Deduplicate by href
-    const uniqueJobs = Array.from(new Map(rawJobs.map(j => [j.href, j])).values());
+    const uniqueJobs = Array.from(rawJobsMap.values());
     const matches: TeachAwayJobMatch[] = [];
 
     // 3. Strict DB School Grounding Match
     for (const job of uniqueJobs) {
       if (!job.title || isSupportOrNonTeachingRole(job.title)) continue;
 
-      const jCompany = (job.company || "").toLowerCase();
-      const jTitle = (job.title || "").toLowerCase();
-      const jLoc = (job.location || "").toLowerCase();
+      const fullText = `${job.title} ${job.company} ${job.location} ${job.text}`.toLowerCase();
 
       const matchedSchool = dbSchools.find((school: any) => {
         const sName = (school.name || school.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 4) return false;
+        if (!sName || sName.length < 3) return false;
 
-        const directMatch =
-          jCompany.includes(sName) ||
-          sName.includes(jCompany) ||
-          jTitle.includes(sName) ||
-          (jLoc.includes(sName) && jLoc.length > 5);
+        if (fullText.includes(sName)) return true;
 
         const aliases: string[] = school.aliases || [];
-        const aliasMatch = aliases.some((alias: string) => {
+        if (aliases.some((alias: string) => {
           const aLower = String(alias || "").toLowerCase().trim();
-          return aLower.length >= 4 && (jCompany.includes(aLower) || jTitle.includes(aLower));
-        });
+          return aLower.length >= 3 && fullText.includes(aLower);
+        })) {
+          return true;
+        }
 
-        return directMatch || aliasMatch;
+        return false;
       });
 
       if (matchedSchool) {

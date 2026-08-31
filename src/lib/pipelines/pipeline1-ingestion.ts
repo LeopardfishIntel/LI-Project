@@ -1,3 +1,4 @@
+import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
 /**
  * 🛸 PIPELINE 1 — CLEAN DUAL-COMMIT INGESTION ENGINE (STRICT TES-ONLY MODE)
  *
@@ -29,6 +30,10 @@ export interface CacheJobDocument {
   id: string;
   title: string;
   source: string;
+  sources?: string[];
+  sourceUrls?: Record<string, string>;
+  group?: string;
+  ownership?: string;
   applyUrl: string;
   datePosted: string | null;
   closingDate: string | null;
@@ -66,10 +71,18 @@ function buildCacheDocument(
     ? parsedDate.closingDate.getTime()
     : null;
 
+  const srcName = record.source || "TES";
+  const srcUrls: Record<string, string> = {};
+  if (record.applyUrl) {
+    srcUrls[srcName] = record.applyUrl;
+  }
+
   return {
     id: fingerprint,
     title: record.rawTitle,
-    source: record.source || "TES",
+    source: srcName,
+    sources: [srcName],
+    sourceUrls: srcUrls,
     applyUrl: record.applyUrl || "",
     datePosted: record.datePosted ? String(record.datePosted) : null,
     closingDate: closingDateISO,
@@ -88,6 +101,33 @@ function buildCacheDocument(
 
 async function writeToCacheCollection(doc: CacheJobDocument): Promise<void> {
   try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (db) {
+      const snap = await db.collection("featured_jobs_cache").get();
+      const normTitle = doc.title.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+      const existingDoc = snap.docs.find((d: any) => {
+        const data = d.data();
+        const dTitle = String(data.title || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+        return data.schoolId === doc.schoolId && dTitle === normTitle;
+      });
+
+      if (existingDoc) {
+        const exData = existingDoc.data();
+        const mergedSources = Array.from(new Set([...(exData.sources || [exData.source || "Official Source"]), ...(doc.sources || [doc.source])]));
+        const mergedUrls = { ...(exData.sourceUrls || {}), ...(doc.sourceUrls || {}) };
+        if (exData.applyUrl) mergedUrls[exData.source || "Official Source"] = exData.applyUrl;
+        if (doc.applyUrl) mergedUrls[doc.source] = doc.applyUrl;
+
+        await existingDoc.ref.update({
+          sources: mergedSources,
+          sourceUrls: mergedUrls,
+          updatedAtMillis: Date.now()
+        });
+        console.log(`🛸 [PIPELINE 1] Merged dual listing sources for "${doc.title}":`, mergedSources);
+        return;
+      }
+    }
     const { setDocument } = await import("@/firebase/admin");
     await setDocument("featured_jobs_cache", doc.id, doc, { merge: true });
   } catch (err) {
@@ -121,7 +161,15 @@ export async function runIngestionPipeline(
     const isNordAnglia = srcUpper === "NORD ANGLIA" && record.applyUrl && record.applyUrl.includes("careers.nordangliaeducation.com/job/");
     const isGrc = srcUpper === "GRC" && record.applyUrl && (record.applyUrl.includes("grcfair.org/job-details/") || record.applyUrl.includes("grcfair.org/job/"));
 
-    if (!isTes && !isNordAnglia && !isGrc) {
+    const isInspired = (srcUpper.includes("INSPIRED") || (record.applyUrl && record.applyUrl.includes("inspirededu.com/job/")));
+    const isTeachAway = (srcUpper.includes("TEACH AWAY") || (record.applyUrl && record.applyUrl.includes("teachaway.com/")));
+    const isCognita = (srcUpper.includes("COGNITA") || (record.applyUrl && record.applyUrl.includes("cognitapeople.csod.com/")));
+    const isMalvern = (srcUpper.includes("MALVERN") || (record.applyUrl && record.applyUrl.includes("malverncollegefamily.org")));
+    const isUwc = (srcUpper.includes("UWC") || srcUpper.includes("UNITED WORLD COLLEGE") || (record.applyUrl && (record.applyUrl.includes("uwc.org/career/") || record.applyUrl.includes("uwc.org/careers/"))));
+    const isIsp = (srcUpper.includes("ISP") || srcUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || (record.applyUrl && record.applyUrl.includes("internationalschools.wd3.myworkdayjobs.com/")));
+    const isGlobeducate = (srcUpper.includes("GLOBEDUCATE") || srcUpper.includes("GLOBE") || (record.applyUrl && (record.applyUrl.includes("globeducate.schoolrecruiter.com/") || record.applyUrl.includes("careers.globeducate.com/"))));
+
+    if (!isTes && !isNordAnglia && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobeducate) {
       rejected++;
       reasons.push(`[UNRECOGNIZED_SOURCE_REJECTED] Discarded "${record.rawTitle}" from source "${record.source}".`);
       continue;
@@ -158,6 +206,9 @@ export async function runIngestionPipeline(
     } else if (isNordAnglia) {
       const naeIdMatch = cleanApplyUrl.match(/\/(\d+)\/?$/);
       fp = naeIdMatch ? `fp_${schoolId.toLowerCase()}_nae_${naeIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
+    } else if (isCognita) {
+      const cognitaMatch = cleanApplyUrl.match(/\/requisition\/(\d+)/i);
+      fp = cognitaMatch ? `fp_${schoolId.toLowerCase()}_cognita_${cognitaMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
     } else if (isGrc) {
       const grcIdMatch = cleanApplyUrl.match(/\/job-details\/(\d+)/i) || cleanApplyUrl.match(/\/(\d+)\/?$/);
       fp = grcIdMatch ? `fp_${schoolId.toLowerCase()}_${grcIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
