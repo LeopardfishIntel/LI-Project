@@ -478,7 +478,8 @@ export default function FeaturedJobsPage() {
         const isTes = sourceUpper === 'TES' && applyUrlLower.includes('tes.com/jobs/vacancy/');
         const isNae = sourceUpper === 'NORD ANGLIA' && applyUrlLower.includes('careers.nordangliaeducation.com/job/');
         const isGrc = sourceUpper === 'GRC' && (applyUrlLower.includes('grcfair.org/job-details/') || applyUrlLower.includes('grcfair.org/job/'));
-        if (!isTes && !isNae && !isGrc) return;
+        const isInspired = (sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com/job/'));
+        if (!isTes && !isNae && !isGrc && !isInspired) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
