@@ -1077,18 +1077,31 @@ function DecoderContent() {
                 </Tooltip>
               </div>
               <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/10 w-full justify-between">
-                {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => setLifestyleMode(mode)}
-                    className={cn(
-                      "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider transition-all italic flex-1 text-center",
-                      lifestyleMode === mode ? "bg-slate-300 text-slate-950 shadow-[0_0_10px_rgba(148,163,184,0.1)] rounded-sm" : "text-slate-500 hover:text-slate-300"
-                    )}
-                  >
-                    {mode}
-                  </button>
-                ))}
+                {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => {
+                  const tooltips: Record<string, string> = {
+                    Budget: "Budget Mode (-20% Rent, -10% Groceries, -40% Social): Modest apartment slightly further out, local hypermarket shopping, and cooking at home.",
+                    Balanced: "Balanced Mode (Baseline): Standard expat residence, average supermarket shopping, and regular dining out.",
+                    Luxury: "Luxury Mode (+30% Rent, +10% Groceries, +80% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
+                  };
+                  return (
+                    <Tooltip key={mode}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setLifestyleMode(mode)}
+                          className={cn(
+                            "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider transition-all italic flex-1 text-center",
+                            lifestyleMode === mode ? "bg-slate-300 text-slate-950 shadow-[0_0_10px_rgba(148,163,184,0.1)] rounded-sm" : "text-slate-500 hover:text-slate-300"
+                          )}
+                        >
+                          {mode}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="bg-[#0b1224] border border-white/10 text-white text-[10px] font-medium p-2.5 max-w-xs shadow-xl z-50 leading-relaxed">
+                        {tooltips[mode]}
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
               </div>
             </div>
 
