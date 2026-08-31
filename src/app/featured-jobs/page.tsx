@@ -479,7 +479,8 @@ export default function FeaturedJobsPage() {
         const isNae = sourceUpper === 'NORD ANGLIA' && applyUrlLower.includes('careers.nordangliaeducation.com/job/');
         const isGrc = sourceUpper === 'GRC' && (applyUrlLower.includes('grcfair.org/job-details/') || applyUrlLower.includes('grcfair.org/job/'));
         const isInspired = (sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com/job/'));
-        if (!isTes && !isNae && !isGrc && !isInspired) return;
+        const isTeachAway = (sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com/'));
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -652,6 +653,7 @@ export default function FeaturedJobsPage() {
     let nae = 0;
     let grc = 0;
     let inspired = 0;
+    let teachaway = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
@@ -659,8 +661,9 @@ export default function FeaturedJobsPage() {
       if (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA")) nae++;
       if (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC")) grc++;
       if (jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED"))) inspired++;
+      if (jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY"))) teachaway++;
     });
-    return { ALL: allJobs.length, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired };
+    return { ALL: allJobs.length, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway };
   }, [allJobs]);
 
 
@@ -710,10 +713,12 @@ export default function FeaturedJobsPage() {
         const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA");
         const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC");
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED"));
+        const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY"));
         if (selectedSourceEngine === "TES" && !hasTes) return false;
         if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
         if (selectedSourceEngine === "GRC" && !hasGrc) return false;
         if (selectedSourceEngine === "INSPIRED" && !hasInspired) return false;
+        if (selectedSourceEngine === "TEACHAWAY" && !hasTeachAway) return false;
       }
 
       return true;
@@ -988,7 +993,8 @@ export default function FeaturedJobsPage() {
                     { id: "TES", label: `TES (${engineCounts.TES})` },
                     { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
                     { id: "GRC", label: `GRC Search (${engineCounts.GRC})` },
-                    { id: "INSPIRED", label: `Inspired Edu (${engineCounts.INSPIRED || 0})` }
+                    { id: "INSPIRED", label: `Inspired Edu (${engineCounts.INSPIRED || 0})` },
+                    { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` }
                   ].map((engine) => (
                     <button
                       key={engine.id}
@@ -1005,6 +1011,7 @@ export default function FeaturedJobsPage() {
                       {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
                       {engine.id === "GRC" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
                       {engine.id === "INSPIRED" && <span className="size-2 rounded-full bg-purple-400 animate-pulse" />}
+                      {engine.id === "TEACHAWAY" && <span className="size-2 rounded-full bg-rose-400 animate-pulse" />}
                       {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
                       {engine.label}
                     </button>
