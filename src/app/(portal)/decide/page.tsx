@@ -48,6 +48,12 @@ const HOUSEHOLD_OPTIONS = FAMILY_PROFILES.map(p => p.value);
 const BONUS_REGISTRY: Record<string, number> = { "austria": 0.166, "germany": 0.083, "china": 0.083, "spain": 0.166, "japan": 0.166, "belgium": 0.166 };
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+function getSchoolField(school: any, keys: string[]) {
+    if (!school) return null;
+    const foundKey = Object.keys(school).find(k => keys.includes(k.toLowerCase().trim()));
+    return foundKey ? school[foundKey] : null;
+}
+
 
 // --- UI COMPONENTS ---
 
@@ -883,11 +889,7 @@ function DecideContent() {
     );
 }
 
-const getSchoolField = (school: any, keys: string[]) => {
-    if (!school) return null;
-    const foundKey = Object.keys(school).find(k => keys.includes(k.toLowerCase().trim()));
-    return foundKey ? school[foundKey] : null;
-};
+
 
 export default function DecidePage() {
     return <Suspense fallback={null}><DecideContent /></Suspense>;
