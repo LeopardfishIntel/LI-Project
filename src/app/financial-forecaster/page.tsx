@@ -724,7 +724,7 @@ function DecoderContent() {
 
     const rentMult = lifestyleMode === "Saver" ? 0.75 : (lifestyleMode === "Full Expat" ? 1.4 : 1.0);
     const groceryMult = lifestyleMode === "Saver" ? 0.8 : (lifestyleMode === "Full Expat" ? 1.25 : 1.0);
-    const lifestyleMult = lifestyleMode === "Saver" ? 0.4 : (lifestyleMode === "Full Expat" ? 2.0 : 1.0);
+    const lifestyleMult = lifestyleMode === "Saver" ? 0.4 : (lifestyleMode === "Full Expat" ? 3.0 : 1.0);
 
     let baseRentUSD = 0;
     if (isProvided) {
@@ -1081,7 +1081,7 @@ function DecoderContent() {
                   const tooltips: Record<string, string> = {
                     Saver: "Saver Mode (-25% Rent, -20% Groceries, -60% Social): Modest apartment slightly further out, local hypermarket shopping, and cooking at home.",
                     Comfortable: "Comfortable Mode (Baseline): Standard expat residence, average supermarket shopping, and regular dining out.",
-                    "Full Expat": "Full Expat Mode (+40% Rent, +25% Groceries, +100% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
+                    "Full Expat": "Full Expat Mode (+40% Rent, +25% Groceries, +200% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
                   };
                   return (
                     <Tooltip key={mode}>
@@ -1518,7 +1518,7 @@ function DecoderContent() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                              {`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Comfortable" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-60%" : "+100%"})` : ""}`}
+                              {`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Comfortable" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-60%" : "+200%"})` : ""}`}
                             </TooltipContent>
                           </Tooltip>
                         </div>
