@@ -1325,7 +1325,7 @@ function DecoderContent() {
                     </div>
 
                     <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
-                      The Leopardfish projected financial analysis and lifestyle projections below are specifically tailored by our team for this opportunity.
+                      The Leopardfish estimated financial analysis and lifestyle projections below are specifically tailored by our team for this specific school opportunity.
                     </p>
                   </div>
                 </div>
