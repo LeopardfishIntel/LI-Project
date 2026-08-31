@@ -723,7 +723,7 @@ function DecoderContent() {
     };
 
     const rentMult = lifestyleMode === "Budget" ? 0.8 : (lifestyleMode === "Luxury" ? 1.3 : 1.0);
-    const groceryMult = lifestyleMode === "Budget" ? 0.9 : (lifestyleMode === "Luxury" ? 1.1 : 1.0);
+    const groceryMult = lifestyleMode === "Budget" ? 0.8 : (lifestyleMode === "Luxury" ? 1.25 : 1.0);
     const lifestyleMult = lifestyleMode === "Budget" ? 0.6 : (lifestyleMode === "Luxury" ? 1.8 : 1.0);
 
     let baseRentUSD = 0;
@@ -1079,9 +1079,9 @@ function DecoderContent() {
               <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/10 w-full justify-between">
                 {(['Budget', 'Balanced', 'Luxury'] as const).map((mode) => {
                   const tooltips: Record<string, string> = {
-                    Budget: "Budget Mode (-20% Rent, -10% Groceries, -40% Social): Modest apartment slightly further out, local hypermarket shopping, and cooking at home.",
+                    Budget: "Budget Mode (-20% Rent, -20% Groceries, -40% Social): Modest apartment slightly further out, local hypermarket shopping, and cooking at home.",
                     Balanced: "Balanced Mode (Baseline): Standard expat residence, average supermarket shopping, and regular dining out.",
-                    Luxury: "Luxury Mode (+30% Rent, +10% Groceries, +80% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
+                    Luxury: "Luxury Mode (+30% Rent, +25% Groceries, +80% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
                   };
                   return (
                     <Tooltip key={mode}>
@@ -1500,7 +1500,7 @@ function DecoderContent() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                              {`Standard food and household supply indices for your household size.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-10%" : "+10%"})` : ""}`}
+                              {`Standard food and household supply indices for your household size.${lifestyleMode !== "Balanced" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Budget" ? "-20%" : "+25%"})` : ""}`}
                             </TooltipContent>
                           </Tooltip>
                         </div>
