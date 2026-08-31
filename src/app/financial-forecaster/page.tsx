@@ -7,7 +7,7 @@ import {
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
   Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users,
   HeartPulse, Laptop, Building, Sliders, BarChart3,
-  Sparkles, ArrowUpRight, MapPin, Calendar, Star
+  Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
@@ -363,6 +363,19 @@ function DecoderContent() {
     const [stabilityCountdown, setStabilityCountdown] = useState(90);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
+  const [requestedSchoolId, setRequestedSchoolId] = useState<string | null>(null);
+  const [requestedJobTitle, setRequestedJobTitle] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlSchoolId = params.get("schoolId") || params.get("id");
+      const jobTitle = params.get("jobTitle");
+      if (urlSchoolId) setRequestedSchoolId(urlSchoolId);
+      if (jobTitle) setRequestedJobTitle(jobTitle);
+    }
+  }, [mounted]);
+
 
   // ⏱️ STABILITY CALCULATION COUNTDOWN (starts at 90, decrements every 1 second)
   useEffect(() => {
@@ -613,7 +626,10 @@ function DecoderContent() {
   useEffect(() => {
     const salaryVal = getSchoolField(activeSchool, ['salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
-      const cleanRange = String(salaryVal)
+      const str = String(salaryVal).trim();
+      const isUSD = str.includes("$") || str.toUpperCase().includes("USD");
+
+      const cleanRange = str
         .replace(/,/g, '')
         .replace(/\.\d+/g, '')
         .replace(/k/gi, '000');
@@ -627,7 +643,13 @@ function DecoderContent() {
         median = Math.round(median / 12);
       }
 
-      setSettings(prev => ({ ...prev, netSalary: Math.round(usdToLocal(median)).toString() }));
+      // Convert from USD to local currency ONLY if original string was in USD and local currency is not USD
+      let monthlyLocal = median;
+      if (isUSD && currency !== "USD") {
+        monthlyLocal = Math.round(usdToLocal(median));
+      }
+
+      setSettings(prev => ({ ...prev, netSalary: monthlyLocal.toString() }));
     }
   }, [settings.schoolId, activeSchool, currency, currentRates]);
 
@@ -1106,6 +1128,32 @@ function DecoderContent() {
         {/* Dashboard Area */}
         <div className="flex-1 lg:ml-72 p-4 md:p-6">
           {!activeSchool ? (
+            requestedSchoolId ? (
+              <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
+                <div className="w-full max-w-[560px] bg-[#0f172a]/90 backdrop-blur-xl border border-white/10 rounded-xl p-8 md:p-10 shadow-2xl flex flex-col items-center text-center space-y-6 animate-in fade-in duration-300">
+                  <div className="relative flex items-center justify-center my-2">
+                    <div className="absolute size-16 bg-[#D96B27]/20 rounded-full animate-ping" />
+                    <Loader2 className="animate-spin size-10 text-[#D96B27] relative z-10" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                      Retrieving School Data...
+                    </h3>
+                    <p className="text-xs md:text-sm text-slate-400 font-medium leading-relaxed max-w-[440px]">
+                      {requestedJobTitle 
+                        ? `Loading profile metrics, cost-of-living data, and financial projections for "${requestedJobTitle}"...` 
+                        : "Loading profile metrics, cost-of-living data, and financial projections..."}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800/80 border border-slate-700/60 rounded-full text-[11px] font-mono text-slate-300">
+                    <span className="size-2 rounded-full bg-[#38BDF8] animate-pulse" />
+                    <span>Target School ID: {requestedSchoolId.replace(/^FLIS/i, "")}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
             <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
               <div className="w-full max-w-[680px] bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-xl p-8 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 
@@ -1176,6 +1224,7 @@ function DecoderContent() {
 
               </div>
             </div>
+          )
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
@@ -1237,6 +1286,25 @@ function DecoderContent() {
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
                     <div className="flex flex-wrap items-center gap-3">
+                      {(() => {
+                        const schoolNum = (settings.schoolId || activeSchool?.id || "").replace(/^FLIS/i, "");
+                        let idNum = "";
+                        if (selectedOpportunity.jobId) {
+                          const match = String(selectedOpportunity.jobId).match(/(\d+)$/);
+                          if (match) idNum = match[1];
+                        }
+                        if (!idNum && selectedOpportunity.applyUrl) {
+                          const match = String(selectedOpportunity.applyUrl).match(/(\d+)\/?$/);
+                          if (match) idNum = match[1];
+                        }
+                        const jobRef = schoolNum && idNum ? `${schoolNum}/${idNum}` : schoolNum || idNum || "";
+                        if (!jobRef) return null;
+                        return (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 border border-slate-700/60 rounded-full text-xs font-mono font-bold text-slate-300">
+                            <span>ID: {jobRef}</span>
+                          </span>
+                        );
+                      })()}
                       {selectedOpportunity.closesDate && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
                           <Calendar className="size-3.5 text-[#FF6B35]" />
@@ -1256,8 +1324,8 @@ function DecoderContent() {
                       )}
                     </div>
 
-                    <p className="text-[11px] italic text-slate-400 font-medium">
-                      Estimated financial surplus and lifestyle projections below are tailored for this opportunity.
+                    <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
+                      The Leopardfish projected financial analysis and lifestyle projections below are specifically tailored by our team for this opportunity.
                     </p>
                   </div>
                 </div>
@@ -1696,11 +1764,11 @@ function DecoderContent() {
                       {/* 🕵️ TACTICAL INCOME REMINDER */}
                       {(analysis?.surplus ?? 0) < 0 && (
                         <div className="mt-4 p-4 bg-sky-500/5 border border-sky-500/20 rounded-sm">
-                          <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest flex items-center gap-2 mb-1">
-                            <Zap className="size-3" /> Tactical Income Tip
+                          <p className="text-xs font-bold text-sky-400 uppercase tracking-widest flex items-center gap-2 mb-1.5">
+                            <Zap className="size-3.5" /> Tactical Income Tip
                           </p>
-                          <p className="text-[11px] text-slate-400 leading-relaxed italic">
-                            Surplus remains negative. To balance this package, consider adding <span className="text-white font-bold">Partner Income</span> on the left menu or <span className="text-white font-bold">Additional Credits</span> (Tutoring/TLR) in the box above.
+                          <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-medium">
+                            Surplus remains negative! To balance this package, consider <span className="text-white font-bold">adjusting apartment size</span>, adding <span className="text-white font-bold">Partner Income</span> on the left menu or <span className="text-white font-bold">Additional Credits</span> (Tutoring/TLR) in the box above.
                           </p>
                         </div>
                       )}

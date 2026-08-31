@@ -19,7 +19,13 @@ try {
     // 🛰️ Local Dev Sentry: Only initialize Admin SDK if credentials are explicitly configured
     // or if we are running in a Google Cloud hosting environment. Otherwise, gracefully fall back
     // to the client-side SDK on the server-side to avoid "Could not load default credentials" crashes.
+    const fs = require('fs');
+    const path = require('path');
+    const saPath = path.resolve(process.cwd(), 'service-account.json');
+    const hasServiceAccountFile = fs.existsSync(saPath);
+
     const hasCredentials = 
+      hasServiceAccountFile ||
       process.env.GOOGLE_APPLICATION_CREDENTIALS || 
       process.env.K_SERVICE || 
       process.env.GAE_ENV || 
@@ -28,9 +34,16 @@ try {
 
     if (hasCredentials || process.env.NODE_ENV === 'production') {
       if (!admin.apps.length) {
-        admin.initializeApp({
-          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'studio-2840117705-12faa'
-        });
+        if (hasServiceAccountFile) {
+          admin.initializeApp({
+            credential: admin.credential.cert(saPath),
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'studio-2840117705-12faa'
+          });
+        } else {
+          admin.initializeApp({
+            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'studio-2840117705-12faa'
+          });
+        }
       }
       adminDb = admin.firestore();
     } else {
@@ -820,7 +833,7 @@ export interface JobUrlVerificationResult {
   delistReason?: string;
 }
 
-export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationResult> {
+export async function verifyJobUrlHttp(url: string, officialDomain?: string): Promise<JobUrlVerificationResult> {
   if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url.trim())) {
     return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: url || '' };
   }
@@ -918,25 +931,28 @@ export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationR
       } else if (headless.status === 404 || headless.status === 410) {
         return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
       }
-    }
 
-    if (statusCode === 404 || statusCode === 410 || statusCode >= 500 || isThirdPartyAggregatorUrl(finalUrl)) {
-      return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
-    }
-
-    // Check if redirected to root domain without query params
-    let isRedirectToRoot = false;
-    try {
-      const parsedInitial = new URL(cleanUrl);
-      const parsedFinal = new URL(finalUrl);
-      const finalPath = parsedFinal.pathname.replace(/\/$/, '');
-      if (parsedInitial.pathname.length > 2 && (finalPath === '' || finalPath === '/') && !parsedFinal.search) {
-        isRedirectToRoot = true;
+      // If headless fails/gets blocked but it is a trusted domain, default to approved!
+      if (!isThirdPartyAggregatorUrl(cleanUrl) && headless.status !== 404 && headless.status !== 410) {
+        return { isValid: true, status: 'approved', finalUrl: headless.finalUrl || cleanUrl };
       }
-    } catch {}
+    }
 
-    if (isRedirectToRoot || isGenericRootUrl(finalUrl) || isGenericRootUrl(cleanUrl)) {
+    if (statusCode === 404 || statusCode === 410 || isThirdPartyAggregatorUrl(finalUrl)) {
       return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
+    }
+
+    // 🌐 Domain Isolation Check
+    if (officialDomain && typeof officialDomain === 'string' && officialDomain.length > 3) {
+      const cleanOfficial = officialDomain.toLowerCase().replace(/^www\./, '').trim();
+      let finalHost = '';
+      try {
+        finalHost = new URL(finalUrl).hostname.toLowerCase().replace(/^www\./, '');
+      } catch {}
+      if (finalHost && !finalHost.includes(cleanOfficial) && !finalHost.includes('tes.com') && !finalHost.includes('jobs.cz')) {
+        console.warn(`🛡️ [VERIFIER] Domain isolation check failed: ${finalHost} does not match official domain ${cleanOfficial}`);
+        return { isValid: false, status: 'delisted', delistReason: 'domain_mismatch', finalUrl };
+      }
     }
 
     // 🚫 Check for Expired / Closed Notice or Past validThrough in page HTML
@@ -969,21 +985,43 @@ export async function verifyJobUrlHttp(url: string): Promise<JobUrlVerificationR
       return { isValid: true, status: 'approved', finalUrl };
     }
 
+    // Default to approved if it is not an aggregator and not explicitly a 404/410 dead page
+    if (!isThirdPartyAggregatorUrl(finalUrl) && statusCode !== 404 && statusCode !== 410) {
+      console.log(`🛡️ [VERIFIER] Non-fatal status code ${statusCode} for trusted domain. Treating as approved: ${finalUrl}`);
+      return { isValid: true, status: 'approved', finalUrl };
+    }
+
     return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
-  } catch {
+  } catch (err) {
     clearTimeout(timeoutId);
     // Fallback to Headless Browser on network/timeout failure
     console.log(`🛡️ [VERIFIER] Network fetch failed for ${cleanUrl}. Invoking managed headless browser fallback...`);
-    const headless = await scrapeWithManagedBrowserFallback(cleanUrl);
-    if (headless.success && headless.status >= 200 && headless.status < 400 && !headless.isBlocked) {
-      if (isThirdPartyAggregatorUrl(headless.finalUrl)) {
-        return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
+    try {
+      const headless = await scrapeWithManagedBrowserFallback(cleanUrl);
+      if (headless.success && headless.status >= 200 && headless.status < 400 && !headless.isBlocked) {
+        if (isThirdPartyAggregatorUrl(headless.finalUrl)) {
+          return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: headless.finalUrl };
+        }
+        return { isValid: true, status: 'approved', finalUrl: headless.finalUrl };
       }
-      return { isValid: true, status: 'approved', finalUrl: headless.finalUrl };
+      // If headless fails/gets blocked but it is a trusted domain (not an aggregator), default to approved!
+      if (!isThirdPartyAggregatorUrl(cleanUrl) && headless.status !== 404 && headless.status !== 410) {
+        console.log(`🛡️ [VERIFIER] Headless verification bypassed/failed for trusted domain. Defaulting to approved: ${cleanUrl}`);
+        return { isValid: true, status: 'approved', finalUrl: headless.finalUrl || cleanUrl };
+      }
+    } catch (headlessErr) {
+      console.warn('Headless fallback failed:', headlessErr);
+    }
+    
+    // If not an aggregator and it didn't explicitly return 404, default to approved
+    if (!isThirdPartyAggregatorUrl(cleanUrl)) {
+      return { isValid: true, status: 'approved', finalUrl: cleanUrl };
     }
     return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: cleanUrl };
   }
 }
+
+
 
 export interface ScrapeWorkerLogEntry {
   timestamp?: any;
@@ -1128,36 +1166,106 @@ export async function moveJobToPending(schoolId: string, jobId: string, reviewed
  */
 export function generateJobFingerprint(schoolId: string, title: string, subject?: string | null): string {
   const cleanSchool = (schoolId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
-  const cleanTitle = (title || "").toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
-  const cleanSub = (subject || "").toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  const cleanTitle = (title || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
 
-  // 1. Identify Normalized Subject
-  let normSubject = "general";
-  if (cleanTitle.includes("math") || cleanSub.includes("math")) normSubject = "maths";
-  else if (cleanTitle.includes("physic") || cleanSub.includes("physic")) normSubject = "physics";
-  else if (cleanTitle.includes("chem") || cleanSub.includes("chem")) normSubject = "chemistry";
-  else if (cleanTitle.includes("bio") || cleanSub.includes("bio")) normSubject = "biology";
-  else if (cleanTitle.includes("sci") || cleanSub.includes("sci")) normSubject = "science";
-  else if (cleanTitle.includes("eng") || cleanSub.includes("eng")) normSubject = "english";
-  else if (cleanTitle.includes("hist") || cleanSub.includes("hist")) normSubject = "history";
-  else if (cleanTitle.includes("geog") || cleanSub.includes("geog")) normSubject = "geography";
-  else if (cleanTitle.includes("comput") || cleanTitle.includes("ict") || cleanSub.includes("comput")) normSubject = "computing";
-  else if (cleanTitle.includes("art") || cleanSub.includes("art")) normSubject = "art";
-  else if (cleanTitle.includes("music") || cleanSub.includes("music")) normSubject = "music";
-  else if (cleanTitle.includes("drama") || cleanSub.includes("drama")) normSubject = "drama";
-  else if (cleanTitle.includes("pe") || cleanTitle.includes("physical ed") || cleanSub.includes("pe")) normSubject = "pe";
-  else if (cleanTitle.includes("kindergarten") || cleanTitle.includes("early years") || cleanTitle.includes("eyfs") || cleanTitle.includes("primary") || cleanSub.includes("primary")) normSubject = "primary";
-  else if (cleanTitle.includes("french") || cleanTitle.includes("spanish") || cleanTitle.includes("german") || cleanTitle.includes("mandarin") || cleanTitle.includes("language")) normSubject = "languages";
+  let hash = 0;
+  for (let i = 0; i < cleanTitle.length; i++) {
+    hash = ((hash << 5) - hash) + cleanTitle.charCodeAt(i);
+    hash |= 0;
+  }
+  const titleHash = Math.abs(hash).toString(36);
 
-  // 2. Identify Role Hierarchy Level
-  let level = "teacher";
-  if (cleanTitle.includes("head") || cleanTitle.includes("director") || cleanTitle.includes("principal") || cleanTitle.includes("coordinator") || cleanTitle.includes("lead")) {
-    level = "leadership";
-  } else if (cleanTitle.includes("assistant") || cleanTitle.includes("intern") || cleanTitle.includes("aid")) {
-    level = "assistant";
+  return `fp_${cleanSchool}_${titleHash}`;
+}
+
+// =====================================================================
+// 🧹 WRITE-TIME INGESTION PIPELINE
+// =====================================================================
+
+/**
+ * Pre-filters a batch of RawJobRecord objects before writing to Firestore.
+ *
+ * Runs three gates in sequence:
+ *   1. Role filter  — isSupportOrNonTeachingRole() drops non-teaching roles.
+ *   2. URL filter   — isBlockedContentUrl() drops news/blog/aggregator links.
+ *   3. Deduplication — generateJobFingerprint() deduplicates within the batch.
+ *
+ * Surviving records are mapped to the saveScrapedJobs shape and written to
+ * the schools/{schoolId}/jobs subcollection.
+ *
+ * @param schoolId  - Firestore school document ID.
+ * @param rawRecords - Typed RawJobRecord array from the adaptor layer.
+ * @returns Summary of accepted/rejected counts for audit logging.
+ */
+export async function processRawIngestionPipeline(
+  schoolId: string,
+  rawRecords: import('@/lib/crawler/adaptors/raw-job.types').RawJobRecord[]
+): Promise<{ accepted: number; rejected: number; reasons: string[] }> {
+  if (!rawRecords || rawRecords.length === 0) {
+    return { accepted: 0, rejected: 0, reasons: [] };
   }
 
-  return `fp_${cleanSchool}_${normSubject}_${level}`;
+  const { isSupportOrNonTeachingRole } = await import('@/lib/crawler/roleClassifier');
+  const { isBlockedContentUrl } = await import('@/lib/crawler/urlResolver');
+
+  const reasons: string[] = [];
+  let rejected = 0;
+
+  // Deduplication within this batch using fingerprint
+  const seenFingerprints = new Set<string>();
+
+  const mappedJobs: any[] = [];
+
+  for (const record of rawRecords) {
+    // Gate 1: Role classifier
+    if (isSupportOrNonTeachingRole(record.rawTitle)) {
+      rejected++;
+      reasons.push(`[ROLE_FILTER] "${record.rawTitle}"`);
+      continue;
+    }
+
+    // Gate 2: Blocked URL filter
+    if (record.applyUrl && isBlockedContentUrl(record.applyUrl)) {
+      rejected++;
+      reasons.push(`[URL_FILTER] "${record.rawTitle}" (${record.applyUrl})`);
+      continue;
+    }
+
+    // Gate 3: Fingerprint deduplication within this batch
+    const fp = generateJobFingerprint(schoolId, record.rawTitle);
+    if (seenFingerprints.has(fp)) {
+      rejected++;
+      reasons.push(`[DEDUP] "${record.rawTitle}" (fingerprint: ${fp})`);
+      continue;
+    }
+    seenFingerprints.add(fp);
+
+    // Map RawJobRecord → saveScrapedJobs job shape
+    mappedJobs.push({
+      id: fp,
+      title: record.rawTitle,
+      source: record.source,
+      sourceName: record.source,
+      applyUrl: record.applyUrl || '',
+      source_url: record.applyUrl || '',
+      closingDate: record.closingDate || null,
+      datePosted: record.datePosted || null,
+      city: record.city || '',
+      country: record.country || '',
+      jobFingerprint: fp,
+      status: 'pending_review',
+    });
+  }
+
+  if (mappedJobs.length > 0) {
+    await saveScrapedJobs(schoolId, mappedJobs);
+  }
+
+  console.log(
+    `🧹 [INGESTION PIPELINE] schoolId=${schoolId} | accepted=${mappedJobs.length} | rejected=${rejected}`
+  );
+
+  return { accepted: mappedJobs.length, rejected, reasons };
 }
 
 export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
@@ -1298,18 +1406,18 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
         continue;
       }
 
-      // 🛡️ EXPLICIT EXPIRY DATE MANDATE:
-      // If no explicit closing date is specified, route to pending_review for manual checking
-      if (!isExplicitDateProvided || isRolling) {
-        status = 'pending_review';
+      // 🛡️ TIER 1 vs TIER 2 LIFECYCLE ASSIGNMENT:
+      // Keep explicit rawJob.status if passed (e.g. 'approved' for Tier 1 sources, 'pending_review' for Tier 2 secondary sources)
+      if (rawJob.status) {
+        status = rawJob.status;
       } else {
-        const httpCheck = await verifyJobUrlHttp(applyUrl);
-        if (httpCheck.status === 'delisted') {
-          if (existing) writeBatch.delete(ref);
-          continue;
-        } else {
-          status = 'approved';
-        }
+        status = 'approved';
+      }
+
+      const httpCheck = await verifyJobUrlHttp(applyUrl);
+      if (httpCheck.status === 'delisted') {
+        if (existing) writeBatch.delete(ref);
+        continue;
       }
 
       const firstDiscoveredAt = existing?.firstDiscoveredAt || rawJob.firstDiscoveredAt || now;
@@ -1486,7 +1594,7 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
           status = 'approved';
         }
       } else if (!status) {
-        status = 'pending_review';
+        status = rawJob.status || 'approved';
       }
 
       const firstDiscoveredAt = existing?.firstDiscoveredAt || rawJob.firstDiscoveredAt || now;

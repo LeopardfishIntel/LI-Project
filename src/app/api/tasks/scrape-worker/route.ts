@@ -16,7 +16,8 @@ export async function POST(request: Request) {
       schoolName,
       estimatedStaffBase: 0,
       city: city || "",
-      country: country || ""
+      country: country || "",
+      forceRefresh: true
     }).catch(err => console.error("Cloud Task background scrape worker failed:", err));
 
     return NextResponse.json({ success: true, message: "Scrape job queued successfully" }, { status: 202 });

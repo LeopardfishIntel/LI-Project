@@ -13,6 +13,20 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "featured_jobs_cache",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "closingDateMillis",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [

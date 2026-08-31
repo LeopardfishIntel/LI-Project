@@ -482,6 +482,33 @@ export function calculateSurplus(
   return Math.min(rawSurplus, maxCap);
 }
 
+
+export function calculateSchoolSavingsForStatus(
+  salaryNum: number,
+  familyStatus: string,
+  colRecord: any,
+  housingProvision: string = "",
+  country: string = "",
+  paidInUSD?: boolean
+): number {
+  const statusLower = (familyStatus || "").toLowerCase();
+  const isDual = statusLower.includes("dual");
+  const effectiveSalary = isDual ? Math.round(salaryNum * 1.85) : salaryNum;
+  
+  const housingLower = (housingProvision || "").toLowerCase();
+  const isHousingProvided = housingLower.includes("provided");
+
+  let surplus = calculateSurplus(effectiveSalary, familyStatus, colRecord, isHousingProvided);
+
+  // Volatile market guardrail (e.g. Argentina in local currency)
+  const isVolatile = (country || "").toLowerCase() === "argentina" || (country || "").toLowerCase() === "ars";
+  if (isVolatile && !paidInUSD) {
+    surplus *= 0.25;
+  }
+
+  return Math.max(0, Math.round(surplus));
+}
+
 export function calculateLocalSavingsScore(localNetUSD: number, familyStatus: string, cityData: any, isHousingProvided: boolean = false): number {
   const surplus = calculateSurplus(localNetUSD, familyStatus, cityData, isHousingProvided);
   let rawScore = 4.0 + (surplus / 960);

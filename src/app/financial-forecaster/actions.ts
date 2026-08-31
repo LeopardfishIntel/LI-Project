@@ -721,20 +721,17 @@ export async function getSchoolStabilityReport(input: {
                     // Lock the gate immediately in local cache and Firestore, clearing stale jobs
                      writeLocalCache(input.schoolId, {
                          ...data,
-                         isRevalidating: true,
-                         scrapedJobsList: [],
-                         scrapedJobsCount: 0
+                         isRevalidating: true
                      });
                      if (data) {
                          (async () => {
-                             const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
-                             await saveScrapedJobs(input.schoolId, []);
+                             const { updateDocument } = await import('@/firebase/admin');
                              await updateDocument('schools', input.schoolId, {
                                  isRevalidating: true,
                                  revalidationStatus: 'syncing',
                                  revalidationError: null
                              });
-                         })().catch((err) => console.error("Failed to clear jobs subcollection on revalidation:", err));
+                         })().catch((err) => console.error("Failed to update revalidation status:", err));
                      }
 
                     // Fire background scrape task
@@ -870,13 +867,46 @@ export async function getSchoolStabilityReport(input: {
                                         .filter(Boolean);
 
                                     await saveScrapedJobs(input.schoolId, subcolJobs);
+
+                                    // 🛸 Pipeline 1 + 2: Ingest RawJobRecords into featured_jobs_cache
+                                    try {
+                                        const { runIngestionPipeline } = await import('@/lib/pipelines/pipeline1-ingestion');
+                                        const { runEnrichmentPipeline } = await import('@/lib/pipelines/pipeline2-enrichment');
+                                        const rawRecords = freshParsedVacancies
+                                            .filter(v => (v.recruitmentCycle === 'CURRENT' || !v.recruitmentCycle) && !isSupportOrNonTeachingRole(v.title))
+                                            .map(v => {
+                                                const rawClosing = v.closesDate || v.date_closing || null;
+                                                const triage = triageVacancyLifecycle(rawClosing);
+                                                const status: 'approved' | 'pending_review' = triage.isRollingDeadline ? 'pending_review' : 'approved';
+                                                return {
+                                                    rawTitle: v.title,
+                                                    applyUrl: v.source_url || null,
+                                                    source: v.source || 'Unknown',
+                                                    datePosted: v.date_listed || null,
+                                                    closingDate: v.closesDate || v.date_closing || null,
+                                                    schoolId: input.schoolId,
+                                                    schoolName: input.schoolName,
+                                                    city: input.city || '',
+                                                    country: input.country || '',
+                                                    status: status
+                                                };
+                                            });
+                                        const ingestionResult = await runIngestionPipeline(input.schoolId, rawRecords);
+                                        console.log(`🛸 [PIPELINE 1] Ingested ${ingestionResult.accepted} jobs for ${input.schoolName}`);
+                                        if (ingestionResult.acceptedFingerprints.length > 0) {
+                                            await runEnrichmentPipeline(input.schoolId, ingestionResult.acceptedFingerprints);
+                                        }
+                                    } catch (pipelineErr) {
+                                        console.error('🛸 [PIPELINE 1/2] Error during ingestion/enrichment:', pipelineErr);
+                                    }
+
                                     await updateDocument('schools', input.schoolId, {
                                         lastScrapedAt: freshLastScrapedAt,
                                         cachedStability: freshReport,
                                         isRevalidating: false,
                                         revalidationStatus: 'success',
                                         revalidationError: null,
-                                        revalidationCompletedAt: admin.firestore.Timestamp.now()
+                                        revalidationCompletedAt: new Date().toISOString()
                                     });
                                 })().catch((err) => console.error("Failed to update school stability details:", err));
                             }

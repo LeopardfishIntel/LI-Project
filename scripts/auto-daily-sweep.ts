@@ -40,6 +40,7 @@ export async function run24HourSweep() {
           name: data.schoolname || data.name || 'Unknown School',
           city: data.city || '',
           country: data.country || '',
+          estimatedStaffBase: data.estimatedStaffBase || 100,
           lastScraped
         });
       }
@@ -66,6 +67,7 @@ export async function run24HourSweep() {
             const res = await getSchoolStabilityReport({
               schoolId: school.id,
               schoolName: school.name,
+              estimatedStaffBase: school.estimatedStaffBase || 100,
               city: school.city,
               country: school.country,
               forceRefresh: true

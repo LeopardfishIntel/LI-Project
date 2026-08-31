@@ -15,13 +15,14 @@ import { parseClosingDate } from '@/lib/crawler/dateParser';
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, Globe
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
 import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
-import { canonicalCountry } from '@/lib/calculations';
+import { canonicalCountry, calculateSchoolSavingsForStatus, findCostOfLiving } from '@/lib/calculations';
+import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 
 const cleanSchoolName = (raw: string): string => {
   if (!raw) return "";
@@ -46,27 +47,6 @@ const formatDateCustom = (dateInput: any): string => {
   return `${day} ${month} ${year}`;
 };
 
-const getCleanSourceLabel = (sourceStr: string, applyUrlStr: string): string => {
-  const url = (applyUrlStr || "").toLowerCase();
-  if (url.includes("tes.com")) return "TES";
-  if (url.includes("schrole.com")) return "Schrole";
-  if (url.includes("searchassociates.com")) return "Search Associates";
-  if (url.includes("teacherhorizons.com")) return "Teacher Horizons";
-  if (url.includes("guardianjobs") || url.includes("theguardian.com")) return "Guardian Jobs";
-  if (url.includes("edvectus")) return "Edvectus";
-  if (url.includes("teachaway")) return "Teach Away";
-  if (url.includes("eteach")) return "eTeach";
-  if (url.includes("lever.co")) return "Lever ATS";
-  if (url.includes("greenhouse.io")) return "Greenhouse ATS";
-  if (url.includes("workday")) return "Workday ATS";
-  if (url.includes("bamboohr")) return "BambooHR ATS";
-  
-  if (sourceStr && sourceStr.length > 0 && sourceStr.length < 25 && !sourceStr.includes("(") && !sourceStr.includes("Posted:")) {
-    return sourceStr;
-  }
-  return "School Web";
-};
-
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
 // A helper to parse salary numbers (e.g., "$4,150.00" -> 4150)
@@ -78,6 +58,31 @@ const parseSalary = (val: any): number => {
 };
 
 // Deterministic fixed reference ID generator (replaces sequential rank numbers)
+
+const getJobCardReference = (job: any): string => {
+  if (!job) return "";
+  const schoolNum = (job.schoolId || "").replace(/^FLIS/i, "");
+  
+  let jobIdNum = "";
+  if (job.id) {
+    const match = String(job.id).match(/(\d+)$/);
+    if (match) {
+      jobIdNum = match[1];
+    }
+  }
+  if (!jobIdNum && job.source_url) {
+    const match = String(job.source_url).match(/(\d+)\/?$/);
+    if (match) {
+      jobIdNum = match[1];
+    }
+  }
+  if (!jobIdNum) {
+    jobIdNum = getFixedJobRef(job).replace(/^REF-/i, "");
+  }
+
+  return schoolNum ? `${schoolNum}/${jobIdNum}` : jobIdNum;
+};
+
 const getFixedJobRef = (job: any): string => {
   if (!job) return "REF-1000";
   const str = job.id || job.jobFingerprint || job.applyUrl || job.title || "";
@@ -109,6 +114,9 @@ interface FeaturedJobCacheDoc {
   // Fields populated by Pipeline 2
   searchTokens?: string[];
   savingsPotentialSingle?: number;
+  savingsByStatus?: Record<string, number>;
+  salaryRange?: string;
+  housingProvision?: string;
   department?: string;
   curriculum?: string;
   schoolRating?: number;
@@ -243,6 +251,13 @@ export default function FeaturedJobsPage() {
   const { data: cacheData, isLoading: loadingCache, error: errorCache } = useCollection<any>(cacheQuery);
   const { data: adminJobsData, isLoading: loadingAdminJobs, error: errorAdmin } = useCollection<any>(adminJobsQuery);
   const { data: schoolsData, isLoading: loadingSchools, error: errorSchools } = useCollection<any>(schoolsQuery);
+  // Query 3: Locations Cost of Living — loaded for dynamic status savings calculation
+  const colQuery = useMemoFirebase(
+    () => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null),
+    [firestore, mounted]
+  );
+  const { data: colData } = useCollection<any>(colQuery);
+
 
   // Aliases for loading/error state used in JSX (preserved for JSX compat)
   const loadingPublicJobs = loadingCache;
@@ -258,15 +273,7 @@ export default function FeaturedJobsPage() {
     }, {});
   }, [schoolsData]);
 
-  // Family-status savings multipliers (applied client-side to savingsPotentialSingle)
-  const FAMILY_MULTIPLIER: Record<string, number> = {
-    'Single': 1.0,
-    'Married (sole earner)': 1.9,
-    'Married (dual income)': 1.9,
-    'Family +1': 2.3,
-    'Family +2': 2.65,
-    'Family +3': 3.0,
-  };
+
 
   // Handle manual verify & sync for a single school via Cloud Task queue worker
   const handleRefreshSchool = async (schoolId: string, schoolName: string, city: string, country: string) => {
@@ -462,7 +469,7 @@ export default function FeaturedJobsPage() {
     if (activeTab === 'public') {
       if (!cacheData || cacheData.length === 0) return [];
 
-      const familyScalar = FAMILY_MULTIPLIER[familyStatus] ?? 1.0;
+
 
       cacheData.forEach((cacheDoc: FeaturedJobCacheDoc) => {
         // MULTI-ENGINE SOURCE FILTER
@@ -470,7 +477,8 @@ export default function FeaturedJobsPage() {
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
         const isTes = sourceUpper === 'TES' && applyUrlLower.includes('tes.com/jobs/vacancy/');
         const isNae = sourceUpper === 'NORD ANGLIA' && applyUrlLower.includes('careers.nordangliaeducation.com/job/');
-        if (!isTes && !isNae) return;
+        const isGrc = sourceUpper === 'GRC' && (applyUrlLower.includes('grcfair.org/job-details/') || applyUrlLower.includes('grcfair.org/job/'));
+        if (!isTes && !isNae && !isGrc) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -498,9 +506,22 @@ export default function FeaturedJobsPage() {
         }
         seenJobKeys.add(jobKey);
 
-        // Apply family-status multiplier to pre-computed single baseline
-        const baseline = cacheDoc.savingsPotentialSingle ?? 0;
-        const savingsPotential = Math.max(0, Math.round(baseline * familyScalar));
+        // Leopardfish grounded calculation for target family status
+        let savingsPotential = cacheDoc.savingsByStatus?.[familyStatus];
+        if (savingsPotential === undefined) {
+          const school = schoolsMap[cacheDoc.schoolId];
+          const salaryNum = parseFloat(String(school?.salaryRange || school?.salary || cacheDoc.salaryRange || "").replace(/[^0-9.]/g, "")) || 3500;
+          const colRecord = findCostOfLiving(cacheDoc.city || school?.city, cacheDoc.country || school?.country, colData || []);
+          const housingProvision = school?.housingprovision || cacheDoc.housingProvision || "";
+          savingsPotential = calculateSchoolSavingsForStatus(
+            salaryNum,
+            familyStatus,
+            colRecord,
+            housingProvision,
+            cacheDoc.country || school?.country || "",
+            cacheDoc.paidInUSD
+          );
+        }
 
         let closesDate: Date | null = null;
         if (cacheDoc.closingDateMillis) {
@@ -512,7 +533,7 @@ export default function FeaturedJobsPage() {
 
         jobsList.push({
           id: cacheDoc.id,
-          title: cacheDoc.title || 'Teaching Vacancy',
+          title: sanitizeJobTitle(cacheDoc.title || 'Teaching Vacancy', cacheDoc.schoolName),
           department: cacheDoc.department || 'Secondary',
           source: cacheDoc.source || 'Official Source',
           source_url: cacheDoc.applyUrl || '',
@@ -612,7 +633,7 @@ export default function FeaturedJobsPage() {
     });
 
     return jobsList;
-  }, [cacheData, adminJobsData, schoolsMap, familyStatus, activeTab, FAMILY_MULTIPLIER]);
+  }, [cacheData, adminJobsData, schoolsMap, familyStatus, activeTab, colData]);
 
   // Derived filters data
   const availableCurriculums = useMemo(() => {
@@ -628,13 +649,18 @@ export default function FeaturedJobsPage() {
   const engineCounts = useMemo(() => {
     let tes = 0;
     let nae = 0;
-    cacheData?.forEach((cacheDoc: any) => {
-      const srcUpper = String(cacheDoc.source || "").toUpperCase();
-      if (srcUpper === "TES") tes++;
-      else if (srcUpper === "NORD ANGLIA") nae++;
+    let grc = 0;
+    allJobs.forEach(job => {
+      const jobSrcUpper = String(job.source || "").toUpperCase();
+      const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
+      if (jobSrcUpper === "TES" || sourcesUpper.includes("TES")) tes++;
+      if (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA")) nae++;
+      if (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC")) grc++;
     });
-    return { tes, nae, total: cacheData?.length ?? 0 };
-  }, [cacheData]);
+    return { ALL: allJobs.length, TES: tes, "NORD ANGLIA": nae, GRC: grc };
+  }, [allJobs]);
+
+
 
   const availableSubjects = [
     "Maths", "Science", "Physics", "Chemistry", "Biology", 
@@ -676,15 +702,18 @@ export default function FeaturedJobsPage() {
       // Search Engine Protocol Filter
       if (selectedSourceEngine !== "ALL") {
         const jobSrcUpper = String(job.source || "").toUpperCase();
-        const hasTes = jobSrcUpper === "TES" || job.sources?.includes("TES");
-        const hasNae = jobSrcUpper === "NORD ANGLIA" || job.sources?.includes("Nord Anglia");
+        const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
+        const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES");
+        const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA");
+        const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC");
         if (selectedSourceEngine === "TES" && !hasTes) return false;
         if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
+        if (selectedSourceEngine === "GRC" && !hasGrc) return false;
       }
 
       return true;
     });
-  }, [allJobs, searchQuery, selectedCurriculums, selectedSubjects, minSavings, minRating]);
+  }, [allJobs, searchQuery, selectedCurriculums, selectedSubjects, minSavings, minRating, selectedSourceEngine]);
 
   // Sort Logic
   const sortedJobs = useMemo(() => {
@@ -948,18 +977,12 @@ export default function FeaturedJobsPage() {
             {/* Search Engine Selection Protocol Control Bar */}
             {!(loadingPublicJobs || loadingAdminJobs) && (
               <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl">
-                <div className="flex items-center gap-2">
-                  <Globe className="size-4 text-[#FF6B35]" />
-                  <span className="text-xs font-black text-white uppercase tracking-wider">
-                    Select Search Engine Protocol:
-                  </span>
-                </div>
-
                 <div className="flex flex-wrap items-center gap-2">
                   {[
-                    { id: "ALL", label: "All Vacancies" },
-                    { id: "TES", label: "TES" },
-                    { id: "NORD ANGLIA", label: "Nord Anglia" }
+                    { id: "ALL", label: `All Vacancies (${engineCounts.ALL})` },
+                    { id: "TES", label: `TES (${engineCounts.TES})` },
+                    { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
+                    { id: "GRC", label: `GRC Search (${engineCounts.GRC})` }
                   ].map((engine) => (
                     <button
                       key={engine.id}
@@ -974,6 +997,7 @@ export default function FeaturedJobsPage() {
                     >
                       {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
                       {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
+                      {engine.id === "GRC" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
                       {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
                       {engine.label}
                     </button>
@@ -1100,9 +1124,6 @@ export default function FeaturedJobsPage() {
                       {/* Left Header Title & Subheader */}
                       <div className="space-y-1 text-left flex-1">
                         <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex flex-wrap items-center gap-2">
-                          <span className="bg-slate-800/80 border border-slate-700/60 text-slate-400 px-2 py-0.5 text-[11px] font-mono font-medium rounded-sm shrink-0 tracking-wider">
-                            ID: {getFixedJobRef(job)}
-                          </span>
                           <a 
                             href={job.source_url}
                             target="_blank"
@@ -1112,74 +1133,6 @@ export default function FeaturedJobsPage() {
                           >
                             {job.title}
                           </a>
-                          {(() => {
-                            const now = new Date();
-                            
-                            // 1. NEW Badge Condition: (now - scrapedAt) <= 3 days (72 hours)
-                            let isNew = false;
-                            if (job.scrapedAtRaw) {
-                              const scrapedTime = job.scrapedAtRaw.seconds 
-                                ? job.scrapedAtRaw.seconds * 1000 
-                                : new Date(job.scrapedAtRaw).getTime();
-                              if ((now.getTime() - scrapedTime) <= 3 * 24 * 60 * 60 * 1000) {
-                                isNew = true;
-                              }
-                            }
-
-                            // 2. CLOSING SOON Badge Condition: (closingDate - now) <= 5 days AND closingDate > now
-                            let isClosingSoon = false;
-                            if (job.closesDateRaw) {
-                              const closesTime = job.closesDateRaw.getTime();
-                              const diffTime = closesTime - now.getTime();
-                              if (diffTime > 0 && diffTime <= 5 * 24 * 60 * 60 * 1000) {
-                                isClosingSoon = true;
-                              }
-                            }
-
-                            return (
-                              <>
-                                {isNew && (
-                                  <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse">
-                                    NEW
-                                  </span>
-                                )}
-                                {/* Multi-Engine Dual Source Badges */}
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  {(job.sources && job.sources.length > 0 ? job.sources : [job.source]).map((src) => {
-                                    const srcUpper = String(src).toUpperCase();
-                                    const srcUrl = (job.sourceUrls && job.sourceUrls[src]) || job.source_url;
-                                    return (
-                                      <a
-                                        key={src}
-                                        href={srcUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={cn(
-                                          "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
-                                          srcUpper === "NORD ANGLIA"
-                                            ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
-                                            : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
-                                        )}
-                                        title={`Open official ${src} vacancy link (opens in new tab)`}
-                                      >
-                                        {src} ↗
-                                      </a>
-                                    );
-                                  })}
-                                </div>
-                                {isClosingSoon && (
-                                  <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                                    CLOSING SOON
-                                  </span>
-                                )}
-                                {(job.isRollingDeadline || !job.closesDateRaw) && (
-                                  <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
-                                    <Clock className="size-2.5" /> ROLLING DEADLINE
-                                  </span>
-                                )}
-                              </>
-                            );
-                          })()}
                           {job.schoolId.startsWith('AGNT') && (
                             <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
                               🏷️ School Agent Placement
@@ -1206,26 +1159,31 @@ export default function FeaturedJobsPage() {
                         </div>
                       </div>
 
-                      {/* Right Header Deadline */}
-                      <div className="flex items-center gap-2 text-[11px] text-slate-400 font-semibold shrink-0 pt-1">
-                        <Calendar className="size-3.5 text-[#FF6B35]" />
-                        {activeTab === 'admin_staging' ? (
-                          <div className="flex items-center gap-1">
-                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
-                            <input
-                              type="date"
-                              value={
-                                job.closesDateRaw
-                                  ? job.closesDateRaw.toISOString().substring(0, 10)
-                                  : ""
-                              }
-                              onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
-                              className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
-                            />
-                          </div>
-                        ) : (
-                          <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
-                        )}
+                      {/* Right Header Deadline & Leopardfish ID */}
+                      <div className="flex flex-col items-end shrink-0 pt-1">
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
+                          <Calendar className="size-3.5 text-[#FF6B35]" />
+                          {activeTab === 'admin_staging' ? (
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
+                              <input
+                                type="date"
+                                value={
+                                  job.closesDateRaw
+                                    ? job.closesDateRaw.toISOString().substring(0, 10)
+                                    : ""
+                                }
+                                onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
+                                className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                              />
+                            </div>
+                          ) : (
+                            <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+                          )}
+                        </div>
+                        <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider mt-0.5">
+                          {getJobCardReference(job)}
+                        </div>
                       </div>
                     </div>
 
@@ -1233,22 +1191,80 @@ export default function FeaturedJobsPage() {
 
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full pt-1">
-                      {/* Left Column: Source Link */}
-                      <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider flex items-center shrink-0">
-                        SOURCE:&nbsp;
-                        <a 
-                          href={job.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-[#FF6B35] underline decoration-slate-600 hover:decoration-[#FF6B35] underline-offset-2 transition-colors duration-200"
-                        >
-                          {getCleanSourceLabel(job.source, job.source_url).toUpperCase()}
-                        </a>
-                      </div>
+                      {/* Left Column: Badges & Metric Pills */}
+                      <div className="flex flex-wrap items-center justify-start gap-2.5">
+                        {/* NEW, CLOSING SOON & Search Engine Source Badges */}
+                        {(() => {
+                          const now = new Date();
+                          
+                          let isNew = false;
+                          if (job.scrapedAtRaw) {
+                            const scrapedTime = job.scrapedAtRaw.seconds 
+                              ? job.scrapedAtRaw.seconds * 1000 
+                              : new Date(job.scrapedAtRaw).getTime();
+                            if ((now.getTime() - scrapedTime) <= 3 * 24 * 60 * 60 * 1000) {
+                              isNew = true;
+                            }
+                          }
 
-                      {/* Center Column: Metric Pills */}
-                      <div className="flex flex-wrap items-center justify-center gap-3">
-                        
+                          let isClosingSoon = false;
+                          if (job.closesDateRaw) {
+                            const closesTime = job.closesDateRaw.getTime();
+                            const diffTime = closesTime - now.getTime();
+                            if (diffTime > 0 && diffTime <= 5 * 24 * 60 * 60 * 1000) {
+                              isClosingSoon = true;
+                            }
+                          }
+
+                          return (
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {isNew && (
+                                <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse">
+                                  NEW
+                                </span>
+                              )}
+
+                              {/* Multi-Engine Dual Source Badges */}
+                              {(job.sources && job.sources.length > 0 ? job.sources : [job.source]).map((src) => {
+                                const srcUpper = String(src).toUpperCase();
+                                const srcUrl = (job.sourceUrls && job.sourceUrls[src]) || job.source_url;
+                                return (
+                                  <a
+                                    key={src}
+                                    href={srcUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={cn(
+                                      "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
+                                      srcUpper === "NORD ANGLIA"
+                                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                                        : srcUpper === "GRC"
+                                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                        : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
+                                    )}
+                                    title={`Open official ${src} vacancy link (opens in new tab)`}
+                                  >
+                                    {src} ↗
+                                  </a>
+                                );
+                              })}
+
+                              {isClosingSoon && (
+                                <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                                  CLOSING SOON
+                                </span>
+                              )}
+
+                              {(job.isRollingDeadline || !job.closesDateRaw) && (
+                                <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
+                                  <Clock className="size-2.5" /> ROLLING DEADLINE
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
+
+                        {/* Estimated Savings Pill */}
                         <span 
                           className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 border border-white/5 rounded-full text-xs font-bold text-[#FF6B35] shrink-0"
                         >
@@ -1295,10 +1311,10 @@ export default function FeaturedJobsPage() {
                             {calculatedIsAdmin && (
                               <button
                                 onClick={() => handleMoveToPending(job.schoolId, job.id)}
-                                className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-400/40 px-3 py-2 rounded-sm transition-all"
+                                className="inline-flex items-center justify-center p-2 text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-400/40 rounded-sm transition-all cursor-pointer"
                                 title="Unpublish from live feed and move to Staging / Pending Review"
                               >
-                                <Clock className="size-3.5" /> Move to Pending
+                                <Clock className="size-4" />
                               </button>
                             )}
                             <a 

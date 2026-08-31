@@ -7,6 +7,12 @@ export async function GET(request: Request) {
     const limitParam = searchParams.get('limit');
     const forceAll = searchParams.get('force') === 'true';
 
+    // 🛸 Pipeline 3 — Janitor: fire-and-forget (non-blocking)
+    import('@/lib/pipelines/pipeline3-janitor')
+      .then(({ runJanitorPipeline }) => runJanitorPipeline())
+      .then(r => console.log(`🛸 [DAILY SWEEP] Janitor — expired=${r.expired} promoted=${r.promoted} durationMs=${r.durationMs}`))
+      .catch(err => console.error('🛸 [DAILY SWEEP] Janitor failed (non-fatal):', err));
+
     const schools = await getCollectionDocs('schools');
     const now = Date.now();
     const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
@@ -76,6 +82,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      janitorRan: true,
       totalSchoolsInDatabase: schools.length,
       staleSchoolsCount: staleSchools.length,
       triggeredCount: targets.length,

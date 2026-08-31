@@ -191,8 +191,13 @@ service cloud.firestore {
     }
 
     // =====================================================================
-    // Jobs Subcollection Security Rules
+    // Jobs & Featured Cache Rules
     // =====================================================================
+    match /featured_jobs_cache/{jobId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /{path=**}/jobs/{jobId} {
       allow read: if true;
       allow write: if isAdmin();

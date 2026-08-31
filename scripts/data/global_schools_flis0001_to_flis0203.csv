@@ -1,0 +1,209 @@
+schoolId,schoolname,country,city,careersPageUrl,tesEmployerSlug,tesOrganizationId
+FLIS0001,German Swiss Int'l,Hong Kong,Hong Kong,https://www.gsis.edu.hk/en/about-us/careers/job-openings,german-swiss-international-school-1057613,1057613
+FLIS0002,St. Paul's Co-ed,Hong Kong,Hong Kong,https://www.spcc.edu.hk/jobs-and-tenders,,
+FLIS0003,K. International,Japan,Tokyo,https://www.kist.ed.jp/node/25,k-international-school-tokyo-1076077,1076077
+FLIS0004,Shanghai American,China,Shanghai,https://www.saschina.org/about-sas/work-sas,,1279504
+FLIS0005,Diocesan Boys',Hong Kong,Hong Kong,https://www.dbs.edu.hk/index.php?s=dbs&m=jobopenings,,
+FLIS0006,UWC South East Asia,Singapore,Singapore,https://www.uwcsea.edu.sg/uwcsea-careers,uwc-south-east-asia-1057094,1061278
+FLIS0007,Amman Academy,Jordan,Amman,https://www.nordangliaeducation.com/amman-academy/careers,,
+FLIS0008,Shanghai High Int'l,China,Shanghai,https://www.shsid.org/ABOUT_US/Career_at_SHSID.htm,,
+FLIS0009,Dhirubhai Ambani,India,Mumbai,https://www.dais.edu.in/careers.html,,
+FLIS0010,Tanglin Trust,Singapore,Singapore,https://www.tts.edu.sg/careers,tanglin-trust-school-1057206,1057206
+FLIS0011,G.T. (Ellen Yeung),Hong Kong,Hong Kong,https://www.gtcollege.edu.hk/recruitment,,
+FLIS0012,GD Country Garden,China,Foshan,https://www.bgy.gd.cn/job/,guangdong-country-garden-school--gcgs--1058223,1058223
+FLIS0013,St. Stephen's,Hong Kong,Hong Kong,https://www.ssc.edu.hk/index.php?option=com_content&view=article&id=82,,
+FLIS0014,ACS International,Singapore,Singapore,https://www.acsinternational.edu.sg/careers/,acs-international-singapore-1074273,1074273
+FLIS0015,European Azerbaijan,Azerbaijan,Baku,https://eas.edu.az/careers/,the-european-azerbaijan-school-1066426,1066426
+FLIS0016,NPS International,Singapore,Singapore,https://www.npsinternational.edu.sg/careers,,
+FLIS0017,The ISF Academy,Hong Kong,Hong Kong,https://academy.isf.edu.hk/careers/,the-independent-schools-foundation-academy-isf-1273163,1273163
+FLIS0018,Dulwich Beijing,China,Beijing,https://beijing.dulwich.org/careers,dulwich-college-beijing-1057433,1057433
+FLIS0019,Singapore Int'l (HK),Hong Kong,Hong Kong,https://www.singapore.edu.hk/careers/,singapore-international-school-1262787,1262787
+FLIS0020,PLK Choi Kai Yau,Hong Kong,Hong Kong,http://www.cky.edu.hk/recruitment/,,
+FLIS0021,YK Pao School,China,Shanghai,https://www.ykpaoschool.cn/careers,yk-pao-school-1057565,1057565
+FLIS0022,Step by Step,India,Noida,https://stepbystep.ed.in/careers/,,
+FLIS0023,Dulwich Pudong,China,Shanghai,https://shanghai-pudong.dulwich.org/careers,dulwich-college-shanghai-pudong-dcs-1057370,1057370
+FLIS0024,SJI International,Singapore,Singapore,https://www.sji-international.com.sg/about/careers,sji-international-school-1055929,1055929
+FLIS0025,Canadian Int'l (HK),Hong Kong,Hong Kong,https://www.cdnis.edu.hk/careers,canadian-international-school-of-hong-kong-1071231,1071231
+FLIS0026,Qatar Academy,Qatar,Doha,https://www.qf.org.qa/careers,qatar-foundation-1071381,1071381
+FLIS0027,GEMS World Dubai,UAE,Dubai,https://www.gemsworldacademy-dubai.com/en/Careers,gems-world-academy-dubai-1060996,1060996
+FLIS0028,Aldar Academies,UAE,Abu Dhabi,https://aldareducation.com/careers/,aldar-education-1220983,1220983
+FLIS0029,JESS Dubai,UAE,Dubai,https://www.jess.sch.ae/careers,jumeirah-english-speaking-school-jess-1055094,1055094
+FLIS0030,Neev Academy,India,Bengaluru,https://neevacademy.org/careers/,,
+FLIS0031,Bombay Int'l,India,Mumbai,https://bis.edu.in/careers/,,
+FLIS0032,Hwa Chong Int'l,Singapore,Singapore,https://www.hcis.edu.sg/careers/,,
+FLIS0033,IS Nanshan,China,Shenzhen,https://www.isnsz.com/careers,,
+FLIS0034,Wellington Shanghai,China,Shanghai,https://shanghai.wellingtoncollege.cn/careers,wellington-college-international-shanghai-1067101,1067101
+FLIS0035,Leman Chengdu,China,Chengdu,https://www.nordangliaeducation.com/lis-chengdu/careers,leman-international-school-chengdu-1071034,1071034
+FLIS0036,GIIS SMART,Singapore,Singapore,https://singapore.globalindianschool.org/careers,,
+FLIS0037,New PORG Prague,Czechia,Prague,https://www.porg.cz/en/careers,porg-prague-1057493,1057493
+FLIS0038,Ecole Jeannine Manuel,France,Paris,https://www.ecolejeanninemanuel.org/en/careers,ecole-jeannine-manuel-paris-1057899,1057899
+FLIS0039,St Catherine's,Greece,Athens,https://www.stcatherines.gr/careers/,st-catherine-s-british-school-1065747,1065747
+FLIS0040,British Milan,Italy,Milan,https://www.britishschoolmilan.com/careers,the-british-school-of-milan-1057215,1057215
+FLIS0041,IS Monaco,Monaco,Monaco,https://www.ismonaco.org/careers,international-school-of-monaco-1057564,1057564
+FLIS0042,St Louis Milan,Italy,Milan,https://www.stlouisschool.com/careers,st-louis-school-caviglia-1058481,1058481
+FLIS0043,Heritage Gurugram,India,Gurugram,https://www.heritagexperiential.org/careers/,,
+FLIS0044,Cheltenham Muscat,Oman,Muscat,https://cheltenhammuscat.om/careers/,cheltenham-muscat-1224896,1224896
+FLIS0045,TISB Bangalore,India,Bengaluru,https://www.tisb.org/careers,,
+FLIS0046,Calcutta Int'l,India,Kolkata,https://www.calcat.in/careers/,,
+FLIS0047,British Manila,Philippines,Manila,https://www.britishschoolmanila.org/careers,the-british-school-manila-1057671,1057671
+FLIS0048,SSIS Shanghai,China,Shanghai,https://www.ssis.asia/careers/,,
+FLIS0049,Dulwich Singapore,Singapore,Singapore,https://singapore.dulwich.org/careers,dulwich-college-singapore-1062744,1062744
+FLIS0050,Dulwich Suzhou,China,Suzhou,https://suzhou.dulwich.org/careers,,
+FLIS0051,Aiglon College,Switzerland,Villars,https://www.aiglon.ch/careers,aiglon-college-1057219,1057219
+FLIS0052,ACS Athens,Greece,Athens,https://www.acs.gr/careers,,
+FLIS0053,IS Prague,Czechia,Prague,https://www.isp.cz/careers,,
+FLIS0054,Frankfurt Int'l,Germany,Frankfurt,https://www.fis.edu/careers,frankfurt-international-school-1277429,1277429
+FLIS0055,King's Alicante,Spain,Alicante,https://alicante.kingscollegeschool.es/careers/,king-s-college-school-alicante-1055666,1055666
+FLIS0056,St George's Rome,Italy,Rome,https://www.stgeorge.it/careers,st-george-s-british-international-school-rome-1058020,1058020
+FLIS0057,Oak House BCN,Spain,Barcelona,https://www.oakhouseschool.com/careers,oak-house-school-1057767,1057767
+FLIS0058,IS Lausanne,Switzerland,Lausanne,https://www.isl.ch/careers,,
+FLIS0059,St John's Waterloo,Belgium,Waterloo,https://www.stjohns.be/careers,st-john-s-international-school-1057076,1057076
+FLIS0060,Beau Soleil,Switzerland,Villars,https://www.nordangliaeducation.com/beau-soleil/careers,coll-ge-alpin-beau-soleil-sa-1057796,1057796
+FLIS0061,English College Prague,Czechia,Prague,https://www.englishcollege.cz/careers/,english-college-in-prague-1058144,1058144
+FLIS0062,American Milan,Italy,Milan,https://www.asmilan.org/careers,,
+FLIS0063,St George's Montreux,Switzerland,Montreux,https://www.stgeorges.ch/careers,st-george-s-international-school-1057262,1057262
+FLIS0064,PaRK Lisbon,Portugal,Lisbon,https://www.park-is.com/careers/,park-international-school-alfragide-1179041,1179041
+FLIS0065,Zurich Int'l,Switzerland,Zurich,https://www.zis.ch/careers,,
+FLIS0066,British Brussels,Belgium,Brussels,https://www.britishschool.be/careers,the-british-school-of-brussels-1057727,1057727
+FLIS0067,St Peter's BCN,Spain,Barcelona,https://stpeters.es/careers/,st-peter-s-school-barcelona-1056328,1056328
+FLIS0068,Int'l College Spain,Spain,Madrid,https://www.nordangliaeducation.com/ics-madrid/careers,international-college-spain-1058692,1058692
+FLIS0069,Aloha College,Spain,Marbella,https://aloha-college.com/careers/,aloha-college-1057357,1057357
+FLIS0070,Munich International,Germany,Munich,https://www.mis-munich.de/careers,,
+FLIS0071,Benjamin Franklin,Spain,Barcelona,https://www.bfischool.org/about-us/careers,benjamin-franklin-international-school-1062233,1062233
+FLIS0072,Leysin American,Switz,Leysin,https://www.las.ch/about/careers,,
+FLIS0073,Bonn International,Germany,Bonn,https://www.bonn-is.de/work/teaching-positions,,
+FLIS0074,IS Amsterdam,Netherlands,Amsterdam,https://www.isa.nl/careers,,
+FLIS0075,American School BCN,Spain,Barcelona,https://www.asbarcelona.com/careers,,
+FLIS0076,Haut-Lac Int'l,Switz,St-Légier,https://www.haut-lac.ch/en/careers/,haut-lac-international-bilingual-school-1079043,1079043
+FLIS0077,American Vienna,Austria,Vienna,https://www.ais.at/employment,,
+FLIS0078,College du Leman,Switz,Geneva,https://www.nordangliaeducation.com/cdl-geneva/careers,nord-anglia-education-1065805,1065805
+FLIS0079,IS Brussels,Belgium,Brussels,https://www.isb.be/careers,international-school-of-brussels-1055958,1055958
+FLIS0080,Riverside Prague,Czechia,Prague,https://www.riversideschool.cz/contact/vacancies/,riverside-international-school-1175419,1175419
+FLIS0081,IS Hellerup,Denmark,Copenhagen,https://ish.dk/vacancies/,,
+FLIS0082,St George's Cologne,Germany,Cologne,https://www.stgeorgesschool.com/careers,st-george-s-the-british-international-school-cologne-1058656,1058656
+FLIS0083,IS Düsseldorf,Germany,Düsseldorf,https://www.isdedu.de/careers,international-school-of-d-sseldorf-e-v-1056279,1056279
+FLIS0084,IS Zug & Luzern,Switz,Zug,https://www.iszl.ch/careers,,
+FLIS0085,Metropolitan Frankfurt,Germany,Frankfurt,https://m-s-f.de/careers/,,
+FLIS0086,Ermitage Int'l,France,Paris,https://www.ermitage.fr/en/careers,ermitage-international-school-1066851,1066851
+FLIS0087,Oslo International,Norway,Oslo,https://www.oslointernationalschool.no/employment,,
+FLIS0088,American School Paris,France,Paris,https://www.asparis.org/employment,,
+FLIS0089,St Julian's School,Portugal,Lisbon,https://www.stjulians.com/work-with-us/vacancies,st-julian-s-school-1058006,1058006
+FLIS0090,American School Madrid,Spain,Madrid,https://www.asmadrid.org/careers,,
+FLIS0091,British Int'l Budapest,Hungary,Budapest,https://www.nordangliaeducation.com/bis-budapest/careers,the-british-international-school-budapest-1057761,1057761
+FLIS0092,St George's Munich,Germany,Munich,https://www.stgeorgesschool.com/careers,st-george-s-the-british-international-school-munich-1074432,1074432
+FLIS0093,Bavarian International,Germany,Munich,https://www.bis-school.com/careers,,
+FLIS0094,International Basel,Switz,Basel,https://www.isbasel.ch/careers,international-school-basel-reinach-campus-1055110,1055110
+FLIS0095,TASIS Switzerland,Switz,Lugano,https://switzerland.tasis.com/employment,the-american-school-in-switzerland-tasis-1059117,1059117
+FLIS0096,IS Athens,Greece,Athens,https://www.isa.edu.gr/about/join-our-team,,
+FLIS0097,Danube International School Vienna,Austria,Vienna,https://www.danubeschool.com/community/employment,danube-international-school-vienna-1057637,1057637
+FLIS0098,British BCN (Nexus),Spain,Barcelona,https://www.britishschoolbarcelona.com/careers,the-british-school-of-barcelona-1169587,1169587
+FLIS0099,Heidelberg Int'l,Germany,Heidelberg,https://www.hischool.de/employment,heidelberg-international-school--h-i-s---1067664,1067664
+FLIS0100,NIST International,Thailand,Bangkok,https://www.nist.ac.th/careers,nist-international-school-1062814,1062814
+FLIS0101,British International School Riyadh,Saudi Arabia,Riyadh,https://www.bisr.com.sa/careers,british-international-school-riyadh-1057688,1057688
+FLIS0102,American International School Riyadh,Saudi Arabia,Riyadh,https://www.aisr.org/employment,,
+FLIS0103,SEK International School Riyadh,Saudi Arabia,Riyadh,https://riyadh.sek.international/work-with-us/,sek-international-school-riyadh-1260795,1260795
+FLIS0104,Reigate Grammar School Riyadh,Saudi Arabia,Riyadh,https://rgs-riyadh.edu.sa/careers/,reigate-grammar-school-riyadh-1263403,1263403
+FLIS0105,Downe House Riyadh,Saudi Arabia,Riyadh,https://www.downehouseriyadh.com/careers/,downe-house-riyadh-1262215,1262215
+FLIS0106,Al Faris International School,Saudi Arabia,Riyadh,https://alfaris.edu.sa/careers/,,
+FLIS0107,Misk Schools,Saudi Arabia,Riyadh,https://miskschools.edu.sa/careers,misk-schools-1081677,1081677
+FLIS0108,Saud International School,Saudi Arabia,Riyadh,https://sis.edu.sa/careers/,,
+FLIS0109,British International School Abu Dhabi,UAE,Abu Dhabi,https://www.nordangliaeducation.com/bis-abu-dhabi/careers,the-british-international-school-abu-dhabi-1058518,1058518
+FLIS0110,Nord Anglia International School Abu Dhabi,UAE,Abu Dhabi,https://www.nordangliaeducation.com/nas-abu-dhabi/careers,nord-anglia-international-school-abu-dhabi-1265059,1265059
+FLIS0111,Cranleigh Abu Dhabi,UAE,Abu Dhabi,https://www.cranleigh.ae/careers,cranleigh-abu-dhabi-1067935,1067935
+FLIS0112,Brighton College Abu Dhabi,UAE,Abu Dhabi,https://www.brightoncollege.ae/careers,brighton-college-abu-dhabi-1062693,1062693
+FLIS0113,Raha International School,UAE,Abu Dhabi,https://www.taaleem.ae/careers,raha-international-school-gardens-campus-1070644,1070644
+FLIS0114,Dubai College,UAE,Dubai,https://www.dubaicollege.org/recruitment,dubai-college-uae-1057286,1057286
+FLIS0115,Dubai British School,UAE,Dubai Jumeira,,dubai-british-school-jumeira-1265177,1265177
+FLIS0115,Dubai British School,UAE,Dubai Jumeirah Park,,dubai-british-school-jumeirah-park-1081671,1081671
+FLIS0115,Dubai British School,UAE,Dubai Mira,,dubai-british-school-mira-1255316,1255316
+FLIS0115,Dubai British School,UAE,Dubai Emirates Hills,,dubai-british-school-emirates-hills-1057169,1057169
+FLIS0116,Sunmarke School,UAE,Dubai,https://sunmarke.com/contact-us/work-with-us/,sunmarke-school-1077790,1077790
+FLIS0117,Nord Anglia International School Dubai,UAE,Dubai,https://www.nordangliaeducation.com/nas-dubai/careers,nord-anglia-international-school-dubai-1067785,1067785
+FLIS0118,Dubai English Speaking School,UAE,Dubai Oud Metha,https://dess.sch.ae/work-at-dess,dubai-english-speaking-school-oud-metha-1059044,1059044
+FLIS0118,Dubai English Speaking School,UAE,Dubai College,https://dess.sch.ae/work-at-dess,dubai-english-speaking-school-college-1057174,1057174
+FLIS0118,Dubai English Speaking School,UAE,Dubai Academic City,https://dess.sch.ae/work-at-dess,dubai-english-speaking-school-academic-city-1271801,1271801
+FLIS0119,Hartland International School,UAE,Dubai,https://www.hartlandinternational.com/current-vacancies/,hartland-international-school-1072119,1072119
+FLIS0120,Kent College Dubai,UAE,Dubai,https://www.eteach.com/careers/kentcollege/,kent-college-dubai-1081286,1081286
+FLIS0121,Repton School Dubai,UAE,Dubai,https://www.reptondubai.org/careers/,repton-school-dubai-1057021,1057021
+FLIS0122,Horizon International School,UAE,Dubai,https://hisdubai.ae/careers/,horizon-international-school-1060959,1060959
+FLIS0123,Compass International School Doha,Qatar,Doha,https://www.nordangliaeducation.com/cis-doha/careers,compass-international-school-doha-1276094,1276094
+FLIS0124,Etqan Global Academy,Qatar,Doha,https://www.nordangliaeducation.com/careers,,
+FLIS0125,British School of Kuwait,Kuwait,Kuwait City,https://www.bsk.edu.kw/careers,the-british-school-of-kuwait-bsk-1057365,1057365
+FLIS0126,British School Muscat,Oman,Muscat,https://www.britishschoolmuscat.com/work-for-us/vacancies,british-school-muscat-1055453,1055453
+FLIS0127,American International School of Muscat,Oman,Muscat,https://www.taism.com/employment,,
+FLIS0128,British School of Bahrain,Bahrain,Hamala,https://www.britishschoolbahrain.com/careers,british-school-of-bahrain-1057331,1057331
+FLIS0129,British International School Cairo,Egypt,Cairo,https://www.bisc.edu.eg/careers,the-british-international-school-cairo-1060109,1060109
+FLIS0130,Malvern College Egypt,Egypt,Cairo,https://malverncollege.edu.eg/careers/,malvern-college-egypt-1077433,1077433
+FLIS0131,El Alsson School,Egypt,Cairo,https://www.alsson.com/careers/,el-alsson-british-and-american-international-school-american-section-1056384,1056384
+FLIS0132,International School of Kenya,Kenya,Nairobi,https://www.isk.ac.ke/employment,,
+FLIS0133,Brookhouse School,Kenya,Nairobi,https://www.brookhouse.ac.ke/careers,brookhouse-schools-1057702,1057702
+FLIS0134,Braeburn Garden Estate,Kenya,Nairobi,https://gardenestate.braeburn.com/careers,braeburn-garden-estate-school-1065558,1065558
+FLIS0135,International School of Cape Town,South Africa,Cape Town,https://www.isct.co.za/careers,,
+FLIS0136,American International School of Johannesburg,South Africa,Joburg,https://www.aisj-jhb.com/employment,,
+FLIS0137,American International School of Cape Town,South Africa,Cape Town,https://www.aisct.org/employment/,,
+FLIS0138,British International School Hanoi,Vietnam,Hanoi,https://www.nordangliaeducation.com/bis-hanoi/careers,british-international-school-hanoi-1066631,1066631
+FLIS0139,British International School Ho Chi Minh City,Vietnam,HCMC,https://www.nordangliaeducation.com/bis-hcmc/careers,british-international-school-ho-chi-minh-city-1252077,1252077
+FLIS0140,UNIS Hanoi,Vietnam,Hanoi,https://www.unishanoi.org/employment,united-nations-international-school-of-hanoi-1061898,1061898
+FLIS0141,International School Ho Chi Minh City,Vietnam,HCMC,https://www.ishcmc.com/careers,international-school-ho-chi-minh-city-ishcmc-1057599,1057599
+FLIS0142,Alice Smith School,Malaysia,Kuala Lumpur,https://www.alice-smith.edu.my/careers,the-alice-smith-school-secondary-1052973,1052973
+FLIS0143,Marlborough College Malaysia,Malaysia,Johor,https://www.marlboroughcollegemalaysia.org/about/careers/,marlborough-college-malaysia-1065828,1065828
+FLIS0144,British International School Kuala Lumpur,Malaysia,KL,https://www.nordangliaeducation.com/bis-kl/careers,the-british-international-school-of-kuala-lumpur-1058039,1058039
+FLIS0145,Garden International School,Malaysia,KL,https://www.gardenschool.edu.my/careers/,garden-international-school-kuala-lumpur-1057218,1057218
+FLIS0146,Epsom College Malaysia,Malaysia,Seremban,https://www.epsomcollege.edu.my/careers/,epsom-college-malaysia-1061281,1061281
+FLIS0147,Mont'Kiara International School,Malaysia,KL,https://www.mkis.edu.my/careers,mont-kiara-international-school-1071798,1071798
+FLIS0148,Shrewsbury International School Riverside,Thailand,Bangkok,https://www.shrewsbury.ac.th/riverside/careers,shrewsbury-international-school-bangkok-riverside-1057793,1057793
+FLIS0149,Bangkok Patana School,Thailand,Bangkok,https://www.patana.ac.th/careers/,bangkok-patana-school-1054899,1054899
+FLIS0150,St. Andrews International School Sukhumvit 107,Thailand,Bangkok,https://www.standrews107.com/careers,st-andrews-international-school-sukhumvit-107-1060428,1060428
+FLIS0151,Brighton College Bangkok,Thailand,Bangkok,https://brightoncollege.ac.th/careers/,brighton-college-bangkok-krungthep-kreetha-1078368,1078368
+FLIS0152,King's College International School Bangkok,Thailand,Bangkok,https://www.kingsbangkok.ac.th/careers,king-s-college-international-school-bangkok-1176707,1176707
+FLIS0153,Rugby School Thailand,Thailand,Chonburi,https://www.rugbyschool.ac.th/careers/,rugby-school-thailand-1085372,1085372
+FLIS0154,Wellington College International Bangkok,Thailand,Bangkok,https://www.wellingtoncollege.ac.th/careers,wellington-college-international-bangkok-wcib-1161804,1161804
+FLIS0155,International School Bangkok,Thailand,Bangkok,https://www.isb.ac.th/careers/,,
+FLIS0156,UWC Thailand,Thailand,Phuket,https://www.uwcthailand.ac.th/careers,,
+FLIS0157,British School Jakarta,Indonesia,Jakarta,https://www.bsj.sch.id/careers,british-school-jakarta-1053515,1053515
+FLIS0158,Jakarta Intercultural School,Indonesia,Jakarta,https://www.jisedu.or.id/careers,,
+FLIS0159,ACG School Jakarta,Indonesia,Jakarta,https://jakarta.acgedu.com/careers/,,
+FLIS0160,Canggu Community School Bali,Indonesia,Bali,https://www.ccsbali.com/careers,,
+FLIS0161,British School Manila,Philippines,Manila,https://www.britishschoolmanila.org/careers,the-british-school-manila-1057671,1057671
+FLIS0162,International School Manila,Philippines,Manila,https://www.ismanila.org/careers,,
+FLIS0163,British School in Tokyo,Japan,Tokyo,https://www.bst.ac.jp/careers,the-british-school-in-tokyo-1057325,1057325
+FLIS0164,Malvern College Tokyo,Japan,Tokyo,https://www.malverncollegetokyo.jp/careers,malvern-college-tokyo-1262424,1262424
+FLIS0165,Rugby School Japan,Japan,Chiba,https://www.rugbyschooljapan.ed.jp/careers,rugby-school-japan-1221682,1221682
+FLIS0166,Harrow International School Appi,Japan,Appi Kogen,https://www.harrowappi.jp/careers/,harrow-international-school-appi-1219867,1219867
+FLIS0167,St. Maur International School,Japan,Yokohama,https://www.stmaur.ac.jp/employment,,
+FLIS0168,Yokohama International School,Japan,Yokohama,https://www.yis.ac.jp/careers,yokohama-international-school-1058204,1058204
+FLIS0169,Canadian Academy Kobe,Japan,Kobe,https://www.canacademy.ac.jp/employment,,
+FLIS0170,Seoul Foreign School,S. Korea,Seoul,https://www.seoulforeign.org/careers,seoul-foreign-school-1055417,1055417
+FLIS0171,Chadwick International,S. Korea,Songdo,https://www.chadwickinternational.org/employment,,
+FLIS0172,Branksome Hall Asia,S. Korea,Jeju,https://www.branksome.asia/careers,,
+FLIS0173,North London Collegiate School Jeju,S. Korea,Jeju,https://www.nlcsjeju.co.kr/careers,,
+FLIS0174,Concordia International School Shanghai,China,Shanghai,https://www.concordiashanghai.org/employment,,
+FLIS0175,International School Beijing,China,Beijing,https://www.isb.bj.edu.cn/careers,,
+FLIS0176,Western Academy of Beijing,China,Beijing,https://www.wab.edu/careers,,
+FLIS0177,British International School Warsaw,Poland,Warsaw,https://www.nordangliaeducation.com/bis-warsaw/careers,the-british-school-warsaw-1057760,1057760
+FLIS0178,Akademeia High School,Poland,Warsaw,https://akademeia.edu.pl/en/careers/,akademeia-high-school-1164028,1164028
+FLIS0179,International School of Bucharest,Romania,Bucharest,https://www.isb.ro/careers/,international-school-of-bucharest-1057074,1057074
+FLIS0180,Prague British International School,Czechia,Prague,https://www.nordangliaeducation.com/pbis-prague/careers,prague-british-international-school-kamyk-1057016,1057016
+FLIS0181,St. George's British International School Bilbao,Spain,Bilbao,https://stgeorgeschool.es/en/careers/,,
+FLIS0182,International School of Helsinki,Finland,Helsinki,https://www.ishelsinki.fi/employment,,
+FLIS0183,British School in Helsinki,Finland,Helsinki,https://www.thebritishschool.fi/vacancies,,
+FLIS0184,Stockholm International School,Sweden,Stockholm,https://www.intsch.se/careers,,
+FLIS0185,British International School of Stockholm,Sweden,Stockholm,https://www.bisstockholm.se/careers,british-international-school-of-stockholm-ekeby-campus-1082172,1082172
+FLIS0186,Copenhagen International School,Denmark,Copenhagen,https://www.copenhageninternational.school/about/careers/,,
+FLIS0187,Southbank International School,UK,London,https://www.southbank.org/careers,southbank-international-school-hampstead-campus-1023050,1023050
+FLIS0188,ACS Cobham International School,UK,Surrey,https://www.acs-schools.org/careers,acs-cobham-international-school-1054365,1054365
+FLIS0189,St. George's International School Luxembourg,Lux,Luxembourg,https://www.st-georges.lu/careers,st-george-s-international-school-luxembourg-1058183,1058183
+FLIS0190,International School of Luxembourg,Lux,Luxembourg,https://www.islux.lu/careers,,
+FLIS0191,St. John's International School Belgium,Belgium,Waterloo,https://www.stjohns.be/enquire-now,st-john-s-international-school-1057076,1057076
+FLIS0192,International School of Nice,France,Nice,https://www.isn-nice.com/join-the-team,international-school-of-nice-isn-1059393,1059393
+FLIS0193,Mougins School,France,Mougins,https://mougins.britishinternationalschool.com/about/work-with-us,mougins-school-1055155,1055155
+FLIS0194,International School of Turin,Italy,Turin,https://www.istorin.it/careers,,
+FLIS0195,International School of Genoa,Italy,Genoa,https://www.isgenoa.it/careers,,
+FLIS0196,St. Paul's School Brazil,Brazil,Sao Paulo,https://www.stpauls.br/careers,st-paul-s-school-1057345,1057345
+FLIS0197,British School Rio de Janeiro,Brazil,Rio,https://www.britishschool.g12.br/careers,the-british-school-rio-de-janeiro-botafogo-campus-1059187,1059187
+FLIS0198,Graded School Sao Paulo,Brazil,Sao Paulo,https://www.graded.br/employment,,
+FLIS0199,Northlands School Argentina,Argentina,B. Aires,https://www.northlands.edu.ar/work-with-us/,,
+FLIS0200,Markham College Peru,Peru,Lima,https://www.markham.edu.pe/careers,markham-college-1057093,1057093
+FLIS0201,Sultans School,Oman,Muscat,https://sultansschool.org/careers/,the-sultan-s-school-1054897,1054897
+FLIS0202,Parklane International School,Czechia,Prague,https://www.parklane-is.com/careers,park-lane-international-school-1071241,1071241
+FLIS0203,American British Academy,Oman,Muscat,https://www.abaoman.org/community/careers,,

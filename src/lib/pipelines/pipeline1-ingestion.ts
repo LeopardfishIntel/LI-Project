@@ -45,6 +45,7 @@ export interface CacheJobDocument {
   department?: string;
   curriculum?: string;
   savingsPotentialSingle?: number;
+  savingsByStatus?: Record<string, number>;
   searchTokens?: string[];
   schoolRating?: number;
   schoolWebsite?: string;
@@ -118,8 +119,9 @@ export async function runIngestionPipeline(
     const srcUpper = (record.source || "").toUpperCase();
     const isTes = srcUpper === "TES" && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/");
     const isNordAnglia = srcUpper === "NORD ANGLIA" && record.applyUrl && record.applyUrl.includes("careers.nordangliaeducation.com/job/");
+    const isGrc = srcUpper === "GRC" && record.applyUrl && (record.applyUrl.includes("grcfair.org/job-details/") || record.applyUrl.includes("grcfair.org/job/"));
 
-    if (!isTes && !isNordAnglia) {
+    if (!isTes && !isNordAnglia && !isGrc) {
       rejected++;
       reasons.push(`[UNRECOGNIZED_SOURCE_REJECTED] Discarded "${record.rawTitle}" from source "${record.source}".`);
       continue;
@@ -156,6 +158,9 @@ export async function runIngestionPipeline(
     } else if (isNordAnglia) {
       const naeIdMatch = cleanApplyUrl.match(/\/(\d+)\/?$/);
       fp = naeIdMatch ? `fp_${schoolId.toLowerCase()}_nae_${naeIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
+    } else if (isGrc) {
+      const grcIdMatch = cleanApplyUrl.match(/\/job-details\/(\d+)/i) || cleanApplyUrl.match(/\/(\d+)\/?$/);
+      fp = grcIdMatch ? `fp_${schoolId.toLowerCase()}_${grcIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
     } else {
       fp = generateJobFingerprint(schoolId, record.rawTitle);
     }

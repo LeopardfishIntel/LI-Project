@@ -1,22 +1,23 @@
 /**
- * 🛰️ DATE PARSER & VACANCY LIFECYCLE TRIAGE
- * Robust multi-format date extraction, rolling deadline detection, and lifecycle classification.
- * Prevents active listings from misclassifying as 'expired' or throwing invalid date errors.
+ * 📅 CENTRAL DATE PARSER & LIFECYCLE TRIAGE
+ *
+ * Normalizes ambiguous raw date strings into ISO 8601 date strings or Date objects.
+ * Enforces Gate 3:
+ *   - Fix 3.1: 45-Day Rolling Post Staleness Cap (Imposes an automatic 45-day expiration cap on undated/rolling listings).
+ *   - Fix 3.2: Automated Cache Purge helper function.
  */
 
-const ROLLING_DEADLINE_PATTERNS = [
-  /\brolling\b/i,
-  /\buntil filled\b/i,
-  /\bopen until\b/i,
-  /\basap\b/i,
-  /\bongoing\b/i,
-  /\bimmediate\b/i,
-  /\bcontinuous\b/i,
-  /\bopen\b/i,
-  /\btbd\b/i,
-  /\bno deadline\b/i,
-  /\bwhen filled\b/i,
-];
+export interface ParsedClosingDate {
+  closingDate: Date | null;
+  isRollingDeadline: boolean;
+}
+
+export interface LifecycleTriageResult {
+  status: 'approved' | 'expired';
+  isRollingDeadline: boolean;
+  closingDate: Date | null;
+  isStaleRolling?: boolean;
+}
 
 const MONTH_MAP: Record<string, number> = {
   jan: 0, january: 0,
@@ -33,123 +34,120 @@ const MONTH_MAP: Record<string, number> = {
   dec: 11, december: 11,
 };
 
-export interface ParsedDateResult {
-  closingDate: Date | null;
-  isRollingDeadline: boolean;
-  rawString: string;
+export const ROLLING_STALENESS_CAP_MS = 45 * 24 * 60 * 60 * 1000; // 45 Days
+
+export function isRollingDeadlineString(rawDateStr: string | null | undefined): boolean {
+  if (!rawDateStr || typeof rawDateStr !== 'string') return true;
+  const clean = rawDateStr.trim().toLowerCase();
+  return (
+    clean.includes('rolling') ||
+    clean.includes('until filled') ||
+    clean.includes('asap') ||
+    clean.includes('open') ||
+    clean.includes('continuous') ||
+    clean.includes('ongoing')
+  );
 }
 
-export interface LifecycleTriageResult {
-  status: 'pending_review' | 'expired';
-  isRollingDeadline: boolean;
-  closingDate: Date | null;
-}
-
-/**
- * Checks if a string contains rolling deadline indicators.
- */
-export function isRollingDeadlineString(str: string | null | undefined): boolean {
-  if (!str) return true; // Missing deadline defaults to rolling
-  const clean = str.trim();
-  return ROLLING_DEADLINE_PATTERNS.some(pattern => pattern.test(clean));
-}
-
-/**
- * Parses a closing date string supporting multiple international formats.
- */
-export function parseClosingDate(rawDateStr: string | null | undefined): ParsedDateResult {
+export function parseClosingDate(rawDateStr: string | null | undefined): ParsedClosingDate {
   if (!rawDateStr || typeof rawDateStr !== 'string') {
-    return { closingDate: null, isRollingDeadline: true, rawString: '' };
+    return { closingDate: null, isRollingDeadline: true };
   }
 
-  const clean = rawDateStr.trim();
-  if (!clean || isRollingDeadlineString(clean)) {
-    return { closingDate: null, isRollingDeadline: true, rawString: clean };
+  const clean = rawDateStr.trim().toLowerCase();
+
+  if (isRollingDeadlineString(clean)) {
+    return { closingDate: null, isRollingDeadline: true };
   }
 
-  // 1. Try ISO format / standard Date.parse (e.g. YYYY-MM-DD or YYYY-MM-DDTHH:mm:ssZ)
-  if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
-    const d = new Date(clean);
-    if (!isNaN(d.getTime())) {
-      return { closingDate: d, isRollingDeadline: false, rawString: clean };
+  // ISO Format: YYYY-MM-DD
+  const isoMatch = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (isoMatch) {
+    const y = parseInt(isoMatch[1], 10);
+    const m = parseInt(isoMatch[2], 10) - 1;
+    const d = parseInt(isoMatch[3], 10);
+    const date = new Date(y, m, d);
+    if (!isNaN(date.getTime())) {
+      return { closingDate: date, isRollingDeadline: false };
     }
   }
 
-  // 2. Try DD/MM/YYYY, DD.MM.YYYY, or DD-MM-YYYY (International school standard)
-  const slashMatch = clean.match(/^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{4})$/);
-  if (slashMatch) {
-    const day = parseInt(slashMatch[1], 10);
-    const month = parseInt(slashMatch[2], 10) - 1;
-    const year = parseInt(slashMatch[3], 10);
-    const d = new Date(year, month, day, 23, 59, 59);
-    if (!isNaN(d.getTime()) && d.getMonth() === month) {
-      return { closingDate: d, isRollingDeadline: false, rawString: clean };
-    }
-  }
+  // Textual formats (e.g. "15 October 2026", "Oct 15, 2026")
+  const words = clean.replace(/[,.]/g, ' ').split(/\s+/).filter(Boolean);
+  let day: number | null = null;
+  let month: number | null = null;
+  let year: number | null = null;
 
-  // 3. Try Textual format: "15 Oct 2026", "15th October 2026", "15-Oct-2026"
-  const textualDayFirstMatch = clean.match(/^(\d{1,2})(?:st|nd|rd|th)?[\s\-]+([a-zA-Z]+)[\s\,]+(\d{4})$/i);
-  if (textualDayFirstMatch) {
-    const day = parseInt(textualDayFirstMatch[1], 10);
-    const monthName = textualDayFirstMatch[2].toLowerCase();
-    const year = parseInt(textualDayFirstMatch[3], 10);
-    if (MONTH_MAP[monthName] !== undefined) {
-      const d = new Date(year, MONTH_MAP[monthName], day, 23, 59, 59);
-      if (!isNaN(d.getTime())) {
-        return { closingDate: d, isRollingDeadline: false, rawString: clean };
+  for (const token of words) {
+    if (/^\d{1,2}(st|nd|rd|th)?$/.test(token)) {
+      const num = parseInt(token, 10);
+      if (num >= 1 && num <= 31 && day === null) {
+        day = num;
       }
+    } else if (MONTH_MAP[token] !== undefined && month === null) {
+      month = MONTH_MAP[token];
+    } else if (/^\d{4}$/.test(token)) {
+      year = parseInt(token, 10);
     }
   }
 
-  // 4. Try Textual format: "Oct 15, 2026", "October 15th 2026"
-  const textualMonthFirstMatch = clean.match(/^([a-zA-Z]+)[\s\-]+(\d{1,2})(?:st|nd|rd|th)?[\s\,]+(\d{4})$/i);
-  if (textualMonthFirstMatch) {
-    const monthName = textualMonthFirstMatch[1].toLowerCase();
-    const day = parseInt(textualMonthFirstMatch[2], 10);
-    const year = parseInt(textualMonthFirstMatch[3], 10);
-    if (MONTH_MAP[monthName] !== undefined) {
-      const d = new Date(year, MONTH_MAP[monthName], day, 23, 59, 59);
-      if (!isNaN(d.getTime())) {
-        return { closingDate: d, isRollingDeadline: false, rawString: clean };
-      }
+  if (month !== null && year !== null) {
+    const finalDay = day !== null ? day : 1;
+    const date = new Date(year, month, finalDay);
+    if (!isNaN(date.getTime())) {
+      return { closingDate: date, isRollingDeadline: false };
     }
   }
 
-  // 5. Fallback general JS date parse (validate realistic year 2020-2035)
-  const fallbackDate = new Date(clean);
-  if (!isNaN(fallbackDate.getTime()) && fallbackDate.getFullYear() >= 2020 && fallbackDate.getFullYear() <= 2035) {
-    return { closingDate: fallbackDate, isRollingDeadline: false, rawString: clean };
+  // Fallback native Date parse
+  const parsedNative = new Date(rawDateStr);
+  if (!isNaN(parsedNative.getTime())) {
+    return { closingDate: parsedNative, isRollingDeadline: false };
   }
 
-  // If date parsing fails completely, treat safely as rolling deadline (never default to expired!)
-  return { closingDate: null, isRollingDeadline: true, rawString: clean };
+  return { closingDate: null, isRollingDeadline: true };
 }
 
 /**
- * Classifies the vacancy lifecycle status based on parsed date and rolling flag.
+ * 🛠️ FIX 3.1: 45-DAY STALENESS THRESHOLD & TRIAGE
+ * Evaluates whether a vacancy is active or expired.
+ * For rolling deadlines, applies a strict 45-day cap from datePosted/ingestedAt.
  */
 export function triageVacancyLifecycle(
   rawDateStr: string | null | undefined, 
+  datePostedOrIngestedAt?: Date | string | number | null,
   referenceDate: Date = new Date()
 ): LifecycleTriageResult {
   const { closingDate, isRollingDeadline } = parseClosingDate(rawDateStr);
 
-  // If rolling deadline or parsing failed -> force status: 'pending_review'
+  const refTime = referenceDate.getTime();
+
   if (isRollingDeadline || !closingDate) {
+    // Calculate staleness from posted or ingested timestamp
+    let postTime = refTime;
+    if (datePostedOrIngestedAt) {
+      const parsed = new Date(datePostedOrIngestedAt);
+      if (!isNaN(parsed.getTime())) {
+        postTime = parsed.getTime();
+      }
+    }
+
+    const isStale = (refTime - postTime) > ROLLING_STALENESS_CAP_MS;
+
     return {
-      status: 'pending_review',
+      status: isStale ? 'expired' : 'approved',
       isRollingDeadline: true,
       closingDate: null,
+      isStaleRolling: isStale
     };
   }
 
-  // Check against reference date
   const refStartOfDay = new Date(referenceDate);
   refStartOfDay.setHours(0, 0, 0, 0);
 
   if (closingDate.getTime() >= refStartOfDay.getTime()) {
     return {
-      status: 'pending_review',
+      status: 'approved',
       isRollingDeadline: false,
       closingDate,
     };
