@@ -350,7 +350,7 @@ function DecoderContent() {
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
-  const [lifestyleMode, setLifestyleMode] = useState<"Saver" | "Comfortable" | "Full Expat">("Comfortable");
+  const [lifestyleMode, setLifestyleMode] = useState<"Saver" | "Comfort" | "Full Expat">("Comfort");
   
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
@@ -1072,15 +1072,15 @@ function DecoderContent() {
                     <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
                   </TooltipTrigger>
                   <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
-                    Stress test your savings. Switch between Saver (modest digs & supermarket basics), Comfortable (comfy flat & Friday pub pints), or Full Expat (swanky pad & dining out).
+                    Stress test your savings. Switch between Saver (modest digs & supermarket basics), Comfort (comfy flat & Friday pub pints), or Full Expat (swanky pad & dining out).
                   </TooltipContent>
                 </Tooltip>
               </div>
               <div className="flex bg-black/40 p-0.5 rounded-sm border border-white/10 w-full justify-between">
-                {(['Saver', 'Comfortable', 'Full Expat'] as const).map((mode) => {
+                {(['Saver', 'Comfort', 'Full Expat'] as const).map((mode) => {
                   const tooltips: Record<string, string> = {
                     Saver: "Saver Mode (-25% Rent, -20% Groceries, -60% Social): Modest apartment slightly further out, local hypermarket shopping, and cooking at home.",
-                    Comfortable: "Comfortable Mode (Baseline): Standard expat residence, average supermarket shopping, and regular dining out.",
+                    Comfort: "Comfort Mode (Baseline): Standard expat residence, average supermarket shopping, and regular dining out.",
                     "Full Expat": "Full Expat Mode (+40% Rent, +25% Groceries, +200% Social): High-end compound/waterfront pad, imported brand groceries, and weekend hotel dining & leisure."
                   };
                   return (
@@ -1414,7 +1414,7 @@ function DecoderContent() {
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                                {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Comfortable" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-25%" : "+40%"})` : ""}`}
+                                {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Comfort" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-25%" : "+40%"})` : ""}`}
                               </TooltipContent>
                             </Tooltip>
                           </div>
@@ -1500,7 +1500,7 @@ function DecoderContent() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                              {`Standard food and household supply indices for your household size.${lifestyleMode !== "Comfortable" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-20%" : "+25%"})` : ""}`}
+                              {`Standard food and household supply indices for your household size.${lifestyleMode !== "Comfort" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-20%" : "+25%"})` : ""}`}
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -1518,7 +1518,7 @@ function DecoderContent() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                              {`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Comfortable" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-60%" : "+200%"})` : ""}`}
+                              {`A discretionary guide for dining out, cultural activities, and general socialising.${lifestyleMode !== "Comfort" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-60%" : "+200%"})` : ""}`}
                             </TooltipContent>
                           </Tooltip>
                         </div>
