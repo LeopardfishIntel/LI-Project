@@ -1043,8 +1043,12 @@ function DecoderContent() {
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="School" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(settings.country))
-                    .sort((a: any, b: any) => (a.schoolname || '').localeCompare(b.schoolname || ''))
-                    .map((s: any) => <SelectItem key={s.id || s.schoolname} value={s.id}>{s.schoolname}</SelectItem>)}
+                    .filter((s: any, idx: number, arr: any[]) => {
+                      const cleanName = (s.schoolname || s.name || '').toLowerCase().trim();
+                      return arr.findIndex((item: any) => (item.schoolname || item.name || '').toLowerCase().trim() === cleanName) === idx;
+                    })
+                    .sort((a: any, b: any) => (a.schoolname || a.name || '').localeCompare(b.schoolname || b.name || ''))
+                    .map((s: any) => <SelectItem key={s.id || s.schoolname} value={s.id}>{s.schoolname || s.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
