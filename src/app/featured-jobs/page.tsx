@@ -57,7 +57,7 @@ import { parseClosingDate } from '@/lib/crawler/dateParser';
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, ShieldCheck, Building2, HeartHandshake
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
@@ -1157,6 +1157,56 @@ export default function FeaturedJobsPage() {
             >
               Reset Filters
             </button>
+          
+            {/* 🛡️ LEOPARDFISH PLATFORM COMMITMENTS (Transposed into Rows) */}
+            <div className="pt-6 border-t border-white/10 space-y-4">
+              
+              
+              {/* Row 1: Financial Clarity & Peace of Mind */}
+              <div className="bg-black/30 border border-emerald-500/20 rounded-lg p-3.5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+                    <ShieldCheck className="size-4" />
+                  </div>
+                  <h5 className="text-xs font-black uppercase tracking-wider text-white">
+                    Financial Clarity &amp; Peace of Mind
+                  </h5>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed font-normal">
+                  Moving abroad is a big step, and our salary and savings tools are built to help you plan with confidence. Because every contract, housing allowance, and local tax setup is unique, always double-check the final offer details and visa requirements directly with the school before signing.
+                </p>
+              </div>
+
+              {/* Row 2: Real Jobs at Trusted Schools */}
+              <div className="bg-black/30 border border-amber-500/20 rounded-lg p-3.5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 shrink-0">
+                    <Building2 className="size-4" />
+                  </div>
+                  <h5 className="text-xs font-black uppercase tracking-wider text-white">
+                    Real Jobs at Trusted Schools
+                  </h5>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed font-normal">
+                  Searching for international teaching roles shouldn&apos;t feel like a guessing game. We only publish active vacancies from genuine schools currently in our databases — so you won&apos;t waste time on expired posts or mystery agencies.
+                </p>
+              </div>
+
+              {/* Row 3: A Welcome Space for Every Educator */}
+              <div className="bg-black/30 border border-sky-500/20 rounded-lg p-3.5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
+                    <HeartHandshake className="size-4" />
+                  </div>
+                  <h5 className="text-xs font-black uppercase tracking-wider text-white">
+                    A Welcome Space for Every Educator
+                  </h5>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed font-normal">
+                  Great schools are built on diverse perspectives. We are deeply committed to fairness and expect every institution on our platform to treat teachers with equity, dignity, and respect.
+                </p>
+              </div>
+            </div>
           </aside>
 
           {/* MAIN JOBS FEED */}

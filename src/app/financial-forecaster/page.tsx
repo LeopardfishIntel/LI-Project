@@ -1706,22 +1706,22 @@ function DecoderContent() {
                       </div>
 
                       {/* RESTORED: Custom Adjustments Box from Screenshot */}
-                      <div className="pt-4 mt-3">
-                        <div className="flex justify-between items-center bg-[#0f172a] border-2 border-amber-500/60 p-3 rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                      <div className="pt-3 mt-2">
+                        <div className="flex justify-between items-center bg-black/40 border border-amber-500/35 p-2.5 rounded-md transition-colors hover:border-amber-500/50">
                           <div className="flex items-center gap-2">
-                            <Wallet className="size-4.5 text-amber-400 shrink-0" />
+                            <Wallet className="size-4 text-amber-400/90 shrink-0" />
                             <div className="flex flex-col">
-                              <p className="text-xs font-black text-amber-300 uppercase tracking-wider leading-none">Custom Adjustments (+/-)</p>
-                              <span className="text-[9px] font-bold text-amber-400/80 uppercase tracking-tight mt-0.5">Editable (+ extra expense / - savings)</span>
+                              <p className="text-xs font-bold text-slate-300 uppercase tracking-wider leading-none">Custom Adjustments (+/-)</p>
+                              <span className="text-[9px] font-medium text-slate-400 uppercase tracking-tight mt-0.5">Editable (+ extra expense / - savings)</span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-black text-amber-400 uppercase">{currency}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">{currency}</span>
                             <Input
                               type="number"
                               value={manualAdjustments}
                               onChange={(e) => setManualAdjustments(e.target.value)}
-                              className={cn("bg-slate-950 border-2 border-amber-500/80 w-28 h-10 px-3 text-right text-base font-black text-amber-300 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/50 shadow-inner transition-all rounded-md", noSpinners)}
+                              className={cn("bg-black/60 border border-amber-500/40 w-24 h-9 px-2.5 text-right text-xs font-extrabold text-amber-300 focus:border-amber-400 outline-none rounded transition-all", noSpinners)}
                             />
                           </div>
                         </div>
@@ -1745,17 +1745,17 @@ function DecoderContent() {
                         <span className="text-[13px] font-black text-white whitespace-nowrap shrink-0">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center bg-[#0f172a] border-2 border-teal-500/60 p-3 rounded-lg shadow-[0_0_15px_rgba(20,184,166,0.15)] my-2">
+                      <div className="flex justify-between items-center bg-black/40 border border-teal-500/35 p-2.5 rounded-md my-1 transition-colors hover:border-teal-500/50">
                         <div className="flex items-center gap-2">
-                          <Banknote className="size-4.5 text-teal-400 shrink-0" />
+                          <Banknote className="size-4 text-teal-400/90 shrink-0" />
                           <div className="flex flex-col">
-                            <span className="text-xs font-black text-teal-300 uppercase tracking-wider leading-none whitespace-nowrap shrink-0">Additional Income</span>
-                            <span className="text-[9px] font-bold text-teal-400/80 uppercase tracking-tight mt-0.5">Editable (side hustle / tutoring)</span>
+                            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider leading-none whitespace-nowrap shrink-0">Additional Income</span>
+                            <span className="text-[9px] font-medium text-slate-400 uppercase tracking-tight mt-0.5">Editable (side hustle / tutoring)</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-black text-teal-400 uppercase">{currency}</span>
-                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-slate-950 border-2 border-teal-500/80 w-28 h-10 px-3 text-right text-base font-black text-teal-300 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/50 shadow-inner rounded-md", noSpinners)} />
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">{currency}</span>
+                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/60 border border-teal-500/40 w-24 h-9 px-2.5 text-right text-xs font-extrabold text-teal-300 focus:border-teal-400 outline-none rounded transition-all", noSpinners)} />
                         </div>
                       </div>
 
