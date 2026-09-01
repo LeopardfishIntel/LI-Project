@@ -1,3 +1,4 @@
+import { getAdminDb } from "@/firebase/admin";
 import { NextResponse } from "next/server";
 import { getCurrentSeason, shouldEngineRunToday, CRAWLER_TIMETABLE } from "@/lib/crawler/timetableScheduler";
 import { isEngineCoolingDown } from "@/lib/crawler/safetyEngine";
@@ -69,9 +70,13 @@ export async function GET(request: Request) {
       }
 
       console.log(`🛸 [SWEEP ORCHESTRATOR] Running crawler engine "${key}"...`);
+      const startMs = Date.now();
       const matches = await runner();
 
       let ingestedCount = 0;
+      let addedCount = 0;
+      let removedCount = 0;
+
       for (const m of matches) {
         if (!m.schoolId) continue;
         const res = await runIngestionPipeline(m.schoolId, [{
@@ -87,11 +92,41 @@ export async function GET(request: Request) {
         }]);
 
         if (res?.accepted > 0) ingestedCount += res.accepted;
+        if (res?.addedCount) addedCount += res.addedCount;
+        if (res?.removedCount) removedCount += res.removedCount;
+      }
+
+      const durationMs = Date.now() - startMs;
+      const totalFound = matches.length;
+      const dbMatched = matches.filter(m => !!m.schoolId).length;
+
+      // 🛰️ Persist CrawlLog in Firestore crawllogs collection
+      try {
+        const db = getAdminDb();
+        if (db) {
+          await db.collection("crawllogs").add({
+            engine: key,
+            addedCount,
+            removedCount,
+            totalFound,
+            dbMatched,
+            durationMs,
+            createdAt: new Date().toISOString(),
+            createdAtMillis: Date.now()
+          });
+          console.log(`🛰️ [CRAWL LOG PERSISTED] Engine=${key} | +${addedCount} | -${removedCount} | Total=${totalFound} | Matched=${dbMatched} | Time=${durationMs}ms`);
+        }
+      } catch (logErr: any) {
+        console.warn(`⚠️ Failed to persist CrawlLog for ${key}:`, logErr?.message || logErr);
       }
 
       telemetry.executedEngines.push({
         engineKey: key,
-        matchesFound: matches.length,
+        matchesFound: totalFound,
+        dbMatched,
+        addedCount,
+        removedCount,
+        durationMs,
         ingestedCount
       });
     }

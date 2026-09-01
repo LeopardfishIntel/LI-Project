@@ -24,6 +24,8 @@ export interface IngestionResult {
   rejected: number;
   reasons: string[];
   acceptedFingerprints: string[];
+  addedCount?: number;
+  removedCount?: number;
 }
 
 export interface CacheJobDocument {
@@ -99,7 +101,7 @@ function buildCacheDocument(
   };
 }
 
-async function writeToCacheCollection(doc: CacheJobDocument): Promise<void> {
+async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: boolean }> {
   try {
     const { getAdminDb } = await import("@/firebase/admin");
     const db = getAdminDb();
@@ -114,7 +116,15 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<void> {
 
       if (existingDoc) {
         const exData = existingDoc.data();
-        const mergedSources = Array.from(new Set([...(exData.sources || [exData.source || "Official Source"]), ...(doc.sources || [doc.source])]));
+        const rawSources = [...(exData.sources || [exData.source || "Official Source"]), ...(doc.sources || [doc.source])];
+        const sourceMap = new Map<string, string>();
+        rawSources.forEach(s => {
+          if (!s) return;
+          const u = String(s).toUpperCase().trim();
+          const cleanName = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
+          if (!sourceMap.has(u)) sourceMap.set(u, cleanName);
+        });
+        const mergedSources = Array.from(sourceMap.values());
         const mergedUrls = { ...(exData.sourceUrls || {}), ...(doc.sourceUrls || {}) };
         if (exData.applyUrl) mergedUrls[exData.source || "Official Source"] = exData.applyUrl;
         if (doc.applyUrl) mergedUrls[doc.source] = doc.applyUrl;
@@ -125,13 +135,15 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<void> {
           updatedAtMillis: Date.now()
         });
         console.log(`🛸 [PIPELINE 1] Merged dual listing sources for "${doc.title}":`, mergedSources);
-        return;
+        return { isNew: false };
       }
     }
     const { setDocument } = await import("@/firebase/admin");
     await setDocument("featured_jobs_cache", doc.id, doc, { merge: true });
+    return { isNew: true };
   } catch (err) {
     console.warn(`🛸 [PIPELINE 1] Cache write failed for ${doc.id}:`, err);
+    return { isNew: false };
   }
 }
 
@@ -140,7 +152,7 @@ export async function runIngestionPipeline(
   rawRecords: RawJobRecord[]
 ): Promise<IngestionResult> {
   if (!rawRecords || rawRecords.length === 0) {
-    return { accepted: 0, rejected: 0, reasons: [], acceptedFingerprints: [] };
+    return { accepted: 0, rejected: 0, reasons: [], acceptedFingerprints: [], addedCount: 0, removedCount: 0 };
   }
 
   const targetWhitelisted = await isWhitelistedSchool(undefined, undefined, schoolId);
@@ -246,12 +258,14 @@ export async function runIngestionPipeline(
     await saveScrapedJobs(schoolId, mappedJobs);
   }
 
-  await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
+  const cacheResults = await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
+  const addedCount = cacheResults.filter(r => r.isNew).length;
+  const removedCount = rejected;
 
   const accepted = mappedJobs.length;
   console.log(
     `🛸 [PIPELINE 1 TES ONLY] schoolId=${schoolId} | accepted=${accepted} | rejected=${rejected}`
   );
 
-  return { accepted, rejected, reasons, acceptedFingerprints };
+  return { accepted, rejected, reasons, acceptedFingerprints, addedCount, removedCount };
 }

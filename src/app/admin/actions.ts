@@ -989,3 +989,86 @@ export async function getSchoolTelemetryStatsAction(schoolName: string) {
     return { success: false, error: err.message, views: 0, evaluations: 0 };
   }
 }
+export interface CrawlLogItem {
+  id: string;
+  engine: string;
+  addedCount: number;
+  removedCount: number;
+  totalFound: number;
+  dbMatched: number;
+  durationMs: number;
+  createdAt: string;
+}
+
+/**
+ * 🛰️ Action: Get Crawl Logs Data
+ * Retrieves recent differential crawl logs for the Data Command Telemetry Dashboard.
+ */
+export async function getCrawlLogsAction(): Promise<{ success: boolean; data: CrawlLogItem[]; error: string | null }> {
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (!db) return { success: false, data: [], error: "Admin DB unavailable" };
+
+    const snap = await db.collection("crawllogs").orderBy("createdAt", "desc").limit(100).get();
+    const logs: CrawlLogItem[] = snap.docs.map((doc: any) => {
+      const d = doc.data();
+      return {
+        id: doc.id,
+        engine: d.engine || "UNKNOWN",
+        addedCount: Number(d.addedCount || 0),
+        removedCount: Number(d.removedCount || 0),
+        totalFound: Number(d.totalFound || 0),
+        dbMatched: Number(d.dbMatched || 0),
+        durationMs: Number(d.durationMs || 0),
+        createdAt: String(d.createdAt || new Date().toISOString())
+      };
+    });
+
+    return { success: true, data: logs, error: null };
+  } catch (err: any) {
+    console.warn("⚠️ Failed to fetch crawl logs:", err?.message || err);
+    return { success: false, data: [], error: err?.message || String(err) };
+  }
+}
+
+
+export interface EngineCoolingItem {
+  engineKey: string;
+  isCooling: boolean;
+  coolingUntilMillis: number;
+  reason?: string;
+  statusCode?: number;
+  lastTripAt?: string;
+}
+
+/**
+ * 🧊 Action: Get Circuit Breaker Cooling Statuses
+ */
+export async function getCoolingStatusesAction(): Promise<{ success: boolean; data: Record<string, EngineCoolingItem>; error: string | null }> {
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (!db) return { success: false, data: {}, error: "Admin DB unavailable" };
+
+    const snap = await db.collection("crawler_engine_status").get();
+    const result: Record<string, EngineCoolingItem> = {};
+
+    snap.docs.forEach((doc: any) => {
+      const data = doc.data();
+      const keyUpper = String(doc.id).toUpperCase();
+      result[keyUpper] = {
+        engineKey: keyUpper,
+        isCooling: Boolean(data.coolingUntilMillis && data.coolingUntilMillis > Date.now()),
+        coolingUntilMillis: Number(data.coolingUntilMillis || 0),
+        reason: data.reason ? String(data.reason) : undefined,
+        statusCode: data.statusCode ? Number(data.statusCode) : undefined,
+        lastTripAt: data.lastTripAt ? String(data.lastTripAt) : undefined
+      };
+    });
+
+    return { success: true, data: result, error: null };
+  } catch (err: any) {
+    return { success: false, data: {}, error: err?.message || String(err) };
+  }
+}

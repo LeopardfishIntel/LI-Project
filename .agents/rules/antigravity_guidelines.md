@@ -11,8 +11,9 @@
 3. **UI / CDP Socket Refresh**: When the browser agent reports CDP socket errors on port 9222, execute `Developer: Reload Window` (`Cmd + Shift + P`).
 
 ## 3. Vacancy Discovery & Grounding Rules
+- **Database Mutation Permissions**: **ALWAYS ask explicit user permission before adding or seeding new school records into the database.** Updating existing metadata/aliases for existing schools is allowed, but adding new school IDs requires explicit user approval.
 - **Direct Advert Deep-Links**: TES and aggregator links must link directly to the specific job advert (`https://www.tes.com/jobs/vacancy/[slug]-[id]`) or the dedicated school employer hub (`https://www.tes.com/jobs/employer/[slug]-[id]`).
 - **Forbidden URLs**: Bare unfiltered international directories (`https://www.tes.com/jobs/browse/international`) are strictly rejected in all scraping flows.
 - **Lifecycle Triage**:
-  * Jobs with future closing dates (`closingDate >= today`) are saved as `status: 'pending_review'`.
-  * Jobs with past closing dates (`closingDate < today`) are automatically saved as `status: 'expired'` and archived for historical school turnover metrics.
+  * Jobs with future closing dates (`closingDate >= today`) are saved as `status: pending_review`.
+  * Jobs with past closing dates (`closingDate < today`) are automatically saved as `status: expired` and archived for historical school turnover metrics.

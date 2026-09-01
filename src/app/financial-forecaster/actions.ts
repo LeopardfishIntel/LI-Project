@@ -1,4 +1,5 @@
 'use server';
+import { applyDulwichCollegeShanghaiOverride } from "@/lib/utils";
 import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
 import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 
@@ -667,7 +668,7 @@ export async function getSchoolStabilityReport(input: {
         }
 
         if (data) {
-            const { applyDulwichCollegeShanghaiOverride } = await import('@/lib/utils');
+            // Top-level imported applyDulwichCollegeShanghaiOverride
             data = applyDulwichCollegeShanghaiOverride(data);
         }
 

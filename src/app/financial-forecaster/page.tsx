@@ -21,6 +21,52 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useRouter } from 'next/navigation';
 import { canonicalCountry } from '@/lib/calculations';
 
+export interface SavingsBadgeConfig {
+  label: string;
+  boxStyle: string;
+}
+
+export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfig {
+  if (monthlySurplus >= 2800) {
+    return {
+      label: "Premium Package",
+      boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
+    };
+  }
+  if (monthlySurplus >= 1900) {
+    return {
+      label: "Strong Financial Growth",
+      boxStyle: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]"
+    };
+  }
+  if (monthlySurplus >= 1200) {
+    return {
+      label: "Comfortable Expat Living",
+      boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+    };
+  }
+  if (monthlySurplus >= 600) {
+    return {
+      label: "Culture & Travel",
+      boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]"
+    };
+  }
+  return {
+    label: "Destination-Led Package",
+    boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]"
+  };
+}
+
+export function formatCurriculumBadge(curr: string): string {
+  if (!curr) return "BRITISH CURRICULUM";
+  const upper = curr.trim().toUpperCase();
+  if (upper === "UK" || upper === "BRITISH") return "UK BRITISH CURRICULUM";
+  if (upper === "US" || upper === "AMERICAN") return "US CURRICULUM";
+  if (upper === "IB") return "IB CURRICULUM";
+  if (upper.includes("CURRICULUM")) return upper;
+  return `${upper} CURRICULUM`;
+}
+
 const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
@@ -330,6 +376,8 @@ function DecoderContent() {
     savingsPotential?: number;
     schoolRating?: string;
     source?: string;
+    sources?: string[];
+    sourceUrls?: Record<string, string>;
     city?: string;
     country?: string;
   } | null>(null);
@@ -371,8 +419,14 @@ function DecoderContent() {
       const params = new URLSearchParams(window.location.search);
       const urlSchoolId = params.get("schoolId") || params.get("id");
       const jobTitle = params.get("jobTitle");
+      const famStatusParam = params.get("familyStatus");
       if (urlSchoolId) setRequestedSchoolId(urlSchoolId);
       if (jobTitle) setRequestedJobTitle(jobTitle);
+      if (famStatusParam) {
+        let mapped = famStatusParam;
+        if (famStatusParam === "Couple") mapped = "Married (sole earner)";
+        setSettings(prev => ({ ...prev, familyStatus: mapped }));
+      }
     }
   }, [mounted]);
 
@@ -1059,6 +1113,7 @@ function DecoderContent() {
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   <SelectItem value="Single">Single</SelectItem>
+                  <SelectItem value="Couple">Couple</SelectItem>
                   <SelectItem value="Married (sole earner)">Married (sole earner)</SelectItem>
                   <SelectItem value="Married (dual income)">Married (dual income)</SelectItem>
                   <SelectItem value="Family +1">Family +1</SelectItem>
@@ -1255,7 +1310,7 @@ function DecoderContent() {
                         </span>
                         {selectedOpportunity.curriculum && (
                           <span className="bg-white/5 border border-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
-                            [{selectedOpportunity.curriculum}]
+                            [{formatCurriculumBadge(selectedOpportunity.curriculum)}]
                           </span>
                         )}
                         {selectedOpportunity.department && (
@@ -1281,17 +1336,75 @@ function DecoderContent() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-                      {selectedOpportunity.applyUrl && (
-                        <a
-                          href={selectedOpportunity.applyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-sm transition-all shadow-[0_0_15px_rgba(255,107,53,0.3)] hover:scale-[1.02]"
-                        >
-                          Apply for Role
-                          <ArrowUpRight className="size-4" />
-                        </a>
-                      )}
+                      {selectedOpportunity && (() => {
+                        const rawSources = selectedOpportunity.sources && selectedOpportunity.sources.length > 0
+                          ? selectedOpportunity.sources
+                          : [selectedOpportunity.source || "Official Source"];
+                        
+                        const sMap = new Map<string, string>();
+                        rawSources.forEach((s: any) => {
+                          if (!s) return;
+                          const u = String(s).toUpperCase().trim();
+                          const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
+                          if (!sMap.has(u)) sMap.set(u, label);
+                        });
+
+                        const displaySources = Array.from(sMap.values());
+
+                        return displaySources.map((src: string) => {
+                          const srcUpper = String(src).toUpperCase().trim();
+                          const srcUrl = (() => {
+                            if (selectedOpportunity.sourceUrls) {
+                              if (selectedOpportunity.sourceUrls[src]) return selectedOpportunity.sourceUrls[src];
+                              if (selectedOpportunity.sourceUrls[srcUpper]) return selectedOpportunity.sourceUrls[srcUpper];
+                              if (selectedOpportunity.sourceUrls[src.toLowerCase()]) return selectedOpportunity.sourceUrls[src.toLowerCase()];
+                              for (const [k, v] of Object.entries(selectedOpportunity.sourceUrls)) {
+                                if (k.toUpperCase().trim() === srcUpper && v) return v as string;
+                              }
+                            }
+                            if (srcUpper.includes("NORD ANGLIA")) {
+                              if (selectedOpportunity.applyUrl?.includes("careers.nordangliaeducation.com")) return selectedOpportunity.applyUrl;
+                            }
+                            if (srcUpper.includes("TES")) {
+                              if (selectedOpportunity.applyUrl?.includes("tes.com")) return selectedOpportunity.applyUrl;
+                            }
+                            return selectedOpportunity.applyUrl || "#";
+                          })();
+
+                          return (
+                            <a
+                              key={src}
+                              href={srcUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={cn(
+                                "inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer shadow-sm hover:scale-105",
+                                srcUpper.includes("INSPIRED")
+                                  ? "bg-sky-500/20 border-sky-500/40 text-sky-300 hover:bg-sky-500/30"
+                                  : srcUpper === "TES"
+                                  ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
+                                  : srcUpper.includes("COGNITA")
+                                  ? "bg-purple-500/20 border-purple-500/40 text-purple-300 hover:bg-purple-500/30"
+                                  : srcUpper.includes("MALVERN")
+                                  ? "bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30"
+                                  : srcUpper.includes("UWC")
+                                  ? "bg-violet-500/20 border-violet-500/40 text-violet-300 hover:bg-violet-500/30"
+                                  : srcUpper.includes("ISP")
+                                  ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30"
+                                  : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
+                                  ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
+                                  : srcUpper === "NORD ANGLIA"
+                                  ? "bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30"
+                                  : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
+                              )}
+                              title={"Open direct vacancy post on " + src + " (opens in new tab)"}
+                            >
+                              {src}
+                              <ArrowUpRight className="size-3.5" />
+                            </a>
+                          );
+                        });
+                      })()}
                       <button
                         onClick={() => router.push('/featured-jobs')}
                         className="inline-flex items-center gap-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white px-3 py-2.5 text-xs font-bold uppercase tracking-wider rounded-sm transition-all"
@@ -1328,21 +1441,24 @@ function DecoderContent() {
                           <span>Closes: {selectedOpportunity.closesDate}</span>
                         </span>
                       )}
-                      {selectedOpportunity.savingsPotential !== undefined && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-[#FF6B35]/30 rounded-full text-xs font-bold text-[#FF6B35]">
-                          <Coins className="size-3.5" />
-                          <span>${selectedOpportunity.savingsPotential.toLocaleString()}/mo Est. Savings</span>
-                        </span>
-                      )}
-                      {selectedOpportunity.source && (
-                        <div className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
-                          SOURCE: <span className="text-slate-300">{selectedOpportunity.source.toUpperCase()}</span>
-                        </div>
-                      )}
+                      {selectedOpportunity && (() => {
+                        const badge = getSavingsBadgeConfig(selectedOpportunity.savingsPotential || 0);
+                        return (
+                          <span 
+                            className={cn(
+                              "inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0",
+                              badge.boxStyle
+                            )}
+                          >
+                            {badge.label}
+                          </span>
+                        );
+                      })()}
+                      
                     </div>
 
                     <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
-                      The Leopardfish estimated financial analysis and lifestyle projections below are specifically tailored by our team for this specific school opportunity.
+                      We’ve crunched the numbers for this role. Here is our breakdown of your expected take-home pay, local living costs, and lifestyle at this campus—you can adjust the settings anytime to factor in your household size, additional income, and personal savings goals.
                     </p>
                   </div>
                 </div>

@@ -132,7 +132,7 @@ export function getCOLField(data: any, keys: string[]): any {
 export function findCostOfLiving(city: string, country: string, costOfLivingList: any[]): any {
   if (!costOfLivingList || costOfLivingList.length === 0) return null;
   
-  const cleanStr = (s: any) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+  const cleanStr = (s: any) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
   
   const sCity = cleanStr(city);
   const sCountry = cleanStr(canonicalCountry(country));
@@ -398,22 +398,22 @@ export function calculateOutflows(
   const col = activeCoL || {};
 
   // Food
-  const foodCost = (safeVal(col.food) || safeVal(col.monthlyFood) || 350) * adults + 
-                   (safeVal(col.food) || 350) * 0.5 * children;
+  const foodCost = (safeVal(col.groceries) || safeVal(col.food) || safeVal(col.monthlyFood) || 350) * adults + 
+                   (safeVal(col.groceries) || safeVal(col.food) || 350) * 0.5 * children;
 
   // Transport
-  const transportCost = (safeVal(col.transport) || safeVal(col.monthlyTransport) || 60) * adults + 
-                        (safeVal(col.transport) || 60) * 0.3 * children;
+  const transportCost = (safeVal(col.transport) || safeVal(col.monthlyTransport) || 45) * adults + 
+                        (safeVal(col.transport) || 45) * 0.3 * children;
 
   // Mobile
-  const mobileCost = (safeVal(col.mobile) || safeVal(col.mobileMonthly) || 30) * adults;
+  const mobileCost = (safeVal(col.mobilePhone) || safeVal(col.mobile) || safeVal(col.mobileMonthly) || 22) * adults;
 
   // Dining & Social
-  const diningSocialCost = (safeVal(col.diningSocial) || safeVal(col.socialMonthly) || 150) * adults;
+  const diningSocialCost = (safeVal(col.diningSocial) || safeVal(col.socialMonthly) || 195) * adults;
 
   // Medical
-  const uncoveredMedicalCost = (safeVal(col.uncoveredMedical) || 50) * adults + 
-                               (safeVal(col.uncoveredMedical) || 50) * 0.5 * children;
+  const uncoveredMedicalCost = (safeVal(col.uncoveredMedical) || 20) * adults + 
+                               (safeVal(col.uncoveredMedical) || 20) * 0.5 * children;
 
   // Rent
   let rentCost = 0;

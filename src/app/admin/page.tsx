@@ -6,9 +6,11 @@ import {
   Database, Zap, Loader2, CheckCircle2, AlertTriangle, 
   FileJson, Beaker, ShieldCheck, RefreshCw, Info, Terminal, 
   MapPin, Globe2, ServerCrash, Coins,
-  Activity, Target, Map, MessageSquare, Compass
+  Activity, Target, Map, MessageSquare, Compass,
+  Cpu, Clock, PlusCircle, MinusCircle, Layers, TrendingUp
 } from 'lucide-react';
 import { 
+  getCrawlLogsAction, type CrawlLogItem, getCoolingStatusesAction, type EngineCoolingItem, 
   uploadRegistryJsonAction, 
   enrichAllSchoolsAction, 
   updateLocationCostOfLivingAction, 
@@ -23,6 +25,7 @@ import {
 } from './actions';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { CRAWLER_TIMETABLE } from '@/lib/crawler/timetableScheduler';
 import { Label } from '@/components/ui/label';
 
 function EconomicSubmitButton() {
@@ -72,6 +75,10 @@ export default function AdminCommandPage() {
 
   const [telemetry, setTelemetry] = useState<any>(null);
   const [loadingTelemetry, setLoadingTelemetry] = useState(false);
+  const [crawlLogs, setCrawlLogs] = useState<CrawlLogItem[]>([]);
+  const [loadingCrawlLogs, setLoadingCrawlLogs] = useState(false);
+  const [selectedEngineFilter, setSelectedEngineFilter] = useState<string>("ALL");
+  const [coolingStatuses, setCoolingStatuses] = useState<Record<string, EngineCoolingItem>>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState<'All' | 'Schools' | 'Countries' | 'Regions'>('All');
 
@@ -172,14 +179,20 @@ export default function AdminCommandPage() {
 
   async function loadTelemetry() {
     setLoadingTelemetry(true);
+    setLoadingCrawlLogs(true);
     const result = await getTelemetryData();
     if (result.success) setTelemetry(result.data);
     setLoadingTelemetry(false);
+    const crawlRes = await getCrawlLogsAction();
+    if (crawlRes.success) setCrawlLogs(crawlRes.data);
+    const coolRes = await getCoolingStatusesAction();
+    if (coolRes.success) setCoolingStatuses(coolRes.data);
+    setLoadingCrawlLogs(false);
   }
 
   useEffect(() => {
-    if (activeTab === 'telemetry' && !telemetry && mounted) loadTelemetry();
-  }, [activeTab, mounted, telemetry]);
+    if (activeTab === 'telemetry' && mounted && !telemetry) loadTelemetry();
+  }, [activeTab, mounted]);
 
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
 
@@ -897,7 +910,265 @@ export default function AdminCommandPage() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        {/* 🛰️ SEARCH-ENGINE SPECIFIC TELEMETRY & DIFFERENTIAL JOB STATS */}
+                        <div className="bg-[#0b1224] border border-white/10 p-6 rounded-sm space-y-6">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/5">
+                                <div className="space-y-1">
+                                    <h3 className="text-xs font-black uppercase text-[#d95f02] tracking-wider flex items-center gap-2">
+                                        <Cpu className="size-4 text-[#d95f02] animate-pulse" /> Search Engine Crawl Telemetry & Differential Stats
+                                    </h3>
+                                    <p className="text-[10px] text-slate-400">Search-engine-specific performance tracking (+ added, - removed, DB matched grounding rate, and execution speed per engine)</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-950/40 border border-emerald-800/30 px-2.5 py-1 rounded-sm flex items-center gap-1.5">
+                                        <Activity className="size-3" /> Live Telemetry System
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* High-Level Differential Summary Cards */}
+                            {(() => {
+                                const filteredLogs = selectedEngineFilter === 'ALL' ? crawlLogs : crawlLogs.filter(l => l.engine.toUpperCase() === selectedEngineFilter);
+                                const totalAdded = filteredLogs.reduce((acc, l) => acc + (l.addedCount || 0), 0);
+                                const totalRemoved = filteredLogs.reduce((acc, l) => acc + (l.removedCount || 0), 0);
+                                const totalScraped = filteredLogs.reduce((acc, l) => acc + (l.totalFound || 0), 0);
+                                const totalMatched = filteredLogs.reduce((acc, l) => acc + (l.dbMatched || 0), 0);
+                                const avgDuration = filteredLogs.length > 0 ? (filteredLogs.reduce((acc, l) => acc + (l.durationMs || 0), 0) / filteredLogs.length / 1000).toFixed(1) : "0.0";
+                                const netDelta = totalAdded - totalRemoved;
+                                const groundingPct = totalScraped > 0 ? Math.round((totalMatched / totalScraped) * 100) : 0;
+
+                                return (
+                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                        <div className="bg-black/40 border border-emerald-500/20 p-4 rounded-sm">
+                                            <div className="text-[9px] font-black uppercase text-emerald-400 mb-1 flex items-center gap-1">
+                                                <PlusCircle className="size-3" /> Jobs Added (+)
+                                            </div>
+                                            <div className="text-2xl font-black italic text-emerald-400">+{totalAdded}</div>
+                                        </div>
+                                        <div className="bg-black/40 border border-rose-500/20 p-4 rounded-sm">
+                                            <div className="text-[9px] font-black uppercase text-rose-400 mb-1 flex items-center gap-1">
+                                                <MinusCircle className="size-3" /> Jobs Removed (-)
+                                            </div>
+                                            <div className="text-2xl font-black italic text-rose-400">-{totalRemoved}</div>
+                                        </div>
+                                        <div className="bg-black/40 border border-purple-500/20 p-4 rounded-sm">
+                                            <div className="text-[9px] font-black uppercase text-purple-400 mb-1 flex items-center gap-1">
+                                                <TrendingUp className="size-3" /> Net Differential
+                                            </div>
+                                            <div className={cn("text-2xl font-black italic", netDelta >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                                                {netDelta >= 0 ? `+${netDelta}` : netDelta}
+                                            </div>
+                                        </div>
+                                        <div className="bg-black/40 border border-sky-500/20 p-4 rounded-sm">
+                                            <div className="text-[9px] font-black uppercase text-sky-400 mb-1 flex items-center gap-1">
+                                                <Layers className="size-3" /> Grounded DB Matched
+                                            </div>
+                                            <div className="text-2xl font-black italic text-white">
+                                                {totalMatched} <span className="text-[10px] text-slate-500 font-bold not-italic">/ {totalScraped} ({groundingPct}%)</span>
+                                            </div>
+                                        </div>
+                                        <div className="bg-black/40 border border-amber-500/20 p-4 rounded-sm">
+                                            <div className="text-[9px] font-black uppercase text-amber-400 mb-1 flex items-center gap-1">
+                                                <Clock className="size-3" /> Avg Run Speed
+                                            </div>
+                                            <div className="text-2xl font-black italic text-amber-400">{avgDuration} <span className="text-[10px] font-bold not-italic">s</span></div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+
+                            {/* ENGINE FILTER PILLS */}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                        <Terminal className="size-3 text-[#d95f02]" /> Filter Scraper Engine
+                                    </h4>
+                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                                        {crawlLogs.length} Log Document(s) Loaded
+                                    </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {["ALL", "GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "ESF", "TAYLORS", "TEACHER_HORIZONS"].map((engineKey) => {
+                                        const count = engineKey === "ALL" 
+                                            ? crawlLogs.length 
+                                            : crawlLogs.filter(l => l.engine.toUpperCase() === engineKey).length;
+                                        return (
+                                            <button
+                                                key={engineKey}
+                                                onClick={() => setSelectedEngineFilter(engineKey)}
+                                                className={cn(
+                                                    "px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all flex items-center gap-1.5",
+                                                    selectedEngineFilter === engineKey
+                                                        ? "bg-[#d95f02] border-[#d95f02] text-white shadow-lg shadow-[#d95f02]/20"
+                                                        : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                                                )}
+                                            >
+                                                <span>{engineKey}</span>
+                                                <span className={cn(
+                                                    "px-1.5 py-0.2 text-[8px] rounded-full font-bold",
+                                                    selectedEngineFilter === engineKey ? "bg-black/30 text-white" : "bg-white/10 text-slate-400"
+                                                )}>
+                                                    {count}
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* DEDICATED SEARCH-ENGINE SPECIFIC TELEMETRY TABLE VIEW */}
+                            <div className="space-y-3">
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                    <Globe2 className="size-3 text-sky-400" /> Search Engine Performance Table
+                                </h4>
+                                <div className="overflow-x-auto border border-white/10 rounded-sm bg-black/40">
+                                    <table className="w-full text-left text-[11px] font-sans">
+                                        <thead className="bg-[#070d19] border-b border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                                            <tr>
+                                                <th className="py-3 px-4">Search Engine</th>
+                                                <th className="py-3 px-4">Last Execution</th>
+                                                <th className="py-3 px-4 text-right">Avg Speed</th>
+                                                <th className="py-3 px-4 text-right">Scraped</th>
+                                                <th className="py-3 px-4 text-right">Grounded DB</th>
+                                                <th className="py-3 px-4 text-right">Grounding %</th>
+                                                <th className="py-3 px-4 text-right">Added (+)</th>
+                                                <th className="py-3 px-4 text-right">Removed (-)</th>
+                                                <th className="py-3 px-4 text-right">Net Delta</th>
+                                                <th className="py-3 px-4 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5 font-mono text-[10px]">
+                                            {(() => {
+                                                const allEngines = ["GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "ESF", "TAYLORS", "TEACHER_HORIZONS"];
+                                                const displayEngines = selectedEngineFilter === 'ALL' 
+                                                    ? allEngines 
+                                                    : allEngines.filter(e => e === selectedEngineFilter);
+
+                                                return displayEngines.map((engineKey) => {
+                                                    const engineLogs = crawlLogs.filter(l => l.engine.toUpperCase() === engineKey);
+                                                    const latestLog = engineLogs[0];
+
+                                                    const totalScraped = engineLogs.reduce((a, b) => a + b.totalFound, 0);
+                                                    const totalMatched = engineLogs.reduce((a, b) => a + b.dbMatched, 0);
+                                                    const totalAdded = engineLogs.reduce((a, b) => a + b.addedCount, 0);
+                                                    const totalRemoved = engineLogs.reduce((a, b) => a + b.removedCount, 0);
+                                                    const avgSpeed = engineLogs.length > 0 ? (engineLogs.reduce((a, b) => a + b.durationMs, 0) / engineLogs.length / 1000).toFixed(1) : "-";
+                                                    const groundingPct = totalScraped > 0 ? Math.round((totalMatched / totalScraped) * 100) : 0;
+                                                    const netDelta = totalAdded - totalRemoved;
+
+                                                    return (
+                                                        <tr key={engineKey} className="hover:bg-white/5 transition-all">
+                                                            <td className="py-3 px-4 font-black uppercase text-purple-400 flex items-center gap-2">
+                                                                <span className="size-2 rounded-full bg-purple-500 animate-pulse" />
+                                                                {engineKey}
+                                                            </td>
+                                                            <td className="py-3 px-4 text-slate-400 font-sans">
+                                                                {latestLog ? new Date(latestLog.createdAt).toLocaleString() : <span className="text-slate-600 italic">No runs recorded</span>}
+                                                            </td>
+                                                            <td className="py-3 px-4 text-right text-amber-400">{avgSpeed !== "-" ? `${avgSpeed}s` : "-"}</td>
+                                                            <td className="py-3 px-4 text-right text-slate-300 font-bold">{totalScraped}</td>
+                                                            <td className="py-3 px-4 text-right text-sky-400 font-bold">{totalMatched}</td>
+                                                            <td className="py-3 px-4 text-right text-slate-300 font-sans">
+                                                                <span className={cn(
+                                                                    "px-2 py-0.5 rounded-sm font-bold text-[9px]",
+                                                                    groundingPct >= 60 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : groundingPct > 0 ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-white/5 text-slate-500"
+                                                                )}>
+                                                                    {groundingPct}%
+                                                                </span>
+                                                            </td>
+                                                            <td className="py-3 px-4 text-right font-black text-emerald-400">+{totalAdded}</td>
+                                                            <td className="py-3 px-4 text-right font-black text-rose-400">-{totalRemoved}</td>
+                                                            <td className="py-3 px-4 text-right font-black">
+                                                                <span className={cn("px-2 py-0.5 rounded-sm text-[9px]", netDelta > 0 ? "bg-emerald-500/10 text-emerald-400" : netDelta < 0 ? "bg-rose-500/10 text-rose-400" : "bg-white/5 text-slate-400")}>
+                                                                    {netDelta >= 0 ? `+${netDelta}` : netDelta}
+                                                                </span>
+                                                            </td>
+                                                            <td className="py-3 px-4 text-center">
+                                                                {(() => {
+                                                                    const config = CRAWLER_TIMETABLE[engineKey];
+                                                                    const isRecentRun = latestLog && (Date.now() - new Date(latestLog.createdAt).getTime()) < 12 * 3600 * 1000;
+
+                                                                    if (isRecentRun) {
+                                                                        return (
+                                                                            <span className="px-2 py-0.5 text-[8px] font-black uppercase tracking-wider rounded-sm border bg-emerald-500/10 border-emerald-500/30 text-emerald-400">
+                                                                                ACTIVE
+                                                                            </span>
+                                                                        );
+                                                                    }
+
+                                                                    if (config?.utcStartWindow) {
+                                                                        return (
+                                                                            <span className="px-2 py-0.5 text-[8px] font-black uppercase tracking-wider rounded-sm border bg-sky-500/10 border-sky-500/30 text-sky-400" title={`Scheduled Daily Window: ${config.utcStartWindow} - ${config.utcEndWindow} UTC (${config.peakSchedule})`}>
+                                                                                TIMED ({config.utcStartWindow} UTC)
+                                                                            </span>
+                                                                        );
+                                                                    }
+
+                                                                    return (
+                                                                        <span className="px-2 py-0.5 text-[8px] font-black uppercase tracking-wider rounded-sm border bg-white/5 border-white/10 text-slate-400">
+                                                                            TIMETABLED
+                                                                        </span>
+                                                                    );
+                                                                })()}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                });
+                                            })()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {/* RECENT HISTORICAL ENGINE EXECUTION LOGS STREAM */}
+                            <div className="space-y-3 pt-2 border-t border-white/5">
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                    <Terminal className="size-3 text-[#d95f02]" /> Raw Engine Execution Log Stream
+                                </h4>
+                                <div className="max-h-60 overflow-y-auto custom-scrollbar border border-white/5 rounded-sm bg-black/30">
+                                    {loadingCrawlLogs ? (
+                                        <div className="p-8 text-center text-slate-500 text-xs flex items-center justify-center gap-2">
+                                            <Loader2 className="size-4 animate-spin text-[#d95f02]" /> Loading Crawler Logs...
+                                        </div>
+                                    ) : crawlLogs.length === 0 ? (
+                                        <div className="p-8 text-center text-slate-500 text-xs italic">
+                                            No crawler telemetry logs recorded yet.
+                                        </div>
+                                    ) : (
+                                        <table className="w-full text-left text-[11px] font-sans">
+                                            <thead className="sticky top-0 bg-[#070d19] border-b border-white/10 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                                                <tr>
+                                                    <th className="py-2.5 px-4">Engine</th>
+                                                    <th className="py-2.5 px-4">Timestamp</th>
+                                                    <th className="py-2.5 px-4 text-right">Duration</th>
+                                                    <th className="py-2.5 px-4 text-right">Scraped</th>
+                                                    <th className="py-2.5 px-4 text-right">DB Grounded</th>
+                                                    <th className="py-2.5 px-4 text-right">Added (+)</th>
+                                                    <th className="py-2.5 px-4 text-right">Removed (-)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5 font-mono text-[10px]">
+                                                {crawlLogs
+                                                    .filter(l => selectedEngineFilter === 'ALL' || l.engine.toUpperCase() === selectedEngineFilter)
+                                                    .map((log) => (
+                                                        <tr key={log.id} className="hover:bg-white/5 transition-all">
+                                                            <td className="py-2 px-4 font-black uppercase text-purple-400">{log.engine}</td>
+                                                            <td className="py-2 px-4 text-slate-400 font-sans">{new Date(log.createdAt).toLocaleString()}</td>
+                                                            <td className="py-2 px-4 text-right text-amber-400">{(log.durationMs / 1000).toFixed(2)}s</td>
+                                                            <td className="py-2 px-4 text-right text-slate-300">{log.totalFound}</td>
+                                                            <td className="py-2 px-4 text-right text-sky-400 font-bold">{log.dbMatched}</td>
+                                                            <td className="py-2 px-4 text-right font-black text-emerald-400">+{log.addedCount}</td>
+                                                            <td className="py-2 px-4 text-right font-black text-rose-400">-{log.removedCount}</td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        </div>
                     );
                 })()}
             </div>
