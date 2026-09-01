@@ -1083,12 +1083,12 @@ export default function FeaturedJobsPage() {
                 onChange={(e) => setMinSavings(Number(e.target.value))}
                 className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#FF6B35] outline-none font-bold"
               >
-                <option value={0}>Any Savings</option>
-                <option value={500}>Min $500 / mo</option>
-                <option value={1000}>Min $1,000 / mo</option>
-                <option value={1500}>Min $1,500 / mo</option>
-                <option value={2000}>Min $2,000 / mo</option>
-                <option value={2500}>Min $2,500 / mo</option>
+                <option value={0}>All Savings Packages</option>
+                <option value={2800}>Premium Package ($2,800+ / mo)</option>
+                <option value={1900}>Strong Financial Growth ($1,900+ / mo)</option>
+                <option value={1200}>Comfortable Expat Living ($1,200+ / mo)</option>
+                <option value={600}>Culture & Travel ($600+ / mo)</option>
+                <option value={1}>Destination-Led Package ($0+ / mo)</option>
               </select>
             </div>
 

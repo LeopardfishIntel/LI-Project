@@ -424,7 +424,7 @@ function DecoderContent() {
       if (jobTitle) setRequestedJobTitle(jobTitle);
       if (famStatusParam) {
         let mapped = famStatusParam;
-        if (famStatusParam === "Couple") mapped = "Married (sole earner)";
+        if (famStatusParam.toLowerCase().includes("married") || famStatusParam === "Couple") mapped = "Couple";
         setSettings(prev => ({ ...prev, familyStatus: mapped }));
       }
     }
@@ -1114,8 +1114,6 @@ function DecoderContent() {
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   <SelectItem value="Single">Single</SelectItem>
                   <SelectItem value="Couple">Couple</SelectItem>
-                  <SelectItem value="Married (sole earner)">Married (sole earner)</SelectItem>
-                  <SelectItem value="Married (dual income)">Married (dual income)</SelectItem>
                   <SelectItem value="Family +1">Family +1</SelectItem>
                   <SelectItem value="Family +2">Family +2</SelectItem>
                   <SelectItem value="Family +3">Family +3</SelectItem>
@@ -1682,9 +1680,9 @@ function DecoderContent() {
                           )}
                         </div>
                         
-                        <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
-                          <button onClick={() => setTransportMode("P")} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", transportMode === "P" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Transit</button>
-                          <button onClick={() => setTransportMode("C")} className={cn("px-1 py-0.5 text-[9px] font-black rounded-sm transition-all", transportMode === "C" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Car Hire</button>
+                        <div className="flex bg-slate-950 rounded-md p-1 border-2 border-slate-700/80 shrink-0 shadow-inner">
+                          <button onClick={() => setTransportMode("P")} className={cn("px-2.5 py-1 text-[10px] font-extrabold rounded transition-all uppercase", transportMode === "P" ? "bg-teal-500 text-slate-950 shadow-[0_0_10px_rgba(20,184,166,0.4)]" : "text-slate-300 hover:text-white hover:bg-white/10")}>Transit</button>
+                          <button onClick={() => setTransportMode("C")} className={cn("px-2.5 py-1 text-[10px] font-extrabold rounded transition-all uppercase", transportMode === "C" ? "bg-teal-500 text-slate-950 shadow-[0_0_10px_rgba(20,184,166,0.4)]" : "text-slate-300 hover:text-white hover:bg-white/10")}>Car Hire</button>
                         </div>
                         <span className="text-[13px] font-black tabular-nums text-white whitespace-nowrap shrink-0">{currency} {Math.round(analysis?.costs.transport || 0).toLocaleString()}</span>
                       </div>
@@ -1708,19 +1706,22 @@ function DecoderContent() {
                       </div>
 
                       {/* RESTORED: Custom Adjustments Box from Screenshot */}
-                      <div className="pt-5 mt-3">
-                        <div className="flex justify-between items-center">
+                      <div className="pt-4 mt-3">
+                        <div className="flex justify-between items-center bg-[#0f172a] border-2 border-amber-500/60 p-3 rounded-lg shadow-[0_0_15px_rgba(245,158,11,0.15)]">
                           <div className="flex items-center gap-2">
-                            <Wallet className="size-4 text-slate-400" />
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-wider italic leading-normal">Custom Adjustments (+/-)</p>
+                            <Wallet className="size-4.5 text-amber-400 shrink-0" />
+                            <div className="flex flex-col">
+                              <p className="text-xs font-black text-amber-300 uppercase tracking-wider leading-none">Custom Adjustments (+/-)</p>
+                              <span className="text-[9px] font-bold text-amber-400/80 uppercase tracking-tight mt-0.5">Editable (+ extra expense / - savings)</span>
+                            </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black text-slate-600 uppercase">{currency}</span>
+                            <span className="text-xs font-black text-amber-400 uppercase">{currency}</span>
                             <Input
                               type="number"
                               value={manualAdjustments}
                               onChange={(e) => setManualAdjustments(e.target.value)}
-                              className={cn("bg-black/40 border-white/10 w-28 h-10 px-3 text-right text-base font-black text-white focus:border-teal-500 transition-all", noSpinners)}
+                              className={cn("bg-slate-950 border-2 border-amber-500/80 w-28 h-10 px-3 text-right text-base font-black text-amber-300 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/50 shadow-inner transition-all rounded-md", noSpinners)}
                             />
                           </div>
                         </div>
@@ -1744,14 +1745,17 @@ function DecoderContent() {
                         <span className="text-[13px] font-black text-white whitespace-nowrap shrink-0">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
 
-                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                      <div className="flex justify-between items-center bg-[#0f172a] border-2 border-teal-500/60 p-3 rounded-lg shadow-[0_0_15px_rgba(20,184,166,0.15)] my-2">
                         <div className="flex items-center gap-2">
-                          <Banknote className="size-4 text-slate-400" />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Additional Income</span>
+                          <Banknote className="size-4.5 text-teal-400 shrink-0" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-black text-teal-300 uppercase tracking-wider leading-none whitespace-nowrap shrink-0">Additional Income</span>
+                            <span className="text-[9px] font-bold text-teal-400/80 uppercase tracking-tight mt-0.5">Editable (side hustle / tutoring)</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] font-black text-slate-600">{currency}</span>
-                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-black/40 border-white/10 w-24 h-8 px-2 text-right text-xs font-black text-white rounded-sm focus:border-teal-500", noSpinners)} />
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-teal-400 uppercase">{currency}</span>
+                          <Input type="number" value={extraIncome} onChange={(e) => setExtraIncome(e.target.value)} className={cn("bg-slate-950 border-2 border-teal-500/80 w-28 h-10 px-3 text-right text-base font-black text-teal-300 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/50 shadow-inner rounded-md", noSpinners)} />
                         </div>
                       </div>
 
