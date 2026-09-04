@@ -1,0 +1,474 @@
+{
+  "totalSchools": 256,
+  "totalFieldsCount": 68,
+  "fields": [
+    {
+      "field": "Ownership",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "Profit Status",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "academicscore",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "agency",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "aliases",
+      "types": [
+        "array"
+      ]
+    },
+    {
+      "field": "approvals",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "baseSchoolName",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "cachedBriefing",
+      "types": [
+        "object"
+      ]
+    },
+    {
+      "field": "cachedBriefings",
+      "types": [
+        "object"
+      ]
+    },
+    {
+      "field": "cachedStability",
+      "types": [
+        "null",
+        "object"
+      ]
+    },
+    {
+      "field": "campusName",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "careersPageUrl",
+      "types": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "field": "careersUrl",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "city",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "citySafety",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "citysafety",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "classsize",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "column 1",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "confidence",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "country",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "curriculum",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "financescore",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "group",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "groupDomain",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "healthcoverage",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "housingprovision",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "id",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "image",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "inspect",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "isRevalidating",
+      "types": [
+        "boolean"
+      ]
+    },
+    {
+      "field": "lastScrapedAt",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "lastSync",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "name",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "netbase",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "noncontacttime",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "numericalstaff",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "ownership",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "paidInUSD",
+      "types": [
+        "boolean"
+      ]
+    },
+    {
+      "field": "parentSchoolId",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "profit status",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "rating",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "revalidationCompletedAt",
+      "types": [
+        "object"
+      ]
+    },
+    {
+      "field": "revalidationError",
+      "types": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "field": "revalidationStatus",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "salary",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "salaryRange",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "savingspotential",
+      "types": [
+        "number"
+      ]
+    },
+    {
+      "field": "savingspotentialsingle",
+      "types": [
+        "number"
+      ]
+    },
+    {
+      "field": "schoolGroup",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "schoolGroupDomain",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "schoolId",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "schoolname",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "scrapedJobsCount",
+      "types": [
+        "number"
+      ]
+    },
+    {
+      "field": "scrapedJobsList",
+      "types": [
+        "array"
+      ]
+    },
+    {
+      "field": "staffcount",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "staffstudentratio",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "summary",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "techecosystem",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "techscore",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "tesEmployerSlug",
+      "types": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "field": "tesEmployerUrl",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "tesOrganizationId",
+      "types": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "field": "totalscore",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "updatedAt",
+      "types": [
+        "string",
+        "object"
+      ]
+    },
+    {
+      "field": "updatedAtMillis",
+      "types": [
+        "number"
+      ]
+    },
+    {
+      "field": "validated",
+      "types": [
+        "string"
+      ]
+    },
+    {
+      "field": "website",
+      "types": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "field": "worklifescore",
+      "types": [
+        "string"
+      ]
+    }
+  ],
+  "sampleSchoolRecord": {
+    "id": "FLIS0001",
+    "financescore": "9.0",
+    "country": "Hong Kong",
+    "classsize": "18-20",
+    "city": "Hong Kong",
+    "rating": "Good",
+    "totalscore": "9.1",
+    "numericalstaff": "180",
+    "staffstudentratio": "1:8",
+    "approvals": "IB, ZfA, BIS",
+    "academicscore": "9.8",
+    "summary": "Premium Peak leader.",
+    "techscore": "9.2",
+    "citySafety": "9.1",
+    "confidence": "9.8",
+    "housingprovision": "Subsidised",
+    "techecosystem": "1:1 iPad/Laptop",
+    "curriculum": "German/British",
+    "staffcount": "180",
+    "schoolname": "German Swiss Int'l",
+    "worklifescore": "8.2",
+    "noncontacttime": "20%",
+    "healthcoverage": "Premium",
+    "image": "",
+    "Profit Status": "Profit Status",
+    "salaryRange": "$4,150.00",
+    "Ownership": "Ownership",
+    "inspect": "Inspect / Accreditation",
+    "validated": "LFI",
+    "profit status": "Profit Status",
+    "ownership": "Ownership",
+    "citysafety": "9.1",
+    "lastSync": "2026-05-26T10:41:07.830Z",
+    "scrapedJobsCount": 0,
+    "scrapedJobsList": [],
+    "revalidationError": null,
+    "revalidationStatus": "success",
+    "isRevalidating": true,
+    "revalidationCompletedAt": {
+      "_seconds": 1788076578,
+      "_nanoseconds": 94000000
+    },
+    "cachedStability": null,
+    "lastScrapedAt": "2026-08-30T07:56:18.092Z",
+    "website": "https://www.gsis.edu.hk/en/about-us/careers/job-openings",
+    "agency": "Search Associates, Schrole, LinkedIn",
+    "careersPageUrl": "https://www.gsis.edu.hk/en/about-us/careers/job-openings",
+    "name": "German Swiss Int'l",
+    "tesOrganizationId": "1057613",
+    "tesEmployerSlug": "german-swiss-international-school-1057613",
+    "updatedAt": "2026-08-30T16:14:23.674Z"
+  }
+}
