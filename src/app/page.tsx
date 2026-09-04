@@ -134,9 +134,9 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mb-10">
+            <TacticalButton href="/featured-jobs" label="Featured Jobs" className="w-52 sm:w-56 h-16" />
             <TacticalButton href="/financial-forecaster" label="Evaluate A School" className="w-52 sm:w-56 h-16" />
             <TacticalButton href="/decide" label="Compare Schools" className="w-52 sm:w-56 h-16" />
-            <TacticalButton href="/featured-jobs" label="Featured Jobs" className="w-52 sm:w-56 h-16" />
           </div>
 
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
