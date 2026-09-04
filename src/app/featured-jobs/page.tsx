@@ -1388,9 +1388,9 @@ export default function FeaturedJobsPage() {
                     <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
                     
                     {/* Top Header Block */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start w-full gap-2 sm:gap-4">
-                      {/* Left Header Title & Subheader */}
-                      <div className="space-y-1.5 text-left flex-1 w-full">
+                    <div className="flex flex-col w-full gap-2">
+                      {/* Line 1: Job Title */}
+                      <div className="w-full">
                         <h3 className="text-base sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
                           <a 
                             href={buildEvalUrl(job, familyStatus)}
@@ -1411,7 +1411,12 @@ export default function FeaturedJobsPage() {
                             </span>
                           )}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-slate-400 font-medium">
+                      </div>
+
+                      {/* Line 2: School, Location, Curriculum & Deadline / Ref ID */}
+                      <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-3 text-xs text-slate-400 font-medium w-full">
+                        {/* Left metadata */}
+                        <div className="flex flex-wrap items-center gap-y-1 gap-x-2">
                           <a 
                             href={buildEvalUrl(job, familyStatus)}
                             onClick={(e) => e.stopPropagation()}
@@ -1420,41 +1425,42 @@ export default function FeaturedJobsPage() {
                           >
                             <Building className="size-3.5 shrink-0" /> {job.schoolName}
                           </a>
-                          <span className="text-slate-600 hidden sm:inline">•</span>
+                          <span className="text-slate-600">•</span>
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
-                          <span className="text-slate-600 hidden sm:inline">•</span>
+                          <span className="text-slate-600">•</span>
                           <span className="bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
                             {formatCurriculumBadge(job.curriculum)}
                           </span>
                         </div>
-                      </div>
 
-                      {/* Right Header Deadline & Leopardfish ID */}
-                      <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-white/5 sm:border-none">
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
-                          <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
-                          {activeTab === 'admin_staging' ? (
-                            <div className="flex items-center gap-1">
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
-                              <input
-                                type="date"
-                                value={
-                                  job.closesDateRaw
-                                    ? job.closesDateRaw.toISOString().substring(0, 10)
-                                    : ""
-                                }
-                                onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
-                                className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
-                              />
-                            </div>
-                          ) : (
-                            <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
-                          )}
-                        </div>
-                        <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider sm:mt-0.5">
-                          {getJobCardReference(job)}
+                        {/* Right metadata: Deadline & Ref ID */}
+                        <div className="flex items-center gap-2.5 shrink-0 ml-auto pt-0.5 sm:pt-0">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
+                            <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
+                            {activeTab === 'admin_staging' ? (
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
+                                <input
+                                  type="date"
+                                  value={
+                                    job.closesDateRaw
+                                      ? job.closesDateRaw.toISOString().substring(0, 10)
+                                      : ""
+                                  }
+                                  onChange={(e) => handleUpdateClosingDate(job.schoolId, job.id, e.target.value)}
+                                  className="bg-black/60 border border-white/10 text-white rounded px-2 py-0.5 text-[10px] focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                                />
+                              </div>
+                            ) : (
+                              <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+                            )}
+                          </div>
+                          <span className="text-slate-600 font-mono text-[10px]">•</span>
+                          <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider">
+                            {getJobCardReference(job)}
+                          </div>
                         </div>
                       </div>
                     </div>
