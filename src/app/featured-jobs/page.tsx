@@ -1388,10 +1388,10 @@ export default function FeaturedJobsPage() {
                     <div className="absolute top-0 left-0 w-1 h-full bg-[#38BDF8]/20 group-hover:bg-[#FF6B35]/60 transition-all duration-300" />
                     
                     {/* Top Header Block */}
-                    <div className="flex justify-between items-start w-full gap-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start w-full gap-2 sm:gap-4">
                       {/* Left Header Title & Subheader */}
-                      <div className="space-y-1 text-left flex-1">
-                        <h3 className="text-lg font-bold tracking-tight text-[#F8FAFC] leading-tight flex flex-wrap items-center gap-2">
+                      <div className="space-y-1.5 text-left flex-1 w-full">
+                        <h3 className="text-base sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
                           <a 
                             href={buildEvalUrl(job, familyStatus)}
                             onClick={(e) => e.stopPropagation()}
@@ -1411,30 +1411,30 @@ export default function FeaturedJobsPage() {
                             </span>
                           )}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 font-medium">
+                        <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-slate-400 font-medium">
                           <a 
                             href={buildEvalUrl(job, familyStatus)}
                             onClick={(e) => e.stopPropagation()}
                             title={`Evaluate ${job.schoolName} Opportunity`}
-                            className="text-sm font-semibold text-[#38BDF8] hover:text-[#FF6B35] tracking-tight flex items-center gap-1 transition-colors duration-200 cursor-pointer"
+                            className="text-xs sm:text-sm font-semibold text-[#38BDF8] hover:text-[#FF6B35] tracking-tight flex items-center gap-1 transition-colors duration-200 cursor-pointer"
                           >
-                            <Building className="size-3.5" /> {job.schoolName}
+                            <Building className="size-3.5 shrink-0" /> {job.schoolName}
                           </a>
-                          <span>•</span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="size-3.5" /> {job.city}, {job.country}
+                          <span className="text-slate-600 hidden sm:inline">•</span>
+                          <span className="flex items-center gap-1 text-slate-300">
+                            <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
-                          <span>•</span>
-                          <span className="bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-400">
-                            [{formatCurriculumBadge(job.curriculum)}]
+                          <span className="text-slate-600 hidden sm:inline">•</span>
+                          <span className="bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
+                            {formatCurriculumBadge(job.curriculum)}
                           </span>
                         </div>
                       </div>
 
                       {/* Right Header Deadline & Leopardfish ID */}
-                      <div className="flex flex-col items-end shrink-0 pt-1">
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-white/5 sm:border-none">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
-                          <Calendar className="size-3.5 text-[#FF6B35]" />
+                          <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
                           {activeTab === 'admin_staging' ? (
                             <div className="flex items-center gap-1">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Closes:</span>
@@ -1453,7 +1453,7 @@ export default function FeaturedJobsPage() {
                             <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
                           )}
                         </div>
-                        <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider mt-0.5">
+                        <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider sm:mt-0.5">
                           {getJobCardReference(job)}
                         </div>
                       </div>
@@ -1462,9 +1462,9 @@ export default function FeaturedJobsPage() {
                     <div className="border-t border-white/5 my-1" />
 
                     {/* Bottom Metrics & Actions Block */}
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full pt-1">
+                    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
                       {/* Left Column: Badges & Metric Pills */}
-                      <div className="flex flex-wrap items-center justify-start gap-2.5">
+                      <div className="flex flex-wrap items-center justify-start gap-2 w-full sm:w-auto">
                         {/* NEW, CLOSING SOON & Search Engine Source Badges */}
                         {(() => {
                           const now = new Date();
@@ -1614,7 +1614,7 @@ export default function FeaturedJobsPage() {
                       </div>
 
                       {/* Right Column: CTA or Admin Controls */}
-                      <div className="shrink-0 flex items-center gap-2">
+                      <div className="shrink-0 flex items-center justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
                         {activeTab === 'admin_staging' ? (
                           <>
                             <button
@@ -1640,11 +1640,11 @@ export default function FeaturedJobsPage() {
                             </button>
                           </>
                         ) : (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
                             {calculatedIsAdmin && (
                               <button
                                 onClick={() => handleMoveToPending(job.schoolId, job.id)}
-                                className="inline-flex items-center justify-center p-2 text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-400/40 rounded-sm transition-all cursor-pointer"
+                                className="inline-flex items-center justify-center p-2 text-amber-400 hover:text-white hover:bg-amber-500/20 border border-amber-400/40 rounded-sm transition-all cursor-pointer shrink-0"
                                 title="Unpublish from live feed and move to Staging / Pending Review"
                               >
                                 <Clock className="size-4" />
@@ -1652,11 +1652,11 @@ export default function FeaturedJobsPage() {
                             )}
                             <a 
                               href={`/financial-forecaster?schoolId=${job.schoolId}&jobId=${job.id}&jobTitle=${encodeURIComponent(job.title)}&department=${encodeURIComponent(job.department || '')}&curriculum=${encodeURIComponent(job.curriculum || '')}&applyUrl=${encodeURIComponent(job.source_url || (job as any).applyUrl || '')}&closesDate=${encodeURIComponent(job.date_closing || '')}&savingsPotential=${job.savingsPotential || 0}&schoolRating=${job.schoolRating || ''}&source=${encodeURIComponent(job.source || '')}&city=${encodeURIComponent(job.city || '')}&country=${encodeURIComponent(job.country || '')}`}
-                              className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-3.5 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)]"
+                              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-4 py-2.5 sm:py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center"
                             >
-                            Evaluate Opportunity
-                            <ArrowUpRight className="size-3.5" />
-                          </a>
+                              Evaluate Opportunity
+                              <ArrowUpRight className="size-3.5" />
+                            </a>
                           </div>
                         )}
                       </div>
