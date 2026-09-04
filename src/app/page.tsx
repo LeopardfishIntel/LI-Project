@@ -15,6 +15,7 @@ import { useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase
 import { collection, doc } from 'firebase/firestore';
 import type { School, AppMetrics } from '@/lib/types';
 import goldfishImg from '@/assets/goldfish.jpg';
+import evaluateSchoolImg from '@/assets/evaluate-school.png';
 
 const features = [
   { title: "TRUE NET SAVINGS", desc: "Calculate genuine disposable income by mapping real-world costs and tax-adjusted net offers.", icon: Wallet, color: "text-[#FF6B00]" },
@@ -92,7 +93,7 @@ export default function Home() {
   const steps = [
     { title: 'Featured Jobs', desc: "Curate active international school opportunities from across the globe.", link: '/featured-jobs/', imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1080&auto=format&fit=crop', label: 'Featured Vacancies' },
     { title: 'Discover', desc: "Find the right role for you. See which destinations suit your skill set and desired lifestyle.", link: '/find-your-fit/', imageUrl: 'https://images.unsplash.com/photo-1554366347-897a5113f6ab?q=80&w=1080&auto=format&fit=crop', label: 'Find Your Fit' },
-    { title: 'Evaluate a school', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid and identify the exact salary required to meet your personal savings target.", link: '/financial-forecaster/', imageUrl: 'https://images.unsplash.com/photo-1720175646487-eba0c1846f80?q=80&w=1080&auto=format&fit=crop', label: 'Financial Forecast' },
+    { title: 'Evaluate a school', desc: "See what your earnings could actually look like. Understand exactly what you’ll be paid and identify the exact salary required to meet your personal savings target.", link: '/financial-forecaster/', imageUrl: (evaluateSchoolImg as any).src || evaluateSchoolImg, label: 'Financial Forecast' },
     { title: 'Compare a school', desc: "Compare your options. View your choices side-by-side to help you make the best decision.", link: '/decide/', imageUrl: 'https://images.unsplash.com/photo-1762920738995-f393efe82205?q=80&w=1080&auto=format&fit=crop', label: 'Compare Offers' },
     { title: 'Prepare', desc: "Get ready to move. Everything you need to do before you head off.", link: '/prepare/', imageUrl: (goldfishImg as any).src || goldfishImg, label: 'Get Ready' },
   ];
