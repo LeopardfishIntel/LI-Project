@@ -278,6 +278,7 @@ export default function Home() {
               Informed decisions start with Leopardfish Intel—the gold standard for indexed school and financial data.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
+              <TacticalButton href="/featured-jobs" label="Featured Jobs" className="w-48 h-14" />
               <TacticalButton href="/find-your-fit" label="Discover" className="w-48 h-14" />
               <TacticalButton href="/financial-forecaster" label="Evaluate a School" className="w-48 h-14" />
               <TacticalButton href="/decide" label="Compare Schools" className="w-48 h-14" />
