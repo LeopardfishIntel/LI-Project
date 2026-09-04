@@ -964,7 +964,7 @@ export default function FeaturedJobsPage() {
               Featured Vacancies
             </h1>
             <p className="text-sm text-slate-300 font-normal leading-relaxed max-w-3xl">
-              We curate active international school jobs across the globe and break down the real numbers—tax-adjusted pay, local living costs, and net savings—so you know exactly what your package is worth before you apply.
+              Leopardfish curate active international school opportunities across the globe, we then break down the real numbers, tax-adjusted pay, local living costs, and net savings, so you know exactly what your projected package could be worth before you apply.
             </p>
           </div>
           
@@ -1173,7 +1173,7 @@ export default function FeaturedJobsPage() {
                   </h5>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed font-normal">
-                  Moving abroad is a big step, and our salary and savings tools are built to help you plan with confidence. Because every contract, housing allowance, and local tax setup is unique, always double-check the final offer details and visa requirements directly with the school before signing.
+                  Moving abroad is a big step, our salary and savings tools are built to help you plan with confidence. However every contract, housing allowance, and local tax setup is unique to your application, so we always ask you to double-check the final offer details and visa requirements directly with the school before signing.
                 </p>
               </div>
 

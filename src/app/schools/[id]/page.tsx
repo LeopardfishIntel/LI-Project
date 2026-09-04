@@ -1047,7 +1047,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   </h4>
                 </div>
                 <p className="text-xs font-normal text-slate-300 leading-relaxed">
-                  Moving abroad is a big step, and our salary and savings tools are built to help you plan with confidence. Because every contract, housing allowance, and local tax setup is unique, always double-check the final offer details and visa requirements directly with the school before signing.
+                  Moving abroad is a big step, our salary and savings tools are built to help you plan with confidence. However every contract, housing allowance, and local tax setup is unique to your application, so we always ask you to double-check the final offer details and visa requirements directly with the school before signing.
                 </p>
               </div>
 

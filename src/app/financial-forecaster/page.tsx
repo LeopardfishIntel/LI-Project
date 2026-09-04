@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense, useCallback } from 'react';
+import { useState, useEffect, useMemo, Suspense, useCallback, useRef } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
   AlertTriangle, AlertCircle, Activity, Clock, Wallet, Banknote, ArrowLeft, ArrowRight, FileText, Info, Car, Bus, Lock, ArrowDownCircle,
@@ -69,7 +69,7 @@ export function formatCurriculumBadge(curr: string): string {
 
 const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
-  KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
+  KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900, TZS: 3308, KES: 165
 };
 
 
@@ -502,15 +502,22 @@ function DecoderContent() {
       }
 
       return {
+        id: job.id,
         title: job.title,
-        source: job.sourceName || "Web",
+        source: job.sourceName || job.source || "Web",
         postedDate: scraped.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
         closesDate: closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
         status: isExpired ? 'closed' : 'open',
         department,
         recruitmentCycle,
         rawPostedDate: scraped,
-        rawClosesDate: closes
+        rawClosesDate: closes,
+        applyUrl: job.applyUrl || job.source_url || "",
+        curriculum: job.curriculum || "",
+        savingsPotential: job.savingsPotential || 0,
+        schoolRating: job.schoolRating || "",
+        city: job.city || "",
+        country: job.country || ""
       };
     }).filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
       .sort((a, b) => {
@@ -520,12 +527,143 @@ function DecoderContent() {
       });
   }, [schoolJobsData]);
 
-  // 🏎️ TACTICAL COUNTRY OVERRIDE: Oman defaults to Car Hire
+  // 🎯 JANITOR ENGINE FILTER FOR NON-JOB TITLES & DUPLICATES
+  const isInvalidNonJobTitle = useCallback((title: string): boolean => {
+    if (!title || typeof title !== 'string') return true;
+    const t = title.toLowerCase().trim();
+    if (!t || t.length < 3) return true;
+
+    // 1. Accessibility, HTML Links & Navigation Headings
+    if (/\b(skip\s+to\s+(main\s+)?content|skip\s+navigation|accessibility|site\s+map|privacy\s+policy|terms\s+of\s+use|cookie\s+policy)\b/i.test(t)) return true;
+    if (/\b(working\s+at\b|work\s+at\b|work\s+with\s+us|working\s+with\s+us|careers?\s+at\b|life\s+at\b|about\s+us|contact\s+us|life\s+in\b|living\s+in\b|living\s+abroad|location\s+guide)\b/i.test(t)) return true;
+
+    // 2. Generic Category Headings, Groupings & Page Section Titles
+    if (/\b(faculty\s+openings|academic\s+openings|teaching\s+openings|support\s+staff\s+openings|administrator\s+openings|instructional\s+assistant\s+openings)\b/i.test(t)) return true;
+    if (/\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities|all\s+vacancies|open\s+positions)\b/i.test(t)) return true;
+    if (/\b(head\s+of\s+school\s+welcome|welcome\s+from|welcome\s+message|welcome\s+to|principal'?s?\s+welcome|headteacher'?s?\s+welcome)\b/i.test(t)) return true;
+    if (/\b(academic\s+leadership\s+team|leadership\s+team|meet\s+the\s+team|our\s+faculty|department\s+heads|leadership\s+&\s+governance|governance|board\s+of\s+trustees)\b/i.test(t)) return true;
+    if (/\b(clubs\s+&\s+leadership|extracurriculars?|co-curricular|student\s+life|clubs?\s+and\s+activities)\b/i.test(t)) return true;
+    if (/\b(how\s+to\s+apply|working\s+with\s+us|why\s+join\s+us|about\s+our\s+school|general\s+applications?|speculative\s+applications?|open\s+applications?)\b/i.test(t)) return true;
+
+    // 3. Assistants, TA, Substitute/Supply & Non-Teaching Support Staff
+    if (/\b(substitute|supply|relief|casual|temporary\s+cover)\b/i.test(t)) return true;
+    if (/\b(instructional\s+assistant|learning\s+support\s+assistant|lsa|teaching\s+assistant|teacher\s+assistant|educational\s+assistant|classroom\s+assistant|assistant\s+teacher)\b/i.test(t)) return true;
+    if (/\b(support\s+staff|admin(istrative)?\s+assistant|office\s+assistant|receptionist|secretary|nurse|nursing|bus\s+driver|janitor|caretaker|facilities|it\s+technician|lab\s+technician)\b/i.test(t)) return true;
+
+    // 4. Community, PTA, Alumni & Student Events
+    if (/\b(parent\s+teacher\s+association|pta|alumni\s+association|friends\s+of\s+the\s+school)\b/i.test(t)) return true;
+    if (/\b(conference|symposium|summit|competition|olympiad)\b/i.test(t)) return true;
+
+    // 5. Single-Word Department Headers (e.g. "Arts", "Sports", "Music") without specific role nouns
+    const singleWordCategories = ['arts', 'art', 'music', 'sports', 'pe', 'science', 'math', 'humanities', 'languages', 'english', 'primary', 'secondary', 'leadership'];
+    if (singleWordCategories.includes(t)) return true;
+
+    // 6. Generic Category Phrase Ends With "Openings", "Opportunities", "Vacancies" without specific role
+    if (/^(support\s+staff|admin(istrator)?|faculty|academic|substitute|general)\s+(openings|opportunities|vacancies|positions)$/i.test(t)) return true;
+
+    // 7. Talent Pools, Expressions of Interest & Generic School Open Applications
+    if (/^vacanc(y|ies)\s+at\b/i.test(t)) return true;
+    if (/^(careers?|jobs?|work|working|employment)\s+at\b/i.test(t)) return true;
+    if (/\b(talent\s+pool|talent\s+bank|talent\s+community|expression\s+of\s+interest|register\s+(your\s+)?interest|future\s+(teaching\s+)?opportunities|future\s+vacancies|future\s+openings)\b/i.test(t)) return true;
+    if (/\b(general\s+vacancy|general\s+teaching\s+vacancy|general\s+application|speculative\s+application|unsolicited\s+application)\b/i.test(t)) return true;
+
+    return false;
+  }, []);
+
+  const normalizeJobTitleKey = useCallback((title: string): string => {
+    return title
+      .replace(/\([^)]*\)/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }, []);
+
+  const isCityOrCampusMismatch = useCallback((jobTitle: string, schoolCity?: string): boolean => {
+    if (!jobTitle || !schoolCity) return false;
+    const t = jobTitle.toLowerCase();
+    const c = schoolCity.toLowerCase().trim();
+
+    if (c === 'prague' && (t.includes('ostrava') || t.includes('brno') || t.includes('liberec'))) return true;
+    if (c === 'ostrava' && (t.includes('prague') || t.includes('brno') || t.includes('liberec'))) return true;
+    if (c === 'dubai' && (t.includes('abu dhabi') || t.includes('sharjah') || t.includes('al ain'))) return true;
+    if (c === 'abu dhabi' && (t.includes('dubai') || t.includes('sharjah') || t.includes('al ain'))) return true;
+
+    return false;
+  }, []);
+
+  // 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
+  const activeVacancies = useMemo(() => {
+    let rawList: any[] = [];
+
+    const openJobs = allProcessedJobs.filter((j: any) => j.status === 'open');
+    if (openJobs.length > 0) {
+      rawList = openJobs;
+    } else if (activeSchool?.scrapedJobsList && Array.isArray(activeSchool.scrapedJobsList) && activeSchool.scrapedJobsList.length > 0) {
+      rawList = activeSchool.scrapedJobsList.map((jobStr: string, idx: number) => {
+        const statusObj = getJobStatus(jobStr);
+        const cleanTitle = jobStr.replace(/\([^)]*\)/g, '').trim();
+        let closesDate = "";
+        if (statusObj.label.includes("Closes:")) {
+          closesDate = statusObj.label.split("Closes:")[1].replace(")", "").trim();
+        }
+        return {
+          id: `scraped-${idx}`,
+          title: cleanTitle || jobStr,
+          source: "Web Scraping",
+          postedDate: "",
+          closesDate,
+          status: statusObj.status,
+          department: "Teaching",
+          recruitmentCycle: "CURRENT",
+          applyUrl: activeSchool.careersPageUrl || activeSchool.schooljp || "",
+          curriculum: activeSchool.curriculum || "",
+          savingsPotential: 0,
+          schoolRating: activeSchool.totalscore || activeSchool.score || "",
+          city: activeSchool.city || "",
+          country: activeSchool.country || ""
+        };
+      }).filter((j: any) => j.status === 'open');
+    }
+
+    // 1. Filter out non-job section titles, generic web headings & city/campus mismatches
+    const validJobs = rawList.filter((j: any) => 
+      !isInvalidNonJobTitle(j.title) && 
+      !isCityOrCampusMismatch(j.title, activeSchool?.city)
+    );
+
+    // 2. Deduplicate by normalized job title key so each position is listed once
+    const seenMap = new Map<string, any>();
+    validJobs.forEach((job: any) => {
+      const normKey = normalizeJobTitleKey(job.title);
+      if (!normKey) return;
+      if (!seenMap.has(normKey)) {
+        seenMap.set(normKey, job);
+      } else {
+        const existing = seenMap.get(normKey);
+        if (!existing.closesDate && job.closesDate) {
+          seenMap.set(normKey, job);
+        }
+      }
+    });
+
+    return Array.from(seenMap.values());
+  }, [allProcessedJobs, activeSchool, isInvalidNonJobTitle, normalizeJobTitleKey]);
+
+  // 🏎️ TACTICAL TRANSPORT OVERRIDES: Oman & UWC East Africa (FLIS0249, both campuses) default to Car Hire
   useEffect(() => {
-    if (settings.country.toLowerCase() === "oman") {
+    const sId = (settings.schoolId || activeSchool?.id || "").toLowerCase();
+    const sName = (activeSchool?.name || activeSchool?.schoolname || "").toLowerCase();
+    const cName = (settings.country || "").toLowerCase();
+
+    if (
+      cName === "oman" ||
+      sId.startsWith("flis0249") ||
+      sName.includes("uwc east africa")
+    ) {
       setTransportMode("C");
     }
-  }, [settings.country]);
+  }, [settings.country, settings.schoolId, activeSchool]);
  
    useEffect(() => {
      if (mounted && allSchools && allSchools.length > 0) {
@@ -613,7 +751,20 @@ function DecoderContent() {
     }
   }, [activeSchool]);
 
+  const prevSchoolIdRef = useRef<string | null>(null);
+
   useEffect(() => {
+    const currentId = activeSchool?.id || null;
+    if (prevSchoolIdRef.current !== null && prevSchoolIdRef.current !== currentId) {
+      // Clean up opportunity & overrides when user changes school
+      setSelectedOpportunity(null);
+      setOverrideBedrooms(null);
+      setManualAdjustments("0");
+      setBriefingRequested(false);
+      setRewordedBriefingText("");
+    }
+    prevSchoolIdRef.current = currentId;
+
     setTurnoverUnlocked(false);
     setStabilityReport(null); // Clear previous report immediately to show progress card/loader!
     if (!activeSchool) {
@@ -622,6 +773,67 @@ function DecoderContent() {
     }
     loadStabilityReport(false);
   }, [activeSchool?.id, loadStabilityReport]);
+
+  const handleCountrySelect = useCallback((newCountry: string) => {
+    const matchingSchools = allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(newCountry) && !s.isMultiCampus) || [];
+    const firstSchool = matchingSchools.length > 0 ? matchingSchools[0] : null;
+    const newSchoolId = firstSchool ? firstSchool.id : "";
+
+    setSelectedOpportunity(null);
+    setOverrideBedrooms(null);
+    setManualAdjustments("0");
+    setBriefingRequested(false);
+    setRewordedBriefingText("");
+
+    setSettings(prev => ({
+      ...prev,
+      country: newCountry,
+      schoolId: newSchoolId
+    }));
+
+    if (typeof window !== 'undefined') {
+      const newUrl = new URL(window.location.href);
+      if (newSchoolId) {
+        newUrl.searchParams.set('schoolId', newSchoolId);
+      } else {
+        newUrl.searchParams.delete('schoolId');
+      }
+      newUrl.searchParams.delete('jobId');
+      newUrl.searchParams.delete('jobTitle');
+      newUrl.searchParams.delete('department');
+      newUrl.searchParams.delete('applyUrl');
+      newUrl.searchParams.delete('closesDate');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [allSchools]);
+
+  const handleSchoolSelect = useCallback((newSchoolId: string) => {
+    const foundSchool = allSchools?.find((s: any) => s.id === newSchoolId);
+    const foundCountry = foundSchool ? canonicalCountry(foundSchool.country || foundSchool.region || settings.country) : settings.country;
+
+    setSelectedOpportunity(null);
+    setOverrideBedrooms(null);
+    setManualAdjustments("0");
+    setBriefingRequested(false);
+    setRewordedBriefingText("");
+
+    setSettings(prev => ({
+      ...prev,
+      country: foundCountry,
+      schoolId: newSchoolId
+    }));
+
+    if (newSchoolId && typeof window !== 'undefined') {
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('schoolId', newSchoolId);
+      newUrl.searchParams.delete('jobId');
+      newUrl.searchParams.delete('jobTitle');
+      newUrl.searchParams.delete('department');
+      newUrl.searchParams.delete('applyUrl');
+      newUrl.searchParams.delete('closesDate');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [allSchools, settings.country]);
 
   const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
@@ -678,10 +890,10 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const salaryVal = getSchoolField(activeSchool, ['salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
+    const salaryVal = getSchoolField(activeSchool, ['expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
       const str = String(salaryVal).trim();
-      const isUSD = str.includes("$") || str.toUpperCase().includes("USD");
+      const isUSD = str.includes("$") || str.toUpperCase().includes("USD") || activeSchool?.salaryCurrency === "USD" || Boolean(activeSchool?.startingSalaryUsd) || Boolean(activeSchool?.expectedSalaryNetUsd);
 
       const cleanRange = str
         .replace(/,/g, '')
@@ -828,7 +1040,9 @@ function DecoderContent() {
       ? (transportMap[transportKey] !== undefined ? safeParse(transportMap[transportKey]) : safeParse(transportMap["family3Children"] || 0))
       : (parseFloat(String(transportMap)) || 0);
     const transportCost = usdToLocal(transportVal);
-    const socialCost = usdToLocal(getVal(getF(activeCOL, ['social', 'dining', 'diningsocial']), pKey, scalar) * lifestyleMult);
+    const rawSocialVal = getF(activeCOL, ['social', 'dining', 'diningsocial']);
+    const socialVal = (rawSocialVal !== null && rawSocialVal !== undefined) ? rawSocialVal : 300;
+    const socialCost = usdToLocal(getVal(socialVal, pKey, scalar) * lifestyleMult);
     
     // Medical gaps cost
     const medicalVal = (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * adults + (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * 0.5 * children;
@@ -1083,7 +1297,7 @@ function DecoderContent() {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Target country</label>
-              <Select value={settings.country} onValueChange={(v) => setSettings({ ...settings, country: v, schoolId: "" })}>
+              <Select value={settings.country} onValueChange={handleCountrySelect}>
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="Country" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.map((s: any) => canonicalCountry(s.country)).filter((v: any, i: any, a: any) => v && a.indexOf(v) === i).sort().map((c: any) => <SelectItem key={c} value={c}>{formatCountry(c)}</SelectItem>)}
@@ -1093,10 +1307,11 @@ function DecoderContent() {
 
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Select school</label>
-              <Select disabled={!settings.country} value={settings.schoolId} onValueChange={(v) => setSettings({ ...settings, schoolId: v })}>
+              <Select disabled={!settings.country} value={settings.schoolId} onValueChange={handleSchoolSelect}>
                 <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="School" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(settings.country))
+                    .filter((s: any) => !s.isMultiCampus)
                     .filter((s: any, idx: number, arr: any[]) => {
                       const cleanName = (s.schoolname || s.name || '').toLowerCase().trim();
                       return arr.findIndex((item: any) => (item.schoolname || item.name || '').toLowerCase().trim() === cleanName) === idx;
@@ -1404,8 +1619,18 @@ function DecoderContent() {
                         });
                       })()}
                       <button
-                        onClick={() => router.push('/featured-jobs')}
-                        className="inline-flex items-center gap-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white px-3 py-2.5 text-xs font-bold uppercase tracking-wider rounded-sm transition-all"
+                        onClick={() => {
+                          setSelectedOpportunity(null);
+                          const newUrl = new URL(window.location.href);
+                          newUrl.searchParams.delete('jobId');
+                          newUrl.searchParams.delete('jobTitle');
+                          newUrl.searchParams.delete('department');
+                          newUrl.searchParams.delete('applyUrl');
+                          newUrl.searchParams.delete('closesDate');
+                          window.history.replaceState({}, '', newUrl.toString());
+                        }}
+                        className="inline-flex items-center gap-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white px-3 py-2.5 text-xs font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer"
+                        title="Return to school view with all vacancies"
                       >
                         <ArrowLeft className="size-3.5" /> All Vacancies
                       </button>
@@ -1440,7 +1665,10 @@ function DecoderContent() {
                         </span>
                       )}
                       {selectedOpportunity && (() => {
-                        const badge = getSavingsBadgeConfig(selectedOpportunity.savingsPotential || 0);
+                        const currentSurplusUSD = analysis
+                          ? Math.round((analysis.surplus || 0) / (currentRates[currency] || 1.0))
+                          : (selectedOpportunity.savingsPotential || 0);
+                        const badge = getSavingsBadgeConfig(currentSurplusUSD);
                         return (
                           <span 
                             className={cn(
@@ -1463,7 +1691,107 @@ function DecoderContent() {
               )}
               <div className="bg-[#0b1224] border border-white/5 p-5 md:p-6 shadow-2xl relative rounded-sm">
 
-                {/* Header Row */}
+                {/* 💼 TOP ACTIVE VACANCIES SUMMARY ROW (ONLY SHOWN WHEN NOT EVALUATING A SPECIFIC OPPORTUNITY) */}
+                {(!selectedOpportunity || !selectedOpportunity.jobTitle) && (
+                  <div className="mb-5 p-3.5 md:p-4 bg-slate-900/90 border border-amber-500/20 rounded-md shadow-md">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className={cn(
+                            "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                            activeVacancies.length > 0 ? "bg-emerald-400" : "bg-slate-500"
+                          )}></span>
+                          <span className={cn(
+                            "relative inline-flex rounded-full h-2.5 w-2.5",
+                            activeVacancies.length > 0 ? "bg-emerald-500" : "bg-slate-600"
+                          )}></span>
+                        </span>
+                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
+                          <Briefcase className="size-3.5 text-[#FF6B35]" />
+                          Current Open Vacancies
+                          <span className={cn(
+                            "px-2 py-0.5 text-[10px] font-mono rounded-full font-bold ml-1",
+                            activeVacancies.length > 0 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-white/5 text-slate-400 border border-white/10"
+                          )}>
+                            {activeVacancies.length}
+                          </span>
+                        </h3>
+                      </div>
+
+                      <button
+                        onClick={() => router.push(`/featured-jobs?search=${encodeURIComponent(getSchoolField(activeSchool, ['schoolname', 'name', 'school']) || '')}`)}
+                        className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 hover:text-[#FF6B35] transition-colors flex items-center gap-1 cursor-pointer"
+                      >
+                        Browse All Vacancies <ArrowUpRight className="size-3" />
+                      </button>
+                    </div>
+
+                    {activeVacancies.length > 0 ? (
+                      <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                        {activeVacancies.map((job: any, idx: number) => {
+                          const isSelected = selectedOpportunity?.jobTitle?.toLowerCase() === job.title.toLowerCase() ||
+                                            (selectedOpportunity?.jobId && String(selectedOpportunity.jobId) === String(job.id));
+
+                          const handleSelectJob = () => {
+                            setSelectedOpportunity({
+                              jobId: job.id,
+                              jobTitle: job.title,
+                              department: job.department,
+                              curriculum: job.curriculum,
+                              applyUrl: job.applyUrl,
+                              closesDate: job.closesDate,
+                              savingsPotential: job.savingsPotential,
+                              schoolRating: job.schoolRating,
+                              source: job.source,
+                              city: job.city,
+                              country: job.country
+                            });
+
+                            // Update URL without full page refresh
+                            const newUrl = new URL(window.location.href);
+                            newUrl.searchParams.set('schoolId', activeSchool.id);
+                            if (job.id) newUrl.searchParams.set('jobId', String(job.id));
+                            newUrl.searchParams.set('jobTitle', job.title);
+                            if (job.department) newUrl.searchParams.set('department', job.department);
+                            if (job.applyUrl) newUrl.searchParams.set('applyUrl', job.applyUrl);
+                            if (job.closesDate) newUrl.searchParams.set('closesDate', job.closesDate);
+                            window.history.replaceState({}, '', newUrl.toString());
+                          };
+
+                          return (
+                            <button
+                              key={job.id || idx}
+                              onClick={handleSelectJob}
+                              className={cn(
+                                "group w-full sm:w-auto flex flex-col sm:inline-flex sm:flex-row sm:items-center justify-between sm:justify-start gap-1 sm:gap-2 px-3 py-2 sm:py-1.5 rounded-md text-xs font-bold transition-all border text-left cursor-pointer",
+                                isSelected
+                                  ? "bg-[#FF6B35]/20 text-white border-[#FF6B35] shadow-[0_0_12px_rgba(255,107,53,0.3)] ring-1 ring-[#FF6B35]"
+                                  : "bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border-white/10 hover:border-white/20"
+                              )}
+                            >
+                              <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
+                                <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{job.title}</span>
+                                <ArrowUpRight className={cn("size-3 shrink-0 sm:hidden transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-400 group-hover:text-white")} />
+                              </div>
+                              {job.closesDate && (
+                                <span className="text-[9.5px] sm:text-[10px] text-slate-400 group-hover:text-slate-300 font-mono pt-0.5 sm:pt-0">
+                                  (Closes: {job.closesDate})
+                                </span>
+                              )}
+                              <ArrowUpRight className={cn("hidden sm:inline-block size-3 shrink-0 transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-500 group-hover:text-white group-hover:translate-x-0.5")} />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-xs text-slate-400 py-1 font-medium italic">
+                        <Info className="size-3.5 text-slate-500 shrink-0" />
+                        <span>No active vacancies currently listed for this campus.</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
                   <div className="space-y-2">
                     <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">
@@ -1475,36 +1803,20 @@ function DecoderContent() {
                         {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
                       </span>
                       <div className="flex gap-2">
-                        {(analysis?.surplus ?? 0) <= 0 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-rose-500/20 bg-rose-500/10">
-                            <AlertCircle className="size-3.5 text-rose-500" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-rose-500">Capital loss</span>
-                          </div>
-                        )}
-                        {(analysis?.surplus ?? 0) > 0 && (analysis?.rateOfSaving ?? 0) <= 10 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[#d95f02]/20 bg-[#d95f02]/10">
-                            <AlertTriangle className="size-3.5 text-[#d95f02]" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-[#d95f02]">Limited Potential</span>
-                          </div>
-                        )}
-                        {(analysis?.rateOfSaving ?? 0) > 10 && (analysis?.rateOfSaving ?? 0) <= 20 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
-                            <Coins className="size-3.5 text-emerald-400" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-400">Good Savings Potential</span>
-                          </div>
-                        )}
-                        {(analysis?.rateOfSaving ?? 0) > 20 && (analysis?.rateOfSaving ?? 0) <= 30 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10">
-                            <Coins className="size-3.5 text-emerald-400" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-400">Significant Savings Potential</span>
-                          </div>
-                        )}
-                        {(analysis?.rateOfSaving ?? 0) > 30 && (
-                          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-emerald-400/40 bg-emerald-400/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
-                            <Zap className="size-3.5 text-emerald-300" />
-                            <span className="text-[9px] font-black uppercase tracking-tight text-emerald-300">Excellent Savings Potential</span>
-                          </div>
-                        )}
+                        {(() => {
+                          const surplusUSD = (analysis?.surplus ?? 0) / (currentRates[currency] || 1.0);
+                          const badge = getSavingsBadgeConfig(surplusUSD);
+                          return (
+                            <span 
+                              className={cn(
+                                "inline-flex items-center px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-sm transition-all duration-200 shrink-0",
+                                badge.boxStyle
+                              )}
+                            >
+                              {badge.label}
+                            </span>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -1785,9 +2097,13 @@ function DecoderContent() {
                           </div>
 
                           <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs font-bold text-slate-400 uppercase">Benchmark: {benchmark}</span>
-                            <span className="text-xl font-black text-emerald-500 italic">{Math.round(analysis?.surplusBenchmark || 0).toLocaleString()}</span>
-                            <span className="text-xs font-black text-emerald-400 opacity-60">({analysis?.rateOfSaving}%)</span>
+                            <span className="text-xs font-bold text-slate-400 uppercase">Benchmark:</span>
+                            <span className={cn("text-xl font-black italic transition-all duration-300", (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
+                              {benchmark} {Math.round(analysis?.surplusBenchmark || 0).toLocaleString()}
+                            </span>
+                            <span className={cn("text-xl font-black italic transition-all duration-300 tabular-nums", (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
+                              ({analysis?.rateOfSaving}%)
+                            </span>
                           </div>
 
                           {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
@@ -2652,60 +2968,6 @@ function DecoderContent() {
                     </div>
                   );
                 })()}
-
-                {/* 🛡️ EVALUATE A SCHOOL RESULT COMMITMENTS & DISCLAIMER */}
-                <div className="mt-10 border-t border-white/10 pt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="bg-gradient-to-b from-[#161d28]/90 to-[#0f141d]/90 border border-white/10 rounded-xl p-6 md:p-8 shadow-2xl backdrop-blur-md space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      
-                      {/* Section 1: Financial Clarity & Peace of Mind */}
-                      <div className="space-y-3 flex flex-col">
-                        <div className="flex items-center gap-2.5">
-                          <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
-                            <ShieldCheck className="size-5" />
-                          </div>
-                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
-                            Financial Clarity &amp; Peace of Mind
-                          </h4>
-                        </div>
-                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
-                          Moving abroad is a big step, and our salary and savings tools are built to help you plan with confidence. Because every contract, housing allowance, and local tax setup is unique, always double-check the final offer details and visa requirements directly with the school before signing.
-                        </p>
-                      </div>
-
-                      {/* Section 2: Real Jobs at Trusted Schools */}
-                      <div className="space-y-3 flex flex-col">
-                        <div className="flex items-center gap-2.5">
-                          <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 shrink-0">
-                            <Building2 className="size-5" />
-                          </div>
-                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
-                            Real Jobs at Trusted Schools
-                          </h4>
-                        </div>
-                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
-                          Searching for international teaching roles shouldn&apos;t feel like a guessing game. We only publish active vacancies from genuine schools currently in our databases — so you won&apos;t waste time on expired posts or mystery agencies.
-                        </p>
-                      </div>
-
-                      {/* Section 3: A Welcome Space for Every Educator */}
-                      <div className="space-y-3 flex flex-col">
-                        <div className="flex items-center gap-2.5">
-                          <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 shrink-0">
-                            <HeartHandshake className="size-5" />
-                          </div>
-                          <h4 className="text-sm font-black uppercase tracking-wider text-white">
-                            A Welcome Space for Every Educator
-                          </h4>
-                        </div>
-                        <p className="text-xs font-normal text-slate-300 leading-relaxed">
-                          Great schools are built on diverse perspectives. We are deeply committed to fairness and expect every institution on our platform to treat teachers with equity, dignity, and respect.
-                        </p>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           )}
