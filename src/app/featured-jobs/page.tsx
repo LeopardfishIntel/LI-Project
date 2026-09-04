@@ -1429,8 +1429,8 @@ export default function FeaturedJobsPage() {
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
-                          <span className="text-slate-600">•</span>
-                          <span className="bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
+                          <span className="text-slate-600 hidden sm:inline">•</span>
+                          <span className="hidden sm:inline-block bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
                             {formatCurriculumBadge(job.curriculum)}
                           </span>
                         </div>
