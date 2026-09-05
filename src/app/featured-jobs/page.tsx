@@ -802,11 +802,8 @@ export default function FeaturedJobsPage() {
     return jobsList;
   }, [cacheData, adminJobsData, schoolsMap, familyStatus, activeTab, colData]);
 
-  // Derived filters data
-  const availableCurriculums = useMemo(() => {
-    const list = allJobs.map(j => j.curriculum);
-    return Array.from(new Set(list)).filter(Boolean).sort();
-  }, [allJobs]);
+  // Derived filters data (Simplified Individual Curriculums)
+  const availableCurriculums = ["BRITISH", "AMERICAN", "IB", "NATIONAL"];
 
   // Public job count for admin tab badge (raw cache size, not filtered)
   // Public job count for admin tab badge (raw cache size, not filtered)
@@ -861,9 +858,25 @@ export default function FeaturedJobsPage() {
         normalize(job.country).includes(normalize(searchQuery));
       if (!matchesQuery) return false;
 
-      // Curriculum match
-      if (selectedCurriculums.length > 0 && !selectedCurriculums.includes(job.curriculum)) {
-        return false;
+      // Curriculum match (simplified individual multi-select)
+      if (selectedCurriculums.length > 0) {
+        const jobCurrUpper = String(job.curriculum || "").toUpperCase();
+        const matchesAnySelected = selectedCurriculums.some(selected => {
+          if (selected === "BRITISH") {
+            return jobCurrUpper.includes("BRITISH") || jobCurrUpper.includes("UK") || jobCurrUpper.includes("IGCSE") || jobCurrUpper.includes("A-LEVEL");
+          }
+          if (selected === "AMERICAN") {
+            return jobCurrUpper.includes("AMERICAN") || jobCurrUpper.includes("US") || jobCurrUpper.includes("AP");
+          }
+          if (selected === "IB") {
+            return jobCurrUpper.includes("IB") || jobCurrUpper.includes("BACCA") || jobCurrUpper.includes("PYP") || jobCurrUpper.includes("MYP") || jobCurrUpper.includes("DP");
+          }
+          if (selected === "NATIONAL") {
+            return jobCurrUpper.includes("NATIONAL") || jobCurrUpper.includes("PORTUGUESE") || jobCurrUpper.includes("LOCAL") || jobCurrUpper.includes("OTHER");
+          }
+          return jobCurrUpper.includes(selected.toUpperCase());
+        });
+        if (!matchesAnySelected) return false;
       }
 
       // Subject tags match
