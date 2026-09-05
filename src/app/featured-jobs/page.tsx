@@ -1437,7 +1437,7 @@ export default function FeaturedJobsPage() {
 
                         {/* Right metadata: Deadline & Ref ID */}
                         <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto shrink-0 sm:ml-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-white/5 sm:border-none">
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold leading-none">
                             <Calendar className="size-3.5 text-[#FF6B35] shrink-0" />
                             {activeTab === 'admin_staging' ? (
                               <div className="flex items-center gap-1">
@@ -1454,11 +1454,11 @@ export default function FeaturedJobsPage() {
                                 />
                               </div>
                             ) : (
-                              <span>{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+                              <span className="leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
                             )}
                           </div>
-                          <span className="text-slate-600 font-mono text-[10px] hidden sm:inline">•</span>
-                          <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider text-right">
+                          <span className="text-slate-600 font-mono text-[10px] hidden sm:inline leading-none">•</span>
+                          <div className="text-[10px] font-mono text-slate-500 font-bold tracking-wider text-right flex items-center leading-none">
                             {getJobCardReference(job)}
                           </div>
                         </div>
