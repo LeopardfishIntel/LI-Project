@@ -32,6 +32,18 @@ function runTests() {
   assert(isSupportOrNonTeachingRole("School Receptionist"), true, "Receptionist is support");
   assert(isSupportOrNonTeachingRole("IT Technician"), true, "IT Technician is support");
   assert(isSupportOrNonTeachingRole("Bus Driver"), true, "Bus Driver is support");
+  assert(isSupportOrNonTeachingRole("Surveillant(e)"), true, "Surveillant(e) is non-teaching support");
+  assert(isSupportOrNonTeachingRole("Surveillant"), true, "Surveillant is non-teaching support");
+  assert(isSupportOrNonTeachingRole("Student Supervisor"), true, "Student Supervisor is non-teaching support");
+  assert(isSupportOrNonTeachingRole("Lunchtime Supervisor"), true, "Lunchtime Supervisor is non-teaching support");
+  assert(isSupportOrNonTeachingRole("Cafeteria(opens in new window/tab)"), true, "Cafeteria link is support");
+  assert(isSupportOrNonTeachingRole("Distinguished Speakers Fund"), true, "Giving fund is support");
+  assert(isSupportOrNonTeachingRole("Leadership and Service"), true, "Leadership section is support");
+  assert(isSupportOrNonTeachingRole("The Arts"), true, "The Arts section is support");
+  assert(isSupportOrNonTeachingRole("Live Stream(opens in new window/tab)"), true, "Live Stream widget is support");
+  assert(isSupportOrNonTeachingRole("LinkedIn(opens in new window/tab)"), true, "LinkedIn link is support");
+  assert(isSupportOrNonTeachingRole("YouTube(opens in new window/tab)"), true, "YouTube link is support");
+  assert(isSupportOrNonTeachingRole("Primary Year Programme @ ISP"), true, "PYP section header is support");
 
   // Academic / Teaching roles (MUST BE FALSE / RETAINED)
   assert(isSupportOrNonTeachingRole("Teacher of English"), false, "Teacher of English is retained");

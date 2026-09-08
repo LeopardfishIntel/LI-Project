@@ -1,6 +1,6 @@
 'use server';
 import { applyDulwichCollegeShanghaiOverride } from "@/lib/utils";
-import { resolveVacancyUrl, extractUrlFromScrapedString } from '@/lib/crawler/urlResolver';
+import { resolveVacancyUrl, extractUrlFromScrapedString, isBlockedContentUrl, isGenericRootUrl } from '@/lib/crawler/urlResolver';
 import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
 
 import fs from 'fs';
@@ -190,20 +190,15 @@ Provide only the reworded text. No intro or outro.`,
 }
 
 const cleanScrapedJobsList = (jobs: string[], schoolName?: string): string[] => {
-  const lowerSchoolName = schoolName ? schoolName.toLowerCase() : "";
-  if (lowerSchoolName.includes("sultan")) {
-    return jobs.map(job => {
-      const lower = job.toLowerCase();
-      if (lower.includes("principal") && lower.includes("anthony millard")) {
-        return null;
-      }
-      if (lower.includes("design technology") && lower.includes("ks3") && lower.includes("tes")) {
-        return "Design Technology Teacher KS3- KS5 (Aug 2025; Posted: 24 Oct 2024; Closes: 21 Nov 2024) - TES";
-      }
-      return job;
-    }).filter((j): j is string => j !== null);
-  }
-  return jobs;
+  if (!Array.isArray(jobs)) return [];
+  return jobs.filter((job): job is string => {
+    if (!job || typeof job !== 'string') return false;
+    const title = job.split('(')[0].trim();
+    if (isSupportOrNonTeachingRole(title)) return false;
+    const url = extractUrlFromScrapedString(job);
+    if (url && (isBlockedContentUrl(url) || isGenericRootUrl(url))) return false;
+    return true;
+  });
 };
 
 const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: string, city?: string): any[] => {
@@ -444,12 +439,12 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
       const existingNorm = getNormalizedComparisonKey(existing.title);
       const year = getYearFromDate(job.date_listed || job.date_closing);
       const existingYear = getYearFromDate(existing.date_listed || existing.date_closing);
+      const isTitleMatch = normKey === existingNorm || (normKey.length > 10 && existingNorm.length > 10 && (normKey.includes(existingNorm) || existingNorm.includes(normKey)));
 
-      // DEDUPLICATION SAFEGUARD: Only deduplicate if they represent the same recruitment cycle (same hiring season)
-      if (job.recruitmentCycle === existing.recruitmentCycle && year === existingYear && (normKey === existingNorm || normKey.includes(existingNorm) || existingNorm.includes(normKey))) {
+      if (isTitleMatch && (job.recruitmentCycle === existing.recruitmentCycle || year === existingYear || normKey === existingNorm)) {
         isDuplicate = true;
-        const newPriority = getSourcePriority(job.source);
-        const oldPriority = getSourcePriority(existing.source);
+        const newPriority = getSourcePriority(job.source) + (job.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (job.status === "OPEN" ? 2 : 0);
+        const oldPriority = getSourcePriority(existing.source) + (existing.source_url?.includes("tes.com/jobs/vacancy") ? 5 : 0) + (existing.status === "OPEN" ? 2 : 0);
         if (newPriority > oldPriority) {
           duplicateIdx = i;
         }
@@ -845,7 +840,7 @@ export async function getSchoolStabilityReport(input: {
                             // Try Firestore update in background without awaiting it!
                             if (data) {
                                 (async () => {
-                                    const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                                    const { saveScrapedJobs, updateDocument, generateJobFingerprint } = await import('@/firebase/admin');
                                     const admin = await import('firebase-admin');
                                     const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
                                     
@@ -865,9 +860,10 @@ export async function getSchoolStabilityReport(input: {
                                             // If no explicit closing date, queue to pending_review for admin checking
                                             const status = triage.isRollingDeadline ? 'pending_review' : 'approved';
 
-                                            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                                            const fp = generateJobFingerprint(input.schoolId, v.title);
                                             return {
-                                                id: jobId,
+                                                id: fp,
+                                                jobFingerprint: fp,
                                                 title: v.title,
                                                 sourceName: v.source,
                                                 applyUrl: v.source_url || "",
@@ -988,7 +984,7 @@ export async function getSchoolStabilityReport(input: {
                 const combinedTitles: string[] = [];
                 cacheSnap.docs.forEach((d: any) => {
                   const c = d.data();
-                  if (c.title && c.status !== 'rejected' && c.status !== 'expired' && !isSupportOrNonTeachingRole(c.title)) {
+                  if (c.title && c.status !== 'rejected' && !isSupportOrNonTeachingRole(c.title)) {
                     const sourceStr = c.source || 'TES';
                     const closingStr = c.closingDate ? `; Closes: ${c.closingDate}` : '';
                     combinedTitles.push(`${c.title} (Posted: ${c.datePosted || 'Recently'}${closingStr}) - ${sourceStr}`);
@@ -997,7 +993,7 @@ export async function getSchoolStabilityReport(input: {
 
                 subcolSnap.docs.forEach((d: any) => {
                   const s = d.data();
-                  if (s.title && s.status !== 'rejected' && s.status !== 'expired' && !isSupportOrNonTeachingRole(s.title)) {
+                  if (s.title && s.status !== 'rejected' && !isSupportOrNonTeachingRole(s.title)) {
                     const sourceStr = s.sourceName || s.source || 'TES';
                     const closingStr = s.closingDate ? `; Closes: ${s.closingDate}` : '';
                     combinedTitles.push(`${s.title} (Posted: Recently${closingStr}) - ${sourceStr}`);
@@ -1129,7 +1125,7 @@ export async function getSchoolStabilityReport(input: {
             // Try updating Firestore in background without awaiting it!
             if (data) {
                 (async () => {
-                    const { saveScrapedJobs, updateDocument } = await import('@/firebase/admin');
+                    const { saveScrapedJobs, updateDocument, generateJobFingerprint } = await import('@/firebase/admin');
                     const admin = await import('firebase-admin');
                     const { triageVacancyLifecycle } = await import('@/lib/crawler/dateParser');
 
@@ -1143,9 +1139,10 @@ export async function getSchoolStabilityReport(input: {
                             // Skip past expired vacancies
                             if (triage.status === 'expired') return null;
 
-                            const jobId = v.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                            const fp = generateJobFingerprint(input.schoolId, v.title);
                             return {
-                                id: jobId,
+                                id: fp,
+                                jobFingerprint: fp,
                                 title: v.title,
                                 sourceName: v.source,
                                 applyUrl: v.source_url || "",

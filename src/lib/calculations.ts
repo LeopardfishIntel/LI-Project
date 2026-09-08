@@ -13,11 +13,19 @@ export const RATES: Record<string, number> = {
 export const canonicalCountry = (c: string) => {
   const n = c?.toLowerCase().trim() || "";
   if (n.includes("czech") || n.includes("czechia")) return "czechia";
-  if (n.includes("uae") || n.includes("emirates")) return "united arab emirates";
-  if (n.includes("uk") || n.includes("britain")) return "united kingdom";
-  if (n.includes("usa") || n.includes("america")) return "united states";
+  if (n.includes("uae") || n.includes("emirates") || n.includes("dubai") || n.includes("abu dhabi")) return "united arab emirates";
+  if (n.includes("uk") || n.includes("britain") || n.includes("england")) return "united kingdom";
+  if (n.includes("usa") || n.includes("america") || n.includes("united states")) return "united states";
   if (n.includes("swiz") || n.includes("swit")) return "switzerland";
   if (n.includes("viet")) return "vietnam";
+  if (n.includes("hong kong") || n.includes("hongkong")) return "hong kong";
+  if (n.includes("korea")) return "south korea";
+  if (n.includes("tanzania")) return "tanzania";
+  if (n.includes("portugal")) return "portugal";
+  if (n.includes("peru")) return "peru";
+  if (n.includes("monaco")) return "monaco";
+  if (n.includes("azerbaijan")) return "azerbaijan";
+  if (n.includes("cyprus")) return "cyprus";
   return n;
 };
 
@@ -132,26 +140,37 @@ export function getCOLField(data: any, keys: string[]): any {
 export function findCostOfLiving(city: string, country: string, costOfLivingList: any[]): any {
   if (!costOfLivingList || costOfLivingList.length === 0) return null;
   
-  const cleanStr = (s: any) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+  const cleanStr = (s: any) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
   
   const sCity = cleanStr(city);
   const sCountry = cleanStr(canonicalCountry(country));
 
   const matches = costOfLivingList.filter((c: any) => {
-    const cCity = cleanStr(c.city || c.city_name || '');
-    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || ''));
-    const cId = cleanStr(c.id || '');
+    const cCity = cleanStr(c.city || c.city_name || "");
+    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || ""));
+    const cId = cleanStr(c.id || c._id || "");
     
     return (
-      (sCity && cCity === sCity) ||
-      (sCountry && cCountry === sCountry) ||
-      (sCity && cId === sCity) ||
-      (sCountry && cId === sCountry)
+      (sCity && cCity && sCity === cCity) ||
+      (sCountry && cCountry && sCountry === cCountry) ||
+      (sCity && cId && (cId === sCity || cId.includes(sCity))) ||
+      (sCountry && cId && (cId === sCountry || cId.includes(sCountry))) ||
+      (sCountry === "hongkong" && (cCity.includes("hongkong") || cId.includes("hongkong"))) ||
+      (sCountry === "unitedarabemirates" && (cCountry.includes("uae") || cId.includes("uae"))) ||
+      (sCountry === "unitedkingdom" && (cCountry.includes("england") || cId.includes("england") || cId.includes("london"))) ||
+      (sCountry === "czechia" && (cCountry.includes("czech") || cId.includes("prague"))) ||
+      (sCountry === "tanzania" && (cCountry.includes("tanzania") || cId.includes("tanzania") || cId.includes("arusha") || cId.includes("moshi")))
     );
   });
 
-  if (matches.length === 0) return null;
-  return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0] || null;
+  if (matches.length === 0) {
+    if (sCountry === "portugal") return costOfLivingList.find((c: any) => cleanStr(c.country || "").includes("spain") || cleanStr(c.id || "").includes("spain")) || costOfLivingList[0];
+    if (sCountry === "monaco") return costOfLivingList.find((c: any) => cleanStr(c.city || "").includes("paris") || cleanStr(c.id || "").includes("france")) || costOfLivingList[0];
+    if (sCountry === "cyprus" || sCountry === "azerbaijan") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("istanbul") || cleanStr(c.country || "").includes("turkey")) || costOfLivingList[0];
+    if (sCountry === "peru") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("bogota") || cleanStr(c.country || "").includes("colombia") || cleanStr(c.country || "").includes("chile")) || costOfLivingList[0];
+    return null;
+  }
+  return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes("groceries") || k.toLowerCase().includes("rent"))) || matches[0] || null;
 }
 
 export const PROFILE_MAP: Record<string, string> = {
@@ -291,7 +310,19 @@ export function calculateBudget(params: BudgetParams) {
   
   let transportVal = transportOverride !== null ? transportOverride : 0;
   if (transportOverride === null) {
-    if (isDriving) {
+    const sCountry = canonicalCountry(selectedSchool?.country || targetData?.country || '');
+    if (sCountry === 'argentina' && !isDriving) {
+      const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
+      const argScalarMap: Record<string, number> = {
+        "single": 1.0,
+        "marriedDualIncome": 1.8,
+        "family1Child": 2.1,
+        "family2Children": 2.5,
+        "family3PlusChildren": 2.9
+      };
+      const argBaseUsd = argSingleUsd * (argScalarMap[profileKey] || 1.0);
+      transportVal = isTaxi ? usdToDisplay(argBaseUsd * 4) * setupMultiplier : usdToDisplay(argBaseUsd) * setupMultiplier;
+    } else if (isDriving) {
       // If carHire is missing, we use a heuristic (e.g. 1.8x public transport)
       const finalBase = (targetData?.transport?.carHire || getCOLField(targetData, ['carHire'])) ? baseTransport : (usdToDisplay(getVal(targetData?.transport?.publicTransport || getCOLField(targetData, ['publicTransport']), profileKey, personCount)) * 1.8);
       transportVal = finalBase * setupMultiplier;

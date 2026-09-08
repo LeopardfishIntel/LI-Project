@@ -72,7 +72,7 @@ export function isCandidateVacancyUrl(href: string, anchorText: string): boolean
   const lowerUrl = href.toLowerCase();
   const lowerText = anchorText.toLowerCase();
 
-  // Exclude self-references / hashes / generic headers / PTA / Alumni
+  // Exclude self-references / hashes / generic headers / PTA / Alumni / Social Media / Non-Job Sections
   if (
     lowerUrl.endsWith('#') ||
     lowerUrl.includes('/about-us') ||
@@ -85,8 +85,19 @@ export function isCandidateVacancyUrl(href: string, anchorText: string): boolean
     lowerUrl.includes('/pta') ||
     lowerUrl.includes('/alumni') ||
     lowerUrl.includes('/parent-association') ||
+    lowerUrl.includes('/giving/') ||
+    lowerUrl.includes('/student-life/') ||
+    lowerUrl.includes('/community/') ||
+    lowerUrl.includes('/learning/') ||
+    lowerUrl.includes('youtube.com') ||
+    lowerUrl.includes('vimeo.com') ||
+    lowerUrl.includes('linkedin.com') ||
+    lowerUrl.includes('facebook.com') ||
+    lowerUrl.includes('instagram.com') ||
+    lowerUrl.includes('veracross.eu') ||
     lowerText.includes('parent teacher association') ||
-    lowerText.includes('pta')
+    lowerText.includes('pta') ||
+    lowerText.includes('(opens in new window/tab)')
   ) {
     return false;
   }

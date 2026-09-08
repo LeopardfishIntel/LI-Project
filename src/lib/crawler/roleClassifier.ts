@@ -11,6 +11,9 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   // Procurement / Facilities / Health & Safety / Corporate Analytics / Leadership Development
   /\b(procurement|facilities|facility|safety|health\s*&\s*safety|analytics|insights|leadership\s+development|community\s+service)\b/i,
   
+  // Hallway / Study Hall / Lunchtime / Student Supervisors (Non-Teaching)
+  /\b(surveillant|supervisor|student\s+supervisor|hallway\s+supervisor|lunchtime\s+supervisor|campus\s+supervisor|study\s+hall\s+supervisor|cafeteria\s+supervisor|playground\s+supervisor)\b/i,
+
   // House Parent / Residential / Boarding Staff
   /\b(house\s+parent|boarding\s+parent|residence\s+staff|residential\s+assistant)\b/i,
 
@@ -76,8 +79,19 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   // Student Events / Conferences / Competitions / Non-Job Pages
   /\b(conference|symposium|summit|competition|olympiad|student\s+science\s+conference|student\s+conference|global\s+perspective)\b/i,
 
-  // Generic Non-Position Page Titles
-  /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities)\b/i,
+  // UI / Social Media / External Portals / Browser Hints
+  /\b(opens\s+in\s+new\s+window|youtube|vimeo|linkedin|facebook|instagram|twitter|live\s+stream|myisp|parent\s+portal)\b/i,
+
+  // Facilities / Services / Giving Funds / General School Pages
+  /\b(cafeteria|falcons'?\s*nest|distinguished\s+speakers?\s+fund|leadership\s+and\s+service|the\s+arts|annual\s+report|strategic\s+plan|university\s+destinations|faculty\s+and\s+staff|e-shop|testing\s+centre|facility\s+booking)\b/i,
+
+  // Standalone Campus Names, Governance, Location Headers, and Division Section Pages
+  /\b(supervisory\s+board|message\s+from\s+head\s+of\s+school|principal'?s?\s+message|headteacher'?s?\s+message|superintendent'?s?\s+welcome|director\s+general'?s?\s+welcome|learning\s+experience|careers\s+programme|msmusical|musical\s*:)\b/i,
+  /^(primary\s+school\s+haimhausen|secondary\s+school\s+haimhausen|primary\s+school\s+city\s+campus|primary\s+school\s+mathematics|middle\s+school\s+mathematics|middle\s+school\s+biology|bavarian\s+international\s+school|diplomatic\s+quarter|destination\s+riyadh|partnerships|open\s+days|faq'?s|lower\s+primary\s+schools|upper\s+primary\s+schools)$/i,
+
+  // Generic Non-Position Page Titles & Standalone Section Headers
+  /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities|open\s+days)\b/i,
+  /^(primary\s+year\s+programme(\s+@\s+\w+)?|diploma\s+programme(\s+@\s+\w+)?|middle\s+years\s+programme|upper\s+school|middle\s+school|elementary\s+school|primary\s+school|secondary\s+school|high\s+school|junior\s+school|senior\s+school|whole\s+school|early\s+years|kindergarten|performing\s+arts|international\s+baccalaureate|student\s+leadership|curriculum|admissions|careers|vacancies|employment|partnerships|open\s+days)$/i,
 ];
 
 /**

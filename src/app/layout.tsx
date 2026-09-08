@@ -24,12 +24,23 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Leopardfish Intel | Strategic Insight for International Educators',
-  description: 'Military-grade precision intel for international educators.',
+  metadataBase: new URL("https://leopardfishintel.com"),
+  title: "Leopardfish Intel | Strategic Insight for International Educators",
+  description: "Military-grade precision intel for international educators, teacher salary forecasters, cost of living breakdowns, and school retention data.",
   robots: {
-    index: false,
-    follow: false,
-  }
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://leopardfishintel.com",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

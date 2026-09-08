@@ -1,5 +1,8 @@
 "use client";
 
+import { translateJobTitleToEnglish } from '@/lib/utils/titleTranslator';
+import { isSupportOrNonTeachingRole } from '@/lib/crawler/roleClassifier';
+
 import { useState, useEffect, useMemo, Suspense, useCallback, useRef } from 'react';
 import {
   Zap, ShieldCheck, BookOpen, Target, Plus, Minus, Coins,
@@ -11,7 +14,7 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
-import { collection, doc } from 'firebase/firestore';
+import { collection, doc, query, where } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import { cn } from '@/lib/utils';
@@ -154,11 +157,18 @@ const formatDeterministicDate = (input: any) => {
   }
 };
 
-const getJobStatus = (job: string): { status: 'open' | 'closed'; hasDeadline: boolean; label: string } => {
+const getJobStatus = (job: any): { status: 'open' | 'closed'; hasDeadline: boolean; label: string } => {
   const today = new Date();
+  if (!job) {
+    return { status: 'open', hasDeadline: false, label: '' };
+  }
+  const jobStr = typeof job === 'string' ? job : (job.title || job.name || String(job));
+  if (!jobStr || typeof jobStr !== 'string' || typeof jobStr.matchAll !== 'function') {
+    return { status: 'open', hasDeadline: false, label: '' };
+  }
   
   // Find all parenthetical blocks in the string
-  const parentheticalMatches = [...job.matchAll(/\(([^)]+)\)/g)];
+  const parentheticalMatches = [...jobStr.matchAll(/\(([^)]+)\)/g)];
   if (parentheticalMatches.length === 0) {
     return { status: 'open', hasDeadline: false, label: '' };
   }
@@ -366,6 +376,7 @@ function DecoderContent() {
   const firestore = useFirestore();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [lastSelectedOpportunity, setLastSelectedOpportunity] = useState<any>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<{
     jobId?: string;
     jobTitle?: string;
@@ -473,63 +484,25 @@ function DecoderContent() {
 
   const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
 
-  const schoolJobsQuery = useMemoFirebase(() => (mounted && firestore && activeSchool?.id ? collection(firestore, 'schools', activeSchool.id, 'jobs') : null), [firestore, mounted, activeSchool?.id]);
+
+
+  // 🛸 Fetch ALL jobs for this school from featured_jobs_cache (approved + expired)
+  // so we have 2 years of history for the turnover engine. activeVacancies filters to open only.
+  const schoolJobsQuery = useMemoFirebase(
+    () => (mounted && firestore && activeSchool?.id
+      ? query(
+          collection(firestore, 'featured_jobs_cache'),
+          where('schoolId', '==', activeSchool.id)
+        )
+      : null),
+    [firestore, mounted, activeSchool?.id]
+  );
   const { data: schoolJobsData } = useCollection<any>(schoolJobsQuery);
-
-  const allProcessedJobs = useMemo(() => {
-    if (!schoolJobsData) return [];
-    const today = new Date();
-    const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
-
-    return schoolJobsData.map((job: any) => {
-      const closes = job.closingDate?.seconds 
-        ? new Date(job.closingDate.seconds * 1000) 
-        : new Date(job.closingDate || Date.now());
-      const scraped = job.scrapedAt?.seconds 
-        ? new Date(job.scrapedAt.seconds * 1000) 
-        : new Date(job.scrapedAt || Date.now());
-
-      const isExpired = closes < today || job.status === 'expired' || job.status === 'rejected';
-      const recruitmentCycle = (closes < new Date("2025-05-21")) ? "HISTORIC_Y1" : "CURRENT";
-      
-      // Determine department
-      let department = "Secondary";
-      const lowerTitle = (job.title || "").toLowerCase();
-      if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
-        department = "Primary";
-      } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
-        department = "Leadership";
-      }
-
-      return {
-        id: job.id,
-        title: job.title,
-        source: job.sourceName || job.source || "Web",
-        postedDate: scraped.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        closesDate: closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        status: isExpired ? 'closed' : 'open',
-        department,
-        recruitmentCycle,
-        rawPostedDate: scraped,
-        rawClosesDate: closes,
-        applyUrl: job.applyUrl || job.source_url || "",
-        curriculum: job.curriculum || "",
-        savingsPotential: job.savingsPotential || 0,
-        schoolRating: job.schoolRating || "",
-        city: job.city || "",
-        country: job.country || ""
-      };
-    }).filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
-      .sort((a, b) => {
-        if (a.status === 'open' && b.status !== 'open') return -1;
-        if (a.status !== 'open' && b.status === 'open') return 1;
-        return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
-      });
-  }, [schoolJobsData]);
 
   // 🎯 JANITOR ENGINE FILTER FOR NON-JOB TITLES & DUPLICATES
   const isInvalidNonJobTitle = useCallback((title: string): boolean => {
     if (!title || typeof title !== 'string') return true;
+    if (isSupportOrNonTeachingRole(title)) return true;
     const t = title.toLowerCase().trim();
     if (!t || t.length < 3) return true;
 
@@ -545,23 +518,32 @@ function DecoderContent() {
     if (/\b(clubs\s+&\s+leadership|extracurriculars?|co-curricular|student\s+life|clubs?\s+and\s+activities)\b/i.test(t)) return true;
     if (/\b(how\s+to\s+apply|working\s+with\s+us|why\s+join\s+us|about\s+our\s+school|general\s+applications?|speculative\s+applications?|open\s+applications?)\b/i.test(t)) return true;
 
-    // 3. Assistants, TA, Substitute/Supply & Non-Teaching Support Staff
+    // 3. Testimonials, Reports & Website Navigation Section Headers
+    if (/\b(what\s+our\s+(teachers?|students?|parents?)\s+say|our\s+teachers|teacher\s+stories|teacher\s+voices|student\s+voices)\b/i.test(t)) return true;
+    if (/\b(inspection\s+reports?|ofsted\s+report|isi\s+report|bso\s+report|accreditation\s+report)\b/i.test(t)) return true;
+    if (/\b(real\s+life\s+experiences?|student\s+experiences?|life\s+experiences?)\b/i.test(t)) return true;
+    if (/\b(work\s+experience(\s+for\s+.*)?|internships?|volunteering)\b/i.test(t)) return true;
+    if (/\b(teacher\s+training|staff\s+development|professional\s+development|cpd)\b/i.test(t)) return true;
+    if (/\b([a-z0-9]+\s+people|our\s+people|meet\s+the\s+people|our\s+staff|meet\s+our\s+experts|meet\s+our\s+staff)\b/i.test(t)) return true;
+    if (/\b(the\s+way\s+we\s+teach|our\s+results|our\s+stories|results\s+&\s+stories)\b/i.test(t)) return true;
+
+    // 4. Assistants, TA, Substitute/Supply & Non-Teaching Support Staff
     if (/\b(substitute|supply|relief|casual|temporary\s+cover)\b/i.test(t)) return true;
     if (/\b(instructional\s+assistant|learning\s+support\s+assistant|lsa|teaching\s+assistant|teacher\s+assistant|educational\s+assistant|classroom\s+assistant|assistant\s+teacher)\b/i.test(t)) return true;
     if (/\b(support\s+staff|admin(istrative)?\s+assistant|office\s+assistant|receptionist|secretary|nurse|nursing|bus\s+driver|janitor|caretaker|facilities|it\s+technician|lab\s+technician)\b/i.test(t)) return true;
 
-    // 4. Community, PTA, Alumni & Student Events
+    // 5. Community, PTA, Alumni & Student Events
     if (/\b(parent\s+teacher\s+association|pta|alumni\s+association|friends\s+of\s+the\s+school)\b/i.test(t)) return true;
     if (/\b(conference|symposium|summit|competition|olympiad)\b/i.test(t)) return true;
 
-    // 5. Single-Word Department Headers (e.g. "Arts", "Sports", "Music") without specific role nouns
+    // 6. Single-Word Department Headers (e.g. "Arts", "Sports", "Music") without specific role nouns
     const singleWordCategories = ['arts', 'art', 'music', 'sports', 'pe', 'science', 'math', 'humanities', 'languages', 'english', 'primary', 'secondary', 'leadership'];
     if (singleWordCategories.includes(t)) return true;
 
-    // 6. Generic Category Phrase Ends With "Openings", "Opportunities", "Vacancies" without specific role
+    // 7. Generic Category Phrase Ends With "Openings", "Opportunities", "Vacancies" without specific role
     if (/^(support\s+staff|admin(istrator)?|faculty|academic|substitute|general)\s+(openings|opportunities|vacancies|positions)$/i.test(t)) return true;
 
-    // 7. Talent Pools, Expressions of Interest & Generic School Open Applications
+    // 8. Talent Pools, Expressions of Interest & Generic School Open Applications
     if (/^vacanc(y|ies)\s+at\b/i.test(t)) return true;
     if (/^(careers?|jobs?|work|working|employment)\s+at\b/i.test(t)) return true;
     if (/\b(talent\s+pool|talent\s+bank|talent\s+community|expression\s+of\s+interest|register\s+(your\s+)?interest|future\s+(teaching\s+)?opportunities|future\s+vacancies|future\s+openings)\b/i.test(t)) return true;
@@ -571,12 +553,38 @@ function DecoderContent() {
   }, []);
 
   const normalizeJobTitleKey = useCallback((title: string): string => {
-    return title
+    if (!title || typeof title !== 'string') return '';
+    let clean = title
       .replace(/\([^)]*\)/g, '')
+      .replace(/\(.*$/, '')
+      .replace(/\b(misk\s+schools|reigate\s+grammar|downe\s+house|al\s+faris|british\s+international).*$/gi, '')
       .toLowerCase()
+      .replace(/\b(school\s*year|sy|academic\s*year)?\s*202[4-7](\s*[\/-]\s*202[4-7])?\b/gi, '')
+      .replace(/\b(pos(ition)?|ref|full[\s-]?time|part[\s-]?time)\b/gi, '')
       .replace(/[^a-z0-9\s]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
+    return clean;
+  }, []);
+
+  const getSourceColorDot = useCallback((sourceName?: string, applyUrl?: string) => {
+    const s = String(sourceName || '').toLowerCase();
+    const url = String(applyUrl || '').toLowerCase();
+
+    if (s.includes('cognita') || url.includes('cognita')) return 'bg-sky-400 border-sky-300 shadow-[0_0_6px_rgba(56,189,248,0.6)]';
+    if (s.includes('tes') || url.includes('tes.com')) return 'bg-indigo-400 border-indigo-300 shadow-[0_0_6px_rgba(129,140,248,0.6)]';
+    if (s.includes('schrole') || url.includes('schrole.com')) return 'bg-purple-400 border-purple-300 shadow-[0_0_6px_rgba(192,132,252,0.6)]';
+    if (s.includes('search associates') || url.includes('searchassociates')) return 'bg-amber-400 border-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.6)]';
+    if (s.includes('nord anglia') || url.includes('nordanglia')) return 'bg-amber-400 border-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.6)]';
+    if (s.includes('grc') || url.includes('grcfair')) return 'bg-cyan-400 border-cyan-300 shadow-[0_0_6px_rgba(34,211,238,0.6)]';
+    if (s.includes('inspired') || url.includes('inspirededu')) return 'bg-purple-400 border-purple-300 shadow-[0_0_6px_rgba(192,132,252,0.6)]';
+    if (s.includes('teach away') || s.includes('teachaway') || url.includes('teachaway.com')) return 'bg-emerald-400 border-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.6)]';
+    if (s.includes('malvern') || url.includes('malverncollege')) return 'bg-rose-400 border-rose-300 shadow-[0_0_6px_rgba(251,113,133,0.6)]';
+    if (s.includes('uwc') || url.includes('uwc.org')) return 'bg-violet-400 border-violet-300 shadow-[0_0_6px_rgba(167,139,250,0.6)]';
+    if (s.includes('isp') || url.includes('internationalschools')) return 'bg-emerald-400 border-emerald-300 shadow-[0_0_6px_rgba(52,211,153,0.6)]';
+    if (s.includes('globeducate') || s.includes('globe') || url.includes('globeducate')) return 'bg-cyan-400 border-cyan-300 shadow-[0_0_6px_rgba(34,211,238,0.6)]';
+
+    return 'bg-emerald-500 border-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.6)]';
   }, []);
 
   const isCityOrCampusMismatch = useCallback((jobTitle: string, schoolCity?: string): boolean => {
@@ -592,24 +600,161 @@ function DecoderContent() {
     return false;
   }, []);
 
-  // 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
+  const allProcessedJobs = useMemo(() => {
+    if (!schoolJobsData) return [];
+    const today = new Date();
+    const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
+
+    const rawList = schoolJobsData.map((job: any) => {
+      // ── Closing date ──────────────────────────────────────────────────────────
+      // featured_jobs_cache: closingDateMillis (number) or closingDate (string/Timestamp)
+      let closes: Date;
+      if (job.closingDateMillis) {
+        closes = new Date(job.closingDateMillis);
+      } else if (job.closingDate?.seconds) {
+        closes = new Date(job.closingDate.seconds * 1000);
+      } else if (job.closingDate) {
+        closes = new Date(job.closingDate);
+      } else {
+        closes = new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000); // rolling/unknown → far future
+      }
+
+      // ── Posted/ingested date ──────────────────────────────────────────────────
+      // featured_jobs_cache: ingestedAtMillis; subcollection legacy: scrapedAt
+      let scraped: Date;
+      if (job.ingestedAtMillis) {
+        scraped = new Date(job.ingestedAtMillis);
+      } else if (job.scrapedAt?.seconds) {
+        scraped = new Date(job.scrapedAt.seconds * 1000);
+      } else if (job.scrapedAt) {
+        scraped = new Date(job.scrapedAt);
+      } else if (job.datePosted) {
+        scraped = new Date(job.datePosted);
+      } else {
+        scraped = today;
+      }
+
+      const isRolling = job.isRollingDeadline === true;
+      // rejected = never a real vacancy, skip entirely at filter stage
+      const cacheStatus = job.status || 'approved';
+      const isExpired = !isRolling && (closes < today || cacheStatus === 'expired');
+      const recruitmentCycle = (closes < new Date("2025-05-21")) ? "HISTORIC_Y1" : "CURRENT";
+
+      // ── Department (prefer Pipeline 2 enriched value, fall back to title inference) ──
+      let department = job.department || "Secondary";
+      if (!job.department) {
+        const lowerTitle = (job.title || "").toLowerCase();
+        if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("class teacher")) {
+          department = "Primary";
+        } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator")) {
+          department = "Leadership";
+        }
+      }
+
+      return {
+        id: job.id,
+        title: job.title,
+        source: job.source || job.sourceName || "Web",
+        sources: job.sources,
+        sourceUrls: job.sourceUrls,
+        postedDate: scraped.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        closesDate: isRolling ? 'Rolling' : closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        cacheStatus,
+        status: isExpired ? 'closed' : 'open',
+        department,
+        recruitmentCycle,
+        rawPostedDate: scraped,
+        rawClosesDate: closes,
+        applyUrl: job.applyUrl || job.source_url || "",
+        curriculum: job.curriculum || "",
+        // featured_jobs_cache uses savingsPotentialSingle; subcollection used savingsPotential
+        savingsPotential: job.savingsPotentialSingle || job.savingsPotential || 0,
+        schoolRating: job.schoolRating || "",
+        city: job.city || "",
+        country: job.country || ""
+      };
+    }).filter(job => job.cacheStatus !== 'rejected')   // skip jobs that were never validated
+      .filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
+      .filter(job => !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city));
+
+    // 🎯 SMART DEDUPLICATION (PRESERVING GENUINE EXTRA POSITIONS WHILE STOPPING RE-SCRAPE DUPLICATES)
+    const result: any[] = [];
+    rawList.forEach((job: any) => {
+      const jobNormKey = normalizeJobTitleKey(job.title);
+
+      const matchIndex = result.findIndex((existing: any) => {
+        // 1. Exact ID match
+        if (existing.id && job.id && existing.id === job.id) return true;
+
+        // 2. Same normalized job title key (collapses re-scrapes of exact same position)
+        const existingNormKey = normalizeJobTitleKey(existing.title);
+        if (jobNormKey && existingNormKey && jobNormKey === existingNormKey) return true;
+
+        // 3. Exact applyUrl match (same specific web listing)
+        if (existing.applyUrl && job.applyUrl && existing.applyUrl === job.applyUrl && !job.applyUrl.endsWith('/career/') && !job.applyUrl.endsWith('/careers')) return true;
+
+        return false;
+      });
+
+      if (matchIndex === -1) {
+        result.push(job);
+      } else {
+        const existing = result[matchIndex];
+        if (job.status === 'open' && existing.status !== 'open') {
+          result[matchIndex] = job;
+        } else if (job.status === existing.status) {
+          if (job.rawClosesDate && existing.rawClosesDate && job.rawClosesDate > existing.rawClosesDate) {
+            result[matchIndex] = job;
+          }
+        }
+      }
+    });
+
+    return result.sort((a, b) => {
+      if (a.status === 'open' && b.status !== 'open') return -1;
+      if (a.status !== 'open' && b.status === 'open') return 1;
+      return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
+    });
+  }, [schoolJobsData, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
+
+  // 📅 Compute earliest posted date among processed jobs
+const earliestPosted = useMemo(() => {
+  if (!allProcessedJobs || allProcessedJobs.length === 0) return null;
+  const dates = allProcessedJobs
+    .map((j: any) => j.rawPostedDate)
+    .filter(Boolean);
+  if (dates.length === 0) return null;
+  return new Date(Math.min(...dates.map((d: any) => d.getTime())));
+}, [allProcessedJobs]);
+
+// 🔢 Determine how many months of history we have (capped at 24, minimum 1)
+const historicMonths = useMemo(() => {
+  if (!earliestPosted) return null;
+  const diffMs = Date.now() - earliestPosted.getTime();
+  const months = Math.floor(diffMs / (30 * 24 * 60 * 60 * 1000));
+  return Math.min(24, Math.max(1, months));
+}, [earliestPosted]);
+
+// 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
   const activeVacancies = useMemo(() => {
     let rawList: any[] = [];
 
-    const openJobs = allProcessedJobs.filter((j: any) => j.status === 'open');
+    // Only show jobs that are open (closing date in future) AND approved in cache
+    const openJobs = allProcessedJobs.filter((j: any) => j.status === 'open' && j.cacheStatus === 'approved');
     if (openJobs.length > 0) {
       rawList = openJobs;
     } else if (activeSchool?.scrapedJobsList && Array.isArray(activeSchool.scrapedJobsList) && activeSchool.scrapedJobsList.length > 0) {
-      rawList = activeSchool.scrapedJobsList.map((jobStr: string, idx: number) => {
-        const statusObj = getJobStatus(jobStr);
-        const cleanTitle = jobStr.replace(/\([^)]*\)/g, '').trim();
+      rawList = activeSchool.scrapedJobsList.map((jobStr: any, idx: number) => {
+        const jobString = typeof jobStr === 'string' ? jobStr : (jobStr?.title || jobStr?.name || String(jobStr || ''));
+        const statusObj = getJobStatus(jobString);
+        const cleanTitle = jobString.replace(/\([^)]*\)/g, '').trim();
         let closesDate = "";
         if (statusObj.label.includes("Closes:")) {
           closesDate = statusObj.label.split("Closes:")[1].replace(")", "").trim();
         }
         return {
           id: `scraped-${idx}`,
-          title: cleanTitle || jobStr,
+          title: cleanTitle || jobString,
           source: "Web Scraping",
           postedDate: "",
           closesDate,
@@ -672,18 +817,31 @@ function DecoderContent() {
        const jobTitle = params.get('jobTitle');
        
        if (jobTitle) {
+         let parsedSources: string[] | undefined = undefined;
+         let parsedSourceUrls: Record<string, string> | undefined = undefined;
+         try {
+           const rawSources = params.get("sources");
+           if (rawSources) parsedSources = JSON.parse(decodeURIComponent(rawSources));
+         } catch (e) {}
+         try {
+           const rawSourceUrls = params.get("sourceUrls");
+           if (rawSourceUrls) parsedSourceUrls = JSON.parse(decodeURIComponent(rawSourceUrls));
+         } catch (e) {}
+
          setSelectedOpportunity({
-           jobId: params.get('jobId') || undefined,
-           jobTitle,
-           department: params.get('department') || undefined,
-           curriculum: params.get('curriculum') || undefined,
-           applyUrl: params.get('applyUrl') || undefined,
-           closesDate: params.get('closesDate') || undefined,
-           savingsPotential: params.get('savingsPotential') ? Number(params.get('savingsPotential')) : undefined,
-           schoolRating: params.get('schoolRating') || undefined,
-           source: params.get('source') || undefined,
-           city: params.get('city') || undefined,
-           country: params.get('country') || undefined
+           jobId: params.get("jobId") || undefined,
+           jobTitle: translateJobTitleToEnglish(jobTitle),
+           department: params.get("department") || undefined,
+           curriculum: params.get("curriculum") || undefined,
+           applyUrl: params.get("applyUrl") || undefined,
+           closesDate: params.get("closesDate") || undefined,
+           savingsPotential: params.get("savingsPotential") ? Number(params.get("savingsPotential")) : undefined,
+           schoolRating: params.get("schoolRating") || undefined,
+           source: params.get("source") || undefined,
+           sources: parsedSources,
+           sourceUrls: parsedSourceUrls,
+           city: params.get("city") || undefined,
+           country: params.get("country") || undefined
          });
        }
 
@@ -752,6 +910,15 @@ function DecoderContent() {
   }, [activeSchool]);
 
   const prevSchoolIdRef = useRef<string | null>(null);
+
+  // ⏱️ AUTO-POLL: when SWR returns isUpdating=true, re-poll after 30s so pill disappears
+  useEffect(() => {
+    if (!stabilityReport?.isUpdating) return;
+    const timer = setTimeout(() => {
+      loadStabilityReport(false);
+    }, 30000);
+    return () => clearTimeout(timer);
+  }, [stabilityReport?.isUpdating, loadStabilityReport]);
 
   useEffect(() => {
     const currentId = activeSchool?.id || null;
@@ -898,14 +1065,16 @@ function DecoderContent() {
       const cleanRange = str
         .replace(/,/g, '')
         .replace(/\.\d+/g, '')
-        .replace(/k/gi, '000');
+        .replace(/(\d+)\s*k\b/gi, '$1000');
       const range = cleanRange.match(/\d+/g);
-      const min = range ? parseInt(range[0]) : 0;
-      const max = range && range.length > 1 ? parseInt(range[1]) : min;
+      const validNums = range ? range.map(n => parseInt(n)).filter(n => !isNaN(n) && n > 0) : [];
+      const min = validNums.length > 0 ? validNums[0] : 0;
+      const max = validNums.length > 1 ? validNums[1] : min;
       let median = Math.round((min + max) / 2);
 
-      // Annual to Monthly Conversion (if the parsed median exceeds 10,000, divide by 12)
-      if (median >= 10000) {
+      const isExplicitMonthly = /month|monthly|\/mo/i.test(str);
+      // Annual to Monthly Conversion: only divide if > 10,000 AND not marked monthly AND in currencies where annual salaries > 10,000 (USD, EUR, GBP)
+      if (median >= 10000 && !isExplicitMonthly && (isUSD || ['USD', 'EUR', 'GBP', 'AED', 'SAR', 'QAR'].includes(currency))) {
         median = Math.round(median / 12);
       }
 
@@ -930,8 +1099,8 @@ function DecoderContent() {
 
     // 🎯 STRICT FAMILY MAPPING PROTOCOL
     if (status === "Single") { personCount = 1; scalar = 1.0; pKey = "single"; }
-    else if (status === "Married (sole earner)") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
-    else if (status === "Married (dual income)") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
+    else if (status === "Couple") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
+    else if (status === "Married (sole earner)" || status === "Married (dual income)") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
     else if (status === "Family +1") { personCount = 3; scalar = 2.3; pKey = "family1Child"; }
     else if (status === "Family +2") { personCount = 4; scalar = 2.65; pKey = "family2Children"; }
     else if (status === "Family +3") { personCount = 5; scalar = 3.0; pKey = "family3PlusChildren"; }
@@ -970,7 +1139,7 @@ function DecoderContent() {
       isProvided = true;
     }
 
-    const standardRentKey = status === "Single" ? 'rent1br' : (status.includes("Family") ? 'rent3br' : 'rent2br');
+    const standardRentKey = (status === "Single") ? 'rent1br' : (status === "Couple" || status === "Family +1") ? 'rent2br' : 'rent3br';
     const activeRentKey = (overrideBedrooms !== null && overrideBedrooms !== 4) ? `rent${overrideBedrooms}br` : standardRentKey;
 
     // 🏠 PROPERTY ADVICE LOGIC
@@ -1025,9 +1194,9 @@ function DecoderContent() {
       ? (tIntel?.carHire || activeCOL?.transport?.carPurchase || activeCOL?.carPurchase || activeCOL?.transport?.carHire || activeCOL?.carHire)
       : (tIntel?.publicTransport || activeCOL?.transport?.publicTransport || activeCOL?.publicTransport);
 
-    // 🛰️ NEW TRANSPORT INTEL REDIRECTION
     const transportPKeyMap: Record<string, string> = {
       "Single": "single",
+      "Couple": "marriedDualIncome",
       "Married (sole earner)": "marriedDualIncome",
       "Married (dual income)": "marriedDualIncome",
       "Family +1": "family1Child",
@@ -1036,9 +1205,41 @@ function DecoderContent() {
     };
     const transportKey = transportPKeyMap[settings.familyStatus] || "single";
 
-    const transportVal = (typeof transportMap === 'object' && transportMap !== null)
-      ? (transportMap[transportKey] !== undefined ? safeParse(transportMap[transportKey]) : safeParse(transportMap["family3Children"] || 0))
-      : (parseFloat(String(transportMap)) || 0);
+    const transitScalarMap: Record<string, number> = {
+      "single": 1.0,
+      "marriedDualIncome": 1.8,
+      "family1Child": 2.1,
+      "family2Children": 2.5,
+      "family3PlusChildren": 2.9
+    };
+
+    let transportVal = 0;
+
+    if (isCar) {
+      // 🚗 CAR HIRE: Constant vehicle rate across all family status profiles
+      if (typeof transportMap === 'object' && transportMap !== null) {
+        transportVal = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0) || 0);
+      } else {
+        transportVal = safeParse(transportMap);
+      }
+    } else {
+      // 🚌 PUBLIC TRANSIT: Multiplies and scales dynamically across all family status profiles
+      if (sCountry === 'argentina') {
+        const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
+        transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0);
+      } else if (typeof transportMap === 'object' && transportMap !== null) {
+        if (transportMap[transportKey] !== undefined && safeParse(transportMap[transportKey]) > 0) {
+          transportVal = safeParse(transportMap[transportKey]);
+        } else {
+          const baseSingle = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0) || 0);
+          transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
+        }
+      } else {
+        const baseSingle = safeParse(transportMap);
+        transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
+      }
+    }
+
     const transportCost = usdToLocal(transportVal);
     const rawSocialVal = getF(activeCOL, ['social', 'dining', 'diningsocial']);
     const socialVal = (rawSocialVal !== null && rawSocialVal !== undefined) ? rawSocialVal : 300;
@@ -1291,7 +1492,21 @@ function DecoderContent() {
 
         {/* Sidebar: Manual Unrolled Search Settings */}
         <div className="w-full lg:w-72 bg-[#0b1224] border-r border-white/5 p-4 lg:fixed lg:h-full overflow-y-auto z-30 shadow-xl">
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors"><ArrowLeft className="size-3" /> Back</button>
+          <button onClick={() => {
+            if (selectedOpportunity) {
+              setLastSelectedOpportunity(selectedOpportunity);
+              setSelectedOpportunity(null);
+              const newUrl = new URL(window.location.href);
+              newUrl.searchParams.delete("jobId");
+              newUrl.searchParams.delete("jobTitle");
+              newUrl.searchParams.delete("department");
+              newUrl.searchParams.delete("applyUrl");
+              newUrl.searchParams.delete("closesDate");
+              window.history.replaceState({}, "", newUrl.toString());
+            } else {
+              router.back();
+            }
+          }} className="flex items-center gap-1.5 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors cursor-pointer" title={selectedOpportunity ? "Return to school view" : "Go back"}><ArrowLeft className="size-3" /> Back</button>
           <p className="text-[11px] font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
 
           <div className="space-y-4">
@@ -1534,7 +1749,7 @@ function DecoderContent() {
                       </div>
 
                       <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
-                        {selectedOpportunity.jobTitle}
+                        {translateJobTitleToEnglish(selectedOpportunity.jobTitle || '')}
                       </h1>
 
                       <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 font-medium">
@@ -1558,7 +1773,7 @@ function DecoderContent() {
                         rawSources.forEach((s: any) => {
                           if (!s) return;
                           const u = String(s).toUpperCase().trim();
-                          const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
+                          const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) ? "Search Associates" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
                           if (!sMap.has(u)) sMap.set(u, label);
                         });
 
@@ -1567,21 +1782,65 @@ function DecoderContent() {
                         return displaySources.map((src: string) => {
                           const srcUpper = String(src).toUpperCase().trim();
                           const srcUrl = (() => {
+                            let foundUrl: string | undefined = undefined;
+
+                            // 1. Direct match in selectedOpportunity.sourceUrls
                             if (selectedOpportunity.sourceUrls) {
-                              if (selectedOpportunity.sourceUrls[src]) return selectedOpportunity.sourceUrls[src];
-                              if (selectedOpportunity.sourceUrls[srcUpper]) return selectedOpportunity.sourceUrls[srcUpper];
-                              if (selectedOpportunity.sourceUrls[src.toLowerCase()]) return selectedOpportunity.sourceUrls[src.toLowerCase()];
-                              for (const [k, v] of Object.entries(selectedOpportunity.sourceUrls)) {
-                                if (k.toUpperCase().trim() === srcUpper && v) return v as string;
+                              if (selectedOpportunity.sourceUrls[src]) foundUrl = selectedOpportunity.sourceUrls[src];
+                              else if (selectedOpportunity.sourceUrls[srcUpper]) foundUrl = selectedOpportunity.sourceUrls[srcUpper];
+                              else if (selectedOpportunity.sourceUrls[src.toLowerCase()]) foundUrl = selectedOpportunity.sourceUrls[src.toLowerCase()];
+                              else {
+                                for (const [k, v] of Object.entries(selectedOpportunity.sourceUrls)) {
+                                  if (k.toUpperCase().trim() === srcUpper && v) {
+                                    foundUrl = v as string;
+                                    break;
+                                  }
+                                }
                               }
                             }
-                            if (srcUpper.includes("NORD ANGLIA")) {
-                              if (selectedOpportunity.applyUrl?.includes("careers.nordangliaeducation.com")) return selectedOpportunity.applyUrl;
+
+                            // 2. Check matched job in activeVacancies
+                            if (!foundUrl && activeVacancies && activeVacancies.length > 0) {
+                              const matchedJob = activeVacancies.find((j: any) =>
+                                (selectedOpportunity.jobId && String(j.id) === String(selectedOpportunity.jobId)) ||
+                                (j.title && selectedOpportunity.jobTitle && j.title.toLowerCase() === selectedOpportunity.jobTitle.toLowerCase())
+                              );
+                              if (matchedJob) {
+                                if (matchedJob.sourceUrls) {
+                                  for (const [k, v] of Object.entries(matchedJob.sourceUrls)) {
+                                    if (k.toUpperCase().trim() === srcUpper && v) {
+                                      foundUrl = v as string;
+                                      break;
+                                    }
+                                  }
+                                }
+                                if (!foundUrl && matchedJob.applyUrl) foundUrl = matchedJob.applyUrl;
+                              }
                             }
-                            if (srcUpper.includes("TES")) {
-                              if (selectedOpportunity.applyUrl?.includes("tes.com")) return selectedOpportunity.applyUrl;
+
+                            // 3. Fallback agency/hub URLs on activeSchool
+                            if (!foundUrl) {
+                              if (srcUpper.includes("TEACH AWAY") || srcUpper.includes("TEACHAWAY")) {
+                                if (activeSchool?.teachAwayUrl) foundUrl = activeSchool.teachAwayUrl;
+                              } else if (srcUpper.includes("TEACHER HORIZONS") || srcUpper.includes("TEACHERHORIZONS")) {
+                                if (activeSchool?.teacherHorizonsUrl) foundUrl = activeSchool.teacherHorizonsUrl;
+                              } else if (srcUpper.includes("OFFICIAL") || srcUpper.includes("SCHOOL") || srcUpper.includes("NORTHLANDS")) {
+                                if (activeSchool?.careersPageUrl) foundUrl = activeSchool.careersPageUrl;
+                                else if (activeSchool?.website) foundUrl = activeSchool.website;
+                                else if (activeSchool?.schooljp) foundUrl = activeSchool.schooljp;
+                              }
                             }
-                            return selectedOpportunity.applyUrl || "#";
+
+                            // 4. Default applyUrl or school careers URL
+                            if (!foundUrl || foundUrl.includes("northlands-school-argentina.com") || foundUrl === "#") {
+                              foundUrl = selectedOpportunity.applyUrl || activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || "#";
+                            }
+
+                            if (foundUrl && foundUrl.includes("northlands-school-argentina.com")) {
+                              foundUrl = "https://www.northlands.edu.ar/en/job-opportunities/";
+                            }
+
+                            return foundUrl || "#";
                           })();
 
                           return (
@@ -1606,8 +1865,8 @@ function DecoderContent() {
                                   ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30"
                                   : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
                                   ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
-                                  : srcUpper === "NORD ANGLIA"
-                                  ? "bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30"
+                                  : (srcUpper === "NORD ANGLIA" || srcUpper.includes("NORD ANGLIA"))
+                                  ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
                                   : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
                               )}
                               title={"Open direct vacancy post on " + src + " (opens in new tab)"}
@@ -1684,7 +1943,7 @@ function DecoderContent() {
                     </div>
 
                     <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
-                      We’ve crunched the numbers for this role. Here is our breakdown of your expected take-home pay, local living costs, and lifestyle at this campus—you can adjust the settings anytime to factor in your household size, additional income, and personal savings goals.
+                      We’ve crunched the numbers for this role. Below is our breakdown of your projected take-home pay, local living costs, and lifestyle at this campus—you can adjust the settings anytime to factor in your household size, additional income, and personal savings goals.
                     </p>
                   </div>
                 </div>
@@ -1695,6 +1954,18 @@ function DecoderContent() {
                 {(!selectedOpportunity || !selectedOpportunity.jobTitle) && (
                   <div className="mb-5 p-3.5 md:p-4 bg-slate-900/90 border border-amber-500/20 rounded-md shadow-md">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+                      {lastSelectedOpportunity && (
+                        <div className="w-full flex justify-end pb-1 border-b border-white/5 mb-1">
+                          <button
+                            onClick={() => setSelectedOpportunity(lastSelectedOpportunity)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6B35]/15 hover:bg-[#FF6B35]/25 border border-[#FF6B35]/40 text-[#FF6B35] text-xs font-bold rounded-sm transition-all cursor-pointer shadow-sm animate-in fade-in"
+                            title={"Return to evaluating " + lastSelectedOpportunity.jobTitle}
+                          >
+                            <ArrowRight className="size-3.5 text-[#FF6B35]" />
+                            <span className="text-[11px] font-bold uppercase tracking-wider">Return to {translateJobTitleToEnglish(lastSelectedOpportunity.jobTitle)} Evaluation</span>
+                          </button>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2.5">
                         <span className="relative flex h-2.5 w-2.5">
                           <span className={cn(
@@ -1738,11 +2009,13 @@ function DecoderContent() {
                               jobTitle: job.title,
                               department: job.department,
                               curriculum: job.curriculum,
-                              applyUrl: job.applyUrl,
+                              applyUrl: job.applyUrl || job.source_url || activeSchool?.careersPageUrl || activeSchool?.website,
                               closesDate: job.closesDate,
                               savingsPotential: job.savingsPotential,
                               schoolRating: job.schoolRating,
                               source: job.source,
+                              sources: job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"],
+                              sourceUrls: job.sourceUrls || {},
                               city: job.city,
                               country: job.country
                             });
@@ -1770,7 +2043,8 @@ function DecoderContent() {
                               )}
                             >
                               <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
-                                <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{job.title}</span>
+                                <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
+                                <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{translateJobTitleToEnglish(job.title)}</span>
                                 <ArrowUpRight className={cn("size-3 shrink-0 sm:hidden transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-400 group-hover:text-white")} />
                               </div>
                               {job.closesDate && (
@@ -1791,6 +2065,38 @@ function DecoderContent() {
                     )}
                   </div>
                 )}
+
+                {/* ⚠️ TACTICAL CURRENCY VOLATILITY ADVISORY BANNER */}
+                {(() => {
+                  const cName = canonicalCountry(getSchoolField(activeSchool, ['country', 'region']) || '');
+                  const currCode = String(activeCOL?.currencyCode || activeSchool?.currency || (cName === 'argentina' ? 'ARS' : (cName === 'egypt' ? 'EGP' : (cName === 'turkey' ? 'TRY' : 'Local')))).toUpperCase();
+                  const isVolatile = 
+                    cName === 'argentina' || 
+                    cName === 'egypt' || 
+                    cName === 'turkey' || 
+                    cName === 'venezuela' || 
+                    cName === 'lebanon' || 
+                    cName === 'nigeria' || 
+                    ['ARS', 'EGP', 'TRY', 'VES', 'LBP', 'NGN'].includes(currCode) ||
+                    activeSchool?.isVolatileMarket === true;
+
+                  if (!isVolatile) return null;
+                  return (
+                    <div className="mb-5 p-3.5 md:p-4 bg-amber-500/10 border-2 border-amber-500/40 rounded-sm shadow-xl flex items-start gap-3 animate-in fade-in duration-300">
+                      <div className="p-2 bg-amber-500/20 rounded-sm border border-amber-500/30 shrink-0 mt-0.5">
+                        <AlertTriangle className="size-5 text-amber-400 animate-pulse" />
+                      </div>
+                      <div className="space-y-1 flex-1">
+                        <p className="text-xs font-semibold text-slate-200 leading-relaxed">
+                          {getSchoolField(activeSchool, ['country', 'region']) || 'This location'} is subject to high inflation and severe currency fluctuations. Local currency ({currCode}) contracts carry significant devaluation risk.
+                          <span className="text-amber-300 font-bold block sm:inline sm:ml-1">
+                            Please confirm whether your specific offer is pegged to USD/EUR or paid into an offshore hard-currency account to protect your monthly savings.
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
                   <div className="space-y-2">
@@ -2114,7 +2420,11 @@ function DecoderContent() {
                                   <div className="flex items-start gap-3">
                                     <Zap className="size-4 text-emerald-400 mt-1 flex-shrink-0" />
                                     <p className="text-[11px] font-bold text-slate-300 leading-relaxed italic">
-                                      Do you want to adjust your offer to allow for bonus month salaries offered in <span className="text-emerald-400 font-black">{formatCountry(settings.country)}</span>?
+                                      {(activeSchool?.id === 'FLIS0097' || activeSchool?.confirmed14thMonth || activeSchool?.monthlySalary?.includes('14') || activeSchool?.salaryRange?.includes('14')) ? (
+                                        <span>Click here to add the <strong className="text-emerald-400 font-black not-italic">bonus months salary</strong></span>
+                                      ) : (
+                                        <>Do you want to adjust your offer to allow for bonus month salaries offered in <span className="text-emerald-400 font-black">{formatCountry(settings.country)}</span>?</>
+                                      )}
                                     </p>
                                   </div>
                                   <button
@@ -2174,11 +2484,36 @@ function DecoderContent() {
                                       </button>
                                     )}
                                   </div>
-                                  <p className="mt-2 text-[10px] font-bold text-emerald-500/40 uppercase italic text-center italic tracking-tighter">
-                                    Please confirm your specific offer includes these payments
+                                  <p className="mt-2.5 text-[10px] font-black uppercase text-amber-400 text-center tracking-wider bg-amber-500/10 border border-amber-500/25 py-1.5 px-2 rounded-sm shadow-sm flex items-center justify-center gap-1.5">
+                                    <AlertCircle className="size-3 text-amber-400 shrink-0" />
+                                    <span>Please confirm if your specific offer already includes this!</span>
                                   </p>
                                 </div>
                               )}
+                            </div>
+                          )}
+
+                          {/* 🏷️ TACTICAL LIFESTYLE DOWNGRADE (SAVER MODE) */}
+                          {(analysis?.surplus ?? 0) < 0 && lifestyleMode !== "Saver" && (
+                            <div className="mt-3 w-full p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-sm transition-all duration-300">
+                              <div className="flex items-start gap-2.5 mb-2.5">
+                                <Sliders className="size-4 text-amber-400 mt-0.5 shrink-0" />
+                                <div>
+                                  <p className="text-[11px] font-bold text-amber-200 leading-tight">
+                                    Surplus still in the red?
+                                  </p>
+                                  <p className="text-[10px] text-slate-300 leading-relaxed mt-0.5">
+                                    Switch from <span className="font-bold text-amber-300">{lifestyleMode}</span> to <span className="font-bold text-emerald-400">Saver Mode</span> to trim rent (-25%), groceries (-20%), & discretionary spending (-60%).
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => setLifestyleMode("Saver")}
+                                className="w-full py-2 bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-black text-[10px] font-black uppercase tracking-widest rounded-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm group"
+                              >
+                                <ArrowDownCircle className="size-3.5 group-hover:translate-y-0.5 transition-transform" />
+                                <span>Downgrade to Saver Lifestyle</span>
+                              </button>
                             </div>
                           )}
 
@@ -2196,14 +2531,15 @@ function DecoderContent() {
                             </button>
                           )}
 
-                          {(overrideBedrooms !== null || uplift13 || uplift14) && (
+                          {(overrideBedrooms !== null || uplift13 || uplift14 || lifestyleMode !== "Comfort") && (
                             <button
                               onClick={() => {
                                 setOverrideBedrooms(null);
                                 setUplift13(false);
                                 setUplift14(false);
+                                setLifestyleMode("Comfort");
                               }}
-                              className="mt-3 flex items-center gap-2 px-3 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white rounded-sm hover:bg-slate-700 hover:border-slate-600 transition-all"
+                              className="mt-3 flex items-center gap-2 px-3 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white rounded-sm hover:bg-slate-700 hover:border-slate-600 transition-all cursor-pointer"
                             >
                               <RefreshCw className="size-3.5" />
                               <span className="text-[10px] font-black uppercase tracking-widest">
@@ -2324,6 +2660,7 @@ function DecoderContent() {
                               </div>
                             </div>
                           </div>
+
                         </div>
                       </div>
 
@@ -2368,10 +2705,8 @@ function DecoderContent() {
                           const displayExpenses = expenses * conversionRate;
 
                           let statusLabel = 'Single Teacher';
-                          if (settings.familyStatus === "Married (sole earner)") {
-                            statusLabel = "Couple (Sole Earner)";
-                          } else if (settings.familyStatus === "Married (dual income)") {
-                            statusLabel = "Dual Income Couple";
+                          if (settings.familyStatus === "Couple" || settings.familyStatus === "Married (sole earner)" || settings.familyStatus === "Married (dual income)") {
+                            statusLabel = "Couple";
                           } else if (settings.familyStatus === "Family +1") {
                             statusLabel = "Family (1 Child)";
                           } else if (settings.familyStatus === "Family +2") {
@@ -2465,17 +2800,50 @@ function DecoderContent() {
                     </div>
 
                     <div>
-                      <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 flex items-center justify-between gap-2 leading-relaxed">
-                        <span>
-                          Staff Turnover Guide - (last 12 months)
-                        </span>
-                        <span className={cn(
-                          "text-[11px] text-slate-400 font-medium tracking-normal normal-case ml-auto transition-all",
-                          (isCalculatingStability || stabilityReport?.isUpdating) && "animate-pulse text-[#d95f02] font-semibold"
-                        )}>
-                          re-verification takes upto 90 secs
-                        </span>
-                      </h4>
+                        {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
+                        {(() => {
+                          const monthLabel = historicMonths === 1 ? '1 month' : historicMonths ? `${historicMonths} months` : null;
+                          // Colour-code the coverage pill
+                          const pillStyle = !historicMonths
+                            ? 'bg-slate-800 text-slate-500 border-slate-700'
+                            : historicMonths >= 6
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            : historicMonths >= 3
+                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                            : 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+                          const pillIcon = !historicMonths ? '○' : historicMonths >= 6 ? '●' : historicMonths >= 3 ? '◑' : '◔';
+
+                          return (
+                            <div>
+                              <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
+                                <span>
+                                  {monthLabel
+                                    ? `Staff Turnover Guide — last ${monthLabel}`
+                                    : 'Staff Turnover Guide — no historic data detected'}
+                                </span>
+                                <span className={`text-[10px] font-black tracking-wider normal-case flex items-center gap-1.5 px-2 py-0.5 rounded-sm border ${pillStyle}`}>
+                                  <span>{pillIcon}</span>
+                                  {monthLabel
+                                    ? `${monthLabel} of vacancy history indexed`
+                                    : 'History not yet indexed'}
+                                </span>
+                              </h4>
+                              {historicMonths && historicMonths < 6 && (
+                                <p className="text-[10px] text-amber-300/70 font-medium mb-3 flex items-center gap-1.5">
+                                  <Info className="size-3 text-amber-400 shrink-0" />
+                                  Only {monthLabel} of data is indexed — turnover estimates will improve as history grows.
+                                </p>
+                              )}
+                              {!historicMonths && (
+                                <p className="text-[10px] text-slate-500 font-medium mb-3 flex items-center gap-1.5">
+                                  <Info className="size-3 shrink-0" />
+                                  No vacancy history has been indexed for this school yet. Turnover insights will appear once data is collected.
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })()}
+
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed">
                         
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
@@ -2551,7 +2919,7 @@ function DecoderContent() {
                                       <div className="flex items-center gap-2 flex-wrap">
                                         <span className="text-[10px] text-slate-400 font-medium">Category:</span>
                                         {(() => {
-                                          const isUnavailable = stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE";
+                                          const isUnavailable = (stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE") && processedJobs12.length === 0;
                                           if (isUnavailable) {
                                             return (
                                               <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-black uppercase tracking-wider">
@@ -2619,15 +2987,6 @@ function DecoderContent() {
                                           </ul>
                                         </TooltipContent>
                                       </Tooltip>
-                                      <button
-                                        onClick={() => loadStabilityReport(true)}
-                                        disabled={isCalculatingStability}
-                                        type="button"
-                                        className="flex items-center gap-1.5 px-2.5 py-1 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 hover:border-[#d95f02]/50 rounded-sm font-black uppercase text-[11px] text-[#d95f02] transition-all hover:text-white disabled:opacity-50"
-                                      >
-                                        <RefreshCw className={cn("size-3", isCalculatingStability && "animate-spin")} /> 
-                                        {isCalculatingStability ? `Re-verifying (${stabilityCountdown}s)...` : "Re-verify vacancies"}
-                                      </button>
                                     </div>
                                   </div>
 
@@ -2645,7 +3004,7 @@ function DecoderContent() {
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
                                       <div className="text-sm font-black text-white mt-0.5">
-                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" ? "—" : `${churnRate}%`}
+                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" && processedJobs12.length === 0 ? "—" : `${churnRate}%`}
                                       </div>
                                     </div>
                                   </div>
@@ -2712,6 +3071,7 @@ function DecoderContent() {
                                                   {currentJobs.map((job, idx) => (
                                                     <div key={`current-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 py-2 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
                                                       <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                        <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
                                                         <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
                                                           {String(idx + 1).padStart(2, '0')}
                                                         </span>
@@ -2754,6 +3114,7 @@ function DecoderContent() {
                                                   {historicJobs.map((job, idx) => (
                                                     <div key={`historic-${idx}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 py-2 px-2 bg-white/[0.01] border-b border-white/5 hover:bg-white/[0.03] transition-colors text-[10px]">
                                                       <div className="flex items-center gap-2 min-w-0 flex-1">
+                                                        <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
                                                         <span className="text-slate-500 font-bold tracking-tight text-[9px] shrink-0">
                                                           {String(idx + 1).padStart(2, '0')}
                                                         </span>
@@ -2871,30 +3232,15 @@ function DecoderContent() {
                       icon: <Building className="size-5 text-sky-400" />,
                       value: (activeSchool as any).profitstatus || (activeSchool as any).profit_status || 'For-Profit'
                     },
-                    {
-                      key: 'housing',
-                      label: 'Housing Provision',
-                      icon: <Home className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.housing?.value || activeSchool.housingprovision || '—'
-                    },
-                    {
-                      key: 'health',
-                      label: 'Health Coverage',
-                      icon: <HeartPulse className="size-5 text-sky-400" />,
-                      value: categorizeInsurance((activeSchool.intel?.healthInsurance || activeSchool.healthcoverage || '—') as string)
-                    },
+
+
                     {
                       key: 'curriculum',
                       label: 'Curriculum',
                       icon: <BookOpen className="size-5 text-sky-400" />,
                       value: activeSchool.intel?.curriculum || activeSchool.curriculum || '—'
                     },
-                    {
-                      key: 'ratio',
-                      label: 'Ratio',
-                      icon: <Users className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.studentTeacherRatio || activeSchool.staffstudentratio || '—'
-                    },
+
                     {
                       key: 'classSize',
                       label: 'Class Size',
@@ -2905,13 +3251,24 @@ function DecoderContent() {
                       key: 'contact',
                       label: 'Non-Contact Time',
                       icon: <Clock className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.nonContactTime || (activeSchool as any).noncontacttime || '—'
+                      value: (() => {
+                        const raw = activeSchool.intel?.nonContactTime || (activeSchool as any).noncontacttime;
+                        if (raw === undefined || raw === null || raw === '' || raw === '—') return '—';
+                        const s = String(raw).trim();
+                        return s.endsWith('%') ? s : `${s}%`;
+                      })()
                     },
                     {
                       key: 'tech',
                       label: 'Tech Ecosystem',
                       icon: <Laptop className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.technologyEcosystem || (activeSchool as any).techecosystem || 'Standard'
+                      value: (() => {
+                        const tags = (activeSchool as any).techEcosystemTags;
+                        const legacy = activeSchool.intel?.technologyEcosystem || (activeSchool as any).techecosystem;
+                        if (!tags && !legacy) return null;
+                        return tags || legacy;
+                      })(),
+                      tags: (activeSchool as any).techEcosystemTags || null,
                     },
                     {
                       key: 'accreditation',
@@ -2956,14 +3313,189 @@ function DecoderContent() {
                                         </Tooltip>
                                       ))}
                                     </div>
-                                  ) : (
+                                  ) : item.key === 'tech' && item.tags ? (
+                                    // 🖥️ Tech Ecosystem — structured pill tags
+                                    <div className="flex flex-wrap gap-1 mt-0.5">
+                                      {item.tags.devices?.map((d: string) => (
+                                        <span key={d} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                                          🖥 {d}
+                                        </span>
+                                      ))}
+                                      {item.tags.suite?.map((s: string) => (
+                                        <span key={s} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-300 border border-violet-500/20">
+                                          ☁️ {s}
+                                        </span>
+                                      ))}
+                                      {item.tags.lms?.map((l: string) => (
+                                        <span key={l} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                                          📚 {l}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  ) : item.value ? (
                                     item.value?.toString()
-                                  )}
+                                  ) : null}
                                 </div>
                               </div>
                             </li>
                           ))}
                         </ul>
+
+                        {(activeSchool.benefitsSummary || activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance || activeSchool.jobRequirements || activeSchool.perks || (activeSchool as any).benefits || activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance || activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage || activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights || activeSchool.taxExemptionStatus || (activeSchool as any).languageAndTechSupport || (activeSchool as any).mealsBenefit || (activeSchool as any).lifestylePrivileges || activeSchool.pdAllowance || activeSchool.holidayEntitlement || activeSchool.pensionBenefit || (activeSchool as any).pensionDetails || activeSchool.shippingAllowance) && (
+                          <div className="pt-4 border-t border-white/10 space-y-4">
+                            <div className="flex items-center gap-2">
+                              <Sparkles className="size-4 text-emerald-400" />
+                              <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Expatriate Package & Contract Intel</span>
+                            </div>
+
+                            {activeSchool.benefitsSummary && Array.isArray(activeSchool.benefitsSummary) && (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                                {activeSchool.benefitsSummary.map((b: string, idx: number) => (
+                                  <div key={`ben-${idx}`} className="flex items-start gap-2 bg-emerald-500/5 border border-emerald-500/10 rounded-sm p-2 text-[11px] font-medium text-slate-200">
+                                    <span className="text-emerald-400 font-black shrink-0">✓</span>
+                                    <span>{b}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                              {activeSchool.taxExemptionStatus && (
+                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-sm p-3 space-y-1 md:col-span-2 shadow-sm">
+                                  <p className="text-[10px] font-black uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
+                                    <span>⚖️ Tax Status & Bilateral Treaty Exemption</span>
+                                    <span className="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest border border-emerald-500/30">POSITIVE BENEFIT</span>
+                                  </p>
+                                  <p className="text-xs text-emerald-100 font-bold leading-relaxed">{activeSchool.taxExemptionStatus}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).payrollFramework && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1 md:col-span-2">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">14-Month Payroll Structure & Tax Advantage</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).payrollFramework}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).positionalAllowances && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Positional & Leadership Allowances</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).positionalAllowances}</p>
+                                </div>
+                              )}
+                              {(activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Housing & Boarding Perks</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance}</p>
+                                </div>
+                              )}
+                              {(activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Healthcare & Social Security</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage}</p>
+                                </div>
+                              )}
+                              {activeSchool.tuitionBenefit && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Dependent Child Tuition Benefit</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.tuitionBenefit}</p>
+                                </div>
+                              )}
+                              {(activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Relocation & Immigration Support</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance}</p>
+                                </div>
+                              )}
+                              {(activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Travel & Home Leave Subsidies</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).languageAndTechSupport && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Language & Tech Infrastructure</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).languageAndTechSupport}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).mealsBenefit && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Duty Meals & Refectory</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).mealsBenefit}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).cognitaMobility && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Cognita Network Mobility</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).cognitaMobility}</p>
+                                </div>
+                              )}
+                              {(activeSchool as any).lifestylePrivileges && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Lifestyle & Outdoor Privileges</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).lifestylePrivileges}</p>
+                                </div>
+                              )}
+                              {(activeSchool.pensionBenefit || (activeSchool as any).pensionDetails) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Pension & Retirement Plan</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pensionBenefit || (activeSchool as any).pensionDetails}</p>
+                                </div>
+                              )}
+                              {activeSchool.shippingAllowance && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Shipping & Repatriation Allowances</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.shippingAllowance}</p>
+                                </div>
+                              )}
+                              {activeSchool.pdAllowance && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Professional Development Fund</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pdAllowance}</p>
+                                </div>
+                              )}
+                              {(activeSchool.perks || (activeSchool as any).benefits) && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Staff Perks & Transport</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.perks || (activeSchool as any).benefits}</p>
+                                </div>
+                              )}
+                              {activeSchool.holidayEntitlement && (
+                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Holiday Entitlement</p>
+                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.holidayEntitlement}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {activeSchool.jobRequirements && (
+                              <div className="bg-black/40 border border-white/10 rounded-sm p-3.5 space-y-2 mt-2">
+                                <p className="text-[10px] font-black uppercase text-sky-400 tracking-wider">Candidate Requirements & Qualifications</p>
+                                <div className="flex flex-wrap gap-2 text-[11px]">
+                                  {activeSchool.jobRequirements.eligibleCandidates && (
+                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
+                                      Candidate: {activeSchool.jobRequirements.eligibleCandidates}
+                                    </span>
+                                  )}
+                                  {activeSchool.jobRequirements.minEducation && (
+                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
+                                      Education: {activeSchool.jobRequirements.minEducation}
+                                    </span>
+                                  )}
+                                  {activeSchool.jobRequirements.minExperience && (
+                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
+                                      Experience: {activeSchool.jobRequirements.minExperience}
+                                    </span>
+                                  )}
+                                  {activeSchool.jobRequirements.credentials && (
+                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
+                                      License: {activeSchool.jobRequirements.credentials}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

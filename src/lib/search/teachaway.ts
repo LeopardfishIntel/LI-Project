@@ -34,15 +34,9 @@ export async function searchTeachAwayDbSchools(query: string = ""): Promise<Teac
       return [];
     }
 
-    // 1. DB PRIMACY: Load valid schools from DB that use Teach Away
+    // 1. DB PRIMACY: Load all valid FLIS schools from database
     const snap = await db.collection("schools").get();
-    let dbSchools = snap.docs
-      .map((d: any) => ({ id: d.id, ...d.data() }))
-      .filter((s: any) => {
-        const agency = String(s.agency || "").toLowerCase();
-        const str = JSON.stringify(s).toLowerCase();
-        return agency.includes("teach away") || agency.includes("teachaway") || str.includes("teachaway");
-      });
+    let dbSchools = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
 
     if (query.trim()) {
       const qLower = query.toLowerCase().trim();
@@ -74,6 +68,9 @@ export async function searchTeachAwayDbSchools(query: string = ""): Promise<Teac
       "https://www.teachaway.com/teaching-jobs-abroad/qatar",
       "https://www.teachaway.com/teaching-jobs-abroad/kuwait",
       "https://www.teachaway.com/teaching-jobs-abroad/vietnam",
+      "https://www.teachaway.com/schools/northlands-school",
+      "https://www.teachaway.com/teaching-jobs-abroad/argentina",
+      "https://www.teachaway.com/teaching-jobs-abroad/south-america",
       "https://www.teachaway.com/teaching-jobs-abroad/all-countries/certified-teacher/any-subject/any-level"
     ];
 

@@ -209,7 +209,7 @@ async function loadSchoolData(schoolId: string): Promise<any | null> {
     const { getAdminDb } = await import('@/firebase/admin');
     const db = getAdminDb();
     if (typeof db.collection === 'function') {
-      const snap = await db.collection('schools').doc(schoolId).get();
+      const snap = await db.collection('schools').doc((schoolId || '').toUpperCase()).get();
       return snap.exists ? snap.data() : null;
     }
   } catch (err) {

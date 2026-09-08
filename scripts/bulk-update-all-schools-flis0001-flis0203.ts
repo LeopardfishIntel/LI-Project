@@ -704,7 +704,7 @@ const rawSchools = [
   },
   {
     "id": "FLIS0077",
-    "schoolname": "American Vienna",
+    "schoolname": "American International School Vienna",
     "country": "Austria",
     "city": "Vienna",
     "schooljp": "https://www.ais.at/employment",
@@ -1891,7 +1891,7 @@ const rawSchools = [
     "schoolname": "Northlands School Argentina",
     "country": "Argentina",
     "city": "B. Aires",
-    "schooljp": "https://www.northlands.edu.ar/work-with-us/",
+    "schooljp": "https://www.northlands.edu.ar/en/job-opportunities/",
     "agency": "Search Associates, LinkedIn"
   },
   {

@@ -81,7 +81,7 @@ function buildCacheDocument(
 
   return {
     id: fingerprint,
-    title: record.rawTitle,
+    title: translateJobTitleToEnglish(record.rawTitle),
     source: srcName,
     sources: [srcName],
     sourceUrls: srcUrls,
@@ -89,7 +89,7 @@ function buildCacheDocument(
     datePosted: record.datePosted ? String(record.datePosted) : null,
     closingDate: closingDateISO,
     closingDateMillis,
-    schoolId: record.schoolId,
+    schoolId: record.schoolId ? record.schoolId.toUpperCase() : '',
     schoolName: record.schoolName || fallbackSchoolName,
     city: record.city || "",
     country: record.country || "",

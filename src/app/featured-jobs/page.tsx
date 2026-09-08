@@ -91,6 +91,7 @@ const formatDateCustom = (dateInput: any): string => {
 
 const getGroupPortalUrl = (groupName: string): string => {
   const gUpper = String(groupName || "").toUpperCase();
+  if (gUpper.includes("SEARCH ASSOCIATES") || gUpper.includes("SEARCHASSOCIATES")) return "https://www.searchassociates.com/leadership-vacancies/";
   if (gUpper.includes("INSPIRED")) return "https://jobs.inspirededu.com";
   if (gUpper.includes("COGNITA")) return "https://cognitapeople.csod.com";
   if (gUpper.includes("NORD ANGLIA")) return "https://careers.nordangliaeducation.com";
@@ -359,7 +360,12 @@ export default function FeaturedJobsPage() {
   const schoolsMap = useMemo(() => {
     if (!schoolsData) return {};
     return schoolsData.reduce((acc: any, school: any) => {
-      acc[school.id] = school;
+      const sId = school.id || school._id;
+      if (sId) {
+        acc[sId] = school;
+        acc[sId.toUpperCase()] = school;
+        acc[sId.toLowerCase()] = school;
+      }
       return acc;
     }, {});
   }, [schoolsData]);
@@ -821,6 +827,7 @@ export default function FeaturedJobsPage() {
     let uwc = 0;
     let isp = 0;
     let globe = 0;
+    let searchAssociates = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
@@ -835,8 +842,9 @@ export default function FeaturedJobsPage() {
       if (jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC")) uwc++;
       if (jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP")) isp++;
       if (jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE")) globe++;
+      if (jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES")) searchAssociates++;
     });
-    return { ALL: allJobs.length, COGNITA: cognita, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway, MALVERN: malvern, UWC: uwc, ISP: isp, GLOBEDUCATE: globe };
+    return { ALL: allJobs.length, "SEARCH ASSOCIATES": searchAssociates, COGNITA: cognita, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway, MALVERN: malvern, UWC: uwc, ISP: isp, GLOBEDUCATE: globe };
   }, [allJobs]);
 
 
@@ -909,6 +917,8 @@ export default function FeaturedJobsPage() {
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP");
         const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE");
+        const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES");
+        if (selectedSourceEngine === "SEARCH ASSOCIATES" && !hasSA) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
         if (selectedSourceEngine === "TES" && !hasTes) return false;
         if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
@@ -1239,6 +1249,7 @@ export default function FeaturedJobsPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   {[
                     { id: "ALL", label: `All (${engineCounts.ALL})` },
+                    { id: "SEARCH ASSOCIATES", label: `Search Associates (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                     { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
                     { id: "TES", label: `TES (${engineCounts.TES})` },
                     { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
@@ -1261,6 +1272,7 @@ export default function FeaturedJobsPage() {
                           : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800/60"
                       )}
                     >
+                      {engine.id === "SEARCH ASSOCIATES" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
                       {engine.id === "COGNITA" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
                       {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
@@ -1524,7 +1536,7 @@ export default function FeaturedJobsPage() {
                                       job.sources.forEach((s: any) => {
                                         if (!s) return;
                                         const u = String(s).toUpperCase().trim();
-                                        const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
+                                        const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) ? "Search Associates" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
                                         if (!sMap.has(u)) sMap.set(u, label);
                                       });
                                       return Array.from(sMap.values());
@@ -1624,12 +1636,6 @@ export default function FeaturedJobsPage() {
                           );
                         })()}
 
-                        {/* Volatile Market Guardrails visual badge */}
-                        {(job.country === "Argentina") && !job.paidInUSD && (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-xs font-bold text-amber-500 shrink-0">
-                            ⚠️ Volatile Market (0.25x Surplus Applied)
-                          </span>
-                        )}
                       </div>
 
                       {/* Right Column: CTA or Admin Controls */}

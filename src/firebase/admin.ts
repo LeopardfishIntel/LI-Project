@@ -1295,7 +1295,7 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
       const d = doc.data();
       existingDocsMap.set(doc.id, d);
       const fp = d.jobFingerprint || generateJobFingerprint(schoolId, d.title, d.subject);
-      if (d.status === 'approved') {
+      if (d.status !== 'rejected') {
         fingerprintToDocMap.set(fp, { id: doc.id, data: d });
       }
     });

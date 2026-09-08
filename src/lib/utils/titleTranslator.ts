@@ -28,6 +28,8 @@ export function translateJobTitleToEnglish(title: string): string {
     [/^Professeur\s*\/\s*Professeure\s+de\s+Fran[cç]ais\s+Langue\s+Etrang[eè]re\s*\(FLE\)$/i, "French as a Foreign Language (FLE) Teacher"],
     [/^Professeur\s*\/\s*Professeure\s+de\s+Fran[cç]ais\s+Langue\s+[EÉ]trang[eè]re/i, "French as a Foreign Language (FLE) Teacher"],
     [/^Surveillant\(e\)\s+Pause\s+m[eé]ridienne$/i, "Lunchtime Supervisor"],
+    [/^Surveillant\(e\)$/i, "Student Supervisor"],
+    [/^Surveillant$/i, "Student Supervisor"],
     [/^Agent\(e\)\s+de\s+maintenance\s+polyvalent\(e\)$/i, "Maintenance Technician"],
     [/^Responsable\s+Safeguarding$/i, "Head of Safeguarding"],
     [/^Enseignant\s+rempla[cç]ant\s+Pr[eé]scolaire\s*-\s*Primaire\s+Francophone$/i, "Pre-School & Primary Supply Teacher (French)"],
@@ -36,8 +38,12 @@ export function translateJobTitleToEnglish(title: string): string {
     [/^Professeur\(e\)\s+d[\x27’][EÉ]ducation\s+Physique$/i, "PE Teacher"],
     [/^Professeur\(e\)\s+d[\x27’]Arts\s+Plastiques$/i, "Art Teacher"],
     [/^Professeur\(e\)\s+de\s+Musique$/i, "Music Teacher"],
+    [/^Professeur\(e\)$/i, "Teacher"],
+    [/^Professeur$/i, "Teacher"],
     [/^Enseignant\(e\)\s+Primary$/i, "Primary Teacher"],
     [/^Enseignant\(e\)\s+Maternelle$/i, "Early Years Teacher"],
+    [/^Enseignant\(e\)$/i, "Teacher"],
+    [/^Enseignant$/i, "Teacher"],
     [/^Educateur\(trice\)/i, "Educator"],
     [/^Directeur\(trice\)/i, "Headteacher / Director"],
 
@@ -52,14 +58,25 @@ export function translateJobTitleToEnglish(title: string): string {
     [/^Profesor\/a\s+de\s+Educaci[oó]n\s+F[ií]sica$/i, "PE Teacher"],
     [/^Profesor\/a\s+de\s+Arte$/i, "Art Teacher"],
     [/^Profesor\/a\s+de\s+Espa[nñ]ol$/i, "Spanish Teacher"],
+    [/^Profesor\/a\s+de\s+Educaci[oó]n\s+Primaria$/i, "Primary Teacher"],
+    [/^Profesor\/a\s+de\s+Educaci[oó]n\s+Infantil$/i, "Early Years Teacher"],
+    [/^Profesor\/a\s+de\s+Secundaria$/i, "Secondary Teacher"],
+    [/^Profesor\/a$/i, "Teacher"],
+    [/^Profesor$/i, "Teacher"],
     [/^Jefe\/a\s+de\s+Administraci[oó]n$/i, "Head of Administration"],
     [/^Auxiliar\s+de\s+reprograf[ií]a\s+y\s+uniformes$/i, "Reprographics & Uniform Assistant"],
     [/^Docente\s+de\s+Baile$/i, "Dance Teacher"],
     [/^Monitor\s+apoyo\s+extraescolar\s+Judo$/i, "After-School Judo Instructor"],
 
-    // --- ITALIAN & PORTUGUESE & GERMAN ---
+    // --- GERMAN ---
+    [/^Lehrer\(in\)$/i, "Teacher"],
+    [/^Grundschullehrer\(in\)$/i, "Primary Teacher"],
+    [/^Gymnasiallehrer\(in\)$/i, "Secondary Teacher"],
+
+    // --- ITALIAN & PORTUGUESE ---
     [/^Docente\s+di\s+Sostegno$/i, "Learning Support Teacher"],
     [/^Insegnante\s+di\s+Inglese$/i, "English Teacher"],
+    [/^Insegnante$/i, "Teacher"],
     [/^Professor\s+de\s+Portugu[eê]s$/i, "Portuguese Teacher"],
     [/^Docente\s+de\s+Dan[cç]a$/i, "Dance Teacher"],
     [/^Jovem\s+Aprendiz$/i, "Apprentice"]
@@ -74,11 +91,14 @@ export function translateJobTitleToEnglish(title: string): string {
   // 3. General pattern match replacements
   let translated = clean;
 
-  translated = translated.replace(/^Professeur\(e\)\s+d[\x27’]/i, "Teacher of ")
-                         .replace(/^Professeur\(e\)\s+de\s+/i, "Teacher of ")
-                         .replace(/^Profesor\/a\s+de\s+/i, "Teacher of ")
+  translated = translated.replace(/^Professeur\(e\)?\s+d[\x27’]/i, "Teacher of ")
+                         .replace(/^Professeur\(e\)?\s+de\s+/i, "Teacher of ")
+                         .replace(/^Enseignant\(e\)?\s+de\s+/i, "Teacher of ")
+                         .replace(/^Profesor\/a?\s+de\s+/i, "Teacher of ")
                          .replace(/^Profesor\s+de\s+/i, "Teacher of ")
-                         .replace(/^Profesor\s+/i, "Teacher ");
+                         .replace(/^Profesor\s+/i, "Teacher ")
+                         .replace(/^Docente\s+di\s+/i, "Teacher of ")
+                         .replace(/^Surveillant\(e\)?\b/i, "Student Supervisor");
 
   return translated.trim();
 }
