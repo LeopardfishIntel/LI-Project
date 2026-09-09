@@ -1797,12 +1797,19 @@ const historicMonths = useMemo(() => {
                               else if (selectedOpportunity.sourceUrls[src.toLowerCase()]) foundUrl = selectedOpportunity.sourceUrls[src.toLowerCase()];
                               else {
                                 for (const [k, v] of Object.entries(selectedOpportunity.sourceUrls)) {
-                                  if (k.toUpperCase().trim() === srcUpper && v) {
+                                  if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
                                     foundUrl = v as string;
                                     break;
                                   }
                                 }
                               }
+                            }
+
+                            // Discard cross-matched URLs (e.g. don't use TES URL for Nord Anglia pill)
+                            if (foundUrl) {
+                              const fUrl = String(foundUrl);
+                              if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                              if (srcUpper.includes("NORD ANGLIA") && fUrl.includes("tes.com")) foundUrl = undefined;
                             }
 
                             // 2. Check matched job in activeVacancies
@@ -1820,30 +1827,47 @@ const historicMonths = useMemo(() => {
                                     }
                                   }
                                 }
-                                if (!foundUrl && matchedJob.applyUrl) foundUrl = matchedJob.applyUrl;
+                                if (!foundUrl && matchedJob.applyUrl) {
+                                  if (srcUpper === "TES" && matchedJob.applyUrl.includes("tes.com")) foundUrl = matchedJob.applyUrl;
+                                  if (srcUpper.includes("NORD ANGLIA") && matchedJob.applyUrl.includes("nordanglia")) foundUrl = matchedJob.applyUrl;
+                                }
                               }
                             }
 
-                            // 3. Fallback agency/hub URLs on activeSchool
+                            // 3. Fallback agency/hub/group URLs on activeSchool
                             if (!foundUrl) {
-                              if (srcUpper.includes("TEACH AWAY") || srcUpper.includes("TEACHAWAY")) {
+                              if (srcUpper.includes("NORD ANGLIA")) {
+                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || "https://careers.nordangliaeducation.com";
+                              } else if (srcUpper.includes("TEACH AWAY") || srcUpper.includes("TEACHAWAY")) {
                                 if (activeSchool?.teachAwayUrl) foundUrl = activeSchool.teachAwayUrl;
                               } else if (srcUpper.includes("TEACHER HORIZONS") || srcUpper.includes("TEACHERHORIZONS")) {
                                 if (activeSchool?.teacherHorizonsUrl) foundUrl = activeSchool.teacherHorizonsUrl;
+                              } else if (srcUpper.includes("SEARCH ASSOCIATES") || srcUpper.includes("SEARCH_ASSOCIATES")) {
+                                if (activeSchool?.searchAssociatesUrl) foundUrl = activeSchool.searchAssociatesUrl;
+                              } else if (srcUpper.includes("COGNITA")) {
+                                foundUrl = activeSchool?.careersPageUrl || "https://www.cognita.com/careers/";
+                              } else if (srcUpper.includes("INSPIRED")) {
+                                foundUrl = activeSchool?.careersPageUrl || "https://inspirededu.com/careers";
                               } else if (srcUpper.includes("OFFICIAL") || srcUpper.includes("SCHOOL") || srcUpper.includes("NORTHLANDS")) {
                                 if (activeSchool?.careersPageUrl) foundUrl = activeSchool.careersPageUrl;
                                 else if (activeSchool?.website) foundUrl = activeSchool.website;
                                 else if (activeSchool?.schooljp) foundUrl = activeSchool.schooljp;
+                              } else if (srcUpper === "TES") {
+                                if (selectedOpportunity.applyUrl && selectedOpportunity.applyUrl.includes("tes.com")) {
+                                  foundUrl = selectedOpportunity.applyUrl;
+                                } else if (activeSchool?.tesEmployerSlug) {
+                                  foundUrl = `https://www.tes.com/jobs/employer/${activeSchool.tesEmployerSlug}`;
+                                }
                               }
                             }
 
-                            // 4. Default applyUrl or school careers URL
-                            if (!foundUrl || foundUrl.includes("northlands-school-argentina.com") || foundUrl === "#") {
-                              foundUrl = selectedOpportunity.applyUrl || activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || "#";
-                            }
-
-                            if (foundUrl && foundUrl.includes("northlands-school-argentina.com")) {
-                              foundUrl = "https://www.northlands.edu.ar/en/job-opportunities/";
+                            // 4. Final default
+                            if (!foundUrl || foundUrl === "#" || (srcUpper.includes("NORD ANGLIA") && foundUrl.includes("tes.com"))) {
+                              if (srcUpper.includes("NORD ANGLIA")) {
+                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || "https://careers.nordangliaeducation.com";
+                              } else {
+                                foundUrl = selectedOpportunity.applyUrl || activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || "#";
+                              }
                             }
 
                             return foundUrl || "#";
