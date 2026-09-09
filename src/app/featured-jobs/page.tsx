@@ -1633,7 +1633,6 @@ export default function FeaturedJobsPage() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                   }}
-                                  title={`Evaluate ${badge.label} Opportunity`}
                                   aria-label={`Evaluate ${badge.label}`}
                                   className={cn(
                                     "inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105",
