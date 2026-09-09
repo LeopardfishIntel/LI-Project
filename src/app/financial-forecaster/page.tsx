@@ -56,7 +56,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
     return {
       label: "Culture & Travel",
       boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]",
-      description: "European & cultural immersion package allowing £600 – £1,199 net monthly savings with strong focus on lifestyle and travel."
+      description: "Cultural immersion package allowing £600 – £1,199 net monthly savings with strong focus on lifestyle and travel."
     };
   }
   return {
