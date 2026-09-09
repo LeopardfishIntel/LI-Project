@@ -3,36 +3,42 @@
 export interface SavingsBadgeConfig {
   label: string;
   boxStyle: string;
+  description: string;
 }
 
 export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfig {
   if (monthlySurplus >= 2800) {
     return {
       label: "Premium Package",
-      boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
+      boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]",
+      description: "High-yield international package allowing £2,800+ ($3,550+) net monthly savings after all housing, utility, food, and lifestyle outgoings."
     };
   }
   if (monthlySurplus >= 1900) {
     return {
       label: "Strong Financial Growth",
-      boxStyle: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]"
+      boxStyle: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]",
+      description: "Strong wealth-building package allowing £1,900 – £2,799 net monthly savings after all core living expenses."
     };
   }
   if (monthlySurplus >= 1200) {
     return {
       label: "Comfortable Expat Living",
-      boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+      boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]",
+      description: "Comfortable expat package allowing £1,200 – £1,899 net monthly savings with high lifestyle quality and regular travel."
     };
   }
   if (monthlySurplus >= 600) {
     return {
       label: "Culture & Travel",
-      boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]"
+      boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]",
+      description: "Cultural immersion package allowing £600 – £1,199 net monthly savings with strong focus on lifestyle and travel."
     };
   }
   return {
     label: "Destination-Led Package",
-    boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]"
+    boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]",
+    description: "Location-driven package focusing on destination experience and cultural immersion, with under £600 net monthly savings."
   };
 }
 
@@ -53,6 +59,7 @@ export const dynamic = "force-dynamic";
  * multiplier, applied to the pre-computed `savingsPotentialSingle` baseline.
  */
 import { parseClosingDate } from '@/lib/crawler/dateParser';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { useState, useEffect, useMemo } from 'react';
 import { 
@@ -1619,20 +1626,28 @@ export default function FeaturedJobsPage() {
                           const evalUrl = buildEvalUrl(job, familyStatus);
 
                           return (
-                            <a 
-                              href={evalUrl}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                              title={`Evaluate ${badge.label} Opportunity`}
-                              aria-label={`Evaluate ${badge.label}`}
-                              className={cn(
-                                "inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105",
-                                badge.boxStyle
-                              )}
-                            >
-                              {badge.label}
-                            </a>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a 
+                                  href={evalUrl}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                  title={`Evaluate ${badge.label} Opportunity`}
+                                  aria-label={`Evaluate ${badge.label}`}
+                                  className={cn(
+                                    "inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105",
+                                    badge.boxStyle
+                                  )}
+                                >
+                                  {badge.label}
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-2.5 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
+                                <p className="text-slate-300">{badge.description}</p>
+                              </TooltipContent>
+                            </Tooltip>
                           );
                         })()}
 
