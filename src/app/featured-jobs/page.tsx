@@ -11,7 +11,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
     return {
       label: "Premium Package",
       boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]",
-      description: "High-yield international package allowing £2,800+ ($3,550+) net monthly savings after all housing, utility, food, and lifestyle outgoings."
+      description: "High-surplus international package allowing £2,800+ ($3,550+) net monthly savings after all housing, utility, food, and lifestyle outgoings."
     };
   }
   if (monthlySurplus >= 1900) {
@@ -25,7 +25,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
     return {
       label: "Comfortable Expat Living",
       boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]",
-      description: "Comfortable expat package allowing £1,200 – £1,899 net monthly savings with high lifestyle quality and regular travel."
+      description: "Comfortable expat package allowing £1,200 – £1,899 net monthly savings with good lifestyle quality and regular travel."
     };
   }
   if (monthlySurplus >= 600) {
