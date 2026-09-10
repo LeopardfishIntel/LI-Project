@@ -2432,7 +2432,7 @@ const historicMonths = useMemo(() => {
                         </div>
                       </div>
 
-                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#d95f02]/20 mt-5">
+                      <div className="flex justify-between items-center pt-3 border-t-2 border-[#d95f02]/20 mt-[48px]">
                         <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total outgoings</span>
                         <span className="text-[18px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
@@ -2921,7 +2921,7 @@ const historicMonths = useMemo(() => {
 
                                     {/* 📝 DATA NOTE DISCLAIMER PARAGRAPH */}
                                     <p className="text-[11.5px] sm:text-xs text-slate-300 font-medium italic leading-relaxed pt-2 border-t border-white/10">
-                                      * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalize automatically across full 12-month recruitment cycles. Newly added schools will take a while to normalise.
+                                      * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles. Newly added schools will take a while to normalise.
                                     </p>
                                   </div>
 
