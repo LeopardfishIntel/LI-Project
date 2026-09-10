@@ -2920,7 +2920,7 @@ const historicMonths = useMemo(() => {
                                     </div>
 
                                     {/* 📝 DATA NOTE DISCLAIMER PARAGRAPH */}
-                                    <p className="text-[10px] text-slate-400/80 italic leading-relaxed pt-2 border-t border-white/5">
+                                    <p className="text-[11.5px] sm:text-xs text-slate-300 font-medium italic leading-relaxed pt-2 border-t border-white/10">
                                       * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalize automatically across full 12-month recruitment cycles. Newly added schools will take a while to normalise.
                                     </p>
                                   </div>
