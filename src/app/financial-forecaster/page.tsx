@@ -1663,7 +1663,7 @@ const historicMonths = useMemo(() => {
               disabled={!activeSchool}
               className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-none h-10 transition-all hover:bg-[#d95f02] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
             >
-              Compare Options
+              Compare Schools
             </button>
           </div>
         </div>
@@ -1758,7 +1758,7 @@ const historicMonths = useMemo(() => {
                       <BarChart3 className="size-4 text-slate-400" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-semibold text-white">Compare Options</h4>
+                      <h4 className="text-[14px] font-semibold text-white">Compare Schools</h4>
                       <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Click to view your projected savings and lifestyle match.</p>
                     </div>
                   </div>
