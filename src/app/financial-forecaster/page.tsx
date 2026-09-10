@@ -506,6 +506,16 @@ function DecoderContent() {
   );
   const { data: schoolJobsData } = useCollection<any>(schoolJobsQuery);
 
+  // 🛸 ALSO fetch admin-added historic jobs from schools/{id}/jobs subcollection
+  // These are manually added by admins to build a fuller turnover picture.
+  const adminJobsQuery = useMemoFirebase(
+    () => (mounted && firestore && activeSchool?.id
+      ? collection(firestore, 'schools', activeSchool.id, 'jobs')
+      : null),
+    [firestore, mounted, activeSchool?.id]
+  );
+  const { data: adminJobsData } = useCollection<any>(adminJobsQuery);
+
   // 🎯 JANITOR ENGINE FILTER FOR NON-JOB TITLES & DUPLICATES
   const isInvalidNonJobTitle = useCallback((title: string): boolean => {
     if (!title || typeof title !== 'string') return true;
@@ -608,18 +618,22 @@ function DecoderContent() {
   }, []);
 
   const allProcessedJobs = useMemo(() => {
-    if (!schoolJobsData) return [];
+    if (!schoolJobsData && !adminJobsData) return [];
     const today = new Date();
     const twentyFourMonthsAgo = new Date(today.getTime() - 2 * 365 * 24 * 60 * 60 * 1000);
 
-    const rawList = schoolJobsData.map((job: any) => {
+    // 🛸 NORMALISE JOB RECORD from either featured_jobs_cache or schools/{id}/jobs subcollection
+    const normaliseJob = (job: any) => {
       // ── Closing date ──────────────────────────────────────────────────────────
       // featured_jobs_cache: closingDateMillis (number) or closingDate (string/Timestamp)
+      // subcollection: closingDate (Timestamp) — admin-added historic jobs
       let closes: Date;
       if (job.closingDateMillis) {
         closes = new Date(job.closingDateMillis);
       } else if (job.closingDate?.seconds) {
         closes = new Date(job.closingDate.seconds * 1000);
+      } else if (job.closingDate?._seconds) {
+        closes = new Date(job.closingDate._seconds * 1000);
       } else if (job.closingDate) {
         closes = new Date(job.closingDate);
       } else {
@@ -627,21 +641,30 @@ function DecoderContent() {
       }
 
       // ── Posted/ingested date ──────────────────────────────────────────────────
-      // featured_jobs_cache: ingestedAtMillis; subcollection legacy: scrapedAt
+      // Prioritise explicitly stated post/posted dates over raw ingestion timestamps
       let scraped: Date;
-      if (job.ingestedAtMillis) {
+      const explicitPosted = job.postedDate || job.postDate || job.datePosted;
+      if (explicitPosted && typeof explicitPosted === 'string' && !isNaN(Date.parse(explicitPosted))) {
+        scraped = new Date(explicitPosted);
+      } else if (explicitPosted && typeof explicitPosted === 'number') {
+        scraped = new Date(explicitPosted);
+      } else if (job.ingestedAtMillis) {
         scraped = new Date(job.ingestedAtMillis);
+      } else if (job.firstDiscoveredAt?.seconds) {
+        scraped = new Date(job.firstDiscoveredAt.seconds * 1000);
+      } else if (job.firstDiscoveredAt?._seconds) {
+        scraped = new Date(job.firstDiscoveredAt._seconds * 1000);
       } else if (job.scrapedAt?.seconds) {
         scraped = new Date(job.scrapedAt.seconds * 1000);
+      } else if (job.scrapedAt?._seconds) {
+        scraped = new Date(job.scrapedAt._seconds * 1000);
       } else if (job.scrapedAt) {
         scraped = new Date(job.scrapedAt);
-      } else if (job.datePosted) {
-        scraped = new Date(job.datePosted);
       } else {
         scraped = today;
       }
 
-      const isRolling = job.isRollingDeadline === true;
+      const isRolling = job.isRollingDeadline === true || job.isRolling === true;
       // rejected = never a real vacancy, skip entirely at filter stage
       const cacheStatus = job.status || 'approved';
       const isExpired = !isRolling && (closes < today || cacheStatus === 'expired');
@@ -659,7 +682,7 @@ function DecoderContent() {
       }
 
       return {
-        id: job.id,
+        id: job.id || job.jobFingerprint,
         title: job.title,
         source: job.source || job.sourceName || "Web",
         sources: job.sources,
@@ -668,6 +691,7 @@ function DecoderContent() {
         closesDate: isRolling ? 'Rolling' : closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
         cacheStatus,
         status: isExpired ? 'closed' : 'open',
+        isRolling,
         department,
         recruitmentCycle,
         rawPostedDate: scraped,
@@ -680,7 +704,15 @@ function DecoderContent() {
         city: job.city || "",
         country: job.country || ""
       };
-    }).filter(job => job.cacheStatus !== 'rejected')   // skip jobs that were never validated
+    };
+
+    // 🔀 MERGE: featured_jobs_cache + admin-added subcollection jobs
+    const cacheJobs = (schoolJobsData || []).map(normaliseJob);
+    const adminJobs = (adminJobsData || []).map(normaliseJob);
+    const mergedList = [...cacheJobs, ...adminJobs];
+
+    const rawList = mergedList
+      .filter(job => job.cacheStatus !== 'rejected')   // skip jobs that were never validated
       .filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
       .filter(job => !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city));
 
@@ -707,7 +739,11 @@ function DecoderContent() {
         result.push(job);
       } else {
         const existing = result[matchIndex];
-        if (job.status === 'open' && existing.status !== 'open') {
+        if (existing.isRolling && !job.isRolling) {
+          result[matchIndex] = job;
+        } else if (!existing.isRolling && job.isRolling) {
+          // Keep explicit non-rolling closed record
+        } else if (job.status === 'open' && existing.status !== 'open') {
           result[matchIndex] = job;
         } else if (job.status === existing.status) {
           if (job.rawClosesDate && existing.rawClosesDate && job.rawClosesDate > existing.rawClosesDate) {
@@ -722,7 +758,7 @@ function DecoderContent() {
       if (a.status !== 'open' && b.status === 'open') return 1;
       return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
     });
-  }, [schoolJobsData, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
+  }, [schoolJobsData, adminJobsData, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
 
   // 📅 Compute earliest posted date among processed jobs
 const earliestPosted = useMemo(() => {
@@ -2454,14 +2490,64 @@ const historicMonths = useMemo(() => {
                           </div>
 
                           <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs font-bold text-slate-400 uppercase">Benchmark:</span>
+                            <span className="text-xs font-bold text-slate-400 uppercase">Conversion:</span>
                             <span className={cn("text-xl font-black italic transition-all duration-300", (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
                               {benchmark} {Math.round(analysis?.surplusBenchmark || 0).toLocaleString()}
                             </span>
-                            <span className={cn("text-xl font-black italic transition-all duration-300 tabular-nums", (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
-                              ({analysis?.rateOfSaving}%)
-                            </span>
                           </div>
+
+                          {/* 📊 OUTFLOWS vs SURPLUS RATIO BAR */}
+                          {analysis && (analysis.totalIn ?? 0) > 0 && (() => {
+                            const totalIn = analysis.totalIn ?? 0;
+                            const surplus = analysis.surplus ?? 0;
+                            const outflows = analysis.totalOut ?? 0;
+                            const outflowPct = totalIn > 0 ? Math.round((outflows / totalIn) * 100) : 0;
+                            const surplusPct = Math.max(0, 100 - outflowPct);
+                            const isNegative = surplus <= 0;
+
+                            return (
+                              <div className="mt-6 w-full">
+                                {/* The stacked bar */}
+                                <div className="w-full h-7 rounded-lg overflow-hidden flex bg-black/40 border border-white/[0.06] shadow-[inset_0_1px_4px_rgba(0,0,0,0.4)]">
+                                  {/* Outflows segment */}
+                                  <div
+                                    className={cn(
+                                      "h-full transition-all duration-700 ease-out relative flex items-center justify-center",
+                                      isNegative
+                                        ? "bg-gradient-to-r from-rose-900/80 to-rose-800/70"
+                                        : "bg-gradient-to-r from-slate-700/70 to-slate-600/60",
+                                      !isNegative && "border-r-2 border-slate-900/80"
+                                    )}
+                                    style={{ width: `${Math.min(outflowPct, 100)}%` }}
+                                  >
+                                    {outflowPct >= 15 && (
+                                      <span className="text-[10px] font-black text-white/80 tabular-nums tracking-wide">{outflowPct}%</span>
+                                    )}
+                                  </div>
+                                  {/* Surplus segment */}
+                                  {!isNegative && (
+                                    <div
+                                      className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-700 ease-out shadow-[0_0_12px_rgba(52,211,153,0.35)] relative flex items-center justify-center"
+                                      style={{ width: `${surplusPct}%` }}
+                                    >
+                                      {surplusPct >= 10 && (
+                                        <span className="text-[10px] font-black text-emerald-950 tabular-nums tracking-wide">{surplusPct}%</span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                                {/* Sub-legend */}
+                                <div className="flex justify-between mt-2">
+                                  <span className={cn("text-[10px] tabular-nums", isNegative ? "text-rose-400/70" : "text-slate-400/70")}>
+                                    Outflows: <strong className={cn("font-extrabold", isNegative ? "text-rose-400" : "text-slate-300")}>{currency} {Math.round(outflows).toLocaleString()}</strong> ({outflowPct}%)
+                                  </span>
+                                  <span className={cn("text-[10px] tabular-nums", isNegative ? "text-rose-400/70" : "text-emerald-400/70")}>
+                                    Net Surplus: <strong className={cn("font-extrabold", isNegative ? "text-rose-400" : "text-emerald-400")}>{currency} {Math.round(surplus).toLocaleString()}</strong> ({surplusPct}%)
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })()}
 
                           {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
                           {analysis?.countryIntel && (
@@ -2660,195 +2746,7 @@ const historicMonths = useMemo(() => {
                         lastUpdated: z.string()
                       });
                     */}
-                    {/* SECTION: ELIGIBILITY & EXPECTED SURPLUS SIDE-BY-SIDE */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 border-b border-white/5 pb-6">
-                      {/* LEFT: Eligibility & Visas */}
-                      <div className="space-y-4 relative overflow-hidden">
-                        <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Eligibility & Visas</p>
-                        
-                        <div className="space-y-4">
-                          <div className="flex gap-4">
-                            <ShieldCheck className="size-5 text-rose-500 mt-1 shrink-0" />
-                            <div className="flex-1">
-                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest mb-1">Visa & Deployment Intel</p>
-                              <div className="text-xs font-bold text-slate-300 space-y-2">
-                                <p>{activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.'}</p>
-                                <div className="pt-2 border-t border-white/5 text-xs text-muted-foreground font-medium flex flex-col gap-1.5">
-                                  {(activeReq?.max_age_f || activeReq?.max_age_m) && (
-                                    <span>• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
-                                  )}
-                                  {activeReq?.max_age_notes && (
-                                    <span className="leading-tight">• {activeReq.max_age_notes}</span>
-                                  )}
-                                  {(activeReq?.min_age || activeReq?.min_age_notes) && (
-                                    <span>• Min Age: {activeReq.min_age_notes || activeReq.min_age || '21'}</span>
-                                  )}
-                                  {(activeSchool as any).dependent_visa_notes && (
-                                    <span>• Dependents: {(activeSchool as any).dependent_visa_notes}</span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
 
-                          <div className="flex gap-4">
-                            <Award className="size-5 text-yellow-500 mt-1 shrink-0" />
-                            <div className="flex-1">
-                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest mb-1">Candidate Qualifications</p>
-                              <div className="text-xs font-bold text-slate-300 space-y-2">
-                                <p>{activeSchool.intel?.minQualifications || activeReq?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.'}</p>
-                                <div className="pt-2 border-t border-white/5 text-xs text-muted-foreground font-medium flex flex-col gap-1.5">
-                                  {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
-                                    <span className="leading-tight">• Degree: {activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req}</span>
-                                  )}
-                                  {(activeReq?.license_req || (activeSchool as any).license_req) && (
-                                    <span className="leading-tight">• License: {activeReq?.license_req || (activeSchool as any).license_req}</span>
-                                  )}
-                                  {(activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience) && (
-                                    <span>• Exp Required: {activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience} Years</span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-                      {/* RIGHT: Expected Surplus */}
-                      <div className="space-y-6 relative overflow-hidden border-t border-white/5 pt-6 lg:border-t-0 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-8">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                          <TrendingUp className="size-16 text-[#d95f02]" />
-                        </div>
-
-                        <div className="flex flex-col gap-2 items-start">
-                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest italic">3. Expected Surplus</p>
-                          <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
-                            {["USD", "GBP", "EUR", "Local"].map(curr => (
-                              <button
-                                key={curr}
-                                onClick={() => setSurplusDisplayCurrency(curr as any)}
-                                className={cn(
-                                  "px-2 py-0.5 text-[9px] font-black rounded-sm transition-all uppercase",
-                                  surplusDisplayCurrency === curr
-                                    ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm"
-                                    : "text-slate-400 hover:text-teal-400"
-                                )}
-                              >
-                                {curr}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        {(() => {
-                          const surplus = analysis?.surplus ?? 0;
-                          const expenses = analysis?.totalOut ?? 0;
-                          const isLoss = surplus < 0;
-                          const costsColor = isLoss ? '#b91c1c' : '#1e293b';
-
-                          const displayCurrency = surplusDisplayCurrency === "Local" ? currency : surplusDisplayCurrency;
-                          const conversionRate = displayCurrency === currency
-                            ? 1.0
-                            : (1.0 / (currentRates[currency] || 1.0)) * (currentRates[displayCurrency] || 1.0);
-
-                          const displaySurplus = surplus * conversionRate;
-                          const displayExpenses = expenses * conversionRate;
-
-                          let statusLabel = 'Single Teacher';
-                          if (settings.familyStatus === "Couple" || settings.familyStatus === "Married (sole earner)" || settings.familyStatus === "Married (dual income)") {
-                            statusLabel = "Couple";
-                          } else if (settings.familyStatus === "Family +1") {
-                            statusLabel = "Family (1 Child)";
-                          } else if (settings.familyStatus === "Family +2") {
-                            statusLabel = "Family (2 Children)";
-                          } else if (settings.familyStatus === "Family +3") {
-                            statusLabel = "Family (3+ Children)";
-                          }
-
-                          return (
-                            <>
-                              <div className="flex items-center gap-2 text-[#d95f02]/70">
-                                <Users className="size-4 text-[#d95f02]" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">Status: {statusLabel}</span>
-                              </div>
-
-                              <div className="space-y-6">
-                                <div className="relative flex flex-col items-center">
-                                  <div className="h-44 w-full -mb-16">
-                                    {mounted ? (
-                                      <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                          <Pie
-                                            data={[
-                                              { name: 'Monthly Costs', value: Math.round(displayExpenses) },
-                                              { name: 'Surplus Potential', value: Math.max(0, Math.round(displaySurplus)) }
-                                            ]}
-                                            cx="50%"
-                                            cy="70%"
-                                            startAngle={180}
-                                            endAngle={0}
-                                            innerRadius={65}
-                                            outerRadius={85}
-                                            paddingAngle={2}
-                                            dataKey="value"
-                                            stroke="none"
-                                            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                                            labelLine={false}
-                                          >
-                                            <Cell fill={costsColor} />
-                                            <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                                          </Pie>
-                                          <RechartsTooltip
-                                            contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px', fontSize: '10px', color: '#fff' }}
-                                          />
-                                        </PieChart>
-                                      </ResponsiveContainer>
-                                    ) : (
-                                      <div className="h-full w-full flex items-center justify-center">
-                                        <span className="text-[10px] font-mono text-slate-500 tracking-widest animate-pulse">PREPARING CHART DATA...</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="text-center relative z-10 mt-6 space-y-0">
-                                    <p className={cn(
-                                      "text-[9px] font-black uppercase tracking-[0.2em] opacity-80",
-                                      isLoss ? "text-rose-500" : "text-[#d95f02]"
-                                    )}>{isLoss ? "Expected Deficit" : "Expected Surplus"}</p>
-                                    <p className="text-2xl font-black text-white tracking-tighter italic">
-                                      {displaySurplus < 0 ? '-' : ''}{displayCurrency} {Math.round(Math.abs(displaySurplus)).toLocaleString()}
-                                      <span className="text-xs text-muted-foreground ml-1 not-italic font-normal uppercase opacity-40">/mo</span>
-                                    </p>
-                                  </div>
-                                </div>
-
-                                {/* 🛡️ TACTICAL LEDGER */}
-                                <div className="grid grid-cols-2 gap-px bg-white/5 border border-white/5 rounded-sm overflow-hidden">
-                                  <div className="bg-[#020617]/40 p-4 space-y-1">
-                                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.15em]">Outflows</p>
-                                    <p className="text-lg font-black text-white tracking-tight italic">
-                                      {displayCurrency} {Math.round(displayExpenses).toLocaleString()}
-                                    </p>
-                                  </div>
-                                  <div className={cn(
-                                    "p-4 space-y-1 border-l border-white/5 text-right",
-                                    isLoss ? "bg-rose-500/5 text-[#f43f5e]" : "bg-[#10B981]/5 text-[#10B981]"
-                                  )}>
-                                    <p className={cn(
-                                      "text-[9px] font-black uppercase tracking-[0.15em]",
-                                      isLoss ? "text-[#f43f5e]" : "text-[#10B981]"
-                                    )}>{isLoss ? "Deficit" : "Surplus"}</p>
-                                    <p className="text-lg font-black tracking-tight italic">
-                                      {displaySurplus < 0 ? '-' : ''}{displayCurrency} {Math.round(Math.abs(displaySurplus)).toLocaleString()}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          );
-                        })()}
-                      </div>
-                    </div>
 
                     <div>
                         {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
@@ -2965,80 +2863,66 @@ const historicMonths = useMemo(() => {
                               return (
                                 <div className="space-y-4">
                                   {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
-                                  <div className="bg-black/40 border border-white/5 rounded-sm p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                    <div>
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="text-[10px] text-slate-400 font-medium">Category:</span>
-                                        {(() => {
-                                          const isUnavailable = (stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE") && processedJobs12.length === 0;
-                                          if (isUnavailable) {
-                                            return (
-                                              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-black uppercase tracking-wider">
-                                                <HelpCircle className="size-3 shrink-0" /> Insight Unavailable
-                                              </span>
-                                            );
-                                          }
-                                          
-                                          let badgeClass = "";
-                                          let label = "";
-                                          if (churnRate < 10) {
-                                            badgeClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                                            label = "Low Turnover (Stable)";
-                                          } else if (churnRate <= 15) {
-                                            badgeClass = "bg-green-500/10 text-green-400 border border-green-500/20";
-                                            label = "Moderate Turnover (Healthy)";
-                                          } else if (churnRate <= 22) {
-                                            badgeClass = "bg-amber-500/10 text-amber-400 border border-amber-500/20";
-                                            label = "Elevated Turnover (Caution)";
-                                          } else {
-                                            badgeClass = "bg-rose-500/10 text-rose-400 border border-rose-500/20";
-                                            label = "High Turnover (Significant Churn)";
-                                          }
-                                          
-                                          return (
-                                            <span className={cn("flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-black uppercase tracking-wider", badgeClass)}>
-                                              <Activity className="size-3 shrink-0" /> {label}
-                                            </span>
-                                          );
-                                        })()}
+                                  <div className="bg-black/40 border border-white/5 rounded-sm p-3.5 space-y-3">
+                                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 text-xs">
+                                      <div className="flex-1">
+                                        <div className="flex items-start gap-2 flex-wrap">
+                                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0 mt-0.5">Category:</span>
+                                          {(() => {
+                                            const isUnavailable = (stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE") && processedJobs12.length === 0;
+                                            if (isUnavailable) {
+                                              return (
+                                                <div className="text-[11px] text-slate-300 font-medium leading-relaxed">
+                                                  <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
+                                                  <strong className="text-white font-bold mr-1">Building the Ledger:</strong>
+                                                  <span className="text-slate-300">Vacancy tracking is currently limited for this campus. Historical retention patterns will surface as hiring season progresses.</span>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            let categoryTitle = "";
+                                            let categoryTitleColor = "";
+                                            let subtitle = "";
+                                            let descriptor = "";
 
-                                        {stabilityReport.isUpdating && (
-                                          <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-black uppercase tracking-wider animate-pulse ml-1">
-                                            <span className="relative flex h-1.5 w-1.5 shrink-0">
-                                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
-                                            </span>
-                                            🔄 Syncing fresh data...
-                                          </span>
-                                        )}
+                                            if (churnRate < 10) {
+                                              categoryTitle = "Low Turnover (<10%)";
+                                              categoryTitleColor = "text-emerald-400";
+                                              subtitle = "Settled Staffroom & High Renewal Rates";
+                                              descriptor = "Staff routinely extend past initial 2-year contracts. Signals supportive SLT, manageable timetable hours, strong retention perks, and low cover demands.";
+                                            } else if (churnRate <= 15) {
+                                              categoryTitle = "Moderate Turnover (10–15%)";
+                                              categoryTitleColor = "text-green-400";
+                                              subtitle = "Healthy Expat Cycle";
+                                              descriptor = "Standard replacement, as teachers complete 2- to 4-year stints, take international promotions, or repatriate home. This is normal staffroom momentum.";
+                                            } else if (churnRate <= 22) {
+                                              categoryTitle = "Elevated Turnover (15–22%)";
+                                              categoryTitleColor = "text-amber-400";
+                                              subtitle = "Staffroom Restlessness";
+                                              descriptor = "Often points to recent SLT shakeups, middle-management churn, or shifting contact hours and cover duties. Worth probing department stability during interviews.";
+                                            } else {
+                                              categoryTitle = "High Turnover (>22%)";
+                                              categoryTitleColor = "text-rose-400";
+                                              subtitle = "Revolving Door Territory";
+                                              descriptor = "High risk of unmanageable workload, unexpected curriculum shifts, or erratic leadership. Dig into staff morale, resignation timing, and contract completion rates before signing.";
+                                            }
+                                            
+                                            return (
+                                              <div className="text-[11px] text-slate-200 font-medium leading-relaxed">
+                                                <strong className={cn("font-black mr-1", categoryTitleColor)}>{categoryTitle}:</strong>
+                                                <strong className="font-bold text-white mr-1">{subtitle}:</strong>
+                                                <span className="text-slate-300">{descriptor}</span>
+                                              </div>
+                                            );
+                                          })()}
+                                        </div>
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-2 self-start sm:self-center">
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <button className="flex items-center gap-1.5 px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 rounded-sm font-black uppercase text-[9px] text-teal-400 transition-all hover:text-white">
-                                            <Info className="size-3" /> Implications & Impact
-                                          </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2.5 rounded-sm shadow-xl z-50">
-                                          <p className="text-[10px] font-black uppercase tracking-wider text-[#d95f02] border-b border-white/10 pb-1.5 leading-relaxed">Implications & Impact</p>
-                                          <ul className="space-y-1.5 text-[10px] leading-relaxed text-slate-300 font-medium">
-                                            <li>
-                                              <span className="font-black text-emerald-400">Low (&lt;10%):</span> Outstanding retention. Indicates a settled staffroom, stable SLT support, and high satisfaction.
-                                            </li>
-                                            <li>
-                                              <span className="font-black text-green-400">Moderate (10-15%):</span> Standard lifecycle. Natural international transition at the end of standard 2-year contracts.
-                                            </li>
-                                            <li>
-                                              <span className="font-black text-amber-400">Elevated (15-22%):</span> Active transition. Likely department shuffles, leadership restructure, or shifting timetables.
-                                            </li>
-                                            <li>
-                                              <span className="font-black text-rose-400">High (&gt;22%):</span> Significant churn. Points to heavy workloads, leadership churn, or structural instability.
-                                            </li>
-                                          </ul>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </div>
+
+                                    {/* 📝 DATA NOTE DISCLAIMER PARAGRAPH */}
+                                    <p className="text-[10px] text-slate-400/80 italic leading-relaxed pt-2 border-t border-white/5">
+                                      * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalize automatically across full 12-month recruitment cycles. Newly added schools will take a while to normalise.
+                                    </p>
                                   </div>
 
                                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -3411,6 +3295,53 @@ const historicMonths = useMemo(() => {
                             )}
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                              {/* Visa & Deployment Intel */}
+                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider flex items-center gap-1.5">
+                                  <ShieldCheck className="size-3.5 text-rose-500 shrink-0" />
+                                  <span>Visa & Deployment Intel</span>
+                                </p>
+                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
+                                  <p>{activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.'}</p>
+                                  <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
+                                    {(activeReq?.max_age_f || activeReq?.max_age_m) && (
+                                      <span>• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
+                                    )}
+                                    {activeReq?.max_age_notes && (
+                                      <span className="leading-tight">• {activeReq.max_age_notes}</span>
+                                    )}
+                                    {(activeReq?.min_age || activeReq?.min_age_notes) && (
+                                      <span>• Min Age: {activeReq.min_age_notes || activeReq.min_age || '21'}</span>
+                                    )}
+                                    {(activeSchool as any).dependent_visa_notes && (
+                                      <span>• Dependents: {(activeSchool as any).dependent_visa_notes}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Candidate Qualifications */}
+                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider flex items-center gap-1.5">
+                                  <Award className="size-3.5 text-yellow-500 shrink-0" />
+                                  <span>Candidate Qualifications</span>
+                                </p>
+                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
+                                  <p>{activeSchool.intel?.minQualifications || activeReq?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.'}</p>
+                                  <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
+                                    {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
+                                      <span className="leading-tight">• Degree: {activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req}</span>
+                                    )}
+                                    {(activeReq?.license_req || (activeSchool as any).license_req) && (
+                                      <span className="leading-tight">• License: {activeReq?.license_req || (activeSchool as any).license_req}</span>
+                                    )}
+                                    {(activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience) && (
+                                      <span>• Exp Required: {activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience} Years</span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
                               {activeSchool.taxExemptionStatus && (
                                 <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-sm p-3 space-y-1 md:col-span-2 shadow-sm">
                                   <p className="text-[10px] font-black uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
