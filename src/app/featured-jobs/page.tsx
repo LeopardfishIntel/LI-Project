@@ -60,10 +60,11 @@ export const dynamic = "force-dynamic";
  */
 import { parseClosingDate } from '@/lib/crawler/dateParser';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 import { useState, useEffect, useMemo } from 'react';
 import { 
-  Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
+  Info, Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
   Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, ShieldCheck, Building2, HeartHandshake
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
@@ -1598,7 +1599,7 @@ export default function FeaturedJobsPage() {
                                         ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
                                         : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
                                     )}
-                                    title={`Open direct vacancy post on ${src} (opens in new tab)`}
+                                    
                                   >
                                     {src} ↗
                                   </a>
@@ -1626,27 +1627,34 @@ export default function FeaturedJobsPage() {
                           const evalUrl = buildEvalUrl(job, familyStatus);
 
                           return (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <a 
-                                  href={evalUrl}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                  aria-label={`Evaluate ${badge.label}`}
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <button
+                                  type="button"
+                                  onClick={(e) => e.stopPropagation()}
+                                  aria-label={`${badge.label} Details`}
                                   className={cn(
-                                    "inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105",
+                                    "inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
                                     badge.boxStyle
                                   )}
                                 >
-                                  {badge.label}
-                                </a>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-2.5 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                  <span>{badge.label}</span>
+                                  <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
                                 <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                                <p className="text-slate-300">{badge.description}</p>
-                              </TooltipContent>
-                            </Tooltip>
+                                <p className="text-slate-300 text-xs leading-relaxed mb-3">{badge.description}</p>
+                                <a
+                                  href={evalUrl}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white font-black text-[10px] uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
+                                >
+                                  <span>Evaluate Opportunity</span>
+                                  <ArrowUpRight className="size-3.5" />
+                                </a>
+                              </PopoverContent>
+                            </Popover>
                           );
                         })()}
 

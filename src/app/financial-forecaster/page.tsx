@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
 import { canonicalCountry } from '@/lib/calculations';
 
@@ -1899,7 +1900,7 @@ const historicMonths = useMemo(() => {
                                   ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
                                   : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
                               )}
-                              title={"Open direct vacancy post on " + src + " (opens in new tab)"}
+                              
                             >
                               {src}
                               <ArrowUpRight className="size-3.5" />
@@ -1959,22 +1960,24 @@ const historicMonths = useMemo(() => {
                           : (selectedOpportunity.savingsPotential || 0);
                         const badge = getSavingsBadgeConfig(currentSurplusUSD);
                         return (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span 
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
                                 className={cn(
-                                  "cursor-help inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0",
+                                  "cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 group select-none hover:scale-105",
                                   badge.boxStyle
                                 )}
                               >
-                                {badge.label}
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-2.5 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                <span>{badge.label}</span>
+                                <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
                               <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                              <p className="text-slate-300">{badge.description}</p>
-                            </TooltipContent>
-                          </Tooltip>
+                              <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
+                            </PopoverContent>
+                          </Popover>
                         );
                       })()}
                       
@@ -2151,22 +2154,24 @@ const historicMonths = useMemo(() => {
                           const surplusUSD = (analysis?.surplus ?? 0) / (currentRates[currency] || 1.0);
                           const badge = getSavingsBadgeConfig(surplusUSD);
                           return (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span 
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <button
+                                  type="button"
                                   className={cn(
-                                    "cursor-help inline-flex items-center px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-sm transition-all duration-200 shrink-0",
+                                    "cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-sm transition-all duration-200 shrink-0 group select-none hover:scale-105",
                                     badge.boxStyle
                                   )}
                                 >
-                                  {badge.label}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-2.5 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                  <span>{badge.label}</span>
+                                  <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
                                 <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                                <p className="text-slate-300">{badge.description}</p>
-                              </TooltipContent>
-                            </Tooltip>
+                                <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
+                              </PopoverContent>
+                            </Popover>
                           );
                         })()}
                       </div>
