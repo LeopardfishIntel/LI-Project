@@ -1133,6 +1133,13 @@ export default function FeaturedJobsPage() {
     const name = engineDisplayNames[engineId] || engineId;
 
     if (count === 0) {
+      if (engineId === "NORD ANGLIA") {
+        return (
+          <span>
+            <strong className="text-amber-400 font-bold">Portal Offline:</strong> Nord Anglia Education's global careers portal is currently unavailable due to a technical service outage on their system.
+          </span>
+        );
+      }
       return (
         <span>
           LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{name}</strong> vacancies listed.
@@ -1572,37 +1579,66 @@ export default function FeaturedJobsPage() {
             {/* Empty State */}
             {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length === 0 && (
               <div className="bg-[#0b1224]/50 border border-white/5 p-12 text-center rounded-sm space-y-6">
-                <AlertCircle className="size-12 text-slate-600 mx-auto" />
-                <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies</h3>
-                  <p className="text-xs text-slate-400 max-w-md mx-auto">
-                    {selectedSourceEngine !== "ALL" ? (
-                      <>
-                        LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{
-                          {
-                            "DIRECT": "Direct School Portals",
-                            "SEARCH ASSOCIATES": "Search Associates",
-                            "COGNITA": "Cognita Schools",
-                            "TES": "TES (Times Educational Supplement)",
-                            "NORD ANGLIA": "Nord Anglia Education",
-                            "INSPIRED": "Inspired Education",
-                            "GLOBEDUCATE": "Globeducate",
-                            "ISP": "International Schools Partnership (ISP)",
-                            "TAYLORS": "Taylor's Education Group",
-                            "ESF": "English Schools Foundation Hong Kong",
-                            "GEMS": "GEMS Education",
-                            "GRC": "GRC (Global Recruitment Collaborative)",
-                            "TEACHAWAY": "Teach Away",
-                            "MALVERN": "Malvern College International",
-                            "UWC": "United World Colleges (UWC)",
-                          }[selectedSourceEngine] || selectedSourceEngine
-                        }</strong> vacancies listed matching your search criteria.
-                      </>
-                    ) : (
-                      "No active vacancies currently match your search filters."
-                    )}
-                  </p>
-                </div>
+                {selectedSourceEngine === "NORD ANGLIA" ? (
+                  <div className="max-w-xl mx-auto space-y-4 text-center">
+                    <div className="size-14 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                      <AlertCircle className="size-7 animate-pulse" />
+                    </div>
+                    <div className="space-y-2">
+                      <span className="bg-amber-500/15 text-amber-400 border border-amber-500/30 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full inline-block">
+                        External System Outage Detected
+                      </span>
+                      <h3 className="text-xl font-bold text-white tracking-tight">
+                        Nord Anglia Careers Portal Offline
+                      </h3>
+                      <div className="bg-[#1e293b]/80 border border-amber-500/20 p-4 rounded-md text-left text-xs text-slate-300 space-y-2.5 leading-relaxed shadow-lg">
+                        <p className="font-semibold text-amber-300 flex items-center gap-1.5">
+                          <span>🌐 Official Provider Status Notice:</span>
+                        </p>
+                        <blockquote className="italic border-l-2 border-amber-500/50 pl-3 py-0.5 text-slate-300 text-[11px]">
+                          &ldquo;Our careers page is currently unavailable due to a technical issue. If you have already applied for a position, please contact the school directly...&rdquo;
+                        </blockquote>
+                        <p className="text-[11px] text-slate-400 pt-1">
+                          LeopardfishIntel DOM monitors are actively checking Nord Anglia&apos;s servers and will automatically restore live vacancy listings as soon as their system recovers.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <AlertCircle className="size-12 text-slate-600 mx-auto" />
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies</h3>
+                      <p className="text-xs text-slate-400 max-w-md mx-auto">
+                        {selectedSourceEngine !== "ALL" ? (
+                          <>
+                            LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{
+                              {
+                                "DIRECT": "Direct School Portals",
+                                "SEARCH ASSOCIATES": "Search Associates",
+                                "COGNITA": "Cognita Schools",
+                                "TES": "TES (Times Educational Supplement)",
+                                "NORD ANGLIA": "Nord Anglia Education",
+                                "INSPIRED": "Inspired Education",
+                                "GLOBEDUCATE": "Globeducate",
+                                "ISP": "International Schools Partnership (ISP)",
+                                "TAYLORS": "Taylor's Education Group",
+                                "ESF": "English Schools Foundation Hong Kong",
+                                "GEMS": "GEMS Education",
+                                "GRC": "GRC (Global Recruitment Collaborative)",
+                                "TEACHAWAY": "Teach Away",
+                                "MALVERN": "Malvern College International",
+                                "UWC": "United World Colleges (UWC)",
+                              }[selectedSourceEngine] || selectedSourceEngine
+                            }</strong> vacancies listed matching your search criteria.
+                          </>
+                        ) : (
+                          "No active vacancies currently match your search filters."
+                        )}
+                      </p>
+                    </div>
+                  </>
+                )}
 
                 {/* Scan School for vacancies if they exist in DB but aren't scanned */}
                 {searchQuery.trim().length > 0 && schoolsData && (
