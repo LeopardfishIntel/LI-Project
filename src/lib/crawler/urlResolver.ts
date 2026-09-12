@@ -199,5 +199,12 @@ export async function verifyJobUrlHttp(urlStr: string): Promise<{ status: 'valid
   if (!urlStr || isBlockedContentUrl(urlStr)) {
     return { status: 'invalid' };
   }
+  try {
+    const { verifyJobUrlHttp: adminVerify } = await import('@/firebase/admin');
+    const res = await adminVerify(urlStr);
+    if (!res.isValid || res.status === 'delisted') {
+      return { status: 'delisted' };
+    }
+  } catch {}
   return { status: 'valid' };
 }
