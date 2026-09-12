@@ -1651,8 +1651,34 @@ export default function FeaturedJobsPage() {
                               {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
                               {(() => {
                                 const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
+                                const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
                                 const sMap = new Map<string, string>();
-                                sMap.set("DIRECT", "Direct");
+
+                                // Detect URL domain signatures to ensure engine pills are accurately assigned
+                                if (applyUrlLower.includes("tes.com")) {
+                                  sMap.set("TES", "TES");
+                                }
+                                if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
+                                  sMap.set("NORD ANGLIA", "Nord Anglia");
+                                }
+                                if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
+                                  sMap.set("COGNITA", "Cognita");
+                                }
+                                if (applyUrlLower.includes("inspirededu")) {
+                                  sMap.set("INSPIRED", "Inspired");
+                                }
+                                if (applyUrlLower.includes("globeducate")) {
+                                  sMap.set("GLOBEDUCATE", "Globeducate");
+                                }
+                                if (applyUrlLower.includes("searchassociates")) {
+                                  sMap.set("SEARCH ASSOCIATES", "Search Associates");
+                                }
+                                if (applyUrlLower.includes("grcfair.org")) {
+                                  sMap.set("GRC", "GRC");
+                                }
+                                if (applyUrlLower.includes("teachaway")) {
+                                  sMap.set("TEACH AWAY", "Teach Away");
+                                }
 
                                 rawSources.forEach((s: any) => {
                                   if (!s) return;
@@ -1673,6 +1699,12 @@ export default function FeaturedJobsPage() {
                                   sMap.set(key, label);
                                 });
 
+                                // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
+                                const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                                if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
+                                  sMap.delete("DIRECT");
+                                }
+
                                 const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
                                   if (a === "DIRECT") return -1;
                                   if (b === "DIRECT") return 1;
@@ -1681,7 +1713,7 @@ export default function FeaturedJobsPage() {
 
                                 const resolvedPills: { label: string; url: string; key: string }[] = [];
                                 const seenPillUrls = new Set<string>();
-                                const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, '').trim();
+                                const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
 
                                 sortedEntries.forEach(([key, label]) => {
                                   const srcUpper = key;
@@ -1704,27 +1736,19 @@ export default function FeaturedJobsPage() {
                                       const fUrl = String(foundUrl);
                                       if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
                                       if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
+                                      if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
                                     }
                                     if (!foundUrl) {
                                       if (srcUpper.includes("NORD ANGLIA")) {
-                                        if ((job as any).applyUrl?.includes("careers.nordangliaeducation.com")) foundUrl = (job as any).applyUrl;
-                                        else if (job.source_url?.includes("careers.nordangliaeducation.com")) foundUrl = job.source_url;
+                                        if (applyUrlLower.includes("careers.nordangliaeducation.com")) foundUrl = (job as any).applyUrl || job.source_url;
                                       } else if (srcUpper === "TES") {
-                                        if ((job as any).applyUrl?.includes("tes.com")) foundUrl = (job as any).applyUrl;
-                                        else if (job.source_url?.includes("tes.com")) foundUrl = job.source_url;
-                                      }
-                                    }
-                                    if (srcUpper !== "DIRECT" && !foundUrl) {
-                                      return "#";
-                                    }
-                                    if (!foundUrl || foundUrl === "#") {
-                                      const candidateUrl = (job as any).applyUrl || job.source_url;
-                                      if (candidateUrl && candidateUrl !== "#" && candidateUrl.trim() !== "") {
-                                        foundUrl = candidateUrl;
-                                      } else if (srcUpper === "DIRECT" && job.schoolWebsite) {
-                                        foundUrl = job.schoolWebsite;
-                                      } else {
-                                        foundUrl = "#";
+                                        if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
+                                      } else if (srcUpper === "DIRECT") {
+                                        if (job.schoolWebsite && job.schoolWebsite !== "#") {
+                                          foundUrl = job.schoolWebsite;
+                                        } else if (!isPureAggregator) {
+                                          foundUrl = (job as any).applyUrl || job.source_url;
+                                        }
                                       }
                                     }
                                     return foundUrl || "#";
