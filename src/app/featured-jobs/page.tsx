@@ -1119,14 +1119,14 @@ export default function FeaturedJobsPage() {
           
           {/* FILTER SIDEBAR */}
           <aside className={cn(
-            "w-full md:w-80 shrink-0 bg-[#0b1224]/80 border border-white/5 p-6 rounded-sm shadow-2xl relative space-y-8 backdrop-blur-md transition-all duration-300 md:block",
+            "w-full md:w-80 shrink-0 bg-[#0b1224]/90 border border-slate-700/60 p-4 md:p-6 rounded-md shadow-2xl relative space-y-4 md:space-y-6 backdrop-blur-md transition-all duration-300 md:block",
             sidebarOpen ? "block" : "hidden"
           )}>
             <div className="absolute top-0 left-0 w-1 h-full bg-[#d95f02]/30" />
             
             {/* Search Input */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="space-y-1.5 md:space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Search className="size-3.5" /> Text Query
               </label>
               <div className="relative">
@@ -1135,20 +1135,20 @@ export default function FeaturedJobsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Title, school, country..."
-                  className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 pl-4 pr-10 text-sm focus:border-[#FF6B35] outline-none"
+                  className="w-full bg-black/40 border border-slate-700/80 text-white rounded-md h-9 md:h-11 px-3 md:px-4 text-xs md:text-sm focus:border-[#FF6B35] outline-none font-medium"
                 />
               </div>
             </div>
 
             {/* Family Status Filter */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="space-y-1.5 md:space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Users className="size-3.5" /> Family Status
               </label>
               <select 
                 value={familyStatus}
                 onChange={(e) => setFamilyStatus(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#FF6B35] outline-none font-bold"
+                className="w-full bg-black/40 border border-slate-700/80 text-white rounded-md h-9 md:h-11 px-3 md:px-4 text-xs md:text-sm focus:border-[#FF6B35] outline-none font-bold"
               >
                 <option value="Single">Single</option>
                 <option value="Couple">Couple</option>
@@ -1159,53 +1159,56 @@ export default function FeaturedJobsPage() {
             </div>
 
             {/* Savings Potential Filter */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="space-y-1.5 md:space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Coins className="size-3.5" /> Est. Savings Potential
               </label>
               <select 
                 value={minSavings}
                 onChange={(e) => setMinSavings(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 text-white rounded-md h-11 px-4 text-sm focus:border-[#FF6B35] outline-none font-bold"
+                className="w-full bg-black/40 border border-slate-700/80 text-white rounded-md h-9 md:h-11 px-3 md:px-4 text-xs md:text-sm focus:border-[#FF6B35] outline-none font-bold"
               >
                 <option value={0}>All Savings Packages</option>
                 <option value={2800}>Premium Package ($2,800+ / mo)</option>
-                <option value={1900}>Strong Financial Growth ($1,900+ / mo)</option>
-                <option value={1200}>Comfortable Expat Living ($1,200+ / mo)</option>
+                <option value={1900}>High Growth Package ($1,900+ / mo)</option>
+                <option value={1200}>Comfortable Living ($1,200+ / mo)</option>
                 <option value={600}>Culture & Travel ($600+ / mo)</option>
-                <option value={1}>Destination-Led Package ($0+ / mo)</option>
+                <option value={1}>Destination Package ($0+ / mo)</option>
               </select>
             </div>
 
 
 
             {/* Curriculum Filter */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="space-y-1.5 md:space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <BookOpen className="size-3.5" /> Curriculum
               </label>
               <div className="flex flex-wrap gap-1.5">
-                {availableCurriculums.map((cur) => (
-                  <button
-                    key={cur}
-                    type="button"
-                    onClick={() => handleCurriculumToggle(cur)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all uppercase",
-                      selectedCurriculums.includes(cur)
-                        ? "bg-[#0073E6]/20 border-[#0073E6] text-[#0073E6]"
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
-                    )}
-                  >
-                    {cur}
-                  </button>
-                ))}
+                {availableCurriculums.map((cur) => {
+                  const displayCur = cur === "BRITISH" ? "British" : cur === "AMERICAN" ? "American" : cur === "NATIONAL" ? "National" : cur;
+                  return (
+                    <button
+                      key={cur}
+                      type="button"
+                      onClick={() => handleCurriculumToggle(cur)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all",
+                        selectedCurriculums.includes(cur)
+                          ? "bg-[#0073E6]/20 border-[#0073E6] text-[#0073E6]"
+                          : "bg-white/5 border-slate-700/80 text-slate-300 hover:text-white"
+                      )}
+                    >
+                      {displayCur}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Subject Filter */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="space-y-1.5 md:space-y-3">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                 <GraduationCap className="size-3.5" /> Common Subjects
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -1215,10 +1218,10 @@ export default function FeaturedJobsPage() {
                     type="button"
                     onClick={() => handleSubjectToggle(sub)}
                     className={cn(
-                      "px-3 py-1.5 rounded-full text-[11px] font-bold border transition-all",
+                      "px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all",
                       selectedSubjects.includes(sub)
                         ? "bg-[#D96B27]/20 border-[#D96B27] text-[#D96B27]"
-                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                        : "bg-white/5 border-slate-700/80 text-slate-300 hover:text-white"
                     )}
                   >
                     {sub}
@@ -1238,7 +1241,7 @@ export default function FeaturedJobsPage() {
                 setFamilyStatus("Single");
                 setSortBy("Projected Savings");
               }}
-              className="w-full h-11 border border-white/10 text-xs font-black uppercase tracking-wider text-slate-400 hover:text-white hover:border-white/20 transition-all rounded-md"
+              className="w-full h-9 md:h-11 border border-slate-700/80 text-xs font-bold text-slate-400 hover:text-white hover:border-slate-500 transition-all rounded-md"
             >
               Reset Filters
             </button>
