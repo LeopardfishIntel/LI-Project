@@ -1041,7 +1041,7 @@ export default function FeaturedJobsPage() {
       <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/5 pb-6 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/5 pb-4 md:pb-6 gap-4">
           <div className="space-y-2">
             <div className="brand-title text-2xl md:text-3xl font-sans font-bold tracking-wide">
               <span className="brand-orange text-[#FF6B35]">Leopardfish</span><span className="brand-blue text-[#0073E6]">Intel</span>
@@ -1101,18 +1101,7 @@ export default function FeaturedJobsPage() {
               </>
             )}
             
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden flex items-center justify-between gap-2 bg-[#0b1224]/90 border border-slate-700/60 px-4 py-2.5 rounded-md text-xs font-bold text-[#FF6B35] shadow-lg transition-all active:scale-[0.98]"
-            >
-              <span className="flex items-center gap-2">
-                <SlidersHorizontal className="size-4 text-[#FF6B35]" />
-                <span>Search Filters</span>
-              </span>
-              <span className="bg-[#FF6B35]/10 border border-[#FF6B35]/30 text-[#FF6B35] px-2 py-0.5 rounded-full text-[10px] font-bold">
-                {selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)}
-              </span>
-            </button>
+
           </div>
         </div>
 
@@ -1316,31 +1305,101 @@ export default function FeaturedJobsPage() {
               </div>
             )}
 
-            {/* Search Engine Selection Protocol Control Bar */}
+            {/* UNIFIED MOBILE TOOLBAR CARD */}
             {!(loadingPublicJobs || loadingAdminJobs) && (
-              <div className="bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 shadow-lg">
-                {/* Mobile Toggle Button (Default Off) */}
-                <button
-                  type="button"
-                  onClick={() => setEngineBarOpen(!engineBarOpen)}
-                  className="md:hidden w-full flex items-center justify-between text-xs font-bold text-slate-200 py-0.5"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="size-2 rounded-full bg-emerald-400" />
-                    <span>Engine Filters</span>
-                    <span className="bg-white/5 border border-white/10 text-slate-300 px-2 py-0.5 rounded-full text-[10px] font-bold">
-                      {selectedSourceEngine === "ALL" ? `All (${engineCounts.ALL})` : selectedSourceEngine}
+              <div className="md:hidden bg-[#0b1224] border border-slate-700/80 rounded-lg p-3 space-y-3 shadow-xl mb-4">
+                {/* Row 1: Dual Control Toggles (Search Filters & Engine Filters side-by-side) */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                    className="flex items-center justify-between bg-[#1e293b]/70 hover:bg-[#1e293b] border border-slate-700/80 px-3 py-2 rounded-md text-xs font-bold text-[#FF6B35] transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <SlidersHorizontal className="size-3.5 text-[#FF6B35]" />
+                      <span>Filters</span>
                     </span>
-                  </span>
-                  <span className="text-[#FF6B35] text-xs font-bold flex items-center gap-1">
-                    {engineBarOpen ? "Hide Filters ▲" : "Show Filters ▼"}
-                  </span>
-                </button>
+                    <span className="bg-[#FF6B35]/15 text-[#FF6B35] px-1.5 py-0.2 text-[10px] font-extrabold rounded">
+                      {selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)}
+                    </span>
+                  </button>
 
-                <div className={cn(
-                  "flex-wrap items-center gap-2 mt-2 md:mt-0",
-                  engineBarOpen ? "flex" : "hidden md:flex"
-                )}>
+                  <button
+                    type="button"
+                    onClick={() => setEngineBarOpen(!engineBarOpen)}
+                    className="flex items-center justify-between bg-[#1e293b]/70 hover:bg-[#1e293b] border border-slate-700/80 px-3 py-2 rounded-md text-xs font-bold text-slate-200 transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5 truncate">
+                      <span className="size-2 rounded-full bg-emerald-400 shrink-0" />
+                      <span className="truncate">{selectedSourceEngine === "ALL" ? "Sources" : selectedSourceEngine}</span>
+                    </span>
+                    <span className="text-[#FF6B35] text-[10px] font-bold">
+                      {engineBarOpen ? "▲" : "▼"}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Expandable Source Engine Pills inside mobile card */}
+                {engineBarOpen && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-slate-800 animate-in fade-in duration-200">
+                    {[
+                      { id: "ALL", label: `All (${engineCounts.ALL})` },
+                      { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
+                      { id: "SEARCH ASSOCIATES", label: `Search (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
+                      { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
+                      { id: "TES", label: `TES (${engineCounts.TES})` },
+                      { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
+                      { id: "GRC", label: `GRC (${engineCounts.GRC})` },
+                      { id: "INSPIRED", label: `Inspired (${engineCounts.INSPIRED || 0})` },
+                      { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
+                      { id: "MALVERN", label: `Malvern (${engineCounts.MALVERN || 0})` },
+                      { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` },
+                      { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
+                      { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` }
+                    ].map((engine) => (
+                      <button
+                        key={engine.id}
+                        type="button"
+                        onClick={() => { setSelectedSourceEngine(engine.id); setEngineBarOpen(false); }}
+                        className={cn(
+                          "px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 border cursor-pointer",
+                          selectedSourceEngine === engine.id
+                            ? "bg-[#FF6B35] border-[#FF6B35] text-white"
+                            : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white"
+                        )}
+                      >
+                        {engine.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Row 2: Vacancies Count & Sort Dropdown */}
+                <div className="flex items-center justify-between pt-2.5 border-t border-slate-800/80 text-xs">
+                  <span className="text-slate-300 font-medium">
+                    Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
+                  </span>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-slate-400 font-medium text-[11px]">Sort:</span>
+                    <select 
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="bg-[#1e293b] border border-slate-700/80 text-white rounded px-2.5 py-1 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                    >
+                      <option value="Projected Savings">Savings</option>
+                      <option value="School Score">Score</option>
+                      <option value="Most recent">Recent</option>
+                      <option value="Oldest (by closing date)">Closing</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* DESKTOP ENGINE & SORT BARS */}
+            {!(loadingPublicJobs || loadingAdminJobs) && (
+              <div className="hidden md:block space-y-4 mb-4">
+                <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md shadow-xl flex flex-wrap items-center gap-2">
                   {[
                     { id: "ALL", label: `All (${engineCounts.ALL})` },
                     { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
@@ -1384,50 +1443,49 @@ export default function FeaturedJobsPage() {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
 
-            {/* Sort & Count Header */}
-            {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length > 0 && (
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md gap-3 w-full shadow-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold text-slate-300">
-                    Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
-                  </span>
-                  
-                  {calculatedIsAdmin && (
-                    <>
-                      <span className="text-slate-700">•</span>
-                      {isSyncingAll ? (
-                        <span className="flex items-center gap-1.5 text-xs text-[#FF6B35] font-bold">
-                          <Loader2 className="animate-spin size-3.5" /> Syncing Listings
-                        </span>
-                      ) : (
-                        <button
-                          onClick={handleSyncAllVisible}
-                          className="text-xs text-[#FF6B35] hover:text-white font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                          title="Force refresh vacancies for all currently listed schools"
-                        >
-                          Verify & Sync Listings
-                        </button>
+                {filteredJobs.length > 0 && (
+                  <div className="flex justify-between items-center bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md shadow-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold text-slate-300">
+                        Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
+                      </span>
+                      
+                      {calculatedIsAdmin && (
+                        <>
+                          <span className="text-slate-700">•</span>
+                          {isSyncingAll ? (
+                            <span className="flex items-center gap-1.5 text-xs text-[#FF6B35] font-bold">
+                              <Loader2 className="animate-spin size-3.5" /> Syncing Listings
+                            </span>
+                          ) : (
+                            <button
+                              onClick={handleSyncAllVisible}
+                              className="text-xs text-[#FF6B35] hover:text-white font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                              title="Force refresh vacancies for all currently listed schools"
+                            >
+                              Verify & Sync Listings
+                            </button>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
-                </div>
-                
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-white/5 pt-2 sm:pt-0">
-                  <span className="text-xs font-semibold text-slate-400">Sort By:</span>
-                  <select 
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
-                  >
-                    <option value="Projected Savings">Projected Savings</option>
-                    <option value="School Score">School Score</option>
-                    <option value="Most recent">Most Recent</option>
-                    <option value="Oldest (by closing date)">Oldest (by closing date)</option>
-                  </select>
-                </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400">Sort By:</span>
+                      <select 
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                      >
+                        <option value="Projected Savings">Projected Savings</option>
+                        <option value="School Score">School Score</option>
+                        <option value="Most recent">Most Recent</option>
+                        <option value="Oldest (by closing date)">Oldest (by closing date)</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
