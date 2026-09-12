@@ -1722,7 +1722,7 @@ export default function FeaturedJobsPage() {
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className={cn(
-                                        "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
+                                        "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
                                         srcUpper.includes("INSPIRED")
                                           ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
                                           : srcUpper === "TES"
@@ -1769,7 +1769,7 @@ export default function FeaturedJobsPage() {
                                     onClick={(e) => e.stopPropagation()}
                                     aria-label={`${badge.label} Details`}
                                     className={cn(
-                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
+                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
                                       badge.boxStyle
                                     )}
                                   >
@@ -1794,7 +1794,7 @@ export default function FeaturedJobsPage() {
                               <a 
                                 href={evalUrl}
                                 onClick={(e) => e.stopPropagation()}
-                                className="h-7 px-3 sm:hidden inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold tracking-tight text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
+                                className="h-7 px-3 sm:hidden inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
                               >
                                 <span>Evaluate</span>
                                 <ArrowUpRight className="size-3" />
