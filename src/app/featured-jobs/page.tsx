@@ -1601,8 +1601,19 @@ export default function FeaturedJobsPage() {
                           return (
                             <div className="flex items-center gap-1.5 flex-wrap">
                               {isNew && (
-                                <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse">
+                                <span 
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse cursor-default select-none"
+                                >
                                   NEW
+                                </span>
+                              )}
+                              {isClosingSoon && (
+                                <span 
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse cursor-default select-none"
+                                >
+                                  CLOSING SOON
                                 </span>
                               )}
 
