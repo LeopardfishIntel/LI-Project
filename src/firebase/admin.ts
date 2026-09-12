@@ -1087,14 +1087,18 @@ export function extractBenefitsFromText(text: string): ExtractedBenefitsResult {
     return text.substring(start, end).replace(/\s+/g, ' ').trim();
   };
 
+  // 🛡️ GATE 7 FIX: Strict Negation Handling via Prioritized Negation Regex & Negative Lookbehinds
+
   // 1. Housing Provision
   let housingProvision: 'Provided' | 'Allowance' | 'Not Provided' | 'Unknown' = 'Unknown';
-  if (/no\s+housing|housing\s+(is\s+)?not\s+provided|accommodation\s+(is\s+)?not\s+provided|living\s+costs?\s+not\s+covered/i.test(rawLower)) {
+  const housingNegation = /no\s+(?:housing|accommodation)|(?:housing|accommodation)\s+(?:allowance\s+)?(?:is\s+)?not\s+(?:provided|included|offered|covered)|accommodation\s+(?:is\s+)?not\s+(?:provided|included|offered)|without\s+(?:housing|accommodation)|(?:housing|accommodation)\s+(?:is\s+)?excluded|no\s+(?:housing|accommodation)\s+allowance|not\s+entitled\s+to\s+(?:housing|accommodation)/i;
+  
+  if (housingNegation.test(rawLower)) {
     housingProvision = 'Not Provided';
-    snippets.housing = getMatchSnippet(/no\s+housing|housing\s+(is\s+)?not\s+provided|accommodation\s+(is\s+)?not\s+provided|living\s+costs?\s+not\s+covered/i);
-  } else if (/furnished\s+accommodation|accommodation\s+provided|free\s+housing|rent-free|school\s+provided\s+housing|housing\s+provided/i.test(rawLower)) {
+    snippets.housing = getMatchSnippet(housingNegation);
+  } else if (/furnished\s+accommodation|(?:school\s+)?provided\s+housing|free\s+housing|rent-free|accommodation\s+provided|(?:(?<!not\s+|no\s+|without\s+|excluding\s+)housing\s+provided)/i.test(rawLower)) {
     housingProvision = 'Provided';
-    snippets.housing = getMatchSnippet(/furnished\s+accommodation|accommodation\s+provided|free\s+housing|rent-free|school\s+provided\s+housing|housing\s+provided/i);
+    snippets.housing = getMatchSnippet(/furnished\s+accommodation|free\s+housing|rent-free|accommodation\s+provided|housing\s+provided/i);
   } else if (/housing\s+allowance|accommodation\s+allowance|rental\s+allowance|monthly\s+housing\s+stipend/i.test(rawLower)) {
     housingProvision = 'Allowance';
     snippets.housing = getMatchSnippet(/housing\s+allowance|accommodation\s+allowance|rental\s+allowance|monthly\s+housing\s+stipend/i);
@@ -1103,9 +1107,11 @@ export function extractBenefitsFromText(text: string): ExtractedBenefitsResult {
   // 2. Tuition Waiver
   let tuitionProvided = false;
   let childCount: number | undefined = undefined;
-  if (/tuition\s+free|tuition\s+(waiver|discount|remission|covered)|free\s+school\s+places?/i.test(rawLower)) {
+  const tuitionNegation = /no\s+tuition|tuition\s+(?:is\s+)?not\s+(?:provided|covered|included|offered)|without\s+tuition|tuition\s+discount\s+not\s+offered|not\s+entitled\s+to\s+tuition/i;
+  
+  if (!tuitionNegation.test(rawLower) && /tuition\s+free|tuition\s+(?:waiver|discount|remission|covered)|free\s+school\s+places?/i.test(rawLower)) {
     tuitionProvided = true;
-    snippets.tuition = getMatchSnippet(/tuition\s+free|tuition\s+(waiver|discount|remission|covered)|free\s+school\s+places?/i);
+    snippets.tuition = getMatchSnippet(/tuition\s+free|tuition\s+(?:waiver|discount|remission|covered)|free\s+school\s+places?/i);
     const childMatch = rawLower.match(/free\s+(?:school\s+)?places?\s+for\s+(?:up\s+to\s+)?(\d+)\s+child(?:ren)?/i);
     if (childMatch) {
       childCount = parseInt(childMatch[1], 10);
@@ -1114,9 +1120,11 @@ export function extractBenefitsFromText(text: string): ExtractedBenefitsResult {
 
   // 3. Flight Allowance
   let flightAllowance: 'Annual' | 'Biennial' | 'Relocation Only' | 'None' | 'Unknown' = 'Unknown';
-  if (/no\s+flights?|flights?\s+not\s+provided/i.test(rawLower)) {
+  const flightNegation = /no\s+flights?|flights?\s+(?:are\s+)?(?:not\s+provided|excluded|not\s+included|not\s+covered)|without\s+flights?|no\s+airfare|not\s+entitled\s+to\s+flights?/i;
+  
+  if (flightNegation.test(rawLower)) {
     flightAllowance = 'None';
-    snippets.flight = getMatchSnippet(/no\s+flights?|flights?\s+not\s+provided/i);
+    snippets.flight = getMatchSnippet(flightNegation);
   } else if (/annual\s+(?:return\s+)?flights?|flight\s+allowance\s+annually|yearly\s+flights?|annual\s+airfare/i.test(rawLower)) {
     flightAllowance = 'Annual';
     snippets.flight = getMatchSnippet(/annual\s+(?:return\s+)?flights?|flight\s+allowance\s+annually|yearly\s+flights?|annual\s+airfare/i);
@@ -1130,7 +1138,9 @@ export function extractBenefitsFromText(text: string): ExtractedBenefitsResult {
 
   // 4. Tax Free Perk
   let taxFreePerk = false;
-  if (/tax\s*free|tax-free\s+salary|net\s+salary\s+paid\s+without\s+deduction/i.test(rawLower)) {
+  const taxNegation = /tax\s+(?:is\s+)?deducted|subject\s+to\s+(?:local\s+)?tax|taxable\s+salary|not\s+tax-free|tax\s+applies/i;
+  
+  if (!taxNegation.test(rawLower) && /tax\s*free|tax-free\s+salary|net\s+salary\s+paid\s+without\s+deduction/i.test(rawLower)) {
     taxFreePerk = true;
     snippets.tax = getMatchSnippet(/tax\s*free|tax-free\s+salary|net\s+salary\s+paid\s+without\s+deduction/i);
   }
@@ -1152,14 +1162,43 @@ export function extractSchoolAccreditations(text: string): string[] {
   if (!text || typeof text !== 'string') return [];
   const found = new Set<string>();
   const t = text.toUpperCase();
-  if (/\bIB\b|INTERNATIONAL BACCALAUREATE/i.test(t)) found.add('IB');
-  if (/\bCIS\b|COUNCIL OF INTERNATIONAL SCHOOLS/i.test(t)) found.add('CIS');
-  if (/\bBSO\b|BRITISH SCHOOLS OVERSEAS/i.test(t)) found.add('BSO');
-  if (/\bNEASC\b|NEW ENGLAND ASSOCIATION/i.test(t)) found.add('NEASC');
-  if (/\bCOBIS\b|COUNCIL OF BRITISH INTERNATIONAL SCHOOLS/i.test(t)) found.add('COBIS');
-  if (/\bHMC\b|HEADMASTERS' AND HEADMISTRESSES'/i.test(t)) found.add('HMC');
-  if (/\bWASC\b|WESTERN ASSOCIATION OF SCHOOLS/i.test(t)) found.add('WASC');
-  if (/\bECIS\b|EDUCATIONAL COLLABORATIVE FOR INTERNATIONAL SCHOOLS/i.test(t)) found.add('ECIS');
+
+  // 🛡️ GATE 8 FIX: Safeguard against candidate experience pollution
+  // Rejects phrasing like "3 years of IB DP experience", "knowledge of CIS standards", "seeking IB teacher"
+  // Requires explicit institutional accreditation phrases (e.g., "IB World School", "CIS Accredited", "BSO Inspected").
+
+  if (/\b(IB\s+World\s+School|accredited\s+by\s+(?:the\s+)?IB|IB\s+accredited|authorized\s+to\s+offer\s+(?:the\s+)?IB|IB\s+school\s+code)\b/i.test(t)) {
+    found.add('IB');
+  }
+
+  if (/\b(CIS\s+accredited|accredited\s+by\s+(?:the\s+)?CIS|member\s+of\s+(?:the\s+)?Council\s+of\s+International\s+Schools|CIS\s+member\s+school|CIS\s+accreditation)\b/i.test(t)) {
+    found.add('CIS');
+  }
+
+  if (/\b(BSO\s+inspected|BSO\s+accredited|British\s+Schools?\s+Overseas\s+inspected|inspected\s+by\s+(?:the\s+)?BSO|BSO\s+inspection)\b/i.test(t)) {
+    found.add('BSO');
+  }
+
+  if (/\b(NEASC\s+accredited|accredited\s+by\s+NEASC|New\s+England\s+Association\s+of\s+Schools)\b/i.test(t)) {
+    found.add('NEASC');
+  }
+
+  if (/\b(COBIS\s+member|COBIS\s+accredited|accredited\s+by\s+COBIS|Council\s+of\s+British\s+International\s+Schools)\b/i.test(t)) {
+    found.add('COBIS');
+  }
+
+  if (/\b(HMC\s+member|member\s+of\s+HMC|Headmasters'\s+and\s+Headmistresses'\s+Conference)\b/i.test(t)) {
+    found.add('HMC');
+  }
+
+  if (/\b(WASC\s+accredited|accredited\s+by\s+WASC|Western\s+Association\s+of\s+Schools)\b/i.test(t)) {
+    found.add('WASC');
+  }
+
+  if (/\b(ECIS\s+member|member\s+of\s+ECIS|Educational\s+Collaborative\s+for\s+International\s+Schools)\b/i.test(t)) {
+    found.add('ECIS');
+  }
+
   return Array.from(found);
 }
 
@@ -1463,9 +1502,17 @@ export async function moveJobToPending(schoolId: string, jobId: string, reviewed
  * Standardizes title, subject, and hierarchy level to generate a deterministic fingerprint
  * for identifying identical vacancies across multiple sources (e.g. TES vs Direct Portal).
  */
-export function generateJobFingerprint(schoolId: string, title: string, subject?: string | null): string {
+export function generateJobFingerprint(
+  schoolId: string,
+  title: string,
+  subject?: string | null,
+  externalPostingId?: string | null,
+  dateSlug?: string | null
+): string {
   const cleanSchool = (schoolId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
   const cleanTitle = (title || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+  const cleanExternal = (externalPostingId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
+  const cleanDate = (dateSlug || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
 
   let hash = 0;
   for (let i = 0; i < cleanTitle.length; i++) {
@@ -1474,7 +1521,19 @@ export function generateJobFingerprint(schoolId: string, title: string, subject?
   }
   const titleHash = Math.abs(hash).toString(36);
 
-  return `fp_${cleanSchool}_${titleHash}`;
+  let extSuffix = '';
+  if (cleanExternal && cleanExternal.length > 2) {
+    let extHash = 0;
+    for (let i = 0; i < cleanExternal.length; i++) {
+      extHash = ((extHash << 5) - extHash) + cleanExternal.charCodeAt(i);
+      extHash |= 0;
+    }
+    extSuffix = `_${Math.abs(extHash).toString(36)}`;
+  } else if (cleanDate) {
+    extSuffix = `_${cleanDate}`;
+  }
+
+  return `fp_${cleanSchool}_${titleHash}${extSuffix}`;
 }
 
 // =====================================================================
@@ -1561,7 +1620,7 @@ export async function processRawIngestionPipeline(
     }
 
     // Gate 3: Fingerprint deduplication within this batch
-    const fp = generateJobFingerprint(schoolId, record.rawTitle);
+    const fp = generateJobFingerprint(schoolId, record.rawTitle, undefined, (record as any).externalPostingId || record.applyUrl, record.datePosted);
     if (seenFingerprints.has(fp)) {
       rejected++;
       reasons.push(`[DEDUP] "${record.rawTitle}" (fingerprint: ${fp})`);
@@ -1659,7 +1718,7 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
         }
       }
       const job = normalizeJobData(rawJob, schoolData);
-      const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject);
+      const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject, rawJob.externalPostingId || rawJob.id, rawJob.datePosted);
       const applyUrl = rawJob.applyUrl || rawJob.source_url || "";
 
       // 🔍 DEDUPLICATION CHECK: If approved vacancy with matching fingerprint already exists, merge links
@@ -1892,7 +1951,7 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
     for (const rawJob of jobs) {
       if (!rawJob || !rawJob.id) continue;
       const job = normalizeJobData(rawJob, schoolData);
-      const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject);
+      const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject, rawJob.externalPostingId || rawJob.id, rawJob.datePosted);
       const applyUrl = rawJob.applyUrl || rawJob.source_url || "";
 
       // Deduplication check
