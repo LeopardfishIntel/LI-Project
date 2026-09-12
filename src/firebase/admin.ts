@@ -1231,6 +1231,36 @@ export async function processRawIngestionPipeline(
       continue;
     }
 
+    // Gate 4: Group Ownership & School Matching Filter
+    if (record.applyUrl) {
+      const urlLower = record.applyUrl.toLowerCase();
+      const schoolRef = getAdminDb().collection("schools").doc(schoolId);
+      const schoolSnap = await schoolRef.get();
+      const schoolData = schoolSnap.exists ? schoolSnap.data() : null;
+      if (schoolData) {
+        const sGroup = String(schoolData.ownership || schoolData.Ownership || schoolData.group || schoolData.agency || "").toUpperCase();
+        const sNameUpper = String(schoolData.schoolname || schoolData.name || "").toUpperCase();
+        let isGroupMismatch = false;
+        if (urlLower.includes("cognita") && !sGroup.includes("COGNITA") && !sNameUpper.includes("ST. ANDREWS") && !sNameUpper.includes("SOUTHBANK") && !sNameUpper.includes("ISHCMC")) {
+          isGroupMismatch = true;
+        } else if (urlLower.includes("careers.nordangliaeducation.com") && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
+          isGroupMismatch = true;
+        } else if (urlLower.includes("inspirededu") && !sGroup.includes("INSPIRED") && !sNameUpper.includes("INSPIRED") && !sNameUpper.includes("KING'S COLLEGE")) {
+          isGroupMismatch = true;
+        } else if (urlLower.includes("globeducate") && !sGroup.includes("GLOBE") && !sGroup.includes("GLOBEDUCATE") && !sNameUpper.includes("GLOBEDUCATE")) {
+          isGroupMismatch = true;
+        } else if (urlLower.includes("internationalschools.wd3.myworkdayjobs.com") && !sGroup.includes("ISP") && !sGroup.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) {
+          isGroupMismatch = true;
+        }
+
+        if (isGroupMismatch) {
+          rejected++;
+          reasons.push(`[GROUP_MISMATCH] "${record.rawTitle}" (${record.applyUrl}) does not match school ${schoolId} ("${schoolData.schoolname || schoolData.name}")`);
+          continue;
+        }
+      }
+    }
+
     // Gate 3: Fingerprint deduplication within this batch
     const fp = generateJobFingerprint(schoolId, record.rawTitle);
     if (seenFingerprints.has(fp)) {
@@ -1306,6 +1336,28 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
       if (!rawJob || !rawJob.id) continue;
       if (isSupportOrNonTeachingRole(rawJob.title)) {
         continue;
+      }
+      const rawUrlLower = String(rawJob.applyUrl || rawJob.source_url || "").toLowerCase();
+      if (rawUrlLower && schoolData) {
+        const sGroup = String(schoolData.ownership || schoolData.Ownership || schoolData.group || schoolData.agency || "").toUpperCase();
+        const sNameUpper = String(schoolData.schoolname || schoolData.name || "").toUpperCase();
+        let isGroupMismatch = false;
+        if (rawUrlLower.includes("cognita") && !sGroup.includes("COGNITA") && !sNameUpper.includes("ST. ANDREWS") && !sNameUpper.includes("SOUTHBANK") && !sNameUpper.includes("ISHCMC")) {
+          isGroupMismatch = true;
+        } else if (rawUrlLower.includes("careers.nordangliaeducation.com") && !sGroup.includes("NORD ANGLIA") && !sNameUpper.includes("NORD ANGLIA")) {
+          isGroupMismatch = true;
+        } else if (rawUrlLower.includes("inspirededu") && !sGroup.includes("INSPIRED") && !sNameUpper.includes("INSPIRED") && !sNameUpper.includes("KING'S COLLEGE")) {
+          isGroupMismatch = true;
+        } else if (rawUrlLower.includes("globeducate") && !sGroup.includes("GLOBE") && !sGroup.includes("GLOBEDUCATE") && !sNameUpper.includes("GLOBEDUCATE")) {
+          isGroupMismatch = true;
+        } else if (rawUrlLower.includes("internationalschools.wd3.myworkdayjobs.com") && !sGroup.includes("ISP") && !sGroup.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) {
+          isGroupMismatch = true;
+        }
+
+        if (isGroupMismatch) {
+          console.warn(`⚠️ [SAVE_JOBS] Blocked group mismatch: URL ${rawUrlLower} does not match school ${schoolId} ("${schoolData.schoolname || schoolData.name}")`);
+          continue;
+        }
       }
       const job = normalizeJobData(rawJob, schoolData);
       const newFingerprint = rawJob.jobFingerprint || generateJobFingerprint(schoolId, job.title, job.subject);
