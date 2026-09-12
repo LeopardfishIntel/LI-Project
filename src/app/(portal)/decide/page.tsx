@@ -54,6 +54,29 @@ function getSchoolField(school: any, keys: string[]) {
     return foundKey ? school[foundKey] : null;
 }
 
+function getLocalSalaryForSchool(school: any, rate: number): string {
+    const raw = (school?.salaryRange || "").trim();
+    if (!raw) return Math.round(4500 * rate).toString();
+
+    const cleanRange = raw.replace(/,/g, '').replace(/\.\d+/g, '');
+    const range = cleanRange.match(/\d+/g);
+    const med = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
+
+    const hasDollarSign = raw.includes('$');
+    const hasExplicitLocalCode = /(OMR|AED|SAR|QAR|CZK|EUR|GBP|SGD|HKD|THB|MYR|JPY|KRW|INR|EGP|BHD|KWD)/i.test(raw);
+
+    if (hasExplicitLocalCode || !hasDollarSign) {
+        let monthly = med;
+        const isExplicitMonthly = /month|monthly|\/mo/i.test(raw);
+        if (monthly >= 10000 && !isExplicitMonthly) {
+            monthly = Math.round(monthly / 12);
+        }
+        return Math.round(monthly).toString();
+    }
+
+    return Math.round(med * rate).toString();
+}
+
 
 // --- UI COMPONENTS ---
 
@@ -199,11 +222,7 @@ function DecideContent() {
             const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
             const rate = currentRates[cCode] || 1.0;
 
-            const cleanRange = (school.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
-            const range = cleanRange.match(/\d+/g);
-            const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-
-            const localSalary = Math.round(usdMed * rate).toString();
+            const localSalary = getLocalSalaryForSchool(school, rate);
             if (nextSalaries[index] !== localSalary) {
                 nextSalaries[index] = localSalary;
                 changed = true;
@@ -273,11 +292,7 @@ function DecideContent() {
                     const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
                     const rate = currentRates[cCode] || 1.0;
 
-                    const cleanRange = (s.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
-                    const range = cleanRange.match(/\d+/g);
-                    const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-
-                    finalSalaries[idx] = Math.round(usdMed * rate).toString();
+                    finalSalaries[idx] = getLocalSalaryForSchool(s, rate);
                 }
             });
             setNetSalaries(finalSalaries);
@@ -305,18 +320,13 @@ function DecideContent() {
             const rate = currentRates[cCode] || 1.0;
 
             // 🎯 MEDIAN SALARY LOGIC (Midpoint of Range)
-            const cleanRange = (school.salaryRange || "").replace(/,/g, '').replace(/\.\d+/g, '');
-            const range = cleanRange.match(/\d+/g);
-            const usdMed = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-
             // Reset manual flag on new selection to allow median auto-fill
             const nextM = [...manualSalaries];
             nextM[index] = false;
             setManualSalaries(nextM);
 
             const nextSalaries = [...netSalaries];
-            // Ensure we are actually multiplying by the rate for the correct currency
-            nextSalaries[index] = Math.round(usdMed * rate).toString();
+            nextSalaries[index] = getLocalSalaryForSchool(school, rate);
             setNetSalaries(nextSalaries);
 
             const nextCountries = [...selectedCountries]; nextCountries[index] = school.country; setSelectedCountries(nextCountries);

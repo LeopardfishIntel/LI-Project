@@ -430,15 +430,18 @@ function DecoderContent() {
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
   const [requestedSchoolId, setRequestedSchoolId] = useState<string | null>(null);
+  const [requestedSchoolName, setRequestedSchoolName] = useState<string | null>(null);
   const [requestedJobTitle, setRequestedJobTitle] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const urlSchoolId = params.get("schoolId") || params.get("id");
+      const urlSchoolName = params.get("schoolName") || params.get("school") || params.get("school_name");
       const jobTitle = params.get("jobTitle");
       const famStatusParam = params.get("familyStatus");
       if (urlSchoolId) setRequestedSchoolId(urlSchoolId);
+      if (urlSchoolName) setRequestedSchoolName(urlSchoolName);
       if (jobTitle) setRequestedJobTitle(jobTitle);
       if (famStatusParam) {
         let mapped = famStatusParam;
@@ -489,20 +492,62 @@ function DecoderContent() {
     return foundKey ? school[foundKey] : null;
   };
 
-  const activeSchool = useMemo(() => allSchools?.find((s: any) => s.id === settings.schoolId) || null, [allSchools, settings.schoolId]);
+  const activeSchool = useMemo(() => {
+    if (!allSchools || !settings.schoolId) return null;
+    const target = settings.schoolId.toLowerCase().trim();
+    const targetClean = target.replace(/^flis/i, '');
+    return allSchools.find((s: any) => {
+      const sIdLower = (s.id || '').toLowerCase().trim();
+      const sSchoolIdLower = (s.schoolId || '').toLowerCase().trim();
+      return sIdLower === target ||
+        sSchoolIdLower === target ||
+        sIdLower.replace(/^flis/i, '') === targetClean ||
+        sSchoolIdLower.replace(/^flis/i, '') === targetClean;
+    }) || null;
+  }, [allSchools, settings.schoolId]);
+
+  const directSchoolDocRef = useMemoFirebase(() => {
+    if (!mounted || !firestore || !requestedSchoolId) return null;
+    const cleanId = requestedSchoolId.toUpperCase().startsWith("FLIS") 
+      ? requestedSchoolId.toUpperCase() 
+      : `FLIS${requestedSchoolId}`;
+    return doc(firestore, 'schools', cleanId);
+  }, [firestore, mounted, requestedSchoolId]);
+
+  const { data: directSchoolDoc } = useDoc<any>(directSchoolDocRef);
+
+  const targetSchoolName = useMemo(() => {
+    if (requestedSchoolName) return requestedSchoolName;
+    if (directSchoolDoc) return directSchoolDoc.name || directSchoolDoc.schoolname || directSchoolDoc.schoolName || null;
+    if (!requestedSchoolId || !allSchools) return null;
+    const reqLower = requestedSchoolId.toLowerCase();
+    const reqClean = requestedSchoolId.replace(/^FLIS/i, "");
+    const found = allSchools.find((s: any) => 
+      s.id?.toLowerCase() === reqLower || 
+      s.id?.replace(/^FLIS/i, "") === reqClean
+    );
+    return found?.name || found?.schoolname || found?.schoolName || found?.institutionName || null;
+  }, [allSchools, requestedSchoolId, directSchoolDoc, requestedSchoolName]);
 
 
 
   // 🛸 Fetch ALL jobs for this school from featured_jobs_cache (approved + expired)
   // so we have 2 years of history for the turnover engine. activeVacancies filters to open only.
   const schoolJobsQuery = useMemoFirebase(
-    () => (mounted && firestore && activeSchool?.id
-      ? query(
-          collection(firestore, 'featured_jobs_cache'),
-          where('schoolId', '==', activeSchool.id)
-        )
-      : null),
-    [firestore, mounted, activeSchool?.id]
+    () => {
+      if (!mounted || !firestore || !activeSchool?.id) return null;
+      const ids = Array.from(new Set([
+        activeSchool.id,
+        activeSchool.id.toLowerCase(),
+        activeSchool.id.toUpperCase(),
+        ...(activeSchool.schoolId ? [activeSchool.schoolId, activeSchool.schoolId.toLowerCase(), activeSchool.schoolId.toUpperCase()] : [])
+      ]));
+      return query(
+        collection(firestore, 'featured_jobs_cache'),
+        where('schoolId', 'in', ids)
+      );
+    },
+    [firestore, mounted, activeSchool?.id, activeSchool?.schoolId]
   );
   const { data: schoolJobsData } = useCollection<any>(schoolJobsQuery);
 
@@ -604,10 +649,19 @@ function DecoderContent() {
     return 'bg-emerald-500 border-emerald-400 shadow-[0_0_6px_rgba(16,185,129,0.6)]';
   }, []);
 
-  const isCityOrCampusMismatch = useCallback((jobTitle: string, schoolCity?: string): boolean => {
-    if (!jobTitle || !schoolCity) return false;
+  const isCityOrCampusMismatch = useCallback((jobTitle: string, schoolCity?: string, schoolCountry?: string, jobSchoolId?: string, activeSchoolId?: string): boolean => {
+    if (!jobTitle) return false;
+
+    // 1. Strict school ID check: if job has an explicit schoolId and it doesn't match the active school, reject
+    if (jobSchoolId && activeSchoolId && jobSchoolId.trim().toUpperCase() !== activeSchoolId.trim().toUpperCase()) return true;
+
     const t = jobTitle.toLowerCase();
-    const c = schoolCity.toLowerCase().trim();
+    const c = (schoolCity || '').toLowerCase().trim();
+    const country = (schoolCountry || '').toLowerCase().trim();
+
+    // 2. Chinese city/location tags mismatching non-China schools
+    const chinaLocations = ['shenzhen', 'hangzhou', 'chengdu', 'futian', 'nanshan', 'park lane harbour', 'guangzhou', 'beijing', 'shanghai'];
+    if (country !== 'china' && chinaLocations.some(loc => t.includes(loc))) return true;
 
     if (c === 'prague' && (t.includes('ostrava') || t.includes('brno') || t.includes('liberec'))) return true;
     if (c === 'ostrava' && (t.includes('prague') || t.includes('brno') || t.includes('liberec'))) return true;
@@ -641,9 +695,10 @@ function DecoderContent() {
       }
 
       // ── Posted/ingested date ──────────────────────────────────────────────────
+      // ── Posted/ingested date ──────────────────────────────────────────────────
       // Prioritise explicitly stated post/posted dates over raw ingestion timestamps
       let scraped: Date;
-      const explicitPosted = job.postedDate || job.postDate || job.datePosted;
+      const explicitPosted = job.postedDate || job.postDate || job.datePosted || job.date_listed;
       if (explicitPosted && typeof explicitPosted === 'string' && !isNaN(Date.parse(explicitPosted))) {
         scraped = new Date(explicitPosted);
       } else if (explicitPosted && typeof explicitPosted === 'number') {
@@ -660,6 +715,8 @@ function DecoderContent() {
         scraped = new Date(job.scrapedAt._seconds * 1000);
       } else if (job.scrapedAt) {
         scraped = new Date(job.scrapedAt);
+      } else if (closes && !isNaN(closes.getTime())) {
+        scraped = new Date(closes.getTime() - 30 * 24 * 60 * 60 * 1000);
       } else {
         scraped = today;
       }
@@ -668,7 +725,8 @@ function DecoderContent() {
       // rejected = never a real vacancy, skip entirely at filter stage
       const cacheStatus = job.status || 'approved';
       const isExpired = !isRolling && (closes < today || cacheStatus === 'expired');
-      const recruitmentCycle = (closes < new Date("2025-05-21")) ? "HISTORIC_Y1" : "CURRENT";
+      const twelveMonthsAgoCutoff = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
+      const recruitmentCycle = (closes < twelveMonthsAgoCutoff) ? "HISTORIC_Y1" : "CURRENT";
 
       // ── Department (prefer Pipeline 2 enriched value, fall back to title inference) ──
       let department = job.department || "Secondary";
@@ -683,6 +741,8 @@ function DecoderContent() {
 
       return {
         id: job.id || job.jobFingerprint,
+        schoolId: job.schoolId || activeSchool?.id || "",
+        schoolName: job.schoolName || activeSchool?.schoolname || activeSchool?.name || "",
         title: job.title,
         source: job.source || job.sourceName || "Web",
         sources: job.sources,
@@ -706,15 +766,26 @@ function DecoderContent() {
       };
     };
 
-    // 🔀 MERGE: featured_jobs_cache + admin-added subcollection jobs
+    // 🔀 MERGE: featured_jobs_cache + admin-added subcollection jobs + stabilityReport vacancies
     const cacheJobs = (schoolJobsData || []).map(normaliseJob);
     const adminJobs = (adminJobsData || []).map(normaliseJob);
-    const mergedList = [...cacheJobs, ...adminJobs];
+    const stabilityJobs = (stabilityReport?.vacancies_discovered || []).map((v: any) => normaliseJob({
+      id: `stability_${(v.title || '').toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+      title: v.title,
+      source: v.source || 'Cognita / TES',
+      postedDate: v.date_listed,
+      closingDate: v.date_closing,
+      status: v.status === 'OPEN' ? 'approved' : 'expired',
+      department: v.department,
+      applyUrl: v.source_url || ''
+    }));
+
+    const mergedList = [...cacheJobs, ...adminJobs, ...stabilityJobs];
 
     const rawList = mergedList
       .filter(job => job.cacheStatus !== 'rejected')   // skip jobs that were never validated
       .filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
-      .filter(job => !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city));
+      .filter(job => !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city, activeSchool?.country, job.schoolId, activeSchool?.id));
 
     // 🎯 SMART DEDUPLICATION (PRESERVING GENUINE EXTRA POSITIONS WHILE STOPPING RE-SCRAPE DUPLICATES)
     const result: any[] = [];
@@ -758,7 +829,7 @@ function DecoderContent() {
       if (a.status !== 'open' && b.status === 'open') return 1;
       return b.rawPostedDate.getTime() - a.rawPostedDate.getTime();
     });
-  }, [schoolJobsData, adminJobsData, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
+  }, [schoolJobsData, adminJobsData, stabilityReport, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
 
   // 📅 Compute earliest posted date among processed jobs
 const earliestPosted = useMemo(() => {
@@ -817,7 +888,7 @@ const historicMonths = useMemo(() => {
     // 1. Filter out non-job section titles, generic web headings & city/campus mismatches
     const validJobs = rawList.filter((j: any) => 
       !isInvalidNonJobTitle(j.title) && 
-      !isCityOrCampusMismatch(j.title, activeSchool?.city)
+      !isCityOrCampusMismatch(j.title, activeSchool?.city, activeSchool?.country, j.schoolId, activeSchool?.id)
     );
 
     // 2. Deduplicate by normalized job title key so each position is listed once
@@ -888,15 +959,38 @@ const historicMonths = useMemo(() => {
          });
        }
 
+       const urlSchoolName = params.get('schoolName') || params.get('school');
+       let found: any = null;
        if (urlSchoolId) {
-         const found = allSchools.find((s: any) => s.id === urlSchoolId);
-         if (found) {
-           setSettings(prev => ({
-             ...prev,
-             schoolId: found.id,
-             country: found.country || found.region || ""
-           }));
-         }
+         const reqLower = urlSchoolId.toLowerCase().trim();
+         const reqClean = reqLower.replace(/^flis/i, '');
+         found = allSchools.find((s: any) => {
+           const sIdLower = (s.id || '').toLowerCase().trim();
+           const sSchoolIdLower = (s.schoolId || '').toLowerCase().trim();
+           return sIdLower === reqLower || 
+                  sSchoolIdLower === reqLower || 
+                  sIdLower.replace(/^flis/i, '') === reqClean || 
+                  sSchoolIdLower.replace(/^flis/i, '') === reqClean;
+         });
+       }
+       if (!found && urlSchoolName) {
+         const sNameLower = urlSchoolName.toLowerCase().trim();
+         found = allSchools.find((s: any) => {
+           const name1 = (s.schoolname || s.name || s.schoolName || '').toLowerCase().trim();
+           return name1.length > 3 && (name1.includes(sNameLower) || sNameLower.includes(name1));
+         });
+       }
+       if (found) {
+         setSettings(prev => ({
+           ...prev,
+           schoolId: found.id,
+           country: found.country || found.region || ""
+         }));
+       } else if (params.get('country')) {
+         setSettings(prev => ({
+           ...prev,
+           country: params.get('country') || prev.country
+         }));
        }
      }
    }, [mounted, allSchools]);
@@ -913,7 +1007,11 @@ const historicMonths = useMemo(() => {
       setStabilityReport(null);
     }
     try {
-      const staffBaseVal = activeSchool.numericalstaff || parseInt(activeSchool.staffcount) || 80;
+      let staffBaseVal = parseInt(String(activeSchool.numericalstaff || activeSchool.staffcount || "80").replace(/[^0-9]/g, ''), 10) || 80;
+      if (staffBaseVal > 1000 && activeSchool.staffcount) {
+        const alt = parseInt(String(activeSchool.staffcount).replace(/[^0-9]/g, ''), 10);
+        if (alt > 0 && alt <= 1000) staffBaseVal = alt;
+      }
       const res = await getSchoolStabilityReport({
         schoolId: activeSchool.id,
         schoolName: activeSchool.schoolname || activeSchool.school || activeSchool.name,
@@ -1054,12 +1152,19 @@ const historicMonths = useMemo(() => {
 
     const matches = costOfLiving.filter((c: any) =>
       normalize(c.city || c.city_name) === sCity ||
+      (sCity.includes("joburg") && normalize(c.city || c.city_name).includes("johannesburg")) ||
       canonicalCountry(c.country || '') === sCountry ||
       normalize(c.id) === sCity || normalize(c.id) === sCountry
     );
 
     if (matches.length === 0) return null;
-    // 🎯 PRIORITY SHIELD: Pick the document that has core cost fields
+
+    const cityMatch = matches.find((c: any) => {
+      const cCity = normalize(c.city || c.city_name || c.id || '');
+      return (sCity && cCity && (cCity.includes(sCity) || sCity.includes(cCity) || ((sCity.includes('joburg') || sCity.includes('johannesburg')) && cCity.includes('johannesburg'))));
+    });
+    if (cityMatch) return cityMatch;
+
     return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0];
   }, [activeSchool, costOfLiving]);
 
@@ -1318,13 +1423,50 @@ const historicMonths = useMemo(() => {
 
   const surplusFontSizes = useMemo(() => {
     if (surplusValStr.length > 9) {
-      return { number: "text-3xl", currency: "text-base" };
+      return { number: "text-3xl", currency: "text-3xl", conversion: "text-xl" };
     }
     if (surplusValStr.length > 7) {
-      return { number: "text-4xl", currency: "text-lg" };
+      return { number: "text-4xl", currency: "text-4xl", conversion: "text-2xl" };
     }
-    return { number: "text-5xl", currency: "text-xl" };
+    return { number: "text-4xl", currency: "text-4xl", conversion: "text-2xl" };
   }, [surplusValStr]);
+
+  const overallRatingNum = useMemo(() => {
+    const raw = activeSchool?.totalscore ?? activeSchool?.score ?? activeSchool?.rating;
+    const parsed = parseFloat(String(raw));
+    if (!isNaN(parsed) && parsed > 0) return parsed;
+    return 8.1;
+  }, [activeSchool]);
+
+  const ratingTierConfig = useMemo(() => {
+    const score = overallRatingNum;
+    if (score >= 9.0) {
+      return {
+        tier: "Tier 1 Premier",
+        desc: "World-class academic results, top-tier compensation & benefits, outstanding facilities.",
+        textClass: "text-emerald-400"
+      };
+    }
+    if (score >= 8.0) {
+      return {
+        tier: "Tier 1 / High Tier 2",
+        desc: "Strong international reputation, high academic standards, competitive package.",
+        textClass: "text-teal-400"
+      };
+    }
+    if (score >= 7.0) {
+      return {
+        tier: "Tier 2 Standard",
+        desc: "Solid international school framework, standard contract terms & benefits.",
+        textClass: "text-amber-400"
+      };
+    }
+    return {
+      tier: "Tier 3 / Emerging",
+      desc: "Basic international package, lower work/life balance rating, or operational challenges.",
+      textClass: "text-rose-400"
+    };
+  }, [overallRatingNum]);
 
   // 🛰️ Telemetry: Flight Simulator Dial tracking (Evaluate Page)
   useEffect(() => {
@@ -1690,9 +1832,9 @@ const historicMonths = useMemo(() => {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800/80 border border-slate-700/60 rounded-full text-[11px] font-mono text-slate-300">
+                  <div className="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800/80 border border-slate-700/60 rounded-full text-[11px] font-sans font-bold text-slate-300">
                     <span className="size-2 rounded-full bg-[#38BDF8] animate-pulse" />
-                    <span>Target School ID: {requestedSchoolId.replace(/^FLIS/i, "")}</span>
+                    <span>{targetSchoolName || "Retrieving Target School..."}</span>
                   </div>
                 </div>
               </div>
@@ -1813,25 +1955,49 @@ const historicMonths = useMemo(() => {
                           : [selectedOpportunity.source || "Official Source"];
                         
                         const sMap = new Map<string, string>();
+                        // Always guarantee a DIRECT / Official Website pill entry
+                        sMap.set("DIRECT", "Direct");
+
                         rawSources.forEach((s: any) => {
                           if (!s) return;
                           const u = String(s).toUpperCase().trim();
-                          const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) ? "Search Associates" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
-                          if (!sMap.has(u)) sMap.set(u, label);
+                          let key = u;
+                          let label = s;
+                          if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
+                          else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
+                          else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
+                          else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
+                          else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
+                          else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                          else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                          else if (u === "TES") { key = "TES"; label = "TES"; }
+                          else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                          else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
+                          else { key = "DIRECT"; label = "Direct"; }
+                          sMap.set(key, label);
                         });
 
-                        const displaySources = Array.from(sMap.values());
+                        // Ensure DIRECT is processed first
+                        const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
+                          if (a === "DIRECT") return -1;
+                          if (b === "DIRECT") return 1;
+                          return 0;
+                        });
 
-                        return displaySources.map((src: string) => {
-                          const srcUpper = String(src).toUpperCase().trim();
+                        // Deduplicate display sources & prevent identical fallback URLs
+                        const resolvedPills: { label: string; url: string; key: string }[] = [];
+                        const seenPillUrls = new Set<string>();
+
+                        const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, '').trim();
+
+                        sortedEntries.forEach(([key, label]) => {
+                          const srcUpper = key;
                           const srcUrl = (() => {
                             let foundUrl: string | undefined = undefined;
-
-                            // 1. Direct match in selectedOpportunity.sourceUrls
                             if (selectedOpportunity.sourceUrls) {
-                              if (selectedOpportunity.sourceUrls[src]) foundUrl = selectedOpportunity.sourceUrls[src];
+                              if (selectedOpportunity.sourceUrls[label]) foundUrl = selectedOpportunity.sourceUrls[label];
                               else if (selectedOpportunity.sourceUrls[srcUpper]) foundUrl = selectedOpportunity.sourceUrls[srcUpper];
-                              else if (selectedOpportunity.sourceUrls[src.toLowerCase()]) foundUrl = selectedOpportunity.sourceUrls[src.toLowerCase()];
+                              else if (selectedOpportunity.sourceUrls[label.toLowerCase()]) foundUrl = selectedOpportunity.sourceUrls[label.toLowerCase()];
                               else {
                                 for (const [k, v] of Object.entries(selectedOpportunity.sourceUrls)) {
                                   if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
@@ -1841,79 +2007,77 @@ const historicMonths = useMemo(() => {
                                 }
                               }
                             }
-
-                            // Discard cross-matched URLs (e.g. don't use TES URL for Nord Anglia pill)
                             if (foundUrl) {
                               const fUrl = String(foundUrl);
                               if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                              if (srcUpper.includes("NORD ANGLIA") && fUrl.includes("tes.com")) foundUrl = undefined;
+                              if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
                             }
-
-                            // 2. Check matched job in activeVacancies
                             if (!foundUrl && activeVacancies && activeVacancies.length > 0) {
                               const matchedJob = activeVacancies.find((j: any) =>
                                 (selectedOpportunity.jobId && String(j.id) === String(selectedOpportunity.jobId)) ||
                                 (j.title && selectedOpportunity.jobTitle && j.title.toLowerCase() === selectedOpportunity.jobTitle.toLowerCase())
                               );
-                              if (matchedJob) {
-                                if (matchedJob.sourceUrls) {
-                                  for (const [k, v] of Object.entries(matchedJob.sourceUrls)) {
-                                    if (k.toUpperCase().trim() === srcUpper && v) {
-                                      foundUrl = v as string;
-                                      break;
-                                    }
+                              if (matchedJob && matchedJob.sourceUrls) {
+                                for (const [k, v] of Object.entries(matchedJob.sourceUrls)) {
+                                  if (k.toUpperCase().trim() === srcUpper && v) {
+                                    const candidate = String(v);
+                                    if (srcUpper === "TES" && !candidate.includes("tes.com")) continue;
+                                    if (srcUpper === "SEARCH ASSOCIATES" && !candidate.includes("searchassociates.com")) continue;
+                                    foundUrl = candidate;
+                                    break;
                                   }
-                                }
-                                if (!foundUrl && matchedJob.applyUrl) {
-                                  if (srcUpper === "TES" && matchedJob.applyUrl.includes("tes.com")) foundUrl = matchedJob.applyUrl;
-                                  if (srcUpper.includes("NORD ANGLIA") && matchedJob.applyUrl.includes("nordanglia")) foundUrl = matchedJob.applyUrl;
                                 }
                               }
                             }
-
-                            // 3. Fallback agency/hub/group URLs on activeSchool
                             if (!foundUrl) {
                               if (srcUpper.includes("NORD ANGLIA")) {
                                 foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || "https://careers.nordangliaeducation.com";
-                              } else if (srcUpper.includes("TEACH AWAY") || srcUpper.includes("TEACHAWAY")) {
-                                if (activeSchool?.teachAwayUrl) foundUrl = activeSchool.teachAwayUrl;
-                              } else if (srcUpper.includes("TEACHER HORIZONS") || srcUpper.includes("TEACHERHORIZONS")) {
-                                if (activeSchool?.teacherHorizonsUrl) foundUrl = activeSchool.teacherHorizonsUrl;
-                              } else if (srcUpper.includes("SEARCH ASSOCIATES") || srcUpper.includes("SEARCH_ASSOCIATES")) {
-                                if (activeSchool?.searchAssociatesUrl) foundUrl = activeSchool.searchAssociatesUrl;
                               } else if (srcUpper.includes("COGNITA")) {
                                 foundUrl = activeSchool?.careersPageUrl || "https://www.cognita.com/careers/";
                               } else if (srcUpper.includes("INSPIRED")) {
                                 foundUrl = activeSchool?.careersPageUrl || "https://inspirededu.com/careers";
-                              } else if (srcUpper.includes("OFFICIAL") || srcUpper.includes("SCHOOL") || srcUpper.includes("NORTHLANDS")) {
-                                if (activeSchool?.careersPageUrl) foundUrl = activeSchool.careersPageUrl;
-                                else if (activeSchool?.website) foundUrl = activeSchool.website;
-                                else if (activeSchool?.schooljp) foundUrl = activeSchool.schooljp;
+                              } else if (srcUpper === "DIRECT") {
+                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || selectedOpportunity.applyUrl;
                               } else if (srcUpper === "TES") {
                                 if (selectedOpportunity.applyUrl && selectedOpportunity.applyUrl.includes("tes.com")) {
                                   foundUrl = selectedOpportunity.applyUrl;
                                 } else if (activeSchool?.tesEmployerSlug) {
                                   foundUrl = `https://www.tes.com/jobs/employer/${activeSchool.tesEmployerSlug}`;
                                 }
+                              } else if (srcUpper === "SEARCH ASSOCIATES") {
+                                if (activeSchool?.searchAssociatesUrl) {
+                                  foundUrl = activeSchool.searchAssociatesUrl;
+                                }
                               }
                             }
 
-                            // 4. Final default
-                            if (!foundUrl || foundUrl === "#" || (srcUpper.includes("NORD ANGLIA") && foundUrl.includes("tes.com"))) {
-                              if (srcUpper.includes("NORD ANGLIA")) {
-                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || "https://careers.nordangliaeducation.com";
-                              } else {
-                                foundUrl = selectedOpportunity.applyUrl || activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || "#";
-                              }
+                            // Secondary aggregator/agency sources MUST have a valid dedicated engine URL, otherwise do not fall back to generic school URL
+                            if (srcUpper !== "DIRECT" && !foundUrl) {
+                              return "#";
                             }
 
+                            if (!foundUrl || foundUrl === "#") {
+                              foundUrl = selectedOpportunity.applyUrl || activeSchool?.careersPageUrl || activeSchool?.website || "#";
+                            }
                             return foundUrl || "#";
                           })();
 
+                          if (srcUrl === "#") return;
+
+                          const norm = normalizeUrl(srcUrl);
+                          // Suppress duplicate URLs for secondary non-direct sources if they match any already rendered pill URL
+                          if (seenPillUrls.has(norm)) return;
+                          seenPillUrls.add(norm);
+
+                          resolvedPills.push({ label, url: srcUrl, key });
+                        });
+
+                        return resolvedPills.map(({ label, url, key }) => {
+                          const srcUpper = key;
                           return (
                             <a
-                              key={src}
-                              href={srcUrl}
+                              key={label}
+                              href={url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={cn(
@@ -1936,9 +2100,8 @@ const historicMonths = useMemo(() => {
                                   ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
                                   : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
                               )}
-                              
                             >
-                              {src}
+                              {label === "Direct" ? "Official Website" : label}
                               <ArrowUpRight className="size-3.5" />
                             </a>
                           );
@@ -2143,38 +2306,6 @@ const historicMonths = useMemo(() => {
                   </div>
                 )}
 
-                {/* ⚠️ TACTICAL CURRENCY VOLATILITY ADVISORY BANNER */}
-                {(() => {
-                  const cName = canonicalCountry(getSchoolField(activeSchool, ['country', 'region']) || '');
-                  const currCode = String(activeCOL?.currencyCode || activeSchool?.currency || (cName === 'argentina' ? 'ARS' : (cName === 'egypt' ? 'EGP' : (cName === 'turkey' ? 'TRY' : 'Local')))).toUpperCase();
-                  const isVolatile = 
-                    cName === 'argentina' || 
-                    cName === 'egypt' || 
-                    cName === 'turkey' || 
-                    cName === 'venezuela' || 
-                    cName === 'lebanon' || 
-                    cName === 'nigeria' || 
-                    ['ARS', 'EGP', 'TRY', 'VES', 'LBP', 'NGN'].includes(currCode) ||
-                    activeSchool?.isVolatileMarket === true;
-
-                  if (!isVolatile) return null;
-                  return (
-                    <div className="mb-5 p-3.5 md:p-4 bg-amber-500/10 border-2 border-amber-500/40 rounded-sm shadow-xl flex items-start gap-3 animate-in fade-in duration-300">
-                      <div className="p-2 bg-amber-500/20 rounded-sm border border-amber-500/30 shrink-0 mt-0.5">
-                        <AlertTriangle className="size-5 text-amber-400 animate-pulse" />
-                      </div>
-                      <div className="space-y-1 flex-1">
-                        <p className="text-xs font-semibold text-slate-200 leading-relaxed">
-                          {getSchoolField(activeSchool, ['country', 'region']) || 'This location'} is subject to high inflation and severe currency fluctuations. Local currency ({currCode}) contracts carry significant devaluation risk.
-                          <span className="text-amber-300 font-bold block sm:inline sm:ml-1">
-                            Please confirm whether your specific offer is pegged to USD/EUR or paid into an offshore hard-currency account to protect your monthly savings.
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })()}
-
                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
                   <div className="space-y-2">
                     <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">
@@ -2213,17 +2344,40 @@ const historicMonths = useMemo(() => {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 leading-relaxed">Reliability</p>
-                    <p className="text-2xl font-black text-slate-300 italic leading-tight">{analysis?.reliability}<span className="text-xs text-slate-700">/10</span></p>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-right cursor-help group select-none">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 leading-relaxed group-hover:text-slate-200 transition-colors">Overall Rating</p>
+                          <p className={cn("text-2xl font-black italic leading-tight transition-colors", ratingTierConfig.textClass)}>
+                            {overallRatingNum.toFixed(1)}<span className="text-xs text-slate-600 not-italic ml-0.5">/10</span>
+                          </p>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 text-white p-3.5 shadow-2xl rounded-sm">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-1.5">
+                            <span className={cn("text-xs font-black uppercase tracking-wider", ratingTierConfig.textClass)}>
+                              {ratingTierConfig.tier}
+                            </span>
+                            <span className="text-[10px] font-mono font-bold text-slate-400">
+                              {overallRatingNum.toFixed(1)} / 10
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                            {ratingTierConfig.desc}
+                          </p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
                 {/* Main Grid: Outgoings & Incomes */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
                   <div className="space-y-4">
-                    <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
+                    <h3 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Minus className="size-4" /> Monthly outgoings</h3>
                     <div className="space-y-3">
                       {/* Monthly Rent */}
                       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0 border-b border-white/5 pb-2">
@@ -2442,7 +2596,7 @@ const historicMonths = useMemo(() => {
                   </div>
 
                   <div className="space-y-5">
-                    <h3 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
+                    <h3 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.35em] flex items-center gap-2 border-b border-[#d95f02]/10 pb-2.5 leading-normal"><Plus className="size-4" /> Monthly incomes</h3>
                     <div className="space-y-5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -2469,15 +2623,14 @@ const historicMonths = useMemo(() => {
                         <span className="text-[16px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalIn || 0).toLocaleString()}</span>
                       </div>
 
-                      <div className="bg-[#d95f02]/5 p-7 border border-[#d95f02]/20 text-right rounded-sm relative shadow-inner">
-                        {/* 🎯 BENCHMARK CURRENCY TOGGLE */}
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
-                            {BENCHMARKS.map(b => (
-                              <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[10px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
-                            ))}
-                          </div>
-                          <p className="text-xs font-black text-[#d95f02] uppercase tracking-[0.25em] italic leading-normal">Monthly Disposable Surplus</p>
+                      <div className="bg-[#d95f02]/5 p-7 border border-[#d95f02]/20 rounded-sm relative shadow-inner">
+                        {/* 🎯 HEADING */}
+                        <div className="text-left mb-1 overflow-hidden">
+                          <p className="text-sm sm:text-base font-black text-[#d95f02] uppercase tracking-normal sm:tracking-[0.15em] italic leading-normal whitespace-nowrap overflow-hidden text-ellipsis">Monthly Disposable Surplus</p>
+                        </div>
+                        {/* 💡 SUB-HEADER EXPLANATION ROW */}
+                        <div className="text-left mb-4 overflow-hidden">
+                          <p className="text-[9.5px] sm:text-[10.5px] font-medium text-slate-300 italic tracking-tight whitespace-nowrap">the amount you can allocate to savings, holidays, and wellbeing...</p>
                         </div>
 
                         <div className="flex flex-col items-end">
@@ -2489,9 +2642,14 @@ const historicMonths = useMemo(() => {
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-xs font-bold text-slate-400 uppercase">Conversion:</span>
-                            <span className={cn("text-xl font-black italic transition-all duration-300", (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
+                          {/* 🎯 CONVERSION LINE WITH BENCHMARK CURRENCY TOGGLE */}
+                          <div className="flex items-center justify-between w-full mt-2">
+                            <div className="flex bg-black/40 rounded-sm p-0.5 border border-white/5">
+                              {BENCHMARKS.map(b => (
+                                <button key={b.code} onClick={() => setBenchmark(b.code)} className={cn("px-2 py-1 text-[10px] font-black rounded-sm transition-all uppercase", benchmark === b.code ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>{b.code}</button>
+                              ))}
+                            </div>
+                            <span className={cn("font-black italic transition-all duration-300", surplusFontSizes.conversion, (analysis?.surplusBenchmark ?? 0) <= 0 ? "text-rose-500" : "text-emerald-500")}>
                               {benchmark} {Math.round(analysis?.surplusBenchmark || 0).toLocaleString()}
                             </span>
                           </div>
@@ -2551,24 +2709,14 @@ const historicMonths = useMemo(() => {
 
                           {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
                           {analysis?.countryIntel && (
-                            <div className="mt-4 w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-sm transition-all duration-500 overflow-hidden">
+                            <div className="mt-4 w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-sm transition-all duration-500 overflow-hidden">
                               {!showUpliftOptions && !uplift13 && !uplift14 ? (
-                                <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-700">
-                                  <div className="flex items-start gap-3">
-                                    <Zap className="size-4 text-emerald-400 mt-1 flex-shrink-0" />
-                                    <p className="text-[11px] font-bold text-slate-300 leading-relaxed italic">
-                                      {(activeSchool?.id === 'FLIS0097' || activeSchool?.confirmed14thMonth || activeSchool?.monthlySalary?.includes('14') || activeSchool?.salaryRange?.includes('14')) ? (
-                                        <span>Click here to add the <strong className="text-emerald-400 font-black not-italic">bonus months salary</strong></span>
-                                      ) : (
-                                        <>Do you want to adjust your offer to allow for bonus month salaries offered in <span className="text-emerald-400 font-black">{formatCountry(settings.country)}</span>?</>
-                                      )}
-                                    </p>
-                                  </div>
+                                <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
                                   <button
                                     onClick={() => setShowUpliftOptions(true)}
-                                    className="w-full py-2 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group"
+                                    className="w-full py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group flex items-center justify-center gap-1.5"
                                   >
-                                    Adjust Offer <ArrowDownCircle className="inline size-3 ml-1 group-hover:translate-y-0.5 transition-transform" />
+                                    Include bonus month salary <ArrowDownCircle className="size-3 group-hover:translate-y-0.5 transition-transform" />
                                   </button>
                                 </div>
                               ) : (
@@ -2747,6 +2895,130 @@ const historicMonths = useMemo(() => {
                       });
                     */}
 
+                    {/* 🛡️ COMPACT SECURITY & SAFETY INTELLIGENCE SECTION */}
+                    {(() => {
+                      const cName = canonicalCountry(getSchoolField(activeSchool, ['country', 'region']) || '');
+                      const currCode = String(activeCOL?.currencyCode || activeSchool?.currency || (cName === 'argentina' ? 'ARS' : (cName === 'egypt' ? 'EGP' : (cName === 'turkey' ? 'TRY' : 'Local')))).toUpperCase();
+                      const isVolatile = 
+                        cName === 'argentina' || 
+                        cName === 'egypt' || 
+                        cName === 'turkey' || 
+                        cName === 'venezuela' || 
+                        cName === 'lebanon' || 
+                        cName === 'nigeria' || 
+                        cName === 'south africa' || 
+                        cName === 'south-africa' || 
+                        ['ARS', 'EGP', 'TRY', 'VES', 'LBP', 'NGN', 'ZAR'].includes(currCode) ||
+                        activeSchool?.isVolatileMarket === true;
+
+                      // 1. Safe Neighborhoods & Commute Copy
+                      let neighborhoodCopy = "Gated perimeter, 24/7 security guard access & rapid response. Secure commuting in recommended expat zones.";
+                      if (cName === 'argentina') {
+                        neighborhoodCopy = "Gated/secure housing provided in expat zones (Palermo/Recoleta/Belgrano). High petty crime (snatch-and-grab); Uber recommended late at night.";
+                      } else if (cName === 'south africa' || cName === 'south-africa') {
+                        neighborhoodCopy = "Gated/secure estate housing in expat hubs (Dainfern, Sandton, Constantia). High property crime; anti-smash & grab vehicle film & Uber recommended.";
+                      } else if (cName === 'egypt') {
+                        neighborhoodCopy = "Secure compounds in expat hubs (Maadi, New Cairo, Zamalek). Heavy urban congestion; Uber/private drivers recommended for daily commutes.";
+                      } else if (cName === 'china') {
+                        neighborhoodCopy = "Extremely low violent and petty crime. Highly safe urban commuting via MRT/Subway and Didi at all hours.";
+                      }
+
+                      // 2. Streaming & Censorship Access Copy
+                      const isGfwOrCensored = ['china', 'united arab emirates', 'saudi arabia', 'qatar', 'oman', 'egypt', 'russia', 'turkey', 'vietnam', 'myanmar'].includes(cName);
+                      let digitalCopy = "Uncensored internet access. Paid VPN recommended (~$8–10/mo) for home-country streaming & overseas banking.";
+                      if (cName === 'china') {
+                        digitalCopy = "CRITICAL PRE-DEPARTURE SETUP: Local ISPs & app stores block VPN downloads inside China. You MUST install stealth VPNs (Astrill / LetsVPN) BEFORE departure. Great Firewall blocks Google, WhatsApp, YouTube.";
+                      } else if (['united arab emirates', 'qatar', 'saudi arabia', 'oman'].includes(cName)) {
+                        digitalCopy = "PRE-DEPARTURE SETUP REQUIRED: Local ISPs block VPN download portals & WhatsApp/FaceTime VoIP calling. Download & configure VPN apps BEFORE departure to maintain VoIP & streaming access.";
+                      } else if (['egypt', 'russia', 'turkey', 'vietnam', 'myanmar'].includes(cName)) {
+                        digitalCopy = "PRE-DEPARTURE SETUP ADVISED: In-country VPN download portals and protocols are throttled by local ISPs. Install obfuscated VPN apps PRIOR to arrival for banking & streaming.";
+                      } else if (cName === 'argentina') {
+                        digitalCopy = "Uncensored internet. Paid VPN required (~$8–10/mo) for accessing home-country streaming services (CNN, BBC iPlayer, Netflix) and overseas banking.";
+                      }
+
+                      // 3. Devaluation & Remittance Risk Copy
+                      let finCopy = `Low exchange rate volatility. Standard international banking & remittance options active.`;
+                      if (isVolatile) {
+                        if (cName === 'argentina') {
+                          finCopy = "High ARS volatility. Verify if salary is USD-pegged, split-paid, or deposited directly into an offshore hard-currency account.";
+                        } else {
+                          finCopy = `High ${currCode} volatility. Verify if salary is USD-pegged, split-paid, or deposited directly into an offshore hard-currency account.`;
+                        }
+                      }
+
+                      return (
+                        <div className="mt-1 mb-6 space-y-3">
+                          <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 leading-relaxed">
+                            Security &amp; Safety Guide
+                          </h4>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                            {/* 1. Safe Neighborhoods & Commute */}
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-1.5 hover:border-white/15 transition-all shadow-sm">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                                  <Home className="size-3.5 text-emerald-400 shrink-0" /> Safe Neighborhoods &amp; Commute
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                                {neighborhoodCopy}
+                              </p>
+                            </div>
+
+                            {/* 2. Streaming & Censorship Access */}
+                            <div className={cn(
+                              "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
+                              isGfwOrCensored
+                                ? "bg-purple-500/10 border border-purple-500/40 hover:border-purple-500/60"
+                                : "bg-black/30 border border-white/5 hover:border-white/15"
+                            )}>
+                              <div className="flex items-center justify-between">
+                                <span className={cn(
+                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+                                  isGfwOrCensored ? "text-purple-300" : "text-slate-300"
+                                )}>
+                                  <Wifi className="size-3.5 text-purple-400 shrink-0" /> Streaming &amp; Censorship Access
+                                </span>
+                              </div>
+                              <p className={cn(
+                                "text-[10px] font-medium leading-relaxed",
+                                isGfwOrCensored ? "text-slate-300" : "text-slate-400"
+                              )}>
+                                {digitalCopy}
+                              </p>
+                            </div>
+
+                            {/* 3. Devaluation & Remittance Risk */}
+                            <div className={cn(
+                              "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
+                              isVolatile 
+                                ? "bg-amber-500/10 border border-amber-500/40 hover:border-amber-500/60" 
+                                : "bg-black/30 border border-white/5 hover:border-white/15"
+                            )}>
+                              <div className="flex items-center justify-between">
+                                <span className={cn(
+                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+                                  isVolatile ? "text-amber-300" : "text-slate-300"
+                                )}>
+                                  {isVolatile ? (
+                                    <AlertTriangle className="size-3.5 text-amber-400 animate-pulse shrink-0" />
+                                  ) : (
+                                    <Banknote className="size-3.5 text-amber-400 shrink-0" />
+                                  )}
+                                  Devaluation &amp; Remittance Risk
+                                </span>
+                              </div>
+                              <p className={cn(
+                                "text-[10px] font-medium leading-relaxed",
+                                isVolatile ? "text-slate-300" : "text-slate-400"
+                              )}>
+                                {finCopy}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     <div>
                         {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
@@ -2764,7 +3036,7 @@ const historicMonths = useMemo(() => {
 
                           return (
                             <div>
-                              <h4 className="text-xs font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
+                              <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
                                 <span>
                                   {monthLabel
                                     ? `Staff Turnover Guide — last ${monthLabel}`
@@ -2853,9 +3125,10 @@ const historicMonths = useMemo(() => {
                             (() => {
                               // Read pre-calculated allProcessedJobs from component scope
                               const processedJobs12 = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
-                              const churnRate = stabilityReport.metrics.estimatedStaffBase 
-                                ? Math.round((processedJobs12.length / stabilityReport.metrics.estimatedStaffBase) * 100) 
-                                : (stabilityReport.metrics.estimatedChurnRatePercent || 0);
+                              const knownVacanciesCount = Math.max(processedJobs12.length, stabilityReport.metrics?.totalKnownVacancies || stabilityReport.total_known_vacancies || 0);
+                              const churnRate = stabilityReport.metrics?.estimatedStaffBase 
+                                ? Math.round((knownVacanciesCount / stabilityReport.metrics.estimatedStaffBase) * 100) 
+                                : (stabilityReport.metrics?.estimatedChurnRatePercent || 0);
 
                               const currentJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const historicJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "HISTORIC_Y1");
@@ -2933,13 +3206,13 @@ const historicMonths = useMemo(() => {
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
                                       <div className={cn("text-sm font-black text-white mt-0.5 transition-all duration-300", isCalculatingStability && "blur-[3px] select-none")}>
-                                        {processedJobs12.length}
+                                        {knownVacanciesCount}
                                       </div>
                                     </div>
                                     <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
                                       <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
                                       <div className="text-sm font-black text-white mt-0.5">
-                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" && processedJobs12.length === 0 ? "—" : `${churnRate}%`}
+                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" && knownVacanciesCount === 0 ? "—" : `${churnRate}%`}
                                       </div>
                                     </div>
                                   </div>
@@ -3124,38 +3397,7 @@ const historicMonths = useMemo(() => {
                       </div>
                     </div>
 
-                    {/* 🛰️ PREMIUM DYNAMIC BRIEFING NARRATIVE */}
-                    {cachedBriefingText && (
-                      <div className="pt-6 border-t border-white/5 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-[#d95f02] uppercase tracking-[0.15em] bg-[#d95f02]/10 px-2 py-0.5 rounded-sm border border-[#d95f02]/20 flex items-center gap-1">
-                              <Zap className="size-2.5" /> Staffroom Vibe & Dossier Intel
-                            </span>
-                          </div>
-                          {isRewording && (
-                            <span className="text-[9px] font-black text-teal-400 uppercase tracking-widest animate-pulse flex items-center gap-1.5">
-                              <span className="size-1.5 rounded-full bg-teal-400 animate-ping" />
-                              Recalibrating staffroom talk...
-                            </span>
-                          )}
-                        </div>
-                        <div className="space-y-4 text-[13px] text-slate-300 leading-relaxed border-l-2 border-teal-500/30 pl-4 italic font-medium">
-                          {isRewording && !rewordedBriefingText ? (
-                            <div className="space-y-3 py-2">
-                              <div className="h-4 bg-white/5 rounded-sm w-3/4 animate-pulse" />
-                              <div className="h-4 bg-white/5 rounded-sm w-5/6 animate-pulse" />
-                              <div className="h-4 bg-white/5 rounded-sm w-2/3 animate-pulse" />
-                              <div className="h-4 bg-white/5 rounded-sm w-4/5 animate-pulse" />
-                            </div>
-                          ) : (
-                            (rewordedBriefingText || cachedBriefingText).split('\n\n').map((para: string, i: number) => (
-                              <p key={`briefing-para-${i}`}>{para.trim()}</p>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    )}
+
                   </div>
                 )}
 
@@ -3217,8 +3459,7 @@ const historicMonths = useMemo(() => {
                     <div className="mt-8 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
                       <div className="bg-[#1f2937]/25 border border-white/5 rounded-sm p-5 space-y-5">
                         <div className="flex items-center gap-2">
-                          <ShieldCheck className="size-4 text-[#d95f02]" />
-                          <span className="text-xs font-black uppercase tracking-widest text-[#d95f02]">Staff Room Intelligence</span>
+                          <span className="text-sm font-black uppercase tracking-widest text-[#d95f02]">Staff Room Intelligence</span>
                         </div>
                         <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
                           {matrixItems.map(item => (

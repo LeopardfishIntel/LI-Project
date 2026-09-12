@@ -59,6 +59,7 @@ export const dynamic = "force-dynamic";
  * multiplier, applied to the pre-computed `savingsPotentialSingle` baseline.
  */
 import { parseClosingDate } from '@/lib/crawler/dateParser';
+import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -128,26 +129,57 @@ const parseSalary = (val: any): number => {
 
 const getJobCardReference = (job: any): string => {
   if (!job) return "";
-  const schoolNum = (job.schoolId || "").replace(/^FLIS/i, "");
+  const schoolIdStr = String(job.school_id || job.schoolId || "").toUpperCase();
+  const schoolFormatted = schoolIdStr.startsWith("FLIS") ? schoolIdStr : (schoolIdStr ? `FLIS${schoolIdStr}` : "");
   
   let jobIdNum = "";
-  if (job.id) {
-    const match = String(job.id).match(/(\d+)$/);
-    if (match) {
-      jobIdNum = match[1];
+
+  // 1. Check candidate apply & source URLs for multi-digit ATS vacancy IDs (>= 4 digits) excluding years 2020-2030
+  const candidateUrls = [
+    job.apply_url,
+    job.applyUrl,
+    job.source_url,
+    job.sourceUrl
+  ].filter(Boolean);
+
+  for (const url of candidateUrls) {
+    const strUrl = String(url);
+    const matches = strUrl.match(/(\d{4,})/g);
+    if (matches) {
+      for (const m of matches) {
+        const num = parseInt(m, 10);
+        if (num < 2020 || num > 2030) {
+          jobIdNum = m;
+          break;
+        }
+      }
+      if (jobIdNum) break;
     }
   }
-  if (!jobIdNum && job.source_url) {
-    const match = String(job.source_url).match(/(\d+)\/?$/);
-    if (match) {
-      jobIdNum = match[1];
+
+  // 2. Check job.id for explicit numeric ID (>= 4 digits) excluding years 2020-2030
+  if (!jobIdNum && job.id) {
+    const matches = String(job.id).match(/(\d{4,})/g);
+    if (matches) {
+      for (const m of matches) {
+        const num = parseInt(m, 10);
+        if (num < 2020 || num > 2030) {
+          jobIdNum = m;
+          break;
+        }
+      }
     }
   }
+
+  // 3. Fallback to deterministic fixed job hash code
   if (!jobIdNum) {
     jobIdNum = getFixedJobRef(job).replace(/^REF-/i, "");
   }
 
-  return schoolNum ? `${schoolNum}/${jobIdNum}` : jobIdNum;
+  if (schoolFormatted && jobIdNum) {
+    return `ID: ${schoolFormatted} / #${jobIdNum}`;
+  }
+  return schoolFormatted ? `ID: ${schoolFormatted}` : `Ref: #${jobIdNum}`;
 };
 
 const getFixedJobRef = (job: any): string => {
@@ -229,7 +261,8 @@ const buildEvalUrl = (job: any, famStatus: string) => {
   const sJson = encodeURIComponent(JSON.stringify(sourcesArr));
   const sUrlsJson = encodeURIComponent(JSON.stringify(job.sourceUrls || {}));
 
-  return "/financial-forecaster?schoolId=" + job.schoolId + 
+  return "/financial-forecaster?schoolId=" + (job.schoolId || "") + 
+    "&schoolName=" + encodeURIComponent(job.schoolName || "") +
     "&jobId=" + job.id + 
     "&jobTitle=" + encodeURIComponent(job.title) + 
     "&department=" + encodeURIComponent(job.department || "") + 
@@ -276,6 +309,7 @@ export default function FeaturedJobsPage() {
   const [familyStatus, setFamilyStatus] = useState<string>("Single");
   const [sortBy, setSortBy] = useState<string>("Projected Savings");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [engineBarOpen, setEngineBarOpen] = useState(false);
   
   // Refresh loading states
   const [refreshingSchools, setRefreshingSchools] = useState<Record<string, boolean>>({});
@@ -329,7 +363,7 @@ export default function FeaturedJobsPage() {
   // Query 1: Pre-enriched cache documents (approved public feed) — single flat collection, no joins
   const cacheQuery = useMemoFirebase(
     () => (mounted && firestore
-      ? query(collection(firestore, 'featured_jobs_cache'), where('status', '==', 'approved'))
+      ? collection(firestore, 'featured_jobs_cache')
       : null),
     [firestore, mounted]
   );
@@ -580,17 +614,18 @@ export default function FeaturedJobsPage() {
         // MULTI-ENGINE SOURCE FILTER
         const sourceUpper = String(cacheDoc.source || '').toUpperCase();
         const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = sourceUpper === 'TES' && applyUrlLower.includes('tes.com/jobs/vacancy/');
-        const isNae = sourceUpper === 'NORD ANGLIA' && applyUrlLower.includes('careers.nordangliaeducation.com/job/');
-        const isGrc = sourceUpper === 'GRC' && (applyUrlLower.includes('grcfair.org/job-details/') || applyUrlLower.includes('grcfair.org/job/'));
-        const isInspired = (sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com/job/'));
-        const isTeachAway = (sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com/'));
-        const isCognita = (sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com/'));
-        const isMalvern = (sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollegefamily.org'));
-        const isUwc = (sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org/career/') || applyUrlLower.includes('uwc.org/careers/'));
-        const isIsp = (sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com/'));
-        const isGlobe = (sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate.schoolrecruiter.com/') || applyUrlLower.includes('careers.globeducate.com/'));
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe) return;
+        const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
+        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
+        const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
+        const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
+        const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
+        const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
+        const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege');
+        const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
+        const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
+        const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
+        const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isOfficial) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -598,11 +633,17 @@ export default function FeaturedJobsPage() {
         // Closing date guard
         if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) return;
 
+        // School & Teaching Job verification guard
+        const sIdCheck = (cacheDoc.schoolId || '').trim();
+        const sNameCheck = (cacheDoc.schoolName || '').trim();
+        if (!sIdCheck || !sNameCheck || sIdCheck.toUpperCase().startsWith("AGNT")) return;
+        if (!isValidJobTitle(cacheDoc.title || (cacheDoc as any).jobTitle || '')) return;
+
         // Deduplication by unique applyUrl & title + schoolId
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
         if (applyUrlLower) seenUrls.add(applyUrlLower);
 
-        const jobKey = `${cacheDoc.schoolId.toLowerCase()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
+        const jobKey = `${(cacheDoc.schoolId || '').toLowerCase().trim()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
         const newSrc = cacheDoc.source || "Official Source";
 
         if (seenJobKeys.has(jobKey)) {
@@ -738,7 +779,7 @@ export default function FeaturedJobsPage() {
             ? { seconds: Math.floor(cacheDoc.ingestedAtMillis / 1000) }
             : null,
           closesDateRaw: closesDate,
-          isRollingDeadline: cacheDoc.isRollingDeadline ?? !closesDate,
+          isRollingDeadline: !closesDate,
         });
       });
 
@@ -825,6 +866,7 @@ export default function FeaturedJobsPage() {
 
   // Search Engine Protocol counts for header buttons
   const engineCounts = useMemo(() => {
+    let direct = 0;
     let tes = 0;
     let nae = 0;
     let grc = 0;
@@ -840,6 +882,8 @@ export default function FeaturedJobsPage() {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
       const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
+      const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !jobSrcUpper.includes("SEARCH ASSOCIATES") && !jobSrcUpper.includes("TES") && !jobSrcUpper.includes("COGNITA") && !jobSrcUpper.includes("NORD ANGLIA") && !jobSrcUpper.includes("INSPIRED") && !jobSrcUpper.includes("GRC") && !jobSrcUpper.includes("TEACH AWAY");
+      if (hasDirect) direct++;
       if (jobSrcUpper === "TES" || sourcesUpper.includes("TES")) tes++;
       if (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || schoolGroupUpper.includes("NORD ANGLIA")) nae++;
       if (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC")) grc++;
@@ -852,7 +896,7 @@ export default function FeaturedJobsPage() {
       if (jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE")) globe++;
       if (jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES")) searchAssociates++;
     });
-    return { ALL: allJobs.length, "SEARCH ASSOCIATES": searchAssociates, COGNITA: cognita, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway, MALVERN: malvern, UWC: uwc, ISP: isp, GLOBEDUCATE: globe };
+    return { ALL: allJobs.length, DIRECT: direct, "SEARCH ASSOCIATES": searchAssociates, COGNITA: cognita, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway, MALVERN: malvern, UWC: uwc, ISP: isp, GLOBEDUCATE: globe };
   }, [allJobs]);
 
 
@@ -866,6 +910,9 @@ export default function FeaturedJobsPage() {
   // Filter Logic
   const filteredJobs = useMemo(() => {
     return allJobs.filter(job => {
+      // Must match a valid, named FLIS database school & valid teaching job title
+      if (!job.schoolName || !job.schoolName.trim() || !job.schoolId || !job.schoolId.trim()) return false;
+      if (!isValidJobTitle(job.title || '')) return false;
       // Search text query (matches title, school, city, country)
       const matchesQuery = 
         normalize(job.title).includes(normalize(searchQuery)) ||
@@ -925,7 +972,9 @@ export default function FeaturedJobsPage() {
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP");
         const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !jobSrcUpper.includes("SEARCH ASSOCIATES") && !jobSrcUpper.includes("TES") && !jobSrcUpper.includes("COGNITA") && !jobSrcUpper.includes("NORD ANGLIA") && !jobSrcUpper.includes("INSPIRED") && !jobSrcUpper.includes("GRC") && !jobSrcUpper.includes("TEACH AWAY");
         const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES");
+        if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
         if (selectedSourceEngine === "SEARCH ASSOCIATES" && !hasSA) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
         if (selectedSourceEngine === "TES" && !hasTes) return false;
@@ -995,7 +1044,12 @@ export default function FeaturedJobsPage() {
               Featured Vacancies
             </h1>
             <p className="text-sm text-slate-300 font-normal leading-relaxed max-w-3xl">
-              Leopardfish curate active international school opportunities across the globe, we then break down the real numbers, tax-adjusted pay, local living costs, and net savings, so you know exactly what your projected package could be worth before you apply.
+              <span className="hidden md:inline">
+                Leopardfish curate active international school opportunities across the globe, we then break down the real numbers, tax-adjusted pay, local living costs, and net savings, so you know exactly what your projected package could be worth before you apply.
+              </span>
+              <span className="md:hidden">
+                Leopardfish curate active international school opportunities with real salary breakdowns, tax-adjusted pay, living costs & net savings projections.
+              </span>
             </p>
           </div>
           
@@ -1253,10 +1307,29 @@ export default function FeaturedJobsPage() {
 
             {/* Search Engine Selection Protocol Control Bar */}
             {!(loadingPublicJobs || loadingAdminJobs) && (
-              <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xl">
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 shadow-xl">
+                {/* Mobile Toggle Button (Default Off) */}
+                <button
+                  type="button"
+                  onClick={() => setEngineBarOpen(!engineBarOpen)}
+                  className="md:hidden w-full flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-300 py-1"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-emerald-400" />
+                    Engine Filters ({selectedSourceEngine === "ALL" ? `All (${engineCounts.ALL})` : selectedSourceEngine})
+                  </span>
+                  <span className="text-[#FF6B35] text-[11px] flex items-center gap-1 font-bold">
+                    {engineBarOpen ? "Hide Filters ▲" : "Show Filters ▼"}
+                  </span>
+                </button>
+
+                <div className={cn(
+                  "flex-wrap items-center gap-2 mt-2 md:mt-0",
+                  engineBarOpen ? "flex" : "hidden md:flex"
+                )}>
                   {[
                     { id: "ALL", label: `All (${engineCounts.ALL})` },
+                    { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
                     { id: "SEARCH ASSOCIATES", label: `Search Associates (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                     { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
                     { id: "TES", label: `TES (${engineCounts.TES})` },
@@ -1280,6 +1353,7 @@ export default function FeaturedJobsPage() {
                           : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800/60"
                       )}
                     >
+                      {engine.id === "DIRECT" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "SEARCH ASSOCIATES" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
                       {engine.id === "COGNITA" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
@@ -1462,10 +1536,7 @@ export default function FeaturedJobsPage() {
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
-                          <span className="text-slate-600 hidden sm:inline">•</span>
-                          <span className="hidden sm:inline-block bg-white/5 border border-white/10 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
-                            {formatCurriculumBadge(job.curriculum)}
-                          </span>
+                          
                         </div>
 
                         {/* Right metadata: Deadline & Ref ID */}
@@ -1503,7 +1574,7 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
                       {/* Left Column: Badges & Metric Pills */}
-                      <div className="flex flex-wrap items-center justify-start gap-2 w-full sm:w-auto">
+                      <div className="flex flex-nowrap sm:flex-wrap items-center justify-between sm:justify-start gap-1.5 sm:gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-visible no-scrollbar pb-0.5 sm:pb-0">
                         {/* NEW, CLOSING SOON & Search Engine Source Badges */}
                         {(() => {
                           const now = new Date();
@@ -1538,85 +1609,134 @@ export default function FeaturedJobsPage() {
 
 
                               {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
-                              {(job.sources && job.sources.length > 0
-                                  ? (() => {
-                                      const sMap = new Map<string, string>();
-                                      job.sources.forEach((s: any) => {
-                                        if (!s) return;
-                                        const u = String(s).toUpperCase().trim();
-                                        const label = (u === "GLOBE" || u === "GLOBEDUCATE") ? "Globeducate" : (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) ? "Search Associates" : (u === "COGNITA" ? "Cognita" : (u === "INSPIRED" ? "Inspired" : (u === "MALVERN" ? "Malvern" : (u === "UWC" ? "UWC" : (u === "ISP" ? "ISP" : (u === "TES" ? "TES" : (u === "NORD ANGLIA" ? "Nord Anglia" : s)))))));
-                                        if (!sMap.has(u)) sMap.set(u, label);
-                                      });
-                                      return Array.from(sMap.values());
-                                    })()
-                                  : [String(job.source).toUpperCase().includes("GLOBE") ? "Globeducate" : job.source]
-                                ).map((src: any) => {
-                                  const srcUpper = String(src).toUpperCase().trim();
+                              {(() => {
+                                const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
+                                const sMap = new Map<string, string>();
+                                sMap.set("DIRECT", "Direct");
+
+                                rawSources.forEach((s: any) => {
+                                  if (!s) return;
+                                  const u = String(s).toUpperCase().trim();
+                                  let key = u;
+                                  let label = s;
+                                  if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
+                                  else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
+                                  else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
+                                  else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
+                                  else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
+                                  else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                                  else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                                  else if (u === "TES") { key = "TES"; label = "TES"; }
+                                  else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                                  else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
+                                  else { key = "DIRECT"; label = "Direct"; }
+                                  sMap.set(key, label);
+                                });
+
+                                const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
+                                  if (a === "DIRECT") return -1;
+                                  if (b === "DIRECT") return 1;
+                                  return 0;
+                                });
+
+                                const resolvedPills: { label: string; url: string; key: string }[] = [];
+                                const seenPillUrls = new Set<string>();
+                                const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, '').trim();
+
+                                sortedEntries.forEach(([key, label]) => {
+                                  const srcUpper = key;
                                   const srcUrl = (() => {
+                                    let foundUrl: string | undefined = undefined;
                                     if (job.sourceUrls) {
-                                      if (job.sourceUrls[src]) return job.sourceUrls[src];
-                                      if (job.sourceUrls[srcUpper]) return job.sourceUrls[srcUpper];
-                                      if (job.sourceUrls[src.toLowerCase()]) return job.sourceUrls[src.toLowerCase()];
-                                      for (const [k, v] of Object.entries(job.sourceUrls)) {
-                                        if (k.toUpperCase().trim() === srcUpper && v) return v as string;
+                                      if (job.sourceUrls[label]) foundUrl = job.sourceUrls[label];
+                                      else if (job.sourceUrls[srcUpper]) foundUrl = job.sourceUrls[srcUpper];
+                                      else if (job.sourceUrls[label.toLowerCase()]) foundUrl = job.sourceUrls[label.toLowerCase()];
+                                      else {
+                                        for (const [k, v] of Object.entries(job.sourceUrls)) {
+                                          if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
+                                            foundUrl = v as string;
+                                            break;
+                                          }
+                                        }
                                       }
                                     }
-                                    if (srcUpper.includes("NORD ANGLIA")) {
-                                      if ((job as any).applyUrl?.includes("careers.nordangliaeducation.com")) return (job as any).applyUrl;
-                                      if (job.source_url?.includes("careers.nordangliaeducation.com")) return job.source_url;
+                                    if (foundUrl) {
+                                      const fUrl = String(foundUrl);
+                                      if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                                      if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
                                     }
-                                    if (srcUpper.includes("TES")) {
-                                      if ((job as any).applyUrl?.includes("tes.com")) return (job as any).applyUrl;
-                                      if (job.source_url?.includes("tes.com")) return job.source_url;
+                                    if (!foundUrl) {
+                                      if (srcUpper.includes("NORD ANGLIA")) {
+                                        if ((job as any).applyUrl?.includes("careers.nordangliaeducation.com")) foundUrl = (job as any).applyUrl;
+                                        else if (job.source_url?.includes("careers.nordangliaeducation.com")) foundUrl = job.source_url;
+                                      } else if (srcUpper === "TES") {
+                                        if ((job as any).applyUrl?.includes("tes.com")) foundUrl = (job as any).applyUrl;
+                                        else if (job.source_url?.includes("tes.com")) foundUrl = job.source_url;
+                                      }
                                     }
-                                    return (job as any).applyUrl || job.source_url || "#";
+                                    if (srcUpper !== "DIRECT" && !foundUrl) {
+                                      return "#";
+                                    }
+                                    if (!foundUrl || foundUrl === "#") {
+                                      const candidateUrl = (job as any).applyUrl || job.source_url;
+                                      if (candidateUrl && candidateUrl !== "#" && candidateUrl.trim() !== "") {
+                                        foundUrl = candidateUrl;
+                                      } else if (srcUpper === "DIRECT" && job.schoolWebsite) {
+                                        foundUrl = job.schoolWebsite;
+                                      } else {
+                                        foundUrl = "#";
+                                      }
+                                    }
+                                    return foundUrl || "#";
                                   })();
-                                return (
-                                  <a
-                                    key={src}
-                                    href={srcUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={cn(
-                                      "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
-                                      srcUpper.includes("INSPIRED")
-                                        ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
-                                        : srcUpper === "TES"
-                                        ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
-                                        : srcUpper.includes("COGNITA")
-                                        ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
-                                        : srcUpper.includes("MALVERN")
-                                        ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
-                                        : srcUpper.includes("UWC")
-                                        ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
-                                        : srcUpper.includes("ISP")
-                                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                        : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
-                                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                        : srcUpper === "NORD ANGLIA"
-                                        ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
-                                        : srcUpper === "GRC"
-                                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                        : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                    )}
-                                    
-                                  >
-                                    {src} ↗
-                                  </a>
-                                );
-                              })}
 
-                              {isClosingSoon && (
-                                <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                                  CLOSING SOON
-                                </span>
-                              )}
+                                  if (srcUrl === "#") return;
 
-                              {(job.isRollingDeadline || !job.closesDateRaw) && (
-                                <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
-                                  <Clock className="size-2.5" /> ROLLING DEADLINE
-                                </span>
-                              )}
+                                  const norm = normalizeUrl(srcUrl);
+                                  if (seenPillUrls.has(norm)) return;
+                                  seenPillUrls.add(norm);
+
+                                  resolvedPills.push({ label: label === "Direct" ? "Official Website" : label, url: srcUrl, key: srcUpper });
+                                });
+
+                                return resolvedPills.map(({ label, url, key }) => {
+                                  const srcUpper = key;
+                                  return (
+                                    <a
+                                      key={label}
+                                      href={url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={cn(
+                                        "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
+                                        srcUpper.includes("INSPIRED")
+                                          ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
+                                          : srcUpper === "TES"
+                                          ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
+                                          : srcUpper.includes("COGNITA")
+                                          ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
+                                          : srcUpper.includes("MALVERN")
+                                          ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
+                                          : srcUpper.includes("UWC")
+                                          ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
+                                          : srcUpper.includes("ISP")
+                                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                          : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
+                                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                          : srcUpper === "NORD ANGLIA"
+                                          ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                                          : srcUpper === "GRC"
+                                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                          : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                      )}
+                                    >
+                                      {label} ↗
+                                    </a>
+                                  );
+                                });
+                              })()}
+
+
                             </div>
                           );
                         })()}
@@ -1627,34 +1747,45 @@ export default function FeaturedJobsPage() {
                           const evalUrl = buildEvalUrl(job, familyStatus);
 
                           return (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button
-                                  type="button"
-                                  onClick={(e) => e.stopPropagation()}
-                                  aria-label={`${badge.label} Details`}
-                                  className={cn(
-                                    "inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
-                                    badge.boxStyle
-                                  )}
-                                >
-                                  <span>{badge.label}</span>
-                                  <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
-                                <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                                <p className="text-slate-300 text-xs leading-relaxed mb-3">{badge.description}</p>
-                                <a
-                                  href={evalUrl}
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white font-black text-[10px] uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
-                                >
-                                  <span>Evaluate Opportunity</span>
-                                  <ArrowUpRight className="size-3.5" />
-                                </a>
-                              </PopoverContent>
-                            </Popover>
+                            <>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => e.stopPropagation()}
+                                    aria-label={`${badge.label} Details`}
+                                    className={cn(
+                                      "inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
+                                      badge.boxStyle
+                                    )}
+                                  >
+                                    <span>{badge.label}</span>
+                                    <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                                  </button>
+                                </PopoverTrigger>
+                                <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                  <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
+                                  <p className="text-slate-300 text-xs leading-relaxed mb-3">{badge.description}</p>
+                                  <a
+                                    href={evalUrl}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white font-black text-[10px] uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
+                                  >
+                                    <span>Evaluate Opportunity</span>
+                                    <ArrowUpRight className="size-3.5" />
+                                  </a>
+                                </PopoverContent>
+                              </Popover>
+
+                              <a 
+                                href={evalUrl}
+                                onClick={(e) => e.stopPropagation()}
+                                className="sm:hidden inline-flex items-center justify-center gap-1 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
+                              >
+                                <span>Evaluate</span>
+                                <ArrowUpRight className="size-3" />
+                              </a>
+                            </>
                           );
                         })()}
 
@@ -1698,8 +1829,8 @@ export default function FeaturedJobsPage() {
                               </button>
                             )}
                             <a 
-                              href={`/financial-forecaster?schoolId=${job.schoolId}&jobId=${job.id}&jobTitle=${encodeURIComponent(job.title)}&department=${encodeURIComponent(job.department || '')}&curriculum=${encodeURIComponent(job.curriculum || '')}&applyUrl=${encodeURIComponent(job.source_url || (job as any).applyUrl || '')}&closesDate=${encodeURIComponent(job.date_closing || '')}&savingsPotential=${job.savingsPotential || 0}&schoolRating=${job.schoolRating || ''}&source=${encodeURIComponent(job.source || '')}&city=${encodeURIComponent(job.city || '')}&country=${encodeURIComponent(job.country || '')}`}
-                              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-4 py-2.5 sm:py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center"
+                              href={buildEvalUrl(job, familyStatus)}
+                              className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-4 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center"
                             >
                               Evaluate Opportunity
                               <ArrowUpRight className="size-3.5" />

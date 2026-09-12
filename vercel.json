@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sweep-orchestrator",
+      "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/cron/daily-link-sweep",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}

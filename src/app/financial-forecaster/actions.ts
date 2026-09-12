@@ -219,7 +219,7 @@ const reconstructStructuredVacancies = (scrapedList: string[], schoolName?: stri
     const cleanDateStr = dateStr.replace(/posted:\s*/i, '').trim();
     const d = new Date(cleanDateStr);
     if (isNaN(d.getTime())) return "CURRENT";
-    const twelveMonthsAgo = new Date("2025-05-21");
+    const twelveMonthsAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
     return d >= twelveMonthsAgo ? "CURRENT" : "HISTORIC_Y1";
   };
 
@@ -516,6 +516,11 @@ const applyLeadershipEnrichment = async (report: any, schoolId: string, schoolNa
     if (!report.metrics) report.metrics = {};
     report.metrics.leadershipChurnRatioPercent = senior_leadership_churn_percentage;
     
+    // 🛡️ PRESERVE MANUAL OVERRIDE METRICS FOR CURATED STAFF TURNOVER GUIDES
+    if (report.isManualOverride) {
+        return report;
+    }
+
     // 🛡️ ISOLATE TO CURRENT (12-MONTH) CYCLES FOR METRICS AND COMMENTARY
     const currentVacancies = vacancies.filter((v: any) => v.recruitmentCycle === "CURRENT");
     
@@ -647,7 +652,10 @@ export async function getSchoolStabilityReport(input: {
 
         // 2. Read from Firestore via Admin SDK
         try {
-            data = await getDocument('schools', input.schoolId);
+            const docResult = await getDocument('schools', input.schoolId);
+            if (docResult) {
+                data = typeof docResult.data === 'function' ? docResult.data() : docResult;
+            }
         } catch (readErr) {
             console.warn(`🛸 [STABILITY ENGINE] Firestore read permission/connection limit:`, readErr);
         }
@@ -656,9 +664,9 @@ export async function getSchoolStabilityReport(input: {
         const localData = localCache[input.schoolId];
         if (localData) {
             data = {
-                ...data,
                 ...localData,
-                cachedStability: localData.cachedStability || (data && data.cachedStability)
+                ...data,
+                cachedStability: (data && data.cachedStability) || localData.cachedStability
             };
         }
 
@@ -688,8 +696,13 @@ export async function getSchoolStabilityReport(input: {
 
             // Determine if a new search is required:
             // - No search has ever run, OR
-            // - Force            // - 21 days (three weeks) have passed since the last search
-            if (input.forceRefresh || lastScrapedAt === null || scrapedJobsCount === null) {
+            // - Force
+            // - 21 days (three weeks) have passed since the last search
+            // - NOT a manual override school (unless forceRefresh requested)
+            const isManual = data?.isManualOverride === true || data?.cachedStability?.isManualOverride === true;
+            if (isManual) {
+                needsNewSearch = !!input.forceRefresh;
+            } else if (input.forceRefresh || lastScrapedAt === null || scrapedJobsCount === null) {
                 needsNewSearch = true;
             } else {
                 const daysElapsed = (Date.now() - new Date(lastScrapedAt).getTime()) / (1000 * 60 * 60 * 24);
@@ -702,19 +715,30 @@ export async function getSchoolStabilityReport(input: {
 
             // If a new search is required, BUT we have cached stability data and it is NOT a manual force refresh:
             // return the stale cache immediately and execute the revalidation sweep in the background!
-            if (needsNewSearch && data.cachedStability && !input.forceRefresh) {
+            if (needsNewSearch && data.cachedStability && !input.forceRefresh && !isManual) {
                 console.log(`🛸 [STABILITY ENGINE] [SWR] Returning STALE cached stability report instantly for ${input.schoolName}.`);
                 const cachedReport = {
                     ...data.cachedStability,
-                    scrapedJobsList,
+                    scrapedJobsList: data.cachedStability.scrapedJobsList || scrapedJobsList,
                     lastScrapedAt,
                     isUpdating: true
                 };
-                if (!cachedReport.vacancies_discovered) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
+                if (!cachedReport.vacancies_discovered || cachedReport.vacancies_discovered.length === 0) {
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city);
                 }
-                cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
-                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
+                const chinaLocs = ['shenzhen', 'hangzhou', 'chengdu', 'futian', 'nanshan', 'park lane harbour', 'guangzhou', 'beijing', 'shanghai'];
+                const isNonChina = (input.country || '').toLowerCase().trim() !== 'china';
+                if (cachedReport.vacancies_discovered) {
+                    cachedReport.vacancies_discovered = cachedReport.vacancies_discovered.filter((v: any) => {
+                        const t = (v.title || '').toLowerCase();
+                        if (isNonChina && chinaLocs.some(l => t.includes(l))) return false;
+                        return true;
+                    });
+                }
+                if (!cachedReport.structured_vacancies || cachedReport.structured_vacancies.length === 0) {
+                    cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
+                }
+                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered?.length || cachedReport.total_known_vacancies || 0;
                 cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
                     ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
                     : 0;
@@ -750,7 +774,10 @@ export async function getSchoolStabilityReport(input: {
                                 city: input.city,
                                 country: input.country
                             });
-                            const freshJobsList = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
+                            const scrapedLive = cleanScrapedJobsList(searchRes.scrapedJobsList, input.schoolName);
+                            const existingScraped = (data && Array.isArray(data.scrapedJobsList)) ? data.scrapedJobsList : [];
+                            const combinedList = Array.from(new Set([...scrapedLive, ...existingScraped]));
+                            const freshJobsList = cleanScrapedJobsList(combinedList, input.schoolName);
                             const freshJobsCount = freshJobsList.length;
                             const freshLastScrapedAt = new Date().toISOString();
 
@@ -953,14 +980,16 @@ export async function getSchoolStabilityReport(input: {
                 console.log(`🛸 [STABILITY ENGINE] Returning cached stability report for ${input.schoolName}`);
                 const cachedReport = {
                     ...data.cachedStability,
-                    scrapedJobsList,
+                    scrapedJobsList: data.cachedStability.scrapedJobsList || scrapedJobsList,
                     lastScrapedAt
                 };
-                if (!cachedReport.vacancies_discovered) {
-                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(scrapedJobsList, input.schoolName, input.city);
+                if (!cachedReport.vacancies_discovered || cachedReport.vacancies_discovered.length === 0) {
+                    cachedReport.vacancies_discovered = reconstructStructuredVacancies(cachedReport.scrapedJobsList, input.schoolName, input.city);
                 }
-                cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
-                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered.length;
+                if (!cachedReport.structured_vacancies || cachedReport.structured_vacancies.length === 0) {
+                    cachedReport.structured_vacancies = cachedReport.vacancies_discovered;
+                }
+                cachedReport.total_known_vacancies = cachedReport.vacancies_discovered?.length || cachedReport.total_known_vacancies || 0;
                 cachedReport.estimated_churn_percentage = input.estimatedStaffBase > 0 
                     ? parseFloat(((cachedReport.total_known_vacancies / input.estimatedStaffBase) * 100).toFixed(1)) 
                     : 0;

@@ -77,6 +77,16 @@ export function isBlockedContentUrl(urlStr: string | null | undefined): boolean 
          lower.includes('/pta/') ||
          lower.includes('/parent-association') ||
          lower.includes('/alumni') ||
+         lower.includes('/open-house') ||
+         lower.includes('/open-day') ||
+         lower.includes('/clubs-and-leadership') ||
+         lower.includes('/field-trips') ||
+         lower.includes('/speaker-series') ||
+         lower.includes('/arts-festival') ||
+         lower.includes('/principals-message') ||
+         lower.includes('/principals-welcome') ||
+         lower.includes('/from-the-school-director') ||
+         lower.includes('/directory') ||
          lower.includes('schrole.com/blog');
 }
 
@@ -171,8 +181,13 @@ export function resolveVacancyUrl(input: any): string {
     return sanitizeUrl(input) || '';
   }
   if (!input) return '';
-  const url = input.rawHref || input.employerHref || input.schoolWebsite || '';
-  return sanitizeUrl(url) || '';
+  const candidate = input.rawHref || input.applyUrl || input.source_url || input.employerHref || '';
+  const cleanCand = sanitizeUrl(candidate);
+  if (cleanCand && !isGenericRootUrl(cleanCand)) {
+    return cleanCand;
+  }
+  const fallback = input.schoolWebsite || '';
+  return sanitizeUrl(fallback) || cleanCand || '';
 }
 
 export function hasTemplatePlaceholder(urlStr: string | null | undefined): boolean {

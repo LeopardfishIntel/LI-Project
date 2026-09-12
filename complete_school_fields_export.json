@@ -2737,7 +2737,7 @@
     "numericalstaff": "8500%",
     "lastSync": "2026-05-26T10:41:07.832Z",
     "housingprovision": "Premium furnished housing or high-value allowance",
-    "techecosystem": "1:1 iPad/Laptop program; Canvas/ManageBac integration",
+    "techecosystem": "1:1 Laptop program; Canvas integration",
     "scrapedJobsCount": 0,
     "scrapedJobsList": [],
     "revalidationError": null,
@@ -2844,7 +2844,19 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 2 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-08-31T07:37:51.541Z"
+    "lastScrapedAt": "2026-08-31T07:37:51.541Z",
+    "techEcosystemTags": {
+      "devices": [],
+      "suite": [
+        "Microsoft 365",
+        "Google Workspace"
+      ],
+      "lms": [
+        "iSAMS",
+        "Firefly",
+        "Seesaw"
+      ]
+    }
   },
   {
     "id": "FLIS0045",
@@ -8536,19 +8548,19 @@
     "staffstudentratio": "1:10",
     "approvals": "BSO",
     "academicscore": "8.8",
-    "salaryRange": "$5,200.00",
+    "salaryRange": "OMR 1,650",
     "summary": "Top-tier non-profit with elite savings and stable culture.",
     "techscore": "8.0",
     "citySafety": "9.0",
     "confidence": "9.1",
     "housingprovision": "Provided",
-    "techecosystem": "1:1 iPad/LMS",
+    "techecosystem": "Microsoft 365, Canvas integration",
     "curriculum": "UK/A-Level",
     "staffcount": "175",
     "schoolname": "British School Muscat",
     "worklifescore": "8.5",
     "noncontacttime": "20%",
-    "healthcoverage": "Full Private",
+    "healthcoverage": "Comprehensive Medical Insurance provided",
     "inspect": "BSO",
     "validated": "LFI",
     "profit status": "Non-Profit",
@@ -8558,7 +8570,27 @@
       "briefing": "Let's talk about British School Muscat. This is genuinely one of the more desirable placements in the international circuit, largely due to its foundational structure and well-established reputation. As a top-tier non-profit school operating on the British curriculum with A-Levels, the professional reality here leans heavily towards stability and academic rigor rather than a high-pressure corporate churn-and-burn environment you sometimes find in for-profit chains. With a staff count of around 175 and a staff-to-student ratio of 1:10, alongside an average class size of 22, the teaching load is designed to be manageable, allowing for quality instruction and student support. Your non-contact time at 20% is decent, providing enough breathing room for planning, collaboration, and professional development without feeling overwhelmed. This isn't a place where you'll be constantly pushed to meet arbitrary metrics or deal with rapid curriculum changes. Instead, expect a stable culture focused on educational excellence and a traditional approach to teaching and learning. Moving here represents a serious and highly respectable career move, one that typically attracts dedicated professionals looking for a strong, supportive community, and therefore requires careful lifestyle planning to fully embrace the experience and make the most of what BSM and Muscat have to offer, ensuring you can fully engage with the professional expectations while also enjoying your personal life in Oman.",
       "currentHead": "Kai Vacher",
       "ownership": "Community Board",
-      "generatedAt": "2026-05-17T12:27:24.700Z"
+      "generatedAt": "2026-05-17T12:27:24.700Z",
+      "internationalHireGuidelines": {
+        "sponsorship": "All non-Omani staff must be sponsored by the school",
+        "qualifications": "Qualified Teacher Status (QTS) or internationally recognised equivalent degree; experience teaching English National Curriculum or EYFS in UK is desirable. ECTs and experienced English medium teachers considered.",
+        "seniorSchoolRequirements": "Experience teaching subject up to GCSE, A/S, and A2 level (or equivalent)",
+        "ageRestrictions": "Maximum age limit under Omani sponsorship regulations is 60 years old (candidates 60+ cannot be considered)",
+        "relationshipPolicy": "Under Omani sponsorship regulations and school policy, applications cannot be considered from unmarried couples (singly or jointly) or same-sex couples",
+        "medicalClearance": "Mandatory blood tests & medical clearance required by Omani Immigration (residency cannot be granted for HIV positive or Hepatitis cases)",
+        "backgroundChecks": "Police / DBS / ICPC checks required; minimum two satisfactory references (one from current Head Teacher/Principal)"
+      },
+      "remunerationDetails": {
+        "housing": "Accommodation Allowance provided or school-provided furnished accommodation",
+        "utilities": "Utilities Allowance provided (50 OMR baseline)",
+        "flightAllowance": "Annual Flight Allowance for teacher & eligible dependents",
+        "freightAllowance": "Freight Allowance provided upon relocation",
+        "medicalInsurance": "Comprehensive Medical Insurance provided",
+        "endOfServiceGratuity": "End of Service Gratuity in accordance with Omani Labour Law",
+        "tuitionDiscount": "Subsidised tuition for up to 2-3 children at British School Muscat",
+        "cpd": "Continuing Professional Development opportunities"
+      },
+      "updatedAt": "2026-09-10T17:18:42.901Z"
     },
     "cachedBriefings": {
       "USD": {
@@ -8586,7 +8618,68 @@
     "name": "British School Muscat",
     "agency": "Teacher Horizons, LinkedIn",
     "website": "https://www.britishschoolmuscat.com",
-    "updatedAt": "2026-08-30T16:53:51.162Z"
+    "updatedAt": "2026-09-10T17:18:42.901Z",
+    "techEcosystemTags": {
+      "devices": [],
+      "suite": [
+        "Microsoft 365"
+      ],
+      "lms": [
+        "Canvas"
+      ]
+    },
+    "salaryrange": "OMR 1,650",
+    "startingSalary": 1650,
+    "salaryMin": 1650,
+    "salaryMax": 1650,
+    "salaryRaw": "OMR 1,650",
+    "currency": "OMR",
+    "salaryCurrency": "OMR",
+    "housingBenefit": "Provided (Accommodation Allowance or furnished housing)",
+    "flightAllowance": "Annual Flight Allowance included",
+    "relocationFreightAllowance": "Provided",
+    "tuitionBenefit": "Subsidised tuition for children at BSM",
+    "internationalPackageDetails": {
+      "employmentType": "International Hire & Local Hire available",
+      "salaryStructure": {
+        "type": "Tax-Free Base Salary",
+        "baseMonthlySalaryOMR": 1650,
+        "currency": "OMR",
+        "taxRate": "0%",
+        "managementAllowances": "Available depending on role/responsibility",
+        "remunerationOfThreshold": "Available depending on role & experience"
+      },
+      "allowancesAndBenefits": {
+        "housing": "Accommodation Allowance provided or school-provided furnished accommodation",
+        "utilities": "Utilities Allowance provided (50 OMR baseline)",
+        "flightAllowance": "Annual Flight Allowance for teacher & eligible dependents",
+        "freightAllowance": "Freight Allowance provided upon relocation",
+        "medicalInsurance": "Comprehensive Medical Insurance provided",
+        "endOfServiceGratuity": "End of Service Gratuity in accordance with Omani Labour Law",
+        "tuitionDiscount": "Subsidised tuition for up to 2-3 children at British School Muscat",
+        "cpd": "Continuing Professional Development opportunities"
+      },
+      "visaAndEligibility": {
+        "sponsorship": "All non-Omani staff must be sponsored by the school",
+        "qualifications": "Qualified Teacher Status (QTS) or internationally recognised equivalent degree; experience teaching English National Curriculum or EYFS in UK is desirable. ECTs and experienced English medium teachers considered.",
+        "seniorSchoolRequirements": "Experience teaching subject up to GCSE, A/S, and A2 level (or equivalent)",
+        "ageRestrictions": "Maximum age limit under Omani sponsorship regulations is 60 years old (candidates 60+ cannot be considered)",
+        "relationshipPolicy": "Under Omani sponsorship regulations and school policy, applications cannot be considered from unmarried couples (singly or jointly) or same-sex couples",
+        "medicalClearance": "Mandatory blood tests & medical clearance required by Omani Immigration (residency cannot be granted for HIV positive or Hepatitis cases)",
+        "backgroundChecks": "Police / DBS / ICPC checks required; minimum two satisfactory references (one from current Head Teacher/Principal)"
+      }
+    },
+    "benefits": [
+      "Tax-Free Salary",
+      "Accommodation Allowance",
+      "Utilities Allowance",
+      "Flight Allowance",
+      "Freight Allowance",
+      "Medical Insurance",
+      "Subsidised School Tuition",
+      "End of Service Gratuity",
+      "CPD"
+    ]
   },
   {
     "id": "FLIS0127",
@@ -9079,7 +9172,7 @@
     "country": "South Africa",
     "Ownership": "Independent",
     "classsize": "18",
-    "city": "Joburg",
+    "city": "Johannesburg",
     "rating": "Highly Regarded",
     "totalscore": "7.9",
     "numericalstaff": "175",

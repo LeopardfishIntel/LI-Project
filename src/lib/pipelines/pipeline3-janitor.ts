@@ -192,6 +192,96 @@ async function promoteApprovedJobs(db: any): Promise<{ promoted: number; errors:
  *
  * @returns JanitorRunResult — audit summary.
  */
+
+// ─── Step 4: Auto-sync school openJobsCount counters with active featured jobs ─
+
+async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ syncedSchools: number; totalActiveJobs: number; errors: string[] }> {
+  let syncedSchools = 0;
+  let totalActiveJobs = 0;
+  const errors: string[] = [];
+
+  if (typeof db.collection !== 'function') return { syncedSchools, totalActiveJobs, errors };
+
+  try {
+    const snap = await db.collection('featured_jobs_cache').get();
+    const seenUrls = new Set<string>();
+    const seenJobKeys = new Set<string>();
+    const activeCountsBySchool: Record<string, number> = {};
+
+    snap.docs.forEach((docSnap: any) => {
+      const cacheDoc = docSnap.data();
+      const rawStatus = String(cacheDoc.status || '').toUpperCase();
+      if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
+      if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < now) return;
+
+      const sourceUpper = String(cacheDoc.source || '').toUpperCase();
+      const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
+
+      const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
+      const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
+      const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
+      const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
+      const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
+      const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
+      const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege');
+      const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
+      const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
+      const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
+      const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
+
+      if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isOfficial) return;
+
+      if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
+      if (applyUrlLower) seenUrls.add(applyUrlLower);
+
+      const sIdRaw = (cacheDoc.schoolId || '').trim();
+      if (!sIdRaw || sIdRaw.toUpperCase().startsWith('AGNT')) return;
+
+      const sId = sIdRaw.toLowerCase();
+      const jobKey = `${sId}_${(cacheDoc.title || '').toLowerCase().trim()}`;
+      if (seenJobKeys.has(jobKey)) return;
+      seenJobKeys.add(jobKey);
+
+      totalActiveJobs++;
+      const upperSid = sId.toUpperCase();
+      activeCountsBySchool[upperSid] = (activeCountsBySchool[upperSid] || 0) + 1;
+    });
+
+    const schoolSnap = await db.collection('schools').get();
+    let batch = db.batch();
+    let batchSize = 0;
+
+    for (const docSnap of schoolSnap.docs) {
+      const sData = docSnap.data();
+      const sId = (sData.schoolId || docSnap.id).toUpperCase().trim();
+      const actualCount = activeCountsBySchool[sId] || 0;
+
+      if (sData.openJobsCount !== actualCount) {
+        batch.set(docSnap.ref, { openJobsCount: actualCount, lastCountersSyncedAt: now }, { merge: true });
+        syncedSchools++;
+        batchSize++;
+      }
+
+      if (batchSize >= 450) {
+        await batch.commit();
+        batch = db.batch();
+        batchSize = 0;
+      }
+    }
+
+    if (batchSize > 0) {
+      await batch.commit();
+    }
+
+    console.log(`🛸 [PIPELINE 3] Synced openJobsCount for ${syncedSchools} schools. Total active featured jobs: ${totalActiveJobs}`);
+  } catch (err: any) {
+    errors.push(`sync_counters: ${err?.message || String(err)}`);
+  }
+
+  return { syncedSchools, totalActiveJobs, errors };
+}
+
+
 export async function runJanitorPipeline(): Promise<JanitorRunResult> {
   const startMs = Date.now();
   console.log('🛸 [PIPELINE 3] Daily Janitor starting...');
@@ -204,17 +294,19 @@ export async function runJanitorPipeline(): Promise<JanitorRunResult> {
     promoteApprovedJobs(db),
   ]);
 
+  const syncResult = await syncSchoolOpenJobCounters(db, now);
+
   const durationMs = Date.now() - startMs;
   const result: JanitorRunResult = {
     expired: expireResult.expired,
     promoted: promoteResult.promoted,
     mirrorErrors: expireResult.mirrorErrors,
-    errors: [...expireResult.errors, ...promoteResult.errors],
+    errors: [...expireResult.errors, ...promoteResult.errors, ...syncResult.errors],
     durationMs,
   };
 
   console.log(
-    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | errors=${result.errors.length} | duration=${durationMs}ms`
+    `🛸 [PIPELINE 3] Janitor complete | expired=${result.expired} | promoted=${result.promoted} | syncedSchools=${syncResult.syncedSchools} | totalActiveFeatured=${syncResult.totalActiveJobs} | duration=${durationMs}ms`
   );
 
   return result;

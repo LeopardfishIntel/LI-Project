@@ -1,0 +1,27 @@
+name: Leopardfish Automated Daily DB Sweep
+
+on:
+  schedule:
+    # 🛰️ Runs automatically every day at 03:00 UTC (04:00/05:00 Europe)
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  daily-sweep:
+    name: Execute 24-Hour Automated Scraper Sweep & Janitor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Sweep API
+        run: |
+          echo "📡 Triggering automated 24h daily sweep endpoint..."
+          APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL || 'https://www.leopardfishintel.com' }}"
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" "${APP_URL}/api/daily-sweep?force=false")
+          echo "Response:"
+          echo "$RESPONSE"
+          
+          HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "✅ Automated daily sweep completed successfully!"
+          else
+            echo "⚠️ Warning: Sweep API returned HTTP status $HTTP_STATUS"
+          fi

@@ -3,7 +3,7 @@
  */
 
 function escapeRegex(str: string) {
-  return str.replace(/[.*+?^$/{}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^$/{}()|[\]]/g, "\\$&");
 }
 
 export function sanitizeJobTitle(title: string, schoolName?: string): string {
@@ -56,4 +56,35 @@ export function sanitizeJobTitle(title: string, schoolName?: string): string {
   clean = clean.replace(/[-_\s/(]+$/, "").replace(/\s+/g, " ").trim();
 
   return clean || title.trim();
+}
+
+const TEACHING_ROLE_REGEX = /\b(teacher|head\s+of|director|principal|vice\s+principal|deputy\s+head|coordinator|counselor|counsellor|instructor|lecturer|professor|educator|assistant\s+principal|librarian|coach|tutor|specialist|leader|leadership|headmaster|headmistress|superintendent|intern|apprentice|practitioner)\b/i;
+const ACADEMIC_SUBJECT_REGEX = /\b(maths?|mathematics|english|science|physics|chemistry|biology|history|geography|art|music|drama|pe|physical education|computing|computer science|spanish|french|german|mandarin|chinese|humanities|economics|business|psychology|sociology)\b/i;
+
+export function isValidJobTitle(title: string): boolean {
+  if (!title || title.trim().length < 3 || title.trim().length > 120) return false;
+  const titleLower = title.toLowerCase().trim();
+
+  const nonJobKeywords = [
+    "apply", "parent and teacher", "open house", "clubs and leadership", 
+    "trips and expeditions", "speaker series", "arts festival", "past drama", 
+    "international recognition", "personalised pathways", "outstanding experiences",
+    "open day", "inspections and reviews", "duke of edinburgh", "principal’s message",
+    "principal's message", "principal's welcome", "principal’s welcome",
+    "performing arts & communication", "nas music academy", "early years apprentice",
+    "faculty & staff directory", "find phone numbers", "learn more about", "schedule a personalized visit",
+    "visa support for", "parent teacher organization", "experiential learning",
+    "faculty features", "arts and cultural events", "search jobs find the perfect opening",
+    "from the director", "saturday english program", "weekday english program", "summer english program", "english programs",
+    "btec international level 3", "science of learning", "contact us", "admissions", "our campus",
+    "privacy policy", "terms of use", "information manager", "it manager", "finance manager",
+    "facilities manager", "marketing manager", "hr manager", "human resources", "admissions manager",
+    "estate manager", "operations manager", "business manager", "accountant", "data analyst",
+    "catering manager", "transport manager", "systems manager", "network manager", "payroll",
+    "bursar", "registrar", "reprographics", "unsolicited applications", "limpieza y comedor"
+  ];
+
+  if (nonJobKeywords.some(kw => titleLower.includes(kw))) return false;
+
+  return TEACHING_ROLE_REGEX.test(titleLower) || ACADEMIC_SUBJECT_REGEX.test(titleLower);
 }

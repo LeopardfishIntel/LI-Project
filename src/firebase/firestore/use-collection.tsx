@@ -21,9 +21,26 @@ export function useCollection<T = DocumentData>(
   const [error, setError] = useState<Error | null>(null);
 
   // 🛡️ MEMOIZATION SHIELD: 
-  // We extract a stable key from the query to prevent re-running on every render.
+  // We extract a stable key from the query including filter constraints to prevent re-running on every render while supporting query parameter changes.
   const queryMemoKey = pathOrQuery 
-    ? (typeof pathOrQuery === 'string' ? pathOrQuery : ((pathOrQuery as any)?._query?.path?.toString() || 'active-query'))
+    ? (typeof pathOrQuery === 'string' 
+        ? pathOrQuery 
+        : (() => {
+            try {
+              const q = pathOrQuery as any;
+              if (q?._query) {
+                const pathStr = q._query.path?.toString() || 'path';
+                const filtersStr = (q._query.filters || []).map((f: any) => {
+                  const fieldStr = f.field?.segments ? f.field.segments.join('.') : (f.field?.canonicalString?.() || '');
+                  const opStr = f.op || '';
+                  const valStr = JSON.stringify(f.value || f.val || '');
+                  return `${fieldStr}:${opStr}:${valStr}`;
+                }).join('|');
+                return `${pathStr}?${filtersStr}`;
+              }
+            } catch (e) {}
+            return 'active-query';
+          })())
     : 'null-query';
 
   useEffect(() => {
