@@ -1091,6 +1091,46 @@ export default function FeaturedJobsPage() {
     );
   };
 
+    const getVacancySummaryText = (count: number, engineId: string) => {
+    const vacancyNoun = count === 1 ? "active vacancy" : "active vacancies";
+
+    if (engineId === "ALL") {
+      return (
+        <span>
+          Showing <strong className="text-white font-bold">{count}</strong> {vacancyNoun}
+        </span>
+      );
+    }
+
+    const engineDisplayNames: Record<string, string> = {
+      "DIRECT": "Direct School Portals",
+      "SEARCH ASSOCIATES": "Search Associates",
+      "COGNITA": "Cognita Schools",
+      "TES": "TES (Times Educational Supplement)",
+      "NORD ANGLIA": "Nord Anglia Education",
+      "INSPIRED": "Inspired Education",
+      "GLOBEDUCATE": "Globeducate",
+      "GLOBE": "Globeducate",
+      "ISP": "International Schools Partnership (ISP)",
+      "TAYLORS": "Taylor's Education Group",
+      "ESF": "English Schools Foundation Hong Kong",
+      "GEMS": "GEMS Education",
+      "GRC": "GRC (Global Recruitment Collaborative)",
+      "TEACHAWAY": "Teach Away",
+      "TEACH AWAY": "Teach Away",
+      "MALVERN": "Malvern College International",
+      "UWC": "United World Colleges (UWC)",
+    };
+
+    const name = engineDisplayNames[engineId] || engineId;
+
+    return (
+      <span>
+        <strong className="text-white font-bold">{name}</strong> has <strong className="text-white font-bold">{count}</strong> {vacancyNoun}
+      </span>
+    );
+  };
+
   if (!mounted) return null;
 
   return (
@@ -1391,7 +1431,7 @@ export default function FeaturedJobsPage() {
                 {/* Row 2: Vacancies Count & Sort Dropdown */}
                 <div className="flex items-center justify-between pt-2.5 border-t border-slate-800/80 text-xs">
                   <span className="text-slate-300 font-medium">
-                    Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
+                    {getVacancySummaryText(filteredJobs.length, selectedSourceEngine)}
                   </span>
 
                   <div className="flex items-center gap-1.5">
@@ -1469,7 +1509,7 @@ export default function FeaturedJobsPage() {
                   <div className="flex justify-between items-center bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md shadow-lg">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-semibold text-slate-300">
-                        Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
+                        {getVacancySummaryText(filteredJobs.length, selectedSourceEngine)}
                       </span>
                       
                       {calculatedIsAdmin && (
