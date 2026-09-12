@@ -1072,3 +1072,36 @@ export async function getCoolingStatusesAction(): Promise<{ success: boolean; da
     return { success: false, data: {}, error: err?.message || String(err) };
   }
 }
+
+/**
+ * 🚨 Action: Fetch Unresolved Data Ingestion Conflict Alerts
+ */
+export async function getIngestionConflictAlertsAction(): Promise<{
+  success: boolean;
+  alerts: import('@/firebase/admin').IngestionConflictAlert[];
+  error: string | null;
+}> {
+  try {
+    const { getIngestionConflictAlerts } = await import('@/firebase/admin');
+    const alerts = await getIngestionConflictAlerts();
+    return { success: true, alerts, error: null };
+  } catch (err: any) {
+    return { success: false, alerts: [], error: err?.message || String(err) };
+  }
+}
+
+/**
+ * ⚡ Action: Resolve Data Ingestion Conflict Alert
+ */
+export async function resolveIngestionConflictAction(
+  alertId: string,
+  action: 'accept_dom' | 'keep_db'
+): Promise<{ success: boolean; error: string | null }> {
+  try {
+    const { resolveIngestionConflictAlert } = await import('@/firebase/admin');
+    const res = await resolveIngestionConflictAlert(alertId, action, 'admin');
+    return { success: res.success, error: res.error || null };
+  } catch (err: any) {
+    return { success: false, error: err?.message || String(err) };
+  }
+}

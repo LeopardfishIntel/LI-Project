@@ -31,6 +31,7 @@ interface ParityState {
   totalSchoolOpenJobs: number;
   isMatch: boolean;
   mismatches: MismatchItem[];
+  conflictCount: number;
 }
 
 export default function Header() {
@@ -56,12 +57,16 @@ export default function Header() {
       totalSchoolOpenJobs: prev?.totalSchoolOpenJobs || 0,
       isMatch: prev?.isMatch ?? true,
       mismatches: prev?.mismatches || [],
+      conflictCount: prev?.conflictCount || 0,
     }));
     try {
-      const [featuredSnap, schoolSnap] = await Promise.all([
+      const [featuredSnap, schoolSnap, conflictSnap] = await Promise.all([
         getDocs(collection(db, "featured_jobs_cache")),
         getDocs(collection(db, "schools")),
+        getDocs(collection(db, "ingestion_conflict_alerts")).catch(() => ({ docs: [] })),
       ]);
+
+      const conflictCount = (conflictSnap as any).docs ? (conflictSnap as any).docs.filter((d: any) => d.data().status === 'unresolved').length : 0;
 
       const schoolDocIds = new Set(schoolSnap.docs.map(doc => (doc.data().schoolId || doc.id).toUpperCase().trim()));
 
@@ -133,6 +138,7 @@ export default function Header() {
         totalSchoolOpenJobs,
         isMatch: mismatches.length === 0,
         mismatches,
+        conflictCount,
       });
     } catch (err) {
       console.error("Parity check failed:", err);
@@ -142,6 +148,7 @@ export default function Header() {
         totalSchoolOpenJobs: prev?.totalSchoolOpenJobs || 0,
         isMatch: prev?.isMatch ?? true,
         mismatches: prev?.mismatches || [],
+        conflictCount: prev?.conflictCount || 0,
       }));
     }
   };
@@ -289,7 +296,7 @@ export default function Header() {
                 "hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border transition-all cursor-pointer shadow-lg",
                 parityState.loading
                   ? "bg-slate-900 text-slate-400 border-slate-800"
-                  : parityState.isMatch
+                  : (parityState.isMatch && parityState.conflictCount === 0)
                   ? "bg-emerald-950/80 text-emerald-400 border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-900/50"
                   : "bg-amber-950/90 text-amber-300 border-amber-500/60 hover:border-amber-400 hover:bg-amber-900/60"
               )}
@@ -300,7 +307,7 @@ export default function Header() {
                   <RefreshCw className="size-3 animate-spin text-slate-400" />
                   Checking...
                 </>
-              ) : parityState.isMatch ? (
+              ) : (parityState.isMatch && parityState.conflictCount === 0) ? (
                 <>
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -311,7 +318,7 @@ export default function Header() {
               ) : (
                 <>
                   <AlertTriangle className="size-3 text-amber-400 animate-pulse" />
-                  <span>Sync Alert ({parityState.mismatches.length} Mismatch{parityState.mismatches.length > 1 ? "es" : ""})</span>
+                  <span>{parityState.conflictCount > 0 ? `${parityState.conflictCount} CONFLICT${parityState.conflictCount > 1 ? "S" : ""}` : `Sync Alert (${parityState.mismatches.length} Mismatch${parityState.mismatches.length > 1 ? "es" : ""})`}</span>
                 </>
               )}
             </button>

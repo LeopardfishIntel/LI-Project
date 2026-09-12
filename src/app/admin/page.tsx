@@ -19,6 +19,8 @@ import {
   uploadTransportIntelAction,
   updateCountryIndexesAction,
   clearCountryIndexesAction,
+  getIngestionConflictAlertsAction,
+  resolveIngestionConflictAction,
 
   type BulkEnrichState,
   type EcoActionState 
@@ -82,9 +84,45 @@ export default function AdminCommandPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState<'All' | 'Schools' | 'Countries' | 'Regions'>('All');
 
+  // Data Ingestion Conflict Alerts State
+  const [conflictAlerts, setConflictAlerts] = useState<import('@/firebase/admin').IngestionConflictAlert[]>([]);
+  const [loadingConflictAlerts, setLoadingConflictAlerts] = useState(false);
+  const [resolvingAlertId, setResolvingAlertId] = useState<string | null>(null);
+
   // Matrix AI State
   const [matrixCountryId, setMatrixCountryId] = useState('');
   const [matrixCountryName, setMatrixCountryName] = useState('');
+
+  async function loadConflictAlerts() {
+    setLoadingConflictAlerts(true);
+    try {
+      const res = await getIngestionConflictAlertsAction();
+      if (res.success && res.alerts) {
+        setConflictAlerts(res.alerts);
+      }
+    } catch (err) {
+      console.error("Failed loading conflict alerts:", err);
+    } finally {
+      setLoadingConflictAlerts(false);
+    }
+  }
+
+  async function handleResolveConflict(alertId: string, action: 'accept_dom' | 'keep_db') {
+    setResolvingAlertId(alertId);
+    try {
+      const res = await resolveIngestionConflictAction(alertId, action);
+      if (res.success) {
+        setStatus({ type: 'success', msg: `Conflict resolved: ${action === 'accept_dom' ? 'DOM Value Accepted' : 'DB Value Kept'}` });
+        await loadConflictAlerts();
+      } else {
+        setStatus({ type: 'error', msg: res.error || 'Resolution failed' });
+      }
+    } catch (err: any) {
+      setStatus({ type: 'error', msg: err?.message || 'Resolution failed' });
+    } finally {
+      setResolvingAlertId(null);
+    }
+  }
 
   async function handleUpdateMatrix() {
     setLoading(true); setStatus(null);
@@ -158,7 +196,7 @@ export default function AdminCommandPage() {
       setLoading(true); setStatus(null);
       const res = await uploadTransportIntelAction(JSON.parse(transportJsonInput));
       if (res.success) {
-        setStatus({ type: 'success', msg: `TRANSPORT UPLINK OK: ${res.count} documents synchronized.` });
+        setStatus({ type: 'success', msg: `TRANSPORT INTEL UPLINK OK: ${res.count} country documents updated.` });
         setTransportJsonInput('');
       } else {
         setStatus({ type: 'error', msg: res.error || 'Transport Uplink failed.' });
@@ -180,6 +218,7 @@ export default function AdminCommandPage() {
   async function loadTelemetry() {
     setLoadingTelemetry(true);
     setLoadingCrawlLogs(true);
+    await loadConflictAlerts();
     const result = await getTelemetryData();
     if (result.success) setTelemetry(result.data);
     setLoadingTelemetry(false);
@@ -191,7 +230,9 @@ export default function AdminCommandPage() {
   }
 
   useEffect(() => {
-    if (activeTab === 'telemetry' && mounted && !telemetry) loadTelemetry();
+    if (activeTab === 'telemetry' && mounted) {
+      loadTelemetry();
+    }
   }, [activeTab, mounted]);
 
   if (!mounted) return <div className="min-h-screen bg-[#020617]" />;
@@ -522,10 +563,91 @@ export default function AdminCommandPage() {
         {activeTab === 'telemetry' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-black uppercase tracking-widest text-white italic">Live Telemetry</h2>
+                    <h2 className="text-xl font-black uppercase tracking-widest text-white italic">Live Telemetry & Ingestion Audit</h2>
                     <button onClick={loadTelemetry} className="text-[10px] font-black uppercase tracking-widest text-[#d95f02] hover:text-white flex items-center gap-2">
                         {loadingTelemetry ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />} Refresh Data
                     </button>
+                </div>
+
+                {/* 🚨 DATA INGESTION CONFLICT ALERTS PANEL */}
+                <div className="bg-[#0b1224] border border-amber-500/30 rounded-sm p-6 space-y-4 shadow-2xl">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <AlertTriangle className="size-5 text-amber-400 animate-pulse" />
+                            <h3 className="text-xs font-black uppercase text-amber-300 tracking-wider">
+                                Data Ingestion Conflict Alerts ({conflictAlerts.length})
+                            </h3>
+                        </div>
+                        <button onClick={loadConflictAlerts} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white flex items-center gap-1.5">
+                            {loadingConflictAlerts ? <Loader2 className="size-3 animate-spin text-amber-400" /> : <RefreshCw className="size-3" />} Refresh Alerts
+                        </button>
+                    </div>
+
+                    {conflictAlerts.length === 0 ? (
+                        <div className="border border-emerald-500/20 bg-emerald-950/20 p-4 rounded-sm text-center">
+                            <CheckCircle2 className="size-6 text-emerald-400 mx-auto mb-2" />
+                            <p className="text-xs font-bold text-emerald-300 uppercase tracking-wider">Zero Ingestion Conflicts</p>
+                            <p className="text-[11px] text-slate-400 mt-1">All extracted DOM benefits match existing database records cleanly.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                            {conflictAlerts.map((alert) => (
+                                <div key={alert.id} className="bg-black/50 border border-amber-500/40 p-4 rounded-sm space-y-3">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-white/10 pb-2">
+                                        <div>
+                                            <span className="text-[10px] font-mono text-amber-400 font-bold uppercase mr-2">[{alert.schoolId}]</span>
+                                            <span className="text-sm font-black text-white">{alert.schoolName || alert.schoolId}</span>
+                                            {alert.jobTitle && <span className="text-xs text-slate-300 ml-2 italic">— {alert.jobTitle}</span>}
+                                        </div>
+                                        <div className="text-[10px] font-mono text-slate-400">
+                                            Field Contradiction: <span className="text-sky-400 font-bold">{alert.fieldName}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                                        <div className="bg-slate-900/90 border border-slate-800 p-3 rounded">
+                                            <span className="text-[9px] uppercase font-bold text-slate-500 block mb-1">Existing DB Value</span>
+                                            <span className="font-bold text-rose-400">{String(alert.dbValue)}</span>
+                                        </div>
+                                        <div className="bg-slate-900/90 border border-amber-500/40 p-3 rounded">
+                                            <span className="text-[9px] uppercase font-bold text-amber-400 block mb-1">Extracted DOM Value</span>
+                                            <span className="font-bold text-emerald-400">{String(alert.domValue)}</span>
+                                        </div>
+                                    </div>
+
+                                    {alert.domSnippet && (
+                                        <div className="bg-black/80 border border-white/5 p-2.5 rounded text-[11px] font-mono text-slate-300 italic">
+                                            Snippet: "<span className="text-amber-200">{alert.domSnippet}</span>"
+                                        </div>
+                                    )}
+
+                                    <div className="flex items-center justify-between pt-2">
+                                        {alert.sourceUrl ? (
+                                            <a href={alert.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-sky-400 hover:underline">
+                                                View Source Page &rarr;
+                                            </a>
+                                        ) : <div />}
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleResolveConflict(alert.id, 'accept_dom')}
+                                                disabled={resolvingAlertId === alert.id}
+                                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-wider rounded transition-all disabled:opacity-50"
+                                            >
+                                                {resolvingAlertId === alert.id ? "Processing..." : "Accept DOM Value"}
+                                            </button>
+                                            <button
+                                                onClick={() => handleResolveConflict(alert.id, 'keep_db')}
+                                                disabled={resolvingAlertId === alert.id}
+                                                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-extrabold uppercase tracking-wider rounded transition-all disabled:opacity-50"
+                                            >
+                                                Keep DB Value
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 
                 {telemetry && (() => {

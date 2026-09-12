@@ -955,7 +955,24 @@ export async function verifyJobUrlHttp(url: string, officialDomain?: string): Pr
       }
     }
 
-    // 🚫 Check for Expired / Closed Notice or Past validThrough in page HTML
+    // 🚫 Check for Expired / Closed Notice or Soft 404 in page HTML
+    if (res.ok && !responseText && !isGetFetched) {
+      try {
+        const getRes = await fetch(cleanUrl, {
+          method: 'GET',
+          redirect: 'follow',
+          signal: controller.signal,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          }
+        });
+        if (getRes.ok) {
+          responseText = (await getRes.text()).toLowerCase();
+        }
+      } catch {}
+    }
+
     if (responseText) {
       const schemaMatch = responseText.match(/"validThrough":"(\d{4}-\d{2}-\d{2})[^"]*"/i);
       if (schemaMatch) {
@@ -973,11 +990,20 @@ export async function verifyJobUrlHttp(url: string, officialDomain?: string): Pr
         /applications are now closed/i,
         /this position has been filled/i,
         /no longer accepting applications/i,
-        /this vacancy is no longer available/i
+        /this vacancy is no longer available/i,
+        /position closed/i,
+        /position filled/i,
+        /0 vacancies/i,
+        /vacancy closed/i,
+        /job not found/i,
+        /no active vacancies/i,
+        /no current vacancies/i,
+        /sorry,?\s+this\s+job\s+is\s+no\s+longer\s+available/i,
+        /404\s+-\s+page\s+not\s+found/i
       ];
       for (const p of expiredPatterns) {
         if (p.test(responseText)) {
-          return { isValid: false, status: "delisted", delistReason: "expired_on_page", finalUrl };
+          return { isValid: false, status: "delisted", delistReason: "soft_404_closed", finalUrl };
         }
       }
     }
@@ -1018,6 +1044,279 @@ export async function verifyJobUrlHttp(url: string, officialDomain?: string): Pr
       return { isValid: true, status: 'approved', finalUrl: cleanUrl };
     }
     return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl: cleanUrl };
+  }
+}
+
+// =====================================================================
+// 📦 UNSTRUCTURED BENEFIT PARSER & DOM CONFLICT SAFEGUARDS
+// =====================================================================
+
+export interface ExtractedBenefitsResult {
+  housingProvision: 'Provided' | 'Allowance' | 'Not Provided' | 'Unknown';
+  tuitionWaiver: { provided: boolean; coveragePercent?: number; childCount?: number };
+  flightAllowance: 'Annual' | 'Biennial' | 'Relocation Only' | 'None' | 'Unknown';
+  taxFreePerk: boolean;
+  extractedSnippets: {
+    housing?: string;
+    tuition?: string;
+    flight?: string;
+    tax?: string;
+  };
+}
+
+export function extractBenefitsFromText(text: string): ExtractedBenefitsResult {
+  if (!text || typeof text !== 'string') {
+    return {
+      housingProvision: 'Unknown',
+      tuitionWaiver: { provided: false },
+      flightAllowance: 'Unknown',
+      taxFreePerk: false,
+      extractedSnippets: {}
+    };
+  }
+
+  const rawLower = text.toLowerCase();
+  const snippets: { housing?: string; tuition?: string; flight?: string; tax?: string } = {};
+
+  const getMatchSnippet = (regex: RegExp): string | undefined => {
+    const match = text.match(regex);
+    if (!match) return undefined;
+    const matchIdx = match.index || 0;
+    const start = Math.max(0, matchIdx - 40);
+    const end = Math.min(text.length, matchIdx + match[0].length + 40);
+    return text.substring(start, end).replace(/\s+/g, ' ').trim();
+  };
+
+  // 1. Housing Provision
+  let housingProvision: 'Provided' | 'Allowance' | 'Not Provided' | 'Unknown' = 'Unknown';
+  if (/no\s+housing|housing\s+(is\s+)?not\s+provided|accommodation\s+(is\s+)?not\s+provided|living\s+costs?\s+not\s+covered/i.test(rawLower)) {
+    housingProvision = 'Not Provided';
+    snippets.housing = getMatchSnippet(/no\s+housing|housing\s+(is\s+)?not\s+provided|accommodation\s+(is\s+)?not\s+provided|living\s+costs?\s+not\s+covered/i);
+  } else if (/furnished\s+accommodation|accommodation\s+provided|free\s+housing|rent-free|school\s+provided\s+housing|housing\s+provided/i.test(rawLower)) {
+    housingProvision = 'Provided';
+    snippets.housing = getMatchSnippet(/furnished\s+accommodation|accommodation\s+provided|free\s+housing|rent-free|school\s+provided\s+housing|housing\s+provided/i);
+  } else if (/housing\s+allowance|accommodation\s+allowance|rental\s+allowance|monthly\s+housing\s+stipend/i.test(rawLower)) {
+    housingProvision = 'Allowance';
+    snippets.housing = getMatchSnippet(/housing\s+allowance|accommodation\s+allowance|rental\s+allowance|monthly\s+housing\s+stipend/i);
+  }
+
+  // 2. Tuition Waiver
+  let tuitionProvided = false;
+  let childCount: number | undefined = undefined;
+  if (/tuition\s+free|tuition\s+(waiver|discount|remission|covered)|free\s+school\s+places?/i.test(rawLower)) {
+    tuitionProvided = true;
+    snippets.tuition = getMatchSnippet(/tuition\s+free|tuition\s+(waiver|discount|remission|covered)|free\s+school\s+places?/i);
+    const childMatch = rawLower.match(/free\s+(?:school\s+)?places?\s+for\s+(?:up\s+to\s+)?(\d+)\s+child(?:ren)?/i);
+    if (childMatch) {
+      childCount = parseInt(childMatch[1], 10);
+    }
+  }
+
+  // 3. Flight Allowance
+  let flightAllowance: 'Annual' | 'Biennial' | 'Relocation Only' | 'None' | 'Unknown' = 'Unknown';
+  if (/no\s+flights?|flights?\s+not\s+provided/i.test(rawLower)) {
+    flightAllowance = 'None';
+    snippets.flight = getMatchSnippet(/no\s+flights?|flights?\s+not\s+provided/i);
+  } else if (/annual\s+(?:return\s+)?flights?|flight\s+allowance\s+annually|yearly\s+flights?|annual\s+airfare/i.test(rawLower)) {
+    flightAllowance = 'Annual';
+    snippets.flight = getMatchSnippet(/annual\s+(?:return\s+)?flights?|flight\s+allowance\s+annually|yearly\s+flights?|annual\s+airfare/i);
+  } else if (/biennial\s+flights?|flights?\s+every\s+two\s+years/i.test(rawLower)) {
+    flightAllowance = 'Biennial';
+    snippets.flight = getMatchSnippet(/biennial\s+flights?|flights?\s+every\s+two\s+years/i);
+  } else if (/relocation\s+flight|initial\s+flight\s+only/i.test(rawLower)) {
+    flightAllowance = 'Relocation Only';
+    snippets.flight = getMatchSnippet(/relocation\s+flight|initial\s+flight\s+only/i);
+  }
+
+  // 4. Tax Free Perk
+  let taxFreePerk = false;
+  if (/tax\s*free|tax-free\s+salary|net\s+salary\s+paid\s+without\s+deduction/i.test(rawLower)) {
+    taxFreePerk = true;
+    snippets.tax = getMatchSnippet(/tax\s*free|tax-free\s+salary|net\s+salary\s+paid\s+without\s+deduction/i);
+  }
+
+  return {
+    housingProvision,
+    tuitionWaiver: { provided: tuitionProvided, childCount },
+    flightAllowance,
+    taxFreePerk,
+    extractedSnippets: snippets
+  };
+}
+
+// =====================================================================
+// 🏅 SCHOOL ACCREDITATION PARSER & SYNC
+// =====================================================================
+
+export function extractSchoolAccreditations(text: string): string[] {
+  if (!text || typeof text !== 'string') return [];
+  const found = new Set<string>();
+  const t = text.toUpperCase();
+  if (/\bIB\b|INTERNATIONAL BACCALAUREATE/i.test(t)) found.add('IB');
+  if (/\bCIS\b|COUNCIL OF INTERNATIONAL SCHOOLS/i.test(t)) found.add('CIS');
+  if (/\bBSO\b|BRITISH SCHOOLS OVERSEAS/i.test(t)) found.add('BSO');
+  if (/\bNEASC\b|NEW ENGLAND ASSOCIATION/i.test(t)) found.add('NEASC');
+  if (/\bCOBIS\b|COUNCIL OF BRITISH INTERNATIONAL SCHOOLS/i.test(t)) found.add('COBIS');
+  if (/\bHMC\b|HEADMASTERS' AND HEADMISTRESSES'/i.test(t)) found.add('HMC');
+  if (/\bWASC\b|WESTERN ASSOCIATION OF SCHOOLS/i.test(t)) found.add('WASC');
+  if (/\bECIS\b|EDUCATIONAL COLLABORATIVE FOR INTERNATIONAL SCHOOLS/i.test(t)) found.add('ECIS');
+  return Array.from(found);
+}
+
+export async function syncSchoolAccreditations(schoolId: string, newAccreditations: string[]): Promise<void> {
+  if (!schoolId || !newAccreditations || newAccreditations.length === 0) return;
+  const dbInstance = getAdminDb();
+  const isAdmin = useAdmin();
+
+  try {
+    if (isAdmin) {
+      const schoolRef = dbInstance.collection('schools').doc(schoolId);
+      const snap = await schoolRef.get();
+      if (!snap.exists) return;
+      const data = snap.data();
+      const currentAcc: string[] = data.accreditations || data.Accreditations || [];
+      const updatedAcc = Array.from(new Set([...currentAcc, ...newAccreditations]));
+      if (updatedAcc.length > currentAcc.length) {
+        await schoolRef.update({
+          accreditations: updatedAcc,
+          lastAccreditationSyncAt: admin.firestore.Timestamp.now()
+        });
+        console.log(`🏅 [ACCREDITATION SYNC] Updated school ${schoolId} with new credentials: ${newAccreditations.join(', ')}`);
+      }
+    } else {
+      const docRef = doc(clientDb, 'schools', schoolId);
+      const snap = await getDoc(docRef);
+      if (!snap.exists()) return;
+      const data = snap.data();
+      const currentAcc: string[] = data.accreditations || data.Accreditations || [];
+      const updatedAcc = Array.from(new Set([...currentAcc, ...newAccreditations]));
+      if (updatedAcc.length > currentAcc.length) {
+        await updateDoc(docRef, {
+          accreditations: updatedAcc,
+          lastAccreditationSyncAt: new Date()
+        });
+        console.log(`🏅 [ACCREDITATION SYNC] Updated school ${schoolId} with new credentials: ${newAccreditations.join(', ')}`);
+      }
+    }
+  } catch (err) {
+    console.error(`Failed to sync school accreditations for ${schoolId}:`, err);
+  }
+}
+
+// =====================================================================
+// ⚠️ DATA INGESTION CONFLICT ALERT SYSTEM
+// =====================================================================
+
+export interface IngestionConflictAlert {
+  id: string;
+  schoolId: string;
+  schoolName?: string;
+  jobId?: string;
+  jobTitle?: string;
+  fieldName: string;
+  dbValue: any;
+  domValue: any;
+  domSnippet: string;
+  sourceUrl: string;
+  detectedAt: any;
+  status: 'unresolved' | 'resolved_dom' | 'resolved_db';
+  resolvedAt?: any;
+  resolvedBy?: string;
+}
+
+export async function recordIngestionConflictAlert(alert: Omit<IngestionConflictAlert, 'id' | 'detectedAt' | 'status'>): Promise<string> {
+  const dbInstance = getAdminDb();
+  const isAdmin = useAdmin();
+  const alertId = `conflict_${alert.schoolId}_${alert.jobId || 'school'}_${alert.fieldName}_${Date.now()}`;
+
+  const payload: IngestionConflictAlert = {
+    ...alert,
+    id: alertId,
+    detectedAt: isAdmin ? admin.firestore.Timestamp.now() : new Date(),
+    status: 'unresolved'
+  };
+
+  if (isAdmin) {
+    await dbInstance.collection('ingestion_conflict_alerts').doc(alertId).set(payload);
+  } else {
+    await setDoc(doc(clientDb, 'ingestion_conflict_alerts', alertId), payload);
+  }
+
+  console.warn(`🚨 [INGESTION CONFLICT ALERT RECORDED] ${alert.fieldName} mismatch on ${alert.schoolId}: DB="${alert.dbValue}" vs DOM="${alert.domValue}"`);
+  return alertId;
+}
+
+export async function getIngestionConflictAlerts(): Promise<IngestionConflictAlert[]> {
+  const dbInstance = getAdminDb();
+  const isAdmin = useAdmin();
+  const alerts: IngestionConflictAlert[] = [];
+
+  try {
+    if (isAdmin) {
+      const snap = await dbInstance.collection('ingestion_conflict_alerts').where('status', '==', 'unresolved').get();
+      snap.docs.forEach((d: any) => {
+        alerts.push({ id: d.id, ...d.data() });
+      });
+    } else {
+      const snap = await getDocs(collection(clientDb, 'ingestion_conflict_alerts'));
+      snap.docs.forEach((d) => {
+        const data = d.data() as IngestionConflictAlert;
+        if (data.status === 'unresolved') {
+          alerts.push({ ...data, id: d.id });
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Failed to fetch ingestion conflict alerts:", err);
+  }
+
+  return alerts;
+}
+
+export async function resolveIngestionConflictAlert(
+  alertId: string,
+  action: 'accept_dom' | 'keep_db',
+  reviewedBy: string = 'admin'
+): Promise<{ success: boolean; error?: string }> {
+  const dbInstance = getAdminDb();
+  const isAdmin = useAdmin();
+
+  try {
+    const alertSnap = await getDocument('ingestion_conflict_alerts', alertId);
+    if (!alertSnap.exists()) return { success: false, error: 'Alert not found' };
+    const alert = alertSnap.data() as IngestionConflictAlert;
+
+    if (action === 'accept_dom') {
+      if (alert.jobId && alert.schoolId) {
+        await updateDocument(`schools/${alert.schoolId}/jobs`, alert.jobId, {
+          [alert.fieldName]: alert.domValue,
+          status: 'approved',
+          lastVerifiedAt: isAdmin ? admin.firestore.Timestamp.now() : new Date()
+        });
+      } else if (alert.schoolId) {
+        await updateDocument('schools', alert.schoolId, {
+          [alert.fieldName]: alert.domValue
+        });
+      }
+    } else {
+      if (alert.jobId && alert.schoolId) {
+        await updateDocument(`schools/${alert.schoolId}/jobs`, alert.jobId, {
+          status: 'approved',
+          lastVerifiedAt: isAdmin ? admin.firestore.Timestamp.now() : new Date()
+        });
+      }
+    }
+
+    await updateDocument('ingestion_conflict_alerts', alertId, {
+      status: action === 'accept_dom' ? 'resolved_dom' : 'resolved_db',
+      resolvedAt: isAdmin ? admin.firestore.Timestamp.now() : new Date(),
+      resolvedBy: reviewedBy
+    });
+
+    return { success: true };
+  } catch (err: any) {
+    console.error(`Failed to resolve alert ${alertId}:`, err);
+    return { success: false, error: err.message || String(err) };
   }
 }
 
@@ -1494,6 +1793,39 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
         alternateUrls.push(applyUrl);
       }
 
+      // 📦 Extract Unstructured Benefits & Sync School Accreditations
+      const rawTextContent = rawJob.rawText || rawJob.textContent || rawJob.description || rawJob.html || "";
+      const extractedBenefits = extractBenefitsFromText(rawTextContent);
+      const extractedAccreds = extractSchoolAccreditations(rawTextContent);
+
+      if (extractedAccreds.length > 0) {
+        await syncSchoolAccreditations(schoolId, extractedAccreds);
+      }
+
+      // ⚠️ Conflict Safeguard: Compare DOM extracted data against existing DB values
+      if (existing) {
+        if (
+          existing.housingProvision &&
+          extractedBenefits.housingProvision !== 'Unknown' &&
+          existing.housingProvision !== extractedBenefits.housingProvision &&
+          ((existing.housingProvision === 'Provided' && extractedBenefits.housingProvision === 'Not Provided') ||
+           (existing.housingProvision === 'Not Provided' && extractedBenefits.housingProvision === 'Provided'))
+        ) {
+          await recordIngestionConflictAlert({
+            schoolId,
+            schoolName: schoolData?.schoolName || schoolData?.name || schoolId,
+            jobId: job.id,
+            jobTitle: job.title,
+            fieldName: 'housingProvision',
+            dbValue: existing.housingProvision,
+            domValue: extractedBenefits.housingProvision,
+            domSnippet: extractedBenefits.extractedSnippets.housing || '',
+            sourceUrl: applyUrl
+          });
+          status = 'pending_review';
+        }
+      }
+
       writeBatch.set(
         ref,
         {
@@ -1517,6 +1849,10 @@ export async function saveScrapedJobs(schoolId: string, jobs: any[]) {
           subject: job.subject,
           curriculum: job.curriculum,
           currency: job.currency,
+          housingProvision: existing?.housingProvision || (extractedBenefits.housingProvision !== 'Unknown' ? extractedBenefits.housingProvision : undefined),
+          tuitionWaiver: existing?.tuitionWaiver || (extractedBenefits.tuitionWaiver.provided ? extractedBenefits.tuitionWaiver : undefined),
+          flightAllowance: existing?.flightAllowance || (extractedBenefits.flightAllowance !== 'Unknown' ? extractedBenefits.flightAllowance : undefined),
+          taxFreePerk: existing?.taxFreePerk !== undefined ? existing.taxFreePerk : (extractedBenefits.taxFreePerk ? true : undefined),
           historicalMetadata,
           isHistorical,
           analysisData: job.analysisData,
