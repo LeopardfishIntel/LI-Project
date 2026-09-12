@@ -748,17 +748,25 @@ export default function FeaturedJobsPage() {
               sourceUrlsMap["TES"] = cacheDoc.applyUrl;
             }
 
-            if (!sourcesList.includes(groupLabel)) {
-              sourcesList.unshift(groupLabel);
-            }
-            if (!sourceUrlsMap[groupLabel] && !sourceUrlsMap[groupLabel.toUpperCase()]) {
-              if (cacheDoc.applyUrl && cacheDoc.applyUrl.includes("/job/")) {
-                sourceUrlsMap[groupLabel] = cacheDoc.applyUrl;
-                sourceUrlsMap[groupLabel.toUpperCase()] = cacheDoc.applyUrl;
-              } else {
-                sourceUrlsMap[groupLabel] = groupPortalUrl;
-                sourceUrlsMap[groupLabel.toUpperCase()] = groupPortalUrl;
+            const isGroupDeepLink = cacheDoc.applyUrl && (
+              applyUrlLower.includes("nordangliaeducation.com") ||
+              applyUrlLower.includes("inspirededu.com") ||
+              applyUrlLower.includes("cognitapeople.csod.com") ||
+              applyUrlLower.includes("taylors.edu.my") ||
+              applyUrlLower.includes("tenby.edu.my") ||
+              applyUrlLower.includes("esf.edu.hk") ||
+              applyUrlLower.includes("gemseducation.com") ||
+              applyUrlLower.includes("globeducate") ||
+              applyUrlLower.includes("internationalschools") ||
+              applyUrlLower.includes("uwc.org")
+            ) && !applyUrlLower.endsWith("/careers") && cacheDoc.applyUrl !== "https://careers.nordangliaeducation.com";
+
+            if (isGroupDeepLink) {
+              if (!sourcesList.includes(groupLabel)) {
+                sourcesList.unshift(groupLabel);
               }
+              sourceUrlsMap[groupLabel] = cacheDoc.applyUrl;
+              sourceUrlsMap[groupLabel.toUpperCase()] = cacheDoc.applyUrl;
             }
           }
         }
@@ -1871,25 +1879,48 @@ export default function FeaturedJobsPage() {
                                         }
                                       }
                                     }
-                                    if (foundUrl) {
-                                      const fUrl = String(foundUrl);
-                                      if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                                      if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
-                                      if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
-                                    }
-                                    if (!foundUrl) {
-                                      if (srcUpper.includes("NORD ANGLIA")) {
-                                        if (applyUrlLower.includes("careers.nordangliaeducation.com")) foundUrl = (job as any).applyUrl || job.source_url;
-                                      } else if (srcUpper === "TES") {
-                                        if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
-                                      } else if (srcUpper === "DIRECT") {
-                                        if (job.schoolWebsite && job.schoolWebsite !== "#") {
-                                          foundUrl = job.schoolWebsite;
-                                        } else if (!isPureAggregator) {
-                                          foundUrl = (job as any).applyUrl || job.source_url;
-                                        }
-                                      }
-                                    }
+                                                                         const isGenericUrl = (u?: string) => {
+                                       if (!u || u === "#") return true;
+                                       const norm = u.toLowerCase().trim().replace(/\/+$/, "");
+                                       return (
+                                         norm === "https://careers.nordangliaeducation.com" ||
+                                         norm === "https://www.nordangliaeducation.com/careers" ||
+                                         norm === "https://jobs.inspirededu.com" ||
+                                         norm === "https://cognitapeople.csod.com" ||
+                                         norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
+                                         norm === "https://www.searchassociates.com/leadership-vacancies" ||
+                                         norm === "https://uwc.org/careers/vacancies" ||
+                                         norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
+                                         norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide"
+                                       );
+                                     };
+
+                                     if (foundUrl && isGenericUrl(foundUrl)) {
+                                       foundUrl = undefined;
+                                     }
+
+                                     if (foundUrl) {
+                                       const fUrl = String(foundUrl);
+                                       if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                                       if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
+                                       if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
+                                     }
+                                     if (!foundUrl) {
+                                       if (srcUpper.includes("NORD ANGLIA")) {
+                                         const rawUrl = (job as any).applyUrl || job.source_url;
+                                         if (applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
+                                           foundUrl = rawUrl;
+                                         }
+                                       } else if (srcUpper === "TES") {
+                                         if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
+                                       } else if (srcUpper === "DIRECT") {
+                                         if (job.schoolWebsite && job.schoolWebsite !== "#") {
+                                           foundUrl = job.schoolWebsite;
+                                         } else if (!isPureAggregator) {
+                                           foundUrl = (job as any).applyUrl || job.source_url;
+                                         }
+                                       }
+                                     }
                                     return foundUrl || "#";
                                   })();
 
