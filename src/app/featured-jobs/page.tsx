@@ -733,7 +733,7 @@ export default function FeaturedJobsPage() {
             else if (gUpper.includes("NORD ANGLIA")) groupLabel = "Nord Anglia";
             else if (gUpper.includes("TEACH AWAY")) groupLabel = "Teach Away";
             else if (gUpper.includes("MALVERN")) groupLabel = "Malvern College";
-            else if (gUpper.includes("UWC") || gUpper.includes("UNITED WORLD COLLEGE")) groupLabel = "UWC";
+            else if ((gUpper.includes("UWC") || gUpper.includes("UNITED WORLD COLLEGE")) && (cleanSchoolName(cacheDoc.schoolName).toUpperCase().includes("UWC") || cleanSchoolName(cacheDoc.schoolName).toUpperCase().includes("UNITED WORLD COLLEGE") || (cacheDoc.applyUrl || "").toLowerCase().includes("uwc.org"))) groupLabel = "UWC";
             else if (gUpper.includes("ISP") || gUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) groupLabel = "ISP";
             else if (gUpper.includes("GLOBE") || gUpper.includes("GLOBEDUCATE")) groupLabel = "Globeducate";
 
