@@ -1632,7 +1632,7 @@ export default function FeaturedJobsPage() {
                               {isNew && (
                                 <span 
                                   onClick={(e) => e.stopPropagation()}
-                                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse cursor-default select-none"
+                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.15)] animate-pulse cursor-default select-none shrink-0"
                                 >
                                   NEW
                                 </span>
@@ -1640,7 +1640,7 @@ export default function FeaturedJobsPage() {
                               {isClosingSoon && (
                                 <span 
                                   onClick={(e) => e.stopPropagation()}
-                                  className="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm animate-pulse cursor-default select-none"
+                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.15)] animate-pulse cursor-default select-none shrink-0"
                                 >
                                   CLOSING SOON
                                 </span>
