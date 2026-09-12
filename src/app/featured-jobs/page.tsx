@@ -2,6 +2,7 @@
 
 export interface SavingsBadgeConfig {
   label: string;
+  shortLabel: string;
   boxStyle: string;
   description: string;
 }
@@ -10,20 +11,23 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
   if (monthlySurplus >= 2800) {
     return {
       label: "Premium Package",
+      shortLabel: "Premium",
       boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]",
       description: "High-surplus international package allowing £2,800+ ($3,550+) net monthly savings after all housing, utility, food, and lifestyle outgoings."
     };
   }
   if (monthlySurplus >= 1900) {
     return {
-      label: "Strong Financial Growth",
+      label: "High Growth Package",
+      shortLabel: "High Growth",
       boxStyle: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]",
       description: "Strong wealth-building package allowing £1,900 – £2,799 net monthly savings after all core living expenses."
     };
   }
   if (monthlySurplus >= 1200) {
     return {
-      label: "Comfortable Expat Living",
+      label: "Comfortable Living",
+      shortLabel: "Comfortable",
       boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]",
       description: "Comfortable expat package allowing £1,200 – £1,899 net monthly savings with good lifestyle quality and regular travel."
     };
@@ -31,12 +35,14 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
   if (monthlySurplus >= 600) {
     return {
       label: "Culture & Travel",
+      shortLabel: "Lifestyle",
       boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]",
       description: "Cultural immersion package allowing £600 – £1,199 net monthly savings with strong focus on lifestyle and travel."
     };
   }
   return {
-    label: "Destination-Led Package",
+    label: "Destination Package",
+    shortLabel: "Destination",
     boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]",
     description: "Location-driven package focusing on destination experience and cultural immersion, with under £600 net monthly savings."
   };
@@ -1704,7 +1710,7 @@ export default function FeaturedJobsPage() {
                                   if (seenPillUrls.has(norm)) return;
                                   seenPillUrls.add(norm);
 
-                                  resolvedPills.push({ label: label === "Direct" ? "Official Website" : label, url: srcUrl, key: srcUpper });
+                                  resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
                                 });
 
                                 return resolvedPills.map(({ label, url, key }) => {
@@ -1716,7 +1722,7 @@ export default function FeaturedJobsPage() {
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className={cn(
-                                        "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
+                                        "px-2 py-0.5 text-[9px] font-bold tracking-wider rounded-sm border transition-all cursor-pointer flex items-center gap-1 hover:scale-105",
                                         srcUpper.includes("INSPIRED")
                                           ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
                                           : srcUpper === "TES"
@@ -1767,7 +1773,7 @@ export default function FeaturedJobsPage() {
                                       badge.boxStyle
                                     )}
                                   >
-                                    <span>{badge.label}</span>
+                                    <span className="hidden sm:inline">{badge.label}</span><span className="sm:hidden">{badge.shortLabel}</span>
                                     <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
                                   </button>
                                 </PopoverTrigger>
@@ -1788,7 +1794,7 @@ export default function FeaturedJobsPage() {
                               <a 
                                 href={evalUrl}
                                 onClick={(e) => e.stopPropagation()}
-                                className="sm:hidden inline-flex items-center justify-center gap-1 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
+                                className="sm:hidden inline-flex items-center justify-center gap-1 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
                               >
                                 <span>Evaluate</span>
                                 <ArrowUpRight className="size-3" />
