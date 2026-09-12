@@ -1580,13 +1580,10 @@ export default function FeaturedJobsPage() {
                           const now = new Date();
                           
                           let isNew = false;
-                          if (job.scrapedAtRaw) {
-                            const scrapedTime = job.scrapedAtRaw.seconds 
-                              ? job.scrapedAtRaw.seconds * 1000 
-                              : new Date(job.scrapedAtRaw).getTime();
-                            if ((now.getTime() - scrapedTime) <= 3 * 24 * 60 * 60 * 1000) {
-                              isNew = true;
-                            }
+                          const jAny = job as any;
+                          const firstAddedTime = jAny.ingestedAtMillis || (jAny.createdAtRaw ? (jAny.createdAtRaw.seconds ? jAny.createdAtRaw.seconds * 1000 : new Date(jAny.createdAtRaw).getTime()) : 0);
+                          if (firstAddedTime > 0 && (now.getTime() - firstAddedTime) <= 3 * 24 * 60 * 60 * 1000) {
+                            isNew = true;
                           }
 
                           let isClosingSoon = false;
