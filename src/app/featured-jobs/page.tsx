@@ -1122,9 +1122,18 @@ export default function FeaturedJobsPage() {
       "UWC": "United World Colleges (UWC)",
     };
 
+    const name = engineDisplayNames[engineId] || engineId;
+
+    if (count === 0) {
+      return (
+        <span>
+          LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{name}</strong> vacancies listed.
+        </span>
+      );
+    }
+
     const pluralEngines = new Set(["DIRECT", "COGNITA", "UWC"]);
     const verb = pluralEngines.has(engineId) ? "have" : "has";
-    const name = engineDisplayNames[engineId] || engineId;
 
     return (
       <span>
@@ -1559,7 +1568,31 @@ export default function FeaturedJobsPage() {
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-white uppercase tracking-tight">No Active Vacancies</h3>
                   <p className="text-xs text-slate-400 max-w-md mx-auto">
-                    No active vacancies currently match your search filters.
+                    {selectedSourceEngine !== "ALL" ? (
+                      <>
+                        LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{
+                          {
+                            "DIRECT": "Direct School Portals",
+                            "SEARCH ASSOCIATES": "Search Associates",
+                            "COGNITA": "Cognita Schools",
+                            "TES": "TES (Times Educational Supplement)",
+                            "NORD ANGLIA": "Nord Anglia Education",
+                            "INSPIRED": "Inspired Education",
+                            "GLOBEDUCATE": "Globeducate",
+                            "ISP": "International Schools Partnership (ISP)",
+                            "TAYLORS": "Taylor's Education Group",
+                            "ESF": "English Schools Foundation Hong Kong",
+                            "GEMS": "GEMS Education",
+                            "GRC": "GRC (Global Recruitment Collaborative)",
+                            "TEACHAWAY": "Teach Away",
+                            "MALVERN": "Malvern College International",
+                            "UWC": "United World Colleges (UWC)",
+                          }[selectedSourceEngine] || selectedSourceEngine
+                        }</strong> vacancies listed matching your search criteria.
+                      </>
+                    ) : (
+                      "No active vacancies currently match your search filters."
+                    )}
                   </p>
                 </div>
 
