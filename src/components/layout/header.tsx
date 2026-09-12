@@ -286,7 +286,7 @@ export default function Header() {
             <button
               onClick={() => setIsParityModalOpen(true)}
               className={cn(
-                "hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider border transition-all cursor-pointer shadow-lg",
+                "hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border transition-all cursor-pointer shadow-lg",
                 parityState.loading
                   ? "bg-slate-900 text-slate-400 border-slate-800"
                   : parityState.isMatch
