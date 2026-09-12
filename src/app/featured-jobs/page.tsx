@@ -1103,10 +1103,15 @@ export default function FeaturedJobsPage() {
             
             <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden flex items-center gap-2 bg-[#0b1224] border border-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#FF6B35]"
+              className="md:hidden flex items-center justify-between gap-2 bg-[#0b1224]/90 border border-slate-700/60 px-4 py-2.5 rounded-md text-xs font-bold text-[#FF6B35] shadow-lg transition-all active:scale-[0.98]"
             >
-              <SlidersHorizontal className="size-4" />
-              Filters ({selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)})
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="size-4 text-[#FF6B35]" />
+                <span>Search Filters</span>
+              </span>
+              <span className="bg-[#FF6B35]/10 border border-[#FF6B35]/30 text-[#FF6B35] px-2 py-0.5 rounded-full text-[10px] font-bold">
+                {selectedCurriculums.length + selectedSubjects.length + (minSavings > 0 ? 1 : 0) + (minRating > 0 ? 1 : 0)}
+              </span>
             </button>
           </div>
         </div>
@@ -1313,18 +1318,21 @@ export default function FeaturedJobsPage() {
 
             {/* Search Engine Selection Protocol Control Bar */}
             {!(loadingPublicJobs || loadingAdminJobs) && (
-              <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 shadow-xl">
+              <div className="bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md mb-4 shadow-lg">
                 {/* Mobile Toggle Button (Default Off) */}
                 <button
                   type="button"
                   onClick={() => setEngineBarOpen(!engineBarOpen)}
-                  className="md:hidden w-full flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-300 py-1"
+                  className="md:hidden w-full flex items-center justify-between text-xs font-bold text-slate-200 py-0.5"
                 >
                   <span className="flex items-center gap-2">
                     <span className="size-2 rounded-full bg-emerald-400" />
-                    Engine Filters ({selectedSourceEngine === "ALL" ? `All (${engineCounts.ALL})` : selectedSourceEngine})
+                    <span>Engine Filters</span>
+                    <span className="bg-white/5 border border-white/10 text-slate-300 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                      {selectedSourceEngine === "ALL" ? `All (${engineCounts.ALL})` : selectedSourceEngine}
+                    </span>
                   </span>
-                  <span className="text-[#FF6B35] text-[11px] flex items-center gap-1 font-bold">
+                  <span className="text-[#FF6B35] text-xs font-bold flex items-center gap-1">
                     {engineBarOpen ? "Hide Filters ▲" : "Show Filters ▼"}
                   </span>
                 </button>
@@ -1381,35 +1389,38 @@ export default function FeaturedJobsPage() {
 
             {/* Sort & Count Header */}
             {!(loadingPublicJobs || loadingAdminJobs) && filteredJobs.length > 0 && (
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/50 border border-white/5 p-4 rounded-sm gap-4 w-full">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md gap-3 w-full shadow-lg">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    Showing {filteredJobs.length} active vacancies
+                  <span className="text-xs font-semibold text-slate-300">
+                    Showing <strong className="text-white font-bold">{filteredJobs.length}</strong> active vacancies
                   </span>
                   
-                  <span className="text-slate-700">|</span>
-                  
-                  {isSyncingAll ? (
-                    <span className="flex items-center gap-1.5 text-xs text-[#FF6B35] font-black uppercase tracking-wider">
-                      <Loader2 className="animate-spin size-3.5" /> Syncing Listings
-                    </span>
-                  ) : (
-                    <button
-                      onClick={handleSyncAllVisible}
-                      className="text-xs text-[#FF6B35] hover:text-white font-black uppercase tracking-wider transition-colors flex items-center gap-1.5"
-                      title="Force refresh vacancies for all currently listed schools"
-                    >
-                      Verify & Sync Listings
-                    </button>
+                  {calculatedIsAdmin && (
+                    <>
+                      <span className="text-slate-700">•</span>
+                      {isSyncingAll ? (
+                        <span className="flex items-center gap-1.5 text-xs text-[#FF6B35] font-bold">
+                          <Loader2 className="animate-spin size-3.5" /> Syncing Listings
+                        </span>
+                      ) : (
+                        <button
+                          onClick={handleSyncAllVisible}
+                          className="text-xs text-[#FF6B35] hover:text-white font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                          title="Force refresh vacancies for all currently listed schools"
+                        >
+                          Verify & Sync Listings
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sort By:</span>
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-white/5 pt-2 sm:pt-0">
+                  <span className="text-xs font-semibold text-slate-400">Sort By:</span>
                   <select 
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-black/40 border border-white/10 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
+                    className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                   >
                     <option value="Projected Savings">Projected Savings</option>
                     <option value="School Score">School Score</option>
