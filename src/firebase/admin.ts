@@ -938,8 +938,21 @@ export async function verifyJobUrlHttp(url: string, officialDomain?: string): Pr
       }
     }
 
-    if (statusCode === 404 || statusCode === 410 || isThirdPartyAggregatorUrl(finalUrl)) {
-      return { isValid: false, status: 'delisted', delistReason: 'phantom_unverified_vacancy', finalUrl };
+    const normFinal = (finalUrl || '').toLowerCase().trim().replace(/\/+$/, '');
+    const isGenericPortalFinal = (
+      normFinal === 'https://careers.nordangliaeducation.com' ||
+      normFinal === 'https://www.nordangliaeducation.com/careers' ||
+      normFinal === 'https://jobs.inspirededu.com' ||
+      normFinal === 'https://cognitapeople.csod.com' ||
+      normFinal === 'https://www.teachaway.com/teaching-jobs-abroad' ||
+      normFinal === 'https://www.searchassociates.com/leadership-vacancies' ||
+      normFinal === 'https://uwc.org/careers/vacancies' ||
+      normFinal === 'https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers' ||
+      normFinal === 'https://careers.globeducate.com/work-with-us/opportunities-worldwide'
+    );
+
+    if (statusCode === 404 || statusCode === 410 || isThirdPartyAggregatorUrl(finalUrl) || (cleanUrl !== finalUrl && isGenericPortalFinal)) {
+      return { isValid: false, status: 'delisted', delistReason: 'redirected_to_generic_portal', finalUrl };
     }
 
     // 🌐 Domain Isolation Check
