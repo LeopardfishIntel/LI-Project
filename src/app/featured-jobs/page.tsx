@@ -1769,7 +1769,7 @@ export default function FeaturedJobsPage() {
                                     onClick={(e) => e.stopPropagation()}
                                     aria-label={`${badge.label} Details`}
                                     className={cn(
-                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-semibold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
+                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
                                       badge.boxStyle
                                     )}
                                   >
