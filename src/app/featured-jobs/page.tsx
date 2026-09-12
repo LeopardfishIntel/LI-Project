@@ -1632,7 +1632,7 @@ export default function FeaturedJobsPage() {
                               {isNew && (
                                 <span 
                                   onClick={(e) => e.stopPropagation()}
-                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.15)] animate-pulse cursor-default select-none shrink-0"
+                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] cursor-default select-none shrink-0"
                                 >
                                   NEW
                                 </span>
