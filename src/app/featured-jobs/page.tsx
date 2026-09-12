@@ -1038,10 +1038,10 @@ export default function FeaturedJobsPage() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 p-4 md:p-8 lg:p-12 font-sans selection:bg-[#d95f02]">
-      <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div className="max-w-7xl mx-auto space-y-3 md:space-y-8 animate-in fade-in duration-500">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/5 pb-4 md:pb-6 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-0 md:border-b border-white/5 pb-1 md:pb-6 gap-2 md:gap-4">
           <div className="space-y-2">
             <div className="brand-title text-2xl md:text-3xl font-sans font-bold tracking-wide">
               <span className="brand-orange text-[#FF6B35]">Leopardfish</span><span className="brand-blue text-[#0073E6]">Intel</span>
@@ -1115,7 +1115,7 @@ export default function FeaturedJobsPage() {
           </div>
         )}
 
-        <div className="flex flex-col md:flex-row gap-8 items-start">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-8 items-start">
           
           {/* FILTER SIDEBAR */}
           <aside className={cn(
