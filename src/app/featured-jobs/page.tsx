@@ -631,8 +631,11 @@ export default function FeaturedJobsPage() {
         const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
         const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
         const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
+        const isTaylors = sourceUpper.includes('TAYLOR') || sourceUpper.includes('TENBY') || applyUrlLower.includes('taylors') || applyUrlLower.includes('tenby');
+        const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
+        const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
         const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isOfficial) return;
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -736,6 +739,9 @@ export default function FeaturedJobsPage() {
             else if ((gUpper.includes("UWC") || gUpper.includes("UNITED WORLD COLLEGE")) && (cleanSchoolName(cacheDoc.schoolName).toUpperCase().includes("UWC") || cleanSchoolName(cacheDoc.schoolName).toUpperCase().includes("UNITED WORLD COLLEGE") || (cacheDoc.applyUrl || "").toLowerCase().includes("uwc.org"))) groupLabel = "UWC";
             else if (gUpper.includes("ISP") || gUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) groupLabel = "ISP";
             else if (gUpper.includes("GLOBE") || gUpper.includes("GLOBEDUCATE")) groupLabel = "Globeducate";
+            else if (gUpper.includes("TAYLOR") || gUpper.includes("TENBY")) groupLabel = "Taylor's Education";
+            else if (gUpper.includes("ESF") || gUpper.includes("ENGLISH SCHOOLS FOUNDATION")) groupLabel = "ESF";
+            else if (gUpper.includes("GEMS")) groupLabel = "GEMS Education";
 
             if (cacheDoc.applyUrl && cacheDoc.applyUrl.includes("tes.com") && !sourcesList.includes("TES")) {
               sourcesList.push("TES");
@@ -886,25 +892,65 @@ export default function FeaturedJobsPage() {
     let isp = 0;
     let globe = 0;
     let searchAssociates = 0;
+    let taylors = 0;
+    let esf = 0;
+    let gems = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
       const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
-      const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !jobSrcUpper.includes("SEARCH ASSOCIATES") && !jobSrcUpper.includes("TES") && !jobSrcUpper.includes("COGNITA") && !jobSrcUpper.includes("NORD ANGLIA") && !jobSrcUpper.includes("INSPIRED") && !jobSrcUpper.includes("GRC") && !jobSrcUpper.includes("TEACH AWAY");
+      const applyUrlLower = String(job.source_url || "").toLowerCase();
+
+      const hasTaylors = jobSrcUpper.includes("TAYLOR") || jobSrcUpper.includes("TENBY") || sourcesUpper.some((s) => s.includes("TAYLOR") || s.includes("TENBY")) || schoolGroupUpper.includes("TAYLOR") || schoolGroupUpper.includes("TENBY") || applyUrlLower.includes("taylors") || applyUrlLower.includes("tenby");
+      const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || schoolGroupUpper.includes("ESF") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
+      const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || schoolGroupUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
+      const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+      const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || schoolGroupUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
+      const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair");
+      const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || schoolGroupUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu");
+      const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
+      const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => s.includes("COGNITA")) || schoolGroupUpper.includes("COGNITA") || applyUrlLower.includes("cognita");
+      const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => s.includes("MALVERN")) || schoolGroupUpper.includes("MALVERN") || applyUrlLower.includes("malvern");
+      const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => s.includes("UWC")) || schoolGroupUpper.includes("UWC") || applyUrlLower.includes("uwc.org");
+      const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || schoolGroupUpper.includes("ISP") || applyUrlLower.includes("internationalschools");
+      const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
+      const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => s.includes("SEARCH ASSOCIATES") || s.includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES");
+      const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSA && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems;
+
       if (hasDirect) direct++;
-      if (jobSrcUpper === "TES" || sourcesUpper.includes("TES")) tes++;
-      if (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || schoolGroupUpper.includes("NORD ANGLIA")) nae++;
-      if (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC")) grc++;
-      if (jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || schoolGroupUpper.includes("INSPIRED")) inspired++;
-      if (jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY"))) teachaway++;
-      if (jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || schoolGroupUpper.includes("COGNITA")) cognita++;
-      if (jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || schoolGroupUpper.includes("MALVERN")) malvern++;
-      if (jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC")) uwc++;
-      if (jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP")) isp++;
-      if (jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE")) globe++;
-      if (jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES")) searchAssociates++;
+      if (hasTes) tes++;
+      if (hasNae) nae++;
+      if (hasGrc) grc++;
+      if (hasInspired) inspired++;
+      if (hasTeachAway) teachaway++;
+      if (hasCognita) cognita++;
+      if (hasMalvern) malvern++;
+      if (hasUwc) uwc++;
+      if (hasIsp) isp++;
+      if (hasGlobe) globe++;
+      if (hasSA) searchAssociates++;
+      if (hasTaylors) taylors++;
+      if (hasEsf) esf++;
+      if (hasGems) gems++;
     });
-    return { ALL: allJobs.length, DIRECT: direct, "SEARCH ASSOCIATES": searchAssociates, COGNITA: cognita, TES: tes, "NORD ANGLIA": nae, GRC: grc, INSPIRED: inspired, TEACHAWAY: teachaway, MALVERN: malvern, UWC: uwc, ISP: isp, GLOBEDUCATE: globe };
+    return {
+      ALL: allJobs.length,
+      DIRECT: direct,
+      "SEARCH ASSOCIATES": searchAssociates,
+      COGNITA: cognita,
+      TES: tes,
+      "NORD ANGLIA": nae,
+      GRC: grc,
+      INSPIRED: inspired,
+      GLOBEDUCATE: globe,
+      ISP: isp,
+      TAYLORS: taylors,
+      ESF: esf,
+      GEMS: gems,
+      MALVERN: malvern,
+      UWC: uwc,
+      TEACHAWAY: teachaway
+    };
   }, [allJobs]);
 
 
@@ -970,18 +1016,24 @@ export default function FeaturedJobsPage() {
         const jobSrcUpper = String(job.source || "").toUpperCase();
         const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
         const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
-        const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES");
-        const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || schoolGroupUpper.includes("NORD ANGLIA");
-        const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC");
-        const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || schoolGroupUpper.includes("INSPIRED");
-        const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY"));
-        const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || schoolGroupUpper.includes("COGNITA");
-        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || schoolGroupUpper.includes("MALVERN");
-        const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC");
-        const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP");
-        const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !jobSrcUpper.includes("SEARCH ASSOCIATES") && !jobSrcUpper.includes("TES") && !jobSrcUpper.includes("COGNITA") && !jobSrcUpper.includes("NORD ANGLIA") && !jobSrcUpper.includes("INSPIRED") && !jobSrcUpper.includes("GRC") && !jobSrcUpper.includes("TEACH AWAY");
+        const applyUrlLower = String(job.source_url || "").toLowerCase();
+
+        const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || schoolGroupUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
+        const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair");
+        const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || schoolGroupUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu");
+        const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
+        const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || schoolGroupUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople");
+        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || schoolGroupUpper.includes("MALVERN") || applyUrlLower.includes("malvern");
+        const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC") || applyUrlLower.includes("uwc.org");
+        const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP") || applyUrlLower.includes("internationalschools");
+        const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || schoolGroupUpper.includes("GLOBE") || schoolGroupUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
+        const hasTaylors = jobSrcUpper.includes("TAYLOR") || jobSrcUpper.includes("TENBY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TAYLOR") || String(s || "").toUpperCase().includes("TENBY")) || schoolGroupUpper.includes("TAYLOR") || schoolGroupUpper.includes("TENBY") || applyUrlLower.includes("taylors") || applyUrlLower.includes("tenby");
+        const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ESF") || String(s || "").toUpperCase().includes("ENGLISH SCHOOLS FOUNDATION")) || schoolGroupUpper.includes("ESF") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
+        const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GEMS")) || schoolGroupUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
         const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES")) || schoolGroupUpper.includes("SEARCH ASSOCIATES");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSA && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems;
+
         if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
         if (selectedSourceEngine === "SEARCH ASSOCIATES" && !hasSA) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
@@ -989,6 +1041,9 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
         if (selectedSourceEngine === "GRC" && !hasGrc) return false;
         if (selectedSourceEngine === "INSPIRED" && !hasInspired) return false;
+        if (selectedSourceEngine === "TAYLORS" && !hasTaylors) return false;
+        if (selectedSourceEngine === "ESF" && !hasEsf) return false;
+        if (selectedSourceEngine === "GEMS" && !hasGems) return false;
         if (selectedSourceEngine === "TEACHAWAY" && !hasTeachAway) return false;
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
@@ -1303,15 +1358,18 @@ export default function FeaturedJobsPage() {
                       { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
                       { id: "SEARCH ASSOCIATES", label: `Search (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                       { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
-                      { id: "TES", label: `TES (${engineCounts.TES})` },
-                      { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
-                      { id: "GRC", label: `GRC (${engineCounts.GRC})` },
+                      { id: "TES", label: `TES (${engineCounts.TES || 0})` },
+                      { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"] || 0})` },
                       { id: "INSPIRED", label: `Inspired (${engineCounts.INSPIRED || 0})` },
+                      { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
+                      { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
+                      { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
+                      { id: "ESF", label: `ESF (${engineCounts.ESF || 0})` },
+                      { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
+                      { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
                       { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
                       { id: "MALVERN", label: `Malvern (${engineCounts.MALVERN || 0})` },
-                      { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` },
-                      { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
-                      { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` }
+                      { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` }
                     ].map((engine) => (
                       <button
                         key={engine.id}
@@ -1362,15 +1420,18 @@ export default function FeaturedJobsPage() {
                     { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
                     { id: "SEARCH ASSOCIATES", label: `Search Associates (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                     { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
-                    { id: "TES", label: `TES (${engineCounts.TES})` },
-                    { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"]})` },
-                    { id: "GRC", label: `GRC (${engineCounts.GRC})` },
+                    { id: "TES", label: `TES (${engineCounts.TES || 0})` },
+                    { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"] || 0})` },
                     { id: "INSPIRED", label: `Inspired (${engineCounts.INSPIRED || 0})` },
+                    { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
+                    { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
+                    { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
+                    { id: "ESF", label: `ESF (${engineCounts.ESF || 0})` },
+                    { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
+                    { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
                     { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
                     { id: "MALVERN", label: `Malvern (${engineCounts.MALVERN || 0})` },
-                    { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` },
-                    { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
-                    { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` }
+                    { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` }
                   ].map((engine) => (
                     <button
                       key={engine.id}
@@ -1395,6 +1456,9 @@ export default function FeaturedJobsPage() {
                       {engine.id === "UWC" && <span className="size-2 rounded-full bg-violet-400 animate-pulse" />}
                       {engine.id === "ISP" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "GLOBEDUCATE" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
+                      {engine.id === "TAYLORS" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
+                      {engine.id === "ESF" && <span className="size-2 rounded-full bg-orange-400 animate-pulse" />}
+                      {engine.id === "GEMS" && <span className="size-2 rounded-full bg-blue-400 animate-pulse" />}
                       {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
                       {engine.label}
                     </button>
