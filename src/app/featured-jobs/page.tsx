@@ -13,7 +13,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
       label: "Premium Package",
       shortLabel: "Premium",
       boxStyle: "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.15)]",
-      description: "High-surplus international package allowing £2,800+ ($3,550+) net monthly savings after all housing, utility, food, and lifestyle outgoings."
+      description: "High-surplus international package allowing £2,800+ ($3,550+) net monthly surplus after all housing, utility, food, and lifestyle outgoings."
     };
   }
   if (monthlySurplus >= 1900) {
@@ -21,7 +21,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
       label: "High Growth Package",
       shortLabel: "High Growth",
       boxStyle: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.15)]",
-      description: "Strong wealth-building package allowing £1,900 – £2,799 net monthly savings after all core living expenses."
+      description: "Strong wealth-building package allowing £1,900 – £2,799 net monthly surplus after all core living expenses."
     };
   }
   if (monthlySurplus >= 1200) {
@@ -29,7 +29,7 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
       label: "Comfortable Living",
       shortLabel: "Comfortable",
       boxStyle: "bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]",
-      description: "Comfortable expat package allowing £1,200 – £1,899 net monthly savings with good lifestyle quality and regular travel."
+      description: "Comfortable expat package allowing £1,200 – £1,899 net monthly surplus with good lifestyle quality and regular travel."
     };
   }
   if (monthlySurplus >= 600) {
@@ -37,14 +37,14 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
       label: "Culture & Travel",
       shortLabel: "Lifestyle",
       boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]",
-      description: "Cultural immersion package allowing £600 – £1,199 net monthly savings with strong focus on lifestyle and travel."
+      description: "Cultural immersion package allowing £600 – £1,199 net monthly surplus with strong focus on lifestyle and travel."
     };
   }
   return {
     label: "Destination Package",
     shortLabel: "Destination",
     boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]",
-    description: "Location-driven package focusing on destination experience and cultural immersion, with under £600 net monthly savings."
+    description: "Location-driven package focusing on destination experience and cultural immersion, with under £600 net monthly surplus."
   };
 }
 
