@@ -1530,7 +1530,7 @@ export default function FeaturedJobsPage() {
                     <div className="flex flex-col w-full gap-2">
                       {/* Line 1: Job Title */}
                       <div className="w-full">
-                        <h3 className="text-base sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
+                        <h3 className="text-sm sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
                           <a 
                             href={buildEvalUrl(job, familyStatus)}
                             onClick={(e) => e.stopPropagation()}
@@ -1606,7 +1606,7 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
                       {/* Left Column: Badges & Metric Pills */}
-                      <div className="flex flex-nowrap sm:flex-wrap items-center justify-between sm:justify-start gap-1.5 sm:gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-visible no-scrollbar pb-0.5 sm:pb-0">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto pb-0.5 sm:pb-0">
                         {/* NEW, CLOSING SOON & Search Engine Source Badges */}
                         {(() => {
                           const now = new Date();
@@ -1809,14 +1809,7 @@ export default function FeaturedJobsPage() {
                                 </PopoverContent>
                               </Popover>
 
-                              <a 
-                                href={evalUrl}
-                                onClick={(e) => e.stopPropagation()}
-                                className="h-7 px-3 sm:hidden inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight text-white bg-[#FF6B35] hover:bg-[#ff7e4f] border border-[#FF6B35] rounded-md shrink-0 shadow-sm transition-all"
-                              >
-                                <span>Evaluate</span>
-                                <ArrowUpRight className="size-3" />
-                              </a>
+                              
                             </>
                           );
                         })()}
@@ -1862,7 +1855,7 @@ export default function FeaturedJobsPage() {
                             )}
                             <a 
                               href={buildEvalUrl(job, familyStatus)}
-                              className="hidden sm:inline-flex flex-1 sm:flex-none items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#FF6B35] hover:text-white hover:bg-[#FF6B35] border border-[#FF6B35] px-4 py-2 rounded-sm transition-all shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center"
+                              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-white sm:text-[#FF6B35] bg-[#FF6B35] sm:bg-transparent hover:bg-[#ff7e4f] sm:hover:bg-[#FF6B35] sm:hover:text-white border border-[#FF6B35] px-4 py-2.5 sm:py-2 rounded-md sm:rounded-sm transition-all shadow-md sm:shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center mt-1 sm:mt-0"
                             >
                               Evaluate Opportunity
                               <ArrowUpRight className="size-3.5" />
