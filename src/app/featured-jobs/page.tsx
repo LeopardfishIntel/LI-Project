@@ -1122,11 +1122,13 @@ export default function FeaturedJobsPage() {
       "UWC": "United World Colleges (UWC)",
     };
 
+    const pluralEngines = new Set(["DIRECT", "COGNITA", "UWC"]);
+    const verb = pluralEngines.has(engineId) ? "have" : "has";
     const name = engineDisplayNames[engineId] || engineId;
 
     return (
       <span>
-        <strong className="text-white font-bold">{name}</strong> has <strong className="text-white font-bold">{count}</strong> {vacancyNoun}
+        <strong className="text-white font-bold">{name}</strong> {verb} <strong className="text-white font-bold">{count}</strong> {vacancyNoun}
       </span>
     );
   };
