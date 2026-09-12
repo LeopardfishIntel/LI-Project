@@ -257,6 +257,7 @@ interface StructuredJob {
   savingsPotential: number;
   schoolWebsite: string;
   paidInUSD?: boolean;
+  ingestedAtMillis?: number | null;
   scrapedAtRaw?: any;
   closesDateRaw?: Date | null;
   isRollingDeadline?: boolean;
@@ -781,6 +782,7 @@ export default function FeaturedJobsPage() {
           savingsPotential,
           schoolWebsite: cacheDoc.schoolWebsite || '',
           paidInUSD: cacheDoc.paidInUSD,
+          ingestedAtMillis: cacheDoc.ingestedAtMillis || null,
           scrapedAtRaw: cacheDoc.ingestedAtMillis
             ? { seconds: Math.floor(cacheDoc.ingestedAtMillis / 1000) }
             : null,
@@ -1611,7 +1613,7 @@ export default function FeaturedJobsPage() {
                           
                           let isNew = false;
                           const jAny = job as any;
-                          const firstAddedTime = jAny.ingestedAtMillis || (jAny.createdAtRaw ? (jAny.createdAtRaw.seconds ? jAny.createdAtRaw.seconds * 1000 : new Date(jAny.createdAtRaw).getTime()) : 0);
+                          const firstAddedTime = jAny.ingestedAtMillis || (jAny.scrapedAtRaw ? (jAny.scrapedAtRaw.seconds ? jAny.scrapedAtRaw.seconds * 1000 : new Date(jAny.scrapedAtRaw).getTime()) : 0);
                           if (firstAddedTime > 0 && (now.getTime() - firstAddedTime) <= 3 * 24 * 60 * 60 * 1000) {
                             isNew = true;
                           }
@@ -1801,17 +1803,9 @@ export default function FeaturedJobsPage() {
                                     <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
-                                  <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                                  <p className="text-slate-300 text-xs leading-relaxed mb-3">{badge.description}</p>
-                                  <a
-                                    href={evalUrl}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-[#FF6B35] hover:bg-[#ff7e4f] text-white font-black text-[10px] uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
-                                  >
-                                    <span>Evaluate Opportunity</span>
-                                    <ArrowUpRight className="size-3.5" />
-                                  </a>
+                                <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-slate-700/80 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                  <p className="font-bold text-[#FF6B35] text-xs tracking-wide mb-1">{badge.label}</p>
+                                  <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
                                 </PopoverContent>
                               </Popover>
 
