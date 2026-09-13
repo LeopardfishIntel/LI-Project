@@ -1385,7 +1385,7 @@ const historicMonths = useMemo(() => {
         const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
         transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0);
       } else if (sCountry === 'vietnam') {
-        const vnSingleUsd = (350000 / (currentRates['VND'] || 31614)) * (currentRates['USD'] || 1.27);
+        const vnSingleUsd = (525000 / (currentRates['VND'] || 31614)) * (currentRates['USD'] || 1.27);
         transportVal = vnSingleUsd * (transitScalarMap[transportKey] || 1.0);
       } else if (typeof transportMap === 'object' && transportMap !== null) {
         if (transportMap[transportKey] !== undefined && safeParse(transportMap[transportKey]) > 0) {
