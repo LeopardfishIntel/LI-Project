@@ -1902,11 +1902,11 @@ export default function FeaturedJobsPage() {
                                     let label = s;
                                     if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
                                     else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
-                                    else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
-                                    else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
-                                    else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
-                                    else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
-                                    else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                                    else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
+                                    else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
+                                    else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
+                                    else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                                    else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
                                     else if (u === "TES") { key = "TES"; label = "TES"; }
                                     else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
                                     else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
@@ -1974,20 +1974,30 @@ export default function FeaturedJobsPage() {
                                         if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
                                       }
                                       if (!foundUrl) {
-                                        if (srcUpper.includes("NORD ANGLIA")) {
-                                          const rawUrl = (job as any).applyUrl || job.source_url;
-                                          if (applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
-                                            foundUrl = rawUrl;
-                                          }
-                                        } else if (srcUpper === "TES") {
-                                          if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
-                                        } else if (srcUpper === "GRC") {
-                                          if (applyUrlLower.includes("grcfair.org")) foundUrl = (job as any).applyUrl || job.source_url;
+                                        const rawUrl = (job as any).applyUrl || job.source_url;
+                                        if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu") && !isGenericUrl(rawUrl)) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper.includes("COGNITA") && applyUrlLower.includes("cognita") && !isGenericUrl(rawUrl)) {
+                                          foundUrl = rawUrl;
+                                        } else if ((srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE")) && applyUrlLower.includes("globeducate") && !isGenericUrl(rawUrl)) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper.includes("ISP") && applyUrlLower.includes("internationalschools") && !isGenericUrl(rawUrl)) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper === "TES" && applyUrlLower.includes("tes.com")) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
+                                          foundUrl = rawUrl;
+                                        } else if (srcUpper === "SEARCH ASSOCIATES" && applyUrlLower.includes("searchassociates")) {
+                                          foundUrl = rawUrl;
                                         } else if (srcUpper === "DIRECT") {
                                           if (job.schoolWebsite && job.schoolWebsite !== "#") {
                                             foundUrl = job.schoolWebsite;
                                           } else if (!isPureAggregator) {
-                                            foundUrl = (job as any).applyUrl || job.source_url;
+                                            foundUrl = rawUrl;
                                           }
                                         }
                                       }
