@@ -2007,7 +2007,7 @@ export default function FeaturedJobsPage() {
                                     const srcUpper = key;
                                     return (
                                       <a
-                                        key={label}
+                                        key={`${key}_${url}`}
                                         href={url}
                                         target="_blank"
                                         rel="noopener noreferrer"
