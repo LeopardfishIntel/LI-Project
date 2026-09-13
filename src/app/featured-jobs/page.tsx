@@ -1231,7 +1231,7 @@ export default function FeaturedJobsPage() {
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="size-3.5" /> Run DB Sweep + Janitor
+                      <RefreshCw className="size-3.5" /> DB + Jan
                     </>
                   )}
                 </button>
