@@ -2176,8 +2176,8 @@ const historicMonths = useMemo(() => {
                       
                     </div>
 
-                    <p className="hidden sm:block text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
-                      We’ve crunched the numbers for this role. Below is our breakdown of your projected take-home pay, local living costs, and lifestyle at this campus—you can adjust the settings anytime to factor in your household size, additional income, and personal savings goals.
+                    <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
+                      Estimated take-home pay, living costs, and lifestyle breakdown—customizable by household size and savings goals.
                     </p>
                   </div>
                 </div>
