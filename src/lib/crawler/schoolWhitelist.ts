@@ -79,13 +79,7 @@ export async function isWhitelistedSchool(
 ): Promise<WhitelistedSchoolInfo | null> {
   const whitelist = await loadSchoolWhitelist();
 
-  // 1. Direct Target School ID match
-  if (targetSchoolId) {
-    const directMatch = whitelist.get(targetSchoolId.toLowerCase());
-    if (directMatch) return directMatch;
-  }
-
-  // 2. Domain / Host match
+  // 1. Domain / Host match
   const candidateDomain = extractCanonicalDomain(domainOrUrl || undefined);
   if (candidateDomain) {
     for (const school of whitelist.values()) {
@@ -95,7 +89,7 @@ export async function isWhitelistedSchool(
     }
   }
 
-  // 3. Organization Name match via matchSchoolEntity
+  // 2. Organization Name match via matchSchoolEntity
   if (organizationName) {
     const cleanOrg = organizationName.trim().toLowerCase();
     for (const school of whitelist.values()) {
@@ -107,6 +101,12 @@ export async function isWhitelistedSchool(
         return school;
       }
     }
+  }
+
+  // 3. Fallback: Direct Target School ID lookup ONLY if no org name or domain/url were provided
+  if (targetSchoolId && !organizationName && !domainOrUrl) {
+    const directMatch = whitelist.get(targetSchoolId.toLowerCase());
+    if (directMatch) return directMatch;
   }
 
   return null;
