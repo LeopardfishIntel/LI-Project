@@ -2138,44 +2138,7 @@ const historicMonths = useMemo(() => {
                     </div>
                   </div>
 
-                  <div className="hidden sm:flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
-                    <div className="flex flex-wrap items-center gap-3">
-
-                      {selectedOpportunity.closesDate && (
-                        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
-                          <Calendar className="size-3.5 text-[#FF6B35]" />
-                          <span>Closes: {selectedOpportunity.closesDate}</span>
-                        </span>
-                      )}
-                      {selectedOpportunity && (() => {
-                        const currentSurplusUSD = analysis
-                          ? Math.round((analysis.surplus || 0) / (currentRates[currency] || 1.0))
-                          : (selectedOpportunity.savingsPotential || 0);
-                        const badge = getSavingsBadgeConfig(currentSurplusUSD);
-                        return (
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <button
-                                type="button"
-                                className={cn(
-                                  "cursor-pointer hidden sm:inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 group select-none hover:scale-105",
-                                  badge.boxStyle
-                                )}
-                              >
-                                <span>{badge.label}</span>
-                                <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                              </button>
-                            </PopoverTrigger>
-                            <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-white/10 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
-                              <p className="font-black text-[#d95f02] uppercase text-[10px] tracking-wider mb-1">{badge.label}</p>
-                              <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
-                            </PopoverContent>
-                          </Popover>
-                        );
-                      })()}
-                      
-                    </div>
-
+                  <div className="pt-3 border-t border-white/10 mt-3">
                     <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
                       Estimated take-home pay, living costs, and lifestyle breakdown—customizable by household size and savings goals.
                     </p>
