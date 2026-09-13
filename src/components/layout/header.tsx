@@ -136,7 +136,7 @@ export default function Header() {
         loading: false,
         totalFeatured,
         totalSchoolOpenJobs,
-        isMatch: mismatches.length === 0,
+        isMatch: totalFeatured === totalSchoolOpenJobs && mismatches.length === 0,
         mismatches,
         conflictCount,
       });
