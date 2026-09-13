@@ -3139,11 +3139,7 @@ function DecoderContent() {
                         return (
                           <div>
                             <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
-                              <span>
-                                {monthLabel
-                                  ? `Staff Turnover Guide — last ${monthLabel}`
-                                  : 'Staff Turnover Guide — no historic data detected'}
-                              </span>
+                              <span>Staff Turnover Guide</span>
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -3153,7 +3149,7 @@ function DecoderContent() {
                                     >
                                       <span>{pillIcon}</span>
                                       {monthLabel
-                                        ? `${monthLabel} of vacancy history indexed`
+                                        ? `${monthLabel} of history indexed`
                                         : 'History not yet indexed'}
                                     </span>
                                   </TooltipTrigger>
