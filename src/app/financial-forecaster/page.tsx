@@ -3346,26 +3346,28 @@ function DecoderContent() {
                                     </div>
                                   </div>
 
-                                  {/* MASSIVE PREMIUM WRAPPER */}
+                                  {/* DISCOVERED VACANCIES LEDGER */}
                                   {allProcessedJobs.length > 0 && (
-                                    <div className="relative rounded-sm overflow-hidden mt-3">
-                                      {/* SINGLE PAYWALL OVERLAY */}
-                                      {!turnoverUnlocked && (
-                                        <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                          {/* Non-orange, sleek glass button */}
+                                    <div className="mt-3">
+                                      {!turnoverUnlocked ? (
+                                        <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                                          <div className="space-y-0.5">
+                                            <p className="text-[10px] font-black uppercase text-sky-400 tracking-wider">
+                                              Discovered Vacancies Ledger
+                                            </p>
+                                            <p className="text-xs text-slate-300 font-medium">
+                                              Indexed {processedJobs12.length} current &amp; {historicJobs.length} historic vacancies for this campus.
+                                            </p>
+                                          </div>
                                           <button
                                             onClick={() => setTurnoverUnlocked(true)}
                                             type="button"
-                                            className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
+                                            className="flex items-center justify-center bg-white/5 border border-white/10 hover:bg-white/10 px-5 py-2 rounded-sm cursor-pointer transition-all shadow-md shrink-0"
                                           >
                                             <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
                                           </button>
                                         </div>
-                                      )}
-
-                                      {/* LOCKED / UNLOCKED CONTENT */}
-                                      <div className={cn("space-y-4 transition-all duration-300", !turnoverUnlocked && "opacity-30 select-none pointer-events-none blur-[2px]")}>
-                                        {/* 📋 DISCOVERED VACANCIES DROPDOWN / LIST */}
+                                      ) : (
                                         <div className="border border-white/5 bg-black/10 rounded-sm">
                                           <details className="group" open>
                                             <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
@@ -3464,7 +3466,7 @@ function DecoderContent() {
                                             </div>
                                           </details>
                                         </div>
-                                      </div>
+                                      )}
                                     </div>
                                   )}
 
