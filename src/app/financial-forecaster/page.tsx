@@ -10,7 +10,7 @@ import {
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
   Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users, Building2, HeartHandshake,
   HeartPulse, Laptop, Building, Sliders, BarChart3,
-  Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2
+  Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2, Plane
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
@@ -173,22 +173,22 @@ const getJobStatus = (job: any): { status: 'open' | 'closed'; hasDeadline: boole
   if (!jobStr || typeof jobStr !== 'string' || typeof jobStr.matchAll !== 'function') {
     return { status: 'open', hasDeadline: false, label: '' };
   }
-  
+
   // Find all parenthetical blocks in the string
   const parentheticalMatches = [...jobStr.matchAll(/\(([^)]+)\)/g)];
   if (parentheticalMatches.length === 0) {
     return { status: 'open', hasDeadline: false, label: '' };
   }
-  
+
   // Find the parenthetical that contains date/cycle indicators
   const dateParenthetical = parentheticalMatches.find(m => {
     const text = m[1].toLowerCase();
     return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
   }) || parentheticalMatches[parentheticalMatches.length - 1];
-  
+
   const content = dateParenthetical[1];
   const parts = content.split(';').map(s => s.trim());
-  
+
   // 1. Explicit Closes date check
   const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
   if (closesPart) {
@@ -202,7 +202,7 @@ const getJobStatus = (job: any): { status: 'open' | 'closed'; hasDeadline: boole
       }
     }
   }
-  
+
   // 2. Explicit Posted date check (assume 4 weeks / 28 days closing window if no closes date)
   const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
   if (postedPart) {
@@ -218,7 +218,7 @@ const getJobStatus = (job: any): { status: 'open' | 'closed'; hasDeadline: boole
       }
     }
   }
-  
+
   // 3. Fallback to start cycle month / year heuristics
   const lower = content.toLowerCase();
   if (lower.includes('2026/27') || lower.includes('2027')) {
@@ -235,7 +235,7 @@ const getJobStatus = (job: any): { status: 'open' | 'closed'; hasDeadline: boole
     }
     return { status: 'open', hasDeadline: false, label: '' };
   }
-  
+
   return { status: 'open', hasDeadline: false, label: '' };
 };
 
@@ -261,7 +261,7 @@ const parseJobString = (job: string) => {
       const text = m[1].toLowerCase();
       return text.includes('posted:') || text.includes('closes:') || /202[4-7]|cycle/i.test(text);
     }) || parentheticalMatches[parentheticalMatches.length - 1];
-    
+
     const content = dateParenthetical[1];
     const parts = content.split(';').map(s => s.trim());
     const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
@@ -289,15 +289,15 @@ const parseJobString = (job: string) => {
   if (lowerTitle.includes("primary") || lowerTitle.includes("prep") || lowerTitle.includes("early years") || lowerTitle.includes("preschool") || lowerTitle.includes("kindergarten") || lowerTitle.includes("eyfs") || lowerTitle.includes("ks1") || lowerTitle.includes("key stage one") || lowerTitle.includes("class teacher") || lowerTitle.includes("practitioner") || lowerTitle.includes("partner") || lowerTitle.includes("sestra") || lowerTitle.includes("nurse")) {
     department = "Primary";
   } else if (lowerTitle.includes("head") || lowerTitle.includes("director") || lowerTitle.includes("principal") || lowerTitle.includes("coordinator") || lowerTitle.includes("headteacher") || lowerTitle.includes("headmaster") || lowerTitle.includes("headmistress")) {
-    const isMiddleLeader = 
-      lowerTitle.includes("head of department") || 
-      lowerTitle.includes("head of faculty") || 
-      lowerTitle.includes("head of dept") || 
+    const isMiddleLeader =
+      lowerTitle.includes("head of department") ||
+      lowerTitle.includes("head of faculty") ||
+      lowerTitle.includes("head of dept") ||
       (lowerTitle.includes("head of") && [
-        "science", "math", "english", "music", "art", "drama", "pe", "physical education", 
-        "history", "geography", "biology", "chemistry", "physics", "languages", "mfl", 
-        "french", "spanish", "german", "mandarin", "chinese", "humanities", "computing", 
-        "computer", "ict", "design", "business", "economics", "inclusion", "learning support", 
+        "science", "math", "english", "music", "art", "drama", "pe", "physical education",
+        "history", "geography", "biology", "chemistry", "physics", "languages", "mfl",
+        "french", "spanish", "german", "mandarin", "chinese", "humanities", "computing",
+        "computer", "ict", "design", "business", "economics", "inclusion", "learning support",
         "eal", "sen", "senco", "curriculum", "subject", "year", "grade", "house"
       ].some(kw => lowerTitle.includes(kw)));
 
@@ -417,7 +417,7 @@ function DecoderContent() {
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
   const [lifestyleMode, setLifestyleMode] = useState<"Saver" | "Comfort" | "Full Expat">("Comfort");
-  
+
   const [rewordedBriefingText, setRewordedBriefingText] = useState<string | null>(null);
   const [isRewording, setIsRewording] = useState(false);
   const [lastRewordedSource, setLastRewordedSource] = useState<string>("");
@@ -426,7 +426,7 @@ function DecoderContent() {
 
   const [stabilityReport, setStabilityReport] = useState<any>(null);
   const [isCalculatingStability, setIsCalculatingStability] = useState(false);
-    const [stabilityCountdown, setStabilityCountdown] = useState(90);
+  const [stabilityCountdown, setStabilityCountdown] = useState(90);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
@@ -475,7 +475,7 @@ function DecoderContent() {
   }, [isCalculatingStability]);
 
 
-  
+
   useEffect(() => { setMounted(true); }, []);
 
   const { data: allSchools } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
@@ -509,8 +509,8 @@ function DecoderContent() {
 
   const directSchoolDocRef = useMemoFirebase(() => {
     if (!mounted || !firestore || !requestedSchoolId) return null;
-    const cleanId = requestedSchoolId.toUpperCase().startsWith("FLIS") 
-      ? requestedSchoolId.toUpperCase() 
+    const cleanId = requestedSchoolId.toUpperCase().startsWith("FLIS")
+      ? requestedSchoolId.toUpperCase()
       : `FLIS${requestedSchoolId}`;
     return doc(firestore, 'schools', cleanId);
   }, [firestore, mounted, requestedSchoolId]);
@@ -523,8 +523,8 @@ function DecoderContent() {
     if (!requestedSchoolId || !allSchools) return null;
     const reqLower = requestedSchoolId.toLowerCase();
     const reqClean = requestedSchoolId.replace(/^FLIS/i, "");
-    const found = allSchools.find((s: any) => 
-      s.id?.toLowerCase() === reqLower || 
+    const found = allSchools.find((s: any) =>
+      s.id?.toLowerCase() === reqLower ||
       s.id?.replace(/^FLIS/i, "") === reqClean
     );
     return found?.name || found?.schoolname || found?.schoolName || found?.institutionName || null;
@@ -833,24 +833,24 @@ function DecoderContent() {
   }, [schoolJobsData, adminJobsData, stabilityReport, activeSchool?.city, isInvalidNonJobTitle, normalizeJobTitleKey, isCityOrCampusMismatch]);
 
   // 📅 Compute earliest posted date among processed jobs
-const earliestPosted = useMemo(() => {
-  if (!allProcessedJobs || allProcessedJobs.length === 0) return null;
-  const dates = allProcessedJobs
-    .map((j: any) => j.rawPostedDate)
-    .filter(Boolean);
-  if (dates.length === 0) return null;
-  return new Date(Math.min(...dates.map((d: any) => d.getTime())));
-}, [allProcessedJobs]);
+  const earliestPosted = useMemo(() => {
+    if (!allProcessedJobs || allProcessedJobs.length === 0) return null;
+    const dates = allProcessedJobs
+      .map((j: any) => j.rawPostedDate)
+      .filter(Boolean);
+    if (dates.length === 0) return null;
+    return new Date(Math.min(...dates.map((d: any) => d.getTime())));
+  }, [allProcessedJobs]);
 
-// 🔢 Determine how many months of history we have (capped at 24, minimum 1)
-const historicMonths = useMemo(() => {
-  if (!earliestPosted) return null;
-  const diffMs = Date.now() - earliestPosted.getTime();
-  const months = Math.floor(diffMs / (30 * 24 * 60 * 60 * 1000));
-  return Math.min(24, Math.max(1, months));
-}, [earliestPosted]);
+  // 🔢 Determine how many months of history we have (capped at 24, minimum 1)
+  const historicMonths = useMemo(() => {
+    if (!earliestPosted) return null;
+    const diffMs = Date.now() - earliestPosted.getTime();
+    const months = Math.floor(diffMs / (30 * 24 * 60 * 60 * 1000));
+    return Math.min(24, Math.max(1, months));
+  }, [earliestPosted]);
 
-// 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
+  // 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
   const activeVacancies = useMemo(() => {
     let rawList: any[] = [];
 
@@ -887,8 +887,8 @@ const historicMonths = useMemo(() => {
     }
 
     // 1. Filter out non-job section titles, generic web headings & city/campus mismatches
-    const validJobs = rawList.filter((j: any) => 
-      !isInvalidNonJobTitle(j.title) && 
+    const validJobs = rawList.filter((j: any) =>
+      !isInvalidNonJobTitle(j.title) &&
       !isCityOrCampusMismatch(j.title, activeSchool?.city, activeSchool?.country, j.schoolId, activeSchool?.id)
     );
 
@@ -924,81 +924,81 @@ const historicMonths = useMemo(() => {
       setTransportMode("C");
     }
   }, [settings.country, settings.schoolId, activeSchool]);
- 
-   useEffect(() => {
-     if (mounted && allSchools && allSchools.length > 0) {
-       const params = new URLSearchParams(window.location.search);
-       const urlSchoolId = params.get('schoolId') || params.get('id');
-       const jobTitle = params.get('jobTitle');
-       
-       if (jobTitle) {
-         let parsedSources: string[] | undefined = undefined;
-         let parsedSourceUrls: Record<string, string> | undefined = undefined;
-         try {
-           const rawSources = params.get("sources");
-           if (rawSources) parsedSources = JSON.parse(decodeURIComponent(rawSources));
-         } catch (e) {}
-         try {
-           const rawSourceUrls = params.get("sourceUrls");
-           if (rawSourceUrls) parsedSourceUrls = JSON.parse(decodeURIComponent(rawSourceUrls));
-         } catch (e) {}
 
-         setSelectedOpportunity({
-           jobId: params.get("jobId") || undefined,
-           jobTitle: translateJobTitleToEnglish(jobTitle),
-           department: params.get("department") || undefined,
-           curriculum: params.get("curriculum") || undefined,
-           applyUrl: params.get("applyUrl") || undefined,
-           closesDate: params.get("closesDate") || undefined,
-           savingsPotential: params.get("savingsPotential") ? Number(params.get("savingsPotential")) : undefined,
-           schoolRating: params.get("schoolRating") || undefined,
-           source: params.get("source") || undefined,
-           sources: parsedSources,
-           sourceUrls: parsedSourceUrls,
-           city: params.get("city") || undefined,
-           country: params.get("country") || undefined
-         });
-       }
+  useEffect(() => {
+    if (mounted && allSchools && allSchools.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const urlSchoolId = params.get('schoolId') || params.get('id');
+      const jobTitle = params.get('jobTitle');
 
-       const urlSchoolName = params.get('schoolName') || params.get('school');
-       let found: any = null;
-       if (urlSchoolId) {
-         const reqLower = urlSchoolId.toLowerCase().trim();
-         const reqClean = reqLower.replace(/^flis/i, '');
-         found = allSchools.find((s: any) => {
-           const sIdLower = (s.id || '').toLowerCase().trim();
-           const sSchoolIdLower = (s.schoolId || '').toLowerCase().trim();
-           return sIdLower === reqLower || 
-                  sSchoolIdLower === reqLower || 
-                  sIdLower.replace(/^flis/i, '') === reqClean || 
-                  sSchoolIdLower.replace(/^flis/i, '') === reqClean;
-         });
-       }
-       if (!found && urlSchoolName) {
-         const sNameLower = urlSchoolName.toLowerCase().trim();
-         found = allSchools.find((s: any) => {
-           const name1 = (s.schoolname || s.name || s.schoolName || '').toLowerCase().trim();
-           return name1.length > 3 && (name1.includes(sNameLower) || sNameLower.includes(name1));
-         });
-       }
-       if (found) {
-         setSettings(prev => ({
-           ...prev,
-           schoolId: found.id,
-           country: found.country || found.region || ""
-         }));
-       } else if (params.get('country')) {
-         setSettings(prev => ({
-           ...prev,
-           country: params.get('country') || prev.country
-         }));
-       }
-     }
-   }, [mounted, allSchools]);
- 
-   useEffect(() => {
-     setBriefingRequested(false);
-   }, [settings.schoolId]);
+      if (jobTitle) {
+        let parsedSources: string[] | undefined = undefined;
+        let parsedSourceUrls: Record<string, string> | undefined = undefined;
+        try {
+          const rawSources = params.get("sources");
+          if (rawSources) parsedSources = JSON.parse(decodeURIComponent(rawSources));
+        } catch (e) { }
+        try {
+          const rawSourceUrls = params.get("sourceUrls");
+          if (rawSourceUrls) parsedSourceUrls = JSON.parse(decodeURIComponent(rawSourceUrls));
+        } catch (e) { }
+
+        setSelectedOpportunity({
+          jobId: params.get("jobId") || undefined,
+          jobTitle: translateJobTitleToEnglish(jobTitle),
+          department: params.get("department") || undefined,
+          curriculum: params.get("curriculum") || undefined,
+          applyUrl: params.get("applyUrl") || undefined,
+          closesDate: params.get("closesDate") || undefined,
+          savingsPotential: params.get("savingsPotential") ? Number(params.get("savingsPotential")) : undefined,
+          schoolRating: params.get("schoolRating") || undefined,
+          source: params.get("source") || undefined,
+          sources: parsedSources,
+          sourceUrls: parsedSourceUrls,
+          city: params.get("city") || undefined,
+          country: params.get("country") || undefined
+        });
+      }
+
+      const urlSchoolName = params.get('schoolName') || params.get('school');
+      let found: any = null;
+      if (urlSchoolId) {
+        const reqLower = urlSchoolId.toLowerCase().trim();
+        const reqClean = reqLower.replace(/^flis/i, '');
+        found = allSchools.find((s: any) => {
+          const sIdLower = (s.id || '').toLowerCase().trim();
+          const sSchoolIdLower = (s.schoolId || '').toLowerCase().trim();
+          return sIdLower === reqLower ||
+            sSchoolIdLower === reqLower ||
+            sIdLower.replace(/^flis/i, '') === reqClean ||
+            sSchoolIdLower.replace(/^flis/i, '') === reqClean;
+        });
+      }
+      if (!found && urlSchoolName) {
+        const sNameLower = urlSchoolName.toLowerCase().trim();
+        found = allSchools.find((s: any) => {
+          const name1 = (s.schoolname || s.name || s.schoolName || '').toLowerCase().trim();
+          return name1.length > 3 && (name1.includes(sNameLower) || sNameLower.includes(name1));
+        });
+      }
+      if (found) {
+        setSettings(prev => ({
+          ...prev,
+          schoolId: found.id,
+          country: found.country || found.region || ""
+        }));
+      } else if (params.get('country')) {
+        setSettings(prev => ({
+          ...prev,
+          country: params.get('country') || prev.country
+        }));
+      }
+    }
+  }, [mounted, allSchools]);
+
+  useEffect(() => {
+    setBriefingRequested(false);
+  }, [settings.schoolId]);
 
   const loadStabilityReport = useCallback(async (force: boolean = false) => {
     if (!activeSchool) return;
@@ -1151,6 +1151,17 @@ const historicMonths = useMemo(() => {
     const sCity = normalize(String(getSchoolField(activeSchool, ['city', 'town', 'location']) || ''));
     const sCountry = canonicalCountry(String(getSchoolField(activeSchool, ['country', 'region']) || ''));
 
+    // 🇲🇨 MONACO CROSS-BORDER LIVING FIX (use French accommodation prices from #FLIS0193 / France)
+    if (sCountry === "monaco" || sCity === "monaco" || String(activeSchool.id || "").toUpperCase() === "FLIS0041") {
+      const flis0193Col = costOfLiving.find((c: any) =>
+        normalize(c.id || c.schoolId || c.schoolid || "").includes("flis0193") ||
+        normalize(c.city || c.city_name || "").includes("mougins") ||
+        normalize(c.id || "").includes("france") ||
+        canonicalCountry(c.country || "") === "france"
+      );
+      if (flis0193Col) return flis0193Col;
+    }
+
     const matches = costOfLiving.filter((c: any) =>
       normalize(c.city || c.city_name) === sCity ||
       (sCity.includes("joburg") && normalize(c.city || c.city_name).includes("johannesburg")) ||
@@ -1269,7 +1280,7 @@ const historicMonths = useMemo(() => {
     const isConvertedFromAnnual = rawNetInGBP >= 18000;
     const baseNet = isConvertedFromAnnual ? Math.round(rawNetInput / 12) : rawNetInput;
 
-    const upliftFactor = (uplift13 ? 1/12 : 0) + (uplift14 ? 1/12 : 0);
+    const upliftFactor = (uplift13 ? 1 / 12 : 0) + (uplift14 ? 1 / 12 : 0);
     const amortizedBase = baseNet * (1 + upliftFactor);
 
     const totalIn = amortizedBase +
@@ -1300,11 +1311,11 @@ const historicMonths = useMemo(() => {
     const activeRentKey = (overrideBedrooms !== null && overrideBedrooms !== 4) ? `rent${overrideBedrooms}br` : standardRentKey;
 
     // 🏠 PROPERTY ADVICE LOGIC
-    const propertyLabels: Record<string, string> = { 
+    const propertyLabels: Record<string, string> = {
       'rent0br': "Shared",
-      'rent1br': "1-Bed Residence", 
-      'rent2br': "2-Bed Residence", 
-      'rent3br': "3-Bed Residence" 
+      'rent1br': "1-Bed Residence",
+      'rent2br': "2-Bed Residence",
+      'rent3br': "3-Bed Residence"
     };
     const propertyLabel = isProvided ? "Provided" : (propertyLabels[activeRentKey] || "Standard Residence");
 
@@ -1339,7 +1350,7 @@ const historicMonths = useMemo(() => {
 
     const groceriesCost = usdToLocal(getVal(getF(activeCOL, ['groceries', 'food']), pKey, scalar) * groceryMult);
     const utilitiesCost = usdToLocal(getVal(getF(activeCOL, ['utilities', 'bills']), pKey, scalar * 0.8));
-    
+
     // Split connectivity Cost
     const internetCost = usdToLocal(getVal(getF(activeCOL, ['internet', 'connectivity']), pKey, 1));
     const mobileCost = usdToLocal(getVal(getF(activeCOL, ['mobile', 'phone', 'mobilephone']), pKey, 1) * personCount);
@@ -1375,12 +1386,12 @@ const historicMonths = useMemo(() => {
     if (isCar) {
       // 🚗 CAR HIRE: Constant vehicle rate across all family status profiles
       if (typeof transportMap === 'object' && transportMap !== null) {
-        transportVal = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0) || 0);
+        transportVal = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0) || 120);
       } else {
-        transportVal = safeParse(transportMap);
+        transportVal = safeParse(transportMap) || 120;
       }
     } else {
-      // 🚌 PUBLIC TRANSIT: Multiplies and scales dynamically across all family status profiles
+      // 🚌 PUBLIC TRANSIT: Multiplies and scales dynamically across all family status profiles ($60 USD baseline)
       if (sCountry === 'argentina') {
         const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
         transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0);
@@ -1391,12 +1402,16 @@ const historicMonths = useMemo(() => {
         if (transportMap[transportKey] !== undefined && safeParse(transportMap[transportKey]) > 0) {
           transportVal = safeParse(transportMap[transportKey]);
         } else {
-          const baseSingle = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0) || 0);
+          const baseSingle = safeParse(transportMap.single || transportMap.base || Object.values(transportMap).find(v => typeof safeParse(v) === 'number' && safeParse(v) > 0)) || 60;
           transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
         }
       } else {
-        const baseSingle = safeParse(transportMap);
+        const baseSingle = safeParse(transportMap) || 60;
         transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
+      }
+
+      if (!transportVal || transportVal <= 0) {
+        transportVal = 60 * (transitScalarMap[transportKey] || 1.0);
       }
     }
 
@@ -1404,11 +1419,11 @@ const historicMonths = useMemo(() => {
     const rawSocialVal = getF(activeCOL, ['social', 'dining', 'diningsocial']);
     const socialVal = (rawSocialVal !== null && rawSocialVal !== undefined) ? rawSocialVal : 300;
     const socialCost = usdToLocal(getVal(socialVal, pKey, scalar) * lifestyleMult);
-    
+
     // Medical gaps cost
     const medicalVal = (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * adults + (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * 0.5 * children;
     const medicalCost = usdToLocal(medicalVal);
-    
+
     const manualCost = safeParse(manualAdjustments);
 
     const totalOut = rentCost + groceriesCost + utilitiesCost + connectivityCost + transportCost + socialCost + medicalCost + manualCost;
@@ -1421,7 +1436,7 @@ const historicMonths = useMemo(() => {
     return {
       costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, internet: internetCost, mobile: mobileCost, transport: transportCost, social: socialCost, medical: medicalCost, manual: manualCost },
       propertyLabel, canDownsize, standardRentKey,
-      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, 
+      totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving,
       housingStatus: isProvided ? 'provided' : 'custom',
       isHousingProvidedByDefault,
       isConvertedFromAnnual, rawNetInput, baseNet,
@@ -1491,8 +1506,8 @@ const historicMonths = useMemo(() => {
       const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
         ? 'Deficit'
         : (analysis?.rateOfSaving ?? 0) <= 10
-        ? 'Limited Potential'
-        : 'Thriving';
+          ? 'Limited Potential'
+          : 'Thriving';
 
       logTelemetryEvent('simulator_dial_adjusted', {
         target_country: activeSchool.country || 'unknown',
@@ -1519,8 +1534,8 @@ const historicMonths = useMemo(() => {
       const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
         ? 'Deficit'
         : (analysis?.rateOfSaving ?? 0) <= 10
-        ? 'Limited Potential'
-        : 'Thriving';
+          ? 'Limited Potential'
+          : 'Thriving';
 
       logTelemetryEvent('simulator_dial_adjusted', {
         target_country: activeSchool.country || 'unknown',
@@ -1546,8 +1561,8 @@ const historicMonths = useMemo(() => {
     const resultingStatus = (analysis?.rateOfSaving ?? 0) <= 0
       ? 'Deficit'
       : (analysis?.rateOfSaving ?? 0) <= 10
-      ? 'Limited Potential'
-      : 'Thriving';
+        ? 'Limited Potential'
+        : 'Thriving';
 
     logTelemetryEvent('simulator_dial_adjusted', {
       target_country: activeSchool.country || 'unknown',
@@ -1659,6 +1674,40 @@ const historicMonths = useMemo(() => {
     };
   }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource, stabilityReport, isCalculatingStability, briefingRequested]);
 
+  const [activeSection, setActiveSection] = useState<string>('section-financials');
+
+  const scrollToSection = useCallback((id: string) => {
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) {
+      const yOffset = -120;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!activeSchool) return;
+
+    const sectionIds = ['section-financials', 'section-living-safety', 'section-staffroom', 'section-package-visa'];
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 180;
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el && el.offsetTop <= scrollPosition) {
+          setActiveSection(sectionIds[i]);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSchool]);
+
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
 
@@ -1707,7 +1756,7 @@ const historicMonths = useMemo(() => {
           }} className="flex items-center gap-1.5 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors cursor-pointer" title={selectedOpportunity ? "Return to school view" : "Go back"}><ArrowLeft className="size-3" /> Back</button>
           <div className="flex items-center justify-between mb-3 lg:mb-4">
             <p className="text-[11px] font-black text-[#d95f02] uppercase tracking-[0.4em] italic my-0">Search settings</p>
-            <button 
+            <button
               onClick={() => setIsMobileFiltersOpen(prev => !prev)}
               className="lg:hidden flex items-center gap-1.5 text-[11px] font-black text-[#d95f02] uppercase tracking-wider bg-white/5 border border-white/10 px-2.5 py-1 rounded-sm cursor-pointer hover:bg-white/10 transition-colors"
             >
@@ -1848,14 +1897,14 @@ const historicMonths = useMemo(() => {
                     <div className="absolute size-16 bg-[#D96B27]/20 rounded-full animate-ping" />
                     <Loader2 className="animate-spin size-10 text-[#D96B27] relative z-10" />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
                       Retrieving School Data...
                     </h3>
                     <p className="text-xs md:text-sm text-slate-400 font-medium leading-relaxed max-w-[440px]">
-                      {requestedJobTitle 
-                        ? `Loading profile metrics, cost-of-living data, and financial projections for "${requestedJobTitle}"...` 
+                      {requestedJobTitle
+                        ? `Loading profile metrics, cost-of-living data, and financial projections for "${requestedJobTitle}"...`
                         : "Loading profile metrics, cost-of-living data, and financial projections..."}
                     </p>
                   </div>
@@ -1867,79 +1916,143 @@ const historicMonths = useMemo(() => {
                 </div>
               </div>
             ) : (
-            <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
-              <div className="w-full max-w-[680px] bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-xl p-8 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                
-                {/* Hero Section */}
-                <div className="flex flex-col items-center text-center gap-4">
-                  <div className="hero-header-group flex flex-col items-center text-center gap-2 select-none w-full">
-                    <h1 className="brand-title text-[32px] md:text-[44px] font-bold tracking-[-0.5px] leading-[1.1] text-center mb-3.5 font-sans">
-                      <span className="brand-orange text-[#D96B27]">Leopardfish</span>
-                      <span className="brand-blue text-[#0073E6] ml-3 md:ml-[16px]">Intel</span>
-                    </h1>
-                    <h2 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
-                      School Profiles & Financial Estimates
-                    </h2>
-                  </div>
-                  
-                  <p className="text-sm md:text-[14px] text-[#94A3B8] font-medium leading-relaxed max-w-[540px]">
-                    Select a target country and school to evaluate estimated net savings, cost of living breakdowns, and community insights.
-                  </p>
-                  
-                  {/* Opinion & Data Disclaimer Badge */}
-                  <div className="flex items-center justify-center gap-2 mt-1 mb-2">
-                    <p className="text-[12px] italic text-[#64748B] leading-normal font-medium max-w-[540px]">
-                      Metrics are independent estimates derived from community submissions and projections.
+              <div className="min-h-[70vh] flex flex-col items-center justify-center py-10 px-4">
+                <div className="w-full max-w-[680px] bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 rounded-xl p-8 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+                  {/* Hero Section */}
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <div className="hero-header-group flex flex-col items-center text-center gap-2 select-none w-full">
+                      <h1 className="brand-title text-[32px] md:text-[44px] font-bold tracking-[-0.5px] leading-[1.1] text-center mb-3.5 font-sans">
+                        <span className="brand-orange text-[#D96B27]">Leopardfish</span>
+                        <span className="brand-blue text-[#0073E6] ml-3 md:ml-[16px]">Intel</span>
+                      </h1>
+                      <h2 className="text-2xl md:text-3xl font-semibold text-white leading-tight">
+                        School Profiles & Financial Estimates
+                      </h2>
+                    </div>
+
+                    <p className="text-sm md:text-[14px] text-[#94A3B8] font-medium leading-relaxed max-w-[540px]">
+                      Select a target country and school to evaluate estimated net savings, cost of living breakdowns, and community insights.
                     </p>
+
+                    {/* Opinion & Data Disclaimer Badge */}
+                    <div className="flex items-center justify-center gap-2 mt-1 mb-2">
+                      <p className="text-[12px] italic text-[#64748B] leading-normal font-medium max-w-[540px]">
+                        Metrics are independent estimates derived from community submissions and projections.
+                      </p>
+                    </div>
                   </div>
+
+                  {/* 3-Step Mini Guide Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+
+                    {/* Step 1 */}
+                    <div className="step-card-01 bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                      <div className="flex items-center justify-between">
+                        <span className="step-number-badge text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">01</span>
+                        <Target className="step-icon size-4 text-slate-400 opacity-70" />
+                      </div>
+                      <div>
+                        <h4 className="text-[14px] font-semibold text-white">Select Target</h4>
+                        <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Select a target country and school.</p>
+                      </div>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">02</span>
+                        <Sliders className="size-4 text-slate-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-[14px] font-semibold text-white">Adjust Profile</h4>
+                        <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Adjust family status and lifestyle mode and salary.</p>
+                      </div>
+                    </div>
+
+                    {/* Step-3 */}
+                    <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">03</span>
+                        <BarChart3 className="size-4 text-slate-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-[14px] font-semibold text-white">Compare Schools</h4>
+                        <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Click to view your projected savings and lifestyle match.</p>
+                      </div>
+                    </div>
+
+                  </div>
+
                 </div>
-
-                {/* 3-Step Mini Guide Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-                  
-                  {/* Step 1 */}
-                  <div className="step-card-01 bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <span className="step-number-badge text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">01</span>
-                      <Target className="step-icon size-4 text-slate-400 opacity-70" />
-                    </div>
-                    <div>
-                      <h4 className="text-[14px] font-semibold text-white">Select Target</h4>
-                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Select a target country and school.</p>
-                    </div>
-                  </div>
-
-                  {/* Step 2 */}
-                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">02</span>
-                      <Sliders className="size-4 text-slate-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-[14px] font-semibold text-white">Adjust Profile</h4>
-                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Adjust family status and lifestyle mode and salary.</p>
-                    </div>
-                  </div>
-
-                  {/* Step-3 */}
-                  <div className="bg-white/[0.03] border border-white/[0.05] rounded-lg p-4 space-y-3 flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">03</span>
-                      <BarChart3 className="size-4 text-slate-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-[14px] font-semibold text-white">Compare Schools</h4>
-                      <p className="text-[12px] text-[#CBD5E1] mt-1 leading-normal">Click to view your projected savings and lifestyle match.</p>
-                    </div>
-                  </div>
-
-                </div>
-
               </div>
-            </div>
-          )
+            )
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
+              {/* 📌 STICKY SECTION SUB-NAV */}
+              <div className="sticky top-[53px] sm:top-[57px] z-40 -mx-2 sm:mx-0 px-3 py-2 bg-[#0b1224]/90 backdrop-blur-md border border-white/10 sm:rounded-md shadow-xl flex items-center justify-center gap-1.5 sm:gap-3 overflow-x-auto no-scrollbar">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('section-financials')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
+                    activeSection === 'section-financials'
+                      ? "bg-[#FF6B35]/20 text-[#FF6B35] border border-[#FF6B35]/40 shadow-[0_0_12px_rgba(255,107,53,0.25)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  )}
+                >
+                  <Coins className="size-3.5" />
+                  Financials
+                </button>
+
+                <span className="text-white/10 text-xs hidden sm:inline">•</span>
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('section-package-visa')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
+                    activeSection === 'section-package-visa'
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  )}
+                >
+                  <ShieldCheck className="size-3.5" />
+                  Package &amp; Visa
+                </button>
+
+                <span className="text-white/10 text-xs hidden sm:inline">•</span>
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('section-staffroom')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
+                    activeSection === 'section-staffroom'
+                      ? "bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  )}
+                >
+                  <Users className="size-3.5" />
+                  Staffroom Intel
+                </button>
+
+                <span className="text-white/10 text-xs hidden sm:inline">•</span>
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('section-living-safety')}
+                  className={cn(
+                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
+                    activeSection === 'section-living-safety'
+                      ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
+                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  )}
+                >
+                  <Home className="size-3.5" />
+                  Living &amp; Safety
+                </button>
+              </div>
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
               {selectedOpportunity && (
                 <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-2 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
@@ -1965,7 +2078,7 @@ const historicMonths = useMemo(() => {
                         const rawSources = selectedOpportunity.sources && selectedOpportunity.sources.length > 0
                           ? selectedOpportunity.sources
                           : [selectedOpportunity.source || "Official Source"];
-                        
+
                         const sMap = new Map<string, string>();
                         // Always guarantee a DIRECT / Official Website pill entry
                         sMap.set("DIRECT", "Direct");
@@ -2097,20 +2210,20 @@ const historicMonths = useMemo(() => {
                                 srcUpper.includes("INSPIRED")
                                   ? "bg-sky-500/20 border-sky-500/40 text-sky-300 hover:bg-sky-500/30"
                                   : srcUpper === "TES"
-                                  ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
-                                  : srcUpper.includes("COGNITA")
-                                  ? "bg-purple-500/20 border-purple-500/40 text-purple-300 hover:bg-purple-500/30"
-                                  : srcUpper.includes("MALVERN")
-                                  ? "bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30"
-                                  : srcUpper.includes("UWC")
-                                  ? "bg-violet-500/20 border-violet-500/40 text-violet-300 hover:bg-violet-500/30"
-                                  : srcUpper.includes("ISP")
-                                  ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30"
-                                  : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
-                                  ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
-                                  : (srcUpper === "NORD ANGLIA" || srcUpper.includes("NORD ANGLIA"))
-                                  ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
-                                  : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
+                                    ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
+                                    : srcUpper.includes("COGNITA")
+                                      ? "bg-purple-500/20 border-purple-500/40 text-purple-300 hover:bg-purple-500/30"
+                                      : srcUpper.includes("MALVERN")
+                                        ? "bg-rose-500/20 border-rose-500/40 text-rose-300 hover:bg-rose-500/30"
+                                        : srcUpper.includes("UWC")
+                                          ? "bg-violet-500/20 border-violet-500/40 text-violet-300 hover:bg-violet-500/30"
+                                          : srcUpper.includes("ISP")
+                                            ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30"
+                                            : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
+                                              ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
+                                              : (srcUpper === "NORD ANGLIA" || srcUpper.includes("NORD ANGLIA"))
+                                                ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
+                                                : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
                               )}
                             >
                               {label === "Direct" ? "Official Website" : label}
@@ -2163,121 +2276,121 @@ const historicMonths = useMemo(() => {
 
                     {/* Desktop Only: Full Vacancies Grid */}
                     <div className="hidden lg:block mb-5 p-3.5 md:p-4 bg-slate-900/90 border border-amber-500/20 rounded-md shadow-md">
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
-                      {lastSelectedOpportunity && (
-                        <div className="w-full flex justify-end pb-1 border-b border-white/5 mb-1">
-                          <button
-                            onClick={() => setSelectedOpportunity(lastSelectedOpportunity)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6B35]/15 hover:bg-[#FF6B35]/25 border border-[#FF6B35]/40 text-[#FF6B35] text-xs font-bold rounded-sm transition-all cursor-pointer shadow-sm animate-in fade-in"
-                            title={"Return to evaluating " + lastSelectedOpportunity.jobTitle}
-                          >
-                            <ArrowRight className="size-3.5 text-[#FF6B35]" />
-                            <span className="text-[11px] font-bold uppercase tracking-wider">Return to {translateJobTitleToEnglish(lastSelectedOpportunity.jobTitle)} Evaluation</span>
-                          </button>
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+                        {lastSelectedOpportunity && (
+                          <div className="w-full flex justify-end pb-1 border-b border-white/5 mb-1">
+                            <button
+                              onClick={() => setSelectedOpportunity(lastSelectedOpportunity)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6B35]/15 hover:bg-[#FF6B35]/25 border border-[#FF6B35]/40 text-[#FF6B35] text-xs font-bold rounded-sm transition-all cursor-pointer shadow-sm animate-in fade-in"
+                              title={"Return to evaluating " + lastSelectedOpportunity.jobTitle}
+                            >
+                              <ArrowRight className="size-3.5 text-[#FF6B35]" />
+                              <span className="text-[11px] font-bold uppercase tracking-wider">Return to {translateJobTitleToEnglish(lastSelectedOpportunity.jobTitle)} Evaluation</span>
+                            </button>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2.5">
+                          <span className="relative flex h-2.5 w-2.5">
+                            <span className={cn(
+                              "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                              activeVacancies.length > 0 ? "bg-emerald-400" : "bg-slate-500"
+                            )}></span>
+                            <span className={cn(
+                              "relative inline-flex rounded-full h-2.5 w-2.5",
+                              activeVacancies.length > 0 ? "bg-emerald-500" : "bg-slate-600"
+                            )}></span>
+                          </span>
+                          <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
+                            <Briefcase className="size-3.5 text-[#FF6B35]" />
+                            Current Open Vacancies
+                            <span className={cn(
+                              "px-2 py-0.5 text-[10px] font-mono rounded-full font-bold ml-1",
+                              activeVacancies.length > 0 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-white/5 text-slate-400 border border-white/10"
+                            )}>
+                              {activeVacancies.length}
+                            </span>
+                          </h3>
+                        </div>
+
+                        <button
+                          onClick={() => router.push(`/featured-jobs?search=${encodeURIComponent(getSchoolField(activeSchool, ['schoolname', 'name', 'school']) || '')}`)}
+                          className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 hover:text-[#FF6B35] transition-colors flex items-center gap-1 cursor-pointer"
+                        >
+                          Browse All Vacancies <ArrowUpRight className="size-3" />
+                        </button>
+                      </div>
+
+                      {activeVacancies.length > 0 ? (
+                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                          {activeVacancies.map((job: any, idx: number) => {
+                            const isSelected = selectedOpportunity?.jobTitle?.toLowerCase() === job.title.toLowerCase() ||
+                              (selectedOpportunity?.jobId && String(selectedOpportunity.jobId) === String(job.id));
+
+                            const handleSelectJob = () => {
+                              setSelectedOpportunity({
+                                jobId: job.id,
+                                jobTitle: job.title,
+                                department: job.department,
+                                curriculum: job.curriculum,
+                                applyUrl: job.applyUrl || job.source_url || activeSchool?.careersPageUrl || activeSchool?.website,
+                                closesDate: job.closesDate,
+                                savingsPotential: job.savingsPotential,
+                                schoolRating: job.schoolRating,
+                                source: job.source,
+                                sources: job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"],
+                                sourceUrls: job.sourceUrls || {},
+                                city: job.city,
+                                country: job.country
+                              });
+
+                              // Update URL without full page refresh
+                              const newUrl = new URL(window.location.href);
+                              newUrl.searchParams.set('schoolId', activeSchool.id);
+                              if (job.id) newUrl.searchParams.set('jobId', String(job.id));
+                              newUrl.searchParams.set('jobTitle', job.title);
+                              if (job.department) newUrl.searchParams.set('department', job.department);
+                              if (job.applyUrl) newUrl.searchParams.set('applyUrl', job.applyUrl);
+                              if (job.closesDate) newUrl.searchParams.set('closesDate', job.closesDate);
+                              window.history.replaceState({}, '', newUrl.toString());
+                            };
+
+                            return (
+                              <button
+                                key={job.id || idx}
+                                onClick={handleSelectJob}
+                                className={cn(
+                                  "group w-full sm:w-auto flex flex-col sm:inline-flex sm:flex-row sm:items-center justify-between sm:justify-start gap-1 sm:gap-2 px-3 py-2 sm:py-1.5 rounded-md text-xs font-bold transition-all border text-left cursor-pointer",
+                                  isSelected
+                                    ? "bg-[#FF6B35]/20 text-white border-[#FF6B35] shadow-[0_0_12px_rgba(255,107,53,0.3)] ring-1 ring-[#FF6B35]"
+                                    : "bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border-white/10 hover:border-white/20"
+                                )}
+                              >
+                                <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
+                                  <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
+                                  <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{translateJobTitleToEnglish(job.title)}</span>
+                                  <ArrowUpRight className={cn("size-3 shrink-0 sm:hidden transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-400 group-hover:text-white")} />
+                                </div>
+                                {job.closesDate && (
+                                  <span className="text-[9.5px] sm:text-[10px] text-slate-400 group-hover:text-slate-300 font-mono pt-0.5 sm:pt-0">
+                                    (Closes: {job.closesDate})
+                                  </span>
+                                )}
+                                <ArrowUpRight className={cn("hidden sm:inline-block size-3 shrink-0 transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-500 group-hover:text-white group-hover:translate-x-0.5")} />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-xs text-slate-400 py-1 font-medium italic">
+                          <Info className="size-3.5 text-slate-500 shrink-0" />
+                          <span>No active vacancies currently listed for this campus.</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2.5">
-                        <span className="relative flex h-2.5 w-2.5">
-                          <span className={cn(
-                            "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
-                            activeVacancies.length > 0 ? "bg-emerald-400" : "bg-slate-500"
-                          )}></span>
-                          <span className={cn(
-                            "relative inline-flex rounded-full h-2.5 w-2.5",
-                            activeVacancies.length > 0 ? "bg-emerald-500" : "bg-slate-600"
-                          )}></span>
-                        </span>
-                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-200 flex items-center gap-2">
-                          <Briefcase className="size-3.5 text-[#FF6B35]" />
-                          Current Open Vacancies
-                          <span className={cn(
-                            "px-2 py-0.5 text-[10px] font-mono rounded-full font-bold ml-1",
-                            activeVacancies.length > 0 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-white/5 text-slate-400 border border-white/10"
-                          )}>
-                            {activeVacancies.length}
-                          </span>
-                        </h3>
-                      </div>
-
-                      <button
-                        onClick={() => router.push(`/featured-jobs?search=${encodeURIComponent(getSchoolField(activeSchool, ['schoolname', 'name', 'school']) || '')}`)}
-                        className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 hover:text-[#FF6B35] transition-colors flex items-center gap-1 cursor-pointer"
-                      >
-                        Browse All Vacancies <ArrowUpRight className="size-3" />
-                      </button>
                     </div>
-
-                    {activeVacancies.length > 0 ? (
-                      <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                        {activeVacancies.map((job: any, idx: number) => {
-                          const isSelected = selectedOpportunity?.jobTitle?.toLowerCase() === job.title.toLowerCase() ||
-                                            (selectedOpportunity?.jobId && String(selectedOpportunity.jobId) === String(job.id));
-
-                          const handleSelectJob = () => {
-                            setSelectedOpportunity({
-                              jobId: job.id,
-                              jobTitle: job.title,
-                              department: job.department,
-                              curriculum: job.curriculum,
-                              applyUrl: job.applyUrl || job.source_url || activeSchool?.careersPageUrl || activeSchool?.website,
-                              closesDate: job.closesDate,
-                              savingsPotential: job.savingsPotential,
-                              schoolRating: job.schoolRating,
-                              source: job.source,
-                              sources: job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"],
-                              sourceUrls: job.sourceUrls || {},
-                              city: job.city,
-                              country: job.country
-                            });
-
-                            // Update URL without full page refresh
-                            const newUrl = new URL(window.location.href);
-                            newUrl.searchParams.set('schoolId', activeSchool.id);
-                            if (job.id) newUrl.searchParams.set('jobId', String(job.id));
-                            newUrl.searchParams.set('jobTitle', job.title);
-                            if (job.department) newUrl.searchParams.set('department', job.department);
-                            if (job.applyUrl) newUrl.searchParams.set('applyUrl', job.applyUrl);
-                            if (job.closesDate) newUrl.searchParams.set('closesDate', job.closesDate);
-                            window.history.replaceState({}, '', newUrl.toString());
-                          };
-
-                          return (
-                            <button
-                              key={job.id || idx}
-                              onClick={handleSelectJob}
-                              className={cn(
-                                "group w-full sm:w-auto flex flex-col sm:inline-flex sm:flex-row sm:items-center justify-between sm:justify-start gap-1 sm:gap-2 px-3 py-2 sm:py-1.5 rounded-md text-xs font-bold transition-all border text-left cursor-pointer",
-                                isSelected
-                                  ? "bg-[#FF6B35]/20 text-white border-[#FF6B35] shadow-[0_0_12px_rgba(255,107,53,0.3)] ring-1 ring-[#FF6B35]"
-                                  : "bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border-white/10 hover:border-white/20"
-                              )}
-                            >
-                              <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
-                                <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
-                                <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{translateJobTitleToEnglish(job.title)}</span>
-                                <ArrowUpRight className={cn("size-3 shrink-0 sm:hidden transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-400 group-hover:text-white")} />
-                              </div>
-                              {job.closesDate && (
-                                <span className="text-[9.5px] sm:text-[10px] text-slate-400 group-hover:text-slate-300 font-mono pt-0.5 sm:pt-0">
-                                  (Closes: {job.closesDate})
-                                </span>
-                              )}
-                              <ArrowUpRight className={cn("hidden sm:inline-block size-3 shrink-0 transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-500 group-hover:text-white group-hover:translate-x-0.5")} />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-xs text-slate-400 py-1 font-medium italic">
-                        <Info className="size-3.5 text-slate-500 shrink-0" />
-                        <span>No active vacancies currently listed for this campus.</span>
-                      </div>
-                    )}
-                  </div>
                   </>
                 )}
 
-                <div className="flex justify-between items-start border-b border-white/5 pb-3">
+                <div id="section-financials" className="scroll-mt-28 flex justify-between items-start border-b border-white/5 pb-3">
                   <div className="space-y-2">
                     <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter leading-none italic">
                       {getSchoolField(activeSchool, ['schoolname', 'name', 'school'])}
@@ -2325,7 +2438,7 @@ const historicMonths = useMemo(() => {
                           </p>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent side="left" className="max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 text-white p-3.5 shadow-2xl rounded-sm">
+                      <TooltipContent side="left" className="max-w-xs bg-[#0b1224]/95 backdrop-blur-md border border-white/15 text-white p-3.5 shadow-2xl rounded-sm z-50">
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-1.5">
                             <span className={cn("text-xs font-black uppercase tracking-wider", ratingTierConfig.textClass)}>
@@ -2335,8 +2448,11 @@ const historicMonths = useMemo(() => {
                               {overallRatingNum.toFixed(1)} / 10
                             </span>
                           </div>
-                          <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
                             {ratingTierConfig.desc}
+                          </p>
+                          <p className="text-[9px] text-slate-400 font-medium pt-1 border-t border-white/5 leading-relaxed">
+                            Composite score combining Academic Rigor, Compensation &amp; Savings Potential, Work/Life Balance, and Leadership Stability.
                           </p>
                         </div>
                       </TooltipContent>
@@ -2353,25 +2469,32 @@ const historicMonths = useMemo(() => {
                       {/* Monthly Rent */}
                       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0 border-b border-white/5 pb-2">
                         <div className="flex justify-between items-center w-full lg:w-auto lg:contents">
-                          <div className="flex items-center gap-2 shrink-0">
-                            <Home className="w-4 h-4 text-orange-500 shrink-0" />
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
-                                  Monthly Rent
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
-                                {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Comfort" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-25%" : "+40%"})` : ""}`}
-                              </TooltipContent>
-                            </Tooltip>
+                          <div className="flex flex-col items-start shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Home className="w-4 h-4 text-orange-500 shrink-0" />
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider cursor-help border-b border-dotted border-teal-500/60 leading-normal whitespace-nowrap shrink-0">
+                                    Monthly Rent
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2">
+                                  {`Estimated market rent based on your specific household profile.${lifestyleMode !== "Comfort" ? ` (${lifestyleMode} Mode: ${lifestyleMode === "Saver" ? "-25%" : "+40%"})` : ""}`}
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
+                            {(canonicalCountry(getSchoolField(activeSchool, ['country', 'region']) || '') === 'monaco' || String(activeSchool?.id || '').toUpperCase() === 'FLIS0041' || activeSchool?.city?.toLowerCase() === 'monaco') && (
+                              <span className="text-[9.5px] font-bold text-amber-400/90 italic tracking-wider ml-6 leading-tight mt-0.5">
+                                (cross border living)
+                              </span>
+                            )}
                           </div>
-                          
+
                           <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap lg:order-3 lg:ml-auto", analysis?.housingStatus === 'provided' && "italic")}>
                             {analysis?.housingStatus === 'provided' ? "covered" : `${currency} ${Math.round(analysis?.costs.rent || 0).toLocaleString()}`}
                           </span>
                         </div>
-                        
+
                         <div className="flex justify-end lg:justify-center w-full lg:w-auto lg:order-2 lg:flex-1 lg:px-4">
                           <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
                             <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
@@ -2509,7 +2632,7 @@ const historicMonths = useMemo(() => {
                             </Tooltip>
                           )}
                         </div>
-                        
+
                         <div className="flex bg-slate-950 rounded-md p-1 border-2 border-slate-700/80 shrink-0 shadow-inner">
                           <button onClick={() => setTransportMode("P")} className={cn("px-2.5 py-1 text-[10px] font-extrabold rounded transition-all uppercase", transportMode === "P" ? "bg-teal-500 text-slate-950 shadow-[0_0_10px_rgba(20,184,166,0.4)]" : "text-slate-300 hover:text-white hover:bg-white/10")}>Transit</button>
                           <button onClick={() => setTransportMode("C")} className={cn("px-2.5 py-1 text-[10px] font-extrabold rounded transition-all uppercase", transportMode === "C" ? "bg-teal-500 text-slate-950 shadow-[0_0_10px_rgba(20,184,166,0.4)]" : "text-slate-300 hover:text-white hover:bg-white/10")}>Car Hire</button>
@@ -2870,21 +2993,25 @@ const historicMonths = useMemo(() => {
                     {(() => {
                       const cName = canonicalCountry(getSchoolField(activeSchool, ['country', 'region']) || '');
                       const currCode = String(activeCOL?.currencyCode || activeSchool?.currency || (cName === 'argentina' ? 'ARS' : (cName === 'egypt' ? 'EGP' : (cName === 'turkey' ? 'TRY' : 'Local')))).toUpperCase();
-                      const isVolatile = 
-                        cName === 'argentina' || 
-                        cName === 'egypt' || 
-                        cName === 'turkey' || 
-                        cName === 'venezuela' || 
-                        cName === 'lebanon' || 
-                        cName === 'nigeria' || 
-                        cName === 'south africa' || 
-                        cName === 'south-africa' || 
+                      const isVolatile =
+                        cName === 'argentina' ||
+                        cName === 'egypt' ||
+                        cName === 'turkey' ||
+                        cName === 'venezuela' ||
+                        cName === 'lebanon' ||
+                        cName === 'nigeria' ||
+                        cName === 'south africa' ||
+                        cName === 'south-africa' ||
                         ['ARS', 'EGP', 'TRY', 'VES', 'LBP', 'NGN', 'ZAR'].includes(currCode) ||
                         activeSchool?.isVolatileMarket === true;
 
                       // 1. Safe Neighborhoods & Commute Copy
-                      let neighborhoodCopy = "Gated perimeter, 24/7 security guard access & rapid response. Secure commuting in recommended expat zones.";
-                      if (cName === 'argentina') {
+                      let neighborhoodCopy = "High urban safety score. Teachers live in popular expat-friendly neighborhoods with reliable public transit & Uber.";
+                      if (cName === 'czech republic' || cName === 'czechia') {
+                        neighborhoodCopy = "World-class safety & walking score. Teachers live in vibrant expat hubs (Vinohrady, Karlín, Dejvice) with seamless 24/7 tram & metro access to school.";
+                      } else if (cName === 'monaco' || cName === 'france') {
+                        neighborhoodCopy = "Exceptional safety rating. Staff commute smoothly from Beausoleil, Cap-d'Ail, or Nice via the coastal TER train or direct bus lines.";
+                      } else if (cName === 'argentina') {
                         neighborhoodCopy = "Gated/secure housing provided in expat zones (Palermo/Recoleta/Belgrano). High petty crime (snatch-and-grab); Uber recommended late at night.";
                       } else if (cName === 'south africa' || cName === 'south-africa') {
                         neighborhoodCopy = "Gated/secure estate housing in expat hubs (Dainfern, Sandton, Constantia). High property crime; anti-smash & grab vehicle film & Uber recommended.";
@@ -2894,10 +3021,14 @@ const historicMonths = useMemo(() => {
                         neighborhoodCopy = "Extremely low violent and petty crime. Highly safe urban commuting via MRT/Subway and Didi at all hours.";
                       }
 
-                      // 2. Streaming & Censorship Access Copy
+                      // 2. Digital Infrastructure & Streaming Copy
                       const isGfwOrCensored = ['china', 'united arab emirates', 'saudi arabia', 'qatar', 'oman', 'egypt', 'russia', 'turkey', 'vietnam', 'myanmar'].includes(cName);
-                      let digitalCopy = "Uncensored internet access. Paid VPN recommended (~$8–10/mo) for home-country streaming & overseas banking.";
-                      if (cName === 'china') {
+                      let digitalCopy = "High-speed fiber & uncensored internet. Optional VPN (~$5–8/mo) used for home-country streaming & UK/US media access.";
+                      if (cName === 'czech republic' || cName === 'czechia') {
+                        digitalCopy = "Gigabit fiber internet & EU roaming. 100% uncensored access. Optional VPN (~$5–8/mo) used for home streaming (BBC iPlayer, US Hulu).";
+                      } else if (cName === 'monaco' || cName === 'france') {
+                        digitalCopy = "High-speed fiber & EU roaming. Fully uncensored. Optional VPN (~$5–8/mo) for home-country streaming & UK/US media.";
+                      } else if (cName === 'china') {
                         digitalCopy = "CRITICAL PRE-DEPARTURE SETUP: Local ISPs & app stores block VPN downloads inside China. You MUST install stealth VPNs (Astrill / LetsVPN) BEFORE departure. Great Firewall blocks Google, WhatsApp, YouTube.";
                       } else if (['united arab emirates', 'qatar', 'saudi arabia', 'oman'].includes(cName)) {
                         digitalCopy = "PRE-DEPARTURE SETUP REQUIRED: Local ISPs block VPN download portals & WhatsApp/FaceTime VoIP calling. Download & configure VPN apps BEFORE departure to maintain VoIP & streaming access.";
@@ -2907,9 +3038,52 @@ const historicMonths = useMemo(() => {
                         digitalCopy = "Uncensored internet. Paid VPN required (~$8–10/mo) for accessing home-country streaming services (CNN, BBC iPlayer, Netflix) and overseas banking.";
                       }
 
-                      // 3. Devaluation & Remittance Risk Copy
-                      let finCopy = `Low exchange rate volatility. Standard international banking & remittance options active.`;
-                      if (isVolatile) {
+                      // 3. Currency & Money Transfers Copy & Inflation Data
+                      const inflationRateMap: Record<string, string> = {
+                        'czech republic': '2.2%',
+                        'czechia': '2.2%',
+                        'monaco': '2.2%',
+                        'france': '2.2%',
+                        'germany': '2.2%',
+                        'spain': '2.2%',
+                        'italy': '2.2%',
+                        'netherlands': '2.2%',
+                        'austria': '2.2%',
+                        'portugal': '2.2%',
+                        'united kingdom': '2.2%',
+                        'united states': '2.9%',
+                        'switzerland': '1.3%',
+                        'united arab emirates': '2.1%',
+                        'saudi arabia': '1.6%',
+                        'qatar': '1.2%',
+                        'singapore': '2.4%',
+                        'japan': '2.8%',
+                        'china': '0.5%',
+                        'hong kong': '1.8%',
+                        'thailand': '0.8%',
+                        'vietnam': '3.2%',
+                        'south korea': '2.6%',
+                        'malaysia': '1.9%',
+                        'indonesia': '2.1%',
+                        'india': '3.6%',
+                        'egypt': '26.4%',
+                        'turkey': '61.8%',
+                        'argentina': '140.0%',
+                        'south africa': '4.4%',
+                        'brazil': '4.1%',
+                        'mexico': '4.9%',
+                        'nigeria': '33.4%',
+                        'kenya': '4.3%',
+                      };
+
+                      const inflationRate = activeSchool?.inflationRate || activeSchool?.cpiInflation || activeSchool?.inflation || inflationRateMap[cName] || (isVolatile ? '15.0%+' : '2.5%');
+
+                      let finCopy = "Stable currency framework. Zero capital controls—teachers easily transfer monthly savings home via Wise or Revolut with minimal FX fees.";
+                      if (cName === 'czech republic' || cName === 'czechia') {
+                        finCopy = "Stable Czech Koruna (CZK). Zero capital controls—teachers easily transfer monthly savings to home accounts using Wise or Revolut.";
+                      } else if (cName === 'monaco' || cName === 'france') {
+                        finCopy = "Euro (EUR) zone. Direct SEPA/IBAN transfers to home accounts with zero currency risk or capital controls.";
+                      } else if (isVolatile) {
                         if (cName === 'argentina') {
                           finCopy = "High ARS volatility. Verify if salary is USD-pegged, split-paid, or deposited directly into an offshore hard-currency account.";
                         } else {
@@ -2918,7 +3092,7 @@ const historicMonths = useMemo(() => {
                       }
 
                       return (
-                        <div className="mt-1 mb-6 space-y-3">
+                        <div id="section-living-safety" className="scroll-mt-28 mt-1 mb-6 space-y-3">
                           <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 leading-relaxed">
                             Security &amp; Safety Guide
                           </h4>
@@ -2936,7 +3110,7 @@ const historicMonths = useMemo(() => {
                               </p>
                             </div>
 
-                            {/* 2. Streaming & Censorship Access */}
+                            {/* 2. Digital Infrastructure & Streaming */}
                             <div className={cn(
                               "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
                               isGfwOrCensored
@@ -2948,7 +3122,7 @@ const historicMonths = useMemo(() => {
                                   "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5",
                                   isGfwOrCensored ? "text-purple-300" : "text-slate-300"
                                 )}>
-                                  <Wifi className="size-3.5 text-purple-400 shrink-0" /> Streaming &amp; Censorship Access
+                                  <Wifi className="size-3.5 text-purple-400 shrink-0" /> {isGfwOrCensored ? "Streaming & Censorship Access" : "Digital Infrastructure & Streaming"}
                                 </span>
                               </div>
                               <p className={cn(
@@ -2959,29 +3133,37 @@ const historicMonths = useMemo(() => {
                               </p>
                             </div>
 
-                            {/* 3. Devaluation & Remittance Risk */}
+                            {/* 3. Currency Risk */}
                             <div className={cn(
                               "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
-                              isVolatile 
-                                ? "bg-amber-500/10 border border-amber-500/40 hover:border-amber-500/60" 
+                              isVolatile
+                                ? "bg-rose-500/10 border border-rose-500/40 hover:border-rose-500/60"
                                 : "bg-black/30 border border-white/5 hover:border-white/15"
                             )}>
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between gap-1">
                                 <span className={cn(
-                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5",
-                                  isVolatile ? "text-amber-300" : "text-slate-300"
+                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 truncate",
+                                  isVolatile ? "text-rose-300 font-extrabold" : "text-slate-300"
                                 )}>
                                   {isVolatile ? (
-                                    <AlertTriangle className="size-3.5 text-amber-400 animate-pulse shrink-0" />
+                                    <AlertTriangle className="size-3.5 text-rose-400 animate-pulse shrink-0" />
                                   ) : (
                                     <Banknote className="size-3.5 text-amber-400 shrink-0" />
                                   )}
-                                  Devaluation &amp; Remittance Risk
+                                  Currency Risk
+                                </span>
+                                <span className={cn(
+                                  "text-[9px] font-bold px-1.5 py-0.5 rounded border tracking-tight whitespace-nowrap shrink-0 transition-all",
+                                  isVolatile
+                                    ? "bg-rose-500/25 text-rose-200 border-rose-500/50 animate-pulse shadow-sm shadow-rose-500/30 font-black"
+                                    : "bg-white/5 text-slate-300 border-white/10"
+                                )}>
+                                  Inflation: {inflationRate}
                                 </span>
                               </div>
                               <p className={cn(
                                 "text-[10px] font-medium leading-relaxed",
-                                isVolatile ? "text-slate-300" : "text-slate-400"
+                                isVolatile ? "text-slate-200" : "text-slate-400"
                               )}>
                                 {finCopy}
                               </p>
@@ -2991,61 +3173,61 @@ const historicMonths = useMemo(() => {
                       );
                     })()}
 
-                    <div>
-                        {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
-                        {(() => {
-                          const monthLabel = historicMonths === 1 ? '1 month' : historicMonths ? `${historicMonths} months` : null;
-                          // Colour-code the coverage pill
-                          const pillStyle = !historicMonths
-                            ? 'bg-slate-800 text-slate-500 border-slate-700'
-                            : historicMonths >= 6
+                    <div id="section-staffroom" className="scroll-mt-28">
+                      {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
+                      {(() => {
+                        const monthLabel = historicMonths === 1 ? '1 month' : historicMonths ? `${historicMonths} months` : null;
+                        // Colour-code the coverage pill
+                        const pillStyle = !historicMonths
+                          ? 'bg-slate-800 text-slate-500 border-slate-700'
+                          : historicMonths >= 6
                             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                             : historicMonths >= 3
-                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                            : 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-                          const pillIcon = !historicMonths ? '○' : historicMonths >= 6 ? '●' : historicMonths >= 3 ? '◑' : '◔';
+                              ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                              : 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+                        const pillIcon = !historicMonths ? '○' : historicMonths >= 6 ? '●' : historicMonths >= 3 ? '◑' : '◔';
 
-                          return (
-                            <div>
-                              <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
-                                <span>
-                                  {monthLabel
-                                    ? `Staff Turnover Guide — last ${monthLabel}`
-                                    : 'Staff Turnover Guide — no historic data detected'}
-                                </span>
-                                <span className={`text-[10px] font-black tracking-wider normal-case flex items-center gap-1.5 px-2 py-0.5 rounded-sm border ${pillStyle}`}>
-                                  <span>{pillIcon}</span>
-                                  {monthLabel
-                                    ? `${monthLabel} of vacancy history indexed`
-                                    : 'History not yet indexed'}
-                                </span>
-                              </h4>
-                              {historicMonths && historicMonths < 6 && (
-                                <p className="text-[10px] text-amber-300/70 font-medium mb-3 flex items-center gap-1.5">
-                                  <Info className="size-3 text-amber-400 shrink-0" />
-                                  Only {monthLabel} of data is indexed — turnover estimates will improve as history grows.
-                                </p>
-                              )}
-                              {!historicMonths && (
-                                <p className="text-[10px] text-slate-500 font-medium mb-3 flex items-center gap-1.5">
-                                  <Info className="size-3 shrink-0" />
-                                  No vacancy history has been indexed for this school yet. Turnover insights will appear once data is collected.
-                                </p>
-                              )}
-                            </div>
-                          );
-                        })()}
+                        return (
+                          <div>
+                            <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 flex flex-wrap items-center justify-between gap-2 leading-relaxed">
+                              <span>
+                                {monthLabel
+                                  ? `Staff Turnover Guide — last ${monthLabel}`
+                                  : 'Staff Turnover Guide — no historic data detected'}
+                              </span>
+                              <span className={`text-[10px] font-black tracking-wider normal-case flex items-center gap-1.5 px-2 py-0.5 rounded-sm border ${pillStyle}`}>
+                                <span>{pillIcon}</span>
+                                {monthLabel
+                                  ? `${monthLabel} of vacancy history indexed`
+                                  : 'History not yet indexed'}
+                              </span>
+                            </h4>
+                            {historicMonths && historicMonths < 6 && (
+                              <p className="text-[10px] text-amber-300/70 font-medium mb-3 flex items-center gap-1.5">
+                                <Info className="size-3 text-amber-400 shrink-0" />
+                                Only {monthLabel} of data is indexed — turnover estimates will improve as history grows.
+                              </p>
+                            )}
+                            {!historicMonths && (
+                              <p className="text-[10px] text-slate-500 font-medium mb-3 flex items-center gap-1.5">
+                                <Info className="size-3 shrink-0" />
+                                No vacancy history has been indexed for this school yet. Turnover insights will appear once data is collected.
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed">
-                        
+
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
                         <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
-                          
+
                           {isCalculatingStability && !stabilityReport ? (
                             <div className="space-y-3 py-2">
                               <div className="h-3 bg-white/5 rounded-sm w-3/4 animate-pulse" />
                               <div className="h-3 bg-white/5 rounded-sm w-1/2 animate-pulse" />
-                              
+
                               {/* 📡 TWO-STEP LIVE SWEEP PROGRESS CARD (FIRST LOAD) */}
                               <div className="p-3 bg-[#d95f02]/5 border border-[#d95f02]/30 shadow-[0_0_15px_rgba(249,115,22,0.07)] animate-pulse rounded-sm space-y-2.5 shadow-inner shadow-black/40 mt-3">
                                 <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
@@ -3056,49 +3238,49 @@ const historicMonths = useMemo(() => {
                                     </span>
                                     Executing Two-Step Vacancy Audit
                                   </span>
-                                                                    <span className="text-[10px] font-bold text-sky-400 tracking-wider animate-pulse">
-                                      Running Research Engine {stabilityCountdown}
-                                    </span>
+                                  <span className="text-[10px] font-bold text-sky-400 tracking-wider animate-pulse">
+                                    Running Research Engine {stabilityCountdown}
+                                  </span>
                                 </div>
-                                
-                                <div className="space-y-2 pt-0.5">
-                                   {/* STEP 1 */}
-                                   <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
-                                     <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black shrink-0">
-                                       ✓
-                                     </div>
-                                     <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 1: Dossier Loaded</span>
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 1.</span>
-                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Retrieved local database (&lt; 100ms)</span>
-                                     </div>
-                                   </div>
 
-                                   {/* STEP 2 */}
-                                   <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
-                                     <div className="flex items-center justify-center size-4 rounded-full bg-[#d95f02]/20 text-[#d95f02] border border-[#d95f02]/30 text-[9px] font-bold shrink-0">
-                                       <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#d95f02] rounded-full" />
-                                     </div>
-                                     <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 2: Portals Sweep</span>
-                                       <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 2.</span>
-                                       <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Auditing premium consultative &amp; global networks live...</span>
-                                     </div>
-                                   </div>
-                                 </div>
+                                <div className="space-y-2 pt-0.5">
+                                  {/* STEP 1 */}
+                                  <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
+                                    <div className="flex items-center justify-center size-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black shrink-0">
+                                      ✓
+                                    </div>
+                                    <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
+                                      <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 1: Dossier Loaded</span>
+                                      <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 1.</span>
+                                      <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Retrieved local database (&lt; 100ms)</span>
+                                    </div>
+                                  </div>
+
+                                  {/* STEP 2 */}
+                                  <div className="flex items-center gap-2.5 text-[10px] leading-relaxed">
+                                    <div className="flex items-center justify-center size-4 rounded-full bg-[#d95f02]/20 text-[#d95f02] border border-[#d95f02]/30 text-[9px] font-bold shrink-0">
+                                      <span className="animate-spin size-2.5 border-2 border-t-transparent border-[#d95f02] rounded-full" />
+                                    </div>
+                                    <div className="flex items-baseline gap-2 flex-wrap sm:flex-nowrap">
+                                      <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap hidden md:inline">Step 2: Portals Sweep</span>
+                                      <span className="font-black text-slate-400 uppercase tracking-wider whitespace-nowrap md:hidden">Step 2.</span>
+                                      <span className="text-[9px] text-slate-400 font-medium hidden md:inline">— Auditing premium consultative &amp; global networks live...</span>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           ) : stabilityError ? (
                             <div className="text-red-400 text-xs font-semibold">
                               ⚠️ Stability engine offline: {stabilityError}
                             </div>
-                                          ) : stabilityReport ? (
+                          ) : stabilityReport ? (
                             (() => {
                               // Read pre-calculated allProcessedJobs from component scope
                               const processedJobs12 = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const knownVacanciesCount = Math.max(processedJobs12.length, stabilityReport.metrics?.totalKnownVacancies || stabilityReport.total_known_vacancies || 0);
-                              const churnRate = stabilityReport.metrics?.estimatedStaffBase 
-                                ? Math.round((knownVacanciesCount / stabilityReport.metrics.estimatedStaffBase) * 100) 
+                              const churnRate = stabilityReport.metrics?.estimatedStaffBase
+                                ? Math.round((knownVacanciesCount / stabilityReport.metrics.estimatedStaffBase) * 100)
                                 : (stabilityReport.metrics?.estimatedChurnRatePercent || 0);
 
                               const currentJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
@@ -3123,7 +3305,7 @@ const historicMonths = useMemo(() => {
                                                 </div>
                                               );
                                             }
-                                            
+
                                             let categoryTitle = "";
                                             let categoryTitleColor = "";
                                             let subtitle = "";
@@ -3150,7 +3332,7 @@ const historicMonths = useMemo(() => {
                                               subtitle = "Revolving Door Territory";
                                               descriptor = "High risk of unmanageable workload, unexpected curriculum shifts, or erratic leadership. Dig into staff morale, resignation timing, and contract completion rates before signing.";
                                             }
-                                            
+
                                             return (
                                               <div className="text-[11px] text-slate-200 font-medium leading-relaxed">
                                                 <strong className={cn("font-black mr-1", categoryTitleColor)}>{categoryTitle}:</strong>
@@ -3194,7 +3376,7 @@ const historicMonths = useMemo(() => {
                                     {!turnoverUnlocked && (
                                       <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
                                         {/* Non-orange, sleek glass button */}
-                                        <button 
+                                        <button
                                           onClick={() => setTurnoverUnlocked(true)}
                                           type="button"
                                           className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
@@ -3269,12 +3451,12 @@ const historicMonths = useMemo(() => {
                                                         )}
                                                         <span className={cn(
                                                           "text-[10px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
-                                                          job.status === 'open' 
-                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                                                          job.status === 'open'
+                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                                                             : "bg-rose-500/10 text-rose-400 border-rose-500/20"
                                                         )}>
-                                                          {job.status === 'open' 
-                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
+                                                          {job.status === 'open'
+                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open')
                                                             : 'Closed'}
                                                         </span>
                                                       </div>
@@ -3282,7 +3464,7 @@ const historicMonths = useMemo(() => {
                                                   ))}
                                                 </div>
                                               )}
-                                              
+
                                               {currentJobs.length > 0 && historicJobs.length > 0 && (
                                                 <hr className="border-white/5 my-3" />
                                               )}
@@ -3312,12 +3494,12 @@ const historicMonths = useMemo(() => {
                                                         )}
                                                         <span className={cn(
                                                           "text-[8px] font-black uppercase px-1.5 py-0.5 rounded-sm border shrink-0",
-                                                          job.status === 'open' 
-                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                                                          job.status === 'open'
+                                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                                                             : "bg-rose-500/10 text-rose-400 border-rose-500/20"
                                                         )}>
-                                                          {job.status === 'open' 
-                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open') 
+                                                          {job.status === 'open'
+                                                            ? (job.closesDate ? `Closes: ${job.closesDate}` : 'Open')
                                                             : 'Closed'}
                                                         </span>
                                                       </div>
@@ -3419,18 +3601,6 @@ const historicMonths = useMemo(() => {
                       })()
                     },
                     {
-                      key: 'tech',
-                      label: 'Tech Ecosystem',
-                      icon: <Laptop className="size-5 text-sky-400" />,
-                      value: (() => {
-                        const tags = (activeSchool as any).techEcosystemTags;
-                        const legacy = activeSchool.intel?.technologyEcosystem || (activeSchool as any).techecosystem;
-                        if (!tags && !legacy) return null;
-                        return tags || legacy;
-                      })(),
-                      tags: (activeSchool as any).techEcosystemTags || null,
-                    },
-                    {
                       key: 'accreditation',
                       label: 'Accreditation',
                       icon: <Award className="size-5 text-sky-400" />,
@@ -3439,92 +3609,56 @@ const historicMonths = useMemo(() => {
                   ];
 
                   return (
-                    <div className="mt-8 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                      <div className="bg-[#1f2937]/25 border border-white/5 rounded-sm p-5 space-y-5">
+                    <div id="section-staffroom" className="scroll-mt-28 mt-8 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                      <div id="section-package-visa" className="scroll-mt-28 bg-[#1f2937]/25 border border-white/5 rounded-sm p-5 space-y-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-black uppercase tracking-widest text-[#d95f02]">Staff Room Intelligence</span>
+                          <span className="text-sm font-black uppercase tracking-widest text-[#d95f02]">Expatriate Package & Contract Intel</span>
                         </div>
-                        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
-                          {matrixItems.map(item => (
-                            <li key={item.key} className="flex items-start">
-                              <div className="mr-4 mt-1 text-sky-400 shrink-0">
-                                {item.icon}
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">{item.label}</p>
-                                <div className={cn(
-                                  "text-sm font-black tracking-tighter",
-                                  /\d/.test(item.value?.toString() || "") ? "text-white" : "text-slate-300"
-                                )}>
-                                  {item.key === 'accreditation' ? (
-                                    <div className="flex flex-wrap gap-1">
-                                      {item.value?.toString().split(/,\s*/).map((acc: string, i: number) => (
-                                        <Tooltip key={i}>
-                                          <TooltipTrigger asChild>
-                                            <span className="cursor-help border-b border-white/20 hover:border-[#d95f02] transition-colors font-black">
-                                              {acc}
-                                              {i < item.value!.toString().split(/,\s*/).length - 1 && ","}
-                                            </span>
-                                          </TooltipTrigger>
-                                          <TooltipContent className="bg-black border-white/10 text-[11px] font-bold text-white px-3 py-1.5 shadow-2xl">
-                                            {ACRONYMS[acc.trim()] || 'International Accreditation'}
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      ))}
-                                    </div>
-                                  ) : item.key === 'tech' && item.tags ? (
-                                    // 🖥️ Tech Ecosystem — structured pill tags
-                                    <div className="flex flex-wrap gap-1 mt-0.5">
-                                      {item.tags.devices?.map((d: string) => (
-                                        <span key={d} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-300 border border-sky-500/20">
-                                          🖥 {d}
-                                        </span>
-                                      ))}
-                                      {item.tags.suite?.map((s: string) => (
-                                        <span key={s} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-300 border border-violet-500/20">
-                                          ☁️ {s}
-                                        </span>
-                                      ))}
-                                      {item.tags.lms?.map((l: string) => (
-                                        <span key={l} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                                          📚 {l}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  ) : item.value ? (
-                                    item.value?.toString()
-                                  ) : null}
+
+                        {/* Consolidated School & Working Environment Box */}
+                        <div className="bg-black/30 border border-white/5 rounded-sm p-4">
+                          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                            {matrixItems.map(item => (
+                              <li key={item.key} className="flex items-start">
+                                <div className="mr-3 mt-0.5 text-sky-400 shrink-0">
+                                  {item.icon}
                                 </div>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-
-                        {(activeSchool.benefitsSummary || activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance || activeSchool.jobRequirements || activeSchool.perks || (activeSchool as any).benefits || activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance || activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage || activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights || activeSchool.taxExemptionStatus || (activeSchool as any).languageAndTechSupport || (activeSchool as any).mealsBenefit || (activeSchool as any).lifestylePrivileges || activeSchool.pdAllowance || activeSchool.holidayEntitlement || activeSchool.pensionBenefit || (activeSchool as any).pensionDetails || activeSchool.shippingAllowance) && (
-                          <div className="pt-4 border-t border-white/10 space-y-4">
-                            <div className="flex items-center gap-2">
-                              <Sparkles className="size-4 text-emerald-400" />
-                              <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Expatriate Package & Contract Intel</span>
-                            </div>
-
-                            {activeSchool.benefitsSummary && Array.isArray(activeSchool.benefitsSummary) && (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                                {activeSchool.benefitsSummary.map((b: string, idx: number) => (
-                                  <div key={`ben-${idx}`} className="flex items-start gap-2 bg-emerald-500/5 border border-emerald-500/10 rounded-sm p-2 text-[11px] font-medium text-slate-200">
-                                    <span className="text-emerald-400 font-black shrink-0">✓</span>
-                                    <span>{b}</span>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">{item.label}</p>
+                                  <div className={cn(
+                                    "text-sm font-black tracking-tighter",
+                                    /\d/.test(item.value?.toString() || "") ? "text-white" : "text-slate-300"
+                                  )}>
+                                    {item.key === 'accreditation' ? (
+                                      <div className="flex flex-wrap gap-1">
+                                        {item.value?.toString().split(/,\s*/).map((acc: string, i: number) => (
+                                          <Tooltip key={i}>
+                                            <TooltipTrigger asChild>
+                                              <span className="cursor-help border-b border-white/20 hover:border-[#d95f02] transition-colors font-black">
+                                                {acc}
+                                                {i < item.value!.toString().split(/,\s*/).length - 1 && ","}
+                                              </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="bg-black border-white/10 text-[11px] font-bold text-white px-3 py-1.5 shadow-2xl">
+                                              {ACRONYMS[acc.trim()] || 'International Accreditation'}
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        ))}
+                                      </div>
+                                    ) : item.value ? (
+                                      item.value?.toString()
+                                    ) : null}
                                   </div>
-                                ))}
-                              </div>
-                            )}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                               {/* Visa & Deployment Intel */}
                               <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider flex items-center gap-1.5">
-                                  <ShieldCheck className="size-3.5 text-rose-500 shrink-0" />
-                                  <span>Visa & Deployment Intel</span>
-                                </p>
+                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Visa & Deployment Intel</p>
                                 <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
                                   <p>{activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.'}</p>
                                   <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
@@ -3546,10 +3680,7 @@ const historicMonths = useMemo(() => {
 
                               {/* Candidate Qualifications */}
                               <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider flex items-center gap-1.5">
-                                  <Award className="size-3.5 text-yellow-500 shrink-0" />
-                                  <span>Candidate Qualifications</span>
-                                </p>
+                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Candidate Qualifications</p>
                                 <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
                                   <p>{activeSchool.intel?.minQualifications || activeReq?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.'}</p>
                                   <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
@@ -3672,39 +3803,9 @@ const historicMonths = useMemo(() => {
                                 </div>
                               )}
                             </div>
-
-                            {activeSchool.jobRequirements && (
-                              <div className="bg-black/40 border border-white/10 rounded-sm p-3.5 space-y-2 mt-2">
-                                <p className="text-[10px] font-black uppercase text-sky-400 tracking-wider">Candidate Requirements & Qualifications</p>
-                                <div className="flex flex-wrap gap-2 text-[11px]">
-                                  {activeSchool.jobRequirements.eligibleCandidates && (
-                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
-                                      Candidate: {activeSchool.jobRequirements.eligibleCandidates}
-                                    </span>
-                                  )}
-                                  {activeSchool.jobRequirements.minEducation && (
-                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
-                                      Education: {activeSchool.jobRequirements.minEducation}
-                                    </span>
-                                  )}
-                                  {activeSchool.jobRequirements.minExperience && (
-                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
-                                      Experience: {activeSchool.jobRequirements.minExperience}
-                                    </span>
-                                  )}
-                                  {activeSchool.jobRequirements.credentials && (
-                                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2 py-0.5 rounded-sm font-bold">
-                                      License: {activeSchool.jobRequirements.credentials}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  );
+                        </div>
+                      );
                 })()}
               </div>
             </div>
