@@ -904,11 +904,23 @@ function DecoderContent() {
 
   // 🔢 Determine how many months of history we have (capped at 24, minimum 1)
   const historicMonths = useMemo(() => {
-    if (!earliestPosted) return null;
-    const diffMs = Date.now() - earliestPosted.getTime();
-    const months = Math.floor(diffMs / (30 * 24 * 60 * 60 * 1000));
-    return Math.min(24, Math.max(1, months));
-  }, [earliestPosted]);
+    if (earliestPosted) {
+      const diffMs = Date.now() - earliestPosted.getTime();
+      const months = Math.floor(diffMs / (30 * 24 * 60 * 60 * 1000));
+      return Math.min(24, Math.max(1, months));
+    }
+    const hasKnownVacancies =
+      (allProcessedJobs && allProcessedJobs.length > 0) ||
+      (activeSchool?.scrapedJobsList && activeSchool.scrapedJobsList.length > 0) ||
+      (activeSchool?.vacancies_discovered && activeSchool.vacancies_discovered.length > 0) ||
+      (activeSchool?.structured_vacancies && activeSchool.structured_vacancies.length > 0) ||
+      (activeSchool?.metrics?.totalKnownVacancies && Number(activeSchool.metrics.totalKnownVacancies) > 0);
+
+    if (hasKnownVacancies) {
+      return 1;
+    }
+    return null;
+  }, [earliestPosted, allProcessedJobs, activeSchool]);
 
   // 🎯 ACTIVE OPEN VACANCIES MEMO (FILTERED & DEDUPLICATED)
   const activeVacancies = useMemo(() => {
