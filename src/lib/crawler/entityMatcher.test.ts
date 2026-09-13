@@ -61,12 +61,12 @@ function runTests() {
   assertEqual(r4.isMatch, true, 'TES Employer Slug matches');
   assertEqual(r4.matchType, 'platform_id', 'Match type is platform_id');
 
-  // 5. Fuzzy Match with minor typographical or article variation
+  // 5. Hardcoded Exact Core Name & Padding Match (No Fuzzy Jaro-Winkler allowed)
   const r5 = matchSchoolEntity(viennaSchool, {
     candidateText: 'The Vienna International School Austria'
   });
-  assertEqual(r5.isMatch, true, 'Fuzzy match handles "The ... Austria" padding');
-  assertEqual(r5.score >= 0.85, true, 'Fuzzy score exceeds 0.85 threshold');
+  assertEqual(r5.isMatch, true, 'Hardcoded exact core name match handles "The ... Austria" padding');
+  assertEqual(r5.matchType, 'exact', 'Match type is exact (no fuzzy score fallback)');
 
   // 6. City-Leak Prevention (Near-Match Rejection)
   // Target: "Vienna International School"

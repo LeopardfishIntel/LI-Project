@@ -12,9 +12,13 @@ Whenever inspecting, editing, or refactoring crawler adaptors (`src/lib/crawler/
 - NEVER weaken or bypass country or city validation rules.
 - A job listing in one country (e.g. France, Saudi Arabia, India) MUST NEVER be matched to a database school in another country (e.g. China, Spain, Portugal).
 
-### 3. Core Brand Token Isolation
-- NEVER calculate fuzzy string similarity (`Jaro-Winkler`) on raw school strings containing generic boilerplate stop words (`"International School"`, `"American School"`).
-- Always strip generic stop words using `extractCoreName()` and evaluate distinct core brand tokens.
+### 3. STRICT NO-FUZZY MATCHING (HARDCODED EXACT MATCHES ONLY)
+- NEVER use fuzzy string score estimation (`Jaro-Winkler` or Levenshtein score thresholds).
+- Entity matching MUST be 100% hardcoded via:
+  1. Exact platform IDs / URL employer slugs (`tesEmployerSlug`, `tesOrganizationId`).
+  2. Exact canonical school names (`school.name` / `school.schoolname`).
+  3. Explicitly configured school aliases (`school.aliases` whitelist).
+  4. Exact core brand token equality after stripping generic stop words (`extractCoreName`).
 
 ### 4. Zero-Fuzzy DOM Domain Lock
 - Always prioritize exact canonical domain matching (`extractCanonicalDomain`) from embedded DOM links before attempting text matching.

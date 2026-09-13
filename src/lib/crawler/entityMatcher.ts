@@ -338,24 +338,14 @@ export function matchSchoolEntity(
     };
   }
 
-  const jaroCore = calculateJaroWinkler(coreCanonical, coreCandidate);
-  if (jaroCore >= 0.88) {
-    return {
-      isMatch: true,
-      score: parseFloat(jaroCore.toFixed(3)),
-      matchType: "fuzzy",
-      matchedText: canonicalName,
-      confidence: jaroCore >= 0.92 ? "high" : "medium",
-      reason: `Core brand name fuzzy score ${jaroCore.toFixed(3)} exceeds threshold 0.88`
-    };
-  }
+  // NO FUZZY MATCHING ALLOWED. Hardcoded exact matches, aliases, platform IDs, and core token equality ONLY.
 
   return {
     isMatch: false,
-    score: parseFloat(jaroCore.toFixed(3)),
+    score: 0,
     matchType: "none",
     confidence: "low",
-    reason: `Core brand name similarity ${jaroCore.toFixed(3)} below threshold 0.88`
+    reason: "No exact canonical name, configured alias, platform ID, or exact core token match found"
   };
 }
 
