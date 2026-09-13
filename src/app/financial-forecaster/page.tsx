@@ -3092,79 +3092,60 @@ function DecoderContent() {
                       }
 
                       return (
-                        <div id="section-living-safety" className="scroll-mt-28 mt-1 mb-6 space-y-3">
+                        <div id="section-living-safety" className="scroll-mt-28 mt-6 space-y-3">
                           <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 leading-relaxed">
                             Security &amp; Safety Guide
                           </h4>
 
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
                             {/* 1. Safe Neighborhoods & Commute */}
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-1.5 hover:border-white/15 transition-all shadow-sm">
-                              <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                                  <Home className="size-3.5 text-emerald-400 shrink-0" /> Safe Neighborhoods &amp; Commute
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">
+                                Safe Neighborhoods &amp; Commute
+                              </p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">
                                 {neighborhoodCopy}
                               </p>
                             </div>
 
                             {/* 2. Digital Infrastructure & Streaming */}
                             <div className={cn(
-                              "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
-                              isGfwOrCensored
-                                ? "bg-purple-500/10 border border-purple-500/40 hover:border-purple-500/60"
-                                : "bg-black/30 border border-white/5 hover:border-white/15"
+                              "bg-black/30 border rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
+                              isGfwOrCensored ? "border-purple-500/40" : "border-white/5 hover:border-white/15"
                             )}>
-                              <div className="flex items-center justify-between">
-                                <span className={cn(
-                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5",
-                                  isGfwOrCensored ? "text-purple-300" : "text-slate-300"
-                                )}>
-                                  <Wifi className="size-3.5 text-purple-400 shrink-0" /> {isGfwOrCensored ? "Streaming & Censorship Access" : "Digital Infrastructure & Streaming"}
-                                </span>
-                              </div>
                               <p className={cn(
-                                "text-[10px] font-medium leading-relaxed",
-                                isGfwOrCensored ? "text-slate-300" : "text-slate-400"
+                                "text-[10px] font-black uppercase tracking-wider",
+                                isGfwOrCensored ? "text-purple-300" : "text-[#d95f02]"
                               )}>
+                                {isGfwOrCensored ? "Streaming & Censorship Access" : "Digital Infrastructure & Streaming"}
+                              </p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">
                                 {digitalCopy}
                               </p>
                             </div>
 
                             {/* 3. Currency Risk */}
                             <div className={cn(
-                              "rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
-                              isVolatile
-                                ? "bg-rose-500/10 border border-rose-500/40 hover:border-rose-500/60"
-                                : "bg-black/30 border border-white/5 hover:border-white/15"
+                              "bg-black/30 border rounded-sm p-3.5 space-y-1.5 transition-all shadow-sm",
+                              isVolatile ? "border-rose-500/40" : "border-white/5 hover:border-white/15"
                             )}>
                               <div className="flex items-center justify-between gap-1">
-                                <span className={cn(
-                                  "text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 truncate",
-                                  isVolatile ? "text-rose-300 font-extrabold" : "text-slate-300"
+                                <p className={cn(
+                                  "text-[10px] font-black uppercase tracking-wider",
+                                  isVolatile ? "text-rose-400" : "text-[#d95f02]"
                                 )}>
-                                  {isVolatile ? (
-                                    <AlertTriangle className="size-3.5 text-rose-400 animate-pulse shrink-0" />
-                                  ) : (
-                                    <Banknote className="size-3.5 text-amber-400 shrink-0" />
-                                  )}
                                   Currency Risk
-                                </span>
+                                </p>
                                 <span className={cn(
                                   "text-[9px] font-bold px-1.5 py-0.5 rounded border tracking-tight whitespace-nowrap shrink-0 transition-all",
                                   isVolatile
-                                    ? "bg-rose-500/25 text-rose-200 border-rose-500/50 animate-pulse shadow-sm shadow-rose-500/30 font-black"
+                                    ? "bg-rose-500/25 text-rose-200 border-rose-500/50 animate-pulse font-black"
                                     : "bg-white/5 text-slate-300 border-white/10"
                                 )}>
                                   Inflation: {inflationRate}
                                 </span>
                               </div>
-                              <p className={cn(
-                                "text-[10px] font-medium leading-relaxed",
-                                isVolatile ? "text-slate-200" : "text-slate-400"
-                              )}>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">
                                 {finCopy}
                               </p>
                             </div>
@@ -3173,7 +3154,7 @@ function DecoderContent() {
                       );
                     })()}
 
-                    <div id="section-staffroom" className="scroll-mt-28">
+                    <div id="section-staffroom" className="scroll-mt-28 mt-8 space-y-4">
                       {/* 📅 Dynamic Staff Turnover Guide header — period reflects actual indexed history */}
                       {(() => {
                         const monthLabel = historicMonths === 1 ? '1 month' : historicMonths ? `${historicMonths} months` : null;
@@ -3221,7 +3202,7 @@ function DecoderContent() {
                       <div className="space-y-6 text-[13px] text-slate-300 leading-relaxed">
 
                         {/* 🛸 STABILITY & CHURN ENGINE LEDGER */}
-                        <div className="bg-white/5 border border-white/10 rounded-sm p-4 space-y-4">
+                        <div className="space-y-4">
 
                           {isCalculatingStability && !stabilityReport ? (
                             <div className="space-y-3 py-2">
@@ -3286,87 +3267,82 @@ function DecoderContent() {
                               const currentJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT");
                               const historicJobs = allProcessedJobs.filter(j => j.recruitmentCycle === "HISTORIC_Y1");
 
+                              const isUnavailable = (stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE") && processedJobs12.length === 0;
+
+                              let categoryTitle = "Low Turnover (<10%)";
+                              let categoryTitleColor = "text-emerald-400";
+                              let subtitle = "Settled Staffroom & High Renewal Rates";
+                              let descriptor = "Staff routinely extend past initial 2-year contracts. Signals supportive SLT, manageable timetable hours, strong retention perks, and low cover demands.";
+
+                              if (churnRate > 22) {
+                                categoryTitle = "High Turnover (>22%)";
+                                categoryTitleColor = "text-rose-400";
+                                subtitle = "Revolving Door Territory";
+                                descriptor = "High risk of unmanageable workload, unexpected curriculum shifts, or erratic leadership. Dig into staff morale, resignation timing, and contract completion rates before signing.";
+                              } else if (churnRate > 15) {
+                                categoryTitle = "Elevated Turnover (15–22%)";
+                                categoryTitleColor = "text-amber-400";
+                                subtitle = "Staffroom Restlessness";
+                                descriptor = "Often points to recent SLT shakeups, middle-management churn, or shifting contact hours and cover duties. Worth probing department stability during interviews.";
+                              } else if (churnRate >= 10) {
+                                categoryTitle = "Moderate Turnover (10–15%)";
+                                categoryTitleColor = "text-green-400";
+                                subtitle = "Healthy Expat Cycle";
+                                descriptor = "Standard replacement, as teachers complete 2- to 4-year stints, take international promotions, or repatriate home. This is normal staffroom momentum.";
+                              }
+
                               return (
                                 <div className="space-y-4">
-                                  {/* 🛡️ STAFF TURNOVER & CHURN CATEGORY GUIDE */}
-                                  <div className="bg-black/40 border border-white/5 rounded-sm p-3.5 space-y-3">
-                                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 text-xs">
-                                      <div className="flex-1">
-                                        <div className="flex items-start gap-2 flex-wrap">
-                                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0 mt-0.5">Category:</span>
-                                          {(() => {
-                                            const isUnavailable = (stabilityReport.category === "INSIGHT_UNAVAILABLE" || stabilityReport.metrics?.riskRating === "INSIGHT_UNAVAILABLE") && processedJobs12.length === 0;
-                                            if (isUnavailable) {
-                                              return (
-                                                <div className="text-[11px] text-slate-300 font-medium leading-relaxed">
-                                                  <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
-                                                  <strong className="text-white font-bold mr-1">Building the Ledger:</strong>
-                                                  <span className="text-slate-300">Vacancy tracking is currently limited for this campus. Historical retention patterns will surface as hiring season progresses.</span>
-                                                </div>
-                                              );
-                                            }
-
-                                            let categoryTitle = "";
-                                            let categoryTitleColor = "";
-                                            let subtitle = "";
-                                            let descriptor = "";
-
-                                            if (churnRate < 10) {
-                                              categoryTitle = "Low Turnover (<10%)";
-                                              categoryTitleColor = "text-emerald-400";
-                                              subtitle = "Settled Staffroom & High Renewal Rates";
-                                              descriptor = "Staff routinely extend past initial 2-year contracts. Signals supportive SLT, manageable timetable hours, strong retention perks, and low cover demands.";
-                                            } else if (churnRate <= 15) {
-                                              categoryTitle = "Moderate Turnover (10–15%)";
-                                              categoryTitleColor = "text-green-400";
-                                              subtitle = "Healthy Expat Cycle";
-                                              descriptor = "Standard replacement, as teachers complete 2- to 4-year stints, take international promotions, or repatriate home. This is normal staffroom momentum.";
-                                            } else if (churnRate <= 22) {
-                                              categoryTitle = "Elevated Turnover (15–22%)";
-                                              categoryTitleColor = "text-amber-400";
-                                              subtitle = "Staffroom Restlessness";
-                                              descriptor = "Often points to recent SLT shakeups, middle-management churn, or shifting contact hours and cover duties. Worth probing department stability during interviews.";
-                                            } else {
-                                              categoryTitle = "High Turnover (>22%)";
-                                              categoryTitleColor = "text-rose-400";
-                                              subtitle = "Revolving Door Territory";
-                                              descriptor = "High risk of unmanageable workload, unexpected curriculum shifts, or erratic leadership. Dig into staff morale, resignation timing, and contract completion rates before signing.";
-                                            }
-
-                                            return (
-                                              <div className="text-[11px] text-slate-200 font-medium leading-relaxed">
-                                                <strong className={cn("font-black mr-1", categoryTitleColor)}>{categoryTitle}:</strong>
-                                                <strong className="font-bold text-white mr-1">{subtitle}:</strong>
-                                                <span className="text-slate-300">{descriptor}</span>
-                                              </div>
-                                            );
-                                          })()}
+                                  {/* Top Metrics Summary Bar matching Expatriate Package top bar */}
+                                  <div className="bg-black/30 border border-white/5 rounded-sm p-4">
+                                    <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                      <li className="flex items-start">
+                                        <div className="space-y-1">
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Est. Staff Base</p>
+                                          <p className="text-sm font-black text-white tracking-tighter">
+                                            {stabilityReport.metrics?.estimatedStaffBase || '—'}
+                                          </p>
                                         </div>
-                                      </div>
-                                    </div>
-
-                                    {/* 📝 DATA NOTE DISCLAIMER PARAGRAPH */}
-                                    <p className="text-[11.5px] sm:text-xs text-slate-300 font-medium italic leading-relaxed pt-2 border-t border-white/10">
-                                      * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles. Newly added schools will take a while to normalise.
-                                    </p>
+                                      </li>
+                                      <li className="flex items-start">
+                                        <div className="space-y-1">
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Known Vacancies</p>
+                                          <p className="text-sm font-black text-white tracking-tighter">
+                                            {knownVacanciesCount}
+                                          </p>
+                                        </div>
+                                      </li>
+                                      <li className="flex items-start">
+                                        <div className="space-y-1">
+                                          <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-widest">Est. Churn Rate</p>
+                                          <p className="text-sm font-black text-white tracking-tighter">
+                                            {isUnavailable ? "—" : `${churnRate}%`}
+                                          </p>
+                                        </div>
+                                      </li>
+                                    </ul>
                                   </div>
 
-                                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Staff</div>
-                                      <div className="text-sm font-black text-white mt-0.5">{stabilityReport.metrics.estimatedStaffBase || '—'}</div>
-                                    </div>
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Known Vacancies</div>
-                                      <div className={cn("text-sm font-black text-white mt-0.5 transition-all duration-300", isCalculatingStability && "blur-[3px] select-none")}>
-                                        {knownVacanciesCount}
-                                      </div>
-                                    </div>
-                                    <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                      <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Est. Churn</div>
-                                      <div className="text-sm font-black text-white mt-0.5">
-                                        {stabilityReport.category === "INSIGHT_UNAVAILABLE" && knownVacanciesCount === 0 ? "—" : `${churnRate}%`}
-                                      </div>
+                                  {/* Category Assessment Card matching Expatriate Package cards */}
+                                  <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-2">
+                                    <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Turnover Assessment &amp; Category</p>
+                                    <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-2">
+                                      {isUnavailable ? (
+                                        <div>
+                                          <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
+                                          <strong className="text-white font-bold mr-1">Building the Ledger:</strong>
+                                          <span>Vacancy tracking is currently limited for this campus. Historical retention patterns will surface as hiring season progresses.</span>
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <strong className={cn("font-black mr-1.5", categoryTitleColor)}>{categoryTitle}:</strong>
+                                          <strong className="font-bold text-white mr-1.5">{subtitle}:</strong>
+                                          <span>{descriptor}</span>
+                                        </div>
+                                      )}
+                                      <p className="text-[11px] text-slate-400 italic pt-2 border-t border-white/5">
+                                        * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles.
+                                      </p>
                                     </div>
                                   </div>
 
@@ -3656,167 +3632,167 @@ function DecoderContent() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                              {/* Visa & Deployment Intel */}
-                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
-                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Visa & Deployment Intel</p>
-                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
-                                  <p>{(activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
-                                  <div className="pt-1.5 border-t border-white/5 text-xs text-slate-300 font-medium leading-relaxed flex flex-col gap-1.5">
-                                    {(activeReq?.max_age_f || activeReq?.max_age_m) && (
-                                      <span className="leading-tight">• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
-                                    )}
-                                    {activeReq?.max_age_notes && (
-                                      <span className="leading-tight">• {activeReq.max_age_notes.replace(/\.([A-Z])/g, '. $1')}</span>
-                                    )}
-                                    {(activeReq?.min_age || activeReq?.min_age_notes) && (
-                                      <span className="leading-tight">• Min Age: {(activeReq.min_age_notes || activeReq.min_age || '21').replace(/\.([A-Z])/g, '. $1')}</span>
-                                    )}
-                                    {(activeSchool as any).dependent_visa_notes && (
-                                      <span className="leading-tight">• Dependents: {((activeSchool as any).dependent_visa_notes).replace(/\.([A-Z])/g, '. $1')}</span>
-                                    )}
-                                  </div>
-                                </div>
+                          {/* Visa & Deployment Intel */}
+                          <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
+                            <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Visa & Deployment Intel</p>
+                            <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
+                              <p>{(activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
+                              <div className="pt-1.5 border-t border-white/5 text-xs text-slate-300 font-medium leading-relaxed flex flex-col gap-1.5">
+                                {(activeReq?.max_age_f || activeReq?.max_age_m) && (
+                                  <span className="leading-tight">• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
+                                )}
+                                {activeReq?.max_age_notes && (
+                                  <span className="leading-tight">• {activeReq.max_age_notes.replace(/\.([A-Z])/g, '. $1')}</span>
+                                )}
+                                {(activeReq?.min_age || activeReq?.min_age_notes) && (
+                                  <span className="leading-tight">• Min Age: {(activeReq.min_age_notes || activeReq.min_age || '21').replace(/\.([A-Z])/g, '. $1')}</span>
+                                )}
+                                {(activeSchool as any).dependent_visa_notes && (
+                                  <span className="leading-tight">• Dependents: {((activeSchool as any).dependent_visa_notes).replace(/\.([A-Z])/g, '. $1')}</span>
+                                )}
                               </div>
-
-                              {/* Candidate Qualifications */}
-                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
-                                <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Candidate Qualifications</p>
-                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
-                                  {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
-                                    <div className="leading-tight">• Degree: {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</div>
-                                  )}
-                                  {(activeReq?.license_req || (activeSchool as any).license_req) && (
-                                    <div className="leading-tight">
-                                      • License: {(() => {
-                                        const raw = (activeReq?.license_req || (activeSchool as any).license_req || '').trim();
-                                        const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
-                                        return first || raw;
-                                      })()}
-                                    </div>
-                                  )}
-                                  <div className="leading-tight">
-                                    • Experience: {(() => {
-                                      const years = activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience;
-                                      const rawNotes = (activeSchool.intel?.minQualifications || activeReq?.exp_notes || '').replace(/\.([A-Z])/g, '. $1').trim();
-                                      const strippedNotes = rawNotes.replace(/^(minimum\s*)?\d+\+?\s*years?(\s*(experience|preferred|required))*\.\s*/i, '').trim();
-                                      if (years) {
-                                        return strippedNotes ? `${years} Years. ${strippedNotes}` : `${years} Years`;
-                                      }
-                                      return rawNotes || '2 Years preferred';
-                                    })()}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {activeSchool.taxExemptionStatus && (
-                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-sm p-3 space-y-1 md:col-span-2 shadow-sm">
-                                  <p className="text-[10px] font-black uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
-                                    <span>⚖️ Tax Status & Bilateral Treaty Exemption</span>
-                                    <span className="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest border border-emerald-500/30">POSITIVE BENEFIT</span>
-                                  </p>
-                                  <p className="text-xs text-emerald-100 font-bold leading-relaxed">{activeSchool.taxExemptionStatus}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).payrollFramework && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1 md:col-span-2">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">14-Month Payroll Structure & Tax Advantage</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).payrollFramework}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).positionalAllowances && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Positional & Leadership Allowances</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).positionalAllowances}</p>
-                                </div>
-                              )}
-                              {(activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Housing & Boarding Perks</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance}</p>
-                                </div>
-                              )}
-                              {(activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Healthcare & Social Security</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage}</p>
-                                </div>
-                              )}
-                              {activeSchool.tuitionBenefit && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Dependent Child Tuition Benefit</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.tuitionBenefit}</p>
-                                </div>
-                              )}
-                              {(activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Relocation & Immigration Support</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance}</p>
-                                </div>
-                              )}
-                              {(activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Travel & Home Leave Subsidies</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).languageAndTechSupport && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Language & Tech Infrastructure</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).languageAndTechSupport}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).mealsBenefit && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Duty Meals & Refectory</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).mealsBenefit}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).cognitaMobility && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Cognita Network Mobility</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).cognitaMobility}</p>
-                                </div>
-                              )}
-                              {(activeSchool as any).lifestylePrivileges && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Lifestyle & Outdoor Privileges</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).lifestylePrivileges}</p>
-                                </div>
-                              )}
-                              {(activeSchool.pensionBenefit || (activeSchool as any).pensionDetails) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Pension & Retirement Plan</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pensionBenefit || (activeSchool as any).pensionDetails}</p>
-                                </div>
-                              )}
-                              {activeSchool.shippingAllowance && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Shipping & Repatriation Allowances</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.shippingAllowance}</p>
-                                </div>
-                              )}
-                              {activeSchool.pdAllowance && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Professional Development Fund</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pdAllowance}</p>
-                                </div>
-                              )}
-                              {(activeSchool.perks || (activeSchool as any).benefits) && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Staff Perks & Transport</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.perks || (activeSchool as any).benefits}</p>
-                                </div>
-                              )}
-                              {activeSchool.holidayEntitlement && (
-                                <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
-                                  <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Holiday Entitlement</p>
-                                  <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.holidayEntitlement}</p>
-                                </div>
-                              )}
                             </div>
                           </div>
+
+                          {/* Candidate Qualifications */}
+                          <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
+                            <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Candidate Qualifications</p>
+                            <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
+                              {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
+                                <div className="leading-tight">• Degree: {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</div>
+                              )}
+                              {(activeReq?.license_req || (activeSchool as any).license_req) && (
+                                <div className="leading-tight">
+                                  • License: {(() => {
+                                    const raw = (activeReq?.license_req || (activeSchool as any).license_req || '').trim();
+                                    const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
+                                    return first || raw;
+                                  })()}
+                                </div>
+                              )}
+                              <div className="leading-tight">
+                                • Experience: {(() => {
+                                  const years = activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience;
+                                  const rawNotes = (activeSchool.intel?.minQualifications || activeReq?.exp_notes || '').replace(/\.([A-Z])/g, '. $1').trim();
+                                  const strippedNotes = rawNotes.replace(/^(minimum\s*)?\d+\+?\s*years?(\s*(experience|preferred|required))*\.\s*/i, '').trim();
+                                  if (years) {
+                                    return strippedNotes ? `${years} Years. ${strippedNotes}` : `${years} Years`;
+                                  }
+                                  return rawNotes || '2 Years preferred';
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+
+                          {activeSchool.taxExemptionStatus && (
+                            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-sm p-3 space-y-1 md:col-span-2 shadow-sm">
+                              <p className="text-[10px] font-black uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
+                                <span>⚖️ Tax Status & Bilateral Treaty Exemption</span>
+                                <span className="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest border border-emerald-500/30">POSITIVE BENEFIT</span>
+                              </p>
+                              <p className="text-xs text-emerald-100 font-bold leading-relaxed">{activeSchool.taxExemptionStatus}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).payrollFramework && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1 md:col-span-2">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">14-Month Payroll Structure & Tax Advantage</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).payrollFramework}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).positionalAllowances && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Positional & Leadership Allowances</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).positionalAllowances}</p>
+                            </div>
+                          )}
+                          {(activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Housing & Boarding Perks</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance}</p>
+                            </div>
+                          )}
+                          {(activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Healthcare & Social Security</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage}</p>
+                            </div>
+                          )}
+                          {activeSchool.tuitionBenefit && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Dependent Child Tuition Benefit</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.tuitionBenefit}</p>
+                            </div>
+                          )}
+                          {(activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Relocation & Immigration Support</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance}</p>
+                            </div>
+                          )}
+                          {(activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Travel & Home Leave Subsidies</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).languageAndTechSupport && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Language & Tech Infrastructure</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).languageAndTechSupport}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).mealsBenefit && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Duty Meals & Refectory</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).mealsBenefit}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).cognitaMobility && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Cognita Network Mobility</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).cognitaMobility}</p>
+                            </div>
+                          )}
+                          {(activeSchool as any).lifestylePrivileges && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Lifestyle & Outdoor Privileges</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).lifestylePrivileges}</p>
+                            </div>
+                          )}
+                          {(activeSchool.pensionBenefit || (activeSchool as any).pensionDetails) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Pension & Retirement Plan</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pensionBenefit || (activeSchool as any).pensionDetails}</p>
+                            </div>
+                          )}
+                          {activeSchool.shippingAllowance && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Shipping & Repatriation Allowances</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.shippingAllowance}</p>
+                            </div>
+                          )}
+                          {activeSchool.pdAllowance && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Professional Development Fund</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.pdAllowance}</p>
+                            </div>
+                          )}
+                          {(activeSchool.perks || (activeSchool as any).benefits) && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Staff Perks & Transport</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.perks || (activeSchool as any).benefits}</p>
+                            </div>
+                          )}
+                          {activeSchool.holidayEntitlement && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Holiday Entitlement</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.holidayEntitlement}</p>
+                            </div>
+                          )}
                         </div>
-                      );
+                      </div>
+                    </div>
+                  );
                 })()}
               </div>
             </div>
