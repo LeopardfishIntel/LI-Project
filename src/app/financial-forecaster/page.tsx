@@ -3081,6 +3081,9 @@ function DecoderContent() {
                               ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
                               : 'bg-rose-500/10 text-rose-400 border-rose-500/20';
                         const pillIcon = !historicMonths ? '○' : historicMonths >= 6 ? '●' : historicMonths >= 3 ? '◑' : '◔';
+                        const tooltipText = historicMonths
+                          ? `Only ${monthLabel} of data is indexed — turnover estimates will improve as history grows.`
+                          : 'No vacancy history has been indexed for this school yet. Turnover insights will appear once data is collected.';
 
                         return (
                           <div>
@@ -3090,25 +3093,25 @@ function DecoderContent() {
                                   ? `Staff Turnover Guide — last ${monthLabel}`
                                   : 'Staff Turnover Guide — no historic data detected'}
                               </span>
-                              <span className={`text-[10px] font-black tracking-wider normal-case flex items-center gap-1.5 px-2 py-0.5 rounded-sm border ${pillStyle}`}>
-                                <span>{pillIcon}</span>
-                                {monthLabel
-                                  ? `${monthLabel} of vacancy history indexed`
-                                  : 'History not yet indexed'}
-                              </span>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span
+                                      title={tooltipText}
+                                      className={`text-[10px] font-black tracking-wider normal-case flex items-center gap-1.5 px-2 py-0.5 rounded-sm border cursor-help ${pillStyle}`}
+                                    >
+                                      <span>{pillIcon}</span>
+                                      {monthLabel
+                                        ? `${monthLabel} of vacancy history indexed`
+                                        : 'History not yet indexed'}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="bg-[#0b1224] border border-white/15 text-white text-[11px] font-medium p-2.5 max-w-xs shadow-xl z-50 leading-relaxed">
+                                    {tooltipText}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </h4>
-                            {historicMonths && historicMonths < 6 && (
-                              <p className="text-[10px] text-amber-300/70 font-medium mb-3 flex items-center gap-1.5">
-                                <Info className="size-3 text-amber-400 shrink-0" />
-                                Only {monthLabel} of data is indexed — turnover estimates will improve as history grows.
-                              </p>
-                            )}
-                            {!historicMonths && (
-                              <p className="text-[10px] text-slate-500 font-medium mb-3 flex items-center gap-1.5">
-                                <Info className="size-3 shrink-0" />
-                                No vacancy history has been indexed for this school yet. Turnover insights will appear once data is collected.
-                              </p>
-                            )}
                           </div>
                         );
                       })()}
