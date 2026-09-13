@@ -2064,8 +2064,8 @@ function DecoderContent() {
               </div>
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
               {selectedOpportunity && (
-                <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-y-2 border-x-0 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
+                <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-x-2 border-y-0 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-3">
                     <div className="space-y-1.5">
                       <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
                         {translateJobTitleToEnglish(selectedOpportunity.jobTitle || '')}
@@ -2260,7 +2260,7 @@ function DecoderContent() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-white/10 mt-3">
+                  <div className="pt-2 mt-2">
                     <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
                       Estimated take-home pay, living costs, and lifestyle breakdown—customizable by household size and savings goals.
                     </p>
