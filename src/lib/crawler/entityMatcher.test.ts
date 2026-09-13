@@ -91,6 +91,19 @@ function runTests() {
   const phase2 = validatePhaseMatching(secondaryOnlySchool, 'IB DP High School Physics Teacher');
   assertEqual(phase2.isPhaseValid, true, 'Phase validation accepts secondary role for secondary-only school');
 
+    // 9. Cross-Country & Generic Overlap Protection Tests
+  const isNanshan = { name: "IS Nanshan", schoolname: "IS Nanshan", country: "China", city: "Shenzhen" };
+  const r9 = matchSchoolEntity(isNanshan, { candidateText: "International School of Paris", country: "France" });
+  assertEqual(r9.isMatch, false, "Anti-False-Positive: IS Nanshan rejects IS Paris");
+
+  const parkSchool = { name: "PaRK International School", schoolname: "PaRK International School", country: "Portugal", city: "Lisbon" };
+  const r10 = matchSchoolEntity(parkSchool, { candidateText: "BASIS International Schools", country: "China" });
+  assertEqual(r10.isMatch, false, "Anti-False-Positive: PaRK Portugal rejects BASIS International Schools");
+
+  const amBcn = { name: "American School BCN", schoolname: "American School BCN", country: "Spain", city: "Barcelona" };
+  const r11 = matchSchoolEntity(amBcn, { candidateText: "American Embassy School, New Delhi", country: "India" });
+  assertEqual(r11.isMatch, false, "Anti-False-Positive: American School BCN rejects American Embassy School New Delhi");
+
   console.log(`\n📊 Entity Matcher Test Summary: ${passed} passed, ${failed} failed.`);
   if (failed > 0) {
     process.exit(1);

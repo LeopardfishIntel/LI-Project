@@ -173,6 +173,21 @@ export function matchSchoolEntity(
     return { isMatch: false, score: 0, matchType: "none", confidence: "low" };
   }
 
+  // 0. Platform ID / Slug Match (Highest Confidence URL Lock)
+  if (candidatePayload.sourceUrl) {
+    const urlLower = candidatePayload.sourceUrl.toLowerCase();
+    if (school.tesEmployerSlug && urlLower.includes(school.tesEmployerSlug.toLowerCase())) {
+      return {
+        isMatch: true,
+        score: 1.0,
+        matchType: "platform_id",
+        matchedText: school.tesEmployerSlug,
+        confidence: "high",
+        reason: "TES Employer Slug matches source URL"
+      };
+    }
+  }
+
   // 1. Strict Geographic Isolation (Country & City Check)
   const targetCountry = normalizeCountryName(school.country || "");
   const targetCity = (school.city || "").toLowerCase().trim();

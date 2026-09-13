@@ -13,6 +13,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "test": "npx tsx src/lib/crawler/entityMatcher.test.ts",
     "test:e2e": "playwright test",
     "test:cypress": "cypress run"
   },
