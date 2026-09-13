@@ -1095,7 +1095,7 @@ const historicMonths = useMemo(() => {
 
     setSettings(prev => ({
       ...prev,
-      country: newCountry,
+      country: canonicalCountry(newCountry),
       schoolId: newSchoolId
     }));
 
@@ -1117,7 +1117,7 @@ const historicMonths = useMemo(() => {
 
   const handleSchoolSelect = useCallback((newSchoolId: string) => {
     const foundSchool = allSchools?.find((s: any) => s.id === newSchoolId);
-    const foundCountry = foundSchool ? canonicalCountry(foundSchool.country || foundSchool.region || settings.country) : settings.country;
+    const foundCountry = foundSchool ? canonicalCountry(foundSchool.country || foundSchool.region || settings.country) : canonicalCountry(settings.country);
 
     setSelectedOpportunity(null);
     setOverrideBedrooms(null);
@@ -1704,8 +1704,8 @@ const historicMonths = useMemo(() => {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Target country</label>
-              <Select value={settings.country} onValueChange={handleCountrySelect}>
-                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="Country" /></SelectTrigger>
+              <Select value={canonicalCountry(settings.country)} onValueChange={handleCountrySelect}>
+                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="Country">{formatCountry(canonicalCountry(settings.country))}</SelectValue></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.map((s: any) => canonicalCountry(s.country)).filter((v: any, i: any, a: any) => v && a.indexOf(v) === i).sort().map((c: any) => <SelectItem key={c} value={c}>{formatCountry(c)}</SelectItem>)}
                 </SelectContent>
