@@ -133,6 +133,34 @@ const parseSalary = (val: any): number => {
 
 // Deterministic fixed reference ID generator (replaces sequential rank numbers)
 
+
+const formatClosingDateMobile = (dateObj: Date | null | undefined, fullString?: string | null): string => {
+  if (dateObj && !isNaN(dateObj.getTime())) {
+    const day = dateObj.getDate();
+    const monthShort = dateObj.toLocaleString('en-US', { month: 'short' }); // "Nov", "Dec", "Jan"
+    const year = dateObj.getFullYear();
+    return `${day} ${monthShort} ${year}`;
+  }
+  if (!fullString) return "";
+  return fullString.replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/gi, (m) => m.substring(0, 3));
+};
+
+const shortenDisplayTitle = (title: string): string => {
+  if (!title) return "";
+  let clean = title.trim();
+
+  // 1. Strip parenthetical clauses
+  clean = clean.replace(/\s*\([^()]*\)/gi, "");
+
+  // 2. Strip trailing dash / hyphen grade & range specifiers
+  clean = clean.replace(/\s*[-–—]\s*(?:kg\d*|grades?|years?|ks\d|key\s*stage|primary|secondary|eyfs|nursery|kindergarten)\b.*$/gi, "");
+
+  // 3. Clean trailing punctuation
+  clean = clean.replace(/[-–—_,\s/()]+$/, "").trim();
+
+  return clean || title.trim();
+};
+
 const getJobCardReference = (job: any): string => {
   if (!job) return "";
   const schoolIdStr = String(job.school_id || job.schoolId || "").toUpperCase();
@@ -182,10 +210,11 @@ const getJobCardReference = (job: any): string => {
     jobIdNum = getFixedJobRef(job).replace(/^REF-/i, "");
   }
 
-  if (schoolFormatted && jobIdNum) {
-    return `ID: ${schoolFormatted} / #${jobIdNum}`;
+  // 🎯 Single ID reference (second half removed as requested)
+  if (schoolFormatted) {
+    return `ID: ${schoolFormatted}`;
   }
-  return schoolFormatted ? `ID: ${schoolFormatted}` : `Ref: #${jobIdNum}`;
+  return `ID: #${jobIdNum}`;
 };
 
 const getFixedJobRef = (job: any): string => {
@@ -1718,9 +1747,9 @@ export default function FeaturedJobsPage() {
                             href={buildEvalUrl(job, familyStatus)}
                             onClick={(e) => e.stopPropagation()}
                             className="hover:text-[#FF6B35] transition-colors duration-200 cursor-pointer"
-                            title={`Evaluate ${job.title} Opportunity`}
+                            title={`Evaluate ${shortenDisplayTitle(job.title)} Opportunity`}
                           >
-                            {job.title}
+                            {shortenDisplayTitle(job.title)}
                           </a>
                           {job.schoolId.startsWith('AGNT') && (
                             <span className="bg-purple-500/10 border border-purple-500/30 text-purple-300 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm flex items-center gap-1">
@@ -1773,7 +1802,10 @@ export default function FeaturedJobsPage() {
                                 />
                               </div>
                             ) : (
-                              <span className="leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+                              <>
+  <span className="sm:hidden leading-none">{job.closesDateRaw ? `Closes: ${formatClosingDateMobile(job.closesDateRaw, job.date_closing)}` : `Added: ${job.date_listed || "Recently"}`}</span>
+  <span className="hidden sm:inline leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
+</>
                             )}
                           </div>
                           <span className="text-slate-600 font-mono text-[10px] hidden sm:inline leading-none">•</span>
