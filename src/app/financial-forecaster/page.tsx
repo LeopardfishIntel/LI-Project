@@ -3657,22 +3657,22 @@ function DecoderContent() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                               {/* Visa & Deployment Intel */}
-                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
                                 <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Visa & Deployment Intel</p>
-                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
-                                  <p>{activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.'}</p>
-                                  <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
+                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
+                                  <p>{(activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
+                                  <div className="pt-1.5 border-t border-white/5 text-xs text-slate-300 font-medium leading-relaxed flex flex-col gap-1.5">
                                     {(activeReq?.max_age_f || activeReq?.max_age_m) && (
-                                      <span>• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
+                                      <span className="leading-tight">• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
                                     )}
                                     {activeReq?.max_age_notes && (
-                                      <span className="leading-tight">• {activeReq.max_age_notes}</span>
+                                      <span className="leading-tight">• {activeReq.max_age_notes.replace(/\.([A-Z])/g, '. $1')}</span>
                                     )}
                                     {(activeReq?.min_age || activeReq?.min_age_notes) && (
-                                      <span>• Min Age: {activeReq.min_age_notes || activeReq.min_age || '21'}</span>
+                                      <span className="leading-tight">• Min Age: {(activeReq.min_age_notes || activeReq.min_age || '21').replace(/\.([A-Z])/g, '. $1')}</span>
                                     )}
                                     {(activeSchool as any).dependent_visa_notes && (
-                                      <span>• Dependents: {(activeSchool as any).dependent_visa_notes}</span>
+                                      <span className="leading-tight">• Dependents: {((activeSchool as any).dependent_visa_notes).replace(/\.([A-Z])/g, '. $1')}</span>
                                     )}
                                   </div>
                                 </div>

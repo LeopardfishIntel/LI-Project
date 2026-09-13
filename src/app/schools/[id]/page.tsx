@@ -986,20 +986,20 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   <ShieldCheck className="size-5 text-rose-500 mt-1" />
                   <div className="flex-1">
                     <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1">Visa & Deployment Intel</p>
-                    <div className="text-sm font-bold text-white space-y-2">
-                      <p>{school.intel?.visaRestrictions || countryIntel?.visa_notes || 'Standard regional requirements apply.'}</p>
-                      <div className="pt-2 border-t border-white/5 text-[11px] text-muted-foreground font-medium flex flex-col gap-1.5 italic">
+                    <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
+                      <p>{(school.intel?.visaRestrictions || countryIntel?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
+                      <div className="pt-2 border-t border-white/5 text-xs text-slate-300 font-medium flex flex-col gap-1.5">
                         {(countryIntel?.max_age_f || countryIntel?.max_age_m) && (
-                          <span>• Max Age: {countryIntel.max_age_f} (F) / {countryIntel.max_age_m} (M)</span>
+                          <span className="leading-tight">• Max Age: {countryIntel.max_age_f} (F) / {countryIntel.max_age_m} (M)</span>
                         )}
                         {countryIntel?.max_age_notes && (
-                          <span className="leading-tight">• {countryIntel.max_age_notes}</span>
+                          <span className="leading-tight">• {countryIntel.max_age_notes.replace(/\.([A-Z])/g, '. $1')}</span>
                         )}
                         {(countryIntel?.min_age || countryIntel?.min_age_notes) && (
-                          <span>• Min Age: {countryIntel.min_age_notes || countryIntel.min_age || '21'}</span>
+                          <span className="leading-tight">• Min Age: {(countryIntel.min_age_notes || countryIntel.min_age || '21').replace(/\.([A-Z])/g, '. $1')}</span>
                         )}
                         {(school as any).dependent_visa_notes && (
-                          <span>• Dependents: {(school as any).dependent_visa_notes}</span>
+                          <span className="leading-tight">• Dependents: {((school as any).dependent_visa_notes).replace(/\.([A-Z])/g, '. $1')}</span>
                         )}
                       </div>
                     </div>
