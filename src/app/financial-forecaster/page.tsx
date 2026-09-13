@@ -1221,8 +1221,10 @@ const historicMonths = useMemo(() => {
       let median = Math.round((min + max) / 2);
 
       const isExplicitMonthly = /month|monthly|\/mo/i.test(str);
-      // Annual to Monthly Conversion: only divide if > 10,000 AND not marked monthly AND in currencies where annual salaries > 10,000 (USD, EUR, GBP)
-      if (median >= 10000 && !isExplicitMonthly && (isUSD || ['USD', 'EUR', 'GBP', 'AED', 'SAR', 'QAR'].includes(currency))) {
+      // Annual to Monthly Conversion: if median >= 10,000 in major currencies or >= 120,000 in local currencies, divide by 12 unless explicitly marked /mo
+      const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR'].includes(currency);
+      const isAnnualVal = isHighValCurr ? median >= 10000 : median >= 120000;
+      if (isAnnualVal && !isExplicitMonthly) {
         median = Math.round(median / 12);
       }
 
@@ -1259,7 +1261,11 @@ const historicMonths = useMemo(() => {
     const sCountry = canonicalCountry(String(getSchoolField(activeSchool, ['country', 'region']) || ''));
     const countryIntel = SALARY_INTEL[sCountry] || null;
 
-    const baseNet = safeParse(settings.netSalary);
+    const rawNetInput = safeParse(settings.netSalary);
+    const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR'].includes(currency);
+    const isConvertedFromAnnual = isHighValCurr ? rawNetInput >= 10000 : rawNetInput >= 120000;
+    const baseNet = isConvertedFromAnnual ? Math.round(rawNetInput / 12) : rawNetInput;
+
     const upliftFactor = (uplift13 ? 1/12 : 0) + (uplift14 ? 1/12 : 0);
     const amortizedBase = baseNet * (1 + upliftFactor);
 
@@ -1412,6 +1418,7 @@ const historicMonths = useMemo(() => {
       totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving, 
       housingStatus: isProvided ? 'provided' : 'custom',
       isHousingProvidedByDefault,
+      isConvertedFromAnnual, rawNetInput, baseNet,
       currency, reliability: activeCOL?.dataReliabilityScore,
       countryIntel, uplift13, uplift14
     };
@@ -1791,6 +1798,11 @@ const historicMonths = useMemo(() => {
                   </Tooltip>
                 </div>
                 <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
+                {analysis?.isConvertedFromAnnual && (
+                  <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 p-2 rounded-sm leading-snug">
+                    <span>💡 Annual salary detected ({parseFloat(settings.netSalary).toLocaleString()} {currency}/yr) — converted to monthly net base of {currency} {analysis.baseNet.toLocaleString()}/mo.</span>
+                  </div>
+                )}
               </div>
               {settings.familyStatus !== "Single" && settings.familyStatus !== "Married (sole earner)" && (
                 <div className="space-y-2">
