@@ -2,6 +2,17 @@
 
 import * as React from 'react';
 import Image from 'next/image';
+function formatLocation(cityRaw?: string, countryRaw?: string): string {
+  const rawStr = [cityRaw, countryRaw].filter(Boolean).join(', ');
+  const parts = rawStr.split(/,\s*/).map(p => p.trim()).filter(Boolean);
+  const uniqueParts: string[] = [];
+  parts.forEach(part => {
+    if (!uniqueParts.some(p => p.toLowerCase() === part.toLowerCase())) {
+      uniqueParts.push(part);
+    }
+  });
+  return uniqueParts.join(', ');
+}
 import { notFound } from 'next/navigation';
 import { useDoc, useFirestore, useMemoFirebase, db, useAuth } from '@/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -523,7 +534,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
               <div className="flex flex-col gap-2">
                 <div className="flex items-center text-sm font-black uppercase text-muted-foreground">
                   <MapPin className="w-4 h-4 mr-2 text-primary" />
-                  <span>{school.city || school.location}, {school.country}</span>
+                  <span>{formatLocation(school.city || school.location, school.country)}</span>
                   <span className="mx-3 opacity-20">|</span>
                   <span className="text-primary/80 tracking-widest font-black">FLIS: {id}</span>
                 </div>

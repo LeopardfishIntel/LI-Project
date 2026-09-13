@@ -71,10 +71,19 @@ export function formatCurriculumBadge(curr: string): string {
   if (!curr) return "BRITISH CURRICULUM";
   const upper = curr.trim().toUpperCase();
   if (upper === "UK" || upper === "BRITISH") return "UK BRITISH CURRICULUM";
-  if (upper === "US" || upper === "AMERICAN") return "US CURRICULUM";
-  if (upper === "IB") return "IB CURRICULUM";
-  if (upper.includes("CURRICULUM")) return upper;
   return `${upper} CURRICULUM`;
+}
+
+export function formatLocation(cityRaw?: string, countryRaw?: string): string {
+  const rawStr = [cityRaw, countryRaw].filter(Boolean).join(', ');
+  const parts = rawStr.split(/,\s*/).map(p => p.trim()).filter(Boolean);
+  const uniqueParts: string[] = [];
+  parts.forEach(part => {
+    if (!uniqueParts.some(p => p.toLowerCase() === part.toLowerCase())) {
+      uniqueParts.push(part);
+    }
+  });
+  return uniqueParts.join(', ');
 }
 
 const RATES: Record<string, number> = {
@@ -2068,7 +2077,7 @@ function DecoderContent() {
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
-                          <MapPin className="size-3.5" /> {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
+                          <MapPin className="size-3.5" /> {formatLocation(getSchoolField(activeSchool, ['city', 'town', 'location']), getSchoolField(activeSchool, ['country', 'region']))}
                         </span>
                       </div>
                     </div>
@@ -2398,7 +2407,7 @@ function DecoderContent() {
                     </h2>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-sm border border-white/10">
-                        {getSchoolField(activeSchool, ['city', 'town', 'location'])}, {getSchoolField(activeSchool, ['country', 'region'])}
+                        {formatLocation(getSchoolField(activeSchool, ['city', 'town', 'location']), getSchoolField(activeSchool, ['country', 'region']))}
                       </span>
                       <div className="flex gap-2">
                         {(() => {
