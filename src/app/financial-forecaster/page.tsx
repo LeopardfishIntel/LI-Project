@@ -2064,7 +2064,7 @@ function DecoderContent() {
               </div>
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
               {selectedOpportunity && (
-                <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-2 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-y-2 border-x-0 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
                     <div className="space-y-1.5">
                       <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
