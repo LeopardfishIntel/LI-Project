@@ -3454,7 +3454,7 @@ function DecoderContent() {
                   ];
 
                   return (
-                    <div id="section-staffroom" className="scroll-mt-28 mt-8 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div id="section-staffroom" className="scroll-mt-28 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
                       <div id="section-package-visa" className="scroll-mt-28 bg-[#1f2937]/25 border border-white/5 rounded-sm p-5 space-y-4">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-black uppercase tracking-widest text-[#d95f02]">Expatriate Package & Contract Intel</span>
