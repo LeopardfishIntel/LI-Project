@@ -1747,9 +1747,9 @@ function DecoderContent() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Target country</label>
               <Select value={canonicalCountry(settings.country)} onValueChange={handleCountrySelect}>
-                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="Country">{formatCountry(canonicalCountry(settings.country))}</SelectValue></SelectTrigger>
+                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase text-left [&>span]:text-left [&>span]:flex-1 [&>span]:text-start"><SelectValue placeholder="Country">{formatCountry(canonicalCountry(settings.country))}</SelectValue></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
-                  {allSchools?.map((s: any) => canonicalCountry(s.country)).filter((v: any, i: any, a: any) => v && a.indexOf(v) === i).sort().map((c: any) => <SelectItem key={c} value={c}>{formatCountry(c)}</SelectItem>)}
+                  {allSchools?.map((s: any) => canonicalCountry(s.country)).filter((v: any, i: any, a: any) => v && a.indexOf(v) === i).sort().map((c: any) => <SelectItem key={c} value={c} className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">{formatCountry(c)}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -1757,7 +1757,7 @@ function DecoderContent() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Select school</label>
               <Select disabled={!settings.country} value={settings.schoolId} onValueChange={handleSchoolSelect}>
-                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue placeholder="School" /></SelectTrigger>
+                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase text-left [&>span]:text-left [&>span]:flex-1 [&>span]:text-start"><SelectValue placeholder="School" /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
                   {allSchools?.filter((s: any) => canonicalCountry(s.country) === canonicalCountry(settings.country))
                     .filter((s: any) => !s.isMultiCampus)
@@ -1766,7 +1766,7 @@ function DecoderContent() {
                       return arr.findIndex((item: any) => (item.schoolname || item.name || '').toLowerCase().trim() === cleanName) === idx;
                     })
                     .sort((a: any, b: any) => (a.schoolname || a.name || '').localeCompare(b.schoolname || b.name || ''))
-                    .map((s: any) => <SelectItem key={s.id || s.schoolname} value={s.id}>{s.schoolname || s.name}</SelectItem>)}
+                    .map((s: any) => <SelectItem key={s.id || s.schoolname} value={s.id} className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">{s.schoolname || s.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -1774,13 +1774,13 @@ function DecoderContent() {
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Family status</label>
               <Select value={settings.familyStatus} onValueChange={(v) => setSettings({ ...settings, familyStatus: v })}>
-                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-black/40 border-white/10 h-10 text-xs font-bold uppercase text-left [&>span]:text-left [&>span]:flex-1 [&>span]:text-start"><SelectValue /></SelectTrigger>
                 <SelectContent className="bg-[#0b1224] border-white/10 text-white font-bold uppercase text-xs">
-                  <SelectItem value="Single">Single</SelectItem>
-                  <SelectItem value="Couple">Couple</SelectItem>
-                  <SelectItem value="Family +1">Family +1</SelectItem>
-                  <SelectItem value="Family +2">Family +2</SelectItem>
-                  <SelectItem value="Family +3">Family +3</SelectItem>
+                  <SelectItem value="Single" className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">Single</SelectItem>
+                  <SelectItem value="Couple" className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">Couple</SelectItem>
+                  <SelectItem value="Family +1" className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">Family +1</SelectItem>
+                  <SelectItem value="Family +2" className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">Family +2</SelectItem>
+                  <SelectItem value="Family +3" className="pl-3 pr-8 text-left [&>span:first-child]:left-auto [&>span:first-child]:right-2">Family +3</SelectItem>
                 </SelectContent>
               </Select>
             </div>
