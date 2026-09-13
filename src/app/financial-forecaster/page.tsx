@@ -2859,7 +2859,7 @@ function DecoderContent() {
                 </div>
 
                 {leopardfishReview && (
-                  <div className="mt-8 p-6 bg-white/[0.02] border border-white/5 rounded-sm shadow-sm space-y-6">
+                  <div className="mt-8 pt-4 pb-6 px-5 md:px-6 bg-white/[0.02] border border-white/5 rounded-sm shadow-sm space-y-6">
                     {/*
                       You are the core data-science and statistical analysis engine for www.leopardfishintel.com. Your task is to calculate institutional stability, estimate teacher churn rates, and assess organizational risk for international schools using raw recruitment data.
 
@@ -3006,7 +3006,7 @@ function DecoderContent() {
                       }
 
                       return (
-                        <div id="section-living-safety" className="scroll-mt-28 mt-6 space-y-3">
+                        <div id="section-living-safety" className="scroll-mt-28 mt-0 space-y-3">
                           <h4 className="text-sm font-black text-[#d95f02] uppercase tracking-[0.4em] mb-3 leading-relaxed">
                             Security &amp; Safety Guide
                           </h4>
