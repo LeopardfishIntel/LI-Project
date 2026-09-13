@@ -101,7 +101,9 @@ export async function runGrcAdaptor(input?: AdaptorInput): Promise<RawJobRecord[
       const whitelistedSchool = await isWhitelistedSchool(
         grcSchoolName,
         grcWebsite,
-        input?.schoolId
+        input?.schoolId,
+        grcCity || schoolDetails.City || "",
+        grcCountry || schoolDetails.Country || schoolDetails.CountryCode || ""
       );
 
       if (!whitelistedSchool) {
@@ -137,7 +139,7 @@ export async function runGrcAdaptor(input?: AdaptorInput): Promise<RawJobRecord[
     console.log("🌐 [GRC SEARCH ENGINE] Extracted " + records.length + " clean, grounded GRC vacancy record(s).");
     return records;
   } catch (err: any) {
-    console.warn("🌐 [GRC SEARCH ENGINE] Adaptor sweep failed:", err.message || err);
+    console.warn("🌐 [GRC SEARCH ENGINE] Adaptor sweep failed:", err.stack || err);
     return [];
   }
 }

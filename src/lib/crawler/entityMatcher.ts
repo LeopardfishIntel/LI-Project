@@ -23,45 +23,56 @@ export interface SchoolEntity {
 export interface EntityMatchResult {
   isMatch: boolean;
   score: number;
-  matchType: 'platform_id' | 'exact' | 'alias' | 'fuzzy' | 'acronym' | 'none';
+  matchType: "platform_id" | "exact" | "alias" | "fuzzy" | "acronym" | "none";
   matchedText?: string;
-  confidence: 'high' | 'medium' | 'low';
+  confidence: "high" | "medium" | "low";
   reason?: string;
 }
 
 const COMMON_ABBREVIATIONS: Record<string, string> = {
-  "int'l": 'international',
-  'intl': 'international',
-  'is': 'international school',
-  'st.': 'saint',
-  'st': 'saint',
-  'co-ed': 'coeducational',
-  'sch': 'school',
-  'acad': 'academy',
-  'coll': 'college',
-  'univ': 'university',
-  'pyp': 'primary years programme',
-  'myp': 'middle years programme',
-  'dp': 'diploma programme',
-  'eyfs': 'early years foundation stage',
-  'kg': 'kindergarten',
+  "int'l": "international",
+  "intl": "international",
+  "is": "international school",
+  "st.": "saint",
+  "st": "saint",
+  "co-ed": "coeducational",
+  "sch": "school",
+  "acad": "academy",
+  "coll": "college",
+  "univ": "university",
+  "pyp": "primary years programme",
+  "myp": "middle years programme",
+  "dp": "diploma programme",
+  "eyfs": "early years foundation stage",
+  "kg": "kindergarten",
 };
 
+const GENERIC_SCHOOL_STOPWORDS = new Set([
+  "international", "school", "schools", "academy", "college", "community", "high",
+  "elementary", "middle", "primary", "secondary", "the", "of", "and", "group", "is",
+  "saint", "st", "de", "la", "le", "en", "du", "education", "educational"
+]);
+
 export function normalizeEntityString(str: string): string {
-  if (!str) return '';
-  let normalized = str.toLowerCase().replace(/['"`]/g, '').trim();
-  
+  if (!str) return "";
+  let normalized = str.toLowerCase().replace(/['"`]/g, "").trim();
   const tokens = normalized.split(/[^a-z0-9]+/);
   const expandedTokens = tokens.map(t => COMMON_ABBREVIATIONS[t] || t).filter(Boolean);
-  return expandedTokens.join(' ');
+  return expandedTokens.join(" ");
+}
+
+export function extractCoreName(str: string): string {
+  if (!str) return "";
+  const tokens = str.toLowerCase().replace(/[^a-z0-9s]/g, " ").split(/\s+/).filter(Boolean);
+  return tokens.filter(t => !GENERIC_SCHOOL_STOPWORDS.has(t)).join(" ");
 }
 
 export function extractAcronym(name: string): string {
-  if (!name) return '';
-  const clean = name.replace(/['"`]/g, '').trim();
-  const words = clean.split(/\s+/).filter(w => !['of', 'the', 'and', '&', 'in', 'at', 'for'].includes(w.toLowerCase()));
-  if (words.length <= 1) return '';
-  return words.map(w => w[0].toUpperCase()).join('');
+  if (!name) return "";
+  const clean = name.replace(/['"`]/g, "").trim();
+  const words = clean.split(/\s+/).filter(w => Boolean(w) && !["of", "the", "and", "&", "in", "at", "for"].includes(w.toLowerCase()));
+  if (words.length <= 1) return "";
+  return words.map(w => (w && w[0]) ? w[0].toUpperCase() : "").filter(Boolean).join("");
 }
 
 export function calculateJaroWinkler(s1: string, s2: string): number {
@@ -117,8 +128,8 @@ export function calculateJaroWinkler(s1: string, s2: string): number {
 }
 
 export function calculateTokenSetSimilarity(s1: string, s2: string): number {
-  const t1 = new Set(normalizeEntityString(s1).split(/\s+/).filter(Boolean));
-  const t2 = new Set(normalizeEntityString(s2).split(/\s+/).filter(Boolean));
+  const t1 = new Set(normalizeEntityString(s1).split(/s+/).filter(Boolean));
+  const t2 = new Set(normalizeEntityString(s2).split(/s+/).filter(Boolean));
 
   if (t1.size === 0 || t2.size === 0) return 0.0;
 
@@ -131,35 +142,77 @@ export function calculateTokenSetSimilarity(s1: string, s2: string): number {
   return intersection / union;
 }
 
-/**
- * 🛠️ FIX 4.2: MULTI-FACTOR LOCATION & ENTITY MATCHING
- * Combines fuzzy string matching with strict city and country isolation.
- */
+function normalizeCountryName(c: string): string {
+  if (!c) return "";
+  const lower = c.toLowerCase().trim();
+  if (lower === "sa" || lower.includes("saudi")) return "saudi arabia";
+  if (lower === "cn" || lower.includes("china")) return "china";
+  if (lower === "in" || lower.includes("india")) return "india";
+  if (lower === "fr" || lower.includes("france")) return "france";
+  if (lower === "br" || lower.includes("brazil")) return "brazil";
+  if (lower === "es" || lower.includes("spain")) return "spain";
+  if (lower === "ae" || lower.includes("emirates") || lower.includes("dubai") || lower.includes("abu dhabi")) return "united arab emirates";
+  if (lower === "mm" || lower.includes("myanmar")) return "myanmar";
+  if (lower === "jo" || lower.includes("jordan")) return "jordan";
+  if (lower === "kw" || lower.includes("kuwait")) return "kuwait";
+  if (lower === "kr" || lower.includes("korea")) return "south korea";
+  if (lower === "ph" || lower.includes("philippines")) return "philippines";
+  if (lower === "id" || lower.includes("indonesia")) return "indonesia";
+  return lower;
+}
+
 export function matchSchoolEntity(
   school: SchoolEntity,
-  candidatePayload: { candidateText: string; sourceUrl?: string },
+  candidatePayload: { candidateText: string; sourceUrl?: string; city?: string; country?: string },
   threshold: number = 0.85
 ): EntityMatchResult {
-  const canonicalName = school.name || school.schoolname || '';
-  const candidate = candidatePayload.candidateText || '';
+  const canonicalName = school.name || school.schoolname || "";
+  const candidate = candidatePayload.candidateText || "";
 
   if (!canonicalName || !candidate) {
-    return { isMatch: false, score: 0, matchType: 'none', confidence: 'low' };
+    return { isMatch: false, score: 0, matchType: "none", confidence: "low" };
   }
 
   // 1. Strict Geographic Isolation (Country & City Check)
-  const targetCountry = (school.country || '').toLowerCase();
-  const targetCity = (school.city || '').toLowerCase();
+  const targetCountry = normalizeCountryName(school.country || "");
+  const targetCity = (school.city || "").toLowerCase().trim();
+  const candCountry = normalizeCountryName(candidatePayload.country || "");
+  const candCity = (candidatePayload.city || "").toLowerCase().trim();
   const candidateLower = candidate.toLowerCase();
 
+  // If candidate explicit country is provided, enforce country isolation
+  if (candCountry && targetCountry && candCountry !== targetCountry) {
+    return {
+      isMatch: false,
+      score: 0.0,
+      matchType: "none",
+      confidence: "high",
+      reason: `Country mismatch: candidate is in "${candCountry}" but target school is in "${targetCountry}"`
+    };
+  }
+
+  // If candidate explicit city is provided, enforce city isolation
+  if (candCity && targetCity && candCity.length > 2 && targetCity.length > 2) {
+    if (!candCity.includes(targetCity) && !targetCity.includes(candCity)) {
+      return {
+        isMatch: false,
+        score: 0.0,
+        matchType: "none",
+        confidence: "high",
+        reason: `City mismatch: candidate is in "${candCity}" but target school is in "${targetCity}"`
+      };
+    }
+  }
+
+  // Geographic keyword extraction from candidate string
   const majorCitiesCountries = [
-    'bahrain', 'monaco', 'singapore', 'austria', 'jordan', 'oman', 'qatar',
-    'united arab emirates', 'dubai', 'abu dhabi', 'sharjah', 'china', 'hong kong',
-    'japan', 'tokyo', 'shanghai', 'beijing', 'south korea', 'seoul', 'thailand', 'bangkok',
-    'vietnam', 'hanoi', 'saigon', 'indonesia', 'jakarta', 'malaysia', 'kuala lumpur',
-    'united kingdom', 'london', 'hammersmith', 'germany', 'munich', 'frankfurt',
-    'switzerland', 'zurich', 'geneva', 'spain', 'barcelona', 'madrid', 'france', 'paris',
-    'egypt', 'cairo', 'saudi arabia', 'riyadh', 'kuwait', 'india', 'mumbai', 'delhi'
+    "bahrain", "monaco", "singapore", "austria", "jordan", "oman", "qatar",
+    "united arab emirates", "dubai", "abu dhabi", "sharjah", "china", "hong kong",
+    "japan", "tokyo", "shanghai", "beijing", "south korea", "seoul", "thailand", "bangkok",
+    "vietnam", "hanoi", "saigon", "indonesia", "jakarta", "malaysia", "kuala lumpur",
+    "united kingdom", "london", "hammersmith", "germany", "munich", "frankfurt",
+    "switzerland", "zurich", "geneva", "spain", "barcelona", "madrid", "france", "paris",
+    "egypt", "cairo", "saudi arabia", "riyadh", "kuwait", "india", "mumbai", "delhi"
   ];
 
   for (const loc of majorCitiesCountries) {
@@ -168,15 +221,15 @@ export function matchSchoolEntity(
       const matchInTargetCity = targetCity.includes(loc) || loc.includes(targetCity);
 
       if (!matchInTargetCountry && !matchInTargetCity) {
-        const isTargetUae = targetCountry.includes('united arab emirates') || targetCountry.includes('uae');
-        const isCandidateUae = ['dubai', 'abu dhabi', 'sharjah', 'united arab emirates', 'uae'].includes(loc);
+        const isTargetUae = targetCountry.includes("united arab emirates") || targetCountry.includes("uae");
+        const isCandidateUae = ["dubai", "abu dhabi", "sharjah", "united arab emirates", "uae"].includes(loc);
         if (isTargetUae && isCandidateUae) continue;
 
         return {
           isMatch: false,
           score: 0.0,
-          matchType: 'none',
-          confidence: 'high',
+          matchType: "none",
+          confidence: "high",
           reason: `Geographic location mismatch: candidate mentions "${loc}" but target school is in "${school.city}, ${school.country}"`
         };
       }
@@ -187,45 +240,45 @@ export function matchSchoolEntity(
   const normCandidate = normalizeEntityString(candidate);
   const normCanonical = normalizeEntityString(canonicalName);
 
-  if (candidate.toLowerCase().includes(canonicalName.toLowerCase()) || normCandidate === normCanonical) {
+  if (candidateLower === canonicalName.toLowerCase() || normCandidate === normCanonical) {
     return {
       isMatch: true,
       score: 1.0,
-      matchType: 'exact',
+      matchType: "exact",
       matchedText: canonicalName,
-      confidence: 'high',
-      reason: 'Exact canonical name match'
+      confidence: "high",
+      reason: "Exact canonical name match"
+    };
+  }
+
+  if (canonicalName.length >= 6 && candidateLower.includes(canonicalName.toLowerCase())) {
+    return {
+      isMatch: true,
+      score: 1.0,
+      matchType: "exact",
+      matchedText: canonicalName,
+      confidence: "high",
+      reason: "Exact canonical substring match"
     };
   }
 
   // 3. Alias Array match
   const aliases = school.aliases || [];
   for (const alias of aliases) {
-    const normAlias = normalizeEntityString(alias);
-    if (normCandidate.includes(normAlias) || candidate.toLowerCase().includes(alias.toLowerCase())) {
+    const aLower = alias.toLowerCase().trim();
+    if (candidateLower === aLower || (aLower.length >= 6 && candidateLower.includes(aLower))) {
       return {
         isMatch: true,
         score: 0.98,
-        matchType: 'alias',
+        matchType: "alias",
         matchedText: alias,
-        confidence: 'high',
+        confidence: "high",
         reason: `Direct match with configured alias "${alias}"`
       };
     }
   }
 
-  if (normCandidate.includes(normCanonical) || normCanonical.includes(normCandidate)) {
-    return {
-      isMatch: true,
-      score: 1.0,
-      matchType: 'exact',
-      matchedText: canonicalName,
-      confidence: 'high',
-      reason: 'Exact canonical name match'
-    };
-  }
-
-  // 4. Acronym Matching (e.g. "VIS" for "Vienna International School")
+  // 4. Acronym Matching
   const acronym = extractAcronym(canonicalName);
   if (acronym && acronym.length >= 3) {
     try {
@@ -233,8 +286,8 @@ export function matchSchoolEntity(
       if (cleanAcronym.length >= 3) {
         const acronymRegex = new RegExp("\\b" + cleanAcronym + "\\b", "i");
         if (acronymRegex.test(candidate)) {
-          const cityMatches = Boolean(school.city && candidate.toLowerCase().includes(school.city.toLowerCase()));
-          const countryMatches = Boolean(school.country && candidate.toLowerCase().includes(school.country.toLowerCase()));
+          const cityMatches = Boolean(school.city && candidateLower.includes(school.city.toLowerCase()));
+          const countryMatches = Boolean(school.country && candidateLower.includes(school.country.toLowerCase()));
 
           if (cityMatches || countryMatches || !school.city) {
             return {
@@ -251,28 +304,43 @@ export function matchSchoolEntity(
     } catch (e) {}
   }
 
-  // 5. Fuzzy String Similarity (Jaro-Winkler + Token Set)
-  const jaroScore = calculateJaroWinkler(canonicalName, candidate);
-  const tokenScore = calculateTokenSetSimilarity(canonicalName, candidate);
-  const compositeScore = Math.max(jaroScore, (jaroScore * 0.6) + (tokenScore * 0.4));
+  // 5. Core Name Fuzzy Matching (Strips generic "International School" boilerplate)
+  const coreCanonical = extractCoreName(canonicalName);
+  const coreCandidate = extractCoreName(candidate);
 
-  if (compositeScore >= threshold) {
+  if (!coreCanonical || coreCanonical.length < 3 || !coreCandidate || coreCandidate.length < 3) {
+    return { isMatch: false, score: 0, matchType: "none", confidence: "low", reason: "Core brand names too short for fuzzy matching" };
+  }
+
+  if (coreCanonical === coreCandidate) {
     return {
       isMatch: true,
-      score: parseFloat(compositeScore.toFixed(3)),
-      matchType: 'fuzzy',
+      score: 0.95,
+      matchType: "fuzzy",
       matchedText: canonicalName,
-      confidence: compositeScore >= 0.92 ? 'high' : 'medium',
-      reason: `Fuzzy similarity score ${compositeScore.toFixed(3)} exceeds threshold ${threshold}`
+      confidence: "high",
+      reason: "Exact core brand name match"
+    };
+  }
+
+  const jaroCore = calculateJaroWinkler(coreCanonical, coreCandidate);
+  if (jaroCore >= 0.88) {
+    return {
+      isMatch: true,
+      score: parseFloat(jaroCore.toFixed(3)),
+      matchType: "fuzzy",
+      matchedText: canonicalName,
+      confidence: jaroCore >= 0.92 ? "high" : "medium",
+      reason: `Core brand name fuzzy score ${jaroCore.toFixed(3)} exceeds threshold 0.88`
     };
   }
 
   return {
     isMatch: false,
-    score: parseFloat(compositeScore.toFixed(3)),
-    matchType: 'none',
-    confidence: 'low',
-    reason: `Similarity score ${compositeScore.toFixed(3)} is below threshold ${threshold}`
+    score: parseFloat(jaroCore.toFixed(3)),
+    matchType: "none",
+    confidence: "low",
+    reason: `Core brand name similarity ${jaroCore.toFixed(3)} below threshold 0.88`
   };
 }
 
@@ -280,11 +348,11 @@ export function validatePhaseMatching(school: SchoolEntity, candidateTitle: stri
   if (!candidateTitle || !school) return { isPhaseValid: true };
   const lower = candidateTitle.toLowerCase();
 
-  if (school.isSecondaryOnly && (lower.includes('primary') || lower.includes('kindergarten') || lower.includes('eyfs') || lower.includes('nursery'))) {
-    return { isPhaseValid: false, reason: 'Secondary-only school cannot offer primary/early years positions' };
+  if (school.isSecondaryOnly && (lower.includes("primary") || lower.includes("kindergarten") || lower.includes("eyfs") || lower.includes("nursery"))) {
+    return { isPhaseValid: false, reason: "Secondary-only school cannot offer primary/early years positions" };
   }
-  if (school.isPrimaryOnly && (lower.includes('secondary') || lower.includes('high school') || lower.includes('igcse') || lower.includes('a-level') || lower.includes('a level'))) {
-    return { isPhaseValid: false, reason: 'Primary-only school cannot offer secondary/high school positions' };
+  if (school.isPrimaryOnly && (lower.includes("secondary") || lower.includes("high school") || lower.includes("igcse") || lower.includes("a-level") || lower.includes("a level"))) {
+    return { isPhaseValid: false, reason: "Primary-only school cannot offer secondary/high school positions" };
   }
   return { isPhaseValid: true };
 }

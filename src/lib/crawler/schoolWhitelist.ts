@@ -14,6 +14,8 @@ export interface WhitelistedSchoolInfo {
   schoolId: string;
   schoolName: string;
   officialDomain: string;
+  city?: string;
+  country?: string;
   tesEmployerSlug?: string;
   aliases?: string[];
 }
@@ -54,6 +56,8 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
           schoolId,
           schoolName,
           officialDomain,
+          city: d.city || d.location || "",
+          country: d.country || "",
           tesEmployerSlug,
           aliases,
         });
@@ -75,7 +79,9 @@ export async function loadSchoolWhitelist(forceReload = false): Promise<Map<stri
 export async function isWhitelistedSchool(
   organizationName?: string,
   domainOrUrl?: string | null,
-  targetSchoolId?: string
+  targetSchoolId?: string,
+  candidateCity?: string,
+  candidateCountry?: string
 ): Promise<WhitelistedSchoolInfo | null> {
   const whitelist = await loadSchoolWhitelist();
 
@@ -94,8 +100,8 @@ export async function isWhitelistedSchool(
     const cleanOrg = organizationName.trim().toLowerCase();
     for (const school of whitelist.values()) {
       const match = matchSchoolEntity(
-        { name: school.schoolName, schoolname: school.schoolName, aliases: school.aliases, tesEmployerSlug: school.tesEmployerSlug },
-        { candidateText: cleanOrg, sourceUrl: domainOrUrl || "" }
+        { name: school.schoolName, schoolname: school.schoolName, city: school.city, country: school.country, aliases: school.aliases, tesEmployerSlug: school.tesEmployerSlug },
+        { candidateText: cleanOrg, sourceUrl: domainOrUrl || "", city: candidateCity, country: candidateCountry }
       );
       if (match.isMatch) {
         return school;
