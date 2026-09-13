@@ -498,7 +498,11 @@ function DecoderContent() {
   const getSchoolField = (school: any, keys: string[]) => {
     if (!school) return null;
     const targetKeys = keys.map(k => k.toLowerCase().replace(/\s+/g, ''));
-    const foundKey = Object.keys(school).find(k => targetKeys.includes(k.toLowerCase().replace(/\s+/g, '')));
+    const foundKey = Object.keys(school).find(k => {
+      const cleanK = k.toLowerCase().replace(/\s+/g, '');
+      const val = school[k];
+      return targetKeys.includes(cleanK) && val !== undefined && val !== null && val !== '' && val !== '—';
+    });
     return foundKey ? school[foundKey] : null;
   };
 
@@ -506,7 +510,7 @@ function DecoderContent() {
     if (!allSchools || !settings.schoolId) return null;
     const target = settings.schoolId.toLowerCase().trim();
     const targetClean = target.replace(/^flis/i, '');
-    return allSchools.find((s: any) => {
+    const foundDoc = allSchools.find((s: any) => {
       const sIdLower = (s.id || '').toLowerCase().trim();
       const sSchoolIdLower = (s.schoolId || '').toLowerCase().trim();
       return sIdLower === target ||
@@ -514,6 +518,53 @@ function DecoderContent() {
         sIdLower.replace(/^flis/i, '') === targetClean ||
         sSchoolIdLower.replace(/^flis/i, '') === targetClean;
     }) || null;
+
+    if (!foundDoc) return null;
+
+    // Sub-campus master fallback: if this record is a sub-campus (e.g. flis0224_primary, flis0224_senior),
+    // inherit missing financial, salary, and rating data from its master record (e.g. FLIS0224)
+    const rawId = String(foundDoc.id || foundDoc.schoolId || '');
+    const underscoreIdx = rawId.indexOf('_');
+    if (underscoreIdx > 0) {
+      const masterPrefix = rawId.substring(0, underscoreIdx).toUpperCase();
+      const masterDoc = allSchools.find((s: any) => {
+        const sIdUpper = String(s.id || s.schoolId || '').toUpperCase();
+        return sIdUpper === masterPrefix || sIdUpper === masterPrefix.replace(/^FLIS/, '');
+      });
+
+      if (masterDoc) {
+        const merged: Record<string, any> = { ...masterDoc, ...foundDoc };
+        const fieldsToInherit = [
+          'salary', 'startingSalary', 'expectedSalary5Years', 'salary5YearsExp', 'salaryrange',
+          'netbase', 'netmonthlyusd', 'salaryrangeusd', 'cost_savings_rating', 'overall_rating',
+          'academic_rating', 'city_safety', 'housingprovision', 'housing', 'accommodation',
+          'noncontacttime', 'classsize', 'approvals', 'curriculum', 'profitstatus', 'briefing',
+          'scrapedJobsList', 'vacancies_discovered', 'structured_vacancies', 'metrics'
+        ];
+
+        fieldsToInherit.forEach(k => {
+          if ((foundDoc[k] === undefined || foundDoc[k] === null || foundDoc[k] === '' || foundDoc[k] === '—') && masterDoc[k] !== undefined && masterDoc[k] !== null && masterDoc[k] !== '') {
+            merged[k] = masterDoc[k];
+          }
+        });
+
+        if (masterDoc.intel || foundDoc.intel) {
+          merged.intel = {
+            ...(masterDoc.intel || {}),
+            ...(foundDoc.intel || {}),
+          };
+          Object.keys(masterDoc.intel || {}).forEach(ik => {
+            if ((!foundDoc.intel || foundDoc.intel[ik] === undefined || foundDoc.intel[ik] === null || foundDoc.intel[ik] === '' || foundDoc.intel[ik] === '—') && masterDoc.intel[ik] !== undefined) {
+              merged.intel[ik] = masterDoc.intel[ik];
+            }
+          });
+        }
+
+        return merged;
+      }
+    }
+
+    return foundDoc;
   }, [allSchools, settings.schoolId]);
 
   const directSchoolDocRef = useMemoFirebase(() => {
