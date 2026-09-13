@@ -2133,11 +2133,11 @@ const historicMonths = useMemo(() => {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
+                  <div className="hidden sm:flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
                     <div className="flex flex-wrap items-center gap-3">
 
                       {selectedOpportunity.closesDate && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
+                        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
                           <Calendar className="size-3.5 text-[#FF6B35]" />
                           <span>Closes: {selectedOpportunity.closesDate}</span>
                         </span>
@@ -2153,7 +2153,7 @@ const historicMonths = useMemo(() => {
                               <button
                                 type="button"
                                 className={cn(
-                                  "cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 group select-none hover:scale-105",
+                                  "cursor-pointer hidden sm:inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wide rounded-md transition-all duration-200 shrink-0 group select-none hover:scale-105",
                                   badge.boxStyle
                                 )}
                               >
