@@ -1010,13 +1010,19 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   <div className="flex-1">
                     <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1">Candidate Qualifications</p>
                     <div className="text-sm font-bold text-white space-y-2">
-                      <p>{school.intel?.minQualifications || countryIntel?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.'}</p>
+                      <p>{(school.intel?.minQualifications || countryIntel?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.').replace(/\.([A-Z])/g, '. $1')}</p>
                       <div className="pt-2 border-t border-white/5 text-[11px] text-muted-foreground font-medium flex flex-col gap-1.5">
                         {(countryIntel?.academic_Degree_req || (school as any).academic_Degree_req) && (
-                          <span className="leading-tight">• Degree: {countryIntel?.academic_Degree_req || (school as any).academic_Degree_req}</span>
+                          <span className="leading-tight">• Degree: {(countryIntel?.academic_Degree_req || (school as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</span>
                         )}
                         {(countryIntel?.license_req || (school as any).license_req) && (
-                          <span className="leading-tight">• License: {countryIntel?.license_req || (school as any).license_req}</span>
+                          <span className="leading-tight">
+                            • License: {(() => {
+                              const raw = (countryIntel?.license_req || (school as any).license_req || '').trim();
+                              const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
+                              return first || raw;
+                            })()}
+                          </span>
                         )}
                         {(countryIntel?.exp_years_Req || (school as any).experience_years_req || (school as any).minExperience) && (
                           <span>• Exp Required: {countryIntel?.exp_years_Req || (school as any).experience_years_req || (school as any).minExperience} Years</span>
