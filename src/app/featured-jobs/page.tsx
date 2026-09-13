@@ -959,7 +959,7 @@ export default function FeaturedJobsPage() {
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
       const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
       const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
-      const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair");
+      const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
       const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
       const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
       const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => s.includes("COGNITA")) || applyUrlLower.includes("cognita");
@@ -1073,7 +1073,7 @@ export default function FeaturedJobsPage() {
 
         const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
         const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
-        const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair");
+        const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
         const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
         const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || applyUrlLower.includes("cognita");
