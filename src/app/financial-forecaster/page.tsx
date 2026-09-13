@@ -429,6 +429,7 @@ function DecoderContent() {
     const [stabilityCountdown, setStabilityCountdown] = useState(90);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [requestedSchoolId, setRequestedSchoolId] = useState<string | null>(null);
   const [requestedSchoolName, setRequestedSchoolName] = useState<string | null>(null);
   const [requestedJobTitle, setRequestedJobTitle] = useState<string | null>(null);
@@ -1699,9 +1700,19 @@ const historicMonths = useMemo(() => {
               router.back();
             }
           }} className="flex items-center gap-1.5 text-[10px] font-black text-teal-400 uppercase tracking-[0.3em] mb-4 hover:text-white transition-colors cursor-pointer" title={selectedOpportunity ? "Return to school view" : "Go back"}><ArrowLeft className="size-3" /> Back</button>
-          <p className="text-[11px] font-black text-[#d95f02] uppercase tracking-[0.4em] mb-4 italic">Search settings</p>
+          <div className="flex items-center justify-between mb-3 lg:mb-4">
+            <p className="text-[11px] font-black text-[#d95f02] uppercase tracking-[0.4em] italic my-0">Search settings</p>
+            <button 
+              onClick={() => setIsMobileFiltersOpen(prev => !prev)}
+              className="lg:hidden flex items-center gap-1.5 text-[11px] font-black text-[#d95f02] uppercase tracking-wider bg-white/5 border border-white/10 px-2.5 py-1 rounded-sm cursor-pointer hover:bg-white/10 transition-colors"
+            >
+              <Sliders className="size-3 text-[#d95f02]" />
+              <span>{isMobileFiltersOpen ? "Hide Filters" : "Filter Options"}</span>
+              <ChevronDown className={cn("size-3 transition-transform duration-200", isMobileFiltersOpen && "rotate-180")} />
+            </button>
+          </div>
 
-          <div className="space-y-4">
+          <div className={cn("space-y-4", !isMobileFiltersOpen && "hidden lg:block")}>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed mb-2">Target country</label>
               <Select value={canonicalCountry(settings.country)} onValueChange={handleCountrySelect}>
@@ -1815,7 +1826,7 @@ const historicMonths = useMemo(() => {
             <button
               onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
               disabled={!activeSchool}
-              className="w-full bg-zinc-950/60 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-none h-10 transition-all hover:bg-[#d95f02] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
+              className="hidden lg:block w-full bg-zinc-950/60 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-none h-10 transition-all hover:bg-[#d95f02] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.15)] text-xs tracking-wider mt-2 disabled:opacity-50"
             >
               Compare Schools
             </button>
@@ -2204,7 +2215,20 @@ const historicMonths = useMemo(() => {
 
                 {/* 💼 TOP ACTIVE VACANCIES SUMMARY ROW (ONLY SHOWN WHEN NOT EVALUATING A SPECIFIC OPPORTUNITY) */}
                 {(!selectedOpportunity || !selectedOpportunity.jobTitle) && (
-                  <div className="mb-5 p-3.5 md:p-4 bg-slate-900/90 border border-amber-500/20 rounded-md shadow-md">
+                  <>
+                    {/* Mobile Only: Back to Featured Jobs Button */}
+                    <div className="block lg:hidden mb-4">
+                      <button
+                        onClick={() => router.push(`/featured-jobs?search=${encodeURIComponent(getSchoolField(activeSchool, ['schoolname', 'name', 'school']) || '')}`)}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-900/90 border border-amber-500/30 hover:border-[#FF6B35] text-slate-200 hover:text-white font-extrabold text-xs uppercase tracking-wider rounded-md transition-all shadow-md cursor-pointer"
+                      >
+                        <ArrowLeft className="size-3.5 text-[#FF6B35]" />
+                        Back to Featured Jobs
+                      </button>
+                    </div>
+
+                    {/* Desktop Only: Full Vacancies Grid */}
+                    <div className="hidden lg:block mb-5 p-3.5 md:p-4 bg-slate-900/90 border border-amber-500/20 rounded-md shadow-md">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
                       {lastSelectedOpportunity && (
                         <div className="w-full flex justify-end pb-1 border-b border-white/5 mb-1">
@@ -2316,6 +2340,7 @@ const historicMonths = useMemo(() => {
                       </div>
                     )}
                   </div>
+                  </>
                 )}
 
                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
@@ -3396,6 +3421,18 @@ const historicMonths = useMemo(() => {
                                         </div>
                                       )}
                                     </div>
+                                  </div>
+
+                                  {/* 📱 MOBILE ONLY: Compare Schools Button rendered right under Staff Turnover section */}
+                                  <div className="block lg:hidden mt-4 pt-3 border-t border-white/10">
+                                    <button
+                                      onClick={() => router.push(`/decide?ids=${activeSchool?.id}`)}
+                                      disabled={!activeSchool}
+                                      className="w-full bg-zinc-950/80 backdrop-blur-xl border border-[#d95f02] text-white font-bold rounded-md h-12 transition-all hover:bg-[#d95f02] hover:text-white shadow-[0_0_15px_rgba(249,115,22,0.2)] text-xs tracking-wider disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                      <span>Compare Schools</span>
+                                      <ArrowRight className="size-4 text-[#d95f02]" />
+                                    </button>
                                   </div>
                                 </div>
                               );
