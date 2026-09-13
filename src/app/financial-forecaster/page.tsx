@@ -1940,22 +1940,6 @@ const historicMonths = useMemo(() => {
                 <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-2 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
                     <div className="space-y-1.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="bg-[#FF6B35]/20 border border-[#FF6B35]/50 text-[#FF6B35] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest rounded-sm flex items-center gap-1.5 shadow-[0_0_10px_rgba(255,107,53,0.2)]">
-                          <Sparkles className="size-3 text-[#FF6B35]" /> EVALUATING OPPORTUNITY
-                        </span>
-                        {selectedOpportunity.curriculum && (
-                          <span className="bg-white/5 border border-white/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm text-slate-300">
-                            [{formatCurriculumBadge(selectedOpportunity.curriculum)}]
-                          </span>
-                        )}
-                        {selectedOpportunity.department && (
-                          <span className="bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
-                            {selectedOpportunity.department}
-                          </span>
-                        )}
-                      </div>
-
                       <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-2">
                         {translateJobTitleToEnglish(selectedOpportunity.jobTitle || '')}
                       </h1>
