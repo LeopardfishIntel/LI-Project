@@ -298,10 +298,20 @@ interface StructuredJob {
   isRollingDeadline?: boolean;
 }
 
-const buildEvalUrl = (job: any, famStatus: string) => {
+const buildEvalUrl = (job: any, famStatus: string, preferredEngine?: string) => {
   const sourcesArr = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Source"];
   const sJson = encodeURIComponent(JSON.stringify(sourcesArr));
   const sUrlsJson = encodeURIComponent(JSON.stringify(job.sourceUrls || {}));
+
+  let targetApplyUrl = job.source_url || job.applyUrl || "";
+  let targetSource = job.source || "";
+
+  if (preferredEngine && preferredEngine !== "ALL" && job.sourceUrls) {
+    if (job.sourceUrls[preferredEngine]) {
+      targetApplyUrl = job.sourceUrls[preferredEngine];
+      targetSource = preferredEngine;
+    }
+  }
 
   return "/financial-forecaster?schoolId=" + (job.schoolId || "") + 
     "&schoolName=" + encodeURIComponent(job.schoolName || "") +
@@ -309,11 +319,11 @@ const buildEvalUrl = (job: any, famStatus: string) => {
     "&jobTitle=" + encodeURIComponent(job.title) + 
     "&department=" + encodeURIComponent(job.department || "") + 
     "&curriculum=" + encodeURIComponent(job.curriculum || "") + 
-    "&applyUrl=" + encodeURIComponent(job.source_url || job.applyUrl || "") + 
+    "&applyUrl=" + encodeURIComponent(targetApplyUrl) + 
     "&closesDate=" + encodeURIComponent(job.date_closing || "") + 
     "&savingsPotential=" + (job.savingsPotential || 0) + 
     "&schoolRating=" + (job.schoolRating || "") + 
-    "&source=" + encodeURIComponent(job.source || "") + 
+    "&source=" + encodeURIComponent(targetSource) + 
     "&sources=" + sJson + 
     "&sourceUrls=" + sUrlsJson + 
     "&city=" + encodeURIComponent(job.city || "") + 
@@ -1750,7 +1760,7 @@ export default function FeaturedJobsPage() {
                       <div className="w-full">
                         <h3 className="text-sm sm:text-lg font-bold tracking-tight text-[#F8FAFC] leading-snug flex flex-wrap items-center gap-2">
                           <a 
-                            href={buildEvalUrl(job, familyStatus)}
+                            href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
                             onClick={(e) => e.stopPropagation()}
                             className="hover:text-[#FF6B35] transition-colors duration-200 cursor-pointer"
                             title={`Evaluate ${shortenDisplayTitle(job.title)} Opportunity`}
@@ -1775,7 +1785,7 @@ export default function FeaturedJobsPage() {
                         {/* Left metadata */}
                         <div className="flex flex-wrap items-center gap-y-1 gap-x-2">
                           <a 
-                            href={buildEvalUrl(job, familyStatus)}
+                            href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
                             onClick={(e) => e.stopPropagation()}
                             title={`Evaluate ${job.schoolName} Opportunity`}
                             className="text-xs sm:text-sm font-semibold text-[#38BDF8] hover:text-[#FF6B35] tracking-tight flex items-center gap-1 transition-colors duration-200 cursor-pointer"
@@ -1971,6 +1981,8 @@ export default function FeaturedJobsPage() {
                                           }
                                         } else if (srcUpper === "TES") {
                                           if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
+                                        } else if (srcUpper === "GRC") {
+                                          if (applyUrlLower.includes("grcfair.org")) foundUrl = (job as any).applyUrl || job.source_url;
                                         } else if (srcUpper === "DIRECT") {
                                           if (job.schoolWebsite && job.schoolWebsite !== "#") {
                                             foundUrl = job.schoolWebsite;
@@ -2122,7 +2134,7 @@ export default function FeaturedJobsPage() {
                               </button>
                             )}
                             <a 
-                              href={buildEvalUrl(job, familyStatus)}
+                              href={buildEvalUrl(job, familyStatus, selectedSourceEngine)}
                               className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider text-white sm:text-[#FF6B35] bg-[#FF6B35] sm:bg-transparent hover:bg-[#ff7e4f] sm:hover:bg-[#FF6B35] sm:hover:text-white border border-[#FF6B35] px-4 py-2.5 sm:py-2 rounded-md sm:rounded-sm transition-all shadow-md sm:shadow-[0_0_10px_rgba(255,107,53,0.05)] text-center mt-1 sm:mt-0"
                             >
                               Evaluate Opportunity
