@@ -3679,26 +3679,31 @@ function DecoderContent() {
                               </div>
 
                               {/* Candidate Qualifications */}
-                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
+                              <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
                                 <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Candidate Qualifications</p>
-                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1">
-                                  <p>{(activeSchool.intel?.minQualifications || activeReq?.exp_notes || 'QTS / PGCE + 2 Years experience preferred.').replace(/\.([A-Z])/g, '. $1')}</p>
-                                  <div className="pt-1.5 border-t border-white/5 text-[11px] text-slate-400 flex flex-col gap-1">
-                                    {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
-                                      <span className="leading-tight">• Degree: {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</span>
-                                    )}
-                                    {(activeReq?.license_req || (activeSchool as any).license_req) && (
-                                      <span className="leading-tight">
-                                        • License: {(() => {
-                                          const raw = (activeReq?.license_req || (activeSchool as any).license_req || '').trim();
-                                          const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
-                                          return first || raw;
-                                        })()}
-                                      </span>
-                                    )}
-                                    {(activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience) && (
-                                      <span>• Exp Required: {activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience} Years</span>
-                                    )}
+                                <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
+                                  {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req) && (
+                                    <div className="leading-tight">• <strong className="text-white font-bold">Degree:</strong> {(activeReq?.academic_Degree_req || (activeSchool as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</div>
+                                  )}
+                                  {(activeReq?.license_req || (activeSchool as any).license_req) && (
+                                    <div className="leading-tight">
+                                      • <strong className="text-white font-bold">License:</strong> {(() => {
+                                        const raw = (activeReq?.license_req || (activeSchool as any).license_req || '').trim();
+                                        const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
+                                        return first || raw;
+                                      })()}
+                                    </div>
+                                  )}
+                                  <div className="leading-tight">
+                                    • <strong className="text-white font-bold">Experience:</strong> {(() => {
+                                      const years = activeReq?.exp_years_Req || (activeSchool as any).experience_years_req || (activeSchool as any).minExperience;
+                                      const rawNotes = (activeSchool.intel?.minQualifications || activeReq?.exp_notes || '').replace(/\.([A-Z])/g, '. $1').trim();
+                                      const strippedNotes = rawNotes.replace(/^(minimum\s*)?\d+\+?\s*years?(\s*(experience|preferred|required))*\.\s*/i, '').trim();
+                                      if (years) {
+                                        return strippedNotes ? `${years} Years. ${strippedNotes}` : `${years} Years`;
+                                      }
+                                      return rawNotes || '2 Years preferred';
+                                    })()}
                                   </div>
                                 </div>
                               </div>
