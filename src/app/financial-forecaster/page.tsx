@@ -3335,7 +3335,7 @@ function DecoderContent() {
                                   {/* Category Assessment Card matching Expatriate Package cards */}
                                   <div className="bg-black/30 border border-white/5 rounded-sm p-3.5 space-y-2">
                                     <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Turnover Assessment &amp; Category</p>
-                                    <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-2">
+                                    <div className="text-xs text-slate-300 font-medium leading-relaxed">
                                       {isUnavailable ? (
                                         <div>
                                           <strong className="text-slate-400 font-black mr-1">Insight Unavailable:</strong>
@@ -3349,9 +3349,6 @@ function DecoderContent() {
                                           <span>{descriptor}</span>
                                         </div>
                                       )}
-                                      <p className="text-[11px] text-slate-400 italic pt-2 border-t border-white/5">
-                                        * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles.
-                                      </p>
                                     </div>
                                   </div>
 
@@ -3391,6 +3388,9 @@ function DecoderContent() {
                                               <ChevronDown className="size-3 text-slate-500 group-open:rotate-180 transition-transform" />
                                             </summary>
                                             <div className="p-3 border-t border-white/5 space-y-4 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
+                                              <p className="text-[11px] text-slate-400 italic pb-2 border-b border-white/5">
+                                                * Data Note: Staff turnover is calculated from known, publicly indexed vacancies relative to total estimated staff headcount. Figures normalise automatically across full 12-month recruitment cycles.
+                                              </p>
                                               {currentJobs.length > 0 && (
                                                 <div className="space-y-2">
                                                   <div className="text-[9px] font-black uppercase text-teal-400 px-2 pt-1 pb-0.5 tracking-wider border-b border-teal-500/10">Current Cycle (Last 12 Months)</div>
