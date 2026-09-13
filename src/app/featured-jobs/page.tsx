@@ -152,10 +152,16 @@ const shortenDisplayTitle = (title: string): string => {
   // 1. Strip parenthetical clauses
   clean = clean.replace(/\s*\([^()]*\)/gi, "");
 
-  // 2. Strip trailing dash / hyphen grade & range specifiers
+  // 2. Strip "for Grades...", "for Years...", "for Key Stage...", "for Secondary...", "for Primary..."
+  clean = clean.replace(/\s+\bfor\s+(?:kg\d*|grades?|years?|ks\d|key\s*stage|primary|secondary|eyfs|nursery|kindergarten)\b.*$/gi, "");
+
+  // 3. Strip trailing dash / hyphen grade & range specifiers
   clean = clean.replace(/\s*[-–—]\s*(?:kg\d*|grades?|years?|ks\d|key\s*stage|primary|secondary|eyfs|nursery|kindergarten)\b.*$/gi, "");
 
-  // 3. Clean trailing punctuation
+  // 4. Strip trailing curriculum/exam suffixes e.g. "and i GCSE", "and IGCSE", "and GCSE", "and IB"
+  clean = clean.replace(/\s+\band\s+(?:i\s*gcse|igcse|gcse|ib|a\s*levels?|pyp|myp|dp)\b.*$/gi, "");
+
+  // 5. Clean trailing punctuation
   clean = clean.replace(/[-–—_,\s/()]+$/, "").trim();
 
   return clean || title.trim();
@@ -1803,7 +1809,7 @@ export default function FeaturedJobsPage() {
                               </div>
                             ) : (
                               <>
-  <span className="sm:hidden leading-none">{job.closesDateRaw ? `Closes: ${formatClosingDateMobile(job.closesDateRaw, job.date_closing)}` : `Added: ${job.date_listed || "Recently"}`}</span>
+  <span className="sm:hidden leading-none">{job.closesDateRaw ? `Closes: ${formatClosingDateMobile(job.closesDateRaw, job.date_closing)}` : `Added: ${formatClosingDateMobile(null, job.date_listed || "Recently")}`}</span>
   <span className="hidden sm:inline leading-none">{job.closesDateRaw ? `Closes: ${job.date_closing}` : `Added: ${job.date_listed || "Recently"}`}</span>
 </>
                             )}
