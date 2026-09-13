@@ -1827,7 +1827,8 @@ export default function FeaturedJobsPage() {
                     {/* Bottom Metrics & Actions Block */}
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full pt-1">
                       {/* Left Column: Badges & Metric Pills */}
-                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto pb-0.5 sm:pb-0">
+                      {/* Left Column: Badges & Metric Pills */}
+                      <div className="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2 w-full pb-0.5 sm:pb-0">
                         {/* NEW, CLOSING SOON & Search Engine Source Badges */}
                         {(() => {
                           const now = new Date();
@@ -1849,241 +1850,240 @@ export default function FeaturedJobsPage() {
                           }
 
                           return (
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              {isNew && (
-                                <span 
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] cursor-default select-none shrink-0"
-                                >
-                                  NEW
-                                </span>
-                              )}
-                              {isClosingSoon && (
-                                <span 
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.15)] animate-pulse cursor-default select-none shrink-0"
-                                >
-                                  CLOSING SOON
-                                </span>
-                              )}
+                            <>
+                              {/* Left Group: Engine Source Pills & Savings Badge */}
+                              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
+                                {(() => {
+                                  const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
+                                  const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
+                                  const sMap = new Map<string, string>();
 
+                                  // Detect URL domain signatures to ensure engine pills are accurately assigned
+                                  if (applyUrlLower.includes("tes.com")) {
+                                    sMap.set("TES", "TES");
+                                  }
+                                  if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
+                                    sMap.set("NORD ANGLIA", "Nord Anglia");
+                                  }
+                                  if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
+                                    sMap.set("COGNITA", "Cognita");
+                                  }
+                                  if (applyUrlLower.includes("inspirededu")) {
+                                    sMap.set("INSPIRED", "Inspired");
+                                  }
+                                  if (applyUrlLower.includes("globeducate")) {
+                                    sMap.set("GLOBEDUCATE", "Globeducate");
+                                  }
+                                  if (applyUrlLower.includes("searchassociates")) {
+                                    sMap.set("SEARCH ASSOCIATES", "Search Associates");
+                                  }
+                                  if (applyUrlLower.includes("grcfair.org")) {
+                                    sMap.set("GRC", "GRC");
+                                  }
+                                  if (applyUrlLower.includes("teachaway")) {
+                                    sMap.set("TEACH AWAY", "Teach Away");
+                                  }
 
+                                  rawSources.forEach((s: any) => {
+                                    if (!s) return;
+                                    const u = String(s).toUpperCase().trim();
+                                    let key = u;
+                                    let label = s;
+                                    if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
+                                    else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
+                                    else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
+                                    else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
+                                    else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
+                                    else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                                    else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                                    else if (u === "TES") { key = "TES"; label = "TES"; }
+                                    else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                                    else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
+                                    else { key = "DIRECT"; label = "Direct"; }
+                                    sMap.set(key, label);
+                                  });
 
-                              {/* Multi-Engine Posting Source Badges (Direct links to each posting portal) */}
-                              {(() => {
-                                const rawSources = job.sources && job.sources.length > 0 ? job.sources : [job.source || "Official Website"];
-                                const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
-                                const sMap = new Map<string, string>();
+                                  // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
+                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                                  if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
+                                    sMap.delete("DIRECT");
+                                  }
 
-                                // Detect URL domain signatures to ensure engine pills are accurately assigned
-                                if (applyUrlLower.includes("tes.com")) {
-                                  sMap.set("TES", "TES");
-                                }
-                                if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
-                                  sMap.set("NORD ANGLIA", "Nord Anglia");
-                                }
-                                if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
-                                  sMap.set("COGNITA", "Cognita");
-                                }
-                                if (applyUrlLower.includes("inspirededu")) {
-                                  sMap.set("INSPIRED", "Inspired");
-                                }
-                                if (applyUrlLower.includes("globeducate")) {
-                                  sMap.set("GLOBEDUCATE", "Globeducate");
-                                }
-                                if (applyUrlLower.includes("searchassociates")) {
-                                  sMap.set("SEARCH ASSOCIATES", "Search Associates");
-                                }
-                                if (applyUrlLower.includes("grcfair.org")) {
-                                  sMap.set("GRC", "GRC");
-                                }
-                                if (applyUrlLower.includes("teachaway")) {
-                                  sMap.set("TEACH AWAY", "Teach Away");
-                                }
+                                  const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
+                                    if (a === "DIRECT") return -1;
+                                    if (b === "DIRECT") return 1;
+                                    return 0;
+                                  });
 
-                                rawSources.forEach((s: any) => {
-                                  if (!s) return;
-                                  const u = String(s).toUpperCase().trim();
-                                  let key = u;
-                                  let label = s;
-                                  if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
-                                  else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
-                                  else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
-                                  else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
-                                  else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
-                                  else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
-                                  else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
-                                  else if (u === "TES") { key = "TES"; label = "TES"; }
-                                  else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
-                                  else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
-                                  else { key = "DIRECT"; label = "Direct"; }
-                                  sMap.set(key, label);
-                                });
+                                  const resolvedPills: { label: string; url: string; key: string }[] = [];
+                                  const seenPillUrls = new Set<string>();
+                                  const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
 
-                                // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                                const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
-                                if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
-                                  sMap.delete("DIRECT");
-                                }
-
-                                const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
-                                  if (a === "DIRECT") return -1;
-                                  if (b === "DIRECT") return 1;
-                                  return 0;
-                                });
-
-                                const resolvedPills: { label: string; url: string; key: string }[] = [];
-                                const seenPillUrls = new Set<string>();
-                                const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, "").trim();
-
-                                sortedEntries.forEach(([key, label]) => {
-                                  const srcUpper = key;
-                                  const srcUrl = (() => {
-                                    let foundUrl: string | undefined = undefined;
-                                    if (job.sourceUrls) {
-                                      if (job.sourceUrls[label]) foundUrl = job.sourceUrls[label];
-                                      else if (job.sourceUrls[srcUpper]) foundUrl = job.sourceUrls[srcUpper];
-                                      else if (job.sourceUrls[label.toLowerCase()]) foundUrl = job.sourceUrls[label.toLowerCase()];
-                                      else {
-                                        for (const [k, v] of Object.entries(job.sourceUrls)) {
-                                          if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
-                                            foundUrl = v as string;
-                                            break;
+                                  sortedEntries.forEach(([key, label]) => {
+                                    const srcUpper = key;
+                                    const srcUrl = (() => {
+                                      let foundUrl: string | undefined = undefined;
+                                      if (job.sourceUrls) {
+                                        if (job.sourceUrls[label]) foundUrl = job.sourceUrls[label];
+                                        else if (job.sourceUrls[srcUpper]) foundUrl = job.sourceUrls[srcUpper];
+                                        else if (job.sourceUrls[label.toLowerCase()]) foundUrl = job.sourceUrls[label.toLowerCase()];
+                                        else {
+                                          for (const [k, v] of Object.entries(job.sourceUrls)) {
+                                            if (k.toUpperCase().trim() === srcUpper && v && v !== "#") {
+                                              foundUrl = v as string;
+                                              break;
+                                            }
                                           }
                                         }
                                       }
-                                    }
-                                                                         const isGenericUrl = (u?: string) => {
-                                       if (!u || u === "#") return true;
-                                       const norm = u.toLowerCase().trim().replace(/\/+$/, "");
-                                       return (
-                                         norm === "https://careers.nordangliaeducation.com" ||
-                                         norm === "https://www.nordangliaeducation.com/careers" ||
-                                         norm === "https://jobs.inspirededu.com" ||
-                                         norm === "https://cognitapeople.csod.com" ||
-                                         norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
-                                         norm === "https://www.searchassociates.com/leadership-vacancies" ||
-                                         norm === "https://uwc.org/careers/vacancies" ||
-                                         norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
-                                         norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide"
-                                       );
-                                     };
+                                      const isGenericUrl = (u?: string) => {
+                                        if (!u || u === "#") return true;
+                                        const norm = u.toLowerCase().trim().replace(/\/+$/, "");
+                                        return (
+                                          norm === "https://careers.nordangliaeducation.com" ||
+                                          norm === "https://www.nordangliaeducation.com/careers" ||
+                                          norm === "https://jobs.inspirededu.com" ||
+                                          norm === "https://cognitapeople.csod.com" ||
+                                          norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
+                                          norm === "https://www.searchassociates.com/leadership-vacancies" ||
+                                          norm === "https://uwc.org/careers/vacancies" ||
+                                          norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
+                                          norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide"
+                                        );
+                                      };
 
-                                     if (foundUrl && isGenericUrl(foundUrl)) {
-                                       foundUrl = undefined;
-                                     }
+                                      if (foundUrl && isGenericUrl(foundUrl)) {
+                                        foundUrl = undefined;
+                                      }
 
-                                     if (foundUrl) {
-                                       const fUrl = String(foundUrl);
-                                       if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                                       if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
-                                       if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
-                                     }
-                                     if (!foundUrl) {
-                                       if (srcUpper.includes("NORD ANGLIA")) {
-                                         const rawUrl = (job as any).applyUrl || job.source_url;
-                                         if (applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
-                                           foundUrl = rawUrl;
-                                         }
-                                       } else if (srcUpper === "TES") {
-                                         if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
-                                       } else if (srcUpper === "DIRECT") {
-                                         if (job.schoolWebsite && job.schoolWebsite !== "#") {
-                                           foundUrl = job.schoolWebsite;
-                                         } else if (!isPureAggregator) {
-                                           foundUrl = (job as any).applyUrl || job.source_url;
-                                         }
-                                       }
-                                     }
-                                    return foundUrl || "#";
-                                  })();
+                                      if (foundUrl) {
+                                        const fUrl = String(foundUrl);
+                                        if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
+                                        if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
+                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
+                                      }
+                                      if (!foundUrl) {
+                                        if (srcUpper.includes("NORD ANGLIA")) {
+                                          const rawUrl = (job as any).applyUrl || job.source_url;
+                                          if (applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
+                                            foundUrl = rawUrl;
+                                          }
+                                        } else if (srcUpper === "TES") {
+                                          if (applyUrlLower.includes("tes.com")) foundUrl = (job as any).applyUrl || job.source_url;
+                                        } else if (srcUpper === "DIRECT") {
+                                          if (job.schoolWebsite && job.schoolWebsite !== "#") {
+                                            foundUrl = job.schoolWebsite;
+                                          } else if (!isPureAggregator) {
+                                            foundUrl = (job as any).applyUrl || job.source_url;
+                                          }
+                                        }
+                                      }
+                                      return foundUrl || "#";
+                                    })();
 
-                                  if (srcUrl === "#") return;
+                                    if (srcUrl === "#") return;
 
-                                  const norm = normalizeUrl(srcUrl);
-                                  if (seenPillUrls.has(norm)) return;
-                                  seenPillUrls.add(norm);
+                                    const norm = normalizeUrl(srcUrl);
+                                    if (seenPillUrls.has(norm)) return;
+                                    seenPillUrls.add(norm);
 
-                                  resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
-                                });
+                                    resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
+                                  });
 
-                                return resolvedPills.map(({ label, url, key }) => {
-                                  const srcUpper = key;
+                                  return resolvedPills.map(({ label, url, key }) => {
+                                    const srcUpper = key;
+                                    return (
+                                      <a
+                                        key={label}
+                                        href={url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={cn(
+                                          "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
+                                          srcUpper.includes("INSPIRED")
+                                            ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
+                                            : srcUpper === "TES"
+                                            ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
+                                            : srcUpper.includes("COGNITA")
+                                            ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
+                                            : srcUpper.includes("MALVERN")
+                                            ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
+                                            : srcUpper.includes("UWC")
+                                            ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
+                                            : srcUpper.includes("ISP")
+                                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                            : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
+                                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                            : srcUpper === "NORD ANGLIA"
+                                            ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
+                                            : srcUpper === "GRC"
+                                            ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                            : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
+                                        )}
+                                      >
+                                        {label} ↗
+                                      </a>
+                                    );
+                                  });
+                                })()}
+
+                                {/* 5-Tier Color Box Savings Badge — Triggers Financial Forecaster Opportunity Evaluation */}
+                                {(() => {
+                                  const badge = getSavingsBadgeConfig(job.savingsPotential || 0);
+
                                   return (
-                                    <a
-                                      key={label}
-                                      href={url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={cn(
-                                        "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md border transition-all cursor-pointer hover:scale-105 shrink-0",
-                                        srcUpper.includes("INSPIRED")
-                                          ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
-                                          : srcUpper === "TES"
-                                          ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20"
-                                          : srcUpper.includes("COGNITA")
-                                          ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
-                                          : srcUpper.includes("MALVERN")
-                                          ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
-                                          : srcUpper.includes("UWC")
-                                          ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
-                                          : srcUpper.includes("ISP")
-                                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                          : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
-                                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                          : srcUpper === "NORD ANGLIA"
-                                          ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
-                                          : srcUpper === "GRC"
-                                          ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                          : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
-                                      )}
-                                    >
-                                      {label} ↗
-                                    </a>
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <button
+                                          type="button"
+                                          onClick={(e) => e.stopPropagation()}
+                                          aria-label={`${badge.label} Details`}
+                                          className={cn(
+                                            "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
+                                            badge.boxStyle
+                                          )}
+                                        >
+                                          <span className="hidden sm:inline">{badge.label}</span><span className="sm:hidden">{badge.shortLabel}</span>
+                                          <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+                                        </button>
+                                      </PopoverTrigger>
+                                      <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-slate-700/80 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
+                                        <p className="font-bold text-[#FF6B35] text-xs tracking-wide mb-1">{badge.label}</p>
+                                        <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
+                                      </PopoverContent>
+                                    </Popover>
                                   );
-                                });
-                              })()}
+                                })()}
+                              </div>
 
-
-                            </div>
-                          );
-                        })()}
-
-                        {/* 5-Tier Color Box Savings Badge — Triggers Financial Forecaster Opportunity Evaluation */}
-                        {(() => {
-                          const badge = getSavingsBadgeConfig(job.savingsPotential || 0);
-                          const evalUrl = buildEvalUrl(job, familyStatus);
-
-                          return (
-                            <>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => e.stopPropagation()}
-                                    aria-label={`${badge.label} Details`}
-                                    className={cn(
-                                      "h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-bold tracking-tight rounded-md transition-all duration-200 shrink-0 cursor-pointer hover:scale-105 group select-none",
-                                      badge.boxStyle
-                                    )}
-                                  >
-                                    <span className="hidden sm:inline">{badge.label}</span><span className="sm:hidden">{badge.shortLabel}</span>
-                                    <Info className="size-3 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity" />
-                                  </button>
-                                </PopoverTrigger>
-                                <PopoverContent side="top" align="center" className="bg-[#0b1224] border border-slate-700/80 text-white text-[11px] font-medium p-3 max-w-xs shadow-2xl z-50 leading-relaxed">
-                                  <p className="font-bold text-[#FF6B35] text-xs tracking-wide mb-1">{badge.label}</p>
-                                  <p className="text-slate-300 text-xs leading-relaxed">{badge.description}</p>
-                                </PopoverContent>
-                              </Popover>
-
-                              
+                              {/* Right Group: NEW & CLOSING SOON Status Badges */}
+                              {(isNew || isClosingSoon) && (
+                                <div className="flex items-center gap-1.5 sm:gap-2 ml-auto shrink-0">
+                                  {isNew && (
+                                    <span 
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] cursor-default select-none shrink-0"
+                                    >
+                                      NEW
+                                    </span>
+                                  )}
+                                  {isClosingSoon && (
+                                    <span 
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="h-7 px-2.5 inline-flex items-center justify-center gap-1 text-[11px] sm:text-xs font-extrabold tracking-tight uppercase rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.15)] animate-pulse cursor-default select-none shrink-0"
+                                    >
+                                      CLOSING SOON
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </>
                           );
                         })()}
-
                       </div>
 
+                      
                       {/* Right Column: CTA or Admin Controls */}
                       <div className="shrink-0 flex items-center justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
                         {activeTab === 'admin_staging' ? (
