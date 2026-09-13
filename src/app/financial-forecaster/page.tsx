@@ -1263,8 +1263,10 @@ const historicMonths = useMemo(() => {
     const countryIntel = SALARY_INTEL[sCountry] || null;
 
     const rawNetInput = safeParse(settings.netSalary);
-    const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR'].includes(currency);
-    const isConvertedFromAnnual = isHighValCurr ? rawNetInput >= 10000 : rawNetInput >= 120000;
+    const gbpRate = currentRates[currency] || 1.0;
+    const rawNetInGBP = rawNetInput / gbpRate;
+    // Normalized annual salary check: If salary converted to GBP equivalent is >= £18,000 net/yr, it's an annual salary input
+    const isConvertedFromAnnual = rawNetInGBP >= 18000;
     const baseNet = isConvertedFromAnnual ? Math.round(rawNetInput / 12) : rawNetInput;
 
     const upliftFactor = (uplift13 ? 1/12 : 0) + (uplift14 ? 1/12 : 0);
