@@ -676,7 +676,7 @@ export default function FeaturedJobsPage() {
         const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
         const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
         const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
-        const isTaylors = sourceUpper.includes('TAYLOR') || sourceUpper.includes('TENBY') || applyUrlLower.includes('taylors') || applyUrlLower.includes('tenby');
+        const isTaylors = sourceUpper.includes('TAYLOR') || applyUrlLower.includes('taylors');
         const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
         const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
         const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
@@ -954,7 +954,7 @@ export default function FeaturedJobsPage() {
       const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
       const applyUrlLower = String(job.source_url || "").toLowerCase();
 
-      const hasTaylors = jobSrcUpper.includes("TAYLOR") || jobSrcUpper.includes("TENBY") || sourcesUpper.some((s) => s.includes("TAYLOR") || s.includes("TENBY")) || applyUrlLower.includes("taylors") || applyUrlLower.includes("tenby");
+      const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => s.includes("TAYLOR")) || applyUrlLower.includes("taylors");
       const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
       const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
@@ -1081,7 +1081,7 @@ export default function FeaturedJobsPage() {
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || applyUrlLower.includes("uwc.org");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || applyUrlLower.includes("internationalschools");
         const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
-        const hasTaylors = jobSrcUpper.includes("TAYLOR") || jobSrcUpper.includes("TENBY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TAYLOR") || String(s || "").toUpperCase().includes("TENBY")) || applyUrlLower.includes("taylors") || applyUrlLower.includes("tenby");
+        const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TAYLOR")) || applyUrlLower.includes("taylors");
         const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ESF") || String(s || "").toUpperCase().includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
         const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
         const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES"));
