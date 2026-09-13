@@ -3347,47 +3347,25 @@ function DecoderContent() {
                                   </div>
 
                                   {/* MASSIVE PREMIUM WRAPPER */}
-                                  <div className="relative rounded-sm overflow-hidden mt-3">
-                                    {/* SINGLE PAYWALL OVERLAY */}
-                                    {!turnoverUnlocked && (
-                                      <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
-                                        {/* Non-orange, sleek glass button */}
-                                        <button
-                                          onClick={() => setTurnoverUnlocked(true)}
-                                          type="button"
-                                          className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
-                                        >
-                                          <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
-                                        </button>
-                                      </div>
-                                    )}
+                                  {allProcessedJobs.length > 0 && (
+                                    <div className="relative rounded-sm overflow-hidden mt-3">
+                                      {/* SINGLE PAYWALL OVERLAY */}
+                                      {!turnoverUnlocked && (
+                                        <div className="absolute inset-0 z-20 backdrop-blur-[3px] bg-[#0b1224]/60 flex items-center justify-center border border-white/5 rounded-sm transition-all duration-300">
+                                          {/* Non-orange, sleek glass button */}
+                                          <button
+                                            onClick={() => setTurnoverUnlocked(true)}
+                                            type="button"
+                                            className="flex items-center justify-center bg-white/5 border border-white/10 px-6 py-2.5 rounded-sm cursor-pointer hover:bg-white/10 transition-colors shadow-2xl"
+                                          >
+                                            <span className="text-[11px] font-black uppercase tracking-widest text-teal-400 hover:text-white transition-colors">Find out more</span>
+                                          </button>
+                                        </div>
+                                      )}
 
-                                    {/* LOCKED / UNLOCKED CONTENT */}
-                                    <div className={cn("space-y-4 transition-all duration-300", !turnoverUnlocked && "opacity-30 select-none pointer-events-none blur-[2px]")}>
-                                      {/* Locked Metrics Grid */}
-                                      <div className="grid grid-cols-3 gap-3">
-                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Leadership</div>
-                                          <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs12.filter(j => j.department === 'Leadership').length}
-                                          </div>
-                                        </div>
-                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Secondary</div>
-                                          <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs12.filter(j => j.department === 'Secondary').length}
-                                          </div>
-                                        </div>
-                                        <div className="bg-black/20 border border-white/5 p-2 rounded-sm">
-                                          <div className="text-[9px] text-slate-400 font-black uppercase tracking-wider leading-relaxed">Primary</div>
-                                          <div className="text-sm font-black text-white mt-0.5">
-                                            {processedJobs12.filter(j => j.department === 'Primary').length}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* 📋 DISCOVERED VACANCIES DROPDOWN / LIST */}
-                                      {turnoverUnlocked && allProcessedJobs.length > 0 && (
+                                      {/* LOCKED / UNLOCKED CONTENT */}
+                                      <div className={cn("space-y-4 transition-all duration-300", !turnoverUnlocked && "opacity-30 select-none pointer-events-none blur-[2px]")}>
+                                        {/* 📋 DISCOVERED VACANCIES DROPDOWN / LIST */}
                                         <div className="border border-white/5 bg-black/10 rounded-sm">
                                           <details className="group" open>
                                             <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
@@ -3486,34 +3464,9 @@ function DecoderContent() {
                                             </div>
                                           </details>
                                         </div>
-                                      )}
-
-                                      {/* Churn Implications Alert Box */}
-                                      {false && turnoverUnlocked && stabilityReport.leopardfishIntelAlert && (
-                                        <div className="mt-4 p-3 bg-[#d95f02]/5 border border-[#d95f02]/20 rounded-sm">
-                                          <div className="space-y-1 w-full">
-                                            <div className="flex items-center justify-between">
-                                              <h5 className="text-[10px] font-black text-slate-200 uppercase tracking-wider">Churn Implications</h5>
-                                              <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                  <button type="button" className="text-slate-400 hover:text-white transition-colors">
-                                                    <Info className="size-3.5" />
-                                                  </button>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="top" className="max-w-sm bg-[#0b1224] border border-white/10 text-white p-3 space-y-2 rounded-sm shadow-xl z-50">
-                                                  <p className="text-[10px] font-black uppercase tracking-wider text-[#d95f02] border-b border-white/10 pb-1.5">Data Scope & Limitations</p>
-                                                  <p className="text-[10px] leading-relaxed text-slate-300 font-medium">
-                                                    This rate is based strictly on public vacancy data we've caught over the last twelve months. It's a handy guide, but keep in mind that a single advert can sometimes cover multiple posts (like hiring three Maths teachers with one listing). Plus, plenty of schools recruit quietly through internal promotions, word of mouth, or specialized agencies without putting a public listing up at all. So while it gives a good steer on staffroom movement, it won't show every quiet shuffle behind the scenes!
-                                                  </p>
-                                                </TooltipContent>
-                                              </Tooltip>
-                                            </div>
-                                            <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic">{stabilityReport.leopardfishIntelAlert}</p>
-                                          </div>
-                                        </div>
-                                      )}
+                                      </div>
                                     </div>
-                                  </div>
+                                  )}
 
                                   {/* 📱 MOBILE ONLY: Compare Schools Button rendered right under Staff Turnover section */}
                                   <div className="block lg:hidden mt-4 pt-3 border-t border-white/10">
