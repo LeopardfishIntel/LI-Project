@@ -93,9 +93,18 @@ export async function runGrcAdaptor(input?: AdaptorInput): Promise<RawJobRecord[
       // Step 2: Grounded Entity Disambiguation (Gate 0)
       const schoolDetails = job.School_details || {};
       const grcSchoolName = schoolDetails.Name || "";
-      const grcWebsite = schoolDetails.Website || "";
+      let grcWebsite = schoolDetails.Website || "";
       const grcCity = schoolDetails.City || "";
       const grcCountry = schoolDetails.Country || "";
+
+      // DOM Node Extraction: Extract official school website link embedded in job description HTML
+      const descHtml = job.Description || "";
+      if (!grcWebsite && descHtml) {
+        const hrefMatch = descHtml.match(/href=["'](https?:\/\/[^"'\s]+)["']/i);
+        if (hrefMatch && !hrefMatch[1].includes("grcfair") && !hrefMatch[1].includes("javascript")) {
+          grcWebsite = hrefMatch[1];
+        }
+      }
 
       // Validate against grounded school database whitelist
       const whitelistedSchool = await isWhitelistedSchool(
