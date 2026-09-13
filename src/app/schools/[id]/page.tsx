@@ -1011,11 +1011,11 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                     <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-1">Candidate Qualifications</p>
                     <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
                       {(countryIntel?.academic_Degree_req || (school as any).academic_Degree_req) && (
-                        <div className="leading-tight">• <strong className="text-white font-bold">Degree:</strong> {(countryIntel?.academic_Degree_req || (school as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</div>
+                        <div className="leading-tight">• Degree: {(countryIntel?.academic_Degree_req || (school as any).academic_Degree_req).replace(/\.([A-Z])/g, '. $1')}</div>
                       )}
                       {(countryIntel?.license_req || (school as any).license_req) && (
                         <div className="leading-tight">
-                          • <strong className="text-white font-bold">License:</strong> {(() => {
+                          • License: {(() => {
                             const raw = (countryIntel?.license_req || (school as any).license_req || '').trim();
                             const first = raw.split(/\.(?=[A-Z\s]|$)/)[0].trim();
                             return first || raw;
@@ -1023,7 +1023,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         </div>
                       )}
                       <div className="leading-tight">
-                        • <strong className="text-white font-bold">Experience:</strong> {(() => {
+                        • Experience: {(() => {
                           const years = countryIntel?.exp_years_Req || (school as any).experience_years_req || (school as any).minExperience;
                           const rawNotes = (school.intel?.minQualifications || countryIntel?.exp_notes || '').replace(/\.([A-Z])/g, '. $1').trim();
                           const strippedNotes = rawNotes.replace(/^(minimum\s*)?\d+\+?\s*years?(\s*(experience|preferred|required))*\.\s*/i, '').trim();
