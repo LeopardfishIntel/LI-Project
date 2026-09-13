@@ -1683,39 +1683,7 @@ function DecoderContent() {
     };
   }, [cachedBriefingText, activeSchool, currency, settings.familyStatus, lastRewordedSource, stabilityReport, isCalculatingStability, briefingRequested]);
 
-  const [activeSection, setActiveSection] = useState<string>('section-financials');
 
-  const scrollToSection = useCallback((id: string) => {
-    setActiveSection(id);
-    const el = document.getElementById(id);
-    if (el) {
-      const yOffset = -120;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!activeSchool) return;
-
-    const sectionIds = ['section-financials', 'section-living-safety', 'section-staffroom', 'section-package-visa'];
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 180;
-
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sectionIds[i]);
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveSection(sectionIds[i]);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [activeSchool]);
 
   const handleNavigateToCompare = () => {
     if (!activeSchool) return;
@@ -1998,70 +1966,7 @@ function DecoderContent() {
             )
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
-              {/* 📌 STICKY SECTION SUB-NAV */}
-              <div className="sticky top-[53px] sm:top-[57px] z-40 -mx-2 sm:mx-0 px-3 py-2 bg-[#0b1224]/90 backdrop-blur-md border border-white/10 sm:rounded-md shadow-xl flex items-center justify-center gap-1.5 sm:gap-3 overflow-x-auto no-scrollbar">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('section-financials')}
-                  className={cn(
-                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
-                    activeSection === 'section-financials'
-                      ? "bg-[#FF6B35]/20 text-[#FF6B35] border border-[#FF6B35]/40 shadow-[0_0_12px_rgba(255,107,53,0.25)]"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-                  )}
-                >
-                  <Coins className="size-3.5" />
-                  Financials
-                </button>
 
-                <span className="text-white/10 text-xs hidden sm:inline">•</span>
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('section-package-visa')}
-                  className={cn(
-                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
-                    activeSection === 'section-package-visa'
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-                  )}
-                >
-                  <ShieldCheck className="size-3.5" />
-                  Package &amp; Visa
-                </button>
-
-                <span className="text-white/10 text-xs hidden sm:inline">•</span>
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('section-staffroom')}
-                  className={cn(
-                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
-                    activeSection === 'section-staffroom'
-                      ? "bg-sky-500/20 text-sky-300 border border-sky-500/40 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-                  )}
-                >
-                  <Users className="size-3.5" />
-                  Staffroom Intel
-                </button>
-
-                <span className="text-white/10 text-xs hidden sm:inline">•</span>
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('section-living-safety')}
-                  className={cn(
-                    "px-3 py-1.5 rounded-sm text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shrink-0 select-none",
-                    activeSection === 'section-living-safety'
-                      ? "bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-                  )}
-                >
-                  <Home className="size-3.5" />
-                  Living &amp; Safety
-                </button>
-              </div>
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
               {selectedOpportunity && (
                 <div className="relative group bg-gradient-to-br from-[#0b1224] via-[#0f172a] to-[#0b1224] border-x-2 border-y-0 border-[#FF6B35]/50 p-5 md:p-6 shadow-[0_0_25px_rgba(255,107,53,0.15)] rounded-sm animate-in fade-in slide-in-from-top-2 duration-300">
