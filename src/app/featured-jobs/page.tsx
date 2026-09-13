@@ -1076,7 +1076,7 @@ export default function FeaturedJobsPage() {
         const hasGrc = jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair");
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || schoolGroupUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu");
         const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
-        const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || schoolGroupUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople");
+        const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || schoolGroupUpper.includes("COGNITA") || applyUrlLower.includes("cognita");
         const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || schoolGroupUpper.includes("MALVERN") || applyUrlLower.includes("malvern");
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || schoolGroupUpper.includes("UWC") || applyUrlLower.includes("uwc.org");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || schoolGroupUpper.includes("ISP") || applyUrlLower.includes("internationalschools");

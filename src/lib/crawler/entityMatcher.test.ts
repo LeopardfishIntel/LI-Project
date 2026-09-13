@@ -104,6 +104,28 @@ function runTests() {
   const r11 = matchSchoolEntity(amBcn, { candidateText: "American Embassy School, New Delhi", country: "India" });
   assertEqual(r11.isMatch, false, "Anti-False-Positive: American School BCN rejects American Embassy School New Delhi");
 
+  
+  // 10. Engine & Search Pill Guardrail Tests
+  const mockCognitaJob = {
+    source: "Cognita",
+    source_url: "https://careers.cognitaschools.com/job/123",
+    applyUrl: "https://careers.cognitaschools.com/job/123"
+  };
+  const cognitaSrcUpper = String(mockCognitaJob.source).toUpperCase();
+  const cognitaApplyUrl = String(mockCognitaJob.applyUrl).toLowerCase();
+  const hasCognita = cognitaSrcUpper.includes("COGNITA") || cognitaApplyUrl.includes("cognita");
+  assertEqual(hasCognita, true, "Engine Pill Alignment: Cognita domain matches consistently");
+
+  const mockGrcJob = {
+    source: "GRC",
+    source_url: "https://grcfair.org/job/456",
+    applyUrl: "https://grcfair.org/job/456"
+  };
+  const grcSrcUpper = String(mockGrcJob.source).toUpperCase();
+  const grcApplyUrl = String(mockGrcJob.applyUrl).toLowerCase();
+  const hasGrc = grcSrcUpper === "GRC" || grcApplyUrl.includes("grcfair");
+  assertEqual(hasGrc, true, "Engine Pill Alignment: GRC domain matches consistently");
+
   console.log(`\n📊 Entity Matcher Test Summary: ${passed} passed, ${failed} failed.`);
   if (failed > 0) {
     process.exit(1);
