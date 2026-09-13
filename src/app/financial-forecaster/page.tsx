@@ -2135,25 +2135,7 @@ const historicMonths = useMemo(() => {
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 text-xs">
                     <div className="flex flex-wrap items-center gap-3">
-                      {(() => {
-                        const schoolNum = (settings.schoolId || activeSchool?.id || "").replace(/^FLIS/i, "");
-                        let idNum = "";
-                        if (selectedOpportunity.jobId) {
-                          const match = String(selectedOpportunity.jobId).match(/(\d+)$/);
-                          if (match) idNum = match[1];
-                        }
-                        if (!idNum && selectedOpportunity.applyUrl) {
-                          const match = String(selectedOpportunity.applyUrl).match(/(\d+)\/?$/);
-                          if (match) idNum = match[1];
-                        }
-                        const jobRef = schoolNum && idNum ? `${schoolNum}/${idNum}` : schoolNum || idNum || "";
-                        if (!jobRef) return null;
-                        return (
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 border border-slate-700/60 rounded-full text-xs font-mono font-bold text-slate-300">
-                            <span>ID: {jobRef}</span>
-                          </span>
-                        );
-                      })()}
+
                       {selectedOpportunity.closesDate && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black/40 border border-white/10 rounded-full text-xs font-bold text-slate-300">
                           <Calendar className="size-3.5 text-[#FF6B35]" />
