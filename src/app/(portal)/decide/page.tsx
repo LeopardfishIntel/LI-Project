@@ -487,7 +487,14 @@ function DecideContent() {
             if (flightVal.includes('annual') || flightVal.includes('school-funded') || flightVal.includes('flights') || flightVal.includes('provided')) benefitsBonus += 2;
             if (tuitionVal.includes('100%') || tuitionVal.includes('full') || tuitionVal.includes('remission') || tuitionVal.includes('discount')) benefitsBonus += 2;
 
-            const finW = (surplusLocal / rate / 2500 * 100 + 35) * 0.4;
+            const riskTier = getMacroRiskTier(currency);
+            const salaryRawStr = String(school?.salaryRange || school?.salary || "").toLowerCase();
+            const isUsdPeggedContract = salaryRawStr.includes("usd") || salaryRawStr.includes("peg") || String(provision).toLowerCase().includes("usd");
+            
+            // Currency volatility risk penalty: if local currency is Tier 3 (high inflation) and contract is NOT USD-pegged, reduce financial weight
+            const currencyRiskFactor = (riskTier === 3 && !isUsdPeggedContract) ? 0.70 : 1.0;
+
+            const finW = ((surplusLocal / rate / 2500 * 100 + 35) * 0.4) * currencyRiskFactor;
             const careerW = parseFloat(String(getSchoolField(school, ['academicscore', 'score']) || "7.5")) * 10 * 0.3;
             const lifestyleW = (rawSafety * 0.2) - (workload > 50 ? (workload - 50) * 2 : 0);
             const workW = (100 - workload) * 0.1;
@@ -908,24 +915,34 @@ function DecideContent() {
                                 const academicRating = String(getSchoolField(item.school, ['academicscore', 'score']) || '8.5');
                                 const safetyRating = item.countryScore || '7.5';
 
-                                let summaryText = "";
-                                const locStr = String(item.school.location || item.school.city || "").toLowerCase();
-                                const schoolNameLower = sName.toLowerCase();
+                                const cityLoc = String(item.school.city || item.school.location || item.school.country || "the region");
+                                const curr = String(item.school.curriculum || "International").trim();
+                                const workScore = item.workload <= 45 ? "manageable contact hours" : "balanced teaching workload";
+                                const risk = getMacroRiskTier(item.currency);
+                                const rawSal = String(item.school.salaryRange || item.school.salary || "").toLowerCase();
+                                const isPegged = rawSal.includes("usd") || rawSal.includes("peg") || String(item.provision).toLowerCase().includes("usd");
 
+                                const perksList: string[] = [];
+                                if (isProvided) perksList.push("zero-cost school housing");
+                                if (item.benefits?.healthcare && !String(item.benefits.healthcare).toLowerCase().includes("standard")) perksList.push("private medical cover");
+                                if (item.benefits?.flights && !String(item.benefits.flights).toLowerCase().includes("check")) perksList.push("annual flight benefits");
+                                if (item.benefits?.tuition && !String(item.benefits.tuition).toLowerCase().includes("check")) perksList.push("dependent tuition support");
+
+                                const perksStr = perksList.length > 0 ? perksList.join(", ") : "competitive expat benefits";
+
+                                let summaryText = "";
                                 if (isWinner) {
                                     if (isProvided) {
-                                        summaryText = `${sName} is our top recommendation for overseas hires. Having school-provided accommodation completely removes relocation stress, allowing teachers to maximize savings from month one. Combined with comprehensive private medical cover, annual flights, and a close-knit staffroom community, contract renewal rates here are exceptionally high.`;
+                                        summaryText = `${sName} is our overall top recommendation for international educators. Having ${perksStr} completely eliminates relocation housing stress, enabling maximum disposable savings. Combined with supportive SLT leadership, ${workScore}, and a strong staffroom community, contract renewal rates here are exceptionally high.`;
                                     } else {
-                                        summaryText = `${sName} stands out as our top overall choice. It delivers strong financial upside alongside an outstanding professional reputation, full healthcare, and annual flights. Teachers report excellent staffroom morale, high leadership continuity, and strong contract retention past the initial two-year commitment.`;
+                                        summaryText = `${sName} stands out as our top recommendation overall. It delivers exceptional financial upside alongside a respected ${curr} academic reputation in ${cityLoc}. Teachers report excellent staffroom morale, supportive leadership continuity, and strong contract retention.`;
                                     }
-                                } else if (isProvided || locStr.includes("quilmes") || schoolNameLower.includes("george")) {
-                                    summaryText = `A fantastic option for international educators seeking a welcoming campus culture. Free on-campus housing makes settling in seamless, while full private health insurance, flight benefits, and strong contract renewal rates reflect a collaborative, supportive department structure.`;
-                                } else if (locStr.includes("olivos") || locStr.includes("san fernando") || schoolNameLower.includes("andrew")) {
-                                    summaryText = `A prestigious IB World School set in an affluent waterfront suburb. Known for exceptional student engagement, strong academic outcomes, comprehensive family health coverage, and tuition support, it offers an ideal post for educators focused on long-term professional growth.`;
                                 } else if (isProvided) {
-                                    summaryText = `Offers a hassle-free transition with school-funded housing, annual flights, and private medical insurance. The supportive SLT and collaborative staffroom foster solid teacher retention and a very positive work-life balance.`;
+                                    summaryText = `A standout choice featuring ${perksStr}. Free accommodation makes settling into ${cityLoc} seamless, while a collaborative department structure and ${workScore} support high teacher retention and contract extensions.`;
+                                } else if (parseFloat(academicRating) >= 8.8) {
+                                    summaryText = `A prestigious ${curr} institution situated in ${cityLoc}. Highly regarded for student engagement, academic outcomes, and ${perksStr}, it offers an ideal environment for long-term professional growth and steady staff retention.`;
                                 } else {
-                                    summaryText = `A highly respected institution with strong staffroom morale and steady retention. Teachers benefit from full medical cover, annual flight benefits, collaborative department culture, and a very comfortable expat lifestyle.`;
+                                    summaryText = `A solid international option in ${cityLoc} offering ${perksStr}. Teachers benefit from a supportive staffroom culture, ${workScore}, and a very comfortable expat lifestyle with reliable contract stability.`;
                                 }
 
                                 const healthLabel = item.benefits.healthcare && String(item.benefits.healthcare).length < 22 ? String(item.benefits.healthcare) : "Private Medical";
