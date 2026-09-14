@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
-import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier } from '@/lib/calculations';
+import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 
 const RATES: Record<string, number> = {};
 Object.keys(BASE_RATES).forEach(k => {
@@ -55,25 +55,27 @@ function getSchoolField(school: any, keys: string[]) {
 }
 
 function getLocalSalaryForSchool(school: any, rate: number): string {
-    const raw = (school?.salaryRange || "").trim();
+    const raw = String(school?.salaryRange || school?.salary || school?.netbase || "").trim();
     if (!raw) return Math.round(4500 * rate).toString();
 
     const cleanRange = raw.replace(/,/g, '').replace(/\.\d+/g, '');
     const range = cleanRange.match(/\d+/g);
     const med = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
 
-    const hasDollarSign = raw.includes('$');
-    const hasExplicitLocalCode = /(OMR|AED|SAR|QAR|CZK|EUR|GBP|SGD|HKD|THB|MYR|JPY|KRW|INR|EGP|BHD|KWD)/i.test(raw);
+    const isUSD = /\bUSD\b|\$/i.test(raw);
+    const hasExplicitLocalCode = /(OMR|AED|SAR|QAR|CZK|EUR|GBP|SGD|HKD|THB|MYR|JPY|KRW|INR|EGP|BHD|KWD|ARS|BRL|MXN|COP|VND|IDR|DKK|CHF)/i.test(raw);
 
-    if (hasExplicitLocalCode || !hasDollarSign) {
+    if (hasExplicitLocalCode || (!isUSD && med > 10000)) {
         let monthly = med;
         const isExplicitMonthly = /month|monthly|\/mo/i.test(raw);
-        if (monthly >= 10000 && !isExplicitMonthly) {
+        const isExplicitAnnual = /year|annual|\/yr|\/annum/i.test(raw);
+        if ((monthly >= 10000 && !isExplicitMonthly && rate < 100) || isExplicitAnnual) {
             monthly = Math.round(monthly / 12);
         }
         return Math.round(monthly).toString();
     }
 
+    // Salary is specified in USD (e.g. USD 2,400 - 3,200 / mo or $3,500/mo) -> convert to local currency
     return Math.round(med * rate).toString();
 }
 
@@ -406,19 +408,26 @@ function DecideContent() {
             const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[bonusKey] ?? 0)) + (parseFloat(adjustments[index].other) || 0);
 
             // 🏠 DYNAMIC HOUSING ENGINE
-            const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
+            const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '');
             const profile = getProfileByLabel(familyStatus);
             const pKey = profile.pKey;
             const scalar = profile.scalar;
             const personCount = profile.personCount;
 
+            const { rentWeight, diningWeight } = getZoneLocationWeights(school);
+
             const rentKey = pKey === 'single' ? 'rent1br' : ((pKey === 'family2Children' || pKey === 'family3PlusChildren') ? 'rent3br' : 'rent2br');
             const rawRentUSD = parseFloat(getCOLField(col, [rentKey]) || getCOLField(col, ['rent1br']) || "1450");
 
-            let finalRentUSD = rawRentUSD;
+            let finalRentUSD = rawRentUSD * rentWeight;
             let housingNote = "Housing is not included in this package";
-            if (provision.includes("provided")) { finalRentUSD = 0; housingNote = "Housing provided by school"; }
-            else if (provision.includes("subsidised")) { finalRentUSD = rawRentUSD * 0.5; housingNote = "Subsidised housing applied"; }
+            if (isHousingProvided(provision, school?.intel?.housing?.provided)) {
+                finalRentUSD = 0;
+                housingNote = "Housing provided by school";
+            } else if (provision.toLowerCase().includes("subsidised")) {
+                finalRentUSD = rawRentUSD * 0.5 * rentWeight;
+                housingNote = "Subsidised housing applied";
+            }
 
             // 📊 GRANULAR COST SCALING
             const mode = cardLifestyles[index] || "Balanced";
@@ -459,7 +468,7 @@ function DecideContent() {
             const transportLocal = transportVal * rate;
 
             const lifestyleMult = mode === "Budget" ? 0.6 : (mode === "Luxury" ? 1.8 : 1.0);
-            const socialLocal = getVal(getCOLField(col, ['diningSocial', 'social', 'dining']), pKey, scalar) * rate * lifestyleMult;
+            const socialLocal = getVal(getCOLField(col, ['diningSocial', 'social', 'dining']), pKey, scalar) * rate * lifestyleMult * diningWeight;
             const manualLocal = parseFloat(adjustments[index].home) || 0;
 
             const totalLocalCost = rentLocal + groceryLocal + utilityLocal + connectivityLocal + transportLocal + socialLocal + manualLocal;
