@@ -837,12 +837,17 @@ function DecideContent() {
                                                             Note: {data.currency} is pegged to the US Dollar. Because this currency is locked to the USD, your savings will follow US exchange rate trends. If the Pound gets stronger, your converted savings total will shrink.
                                                         </p>
                                                     );
-                                                case 3:
-                                                    return (
-                                                        <p className="text-[11px] text-rose-400/90 font-semibold leading-relaxed mt-1">
-                                                            Note: {data.currency} is a highly volatile currency. Local currency contracts here are risky due to high inflation. To protect your savings, you should request a contract pegged to a stable currency like USD or EUR.
-                                                        </p>
-                                                    );
+                                                                                                 case 3: {
+                                                     const infRate = getInflationRate(data.school || data.currency);
+                                                     return (
+                                                         <div className="mt-2.5 flex items-center">
+                                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-500/15 border border-rose-500/30 rounded-full text-[10px] font-black uppercase text-rose-400 tracking-wider shadow-sm animate-pulse">
+                                                                 <AlertTriangle className="size-3 text-rose-400 shrink-0" />
+                                                                 <span>Currency Alert — Inflation {infRate}</span>
+                                                             </span>
+                                                         </div>
+                                                     );
+                                                 }
                                                 default:
                                                     return null;
                                             }
