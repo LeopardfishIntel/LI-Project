@@ -424,6 +424,8 @@ function DecideContent() {
             if (isHousingProvided(provision, school?.intel?.housing?.provided)) {
                 finalRentUSD = 0;
                 housingNote = "Housing provided by school";
+            } else if (provision.toLowerCase().includes("allowance")) {
+                housingNote = "Housing allowance is included in the salary shown";
             } else if (provision.toLowerCase().includes("subsidised")) {
                 finalRentUSD = rawRentUSD * 0.5 * rentWeight;
                 housingNote = "Subsidised housing applied";
