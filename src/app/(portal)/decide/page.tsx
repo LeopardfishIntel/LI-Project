@@ -478,12 +478,21 @@ function DecideContent() {
             const workload = calculateWorkload(school);
             const rawSafety = parseFloat(String(getSchoolField(school, ['citysafety', 'safety']) || "7.2")) * 10;
 
+            const healthVal = String(getSchoolField(school, ['healthcoverage', 'healthcare', 'medical']) || school.healthcoverage || "").toLowerCase();
+            const flightVal = String(getSchoolField(school, ['travelBenefit', 'annualflights', 'flights']) || school.travelBenefit || "").toLowerCase();
+            const tuitionVal = String(getSchoolField(school, ['tuitionBenefit', 'tuition', 'education']) || school.tuitionBenefit || "").toLowerCase();
+
+            let benefitsBonus = 0;
+            if (healthVal.includes('full') || healthVal.includes('comprehensive') || healthVal.includes('private') || healthVal.includes('family') || healthVal.includes('provided')) benefitsBonus += 2;
+            if (flightVal.includes('annual') || flightVal.includes('school-funded') || flightVal.includes('flights') || flightVal.includes('provided')) benefitsBonus += 2;
+            if (tuitionVal.includes('100%') || tuitionVal.includes('full') || tuitionVal.includes('remission') || tuitionVal.includes('discount')) benefitsBonus += 2;
+
             const finW = (surplusLocal / rate / 2500 * 100 + 35) * 0.4;
             const careerW = parseFloat(String(getSchoolField(school, ['academicscore', 'score']) || "7.5")) * 10 * 0.3;
             const lifestyleW = (rawSafety * 0.2) - (workload > 50 ? (workload - 50) * 2 : 0);
             const workW = (100 - workload) * 0.1;
 
-            const matchScore = Math.round(Math.max(15, Math.min(99, finW + careerW + lifestyleW + workW)));
+            const matchScore = Math.round(Math.max(15, Math.min(99, finW + careerW + lifestyleW + workW + benefitsBonus)));
 
             return {
                 school, surplusLocal, totalLocalIn, totalLocalCost, currency, rate, matchPercentage: matchScore, workload, housingNote, provision,
@@ -500,8 +509,9 @@ function DecideContent() {
                     social: socialLocal
                 },
                 benefits: {
-                    flights: getSchoolField(school, ['annualflights', 'flights']) || "Check Contract",
-                    healthcare: getSchoolField(school, ['healthcare', 'medical']) || "Standard",
+                    flights: getSchoolField(school, ['travelBenefit', 'annualflights', 'flights']) || "Annual Flights",
+                    healthcare: getSchoolField(school, ['healthcoverage', 'healthcare', 'medical']) || "Private Health Cover",
+                    tuition: getSchoolField(school, ['tuitionBenefit', 'tuition', 'educationAllowance']) || "Tuition Support",
                     gratuity: getSchoolField(school, ['endofservicegratuity', 'gratuity', 'bonus']) || "Statutory"
                 },
                 purchasingPower: col?.localPurchasingPowerIndex || "N/A"
@@ -899,18 +909,18 @@ function DecideContent() {
 
                                 if (isWinner) {
                                     if (isProvided) {
-                                        summaryText = `${sName} is our top recommendation for overseas hires. Having school-provided accommodation completely removes relocation stress, allowing teachers to maximize savings from month one. Staff retention is exceptionally high, with teachers routinely renewing contracts due to supportive SLT leadership, manageable teaching loads, and a strong staffroom community.`;
+                                        summaryText = `${sName} is our top recommendation for overseas hires. Having school-provided accommodation completely removes relocation stress, allowing teachers to maximize savings from month one. Combined with comprehensive private medical cover, annual flights, and a close-knit staffroom community, contract renewal rates here are exceptionally high.`;
                                     } else {
-                                        summaryText = `${sName} stands out as our top overall choice. It delivers strong financial upside alongside an outstanding professional reputation. Teachers report excellent staffroom morale, high leadership continuity, and strong contract retention past the initial two-year commitment.`;
+                                        summaryText = `${sName} stands out as our top overall choice. It delivers strong financial upside alongside an outstanding professional reputation, full healthcare, and annual flights. Teachers report excellent staffroom morale, high leadership continuity, and strong contract retention past the initial two-year commitment.`;
                                     }
                                 } else if (isProvided || locStr.includes("quilmes") || schoolNameLower.includes("george")) {
-                                    summaryText = `A fantastic option for international educators seeking a welcoming campus culture. Free on-campus housing makes settling in seamless, while low staff turnover and strong contract renewal rates reflect a collaborative, supportive department structure.`;
+                                    summaryText = `A fantastic option for international educators seeking a welcoming campus culture. Free on-campus housing makes settling in seamless, while full private health insurance, flight benefits, and strong contract renewal rates reflect a collaborative, supportive department structure.`;
                                 } else if (locStr.includes("olivos") || locStr.includes("san fernando") || schoolNameLower.includes("andrew")) {
-                                    summaryText = `A prestigious IB World School set in an affluent waterfront suburb. Known for exceptional student engagement, strong academic outcomes, and low staff churn, it offers an ideal post for educators focused on professional growth in a prime location.`;
+                                    summaryText = `A prestigious IB World School set in an affluent waterfront suburb. Known for exceptional student engagement, strong academic outcomes, comprehensive family health coverage, and tuition support, it offers an ideal post for educators focused on long-term professional growth.`;
                                 } else if (isProvided) {
-                                    summaryText = `Offers a hassle-free transition with school-funded housing, enabling high disposable savings. The supportive SLT and collaborative staffroom foster solid teacher retention and a very positive work-life balance.`;
+                                    summaryText = `Offers a hassle-free transition with school-funded housing, annual flights, and private medical insurance. The supportive SLT and collaborative staffroom foster solid teacher retention and a very positive work-life balance.`;
                                 } else {
-                                    summaryText = `A highly respected institution with strong staffroom morale and steady retention. Teachers benefit from a collaborative department culture, generous professional development, and a very comfortable expat lifestyle.`;
+                                    summaryText = `A highly respected institution with strong staffroom morale and steady retention. Teachers benefit from full medical cover, annual flight benefits, collaborative department culture, and a very comfortable expat lifestyle.`;
                                 }
 
                                 return (
@@ -948,6 +958,20 @@ function DecideContent() {
                                                 </strong>
                                                 {summaryText}
                                             </p>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-1 pt-2">
+                                            <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                🩺 {String(item.benefits.healthcare).slice(0, 24)}
+                                            </span>
+                                            <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                ✈️ {String(item.benefits.flights).slice(0, 24)}
+                                            </span>
+                                            {item.benefits.tuition && (
+                                                <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                    🎓 {String(item.benefits.tuition).slice(0, 24)}
+                                                </span>
+                                            )}
                                         </div>
 
                                         <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
