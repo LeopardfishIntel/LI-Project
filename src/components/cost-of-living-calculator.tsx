@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { RATES } from '@/lib/calculations';
+import { RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -87,17 +87,18 @@ export function CostOfLivingCalculator({
   const calculateTotal = () => {
     const safeVal = (val: any) => parseFloat(String(val)) || 0;
     
+    const { rentWeight, diningWeight } = getZoneLocationWeights(school);
     const foodCost = (safeVal(activeCoL.food) || safeVal((activeCoL as any).monthlyFood) || 350) * adults + (safeVal(activeCoL.food) || 350) * 0.5 * children;
     const transportCost = (safeVal(activeCoL.transport) || safeVal((activeCoL as any).monthlyTransport) || 60) * adults + (safeVal(activeCoL.transport) || 60) * 0.3 * children;
     const mobileCost = (safeVal(activeCoL.mobile) || safeVal((activeCoL as any).mobileMonthly) || 30) * adults;
-    const diningSocialCost = (safeVal(activeCoL.diningSocial) || safeVal((activeCoL as any).socialMonthly) || 150) * adults;
+    const diningSocialCost = (safeVal(activeCoL.diningSocial) || safeVal((activeCoL as any).socialMonthly) || 150) * adults * diningWeight;
     const uncoveredMedicalCost = (safeVal(activeCoL.uncoveredMedical) || 50) * adults + (safeVal(activeCoL.uncoveredMedical) || 50) * 0.5 * children;
     
     let rentCost = 0;
-    const isProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+    const isProvided = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
     
     if (!isProvided) {
-        rentCost = getRentForFamily(activeCoL as any, familyStatus).rent || (safeVal(activeCoL.monthlyRent1BR) || 1200);
+        rentCost = (getRentForFamily(activeCoL as any, familyStatus).rent || (safeVal(activeCoL.monthlyRent1BR) || 1200)) * rentWeight;
     }
     
     const total =
@@ -117,7 +118,7 @@ export function CostOfLivingCalculator({
 
   const totalCost = calculateTotal();
   const { rent: rentToShow, label: rentLabel } = getRentForFamily(activeCoL as any, familyStatus);
-  const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+  const isHousingProvidedVal = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
 
   const content = (
     <div className="space-y-6">
@@ -161,7 +162,7 @@ export function CostOfLivingCalculator({
       <div className="space-y-3 text-sm text-muted-foreground font-medium">
         <div className="flex justify-between items-center py-1.5 border-b border-white/5">
           <span className="flex items-center gap-2"><Home className="w-4 h-4 text-primary" /> {rentLabel}</span>
-          <span className="text-white font-bold">{isHousingProvided ? 'PROVIDED' : formatCurrency(convert(rentToShow || 1200), targetCurrency)}</span>
+          <span className="text-white font-bold">{isHousingProvidedVal ? 'PROVIDED' : formatCurrency(convert(rentToShow || 1200), targetCurrency)}</span>
         </div>
          <div className="flex justify-between items-center py-1.5 border-b border-white/5">
           <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-yellow-400" /> Utilities (Water/Elec/Gas)</span>

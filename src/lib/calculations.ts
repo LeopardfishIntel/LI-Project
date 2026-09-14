@@ -29,6 +29,84 @@ export const canonicalCountry = (c: string) => {
   return n;
 };
 
+export interface ZoneLocationWeights {
+  rentWeight: number;
+  diningWeight: number;
+}
+
+/**
+ * Calculates campus/zone-level Cost of Living weighting for specific sub-regions/zones.
+ * Example:
+ * - Olivos & San Fernando (St. Andrew's Scots School): Affluent Northern BA waterfront suburbs with higher rent (1.25x) & dining (1.20x).
+ * - Quilmes & Los Polvorines (St. George's College): South / North-West suburbs with lower/baseline rent (0.95x) & dining (0.95x).
+ */
+export function getZoneLocationWeights(schoolOrLocation?: any): ZoneLocationWeights {
+  if (!schoolOrLocation) return { rentWeight: 1.0, diningWeight: 1.0 };
+
+  let searchStr = "";
+  if (typeof schoolOrLocation === 'string') {
+    searchStr = schoolOrLocation;
+  } else if (typeof schoolOrLocation === 'object') {
+    searchStr = [
+      schoolOrLocation.schoolname,
+      schoolOrLocation.schoolName,
+      schoolOrLocation.name,
+      schoolOrLocation.location,
+      schoolOrLocation.city,
+      schoolOrLocation.address,
+      schoolOrLocation.country
+    ].filter(Boolean).join(" ");
+  }
+
+  const str = searchStr.toLowerCase();
+
+  // Olivos & San Fernando (Northern BA affluent waterfront suburbs)
+  if (
+    str.includes('olivos') ||
+    str.includes('san fernando') ||
+    str.includes('st. andrew') ||
+    str.includes("st andrew") ||
+    str.includes('saint andrew')
+  ) {
+    return { rentWeight: 1.25, diningWeight: 1.20 };
+  }
+
+  // Quilmes & Los Polvorines (South / North-West suburbs)
+  if (
+    str.includes('quilmes') ||
+    str.includes('los polvorines') ||
+    str.includes('polvorines') ||
+    str.includes('st. george') ||
+    str.includes("st george") ||
+    str.includes('saint george')
+  ) {
+    return { rentWeight: 0.95, diningWeight: 0.95 };
+  }
+
+  return { rentWeight: 1.0, diningWeight: 1.0 };
+}
+
+/**
+ * Helper to determine if housing is provided by default from school database record or intel.
+ * Fixes issue where "Free On-Campus Housing", "On-Campus Housing", etc., were not auto-selecting provided housing.
+ * Also ensures "Not Provided" does not falsely match.
+ */
+export function isHousingProvided(housingProvision?: string, intelHousingProvided?: boolean): boolean {
+  if (intelHousingProvided === true) return true;
+  if (!housingProvision) return false;
+  const lower = String(housingProvision).toLowerCase();
+  if (lower.includes('not provided') || lower.includes('no housing')) return false;
+  return (
+    lower.includes('provided') ||
+    lower.includes('free on-campus') ||
+    lower.includes('on-campus housing') ||
+    lower.includes('free housing') ||
+    lower.includes('on campus housing') ||
+    lower.startsWith('on-campus') ||
+    lower.startsWith('on campus')
+  );
+}
+
 /**
  * 🕵️ STRATEGIC INTELLIGENCE TIERS
  * Tier 3: Legendary | Tier 2: High | Tier 1: Standard | Tier 0: Limited
@@ -286,12 +364,17 @@ export function calculateBudget(params: BudgetParams) {
   
   let rentVal = housingOverride !== null ? housingOverride : (rentMonthly * (1.5 + setupMultiplier)); 
   
+  const { rentWeight: initRentWeight } = getZoneLocationWeights(selectedSchool || targetData);
   const housingProv = selectedSchool?.housingprovision?.toLowerCase() || "";
+  const isProv = isHousingProvided(selectedSchool?.housingprovision, selectedSchool?.intel?.housing?.provided);
   if (housingOverride === null) {
-    if (housingProv.includes('provided')) {
+    if (isProv) {
       rentVal = 0;
-    } else if (housingProv.includes('subsidised')) {
-      rentVal = rentVal * 0.5; // 50% discount for subsidised housing
+    } else {
+      rentVal = rentVal * initRentWeight;
+      if (housingProv.includes('subsidised')) {
+        rentVal = rentVal * 0.5; // 50% discount for subsidised housing
+      }
     }
   }
 
@@ -423,10 +506,12 @@ export function calculateOutflows(
   adults: number,
   children: number,
   activeCoL: any,
-  isHousingProvided = false
+  isHousingProvided = false,
+  schoolOrLocation?: any
 ): number {
   const safeVal = (val: any) => parseFloat(String(val)) || 0;
   const col = activeCoL || {};
+  const { rentWeight, diningWeight } = getZoneLocationWeights(schoolOrLocation || col.schoolname || col.schoolName || col.city || col.location);
 
   // Food
   const foodCost = (safeVal(col.groceries) || safeVal(col.food) || safeVal(col.monthlyFood) || 350) * adults + 
@@ -440,7 +525,7 @@ export function calculateOutflows(
   const mobileCost = (safeVal(col.mobilePhone) || safeVal(col.mobile) || safeVal(col.mobileMonthly) || 22) * adults;
 
   // Dining & Social
-  const diningSocialCost = (safeVal(col.diningSocial) || safeVal(col.socialMonthly) || 195) * adults;
+  const diningSocialCost = (safeVal(col.diningSocial) || safeVal(col.socialMonthly) || 195) * adults * diningWeight;
 
   // Medical
   const uncoveredMedicalCost = (safeVal(col.uncoveredMedical) || 20) * adults + 
@@ -460,6 +545,7 @@ export function calculateOutflows(
     } else {
       rentCost = rent1BR;
     }
+    rentCost = rentCost * rentWeight;
   }
 
   const total =
@@ -485,27 +571,35 @@ export function calculateSurplus(
   familyStatusOrAdults: string | number,
   cityDataOrChildren: any,
   isHousingProvidedOrCityData: boolean | any = false,
-  isHousingProvidedFallback = false
+  isHousingProvidedFallback: any = false,
+  schoolOrLocation?: any
 ): number {
   let adults = 1;
   let children = 0;
   let cityData: any = {};
   let isHousingProvided = false;
+  let schoolLoc: any = schoolOrLocation;
 
   if (typeof familyStatusOrAdults === 'number') {
     adults = familyStatusOrAdults;
     children = typeof cityDataOrChildren === 'number' ? cityDataOrChildren : 0;
     cityData = isHousingProvidedOrCityData;
     isHousingProvided = !!isHousingProvidedFallback;
+    if (!schoolLoc && typeof isHousingProvidedFallback === 'object') {
+      schoolLoc = isHousingProvidedFallback;
+    }
   } else {
     const profile = getProfileByLabel(familyStatusOrAdults);
     adults = profile.personCount - profile.childrenCount;
     children = profile.childrenCount;
     cityData = cityDataOrChildren;
     isHousingProvided = isHousingProvidedOrCityData === true;
+    if (!schoolLoc && typeof isHousingProvidedFallback === 'object') {
+      schoolLoc = isHousingProvidedFallback;
+    }
   }
 
-  const totalOut = calculateOutflows(adults, children, cityData, isHousingProvided);
+  const totalOut = calculateOutflows(adults, children, cityData, isHousingProvided, schoolLoc || cityData);
   const rawSurplus = localNetUSD - totalOut;
   const isFamily = children > 0;
   const maxCap = isFamily ? 4400 : 5700;
@@ -526,10 +620,9 @@ export function calculateSchoolSavingsForStatus(
   const isDual = statusLower.includes("dual");
   const effectiveSalary = isDual ? Math.round(salaryNum * 1.85) : salaryNum;
   
-  const housingLower = (housingProvision || "").toLowerCase();
-  const isHousingProvided = housingLower.includes("provided");
+  const isProv = isHousingProvided(housingProvision);
 
-  let surplus = calculateSurplus(effectiveSalary, familyStatus, colRecord, isHousingProvided);
+  let surplus = calculateSurplus(effectiveSalary, familyStatus, colRecord, isProv, colRecord);
 
   // Volatile market guardrail (e.g. Argentina in local currency)
   const isVolatile = (country || "").toLowerCase() === "argentina" || (country || "").toLowerCase() === "ars";

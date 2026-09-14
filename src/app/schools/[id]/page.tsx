@@ -48,7 +48,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
-import { calculateSurplus, RATES } from '@/lib/calculations';
+import { calculateSurplus, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -367,22 +367,23 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         // Calculate exact, finalized costs that will be displayed in the UI to prevent any AI deviation
         const activeCoL = locationData || {};
         const safeVal = (val: any) => parseFloat(String(val)) || 0;
-        const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
+        const { rentWeight, diningWeight } = getZoneLocationWeights(school);
+        const isHousingProvidedVal = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
         
         // Single profile values (which is the default userProfile passed to Genkit)
-        const singleRent = isHousingProvided ? 0 : (safeVal((activeCoL as any).monthlyRent1BR || (activeCoL as any).rent1br) || 1200);
+        const singleRent = isHousingProvidedVal ? 0 : ((safeVal((activeCoL as any).monthlyRent1BR || (activeCoL as any).rent1br) || 1200) * rentWeight);
         const singleUtilities = safeVal(activeCoL.utilities) || 150;
         const singleInternet = safeVal(activeCoL.internet) || 60;
         const singleMobile = safeVal(activeCoL.mobile) || 30;
         const singleFood = safeVal(activeCoL.food) || 350;
-        const singleDining = safeVal(activeCoL.diningSocial) || 150;
+        const singleDining = (safeVal(activeCoL.diningSocial) || 150) * diningWeight;
         const singleTransport = safeVal(activeCoL.transport) || 60;
         const singleMedical = safeVal(activeCoL.uncoveredMedical) || 50;
         
         const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
 
         const monthlyTotal = salaryNum * 1.18;
-        const surplus = calculateSurplus(monthlyTotal, adults, children, locationData, isHousingProvided);
+        const surplus = calculateSurplus(monthlyTotal, adults, children, locationData, isHousingProvidedVal, school);
         const expenses = Math.max(0, monthlyTotal - surplus);
 
         const monthlyCostForecastStr = formatCurrency(convertUSD(expenses), activeCurrencyCode);
@@ -391,8 +392,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
         const finalizedColData = {
           currencyCode: 'USD',
-          monthlyRent1BR: isHousingProvided ? 'Provided (0 USD)' : `${singleRent} USD`,
-          isHousingProvided: isHousingProvided,
+          monthlyRent1BR: isHousingProvidedVal ? 'Provided (0 USD)' : `${singleRent} USD`,
+          isHousingProvided: isHousingProvidedVal,
           utilities: `${singleUtilities} USD`,
           internet: `${singleInternet} USD`,
           mobile: `${singleMobile} USD`,
@@ -898,8 +899,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                       label = adults >= 2 ? 'Family (2 Adults + Kids)' : 'Family (Single Parent)';
                     }
 
-                    const isHousingProvided = school.housingprovision?.toLowerCase().includes('provided') || school.intel?.housing?.provided;
-                    const surplus = calculateSurplus(salaryNum * 1.18, adults, children, locationData, isHousingProvided);
+                    const isHousingProvidedVal = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
+                    const surplus = calculateSurplus(salaryNum * 1.18, adults, children, locationData, isHousingProvidedVal, school);
                     const monthlyTotal = salaryNum * 1.18;
                     const expenses = Math.max(0, monthlyTotal - surplus);
                     const isLoss = surplus < 0;

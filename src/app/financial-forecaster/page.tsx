@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
-import { canonicalCountry } from '@/lib/calculations';
+import { canonicalCountry, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -1391,8 +1391,8 @@ function DecoderContent() {
       return safeParse(data) * mult; // Scalar fallback
     };
 
-    const housingStatusRaw = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation']) || '').toLowerCase();
-    const isHousingProvidedByDefault = housingStatusRaw.includes('provided');
+    const housingStatusRaw = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation']) || '');
+    const isHousingProvidedByDefault = isHousingProvided(housingStatusRaw, activeSchool?.intel?.housing?.provided);
 
     let isProvided = false;
     if (overrideBedrooms === 4) {
@@ -1419,7 +1419,8 @@ function DecoderContent() {
       return foundKey ? data[foundKey] : null;
     };
 
-    const rentMult = lifestyleMode === "Saver" ? 0.75 : (lifestyleMode === "Full Expat" ? 1.4 : 1.0);
+    const zoneWeights = getZoneLocationWeights(activeSchool || activeCOL?.city || activeCOL?.location);
+    const rentMult = (lifestyleMode === "Saver" ? 0.75 : (lifestyleMode === "Full Expat" ? 1.4 : 1.0)) * zoneWeights.rentWeight;
     const groceryMult = lifestyleMode === "Saver" ? 0.8 : (lifestyleMode === "Full Expat" ? 1.25 : 1.0);
     const lifestyleMult = lifestyleMode === "Saver" ? 0.4 : (lifestyleMode === "Full Expat" ? 3.0 : 1.0);
 
@@ -1512,7 +1513,7 @@ function DecoderContent() {
     const transportCost = usdToLocal(transportVal);
     const rawSocialVal = getF(activeCOL, ['social', 'dining', 'diningsocial']);
     const socialVal = (rawSocialVal !== null && rawSocialVal !== undefined) ? rawSocialVal : 300;
-    const socialCost = usdToLocal(getVal(socialVal, pKey, scalar) * lifestyleMult);
+    const socialCost = usdToLocal(getVal(socialVal, pKey, scalar) * lifestyleMult * zoneWeights.diningWeight);
 
     // Medical gaps cost
     const medicalVal = (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * adults + (safeParse(getF(activeCOL, ['uncoveredMedical', 'uncoveredmedical'])) || 50) * 0.5 * children;
