@@ -923,17 +923,22 @@ function DecideContent() {
                                     summaryText = `A highly respected institution with strong staffroom morale and steady retention. Teachers benefit from full medical cover, annual flight benefits, collaborative department culture, and a very comfortable expat lifestyle.`;
                                 }
 
+                                const healthLabel = item.benefits.healthcare && String(item.benefits.healthcare).length < 22 ? String(item.benefits.healthcare) : "Private Medical";
+                                const flightLabel = item.benefits.flights && String(item.benefits.flights).length < 22 ? String(item.benefits.flights) : "Annual Flights";
+                                const tuitionLabel = item.benefits.tuition && String(item.benefits.tuition).length < 22 ? String(item.benefits.tuition) : "Tuition Support";
+
                                 return (
                                     <div 
                                         key={item.school.id || idx}
                                         className={cn(
-                                            "p-4 rounded-sm border flex flex-col justify-between space-y-4 transition-all relative overflow-hidden",
+                                            "p-4 rounded-sm border flex flex-col justify-between transition-all relative overflow-hidden",
                                             isWinner 
                                                 ? "bg-emerald-500/5 border-emerald-500/40 shadow-lg shadow-emerald-950/20" 
                                                 : "bg-white/[0.02] border-white/5 hover:border-white/10"
                                         )}
                                     >
-                                        <div className="space-y-2.5">
+                                        {/* Top Section */}
+                                        <div className="space-y-2.5 flex-grow pb-4">
                                             <div className="flex items-center justify-between">
                                                 <span className={cn(
                                                     "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm border",
@@ -960,23 +965,26 @@ function DecideContent() {
                                             </p>
                                         </div>
 
-                                        <div className="flex flex-wrap gap-1 pt-2">
-                                            <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
-                                                🩺 {String(item.benefits.healthcare).slice(0, 24)}
-                                            </span>
-                                            <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
-                                                ✈️ {String(item.benefits.flights).slice(0, 24)}
-                                            </span>
-                                            {item.benefits.tuition && (
+                                        {/* Pinned Bottom Container (Benefit Pills + Footer) */}
+                                        <div className="mt-auto space-y-3">
+                                            <div className="flex flex-wrap items-center gap-1.5 min-h-[26px]">
                                                 <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
-                                                    🎓 {String(item.benefits.tuition).slice(0, 24)}
+                                                    🩺 {healthLabel}
                                                 </span>
-                                            )}
-                                        </div>
+                                                <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                    ✈️ {flightLabel}
+                                                </span>
+                                                {item.benefits.tuition && (
+                                                    <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                        🎓 {tuitionLabel}
+                                                    </span>
+                                                )}
+                                            </div>
 
-                                        <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
-                                            <span>Surplus: <strong className="text-white">{item.currency} {surplusFormatted}</strong></span>
-                                            <span>Housing: <strong className={isProvided ? "text-emerald-400" : "text-white"}>{isProvided ? "Provided (ARS 0)" : "Allowance"}</strong></span>
+                                            <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
+                                                <span>Surplus: <strong className="text-white">{item.currency} {surplusFormatted}</strong></span>
+                                                <span>Housing: <strong className={isProvided ? "text-emerald-400" : "text-white"}>{isProvided ? "Provided (ARS 0)" : "Allowance"}</strong></span>
+                                            </div>
                                         </div>
                                     </div>
                                 );
