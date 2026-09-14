@@ -870,36 +870,89 @@ function DecideContent() {
                     </div>
                 </div>
 
-                {/* TOP PICK CTA — compact strip */}
-                {!isUnlocked ? (
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4 p-4 bg-[#d95f02]/5 border border-dashed border-[#d95f02]/20 rounded-sm">
-                        <p className="text-xs text-slate-400 font-bold">Ready for the deep dive? Access our custom location intelligence briefings for your chosen locations.</p>
-                        <button
-                            onClick={handleUnlockIntelligence}
-                            disabled={isGenerating || ranked.length < 2}
-                            className="shrink-0 px-6 py-3 border border-[#d95f02] bg-black text-[#f5f5f5] font-black normal-case tracking-wide text-sm hover:bg-[#d95f02] transition-all disabled:opacity-50 whitespace-nowrap"
-                        >
-                            {isGenerating ? <span className="flex items-center gap-2"><Loader2 className="animate-spin size-4" /> Compiling...</span> : 'Request Intelligence Briefing'}
-                        </button>
-                    </div>
-                ) : (
-                    <div className="lg:col-span-3 bg-[#d95f02]/5 border border-[#d95f02]/20 p-12 rounded-sm relative overflow-hidden flex flex-col items-center animate-in zoom-in-95 duration-700">
-                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.12] pointer-events-none select-none overflow-hidden z-0">
-                            <span className="text-[60px] md:text-[80px] font-black tracking-[0.2em] rotate-[-20deg] whitespace-nowrap text-white text-center">leopardfish intel</span>
+                {/* 🏆 STRATEGIC DECISION SUMMARY */}
+                {ranked.length > 0 && (
+                    <div className="mt-6 p-6 bg-[#0b1224]/90 border border-white/10 rounded-sm space-y-5 shadow-2xl">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+                            <div className="flex items-center gap-2.5">
+                                <Zap className="size-4 text-[#d95f02]" />
+                                <h3 className="text-xs font-black uppercase tracking-[0.25em] text-[#d95f02]">
+                                    Strategic Executive Summary
+                                </h3>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest bg-white/5 px-3 py-1.5 rounded-sm border border-white/10 flex items-center gap-1.5">
+                                    <span>Top Choice:</span>
+                                    <span className="text-emerald-400 font-black italic">{ranked[0].school.schoolname || ranked[0].school.schoolName || ranked[0].school.name}</span>
+                                    <span className="text-[#d95f02] font-black italic">({ranked[0].matchPercentage}% Match)</span>
+                                </span>
+                            </div>
                         </div>
-                        <div className="relative z-10 space-y-8 w-full max-w-5xl">
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-[12px] font-black text-[#d95f02] uppercase tracking-[0.4em] flex items-center gap-2"><Zap className="size-4" /> Leopardfish intel conclusion</h3>
-                                <button onClick={() => setIsUnlocked(false)} className="text-[10px] font-black text-slate-500 uppercase tracking-widest hover:text-white transition-colors">Relock Briefing</button>
-                            </div>
-                            <div className="text-[16px] font-medium italic tracking-tight text-slate-300 leading-relaxed space-y-6">
-                                {aiBriefing?.conclusion.map((para: string, pIdx: number) => <p key={pIdx}>{para}</p>)}
-                                <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-sm">
-                                    <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Strategic Pick</p>
-                                    <p className="text-white font-bold">{aiBriefing?.topPickReason}</p>
-                                </div>
-                                <p className="not-italic font-bold text-slate-500 text-[11px] mt-6 tracking-widest uppercase pt-4 border-t border-white/5">Evaluation: March 2026</p>
-                            </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {ranked.map((item, idx) => {
+                                const isWinner = idx === 0;
+                                const sName = item.school.schoolname || item.school.schoolName || item.school.name || "School";
+                                const isProvided = isHousingProvided(item.provision, item.school?.intel?.housing?.provided);
+                                const surplusFormatted = Math.round(item.surplusLocal).toLocaleString();
+                                const academicRating = String(getSchoolField(item.school, ['academicscore', 'score']) || '8.5');
+                                const safetyRating = item.countryScore || '7.5';
+
+                                let summaryText = "";
+                                if (isWinner) {
+                                    summaryText = `${sName} is the overall top recommendation, offering an unmatched balance of local savings (${item.currency} ${surplusFormatted}/mo), ${isProvided ? "100% free school-provided accommodation" : "competitive allowance"}, and an outstanding ${academicRating}/10 academic reputation.`;
+                                } else if (isProvided) {
+                                    summaryText = `A strong contender featuring free school-provided housing (ARS 0 rent cost), yielding ${item.currency} ${surplusFormatted}/mo net surplus with a ${academicRating}/10 academic score.`;
+                                } else if (parseFloat(academicRating) >= 8.9) {
+                                    summaryText = `Top-tier academic environment (${academicRating}/10 rating) situated in ${item.school.location || "an affluent zone"} with an ${safetyRating}/10 safety index, supported by a ${item.school.housingprovision || "housing allowance"}.`;
+                                } else {
+                                    summaryText = `Balanced offer generating ${item.currency} ${surplusFormatted}/mo net savings in a ${safetyRating}/10 safety zone with a ${academicRating}/10 academic score.`;
+                                }
+
+                                return (
+                                    <div 
+                                        key={item.school.id || idx}
+                                        className={cn(
+                                            "p-4 rounded-sm border flex flex-col justify-between space-y-4 transition-all relative overflow-hidden",
+                                            isWinner 
+                                                ? "bg-emerald-500/5 border-emerald-500/40 shadow-lg shadow-emerald-950/20" 
+                                                : "bg-white/[0.02] border-white/5 hover:border-white/10"
+                                        )}
+                                    >
+                                        <div className="space-y-2.5">
+                                            <div className="flex items-center justify-between">
+                                                <span className={cn(
+                                                    "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm border",
+                                                    isWinner 
+                                                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
+                                                        : "bg-white/5 text-slate-400 border-white/5"
+                                                )}>
+                                                    {isWinner ? "🏆 Best Choice" : `Option #${idx + 1}`}
+                                                </span>
+                                                <span className={cn("text-xs font-black italic tracking-tight", isWinner ? "text-emerald-400" : "text-white")}>
+                                                    {item.matchPercentage}% Match
+                                                </span>
+                                            </div>
+
+                                            <h4 className="text-sm font-black text-white italic tracking-tight leading-snug">
+                                                {sName}
+                                            </h4>
+
+                                            <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                                                <strong className={isWinner ? "text-emerald-400" : "text-slate-200"}>
+                                                    {isWinner ? "Why it wins: " : "Why it works: "}
+                                                </strong>
+                                                {summaryText}
+                                            </p>
+                                        </div>
+
+                                        <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
+                                            <span>Surplus: <strong className="text-white">{item.currency} {surplusFormatted}</strong></span>
+                                            <span>Housing: <strong className={isProvided ? "text-emerald-400" : "text-white"}>{isProvided ? "Provided (ARS 0)" : "Allowance"}</strong></span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
