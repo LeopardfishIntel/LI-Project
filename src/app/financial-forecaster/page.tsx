@@ -2737,13 +2737,39 @@ function DecoderContent() {
                         </div>
 
                         <div className="flex flex-col items-end">
-                          <div className="flex items-baseline gap-2 leading-tight">
-                            <span className={cn("font-black text-white/50 transition-all duration-300", surplusFontSizes.currency)}>{currency}</span>
-                            <span className={cn("font-black tracking-tighter tabular-nums text-white leading-tight transition-all duration-300", surplusFontSizes.number, (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
-                              {surplusValStr}
-                              {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#d95f02] ml-1">*</span>}
-                            </span>
-                          </div>
+                          {(() => {
+                            const cName = String(analysis?.activeSchool?.country || activeSchool?.country || settings?.country || "").toLowerCase().trim();
+                            const currCode = String(currency || analysis?.activeSchool?.currency || "").toUpperCase().trim();
+                            const isVolatileCurrency =
+                              cName === "argentina" ||
+                              cName === "egypt" ||
+                              cName === "turkey" ||
+                              cName === "venezuela" ||
+                              cName === "lebanon" ||
+                              cName === "nigeria" ||
+                              cName === "south africa" ||
+                              cName === "south-africa" ||
+                              ["ARS", "EGP", "TRY", "VES", "LBP", "NGN", "ZAR"].includes(currCode) ||
+                              analysis?.activeSchool?.isVolatileMarket === true ||
+                              activeSchool?.isVolatileMarket === true;
+
+                            return (
+                              <div className="flex items-center gap-3 leading-tight flex-wrap justify-end">
+                                {isVolatileCurrency && (
+                                  <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded border bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.2)] animate-pulse shrink-0 self-center">
+                                    Currency Risk
+                                  </span>
+                                )}
+                                <div className="flex items-baseline gap-2 leading-tight">
+                                  <span className={cn("font-black text-white/50 transition-all duration-300", surplusFontSizes.currency)}>{currency}</span>
+                                  <span className={cn("font-black tracking-tighter tabular-nums text-white leading-tight transition-all duration-300", surplusFontSizes.number, (analysis?.surplus ?? 0) <= 0 && "text-rose-500")}>
+                                    {surplusValStr}
+                                    {(analysis?.uplift13 || analysis?.uplift14) && <span className="text-xl align-top text-[#d95f02] ml-1">*</span>}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })()}
 
                           {/* 🎯 CONVERSION LINE WITH BENCHMARK CURRENCY TOGGLE */}
                           <div className="flex items-center justify-between w-full mt-2">
