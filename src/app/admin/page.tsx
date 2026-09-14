@@ -1111,7 +1111,7 @@ export default function AdminCommandPage() {
                                     </span>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                    {["ALL", "GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "ESF", "TAYLORS", "TEACHER_HORIZONS"].map((engineKey) => {
+                                    {["ALL", "GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "TAYLORS", "TEACHER_HORIZONS"].map((engineKey) => {
                                         const count = engineKey === "ALL" 
                                             ? crawlLogs.length 
                                             : crawlLogs.filter(l => l.engine.toUpperCase() === engineKey).length;
@@ -1162,7 +1162,7 @@ export default function AdminCommandPage() {
                                         </thead>
                                         <tbody className="divide-y divide-white/5 font-mono text-[10px]">
                                             {(() => {
-                                                const allEngines = ["GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "ESF", "TAYLORS", "TEACHER_HORIZONS"];
+                                                const allEngines = ["GLOBEDUCATE", "ISP", "COGNITA", "INSPIRED", "MALVERN", "TES", "GRC", "UWC", "GEMS", "TAYLORS", "TEACHER_HORIZONS"];
                                                 const displayEngines = selectedEngineFilter === 'ALL' 
                                                     ? allEngines 
                                                     : allEngines.filter(e => e === selectedEngineFilter);

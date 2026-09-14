@@ -176,7 +176,7 @@ export async function runIngestionPipeline(
     const isInspired = (srcUpper.includes("INSPIRED") || (record.applyUrl && record.applyUrl.includes("inspirededu.com/job/")));
     const isTeachAway = (srcUpper.includes("TEACH AWAY") || (record.applyUrl && record.applyUrl.includes("teachaway.com/")));
     const isCognita = (srcUpper.includes("COGNITA") || (record.applyUrl && record.applyUrl.includes("cognitapeople.csod.com/")));
-    const isMalvern = (srcUpper.includes("MALVERN") || (record.applyUrl && record.applyUrl.includes("malverncollegefamily.org")));
+    const isMalvern = (srcUpper.includes("MALVERN") || (record.applyUrl && record.applyUrl.includes("malverncollegefamily.org")) || targetSchoolName.toUpperCase().includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(schoolId));
     const isUwc = (srcUpper.includes("UWC") || srcUpper.includes("UNITED WORLD COLLEGE") || (record.applyUrl && (record.applyUrl.includes("uwc.org/career/") || record.applyUrl.includes("uwc.org/careers/"))));
     const isIsp = (srcUpper.includes("ISP") || srcUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || (record.applyUrl && record.applyUrl.includes("internationalschools.wd3.myworkdayjobs.com/")));
     const isGlobeducate = (srcUpper.includes("GLOBEDUCATE") || srcUpper.includes("GLOBE") || (record.applyUrl && (record.applyUrl.includes("globeducate.schoolrecruiter.com/") || record.applyUrl.includes("careers.globeducate.com/"))));

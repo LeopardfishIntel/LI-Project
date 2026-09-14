@@ -96,16 +96,6 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     utcEndWindow: "04:00",
     targetDurationMinutes: 20
   },
-  ESF: {
-    engineKey: "ESF",
-    sourceName: "ESF Hong Kong",
-    method: "SuccessFactors API",
-    peakSchedule: "MWF",
-    offPeakSchedule: "MONDAY",
-    utcStartWindow: "04:00",
-    utcEndWindow: "04:15",
-    targetDurationMinutes: 15
-  },
   TAYLORS: {
     engineKey: "TAYLORS",
     sourceName: "Taylor's Group",

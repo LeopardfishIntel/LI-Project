@@ -10,7 +10,6 @@ import { searchCognitaDbSchools } from "@/lib/search/cognita";
 import { searchInspiredDbSchools } from "@/lib/search/inspired";
 import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
 import { searchGemsDbSchools } from "@/lib/search/gems";
-import { searchEsfDbSchools } from "@/lib/search/esf";
 import { searchTaylorsDbSchools } from "@/lib/search/taylors";
 import { searchTeacherHorizonsDbSchools } from "@/lib/search/teacherhorizons";
 import { runIngestionPipeline } from "@/lib/pipelines/pipeline1-ingestion";
@@ -44,7 +43,6 @@ export async function GET(request: Request) {
       INSPIRED: searchInspiredDbSchools,
       TEACH_AWAY: searchTeachAwayDbSchools,
       GEMS: searchGemsDbSchools,
-      ESF: searchEsfDbSchools,
       TAYLORS: searchTaylorsDbSchools,
       TEACHER_HORIZONS: searchTeacherHorizonsDbSchools
     };

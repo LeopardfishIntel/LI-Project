@@ -979,13 +979,17 @@ You MUST run search queries with the school name enclosed in escaped double quot
 
         // Map finalVacancies to the report output (making it backward compatible)
         const scrapedJobsListString = finalVacancies.map(v => {
+          let closingVal = String(v.date_closing || "").trim();
+          if (!closingVal || closingVal.toLowerCase().includes("object") || closingVal.toLowerCase().includes("invalid") || closingVal.toLowerCase() === "n/a" || closingVal.toLowerCase() === "na") {
+            closingVal = "Rolling";
+          }
           let dateStr = "";
-          if (v.date_listed && v.date_closing) {
-            dateStr = `Posted: ${v.date_listed}; Closes: ${v.date_closing}`;
+          if (v.date_listed && closingVal) {
+            dateStr = `Posted: ${v.date_listed}; Closes: ${closingVal}`;
           } else if (v.date_listed) {
             dateStr = v.date_listed;
-          } else if (v.date_closing) {
-            dateStr = `Closes: ${v.date_closing}`;
+          } else if (closingVal) {
+            dateStr = `Closes: ${closingVal}`;
           }
           return dateStr ? `${v.title} (${dateStr}) - ${v.source}` : `${v.title} - ${v.source}`;
         });

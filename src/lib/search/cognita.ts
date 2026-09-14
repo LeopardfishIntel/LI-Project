@@ -107,33 +107,46 @@ export async function searchCognitaDbSchools(): Promise<CognitaJobMatch[]> {
     await page.goto(portalUrl, { waitUntil: "networkidle", timeout: 35000 }).catch(() => {});
     await page.waitForTimeout(3000);
 
-    // 3. Fetch full CSOD requisitions payload (pageSize 200 to capture all live listings)
+    // 3. Fetch full CSOD requisitions payload (Dynamic pagination up to totalCount)
     let apiRequisitions: any[] = [];
     if (bearerToken) {
       try {
         apiRequisitions = await page.evaluate(async (token) => {
-          const res = await fetch("https://uk.api.csod.com/rec-job-search/external/jobs", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": token,
-              "csod-accept-language": "en-GB",
-            },
-            body: JSON.stringify({
-              careerSiteId: 1,
-              careerSitePageId: 1,
-              pageNumber: 1,
-              pageSize: 200,
-              cultureId: 2,
-              searchText: "",
-              cultureName: "en-GB",
-              states: [],
-              countryCodes: [],
-              cities: [],
-            }),
-          });
-          const json = await res.json();
-          return json.data?.requisitions || [];
+          const allReqs: any[] = [];
+          let pageNum = 1;
+          const pageSize = 500;
+          let totalCount = 0;
+
+          do {
+            const res = await fetch("https://uk.api.csod.com/rec-job-search/external/jobs", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": token,
+                "csod-accept-language": "en-GB",
+              },
+              body: JSON.stringify({
+                careerSiteId: 1,
+                careerSitePageId: 1,
+                pageNumber: pageNum,
+                pageSize: pageSize,
+                cultureId: 2,
+                searchText: "",
+                cultureName: "en-GB",
+                states: [],
+                countryCodes: [],
+                cities: [],
+              }),
+            });
+            const json = await res.json();
+            const reqs = json.data?.requisitions || [];
+            totalCount = json.data?.totalCount || reqs.length;
+            allReqs.push(...reqs);
+            if (reqs.length === 0 || allReqs.length >= totalCount) break;
+            pageNum++;
+          } while (pageNum <= 10);
+
+          return allReqs;
         }, bearerToken);
       } catch (err) {
         console.warn("⚠️ CSOD direct API fetch fallback:", err);

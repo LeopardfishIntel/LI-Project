@@ -118,7 +118,7 @@ const SALARY_INTEL: Record<string, { has13th: boolean, has14th: boolean, note?: 
   "bolivia": { has13th: true, has14th: false, note: "Standard 13th month." },
   "philippines": { has13th: true, has14th: false, note: "Statutory 13th month payment." },
   "indonesia": { has13th: true, has14th: false, note: "Tunjangan Hari Raya (Religious Holiday Allowance)." },
-  "japan": { has13th: true, has14th: true, note: "Bonus structure often equals 2 extra months." },
+  "japan": { has13th: false, has14th: false, note: "Standard UK/Western 12-month payroll structure; base salary is disbursed in 12 equal monthly payments (no 13th/14th month)." },
   "china": { has13th: true, has14th: false, note: "Chinese New Year bonus." },
   "angola": { has13th: true, has14th: false, note: "Standard holiday allowance." },
   "south africa": { has13th: true, has14th: false, note: "Often paid as a Christmas bonus." }
@@ -276,7 +276,15 @@ const parseJobString = (job: string) => {
     const postedPart = parts.find(p => p.toLowerCase().includes('posted:'));
     if (postedPart) postedDate = postedPart.replace(/posted:\s*/i, '').trim();
     const closesPart = parts.find(p => p.toLowerCase().includes('closes:'));
-    if (closesPart) closesDate = closesPart.replace(/closes:\s*/i, '').trim();
+    if (closesPart) {
+      const parsed = closesPart.replace(/closes:\s*/i, '').trim();
+      const lowerParsed = parsed.toLowerCase();
+      if (lowerParsed === 'n/a' || lowerParsed === 'na' || lowerParsed === 'rolling' || lowerParsed === 'open' || lowerParsed.includes('object') || lowerParsed.includes('invalid')) {
+        closesDate = 'Rolling';
+      } else {
+        closesDate = parsed;
+      }
+    }
   }
 
   const statusInfo = getJobStatus(job);
@@ -423,6 +431,7 @@ function DecoderContent() {
   const [benchmark, setBenchmark] = useState("GBP");
   const [overrideBedrooms, setOverrideBedrooms] = useState<number | null>(null);
   const [showUpliftOptions, setShowUpliftOptions] = useState(false);
+  const [isCompBreakdownOpen, setIsCompBreakdownOpen] = useState(false);
   const [uplift13, setUplift13] = useState(false);
   const [uplift14, setUplift14] = useState(false);
   const [lifestyleMode, setLifestyleMode] = useState<"Saver" | "Comfort" | "Full Expat">("Comfort");
@@ -742,17 +751,24 @@ function DecoderContent() {
       // ── Closing date ──────────────────────────────────────────────────────────
       // featured_jobs_cache: closingDateMillis (number) or closingDate (string/Timestamp)
       // subcollection: closingDate (Timestamp) — admin-added historic jobs
-      let closes: Date;
-      if (job.closingDateMillis) {
-        closes = new Date(job.closingDateMillis);
+      let closes: Date | null = null;
+      if (job.closingDateMillis && !isNaN(Number(job.closingDateMillis))) {
+        closes = new Date(Number(job.closingDateMillis));
       } else if (job.closingDate?.seconds) {
         closes = new Date(job.closingDate.seconds * 1000);
       } else if (job.closingDate?._seconds) {
         closes = new Date(job.closingDate._seconds * 1000);
-      } else if (job.closingDate) {
+      } else if (job.closingDate && typeof job.closingDate === "string") {
+        const dStr = job.closingDate.trim();
+        const lowerD = dStr.toLowerCase();
+        if (lowerD !== "n/a" && lowerD !== "na" && lowerD !== "rolling" && lowerD !== "open" && !lowerD.includes("object") && !lowerD.includes("invalid")) {
+          const parsedDt = new Date(dStr);
+          if (!isNaN(parsedDt.getTime())) {
+            closes = parsedDt;
+          }
+        }
+      } else if (job.closingDate && typeof job.closingDate === "number") {
         closes = new Date(job.closingDate);
-      } else {
-        closes = new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000); // rolling/unknown → far future
       }
 
       // ── Posted/ingested date ──────────────────────────────────────────────────
@@ -785,9 +801,9 @@ function DecoderContent() {
       const isRolling = job.isRollingDeadline === true || job.isRolling === true;
       // rejected = never a real vacancy, skip entirely at filter stage
       const cacheStatus = job.status || 'approved';
-      const isExpired = !isRolling && (closes < today || cacheStatus === 'expired');
+      const isExpired = !isRolling && closes !== null && (closes < today || cacheStatus === 'expired');
       const twelveMonthsAgoCutoff = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000);
-      const recruitmentCycle = (closes < twelveMonthsAgoCutoff) ? "HISTORIC_Y1" : "CURRENT";
+      const recruitmentCycle = (closes !== null && closes < twelveMonthsAgoCutoff) ? "HISTORIC_Y1" : "CURRENT";
 
       // ── Department (prefer Pipeline 2 enriched value, fall back to title inference) ──
       let department = job.department || "Secondary";
@@ -804,12 +820,18 @@ function DecoderContent() {
         id: job.id || job.jobFingerprint,
         schoolId: job.schoolId || activeSchool?.id || "",
         schoolName: job.schoolName || activeSchool?.schoolname || activeSchool?.name || "",
-        title: job.title,
+        title: (() => {
+          let clean = String(job.title || "").trim();
+          clean = clean.replace(/\s*,\s*([A-Z][a-z]+|\s)+is\s+excited\s+to\s+announce.*$/i, "");
+          clean = clean.replace(/\s*is\s+excited\s+to\s+announce.*$/i, "");
+          clean = clean.replace(/\s*is\s+looking\s+to\s+recruit.*$/i, "");
+          return clean.trim() || "Unknown Position";
+        })(),
         source: job.source || job.sourceName || "Web",
         sources: job.sources,
         sourceUrls: job.sourceUrls,
         postedDate: scraped.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        closesDate: isRolling ? 'Rolling' : closes.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        closesDate: (isRolling || !closes || isNaN(closes.getTime())) ? "Rolling" : closes.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
         cacheStatus,
         status: isExpired ? 'closed' : 'open',
         isRolling,
@@ -1513,7 +1535,7 @@ function DecoderContent() {
       isHousingProvidedByDefault,
       isConvertedFromAnnual, rawNetInput, baseNet,
       currency, reliability: activeCOL?.dataReliabilityScore,
-      countryIntel, uplift13, uplift14
+      sCountry, activeSchool, countryIntel, uplift13, uplift14
     };
   }, [activeSchool, activeCOL, settings, responsibilityAllowance, manualAdjustments, extraIncome, currency, transportMode, benchmark, overrideBedrooms, currentRates, uplift13, uplift14, tIntel, lifestyleMode]);
 
@@ -1536,6 +1558,14 @@ function DecoderContent() {
     const parsed = parseFloat(String(raw));
     if (!isNaN(parsed) && parsed > 0) return parsed;
     return 8.1;
+  }, [activeSchool]);
+
+  const subScores = useMemo(() => {
+    const acad = parseFloat(String(activeSchool?.academicscore || activeSchool?.academic_rating || "8.5")) || 8.5;
+    const fin = parseFloat(String(activeSchool?.financescore || activeSchool?.salaryScore || "8.2")) || 8.2;
+    const wl = parseFloat(String(activeSchool?.worklifescore || activeSchool?.worklife || "7.8")) || 7.8;
+    const lead = parseFloat(String(activeSchool?.techscore || activeSchool?.citySafety || activeSchool?.citysafety || "8.4")) || 8.4;
+    return { academic: acad, finance: fin, worklife: wl, leadership: lead };
   }, [activeSchool]);
 
   const ratingTierConfig = useMemo(() => {
@@ -2415,22 +2445,24 @@ function DecoderContent() {
                           </p>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent side="left" className="max-w-xs bg-[#0b1224]/95 backdrop-blur-md border border-white/15 text-white p-3.5 shadow-2xl rounded-sm z-50">
+                      <TooltipContent side="left" className="w-60 bg-[#0b1224]/95 backdrop-blur-md border border-white/15 text-white p-3 shadow-2xl rounded-sm z-50">
                         <div className="space-y-1.5">
-                          <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-1.5">
-                            <span className={cn("text-xs font-black uppercase tracking-wider", ratingTierConfig.textClass)}>
-                              {ratingTierConfig.tier}
-                            </span>
-                            <span className="text-[10px] font-mono font-bold text-slate-400">
-                              {overallRatingNum.toFixed(1)} / 10
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
-                            {ratingTierConfig.desc}
-                          </p>
-                          <p className="text-[9px] text-slate-400 font-medium pt-1 border-t border-white/5 leading-relaxed">
-                            Composite score combining Academic Rigor, Compensation &amp; Savings Potential, Work/Life Balance, and Leadership Stability.
-                          </p>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="font-bold text-slate-300">Academic Rigor</span>
+                              <span className="font-mono font-black text-amber-400">{subScores.academic.toFixed(1)} / 10</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="font-bold text-slate-300">Compensation &amp; Savings</span>
+                              <span className="font-mono font-black text-emerald-400">{subScores.finance.toFixed(1)} / 10</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="font-bold text-slate-300">Work/Life Balance</span>
+                              <span className="font-mono font-black text-sky-400">{subScores.worklife.toFixed(1)} / 10</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="font-bold text-slate-300">Leadership &amp; Stability</span>
+                              <span className="font-mono font-black text-indigo-400">{subScores.leadership.toFixed(1)} / 10</span>
+                            </div>
                         </div>
                       </TooltipContent>
                     </Tooltip>
@@ -2778,44 +2810,113 @@ function DecoderContent() {
                             );
                           })()}
 
-                          {/* 🕵️ TACTICAL SALARY UPLIFT (Stage 1) */}
-                          {analysis?.countryIntel && (
-                            <div className="mt-4 w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-sm transition-all duration-500 overflow-hidden">
-                              {!showUpliftOptions && !uplift13 && !uplift14 ? (
-                                <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
-                                  <button
-                                    onClick={() => setShowUpliftOptions(true)}
-                                    className="w-full py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group flex items-center justify-center gap-1.5"
-                                  >
-                                    Include bonus month salary <ArrowDownCircle className="size-3 group-hover:translate-y-0.5 transition-transform" />
-                                  </button>
+                          {/* 🇯🇵 JAPAN COMPENSATION STRUCTURE BREAKDOWN (COLLAPSIBLE DROPDOWN WITH BONUS MONTH CONTROLS INCLUDED) */}
+                          {String(analysis?.activeSchool?.country || analysis?.sCountry || "").toLowerCase().includes("japan") && (
+                            <div className="mt-4 w-full bg-sky-950/40 border border-sky-500/30 rounded-sm shadow-md overflow-hidden text-left transition-all duration-300">
+                              <button
+                                type="button"
+                                onClick={() => setIsCompBreakdownOpen(!isCompBreakdownOpen)}
+                                className="w-full p-3.5 flex items-center justify-between text-left hover:bg-sky-900/30 transition-all group"
+                              >
+                                <div className="flex items-center gap-2.5">
+                                  <div className="p-1.5 rounded bg-sky-500/10 border border-sky-500/20 text-sky-400 group-hover:scale-105 transition-transform">
+                                    <FileText className="size-4 shrink-0" />
+                                  </div>
+                                  <div>
+                                    <h4 className="text-xs font-black uppercase tracking-wider text-sky-300">
+                                      Japan Compensation Structure Breakdown
+                                    </h4>
+                                    <p className="text-[10px] text-slate-400 font-mono">
+                                      Click to {isCompBreakdownOpen ? "hide" : "view"} payroll & allowance details
+                                    </p>
+                                  </div>
                                 </div>
-                              ) : (
-                                <div className="animate-in zoom-in-95 duration-500">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic flex items-center gap-2">
-                                      Tactical Intel: {analysis.countryIntel.has14th ? "13th & 14th Month" : "13th Month"}
-                                    </span>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <button className="text-emerald-400 hover:text-white transition-colors">
-                                            <Info className="size-3" />
-                                          </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="left" className="max-w-xs bg-slate-900 border-emerald-500/50 text-white p-4">
-                                          <p className="text-xs font-bold text-emerald-400 mb-2 uppercase tracking-tight">Market Intelligence Briefing</p>
-                                          <p className="text-[11px] leading-relaxed mb-3">
-                                            {analysis.countryIntel.note} We are amortising these payments into your monthly forecast (adding 1/12th of your base salary per payment).
-                                          </p>
-                                          <p className="text-[10px] italic text-rose-400 border-t border-white/10 pt-2 font-bold">
-                                            ⚠️ WARNING: Full net salary may not be the exact amount of the 13/14 payment as taxes and social security often vary on bonuses.
-                                          </p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
+                                <div className="flex items-center gap-2">
+                                  <ChevronDown className={cn("size-4 text-sky-400 transition-transform duration-300", isCompBreakdownOpen && "rotate-180")} />
+                                </div>
+                              </button>
+
+                              {isCompBreakdownOpen && (
+                                <div className="p-4 pt-2 border-t border-sky-500/20 animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
+                                  <div className="space-y-2 text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
+                                    <p>
+                                      <strong className="text-white font-bold">12-Month Disbursement:</strong> Unlike traditional Japanese corporate contracts (which divide an annual figure into 14 parts for summer/winter bonuses), international schools in Japan disburse your agreed annual base salary in 12 equal monthly payments across the year.
+                                    </p>
+                                    <p>
+                                      <strong className="text-white font-bold">No Statutory 13th/14th Month:</strong> Japanese labor law does not require 13th or 14th-month pay. Western international schools (such as Malvern, BST, Rugby) run a standard UK-style 12-month payroll structure covering teaching terms and paid vacation.
+                                    </p>
+                                    <p>
+                                      <strong className="text-white font-bold">Separate Allowances & Benefits:</strong> Any cash or non-cash perks (housing allowance, airfare, relocation fees, or contract completion gratuities) are separate line items in your offer letter rather than extra salary months. You can use the additional income field above to include these.
+                                    </p>
                                   </div>
 
+                                  {/* BONUS MONTH CONTROLS INTEGRATED INSIDE THE BREAKDOWN SECTION */}
+                                  {analysis?.countryIntel && (analysis.countryIntel.has13th || analysis.countryIntel.has14th) && (
+                                    <div className="pt-3 border-t border-sky-500/20">
+                                      {!showUpliftOptions && !uplift13 && !uplift14 ? (
+                                        <button
+                                          onClick={() => setShowUpliftOptions(true)}
+                                          className="w-full py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group flex items-center justify-center gap-1.5"
+                                        >
+                                          Include bonus month salary <ArrowDownCircle className="size-3 group-hover:translate-y-0.5 transition-transform" />
+                                        </button>
+                                      ) : (
+                                        <div className="space-y-2">
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic">
+                                              Bonus Month Salary Options
+                                            </span>
+                                          </div>
+                                          <div className="flex gap-2">
+                                            {analysis.countryIntel.has13th && (
+                                              <button
+                                                onClick={() => setUplift13(!uplift13)}
+                                                className={cn(
+                                                  "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                                  uplift13 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                                )}
+                                              >
+                                                {uplift13 ? "13th Month Active" : "Apply 13th Month"}
+                                              </button>
+                                            )}
+                                            {analysis.countryIntel.has14th && (
+                                              <button
+                                                onClick={() => setUplift14(!uplift14)}
+                                                className={cn(
+                                                  "flex-1 py-1.5 px-3 text-[9px] font-black uppercase tracking-widest rounded-sm border transition-all",
+                                                  uplift14 ? "bg-emerald-500 border-emerald-400 text-black" : "bg-black/40 border-emerald-500/30 text-emerald-500/60 hover:border-emerald-500 hover:text-emerald-400"
+                                                )}
+                                              >
+                                                {uplift14 ? "14th Month Active" : "Apply 14th Month"}
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* 🕵️ TACTICAL SALARY UPLIFT FOR NON-JAPAN COUNTRIES */}
+                          {analysis?.countryIntel && !String(analysis?.activeSchool?.country || analysis?.sCountry || "").toLowerCase().includes("japan") && (analysis.countryIntel.has13th || analysis.countryIntel.has14th) && (
+                            <div className="mt-4 w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-sm transition-all duration-500 overflow-hidden text-left">
+                              {!showUpliftOptions && !uplift13 && !uplift14 ? (
+                                <button
+                                  onClick={() => setShowUpliftOptions(true)}
+                                  className="w-full py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-emerald-500 hover:text-black transition-all group flex items-center justify-center gap-1.5"
+                                >
+                                  Include bonus month salary <ArrowDownCircle className="size-3 group-hover:translate-y-0.5 transition-transform" />
+                                </button>
+                              ) : (
+                                <div className="space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest italic">
+                                      Bonus Month Salary Options ({analysis.countryIntel.has14th ? "13th & 14th Month" : "13th Month"})
+                                    </span>
+                                  </div>
                                   <div className="flex gap-2">
                                     {analysis.countryIntel.has13th && (
                                       <button
@@ -2840,10 +2941,6 @@ function DecoderContent() {
                                       </button>
                                     )}
                                   </div>
-                                  <p className="mt-2.5 text-[10px] font-black uppercase text-amber-400 text-center tracking-wider bg-amber-500/10 border border-amber-500/25 py-1.5 px-2 rounded-sm shadow-sm flex items-center justify-center gap-1.5">
-                                    <AlertCircle className="size-3 text-amber-400 shrink-0" />
-                                    <span>Please confirm if your specific offer already includes this!</span>
-                                  </p>
                                 </div>
                               )}
                             </div>

@@ -946,8 +946,7 @@ export default function FeaturedJobsPage() {
     let globe = 0;
     let searchAssociates = 0;
     let taylors = 0;
-    let esf = 0;
-    let gems = 0;
+        let gems = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
@@ -962,8 +961,9 @@ export default function FeaturedJobsPage() {
       const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
       const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
       const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
+      const schoolNameUpper = String((job as any).schoolName || (job as any).schoolname || (job as any).name || "").toUpperCase();
       const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => s.includes("COGNITA")) || applyUrlLower.includes("cognita");
-      const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => s.includes("MALVERN")) || applyUrlLower.includes("malvern");
+      const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => s.includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(job.schoolId);
       const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => s.includes("UWC")) || applyUrlLower.includes("uwc.org");
       const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || applyUrlLower.includes("internationalschools");
       const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
@@ -983,8 +983,7 @@ export default function FeaturedJobsPage() {
       if (hasGlobe) globe++;
       if (hasSA) searchAssociates++;
       if (hasTaylors) taylors++;
-      if (hasEsf) esf++;
-      if (hasGems) gems++;
+            if (hasGems) gems++;
     });
     return {
       ALL: allJobs.length,
@@ -998,7 +997,6 @@ export default function FeaturedJobsPage() {
       GLOBEDUCATE: globe,
       ISP: isp,
       TAYLORS: taylors,
-      ESF: esf,
       GEMS: gems,
       MALVERN: malvern,
       UWC: uwc,
@@ -1069,6 +1067,7 @@ export default function FeaturedJobsPage() {
         const jobSrcUpper = String(job.source || "").toUpperCase();
         const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
         const schoolGroupUpper = String((job as any).schoolGroup || "").toUpperCase();
+        const schoolNameUpper = String((job as any).schoolName || (job as any).schoolname || (job as any).name || "").toUpperCase();
         const applyUrlLower = String(job.source_url || "").toLowerCase();
 
         const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
@@ -1077,7 +1076,7 @@ export default function FeaturedJobsPage() {
         const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
         const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
         const hasCognita = jobSrcUpper.includes("COGNITA") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("COGNITA")) || applyUrlLower.includes("cognita");
-        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || applyUrlLower.includes("malvern");
+        const hasMalvern = jobSrcUpper.includes("MALVERN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("MALVERN")) || applyUrlLower.includes("malvern") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(job.schoolId);
         const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("UWC")) || applyUrlLower.includes("uwc.org");
         const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ISP")) || applyUrlLower.includes("internationalschools");
         const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GLOBE") || String(s || "").toUpperCase().includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
@@ -1095,8 +1094,7 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "GRC" && !hasGrc) return false;
         if (selectedSourceEngine === "INSPIRED" && !hasInspired) return false;
         if (selectedSourceEngine === "TAYLORS" && !hasTaylors) return false;
-        if (selectedSourceEngine === "ESF" && !hasEsf) return false;
-        if (selectedSourceEngine === "GEMS" && !hasGems) return false;
+                if (selectedSourceEngine === "GEMS" && !hasGems) return false;
         if (selectedSourceEngine === "TEACHAWAY" && !hasTeachAway) return false;
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
@@ -1166,7 +1164,6 @@ export default function FeaturedJobsPage() {
       "GLOBE": "Globeducate",
       "ISP": "International Schools Partnership (ISP)",
       "TAYLORS": "Taylor's Education Group",
-      "ESF": "English Schools Foundation Hong Kong",
       "GEMS": "GEMS Education",
       "GRC": "GRC (Global Recruitment Collaborative)",
       "TEACHAWAY": "Teach Away",
@@ -1475,7 +1472,6 @@ export default function FeaturedJobsPage() {
                       { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
                       { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
                       { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
-                      { id: "ESF", label: `ESF (${engineCounts.ESF || 0})` },
                       { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
                       { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
                       { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
@@ -1537,7 +1533,6 @@ export default function FeaturedJobsPage() {
                     { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
                     { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
                     { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
-                    { id: "ESF", label: `ESF (${engineCounts.ESF || 0})` },
                     { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
                     { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
                     { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
@@ -1568,7 +1563,6 @@ export default function FeaturedJobsPage() {
                       {engine.id === "ISP" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "GLOBEDUCATE" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
                       {engine.id === "TAYLORS" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "ESF" && <span className="size-2 rounded-full bg-orange-400 animate-pulse" />}
                       {engine.id === "GEMS" && <span className="size-2 rounded-full bg-blue-400 animate-pulse" />}
                       {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
                       {engine.label}
@@ -1668,8 +1662,7 @@ export default function FeaturedJobsPage() {
                                 "GLOBEDUCATE": "Globeducate",
                                 "ISP": "International Schools Partnership (ISP)",
                                 "TAYLORS": "Taylor's Education Group",
-                                "ESF": "English Schools Foundation Hong Kong",
-                                "GEMS": "GEMS Education",
+                                                          "GEMS": "GEMS Education",
                                 "GRC": "GRC (Global Recruitment Collaborative)",
                                 "TEACHAWAY": "Teach Away",
                                 "MALVERN": "Malvern College International",

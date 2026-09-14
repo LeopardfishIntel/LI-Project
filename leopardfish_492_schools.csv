@@ -263,4 +263,10 @@ school_id,school_name,city,country,curriculum,savings_potential_single_usd,acade
 "FLIS0249","UWC East Africa","Moshi & Arusha","Tanzania","IB","","","https://employ.uwcea.org","","","East Africa"
 "FLIS0249_ARUSHA","UWC East Africa (Arusha Campus)","Arusha","Tanzania","IB","","","https://employ.uwcea.org","","","East Africa"
 "FLIS0249_MOSHI","UWC East Africa (Moshi Campus)","Moshi","Tanzania","IB","","","https://employ.uwcea.org","","","East Africa"
-"FLIS0250","Riffa Views International School","Riffa","Bahrain","IB & US Curriculum","","8.3","https://www.rvis.edu.bh/careers","https://www.rvis.edu.bh/","",""
+"FLIS0250","Riffa Views International School","Riffa","Bahrain","IB & US Curriculum","","8.3","https://www.rvis.edu.bh/careers","https://www.rvis.edu.bh/","","""FLIS0251","Malvern College Hong Kong","Hong Kong (Tai Po)","Hong Kong SAR","IB (PYP, MYP, DP)","","8.7","https://malverncollege.org.hk","https://malverncollege.org.hk",
+"FLIS0252","Malvern College Pre-School HK (Island West)","Hong Kong (Sai Ying Pun)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://malvernpreschool.hk",
+"FLIS0253","Malvern College Pre-School HK (Coronation Circle)","Hong Kong (West Kowloon)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://malvernpreschool.hk",
+"FLIS0254","Malvern College Qingdao","Qingdao","China","UK Curriculum, IGCSE, A-Levels, AP","","8.5","https://malverncollegeqd.com","https://malverncollegeqd.com",
+"FLIS0255","Malvern College Chengdu","Chengdu","China","UK Curriculum, IGCSE, A-Levels","","8.5","https://malvernchengdu.cn","https://malvernchengdu.cn",
+"FLIS0256","Malvern College Riyadh","Riyadh","Saudi Arabia","UK National Curriculum, IGCSE, A-Levels","","8.6","https://malverncollegeryadh.com","https://malverncollegeryadh.com",
+"FLIS0257","Malvern College São Paulo","São Paulo","Brazil","UK Curriculum, IB Diploma Framework","","7.9","https://malverncollegesaopaulo.com","https://malverncollegesaopaulo.com",

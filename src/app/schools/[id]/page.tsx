@@ -39,6 +39,8 @@ import {
   Eye,
   Building2,
   HeartHandshake,
+  FileText,
+  ChevronDown,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -270,6 +272,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   
   // 🛰️ Server-side loader state to bypass Firestore Security Rules
   const [countryIntel, setCountryIntel] = React.useState<any>(null);
+  const [isCompBreakdownOpen, setIsCompBreakdownOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (countryId) {
@@ -1052,6 +1055,59 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           </div>
 
         </div>
+
+        {/* 🇯🇵 JAPAN COMPENSATION STRUCTURE BREAKDOWN (COLLAPSIBLE DROPDOWN) */}
+        {String(school.country || "").toLowerCase().includes("japan") && (
+          <div className="mt-8 bg-sky-950/40 border border-sky-500/30 rounded-xl shadow-xl backdrop-blur-md overflow-hidden transition-all duration-300">
+            <button
+              type="button"
+              onClick={() => setIsCompBreakdownOpen(!isCompBreakdownOpen)}
+              className="w-full p-5 flex items-center justify-between text-left hover:bg-sky-900/30 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 group-hover:scale-105 transition-transform">
+                  <FileText className="size-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black uppercase tracking-wider text-sky-300">
+                    Japan Compensation Structure Breakdown
+                  </h4>
+                  <p className="text-[10px] text-sky-400/80 font-mono uppercase tracking-widest">
+                    Click to {isCompBreakdownOpen ? "hide" : "view"} official payroll &amp; allowance guidance
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <ChevronDown className={cn("size-5 text-sky-400 transition-transform duration-300", isCompBreakdownOpen && "rotate-180")} />
+              </div>
+            </button>
+
+            {isCompBreakdownOpen && (
+              <div className="p-6 pt-2 border-t border-sky-500/20 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 text-xs text-slate-300 leading-relaxed font-sans">
+                  <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
+                    <p className="font-black text-white uppercase text-[11px] tracking-wide">12-Month Disbursement</p>
+                    <p className="text-[11px] text-slate-400">
+                      Unlike traditional Japanese corporate contracts (which divide annual pay into 14 parts for summer/winter bonuses), international schools in Japan disburse your agreed annual base salary in 12 equal monthly payments across the year.
+                    </p>
+                  </div>
+                  <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
+                    <p className="font-black text-white uppercase text-[11px] tracking-wide">No Statutory 13th/14th Month</p>
+                    <p className="text-[11px] text-slate-400">
+                      Japanese labor law does not require 13th or 14th-month pay. Western international schools (such as Malvern, BST, Rugby) run a standard UK-style 12-month payroll structure covering teaching terms and paid vacation periods.
+                    </p>
+                  </div>
+                  <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
+                    <p className="font-black text-white uppercase text-[11px] tracking-wide">Separate Allowances &amp; Benefits</p>
+                    <p className="text-[11px] text-slate-400">
+                      Any cash or non-cash perks (housing allowances, airfare allowances, relocation fees, or contract completion gratuities) are separate line items in your offer letter rather than extra salary months. You can use the additional income field above to include these.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 🛡️ EVALUATE A SCHOOL RESULT COMMITMENTS & DISCLAIMER */}
         <div className="mt-12 border-t border-white/10 pt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

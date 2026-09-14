@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {
   Wallet, Users, Globe, Pencil,
   GitCompare, Search, FileText, ShieldAlert,
-  ArrowRight, Building2, Eye, BarChart3,
+  ArrowRight, Building2, Eye, BarChart3, Briefcase,
   Target, SlidersHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,7 @@ const features = [
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
 const COUNTER_FALLBACKS = {
   schools: 251,
+  vacancies: 68,
   countries: 46,
   visits: 1525,
   comparisons: 303
@@ -59,6 +60,7 @@ export default function Home() {
   // 🛰️ DB UPLINKS
   const { data: schoolsData, isLoading: sLoading } = useCollection<School>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'schools') : null), [firestore, mounted]));
   const { data: colData, isLoading: cLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'locations_costOfLiving') : null), [firestore, mounted]));
+  const { data: featuredJobsData, isLoading: jLoading } = useCollection<any>(useMemoFirebase(() => (mounted && firestore ? collection(firestore, 'featured_jobs_cache') : null), [firestore, mounted]));
 
   const metricsRef = useMemo(() => (mounted && firestore ? doc(firestore, 'app_metrics', 'page_views') : null), [firestore, mounted]);
   const { data: metrics, isLoading: mLoading } = useDoc<AppMetrics>(metricsRef as any);
@@ -66,7 +68,7 @@ export default function Home() {
   useEffect(() => { setMounted(true); }, []);
 
   // 🌍 CALCULATED METRICS
-  const isAnyLoading = sLoading || cLoading || mLoading;
+  const isAnyLoading = sLoading || cLoading || mLoading || jLoading;
 
   const schoolCount = useMemo(() => {
     if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.schools;
@@ -81,14 +83,27 @@ export default function Home() {
     return countries.size || COUNTER_FALLBACKS.countries;
   }, [schoolsData]);
 
+  const vacanciesCount = useMemo(() => {
+    if (!featuredJobsData || featuredJobsData.length === 0) return COUNTER_FALLBACKS.vacancies;
+    const todayMs = Date.now();
+    const valid = featuredJobsData.filter((job: any) => {
+      const rawStatus = String(job.status || "").toUpperCase();
+      if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") return false;
+      if (job.closingDateMillis && job.closingDateMillis < todayMs) return false;
+      return true;
+    });
+    return valid.length || COUNTER_FALLBACKS.vacancies;
+  }, [featuredJobsData]);
+
   const visitsCount = metrics?.site_visits || COUNTER_FALLBACKS.visits;
   const comparisonsCount = metrics?.comparisons_made || COUNTER_FALLBACKS.comparisons;
 
   const counters = [
     { label: 'INTL SCHOOLS', value: schoolCount.toLocaleString(), icon: Building2, color: 'text-[#d95f02]', loading: isAnyLoading },
-    { label: 'COUNTRIES', value: countryCount.toLocaleString(), icon: Globe, color: 'text-[#007FFF]', loading: isAnyLoading },
-    { label: 'VISITS', value: visitsCount.toLocaleString(), icon: Eye, color: 'text-[#d95f02]', loading: isAnyLoading },
-    { label: 'COMPARISONS', value: comparisonsCount.toLocaleString(), icon: BarChart3, color: 'text-[#007FFF]', loading: isAnyLoading },
+    { label: 'VACANCIES', value: vacanciesCount.toLocaleString(), icon: Briefcase, color: 'text-[#007FFF]', loading: isAnyLoading },
+    { label: 'COUNTRIES', value: countryCount.toLocaleString(), icon: Globe, color: 'text-[#d95f02]', loading: isAnyLoading },
+    { label: 'VISITS', value: visitsCount.toLocaleString(), icon: Eye, color: 'text-[#007FFF]', loading: isAnyLoading },
+    { label: 'COMPARISONS', value: comparisonsCount.toLocaleString(), icon: BarChart3, color: 'text-[#d95f02]', loading: isAnyLoading },
   ];
 
   const steps = [
@@ -142,7 +157,7 @@ export default function Home() {
             <TacticalButton href="/decide" label="Compare Schools" className="w-52 sm:w-56 h-16" />
           </div>
 
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 w-full border-t border-white/10 pt-6">
+          <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-10 w-full border-t border-white/10 pt-6">
             {counters.map((c) => (
               <div key={c.label} className="flex flex-col items-center space-y-1 group">
                 <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />

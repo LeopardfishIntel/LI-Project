@@ -67,6 +67,15 @@ function matchCostOfLiving(
   if (!colData || colData.length === 0) return null;
   const normCity = normalize(city);
   const normCountry = normalize(country);
+
+  // Dynamic 2-Tier Resolution for Japan
+  if (normCountry.includes("japan")) {
+    const isGreaterTokyo = ["tokyo", "yokohama", "chiba", "saitama", "kawasaki", "kanto"].some(t => normCity.includes(t));
+    const targetId = isGreaterTokyo ? "tokyo-japan" : "outside-tokyo-japan";
+    const matched = colData.find(c => (c.id || "").toLowerCase() === targetId || (c.flicId || "").toLowerCase() === targetId);
+    if (matched) return matched;
+  }
+
   return (
     colData.find(c => {
       const cCity = normalize(c.city || c.locationName || c.city_name || c.id || '');

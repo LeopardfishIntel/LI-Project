@@ -223,7 +223,10 @@ async function syncSchoolOpenJobCounters(db: any, now: number): Promise<{ synced
       const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
       const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
       const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
-      const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege');
+      const schoolNameUpper = String(cacheDoc.schoolName || cacheDoc.schoolname || cacheDoc.name || "").toUpperCase();
+      const schoolGroupUpper = String(cacheDoc.schoolGroup || cacheDoc.group || "").toUpperCase();
+      const sIdUpper = String(cacheDoc.schoolId || "").toUpperCase();
+      const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege') || schoolGroupUpper.includes('MALVERN') || schoolNameUpper.includes('MALVERN') || ['FLIS0130', 'FLIS0164'].includes(sIdUpper);
       const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
       const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
       const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
