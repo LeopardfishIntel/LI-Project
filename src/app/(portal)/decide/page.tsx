@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
-import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
+import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getInflationRate } from '@/lib/calculations';
 
 const RATES: Record<string, number> = {};
 Object.keys(BASE_RATES).forEach(k => {

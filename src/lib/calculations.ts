@@ -715,3 +715,74 @@ export function getMacroRiskTier(currencyCode: string): 1 | 2 | 3 {
   // Standard free-floating global currencies
   return 1;
 }
+
+export const INFLATION_RATE_MAP: Record<string, string> = {
+  'argentina': '140.0%',
+  'turkey': '61.8%',
+  'nigeria': '33.4%',
+  'egypt': '26.4%',
+  'brazil': '4.1%',
+  'mexico': '4.9%',
+  'south africa': '4.4%',
+  'kenya': '4.3%',
+  'india': '3.6%',
+  'vietnam': '3.2%',
+  'united states': '2.9%',
+  'japan': '2.8%',
+  'south korea': '2.6%',
+  'singapore': '2.4%',
+  'united kingdom': '2.2%',
+  'czech republic': '2.2%',
+  'czechia': '2.2%',
+  'monaco': '2.2%',
+  'france': '2.2%',
+  'germany': '2.2%',
+  'spain': '2.2%',
+  'italy': '2.2%',
+  'netherlands': '2.2%',
+  'austria': '2.2%',
+  'portugal': '2.2%',
+  'united arab emirates': '2.1%',
+  'indonesia': '2.1%',
+  'malaysia': '1.9%',
+  'hong kong': '1.8%',
+  'saudi arabia': '1.6%',
+  'switzerland': '1.3%',
+  'qatar': '1.2%',
+  'thailand': '0.8%',
+  'china': '0.5%',
+};
+
+export function getInflationRate(schoolOrCountryOrCurrency?: any): string {
+  if (!schoolOrCountryOrCurrency) return '2.5%';
+
+  let searchStr = "";
+  if (typeof schoolOrCountryOrCurrency === 'string') {
+    searchStr = schoolOrCountryOrCurrency;
+  } else if (typeof schoolOrCountryOrCurrency === 'object') {
+    if (schoolOrCountryOrCurrency.inflationRate || schoolOrCountryOrCurrency.cpiInflation || schoolOrCountryOrCurrency.inflation) {
+      return String(schoolOrCountryOrCurrency.inflationRate || schoolOrCountryOrCurrency.cpiInflation || schoolOrCountryOrCurrency.inflation);
+    }
+    searchStr = [
+      schoolOrCountryOrCurrency.country,
+      schoolOrCountryOrCurrency.location,
+      schoolOrCountryOrCurrency.city,
+      schoolOrCountryOrCurrency.currencyCode,
+      schoolOrCountryOrCurrency.currency
+    ].filter(Boolean).join(" ");
+  }
+
+  const str = searchStr.toLowerCase();
+  for (const [countryKey, rate] of Object.entries(INFLATION_RATE_MAP)) {
+    if (str.includes(countryKey)) {
+      return rate;
+    }
+  }
+
+  if (str.includes('ars') || str.includes('argentina')) return '140.0%';
+  if (str.includes('try') || str.includes('turkey')) return '61.8%';
+  if (str.includes('egp') || str.includes('egypt')) return '26.4%';
+  if (str.includes('ngn') || str.includes('nigeria')) return '33.4%';
+
+  return '2.5%';
+}
