@@ -1,4 +1,5 @@
 "use client";
+import { isValidJobTitle } from "@/lib/crawler/titleSanitizer";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -108,6 +109,7 @@ export default function Header() {
 
         const sId = (cacheDoc.schoolId || "").toUpperCase().trim();
         if (!sId || sId.startsWith("AGNT") || !schoolDocIds.has(sId)) return;
+        if (!isValidJobTitle(cacheDoc.title || cacheDoc.jobTitle || "")) return;
 
         const jobKey = `${sId.toLowerCase()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
         if (seenJobKeys.has(jobKey)) return;
