@@ -710,7 +710,7 @@ function DecideContent() {
 
                                     <div className="grid grid-cols-4 gap-1.5 py-4 h-14 mt-2 border-y border-white/5">
                                         <ScoreBadge label="Match" score={`${data.matchPercentage}%`} color="#d95f02" />
-                                        <ScoreBadge label="Country" score={data.countryScore} color="#e2e8f0" />
+                                        <ScoreBadge label="Safety" score={data.countryScore} color="#e2e8f0" />
                                         <ScoreBadge label="School" score={data.schoolScore} color="#e2e8f0" />
                                         <div className="flex flex-col items-center justify-center p-2 bg-white/5 border border-white/10 rounded-sm">
                                             <span className="text-[7px] font-black uppercase text-slate-500 mb-1 leading-none">Validation</span>
