@@ -2733,7 +2733,7 @@ function DecoderContent() {
                         </div>
                         {/* 💡 SUB-HEADER EXPLANATION ROW */}
                         <div className="text-left mb-4 overflow-hidden">
-                          <p className="text-[9.5px] sm:text-[10.5px] font-medium text-slate-300 italic tracking-tight whitespace-nowrap">the amount you can allocate to savings, holidays, and wellbeing...</p>
+                          <p className="text-[9.5px] sm:text-[10.5px] font-medium text-slate-300 italic tracking-tight whitespace-nowrap">the amount you can allocate to savings, holidays, and gym membership...</p>
                         </div>
 
                         <div className="flex flex-col items-end">
