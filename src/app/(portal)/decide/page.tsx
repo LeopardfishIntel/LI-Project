@@ -195,7 +195,7 @@ function DecideContent() {
     const [familyStatus, setFamilyStatus] = useState("single");
     const [netSalaries, setNetSalaries] = useState<string[]>(['', '', '']);
     const [manualSalaries, setManualSalaries] = useState<boolean[]>([false, false, false]);
-    const [adjustments, setAdjustments] = useState(Array(3).fill({ second: '0', other: '0', home: '0' }));
+    const [adjustments, setAdjustments] = useState(Array(3).fill({ second: '', other: '', home: '' }));
     const [benchmark, setBenchmark] = useState("GBP");
     const [cardLifestyles, setCardLifestyles] = useState<("Budget" | "Balanced" | "Luxury")[]>(["Balanced", "Balanced", "Balanced"]);
 
@@ -680,14 +680,14 @@ function DecideContent() {
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
-                                                value={adjustments[idx].other} 
+                                                value={adjustments[idx]?.other === '0' ? '' : (adjustments[idx]?.other || '')} 
                                                 placeholder="0"
                                                 onChange={(e) => { 
                                                     const next = [...adjustments]; 
                                                     next[idx] = { ...next[idx], other: e.target.value }; 
                                                     setAdjustments(next); 
                                                 }} 
-                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} 
+                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-slate-300 placeholder:text-slate-500 text-[13px]", noSpinners)} 
                                             />
                                         </div>
                                         <div className="space-y-1">
@@ -696,14 +696,14 @@ function DecideContent() {
                                             </Tooltip>
                                             <Input 
                                                 type="number" 
-                                                value={adjustments[idx].home} 
+                                                value={adjustments[idx]?.home === '0' ? '' : (adjustments[idx]?.home || '')} 
                                                 placeholder="0"
                                                 onChange={(e) => { 
                                                     const next = [...adjustments]; 
                                                     next[idx] = { ...next[idx], home: e.target.value }; 
                                                     setAdjustments(next); 
                                                 }} 
-                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-white text-[13px]", noSpinners)} 
+                                                className={cn("bg-black/40 border-white/5 h-8 text-right font-black text-slate-300 placeholder:text-slate-500 text-[13px]", noSpinners)} 
                                             />
                                         </div>
                                     </div>
