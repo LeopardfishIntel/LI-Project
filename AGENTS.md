@@ -1,9 +1,3 @@
-# Cursor/Agent Privacy and Crawler Directives Guidelines
-
-Every time a new route is added to src/app/, check robots.ts to see if it should be added to the Disallow list based on the project’s privacy guidelines.
-
-Whenever a new public route is added to src/app/, check if it should be included in sitemap.ts to ensure full search engine indexability.
-
 # 🔒 FROZEN MODULES — DO NOT ALTER WITHOUT EXPLICIT PERMISSION
 - src/lib/search/gems.ts
 - src/lib/crawler/adaptors/gems-adaptor.ts
