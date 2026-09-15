@@ -506,13 +506,21 @@ function DecoderContent() {
 
   const getSchoolField = (school: any, keys: string[]) => {
     if (!school) return null;
-    const targetKeys = keys.map(k => k.toLowerCase().replace(/\s+/g, ''));
-    const foundKey = Object.keys(school).find(k => {
-      const cleanK = k.toLowerCase().replace(/\s+/g, '');
-      const val = school[k];
-      return targetKeys.includes(cleanK) && val !== undefined && val !== null && val !== '' && val !== '—';
-    });
-    return foundKey ? school[foundKey] : null;
+    const schoolKeyMap = new Map<string, string>();
+    for (const k of Object.keys(school)) {
+      schoolKeyMap.set(k.toLowerCase().replace(/\s+/g, ''), k);
+    }
+    for (const key of keys) {
+      const cleanKey = key.toLowerCase().replace(/\s+/g, '');
+      const realKey = schoolKeyMap.get(cleanKey);
+      if (realKey !== undefined) {
+        const val = school[realKey];
+        if (val !== undefined && val !== null && val !== '' && val !== '—') {
+          return val;
+        }
+      }
+    }
+    return null;
   };
 
   const activeSchool = useMemo(() => {
@@ -1311,7 +1319,7 @@ function DecoderContent() {
   const usdToLocal = (usdAmount: number) => (usdAmount / (currentRates['USD'] || 1.27)) * (currentRates[currency] || 1.0);
 
   useEffect(() => {
-    const salaryVal = getSchoolField(activeSchool, ['expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'salaryrange', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
+    const salaryVal = getSchoolField(activeSchool, ['expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'salaryrange', 'monthlySalary', 'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd']);
     if (salaryVal) {
       const str = String(salaryVal).trim();
       const isUSD = str.includes("$") || str.toUpperCase().includes("USD") || activeSchool?.salaryCurrency === "USD" || Boolean(activeSchool?.startingSalaryUsd) || Boolean(activeSchool?.expectedSalaryNetUsd);

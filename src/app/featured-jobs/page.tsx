@@ -118,6 +118,7 @@ const getGroupPortalUrl = (groupName: string): string => {
   if (gUpper.includes("UWC") || gUpper.includes("UNITED WORLD COLLEGE")) return "https://uwc.org/careers/vacancies/";
   if (gUpper.includes("ISP") || gUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) return "https://internationalschools.wd3.myworkdayjobs.com/en-US/ISPCareers";
   if (gUpper.includes("GLOBE") || gUpper.includes("GLOBEDUCATE")) return "https://careers.globeducate.com/work-with-us/opportunities-worldwide";
+  if (gUpper.includes("GEMS")) return "https://careers.gemseducation.com";
   return "";
 };
 
@@ -1789,6 +1790,21 @@ export default function FeaturedJobsPage() {
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
+                          {(() => {
+                            const pot = Math.round((job.savingsPotential || (job as any).savingsPotentialSingle || (job as any).est2YrSavingsPot ? ((job as any).est2YrSavingsPot || (job.savingsPotential || 0) * 24) : (job.savingsPotential || 0) * 24));
+                            if (pot <= 0) return null;
+                            return (
+                              <>
+                                <span className="text-slate-600 hidden sm:inline">•</span>
+                                <span 
+                                  className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded shadow-[0_0_8px_rgba(16,185,129,0.1)]"
+                                  title="Projected 2-Year Net Savings Pot"
+                                >
+                                  💰 Est. 2-Yr Pot: ${pot.toLocaleString()} USD
+                                </span>
+                              </>
+                            );
+                          })()}
                           
                         </div>
 
@@ -1887,6 +1903,9 @@ export default function FeaturedJobsPage() {
                                   if (applyUrlLower.includes("teachaway")) {
                                     sMap.set("TEACH AWAY", "Teach Away");
                                   }
+                                  if (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae")) {
+                                    sMap.set("GEMS", "GEMS");
+                                  }
 
                                   rawSources.forEach((s: any) => {
                                     if (!s) return;
@@ -1902,6 +1921,7 @@ export default function FeaturedJobsPage() {
                                     else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
                                     else if (u === "TES") { key = "TES"; label = "TES"; }
                                     else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                                    else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                                     else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
                                     else { key = "DIRECT"; label = "Direct"; }
                                     sMap.set(key, label);
@@ -1910,6 +1930,9 @@ export default function FeaturedJobsPage() {
                                   // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
                                   const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
                                   if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
+                                    sMap.delete("DIRECT");
+                                  }
+                                  if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
                                     sMap.delete("DIRECT");
                                   }
 
@@ -1952,7 +1975,9 @@ export default function FeaturedJobsPage() {
                                           norm === "https://www.searchassociates.com/leadership-vacancies" ||
                                           norm === "https://uwc.org/careers/vacancies" ||
                                           norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
-                                          norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide"
+                                          norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide" ||
+                                          norm === "https://careers.gemseducation.com" ||
+                                          norm === "https://www.gemseducation.com"
                                         );
                                       };
 
@@ -1985,6 +2010,8 @@ export default function FeaturedJobsPage() {
                                         } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
                                           foundUrl = rawUrl;
                                         } else if (srcUpper === "SEARCH ASSOCIATES" && applyUrlLower.includes("searchassociates")) {
+                                          foundUrl = rawUrl;
+                                        } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
                                           foundUrl = rawUrl;
                                         } else if (srcUpper === "DIRECT") {
                                           if (job.schoolWebsite && job.schoolWebsite !== "#") {
@@ -2034,6 +2061,8 @@ export default function FeaturedJobsPage() {
                                             ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
                                             : srcUpper === "GRC"
                                             ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                            : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
+                                            ? "bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20"
                                             : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
                                         )}
                                       >

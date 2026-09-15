@@ -180,8 +180,9 @@ export async function runIngestionPipeline(
     const isUwc = (srcUpper.includes("UWC") || srcUpper.includes("UNITED WORLD COLLEGE") || (record.applyUrl && (record.applyUrl.includes("uwc.org/career/") || record.applyUrl.includes("uwc.org/careers/"))));
     const isIsp = (srcUpper.includes("ISP") || srcUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || (record.applyUrl && record.applyUrl.includes("internationalschools.wd3.myworkdayjobs.com/")));
     const isGlobeducate = (srcUpper.includes("GLOBEDUCATE") || srcUpper.includes("GLOBE") || (record.applyUrl && (record.applyUrl.includes("globeducate.schoolrecruiter.com/") || record.applyUrl.includes("careers.globeducate.com/"))));
+    const isGems = (srcUpper.includes("GEMS") || (record.applyUrl && record.applyUrl.includes("careers.gemseducation.com/")));
 
-    if (!isTes && !isNordAnglia && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobeducate) {
+    if (!isTes && !isNordAnglia && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobeducate && !isGems) {
       rejected++;
       reasons.push(`[UNRECOGNIZED_SOURCE_REJECTED] Discarded "${record.rawTitle}" from source "${record.source}".`);
       continue;
@@ -224,6 +225,9 @@ export async function runIngestionPipeline(
     } else if (isGrc) {
       const grcIdMatch = cleanApplyUrl.match(/\/job-details\/(\d+)/i) || cleanApplyUrl.match(/\/(\d+)\/?$/);
       fp = grcIdMatch ? `fp_${schoolId.toLowerCase()}_${grcIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
+    } else if (isGems) {
+      const gemsIdMatch = cleanApplyUrl.match(/-(\d+)\/?$/);
+      fp = gemsIdMatch ? `fp_${schoolId.toLowerCase()}_gems_${gemsIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
     } else {
       fp = generateJobFingerprint(schoolId, record.rawTitle);
     }

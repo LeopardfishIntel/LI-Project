@@ -36,6 +36,15 @@ export interface RawJobRecord {
 
   /** Status lifecycle: 'approved' | 'pending_review' | 'expired' | 'rejected' */
   status?: 'pending_review' | 'approved' | 'expired' | 'rejected';
+
+  /** Curriculum track: e.g. 'IB DP', 'IGCSE', 'US Curriculum' */
+  curriculum?: string;
+
+  /** Academic start term: e.g. 'August 2026', 'Immediate' */
+  startTerm?: string;
+
+  /** Seniority / phase tier: 'Classroom Teacher' | 'Head of Department (HoD)' | 'SLT / Coordinator' */
+  roleTier?: string;
 }
 
 /**

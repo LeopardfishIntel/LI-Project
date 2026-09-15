@@ -28,55 +28,147 @@ const getCurrencyForCity = (city: string, country: string, colCode?: string) => 
     const c = (city || "").toLowerCase();
     const co = (country || "").toLowerCase();
     if (colCode && colCode !== 'USD') return colCode.toUpperCase();
+    if (co.includes("bahrain") || c.includes("riffa") || c.includes("manama")) return "BHD";
     if (c.includes("prague") || co.includes("czech")) return "CZK";
     if (c.includes("dubai") || c.includes("abu dhabi") || co.includes("emirates")) return "AED";
     if (c.includes("london") || co.includes("united kingdom")) return "GBP";
     if (co.includes("saudi")) return "SAR";
     if (c.includes("doha") || co.includes("qatar")) return "QAR";
+    if (co.includes("kuwait")) return "KWD";
+    if (co.includes("oman") || c.includes("muscat")) return "OMR";
+    if (co.includes("jordan") || c.includes("amman")) return "JOD";
+    if (co.includes("egypt") || c.includes("cairo")) return "EGP";
+    if (co.includes("switzerland") || co.includes("swiss")) return "CHF";
+    if (co.includes("austria") || co.includes("belgium") || co.includes("germany") || co.includes("spain") || co.includes("france") || co.includes("netherlands") || co.includes("portugal") || co.includes("italy")) return "EUR";
     if (co.includes("hong kong")) return "HKD";
     if (co.includes("singapore")) return "SGD";
     if (co.includes("china")) return "CNY";
     if (co.includes("thailand")) return "THB";
     if (co.includes("malaysia")) return "MYR";
+    if (co.includes("japan")) return "JPY";
+    if (co.includes("korea")) return "KRW";
+    if (co.includes("vietnam")) return "VND";
+    if (co.includes("indonesia")) return "IDR";
+    if (co.includes("brazil")) return "BRL";
+    if (co.includes("mexico")) return "MXN";
     return colCode?.toUpperCase() || "USD";
 };
 
-
-
-
 const HOUSEHOLD_OPTIONS = FAMILY_PROFILES.map(p => p.value);
-const BONUS_REGISTRY: Record<string, number> = { "austria": 0.166, "germany": 0.083, "china": 0.083, "spain": 0.166, "japan": 0.166, "belgium": 0.166 };
+const BONUS_REGISTRY: Record<string, number> = {};
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
-function getSchoolField(school: any, keys: string[]) {
-    if (!school) return null;
-    const foundKey = Object.keys(school).find(k => keys.includes(k.toLowerCase().trim()));
-    return foundKey ? school[foundKey] : null;
+
+function shortenSchoolName(name: string): string {
+    if (!name) return "";
+    let s = String(name).trim();
+    if (s.length <= 18) return s;
+    s = s.replace(/\bInternational School\b/gi, "Int'l Sch.")
+         .replace(/\bInternational\b/gi, "Int'l")
+         .replace(/\bSchool\b/gi, "Sch.")
+         .replace(/\bCollege\b/gi, "Coll.")
+         .replace(/\bAcademy\b/gi, "Acad.")
+         .replace(/\bElementary\b/gi, "Elem.")
+         .replace(/\bSecondary\b/gi, "Sec.")
+         .replace(/\bHigh School\b/gi, "HS")
+         .replace(/\bBritish\b/gi, "Brit.")
+         .replace(/\bSaint\b/gi, "St.");
+    return s;
 }
 
-function getLocalSalaryForSchool(school: any, rate: number): string {
-    const raw = String(school?.salaryRange || school?.salary || school?.netbase || "").trim();
-    if (!raw) return Math.round(4500 * rate).toString();
-
-    const cleanRange = raw.replace(/,/g, '').replace(/\.\d+/g, '');
-    const range = cleanRange.match(/\d+/g);
-    const med = range ? (range.length > 1 ? (parseFloat(range[0]) + parseFloat(range[1])) / 2 : parseFloat(range[0])) : 4500;
-
-    const isUSD = /\bUSD\b|\$/i.test(raw);
-    const hasExplicitLocalCode = /(OMR|AED|SAR|QAR|CZK|EUR|GBP|SGD|HKD|THB|MYR|JPY|KRW|INR|EGP|BHD|KWD|ARS|BRL|MXN|COP|VND|IDR|DKK|CHF)/i.test(raw);
-
-    if (hasExplicitLocalCode || (!isUSD && med > 10000)) {
-        let monthly = med;
-        const isExplicitMonthly = /month|monthly|\/mo/i.test(raw);
-        const isExplicitAnnual = /year|annual|\/yr|\/annum/i.test(raw);
-        if ((monthly >= 10000 && !isExplicitMonthly && rate < 100) || isExplicitAnnual) {
-            monthly = Math.round(monthly / 12);
+function shortenHousingProvision(provision: string): string {
+    if (!provision) return "Not Included";
+    const raw = String(provision).trim();
+    const l = raw.toLowerCase();
+    
+    if (l.includes("provided") || l.includes("furnished") || l.includes("accommodation")) {
+        let type = "";
+        if (l.includes("villa") || l.includes("house")) type = "Villa";
+        else if (l.includes("apartment") || l.includes("flat")) type = "Flat";
+        
+        if (l.includes("allowance")) {
+            return type ? `Provided (${type}) / Allowance` : "Provided / Allowance";
         }
-        return Math.round(monthly).toString();
+        return type ? `Provided (${type})` : "Provided";
+    }
+    
+    if (l.includes("allowance")) return "Housing Allowance";
+    if (l.includes("subsidis") || l.includes("subsidiz")) return "Subsidised";
+    if (l.includes("none") || l.includes("not")) return "Not Included";
+    
+    return raw.length > 22 ? `${raw.slice(0, 22)}...` : raw;
+}
+function getSchoolField(school: any, keys: string[]) {
+    if (!school) return null;
+    const schoolKeyMap = new Map<string, string>();
+    for (const k of Object.keys(school)) {
+        schoolKeyMap.set(k.toLowerCase().trim(), k);
+    }
+    for (const key of keys) {
+        const found = schoolKeyMap.get(key.toLowerCase().trim());
+        if (found !== undefined && school[found] !== null && school[found] !== undefined && school[found] !== "") {
+            return school[found];
+        }
+    }
+    return null;
+}
+
+function getLocalSalaryForSchool(school: any, currency: string, currentRates: Record<string, number>): string {
+    if (!school) return "0";
+    const rawVal = getSchoolField(school, [
+      'expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'salaryrange', 'monthlySalary',
+      'salary', 'netbase', 'netmonthlyusd', 'salaryrangeusd', 'startingSalaryBA', 'startingSalaryMA'
+    ]);
+    const raw = (rawVal && rawVal !== "undefined" && rawVal !== "null") ? String(rawVal).trim() : "";
+    
+    const fallbackUSD = 4200;
+    const gbpRate = currentRates[currency] || 1.0;
+    const usdRate = currentRates['USD'] || 1.27;
+    const fallbackLocal = Math.round((fallbackUSD / usdRate) * gbpRate);
+    
+    if (!raw || raw === "0") return fallbackLocal.toString();
+
+    // Sanitize commas, trailing decimal cents, and k notation
+    const cleanRaw = raw
+      .replace(/,/g, '')
+      .replace(/\.\d+/g, '')
+      .replace(/(\d+)\s*k\b/gi, '$1000');
+
+    const matches = cleanRaw.match(/\d+/g);
+    if (!matches || matches.length === 0) return fallbackLocal.toString();
+
+    // Filter out small auxiliary numbers like 14 in '14 times/year'
+    const numbers = matches.map(Number).filter(n => n > 50 || matches.length === 1);
+    if (numbers.length === 0) return fallbackLocal.toString();
+
+    const isSingleOrStarting = /starting|expected|5year|entry/i.test(
+      String(getSchoolField(school, ['expectedSalary5Years', 'salary5YearsExp', 'startingSalary', 'startingSalaryBA', 'startingSalaryMA']) || '')
+    );
+    let med = (numbers.length > 1 && !isSingleOrStarting) ? (numbers[0] + numbers[1]) / 2 : numbers[0];
+    if (isNaN(med) || med <= 0) med = fallbackUSD;
+
+    const lower = raw.toLowerCase();
+    const isUSD = /\b(usd|us\$)\b|\$/i.test(raw) || school?.salaryCurrency === "USD" || Boolean(school?.startingSalaryUsd) || Boolean(school?.expectedSalaryNetUsd);
+
+    const isExplicitAnnual = /year|annual|\/yr|\/year|gross\/yr|\/annum|p\.a\.|times\/year|month payroll/i.test(lower);
+    const isExplicitMonthly = /month|monthly|\/\s*mo|\bmo\b/i.test(lower);
+    const is14Month = /14-month|14 times/i.test(lower);
+    const monthsPerYear = is14Month ? 14 : 12;
+
+    const highValCurrencies = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR'];
+    const isHighVal = highValCurrencies.includes(currency) || isUSD;
+    const isAnnualVal = isHighVal ? med >= 10000 : med >= 120000;
+
+    let monthly = med;
+    if ((isExplicitAnnual || isAnnualVal) && !isExplicitMonthly) {
+        monthly = Math.round(monthly / monthsPerYear);
     }
 
-    // Salary is specified in USD (e.g. USD 2,400 - 3,200 / mo or $3,500/mo) -> convert to local currency
-    return Math.round(med * rate).toString();
+    if (isUSD && currency !== "USD") {
+        monthly = Math.round((monthly / usdRate) * gbpRate);
+    }
+
+    return monthly.toString();
 }
 
 
@@ -203,16 +295,17 @@ function DecideContent() {
     const [aiBriefing, setAiBriefing] = useState<any>(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData arrival)
+    // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData / school selection arrival)
     useEffect(() => {
         if (schools.length === 0 || colData.length === 0 || !mounted) return;
 
         let changed = false;
         const nextSalaries = [...netSalaries];
         const nextCountries = [...selectedCountries];
+        const nextManual = [...manualSalaries];
 
         selectedIds.forEach((id, index) => {
-            if (!id || manualSalaries[index]) return;
+            if (!id) return;
 
             const school = schools.find((s: any) => s.id === id);
             if (!school) return;
@@ -222,11 +315,16 @@ function DecideContent() {
             const col = findCostOfLiving(sCity, sCountry, colData);
 
             const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
-            const rate = currentRates[cCode] || 1.0;
 
-            const localSalary = getLocalSalaryForSchool(school, rate);
-            if (nextSalaries[index] !== localSalary) {
+            const localSalary = getLocalSalaryForSchool(school, cCode, currentRates);
+            const currentVal = nextSalaries[index];
+            const isZeroOrInvalid = !currentVal || currentVal === "0" || currentVal === "0.00" || parseFloat(currentVal) === 0;
+
+            if (isZeroOrInvalid || (!manualSalaries[index] && currentVal !== localSalary)) {
                 nextSalaries[index] = localSalary;
+                if (isZeroOrInvalid) {
+                    nextManual[index] = false;
+                }
                 changed = true;
             }
             if (nextCountries[index] !== school.country) {
@@ -238,8 +336,9 @@ function DecideContent() {
         if (changed) {
             setNetSalaries(nextSalaries);
             setSelectedCountries(nextCountries);
+            setManualSalaries(nextManual);
         }
-    }, [schools, colData, selectedIds, manualSalaries, mounted, currentRates]);
+    }, [schools, colData, selectedIds, manualSalaries, netSalaries, mounted, currentRates]);
 
     useEffect(() => { setMounted(true); }, []);
 
@@ -281,22 +380,28 @@ function DecideContent() {
                 setFamilyStatus(matched.value);
             }
             if (savedAdj) setAdjustments(JSON.parse(savedAdj));
-            setManualSalaries(savedManual);
 
             const finalSalaries = [...savedNet];
+            const finalManual = [...savedManual];
+
             finalIds.forEach((id, idx) => {
-                if (id && !savedManual[idx]) {
+                const isZero = !finalSalaries[idx] || finalSalaries[idx] === "0" || parseFloat(finalSalaries[idx]) === 0;
+                if (isZero) {
+                    finalManual[idx] = false;
+                }
+                if (id && !finalManual[idx]) {
                     const s = schools.find((item: any) => item.id === id);
                     if (!s) return;
                     const sCity = String(getSchoolField(s, ['city', 'town', 'location']) || '');
                     const sCountry = String(getSchoolField(s, ['country', 'region']) || '');
                     const col = findCostOfLiving(sCity, sCountry, colData);
                     const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
-                    const rate = currentRates[cCode] || 1.0;
 
-                    finalSalaries[idx] = getLocalSalaryForSchool(s, rate);
+                    finalSalaries[idx] = getLocalSalaryForSchool(s, cCode, currentRates);
                 }
             });
+
+            setManualSalaries(finalManual);
             setNetSalaries(finalSalaries);
         }
     }, [mounted, schools, colData, searchParams, currentRates]);
@@ -319,7 +424,6 @@ function DecideContent() {
             const sCountry = String(getSchoolField(school, ['country', 'region']) || '');
             const col = findCostOfLiving(sCity, sCountry, colData);
             const cCode = getCurrencyForCity(sCity, sCountry, col?.currencyCode);
-            const rate = currentRates[cCode] || 1.0;
 
             // 🎯 MEDIAN SALARY LOGIC (Midpoint of Range)
             // Reset manual flag on new selection to allow median auto-fill
@@ -328,7 +432,7 @@ function DecideContent() {
             setManualSalaries(nextM);
 
             const nextSalaries = [...netSalaries];
-            nextSalaries[index] = getLocalSalaryForSchool(school, rate);
+            nextSalaries[index] = getLocalSalaryForSchool(school, cCode, currentRates);
             setNetSalaries(nextSalaries);
 
             const nextCountries = [...selectedCountries]; nextCountries[index] = school.country; setSelectedCountries(nextCountries);
@@ -405,7 +509,10 @@ function DecideContent() {
             const rate = currentRates[currency] || 1.0;
             const salaryIn = parseFloat(netSalaries[index]) || 0;
             const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
-            const totalLocalIn = salaryIn + (salaryIn * (BONUS_REGISTRY[bonusKey] ?? 0)) + (parseFloat(adjustments[index].other) || 0);
+            const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
+            const bonusAmount = salaryIn * bonusPct;
+            const otherIncome = parseFloat(adjustments[index].other) || 0;
+            const totalLocalIn = salaryIn + bonusAmount + otherIncome;
 
             // 🏠 DYNAMIC HOUSING ENGINE
             const provision = String(getSchoolField(school, ['housingprovision', 'housing', 'accommodation']) || '');
@@ -503,10 +610,11 @@ function DecideContent() {
 
             return {
                 school, surplusLocal, totalLocalIn, totalLocalCost, currency, rate, matchPercentage: matchScore, workload, housingNote, provision,
+                salaryIn, bonusPct, bonusAmount, otherIncome,
                 countryScore: (rawSafety / 10).toFixed(1), schoolScore: (careerW / 3).toFixed(1),
                 surplusUSD: surplusLocal / rate, savingsRate: totalLocalIn > 0 ? Math.round((surplusLocal / totalLocalIn) * 100) : 0,
                 surplusBenchmark: (surplusLocal / rate) * (currentRates[benchmark] || (benchmark === 'EUR' ? 0.93 : benchmark === 'USD' ? 1.0 : 0.79)),
-                savings3Year: surplusLocal * 36,
+                savings2Year: surplusLocal * 24,
                 costs: {
                     rent: rentLocal,
                     groceries: groceryLocal,
@@ -529,6 +637,16 @@ function DecideContent() {
     const ranked = useMemo(() => shootoutMatrix.filter((item): item is NonNullable<typeof item> => item !== null).sort((a, b) => b.matchPercentage - a.matchPercentage), [shootoutMatrix]);
     const topPickId = ranked[0]?.school.id;
     const detailedConclusion = useMemo(() => generateDetailedConclusion(ranked), [ranked]);
+
+    const maxIncomeSubLines = useMemo(() => {
+        return Math.max(0, ...shootoutMatrix.map(d => {
+            if (!d) return 0;
+            let count = 0;
+            if (d.bonusPct > 0) count++;
+            if (d.otherIncome !== 0) count++;
+            return count;
+        }));
+    }, [shootoutMatrix]);
 
     if (!mounted || apiLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02] size-10" /></div>;
 
@@ -612,9 +730,18 @@ function DecideContent() {
                                         Monthly income ({shootoutMatrix[i]?.currency || 'Local'})
                                     </Label>
                                     {selectedIds[i] && (
-                                        <Tooltip text={!manualSalaries[i] 
-                                            ? "This is the estimated median salary for this school. You can override it by typing in a different amount." 
-                                            : "You have overridden the estimated median salary. Clear this input to revert to the default median."}>
+                                        <Tooltip text={(() => {
+                                            const school = schools?.find((s: any) => s.id === selectedIds[i]);
+                                            const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
+                                            const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
+                                            let baseMsg = !manualSalaries[i] 
+                                                ? "Estimated base median salary for this school." 
+                                                : "User-overridden base salary.";
+                                            if (bonusPct > 0) {
+                                                baseMsg += ` Mandatory regional bonuses (+${(bonusPct * 100).toFixed(1)}%) are amortized into Total Monthly Income below.`;
+                                            }
+                                            return baseMsg;
+                                        })()}>
                                             <Info className="size-3.5 cursor-help text-slate-400" />
                                         </Tooltip>
                                     )}
@@ -626,7 +753,8 @@ function DecideContent() {
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         const next = [...netSalaries]; next[i] = val; setNetSalaries(next);
-                                        const nextM = [...manualSalaries]; nextM[i] = val !== ""; setManualSalaries(nextM);
+                                        const isZero = !val || val === "0" || val === "0.00" || parseFloat(val) === 0;
+                                        const nextM = [...manualSalaries]; nextM[i] = !isZero; setManualSalaries(nextM);
                                     }}
                                     className={cn(
                                         "bg-black/40 h-7 w-28 text-right font-black text-[12px] pr-2 rounded-sm",
@@ -651,12 +779,17 @@ function DecideContent() {
                             {data ? (
                                 <>
                                     <div className="flex flex-col gap-1">
-                                        <div className="h-[72px] flex items-start pt-1">
-                                            <h2 className="text-[17px] md:text-[28px] font-black text-[#d95f02] italic tracking-tighter leading-tight line-clamp-2">{data.school.schoolname}</h2>
+                                        <div className="h-9 flex items-center pt-1 overflow-hidden">
+                                            <h2 className="text-base md:text-[21px] font-black text-[#d95f02] italic tracking-tighter leading-none whitespace-nowrap truncate w-full" title={data.school.schoolname}>
+                                                {shortenSchoolName(data.school.schoolname)}
+                                            </h2>
                                         </div>
-                                        <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 mt-1 h-6">
-                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
-                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5"><Home className="size-3 text-[#d95f02]" /> {data.school.housingprovision}</span>
+                                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 mt-1 h-6">
+                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5 shrink-0"><Clock className="size-3 text-[#007FFF]" /> ~{data.workload} hrs/wk</span>
+                                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/5 shrink-0 max-w-[220px]" title={data.school.housingprovision}>
+                                                <Home className="size-3 text-[#d95f02] shrink-0" />
+                                                <span className="truncate">{shortenHousingProvision(data.school.housingprovision)}</span>
+                                            </span>
                                         </div>
                                     </div>
 
@@ -752,51 +885,65 @@ function DecideContent() {
                                             <span>{data.currency}</span>
                                         </div>
                                         <div className="space-y-1.5 text-[11px] font-bold">
-                                            <div className="flex justify-between items-center p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-sm mb-3">
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="text-emerald-400 uppercase text-[9px] font-black tracking-widest">Total Monthly Income</span>
-                                                    {(() => {
-                                                        const bonusKey = String(getSchoolField(data.school, ['country', 'region']) || '').toLowerCase();
-                                                        const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
-                                                        if (bonusPct > 0) {
-                                                            const tooltipText = bonusKey === 'austria' || bonusKey === 'spain' || bonusKey === 'japan' || bonusKey === 'belgium'
+                                            <div className={cn(
+                                                "p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-sm mb-3 flex flex-col justify-between transition-all",
+                                                maxIncomeSubLines === 1 && "min-h-[72px]",
+                                                maxIncomeSubLines === 2 && "min-h-[92px]"
+                                            )}>
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="text-emerald-400 uppercase text-[9px] font-black tracking-widest">Total Monthly Income</span>
+                                                        {data.bonusPct > 0 && (
+                                                            <Tooltip text={data.bonusPct >= 0.15
                                                                 ? "Includes mandatory 13th and 14th month salary payments (amortized monthly: +16.6%)."
-                                                                : `Includes 13th month salary payment (amortized monthly: +${(bonusPct * 100).toFixed(1)}%).`;
-                                                            return (
-                                                                <Tooltip text={tooltipText}>
-                                                                    <Info className="size-3 text-emerald-400/80 cursor-help hover:text-emerald-300 transition-colors" />
-                                                                </Tooltip>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    })()}
+                                                                : `Includes 13th month salary payment (amortized monthly: +${(data.bonusPct * 100).toFixed(1)}%).`}>
+                                                                <Info className="size-3 text-emerald-400/80 cursor-help hover:text-emerald-300 transition-colors" />
+                                                            </Tooltip>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-emerald-400 text-base font-black italic">{data.currency} {Math.round(data.totalLocalIn).toLocaleString()}</span>
                                                 </div>
-                                                <span className="text-emerald-400 text-base font-black italic">{Math.round(data.totalLocalIn).toLocaleString()}</span>
+                                                {(data.bonusPct > 0 || data.otherIncome !== 0) && (
+                                                    <div className="pt-1.5 mt-1 border-t border-emerald-500/20 text-[10px] space-y-0.5 font-medium text-emerald-300/80">
+                                                        {data.bonusPct > 0 && (
+                                                            <div className="flex justify-between">
+                                                                <span>Base ({data.currency} {Math.round(data.salaryIn).toLocaleString()}) + 13th/14th Month (+{(data.bonusPct * 100).toFixed(1)}%):</span>
+                                                                <span className="font-bold">+{data.currency} {Math.round(data.bonusAmount).toLocaleString()}</span>
+                                                            </div>
+                                                        )}
+                                                        {data.otherIncome !== 0 && (
+                                                            <div className="flex justify-between">
+                                                                <span>{data.bonusPct === 0 ? `Base (${data.currency} ${Math.round(data.salaryIn).toLocaleString()}) + Other Income:` : "Other Income / Adjustments:"}</span>
+                                                                <span className="font-bold">{data.otherIncome > 0 ? `+${data.currency} ${Math.round(data.otherIncome).toLocaleString()}` : `${data.currency} ${Math.round(data.otherIncome).toLocaleString()}`}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="flex justify-between text-slate-400 px-1">
                                                 <Tooltip text={`Estimated rent based on specific household profile.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-20%" : "+30%"})` : ""}`}>
                                                     <span className="cursor-help border-b border-dotted border-slate-500">Accommodation</span>
                                                 </Tooltip>
-                                                <span className="text-white font-black">{Math.round(data.costs.rent).toLocaleString()}</span>
+                                                <span className="text-white font-black">{data.currency} {Math.round(data.costs.rent).toLocaleString()}</span>
                                             </div>
                                             <div className="flex justify-between text-slate-400 px-1">
                                                 <Tooltip text={`Estimated grocery and food budget.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-10%" : "+10%"})` : ""}`}>
                                                     <span className="cursor-help border-b border-dotted border-slate-500">Groceries</span>
                                                 </Tooltip>
-                                                <span className="text-white font-black">{Math.round(data.costs.groceries).toLocaleString()}</span>
+                                                <span className="text-white font-black">{data.currency} {Math.round(data.costs.groceries).toLocaleString()}</span>
                                             </div>
-                                            <div className="flex justify-between text-slate-400 px-1"><span>Utilities & Net</span><span className="text-white font-black">{Math.round(data.costs.utilities + data.costs.connectivity).toLocaleString()}</span></div>
-                                            <div className="flex justify-between text-slate-400 px-1"><span>Transport</span><span className="text-white font-black">{Math.round(data.costs.transport).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Utilities & Net</span><span className="text-white font-black">{data.currency} {Math.round(data.costs.utilities + data.costs.connectivity).toLocaleString()}</span></div>
+                                            <div className="flex justify-between text-slate-400 px-1"><span>Transport</span><span className="text-white font-black">{data.currency} {Math.round(data.costs.transport).toLocaleString()}</span></div>
                                             <div className="flex justify-between text-slate-400 px-1 border-b border-white/5 pb-2">
                                                 <Tooltip text={`Discretionary leisure, dining, and socialising budget.${cardLifestyles[idx] !== "Balanced" ? ` (${cardLifestyles[idx]} Mode: ${cardLifestyles[idx] === "Budget" ? "-40%" : "+80%"})` : ""}`}>
                                                     <span className="cursor-help border-b border-dotted border-slate-500">Social & Other</span>
                                                 </Tooltip>
-                                                <span className="text-white font-black">{Math.round(data.costs.social).toLocaleString()}</span>
+                                                <span className="text-white font-black">{data.currency} {Math.round(data.costs.social).toLocaleString()}</span>
                                             </div>
                                         </div>
                                         <div className="pt-2 flex justify-between items-center px-1">
                                             <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Total Monthly Outgoings</span>
-                                            <span className="text-sm font-black text-rose-400 tabular-nums">{Math.round(data.totalLocalCost).toLocaleString()}</span>
+                                            <span className="text-sm font-black text-rose-400 tabular-nums">{data.currency} {Math.round(data.totalLocalCost).toLocaleString()}</span>
                                         </div>
                                     </div>
 
@@ -816,45 +963,50 @@ function DecideContent() {
                                             </div>
                                         </div>
 
-                                        {/* 💰 3-YEAR WEALTH POT */}
-                                        <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings3Year > 0 ? "bg-[#d95f02]/10 border-[#d95f02]/30" : "bg-rose-500/10 border-rose-500/50")}>
+                                        {/* 💰 2-YEAR WEALTH POT */}
+                                        <div className={cn("p-3.5 border rounded-sm flex flex-col gap-2 justify-center", data.savings2Year > 0 ? "bg-[#d95f02]/10 border-[#d95f02]/30" : "bg-rose-500/10 border-rose-500/50")}>
                                             <div className="flex items-center justify-between">
-                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings3Year > 0 ? "text-[#f5f5f5]" : "text-rose-500")} >3-Year Bankable Pot</p>
-                                                <p className={cn("text-[14px] font-black italic tabular-nums leading-none", data.savings3Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings3Year).toLocaleString()}</p>
+                                                <p className={cn("text-[12px] font-black uppercase tracking-wider italic leading-none", data.savings2Year > 0 ? "text-[#f5f5f5]" : "text-rose-500")} >2-Year Bankable Pot</p>
+                                                <p className={cn("text-[14px] font-black italic tabular-nums leading-none", data.savings2Year > 0 ? "text-emerald-400" : "text-rose-500")}>{data.currency} {Math.round(data.savings2Year).toLocaleString()}</p>
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <p className="text-[12px] font-bold text-slate-400 italic leading-none">Projected assets at contract end.</p>
-                                                <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings3Year / data.rate) * (currentRates[benchmark] || (benchmark === 'EUR' ? 0.93 : benchmark === 'USD' ? 1.0 : 0.79))).toLocaleString()}</p>
+                                                <p className="text-[12px] font-bold text-slate-400 leading-none">{benchmark} {Math.round((data.savings2Year / data.rate) * (currentRates[benchmark] || (benchmark === 'EUR' ? 0.93 : benchmark === 'USD' ? 1.0 : 0.79))).toLocaleString()}</p>
                                             </div>
                                         </div>
 
                                         {/* 💱 Currency stability advisory to guide teachers through local currency quirks */}
                                         {(() => {
                                             const riskLevel = getMacroRiskTier(data.currency);
+                                            const infRate = getInflationRate(data.school?.country || data.school || data.currency);
                                             switch (riskLevel) {
                                                 case 1:
                                                     return (
-                                                        <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: {data.currency} is a free-floating currency. These estimates use live conversion rates. Your actual savings will shift slightly up or down with standard exchange rate changes.
-                                                        </p>
+                                                        <div className="mt-2.5 flex justify-center items-center">
+                                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 border border-sky-500/20 rounded-full text-[9px] font-bold text-sky-400">
+                                                                <Globe2 className="size-3 text-sky-400 shrink-0" />
+                                                                <span>Free-Floating ({data.currency}) • Inflation {infRate}</span>
+                                                            </span>
+                                                        </div>
                                                     );
                                                 case 2:
                                                     return (
-                                                        <p className="text-[11px] text-slate-300 font-medium leading-relaxed mt-1">
-                                                            Note: {data.currency} is pegged to the US Dollar. Because this currency is locked to the USD, your savings will follow US exchange rate trends. If the Pound gets stronger, your converted savings total will shrink.
-                                                        </p>
+                                                        <div className="mt-2.5 flex justify-center items-center">
+                                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[9px] font-bold text-emerald-400">
+                                                                <Lock className="size-3 text-emerald-400 shrink-0" />
+                                                                <span>USD Pegged ({data.currency}) • Inflation {infRate}</span>
+                                                            </span>
+                                                        </div>
                                                     );
-                                                                                                 case 3: {
-                                                     const infRate = getInflationRate(data.school || data.currency);
-                                                     return (
-                                                         <div className="mt-2.5 flex items-center">
-                                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-500/15 border border-rose-500/30 rounded-full text-[10px] font-black uppercase text-rose-400 tracking-wider shadow-sm animate-pulse">
-                                                                 <AlertTriangle className="size-3 text-rose-400 shrink-0" />
-                                                                 <span>Currency Alert — Inflation {infRate}</span>
-                                                             </span>
-                                                         </div>
-                                                     );
-                                                 }
+                                                case 3:
+                                                    return (
+                                                        <div className="mt-2.5 flex justify-center items-center">
+                                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-500/15 border border-rose-500/30 rounded-full text-[10px] font-black uppercase text-rose-400 tracking-wider shadow-sm animate-pulse">
+                                                                <AlertTriangle className="size-3 text-rose-400 shrink-0" />
+                                                                <span>Currency Alert — Inflation {infRate}</span>
+                                                            </span>
+                                                        </div>
+                                                    );
                                                 default:
                                                     return null;
                                             }
@@ -955,32 +1107,60 @@ function DecideContent() {
                                         className={cn(
                                             "p-4 rounded-sm border flex flex-col justify-between transition-all relative overflow-hidden",
                                             isWinner 
-                                                ? "bg-emerald-500/5 border-emerald-500/40 shadow-lg shadow-emerald-950/20" 
-                                                : "bg-white/[0.02] border-white/5 hover:border-white/10"
+                                                ? "bg-emerald-500/[0.04] border-emerald-500/30 shadow-lg shadow-emerald-950/20" 
+                                                : "bg-white/[0.02] border-white/10 hover:border-white/15"
                                         )}
                                     >
                                         {/* Top Section */}
                                         <div className="space-y-2.5 flex-grow pb-4">
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center justify-between gap-2">
                                                 <span className={cn(
-                                                    "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm border",
+                                                    "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-sm border shrink-0",
                                                     isWinner 
-                                                        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
-                                                        : "bg-white/5 text-slate-400 border-white/5"
+                                                        ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" 
+                                                        : "bg-white/5 text-slate-400 border-white/10"
                                                 )}>
                                                     {isWinner ? "🏆 Best Choice" : `Option #${idx + 1}`}
                                                 </span>
-                                                <span className={cn("text-xs font-black italic tracking-tight", isWinner ? "text-emerald-400" : "text-white")}>
-                                                    {item.matchPercentage}% Match
-                                                </span>
+                                                <div className="flex items-center gap-2">
+                                                    {(() => {
+                                                        const riskLevel = getMacroRiskTier(item.currency);
+                                                        const infRate = getInflationRate(item.school?.country || item.school || item.currency);
+                                                        if (riskLevel === 3) {
+                                                            return (
+                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-rose-500/15 border border-rose-500/30 rounded-full text-[8px] font-black uppercase text-rose-400 tracking-wider animate-pulse">
+                                                                    <AlertTriangle className="size-2.5 text-rose-400 shrink-0" />
+                                                                    <span>Inflation {infRate}</span>
+                                                                </span>
+                                                            );
+                                                        }
+                                                        if (riskLevel === 2) {
+                                                            return (
+                                                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-sky-500/10 border border-sky-500/20 rounded-full text-[8px] font-bold text-sky-400">
+                                                                    <Lock className="size-2 text-sky-400 shrink-0" />
+                                                                    <span>USD Pegged ({infRate})</span>
+                                                                </span>
+                                                            );
+                                                        }
+                                                        return (
+                                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-white/5 border border-white/10 rounded-full text-[8px] font-bold text-slate-400">
+                                                                <Globe2 className="size-2 text-slate-400 shrink-0" />
+                                                                <span>Inf {infRate}</span>
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                    <span className={cn("text-xs font-black italic tracking-tight shrink-0", isWinner ? "text-emerald-400" : "text-slate-300")}>
+                                                        {item.matchPercentage}% Match
+                                                    </span>
+                                                </div>
                                             </div>
 
-                                            <h4 className="text-sm font-black text-white italic tracking-tight leading-snug">
-                                                {sName}
+                                            <h4 className={cn("text-sm font-black italic tracking-tight leading-none whitespace-nowrap truncate w-full", isWinner ? "text-white" : "text-slate-200")} title={sName}>
+                                                {shortenSchoolName(sName)}
                                             </h4>
 
                                             <p className="text-xs text-slate-300 font-medium leading-relaxed">
-                                                <strong className={isWinner ? "text-emerald-400" : "text-slate-200"}>
+                                                <strong className={isWinner ? "text-emerald-400 font-bold" : "text-slate-200 font-bold"}>
                                                     {isWinner ? "Why it wins: " : "Why it works: "}
                                                 </strong>
                                                 {summaryText}
@@ -990,22 +1170,45 @@ function DecideContent() {
                                         {/* Pinned Bottom Container (Benefit Pills + Footer) */}
                                         <div className="mt-auto space-y-3">
                                             <div className="flex flex-wrap items-center gap-1.5 min-h-[26px]">
-                                                <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                <span className={cn(
+                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                    isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
+                                                )}>
                                                     🩺 {healthLabel}
                                                 </span>
-                                                <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                <span className={cn(
+                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                    isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
+                                                )}>
                                                     ✈️ {flightLabel}
                                                 </span>
                                                 {item.benefits.tuition && (
-                                                    <span className="text-[9px] font-bold text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded-sm flex items-center gap-1">
+                                                    <span className={cn(
+                                                        "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                        isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
+                                                    )}>
                                                         🎓 {tuitionLabel}
                                                     </span>
                                                 )}
                                             </div>
 
                                             <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
-                                                <span>Surplus: <strong className="text-white">{item.currency} {surplusFormatted}</strong></span>
-                                                <span>Housing: <strong className={isProvided ? "text-emerald-400" : "text-white"}>{isProvided ? "Provided (ARS 0)" : "Allowance"}</strong></span>
+                                                <span>
+                                                    Surplus: <strong className={cn(
+                                                        item.surplusLocal < 0 
+                                                            ? "text-rose-400" 
+                                                            : isWinner 
+                                                                ? "text-emerald-400" 
+                                                                : "text-slate-200"
+                                                    )}>{item.currency} {surplusFormatted}</strong>
+                                                </span>
+                                                <span>
+                                                    Housing: <strong className={cn(
+                                                        isWinner 
+                                                            ? (isProvided ? "text-emerald-400" : "text-emerald-300/80") 
+                                                            : "text-slate-200"
+                                                    )}>{isProvided ? `Provided (${item.currency} 0)` : "Allowance"}</strong>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
