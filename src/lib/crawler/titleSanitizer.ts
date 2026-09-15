@@ -58,7 +58,7 @@ export function sanitizeJobTitle(title: string, schoolName?: string): string {
   return clean || title.trim();
 }
 
-const TEACHING_ROLE_REGEX = /\b(teacher|head\s+of|director|principal|vice\s+principal|deputy\s+head|coordinator|counselor|counsellor|instructor|lecturer|professor|educator|assistant\s+principal|librarian|coach|tutor|specialist|leader|leadership|headmaster|headmistress|superintendent|intern|apprentice|practitioner)\b/i;
+const TEACHING_ROLE_REGEX = /\b(teacher|head\s+of|director|principal|vice\s+principal|deputy\s+head|coordinator|counselor|counsellor|advisor|adviser|instructor|lecturer|professor|educator|assistant\s+principal|librarian|coach|tutor|specialist|leader|leadership|headmaster|headmistress|superintendent|intern|apprentice|practitioner)\b/i;
 const ACADEMIC_SUBJECT_REGEX = /\b(maths?|mathematics|english|science|physics|chemistry|biology|history|geography|art|music|drama|pe|physical education|computing|computer science|spanish|french|german|mandarin|chinese|humanities|economics|business|psychology|sociology)\b/i;
 
 export function isValidJobTitle(title: string): boolean {
