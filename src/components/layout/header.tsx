@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User as UserIcon, LogOut, LogIn, Menu, X, RefreshCw, AlertTriangle, CheckCircle2, ShieldCheck, Database, Wrench } from "lucide-react"; 
+import { User as UserIcon, LogOut, LogIn, Menu, X, RefreshCw, AlertTriangle, CheckCircle2, ShieldCheck, Database, Wrench, ChevronDown, ChevronUp, ExternalLink, AlertCircle, Check } from "lucide-react"; 
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/firebase"; 
 import { doc, getDoc, collection, getDocs, writeBatch } from "firebase/firestore";
@@ -19,11 +19,29 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
+interface CachedJobDetail {
+  id: string;
+  title: string;
+  source: string;
+  applyUrl?: string;
+  closingDate?: string | null;
+}
+
+interface FlaggedJobDetail {
+  id: string;
+  title: string;
+  reason: string;
+  source?: string;
+  applyUrl?: string;
+}
+
 interface MismatchItem {
   schoolId: string;
   schoolName: string;
   featuredCount: number;
   schoolCount: number;
+  cachedJobs: CachedJobDetail[];
+  flaggedJobs: FlaggedJobDetail[];
 }
 
 interface ParityState {
@@ -48,6 +66,7 @@ export default function Header() {
   const [isParityModalOpen, setIsParityModalOpen] = useState(false);
   const [isFixing, setIsFixing] = useState(false);
   const [parityState, setParityState] = useState<ParityState | null>(null);
+  const [expandedSchoolId, setExpandedSchoolId] = useState<string | null>(null);
 
   const isAdmin = Boolean(user && (teacherId === "FLI007" || user.email?.includes("admin")));
 
@@ -75,48 +94,84 @@ export default function Header() {
       const seenUrls = new Set<string>();
       const seenJobKeys = new Set<string>();
       const countsBySchool: Record<string, number> = {};
+      const schoolCacheJobs: Record<string, CachedJobDetail[]> = {};
+      const schoolFlaggedJobs: Record<string, FlaggedJobDetail[]> = {};
       let totalFeatured = 0;
 
       featuredSnap.docs.forEach((d) => {
         const cacheDoc = d.data();
-        const rawStatus = String(cacheDoc.status || '').toUpperCase();
-        if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
-        if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) return;
+        const sId = (cacheDoc.schoolId || "").toUpperCase().trim();
+        if (!sId || sId.startsWith("AGNT") || !schoolDocIds.has(sId)) return;
 
-        const sourceUpper = String(cacheDoc.source || '').toUpperCase();
-        const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
-        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
-        const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
-        const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
-        const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
-        const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
+        if (!schoolCacheJobs[sId]) schoolCacheJobs[sId] = [];
+        if (!schoolFlaggedJobs[sId]) schoolFlaggedJobs[sId] = [];
+
+        const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
+        const rawStatus = String(cacheDoc.status || "").toUpperCase();
+        const applyUrl = String(cacheDoc.applyUrl || cacheDoc.source_url || "").trim();
+        const applyUrlLower = applyUrl.toLowerCase();
+        const source = String(cacheDoc.source || "Direct");
+
+        if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: `Inactive status (${rawStatus})`, source, applyUrl });
+          return;
+        }
+        if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Expired deadline", source, applyUrl });
+          return;
+        }
+
+        const sourceUpper = source.toUpperCase();
+        const isTes = sourceUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const isNae = sourceUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordangliaeducation.com");
+        const isGrc = sourceUpper.includes("GRC") || applyUrlLower.includes("grcfair.org");
+        const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
+        const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
+        const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
         const schoolNameUpper = String(cacheDoc.schoolName || cacheDoc.schoolname || cacheDoc.name || "").toUpperCase();
         const schoolGroupUpper = String(cacheDoc.schoolGroup || cacheDoc.group || "").toUpperCase();
         const sIdUpper = String(cacheDoc.schoolId || "").toUpperCase();
-        const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege') || schoolGroupUpper.includes('MALVERN') || schoolNameUpper.includes('MALVERN') || ['FLIS0130', 'FLIS0164'].includes(sIdUpper);
-        const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
-        const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
-        const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
-        const isTaylors = sourceUpper.includes('TAYLOR') || applyUrlLower.includes('taylors');
-        const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
-        const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
-        const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) return;
+        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(sIdUpper);
+        const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
+        const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
+        const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
+        const isTaylors = sourceUpper.includes("TAYLOR") || applyUrlLower.includes("taylors");
+        const isEsf = sourceUpper.includes("ESF") || sourceUpper.includes("ENGLISH SCHOOLS FOUNDATION") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
+        const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
+        const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
+        
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: `Unrecognized source (${source})`, source, applyUrl });
+          return;
+        }
 
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower && seenUrls.has(applyUrlLower)) {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Duplicate apply URL", source, applyUrl });
+          return;
+        }
         if (applyUrlLower) seenUrls.add(applyUrlLower);
 
-        const sId = (cacheDoc.schoolId || "").toUpperCase().trim();
-        if (!sId || sId.startsWith("AGNT") || !schoolDocIds.has(sId)) return;
-        if (!isValidJobTitle(cacheDoc.title || cacheDoc.jobTitle || "")) return;
+        if (!isValidJobTitle(title)) {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Non-academic or support role (filtered by guardrail)", source, applyUrl });
+          return;
+        }
 
-        const jobKey = `${sId.toLowerCase()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
-        if (seenJobKeys.has(jobKey)) return;
+        const jobKey = `${sId.toLowerCase()}_${title.toLowerCase().trim()}`;
+        if (seenJobKeys.has(jobKey)) {
+          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Duplicate job title already active for school", source, applyUrl });
+          return;
+        }
         seenJobKeys.add(jobKey);
 
         totalFeatured++;
         countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
+        schoolCacheJobs[sId].push({
+          id: d.id,
+          title,
+          source,
+          applyUrl,
+          closingDate: cacheDoc.closingDate || cacheDoc.date_closing || null,
+        });
       });
 
       let totalSchoolOpenJobs = 0;
@@ -136,6 +191,8 @@ export default function Header() {
             schoolName: sData.schoolName || sData.name || sId,
             featuredCount: actualCount,
             schoolCount: reportedCount,
+            cachedJobs: schoolCacheJobs[sId] || [],
+            flaggedJobs: schoolFlaggedJobs[sId] || [],
           });
         }
       });
@@ -414,7 +471,7 @@ export default function Header() {
       {/* DIAGNOSTIC PARITY MONITOR MODAL */}
       {isAdmin && (
         <Dialog open={isParityModalOpen} onOpenChange={setIsParityModalOpen}>
-          <DialogContent className="max-w-2xl bg-slate-950 border border-slate-800 text-slate-100 shadow-2xl p-6">
+          <DialogContent className="max-w-3xl bg-slate-950 border border-slate-800 text-slate-100 shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <div className="flex items-center gap-2 text-slate-400 text-xs font-mono uppercase tracking-wider mb-1">
                 <Database className="size-4 text-[#d95f02]" />
@@ -456,21 +513,124 @@ export default function Header() {
 
             {parityState && parityState.mismatches.length > 0 ? (
               <div className="border border-amber-500/30 bg-amber-950/20 rounded-lg p-4 space-y-3">
-                <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <AlertTriangle className="size-4" /> Detected Mismatched Schools ({parityState.mismatches.length})
-                </h4>
-                <div className="max-h-48 overflow-y-auto space-y-2 pr-1">
-                  {parityState.mismatches.map((item) => (
-                    <div key={item.schoolId} className="flex justify-between items-center bg-slate-900/90 border border-slate-800 p-2.5 rounded text-xs">
-                      <div>
-                        <span className="font-mono text-slate-400 font-bold mr-2">[{item.schoolId}]</span>
-                        <span className="font-semibold text-slate-200">{item.schoolName}</span>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <AlertTriangle className="size-4" /> Detected Mismatched Schools ({parityState.mismatches.length})
+                  </h4>
+                  <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">Click to inspect active & flagged vacancies</span>
+                </div>
+                
+                <div className="max-h-80 overflow-y-auto space-y-2.5 pr-1">
+                  {parityState.mismatches.map((item) => {
+                    const isExpanded = expandedSchoolId === item.schoolId;
+                    return (
+                      <div 
+                        key={item.schoolId} 
+                        className="bg-slate-900/95 border border-slate-800 hover:border-slate-700 transition-all rounded-lg overflow-hidden"
+                      >
+                        {/* Accordion Row Header */}
+                        <button
+                          type="button"
+                          onClick={() => setExpandedSchoolId(isExpanded ? null : item.schoolId)}
+                          className="w-full flex justify-between items-center p-3 text-xs text-left cursor-pointer hover:bg-slate-800/40 transition-colors"
+                        >
+                          <div className="flex items-center gap-2 truncate mr-2">
+                            <span className="font-mono bg-slate-800 text-amber-400 font-bold px-1.5 py-0.5 rounded text-[11px] shrink-0">
+                              [{item.schoolId}]
+                            </span>
+                            <span className="font-bold text-slate-100 truncate">{item.schoolName}</span>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0">
+                            <div className="font-mono text-[11px] text-slate-300">
+                              Cache: <span className="text-emerald-400 font-bold">{item.featuredCount}</span> vs School: <span className="text-rose-400 font-bold">{item.schoolCount}</span>
+                            </div>
+                            {isExpanded ? (
+                              <ChevronUp className="size-4 text-slate-400" />
+                            ) : (
+                              <ChevronDown className="size-4 text-slate-400" />
+                            )}
+                          </div>
+                        </button>
+
+                        {/* Accordion Row Details */}
+                        {isExpanded && (
+                          <div className="p-3.5 border-t border-slate-800/80 bg-slate-950/70 space-y-3 animate-in fade-in-50 duration-150">
+                            {/* 1. Flagged / Dropped Vacancies */}
+                            {item.flaggedJobs && item.flaggedJobs.length > 0 && (
+                              <div className="space-y-1.5">
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1">
+                                  <AlertCircle className="size-3" /> Filtered / Unindexed Postings ({item.flaggedJobs.length})
+                                </p>
+                                <div className="space-y-1">
+                                  {item.flaggedJobs.map((fj, idx) => (
+                                    <div key={idx} className="flex justify-between items-center bg-rose-950/30 border border-rose-900/40 p-2 rounded text-[11px]">
+                                      <div className="flex items-center gap-1.5 truncate mr-2">
+                                        <span className="text-slate-300 font-medium truncate">"{fj.title}"</span>
+                                        {fj.source && (
+                                          <span className="text-[9px] bg-slate-800 text-slate-400 px-1 py-0.5 rounded font-mono">
+                                            {fj.source}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <span className="text-[10px] text-rose-300 bg-rose-950/80 border border-rose-700/50 px-2 py-0.5 rounded font-mono shrink-0">
+                                        {fj.reason}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* 2. Active Approved Vacancies in Cache */}
+                            <div className="space-y-1.5">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1">
+                                <Check className="size-3" /> Approved Active Vacancies in Cache ({item.cachedJobs.length})
+                              </p>
+                              {item.cachedJobs.length > 0 ? (
+                                <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                                  {item.cachedJobs.map((cj) => (
+                                    <div key={cj.id} className="flex justify-between items-center bg-slate-900/80 border border-slate-800/80 p-2 rounded text-[11px]">
+                                      <div className="flex items-center gap-1.5 truncate mr-2">
+                                        <span className="text-slate-200 font-semibold truncate">"{cj.title}"</span>
+                                        <span className="text-[9px] bg-slate-800 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-mono font-bold">
+                                          {cj.source}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center gap-2 shrink-0">
+                                        {cj.closingDate && (
+                                          <span className="text-[10px] text-slate-400 font-mono">
+                                            Closes: {cj.closingDate}
+                                          </span>
+                                        )}
+                                        {cj.applyUrl && (
+                                          <a
+                                            href={cj.applyUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#d95f02] hover:text-white transition-colors"
+                                            title="View Vacancy URL"
+                                          >
+                                            <ExternalLink className="size-3.5" />
+                                          </a>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-[11px] text-slate-500 italic">No approved vacancies currently indexed in cache.</p>
+                              )}
+                            </div>
+
+                            {/* 3. Diagnostic Summary */}
+                            <div className="text-[10px] text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 font-mono">
+                              💡 <strong>Sync Diagnosis</strong>: School document reports <span className="text-amber-300 font-bold">{item.schoolCount}</span> vacancies, while verified academic cache has <span className="text-emerald-300 font-bold">{item.featuredCount}</span>. Click <strong>Auto-Fix & Sync</strong> to align the school counter.
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="font-mono text-slate-300">
-                        Cache: <span className="text-emerald-400 font-bold">{item.featuredCount}</span> vs School: <span className="text-rose-400 font-bold">{item.schoolCount}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ) : (
