@@ -1790,22 +1790,6 @@ export default function FeaturedJobsPage() {
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}
                           </span>
-                          {(() => {
-                            const pot = Math.round((job.savingsPotential || (job as any).savingsPotentialSingle || (job as any).est2YrSavingsPot ? ((job as any).est2YrSavingsPot || (job.savingsPotential || 0) * 24) : (job.savingsPotential || 0) * 24));
-                            if (pot <= 0) return null;
-                            return (
-                              <>
-                                <span className="text-slate-600 hidden sm:inline">•</span>
-                                <span 
-                                  className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded shadow-[0_0_8px_rgba(16,185,129,0.1)]"
-                                  title="Projected 2-Year Net Savings Pot"
-                                >
-                                  💰 Est. 2-Yr Pot: ${pot.toLocaleString()} USD
-                                </span>
-                              </>
-                            );
-                          })()}
-                          
                         </div>
 
                         {/* Right metadata: Deadline & Ref ID */}
