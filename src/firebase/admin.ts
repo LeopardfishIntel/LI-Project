@@ -46,6 +46,9 @@ try {
         }
       }
       adminDb = admin.firestore();
+      try {
+        adminDb.settings({ ignoreUndefinedProperties: true });
+      } catch (_) {}
     } else {
       console.log("ℹ️ Admin credentials not detected locally. Using client-side Firestore fallback on server.");
     }

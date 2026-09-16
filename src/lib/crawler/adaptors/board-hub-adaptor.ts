@@ -10,7 +10,7 @@
  */
 
 import { getAI } from '@/ai/genkit';
-import { buildTier3SchoolAgentQueries } from '../searchQueryBuilder';
+import { buildTier3SchoolAgentQueries, formatGroundingSiteQuery } from '../searchQueryBuilder';
 import type { AdaptorInput, RawJobRecord } from './raw-job.types';
 import { isBlockedContentUrl, sanitizeUrl } from '../urlResolver';
 import { extractUrlFromScrapedString, isJobWithinLast24Months } from './adaptor-utils';
@@ -64,7 +64,8 @@ function parseBoardHubResponse(text: string): Array<{
  */
 async function runGroundingSearch(
   schoolName: string,
-  query: string
+  query: string,
+  retries: number = 3
 ): Promise<Array<{
   title: string;
   source: string;
@@ -73,22 +74,31 @@ async function runGroundingSearch(
   applyUrl: string | null;
 }>> {
   const ai = getAI();
-  try {
-    const response = await ai.generate({
-      model: 'googleai/gemini-2.5-flash',
-      prompt: `Find all active or recently closed teaching/leadership vacancies strictly for the school "${schoolName}" using this search query: ${query}
-
-${BOARD_HUB_PROMPT_SUFFIX}`,
-      config: {
-        tools: [{ googleSearch: {} } as any],
-        temperature: 0,
-      },
-    });
-    return parseBoardHubResponse(response.text);
-  } catch (err) {
-    console.warn(`🟡 [BOARD HUB ADAPTOR] Grounding search failed for query "${query}":`, err);
-    return [];
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await ai.generate({
+        model: "googleai/gemini-2.5-flash",
+        prompt: "Find all active or recently closed teaching/leadership vacancies strictly for the school \"" + schoolName + "\" using this search query: " + query + "\n\n" + BOARD_HUB_PROMPT_SUFFIX,
+        config: {
+          tools: [{ googleSearch: {} } as any],
+          temperature: 0,
+        },
+      });
+      return parseBoardHubResponse(response.text);
+    } catch (err: any) {
+      const isCreditDepleted = (err?.message || "").includes("prepayment credits are depleted") || (err?.message || "").includes("billing");
+      const isRateLimit = !isCreditDepleted && (err?.status === 429 || (err?.message || "").includes("429") || (err?.message || "").includes("Too Many Requests") || (err?.message || "").includes("RESOURCE_EXHAUSTED"));
+      if (isRateLimit && attempt < retries) {
+        const delay = attempt * 1500;
+        console.warn("🟡 [BOARD HUB ADAPTOR] Rate limit encountered. Backing off " + delay + "ms before retry " + attempt + "/" + retries + "...");
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      console.warn("🟡 [BOARD HUB ADAPTOR] Grounding search failed for query \"" + query + "\":", err?.message || err);
+      return [];
+    }
   }
+  return [];
 }
 
 /**
@@ -100,12 +110,18 @@ ${BOARD_HUB_PROMPT_SUFFIX}`,
 export async function runBoardHubAdaptor(input: AdaptorInput): Promise<RawJobRecord[]> {
   console.log(`🟡 [BOARD HUB ADAPTOR] Starting agent platform search for ${input.schoolName}...`);
 
-  const queries = buildTier3SchoolAgentQueries(input.schoolName);
+  const queries = [
+    ...buildTier3SchoolAgentQueries(input.schoolName),
+    formatGroundingSiteQuery(input.schoolName, "jobs.theguardian.com", input.city || input.country)
+  ];
 
-  // Run all agent platform queries concurrently
-  const results = await Promise.all(
-    queries.map(q => runGroundingSearch(input.schoolName, q))
-  );
+  // Run agent platform queries with throttled pacing to avoid burst rate limits
+  const results: any[] = [];
+  for (const q of queries) {
+    const res = await runGroundingSearch(input.schoolName, q);
+    results.push(res);
+    await new Promise(r => setTimeout(r, 400));
+  }
 
   const allJobs = results.flat();
   console.log(`🟡 [BOARD HUB ADAPTOR] Raw results from agent platforms: ${allJobs.length} item(s).`);
