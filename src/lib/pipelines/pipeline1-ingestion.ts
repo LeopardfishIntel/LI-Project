@@ -14,6 +14,7 @@ import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
  */
 
 import { isSupportOrNonTeachingRole } from "../crawler/roleClassifier";
+import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
@@ -263,6 +264,16 @@ export async function runIngestionPipeline(
   }
 
   const cacheResults = await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
+
+  // 🧹 Auto-purge stale TES vacancies for this school
+  const activeTesUrls = new Set(
+    mappedJobs
+      .filter(j => (j.source || "").toUpperCase().includes("TES") && j.applyUrl)
+      .map(j => j.applyUrl)
+  );
+  if (activeTesUrls.size > 0) {
+    await purgeStaleTesVacancies(schoolId, activeTesUrls);
+  }
   const addedCount = cacheResults.filter(r => r.isNew).length;
   const removedCount = rejected;
 

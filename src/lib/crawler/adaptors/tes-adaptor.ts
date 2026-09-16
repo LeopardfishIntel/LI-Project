@@ -2,13 +2,15 @@
  * 🛰️ TES DIRECT EMPLOYER HUB ADAPTOR (PURE EXTRACTION & DEEP DATE RESOLUTION)
  *
  * Renders official TES employer pages (e.g. `https://www.tes.com/jobs/employer/cheltenham-muscat-1224896`),
- * scrolls to the bottom to trigger full DOM rendering, and extracts 100% of vacancy links listed on the page.
+ * expands paginated / "Load more" DOM cards, extracts vacancy links, enforces role
+ * classification guardrails, throttles deep closing date inspection, and purges stale records.
  * Enforces SHORT JOB NAME TITLES ONLY (Strictly Capped at 60 Characters Maximum).
  */
 
 import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { sanitizeUrl } from "../urlResolver";
 import { sanitizeJobTitle } from "../titleSanitizer";
+import { isSupportOrNonTeachingRole } from "../roleClassifier";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Record<string, string> = {
@@ -73,12 +75,20 @@ function jobPostingToRecord(posting: any, input: AdaptorInput): RawJobRecord | n
   const rawUrl = posting.url || posting.identifier || null;
   const cleanUrl = rawUrl ? sanitizeUrl(rawUrl) : null;
 
-  if (!cleanUrl || !cleanUrl.includes('tes.com/jobs/vacancy/')) {
+  if (!cleanUrl || !cleanUrl.includes("tes.com/jobs/vacancy/")) {
     return null;
   }
 
   const rawTitle = (posting.title || posting.name || "").trim();
+  // 🛡️ Gate 1: Role Classification Guardrail (Drop non-teaching early)
+  if (!rawTitle || isSupportOrNonTeachingRole(rawTitle)) {
+    return null;
+  }
+
   const title = cleanJobTitle(rawTitle, input.schoolName);
+  if (!title || isSupportOrNonTeachingRole(title)) {
+    return null;
+  }
 
   let city = input.city;
   let country = input.country;
@@ -126,38 +136,136 @@ async function fetchDeepClosingDate(urlStr: string): Promise<{ closingDate: stri
   }
 }
 
+/**
+ * ⚡ CONCURRENCY-CONTROLLED DEEP DATE RESOLUTION
+ * Bounded worker pool (concurrency = 5) prevents TES 429 Too Many Requests rate-limiting.
+ */
+async function fetchDeepClosingDatesConcurrently(
+  items: { href: string; title: string }[],
+  concurrency = 5
+): Promise<Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null }>> {
+  const results = new Map<string, { closingDate: string | null; datePosted: string | null; exactTitle: string | null }>();
+  for (let i = 0; i < items.length; i += concurrency) {
+    const chunk = items.slice(i, i + concurrency);
+    const chunkResults = await Promise.all(
+      chunk.map(async (item) => {
+        const cleanUrl = sanitizeUrl(item.href);
+        if (!cleanUrl) return null;
+        const data = await fetchDeepClosingDate(cleanUrl);
+        return { url: cleanUrl, data };
+      })
+    );
+    for (const res of chunkResults) {
+      if (res) results.set(res.url, res.data);
+    }
+  }
+  return results;
+}
+
+/**
+ * 🧹 STALE VACANCY GARBAGE COLLECTOR (TOMBSTONE DISAPPEARED RECORDS)
+ */
+export async function purgeStaleTesVacancies(
+  schoolId: string,
+  activeApplyUrls: Set<string>
+): Promise<number> {
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (!db) return 0;
+
+    const snapshot = await db
+      .collection("featured_jobs_cache")
+      .where("schoolId", "==", schoolId.toUpperCase().trim())
+      .get();
+
+    if (snapshot.empty) return 0;
+
+    const normalizeUrl = (u: string) => u.toLowerCase().replace(/\/+$/, "").trim();
+    const activeNormalized = new Set(Array.from(activeApplyUrls).map(normalizeUrl));
+
+    let purgedCount = 0;
+    const batch = db.batch();
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      if (data.source !== "TES") continue;
+
+      const applyUrl = normalizeUrl(String(data.applyUrl || data.source_url || ""));
+      const isPastClosing = data.closingDateMillis && data.closingDateMillis < Date.now();
+
+      if (!activeNormalized.has(applyUrl) || isPastClosing) {
+        batch.delete(doc.ref);
+        purgedCount++;
+      }
+    }
+
+    if (purgedCount > 0) {
+      await batch.commit();
+      console.log(`🧹 [TES GARBAGE COLLECTOR] Purged ${purgedCount} stale TES vacancies for school ${schoolId}.`);
+    }
+
+    return purgedCount;
+  } catch (err: any) {
+    console.error(`⚠️ [TES GARBAGE COLLECTOR] Error purging for ${schoolId}:`, err?.message || err);
+    return 0;
+  }
+}
+
 async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promise<RawJobRecord[]> {
   try {
     const { chromium } = await import("playwright");
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
     
-    await page.evaluate(async () => {
-      await new Promise((resolve) => {
-        let totalHeight = 0;
-        const distance = 300;
-        const timer = setInterval(() => {
-          const scrollHeight = document.body.scrollHeight;
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-          if (totalHeight >= scrollHeight || totalHeight > 6000) {
-            clearInterval(timer);
-            resolve(true);
-          }
-        }, 100);
+    // 🔄 Large Hub Pagination & Dynamic "Load More" Expansion Loop
+    let loadMoreClicks = 0;
+    const MAX_LOAD_MORE_CLICKS = 10;
+
+    while (loadMoreClicks < MAX_LOAD_MORE_CLICKS) {
+      await page.evaluate(async () => {
+        await new Promise((resolve) => {
+          let totalHeight = 0;
+          const distance = 400;
+          const timer = setInterval(() => {
+            const scrollHeight = document.body.scrollHeight;
+            window.scrollBy(0, distance);
+            totalHeight += distance;
+            if (totalHeight >= scrollHeight || totalHeight > 8000) {
+              clearInterval(timer);
+              resolve(true);
+            }
+          }, 80);
+        });
       });
-    });
-    await page.waitForTimeout(1000);
+      await page.waitForTimeout(600);
+
+      const loadMoreBtn = await page.$(
+        'button:has-text("Load more"), button:has-text("Show more"), [data-testid*="load-more"], a:has-text("Load more"), button.load-more, .load-more-btn'
+      );
+
+      if (loadMoreBtn && (await loadMoreBtn.isVisible())) {
+        try {
+          await loadMoreBtn.click();
+          loadMoreClicks++;
+          await page.waitForTimeout(1200);
+        } catch {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
 
     const rawItems = await page.evaluate(() => {
       const links = Array.from(document.querySelectorAll('a[href*="/jobs/vacancy/"]'));
-      return links.map(a => {
+      return links.map((a) => {
         const headingEl = a.querySelector('h2, h3, h4, .headline, .job-title, [class*="title"]');
-        const rawHeading = headingEl ? headingEl.textContent : (a.textContent || '');
+        const rawHeading = headingEl ? headingEl.textContent : (a.textContent || "");
         return {
-          title: (rawHeading || '').trim(),
+          title: (rawHeading || "").trim(),
           href: (a as HTMLAnchorElement).href,
         };
       });
@@ -165,21 +273,35 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
 
     await browser.close();
 
-    const records: RawJobRecord[] = [];
-    const seen = new Set<string>();
+    // 🛡️ Gate 1: Role Classification Filter (Filter non-academic roles before deep fetches)
+    const validItems: { href: string; title: string }[] = [];
+    const seenUrls = new Set<string>();
 
     for (const item of rawItems) {
       const cleanUrl = sanitizeUrl(item.href);
-      if (!cleanUrl || !cleanUrl.includes('tes.com/jobs/vacancy/') || seen.has(cleanUrl)) continue;
-      seen.add(cleanUrl);
+      if (!cleanUrl || !cleanUrl.includes("tes.com/jobs/vacancy/") || seenUrls.has(cleanUrl)) continue;
+      if (!item.title || isSupportOrNonTeachingRole(item.title)) continue;
 
-      const deepData = await fetchDeepClosingDate(cleanUrl);
-      const title = cleanJobTitle(deepData.exactTitle || item.title, input.schoolName);
+      seenUrls.add(cleanUrl);
+      validItems.push({ href: cleanUrl, title: item.title });
+    }
+
+    // ⚡ Concurrency-Controlled Deep Date Fetching
+    const deepDateMap = await fetchDeepClosingDatesConcurrently(validItems, 5);
+
+    const records: RawJobRecord[] = [];
+    for (const item of validItems) {
+      const deepData = deepDateMap.get(item.href) || { closingDate: null, datePosted: null, exactTitle: null };
+      const rawTitle = deepData.exactTitle || item.title;
+      if (isSupportOrNonTeachingRole(rawTitle)) continue;
+
+      const title = cleanJobTitle(rawTitle, input.schoolName);
+      if (!title || isSupportOrNonTeachingRole(title)) continue;
 
       records.push({
         rawTitle: title,
         source: "TES",
-        applyUrl: cleanUrl,
+        applyUrl: item.href,
         schoolId: input.schoolId,
         schoolName: input.schoolName,
         city: input.city,
@@ -190,7 +312,7 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
       });
     }
 
-    console.log(`🔴 [TES PLAYWRIGHT] Discovered ${records.length} direct vacancy link(s) on ${url}`);
+    console.log(`🔴 [TES PLAYWRIGHT] Discovered ${records.length} academic vacancy link(s) on ${url}`);
     return records;
   } catch (err: any) {
     console.warn(`🔴 [TES PLAYWRIGHT] Failed for ${url}:`, err.message || err);
@@ -219,7 +341,7 @@ export async function runTesAdaptor(input: AdaptorInput): Promise<RawJobRecord[]
         const records: RawJobRecord[] = [];
         for (const posting of jsonLdPostings) {
           const record = jobPostingToRecord(posting, input);
-          if (record && record.rawTitle && record.applyUrl && record.applyUrl.includes('tes.com/jobs/vacancy/')) {
+          if (record && record.rawTitle && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/")) {
             records.push(record);
           }
         }
