@@ -1198,25 +1198,25 @@ function DecideContent() {
 
                                         {/* Pinned Bottom Container (Benefit Pills + Footer) */}
                                         <div className="mt-auto space-y-3">
-                                            <div className="flex flex-wrap items-center gap-1.5 min-h-[26px]">
+                                            <div className="flex flex-wrap items-center justify-center gap-1.5 min-h-[26px]">
                                                 <span className={cn(
-                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm border",
                                                     isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
                                                 )}>
-                                                    🩺 {healthLabel}
+                                                    {healthLabel}
                                                 </span>
                                                 <span className={cn(
-                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                    "text-[9px] font-bold px-2 py-0.5 rounded-sm border",
                                                     isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
                                                 )}>
-                                                    ✈️ {flightLabel}
+                                                    {flightLabel}
                                                 </span>
                                                 {item.benefits.tuition && (
                                                     <span className={cn(
-                                                        "text-[9px] font-bold px-2 py-0.5 rounded-sm flex items-center gap-1 border",
+                                                        "text-[9px] font-bold px-2 py-0.5 rounded-sm border",
                                                         isWinner ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300" : "bg-white/5 border-white/10 text-slate-300"
                                                     )}>
-                                                        🎓 {tuitionLabel}
+                                                        {tuitionLabel}
                                                     </span>
                                                 )}
                                             </div>
