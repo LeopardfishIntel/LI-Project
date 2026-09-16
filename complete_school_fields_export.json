@@ -3353,7 +3353,7 @@
     "noncontacttime": "25%",
     "healthcoverage": "Full Private",
     "Profit Status": "Non-Profit",
-    "salaryRange": "$2,655.00",
+    "salaryRange": "$3,650",
     "Ownership": "Independent Board",
     "inspect": "CIS / NEASC",
     "validated": "LFI",
@@ -3378,7 +3378,13 @@
     "name": "Frankfurt Int'l",
     "tesOrganizationId": "1277429",
     "tesEmployerSlug": "frankfurt-international-school-1277429",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T14:03:48.889Z",
+    "base_salary_eur": 3350,
+    "base_salary_usd": 3650,
+    "raw_salary_notes": "Updated net base to €3,350/mo ($3,650/mo) reflecting actual Step 5 collective bargaining scale (~€65k gross/yr).",
+    "package_descriptor": "Culture & Travel",
+    "savingspotential": 1195,
+    "savingspotentialsingle": 1195
   },
   {
     "id": "FLIS0055",
@@ -5008,7 +5014,7 @@
     "noncontacttime": "25%",
     "healthcoverage": "Full Private",
     "Profit Status": "Non-Profit",
-    "salaryRange": "$2,775.00",
+    "salaryRange": "$3,380",
     "Ownership": "Community Project",
     "inspect": "BSO",
     "validated": "LFI",
@@ -5033,7 +5039,13 @@
     "name": "Munich International",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T14:03:48.889Z",
+    "base_salary_eur": 3100,
+    "base_salary_usd": 3380,
+    "raw_salary_notes": "Updated net base to €3,100/mo ($3,380/mo) reflecting actual Step 5 pay scale (~€60k gross/yr).",
+    "package_descriptor": "Culture & Travel",
+    "savingspotential": 855,
+    "savingspotentialsingle": 855
   },
   {
     "id": "FLIS0071",
