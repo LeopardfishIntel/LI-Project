@@ -10,6 +10,8 @@ import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth
 import { auth, db } from "@/firebase"; 
 import { doc, getDoc, collection, getDocs, writeBatch } from "firebase/firestore";
 import { Input } from "@/components/ui/input";
+import { AdminAuditDropdown } from "@/components/layout/AdminAuditDropdown";
+import { CompensationAuditModal } from "@/components/audit/CompensationAuditModal";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -64,6 +66,7 @@ export default function Header() {
   
   // Parity Monitor State
   const [isParityModalOpen, setIsParityModalOpen] = useState(false);
+  const [isCompensationModalOpen, setIsCompensationModalOpen] = useState(false);
   const [isFixing, setIsFixing] = useState(false);
   const [parityState, setParityState] = useState<ParityState | null>(null);
   const [expandedSchoolId, setExpandedSchoolId] = useState<string | null>(null);
@@ -362,40 +365,13 @@ export default function Header() {
         {/* ACCOUNT & MOBILE MENU TOGGLE */}
         <div className="flex items-center gap-4">
 
-          {/* ADMIN DATA PARITY MONITOR STATUS PILL */}
-          {isAdmin && parityState && (
-            <button
-              onClick={() => setIsParityModalOpen(true)}
-              className={cn(
-                "hidden md:flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border transition-all cursor-pointer shadow-lg",
-                parityState.loading
-                  ? "bg-slate-900 text-slate-400 border-slate-800"
-                  : (parityState.isMatch && parityState.conflictCount === 0)
-                  ? "bg-emerald-950/80 text-emerald-400 border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-900/50"
-                  : "bg-amber-950/90 text-amber-300 border-amber-500/60 hover:border-amber-400 hover:bg-amber-900/60"
-              )}
-              title="Data Parity & Sync Monitor (Admin Only)"
-            >
-              {parityState.loading ? (
-                <>
-                  <RefreshCw className="size-3 animate-spin text-slate-400" />
-                  Checking...
-                </>
-              ) : (parityState.isMatch && parityState.conflictCount === 0) ? (
-                <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span>100 ({parityState.totalFeatured} / {parityState.totalSchoolOpenJobs})</span>
-                </>
-              ) : (
-                <>
-                  <AlertTriangle className="size-3 text-amber-400 animate-pulse" />
-                  <span>{parityState.conflictCount > 0 ? `${parityState.conflictCount} CONFLICT${parityState.conflictCount > 1 ? "S" : ""}` : `Sync Alert (${parityState.mismatches.length} Mismatch${parityState.mismatches.length > 1 ? "es" : ""})`}</span>
-                </>
-              )}
-            </button>
+          {/* ADMIN DATA PARITY & SYSTEM INTELLIGENCE DROPDOWN */}
+          {isAdmin && (
+            <AdminAuditDropdown
+              parityState={parityState}
+              onOpenJobParity={() => setIsParityModalOpen(true)}
+              onOpenCompensationAudit={() => setIsCompensationModalOpen(true)}
+            />
           )}
 
           {user ? (
@@ -668,6 +644,12 @@ export default function Header() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* COMPENSATION & NET BASELINE AUDIT MODAL */}
+      <CompensationAuditModal
+        isOpen={isCompensationModalOpen}
+        onClose={() => setIsCompensationModalOpen(false)}
+      />
     </header>
   );
 }
