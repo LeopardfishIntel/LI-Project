@@ -261,8 +261,11 @@ export default function Header() {
         if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
         if (applyUrlLower) seenUrls.add(applyUrlLower);
 
+        const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
+        if (!isValidJobTitle(title)) return;
+
         const sId = (cacheDoc.schoolId || "").toUpperCase();
-        const jobKey = `${(cacheDoc.schoolId || '').toLowerCase().trim()}_${(cacheDoc.title || '').toLowerCase().trim()}`;
+        const jobKey = `${(cacheDoc.schoolId || '').toLowerCase().trim()}_${title.toLowerCase().trim()}`;
         if (seenJobKeys.has(jobKey)) return;
         seenJobKeys.add(jobKey);
 
