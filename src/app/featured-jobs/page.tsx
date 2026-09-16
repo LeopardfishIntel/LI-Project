@@ -683,7 +683,9 @@ export default function FeaturedJobsPage() {
         const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
         const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
         const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) return;
+        const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
+        const isSA = sourceUpper.includes('SEARCH ASSOCIATES') || sourceUpper.includes('SEARCH_ASSOCIATES') || applyUrlLower.includes('searchassociates');
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isSA) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -2071,7 +2073,9 @@ export default function FeaturedJobsPage() {
                                             ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
                                             : srcUpper === "GRC"
                                             ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
-                                            : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
+                                            : srcUpper === "GUARDIAN"
+                                             ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
+                                             : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
                                             ? "bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20"
                                             : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
                                         )}
