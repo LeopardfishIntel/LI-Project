@@ -15674,7 +15674,7 @@
     "summary": "UK curriculum school in Isa Town, Non-Profit, with 1:10 ratio and Mixed LMS.",
     "techscore": "8.5",
     "confidence": "9.7",
-    "housingprovision": "No",
+    "housingprovision": "Housing Allowance Included in Base",
     "techecosystem": "Mixed LMS",
     "citysafety": "8.5",
     "curriculum": "UK",
@@ -15767,7 +15767,9 @@
     "lastScrapedAt": "2026-08-31T08:19:03.360Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "housingBenefit": "Housing Allowance Included in Base",
+    "housing": "Housing Allowance Included in Base"
   },
   {
     "id": "FLIS0225",
