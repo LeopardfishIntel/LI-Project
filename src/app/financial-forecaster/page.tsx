@@ -53,17 +53,17 @@ export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfi
       description: "Comfortable expat package allowing £1,200 – £1,899 net monthly surplus with good lifestyle quality and regular travel."
     };
   }
-  if (monthlySurplus >= 600) {
+  if (monthlySurplus >= 700) {
     return {
       label: "Culture & Travel",
       boxStyle: "bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]",
-      description: "Cultural immersion package allowing £600 – £1,199 net monthly surplus with strong focus on lifestyle and travel."
+      description: "Cultural immersion package allowing $700 – $1,199 net monthly surplus with strong focus on lifestyle and travel."
     };
   }
   return {
     label: "Destination-Led Package",
     boxStyle: "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.15)]",
-    description: "Location-driven package focusing on destination experience and cultural immersion, with under £600 net monthly surplus."
+    description: "Location-driven package focusing on destination experience and cultural immersion, with under $700 net monthly surplus."
   };
 }
 
