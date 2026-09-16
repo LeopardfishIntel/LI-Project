@@ -17143,7 +17143,7 @@
     "approvals": "Cambridge Assessment, Edexcel, Bureau",
     "classsize": "20–22 max",
     "staffcount": "~90",
-    "salaryRange": "RMB 28,000 – 36,000 / mo (gross + perks)",
+    "salaryRange": "$3,350",
     "validated": "Yes",
     "Profit Status": "For-Profit",
     "Ownership": "Joint Venture (Malvern License)",
@@ -17157,7 +17157,11 @@
     "schoolId": "FLIS0254",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "base_salary_cny": 24000,
+    "base_salary_usd": 3350,
+    "raw_salary_notes": "Gross scale RMB 28,000 – 36,000 / mo normalized to ¥24,000 net ($3,350/mo) baseline",
+    "updatedAt": "2026-09-16T13:19:59.685Z"
   },
   {
     "id": "FLIS0255",
@@ -17186,7 +17190,7 @@
     "approvals": "Cambridge Assessment, Local Bureau",
     "classsize": "20–22 max",
     "staffcount": "~85",
-    "salaryRange": "RMB 27,000 – 35,000 / mo (gross + perks)",
+    "salaryRange": "$3,350",
     "validated": "Yes",
     "Profit Status": "For-Profit",
     "Ownership": "Joint Venture (Malvern License)",
@@ -17200,7 +17204,11 @@
     "schoolId": "FLIS0255",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "base_salary_cny": 24000,
+    "base_salary_usd": 3350,
+    "raw_salary_notes": "Gross scale RMB 27,000 – 35,000 / mo normalized to ¥24,000 net ($3,350/mo) baseline",
+    "updatedAt": "2026-09-16T13:19:59.685Z"
   },
   {
     "id": "FLIS0256",
