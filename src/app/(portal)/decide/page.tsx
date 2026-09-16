@@ -55,7 +55,36 @@ const getCurrencyForCity = (city: string, country: string, colCode?: string) => 
 };
 
 const HOUSEHOLD_OPTIONS = FAMILY_PROFILES.map(p => p.value);
-const BONUS_REGISTRY: Record<string, number> = {};
+const BONUS_REGISTRY: Record<string, number> = {
+  "austria": 2 / 12,       // +16.67% (14-month statutory payroll cycle)
+  "portugal": 2 / 12,      // +16.67% (14-month statutory payroll cycle)
+  "spain": 2 / 12,         // +16.67% (14-month statutory payroll cycle)
+  "greece": 2 / 12,        // +16.67% (14-month statutory payroll cycle)
+  "peru": 2 / 12,          // +16.67% (July & December Gratifications)
+  "ecuador": 2 / 12,       // +16.67% (Decimo Tercer & Cuarto)
+  "belgium": 1.92 / 12,    // +16.0% (13th + 92% of 14th)
+  "italy": 1 / 12,         // +8.33% (13th month standard)
+  "argentina": 1 / 12,     // +8.33% (S.A.C. Sueldo Anual Complementario)
+  "brazil": 1 / 12,        // +8.33% (13th month Décimo Terceiro)
+  "mexico": 1 / 12,        // +8.33% (Aguinaldo 13th month)
+  "germany": 1 / 12,       // +8.33% (Weihnachtsgeld holiday/13th)
+  "netherlands": 1 / 12,   // +8.33% (13th month / Vakantiegeld)
+  "china": 1 / 12,         // +8.33% (CNY 13th month bonus)
+  "philippines": 1 / 12,   // +8.33% (Statutory 13th month)
+  "indonesia": 1 / 12,     // +8.33% (THR Religious Holiday Allowance)
+  "bolivia": 1 / 12,       // +8.33% (Aguinaldo 13th month)
+  "south africa": 1 / 12,  // +8.33% (13th month Christmas bonus)
+  "angola": 1 / 12         // +8.33% (13th month statutory allowance)
+};
+
+function getBonusPctForCountry(rawCountry: string): number {
+  if (!rawCountry) return 0;
+  const c = canonicalCountry(rawCountry);
+  for (const [k, v] of Object.entries(BONUS_REGISTRY)) {
+    if (c.includes(k) || k.includes(c)) return v;
+  }
+  return 0;
+}
 const noSpinners = "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 const normalize = (str: string) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, '').trim();
 
@@ -509,7 +538,7 @@ function DecideContent() {
             const rate = currentRates[currency] || 1.0;
             const salaryIn = parseFloat(netSalaries[index]) || 0;
             const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
-            const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
+            const bonusPct = getBonusPctForCountry(bonusKey);
             const bonusAmount = salaryIn * bonusPct;
             const otherIncome = parseFloat(adjustments[index].other) || 0;
             const totalLocalIn = salaryIn + bonusAmount + otherIncome;
@@ -733,7 +762,7 @@ function DecideContent() {
                                         <Tooltip text={(() => {
                                             const school = schools?.find((s: any) => s.id === selectedIds[i]);
                                             const bonusKey = String(getSchoolField(school, ['country', 'region']) || '').toLowerCase();
-                                            const bonusPct = BONUS_REGISTRY[bonusKey] ?? 0;
+                                            const bonusPct = getBonusPctForCountry(bonusKey);
                                             let baseMsg = !manualSalaries[i] 
                                                 ? "Estimated base median salary for this school." 
                                                 : "User-overridden base salary.";
