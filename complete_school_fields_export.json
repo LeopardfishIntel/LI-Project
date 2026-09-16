@@ -5229,7 +5229,7 @@
     "noncontacttime": "25%",
     "healthcoverage": "Full Private",
     "Profit Status": "Non-Profit",
-    "salaryRange": "$2,440.00",
+    "salaryRange": "$3,450",
     "Ownership": "Parent Board",
     "inspect": "CIS",
     "validated": "LFI",
@@ -5254,7 +5254,13 @@
     "name": "IS Amsterdam",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T14:12:11.530Z",
+    "base_salary_eur": 3150,
+    "base_salary_usd": 3450,
+    "package_descriptor": "Culture & Travel",
+    "savingspotential": 950,
+    "savingspotentialsingle": 950,
+    "raw_salary_notes": "Recalibrated from entry support scale to standard Step 5 CAO VO collective agreement teacher scale: €3,150 net/mo (~$3,450/mo) based on €58,000 gross/yr."
   },
   {
     "id": "FLIS0075",
