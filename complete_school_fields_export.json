@@ -739,7 +739,7 @@
     "rating": "Good",
     "approvals": "IB, CIS",
     "summary": "Innovative Baku leader.",
-    "citySafety": "7.2",
+    "citySafety": "6.8",
     "housingprovision": "Provided",
     "techecosystem": "Smart Board Focus",
     "curriculum": "IB",
@@ -747,7 +747,7 @@
     "schoolname": "European Azerbaijan",
     "noncontacttime": "22%",
     "healthcoverage": "Standard",
-    "Profit Status": "Non-Profit",
+    "Profit Status": "For-Profit",
     "salaryRange": "$2,475.00",
     "Ownership": "ACS Foundation",
     "inspect": "IB / CPE",
@@ -3359,7 +3359,7 @@
     "healthcoverage": "Standard",
     "Profit Status": "Non-Profit",
     "salaryRange": "$2,165.00",
-    "Ownership": "Parent Board",
+    "Ownership": "Inspired Education",
     "inspect": "CIS / NEASC",
     "validated": "LFI",
     "profit status": "Non-Profit",
@@ -3453,7 +3453,7 @@
     "healthcoverage": "Full Private",
     "Profit Status": "For-Profit",
     "salaryRange": "$1,940.00",
-    "Ownership": "Inspired Education",
+    "Ownership": "Independent Non-Profit",
     "inspect": "BSO",
     "validated": "LFI",
     "profit status": "For-Profit",
@@ -3713,7 +3713,7 @@
     "healthcoverage": "Premium",
     "Profit Status": "For-Profit",
     "salaryRange": "$4,155.00",
-    "Ownership": "Inspired Education",
+    "Ownership": "Nord Anglia Education",
     "inspect": "CIS",
     "validated": "LFI",
     "profit status": "For-Profit",
@@ -4509,7 +4509,7 @@
     "healthcoverage": "Premium",
     "Profit Status": "For-Profit",
     "salaryRange": "$4,475.00",
-    "Ownership": "Inspired Education",
+    "Ownership": "Independent Non-Profit",
     "inspect": "CIS",
     "validated": "LFI",
     "profit status": "For-Profit",
@@ -4883,7 +4883,9 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 7 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T17:44:44.836Z"
+    "lastScrapedAt": "2026-09-01T17:44:44.836Z",
+    "approvals": "IB World School, CIS, NEASC, ECIS",
+    "classsize": "20"
   },
   {
     "id": "FLIS0069",
@@ -7842,9 +7844,9 @@
       "_nanoseconds": 933000000
     },
     "lastScrapedAt": "2026-08-30T07:57:02.932Z",
-    "website": null,
+    "website": "https://www.dubaibritishschool.ae",
     "agency": "Taaleem Careers Portal, Teach Away, Gulf Talent",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.dubaibritishschool.ae/work-with-us",
     "name": "Dubai British School",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "city": "Dubai Emirates Hills",
@@ -8793,7 +8795,7 @@
     "Profit Status": "For-Profit",
     "financescore": "7.0",
     "country": "Egypt",
-    "Ownership": "Cognita",
+    "Ownership": "Malvern College Family of Schools",
     "classsize": "24",
     "city": "Cairo",
     "rating": "Respectable",
@@ -9633,7 +9635,7 @@
     "id": "FLIS0143",
     "Profit Status": "Non-Profit",
     "Ownership": "Marlborough College UK Overseas Trust",
-    "citySafety": "8.2",
+    "citySafety": "8.7",
     "validated": "LFI",
     "citysafety": "8.7",
     "column 1": "Yes",
@@ -9820,7 +9822,7 @@
     "id": "FLIS0146",
     "Profit Status": "Private Trust",
     "Ownership": "Educatus Trust (Private Sister School)",
-    "citySafety": "8.0",
+    "citySafety": "8.8",
     "validated": "LFI",
     "column 1": "Yes",
     "financescore": "8.6",
@@ -10790,7 +10792,7 @@
   {
     "id": "FLIS0164",
     "Profit Status": "For-Profit",
-    "Ownership": "Nord Anglia",
+    "Ownership": "Malvern College Family of Schools",
     "techscore": "8.0",
     "citySafety": "9.5",
     "curriculum": "IB",
@@ -12579,7 +12581,7 @@
     "Profit Status": "For-Profit",
     "financescore": "6.8",
     "country": "Italy",
-    "Ownership": "Inspired",
+    "Ownership": "Independent Non-Profit",
     "classsize": "22",
     "city": "Turin",
     "rating": "Respectable",
@@ -12999,7 +13001,7 @@
     "Profit Status": "For-Profit",
     "financescore": "6.8",
     "country": "Italy",
-    "Ownership": "Inspired",
+    "Ownership": "Independent Non-Profit",
     "classsize": "22",
     "city": "Genoa",
     "rating": "Respectable",
@@ -13847,9 +13849,9 @@
       "_nanoseconds": 832000000
     },
     "lastScrapedAt": "2026-08-30T07:56:39.830Z",
-    "website": null,
+    "website": "https://www.stgis.at",
     "agency": "Search Associates, Schrole, LinkedIn, Karriere.at",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.schrole.com/schools/st-gilgen-international-school",
     "name": "St. Gilgen International School",
     "tesOrganizationId": "1057170",
     "tesEmployerSlug": "st-gilgen-international-school-1057170",
@@ -13886,7 +13888,9 @@
     "salary": "€2,050/month",
     "netbase": "€2,050",
     "baseSalary": "€2,050",
-    "bonusPot": "+€5,040 / yr"
+    "bonusPot": "+€5,040 / yr",
+    "Profit Status": "Private / Cognita Group",
+    "citySafety": "8.3"
   },
   {
     "id": "FLIS0205",
@@ -13971,7 +13975,9 @@
     "salary": "€2,350/month",
     "netbase": "€2,350",
     "baseSalary": "€2,350",
-    "bonusPot": "+€5,860 / yr"
+    "bonusPot": "+€5,860 / yr",
+    "Ownership": "Non-Profit Independent Christian Board",
+    "citySafety": "7.9"
   },
   {
     "id": "FLIS0206",
@@ -14025,7 +14031,10 @@
     "salary": "€2,280/month",
     "netbase": "€2,280",
     "baseSalary": "€2,280",
-    "bonusPot": "+€5,670 / yr"
+    "bonusPot": "+€5,670 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.2"
   },
   {
     "id": "FLIS0207",
@@ -14068,9 +14077,9 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:31.095Z",
-    "website": null,
+    "website": "https://www.innsbruck-iis.at",
     "agency": "Karriere.at, Tirol.gv.at Job Portal, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.innsbruck-iis.at/careers",
     "name": "International School Innsbruck",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14079,7 +14088,10 @@
     "salary": "€2,480/month",
     "netbase": "€2,480",
     "baseSalary": "€2,480",
-    "bonusPot": "+€6,210 / yr"
+    "bonusPot": "+€6,210 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "Public",
+    "citySafety": "7.9"
   },
   {
     "id": "FLIS0208",
@@ -14122,9 +14134,9 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:24.682Z",
-    "website": null,
+    "website": "https://www.lais.at",
     "agency": "Karriere.at, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.lais.at/contact",
     "name": "Lower Austrian International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14133,7 +14145,10 @@
     "salary": "€2,440/month",
     "netbase": "€2,440",
     "baseSalary": "€2,440",
-    "bonusPot": "+€6,100 / yr"
+    "bonusPot": "+€6,100 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "Public",
+    "citySafety": "7.4"
   },
   {
     "id": "FLIS0209",
@@ -14187,7 +14202,10 @@
     "salary": "€2,440/month",
     "netbase": "€2,440",
     "baseSalary": "€2,440",
-    "bonusPot": "+€6,100 / yr"
+    "bonusPot": "+€6,100 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "Public",
+    "citySafety": "7.7"
   },
   {
     "id": "FLIS0210",
@@ -14230,9 +14248,9 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:27.793Z",
-    "website": null,
+    "website": "https://www.sais.at",
     "agency": "Karriere.at, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.sais.at/employment",
     "name": "SALIS - Salzburg International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14241,7 +14259,10 @@
     "salary": "€2,440/month",
     "netbase": "€2,440",
     "baseSalary": "€2,440",
-    "bonusPot": "+€6,100 / yr"
+    "bonusPot": "+€6,100 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "Public",
+    "citySafety": "8.1"
   },
   {
     "id": "FLIS0212",
@@ -14295,7 +14316,10 @@
     "salary": "€2,160/month",
     "netbase": "€2,160",
     "baseSalary": "€2,160",
-    "bonusPot": "+€5,370 / yr"
+    "bonusPot": "+€5,370 / yr",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0213",
@@ -14380,7 +14404,8 @@
     "salary": "€3,033/month",
     "netbase": "€3,033",
     "baseSalary": "€3,033",
-    "bonusPot": "+€7,554 / yr"
+    "bonusPot": "+€7,554 / yr",
+    "citySafety": "7.9"
   },
   {
     "id": "FLIS0214",
@@ -14423,13 +14448,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:26.002Z",
-    "website": null,
+    "website": "https://apgschool.com",
     "agency": "LinkedIn, Gulf Talent",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://apgschool.com/careers",
     "name": "Arabian Pearl Gulf School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0215",
@@ -14472,13 +14500,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:25.475Z",
-    "website": null,
+    "website": "https://www.asb.bh",
     "agency": "Emerge Education Portal, Search Associates, LinkedIn, Gulf Talent",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.asb.bh/about/careers",
     "name": "American School of Bahrain",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0216",
@@ -14527,7 +14558,10 @@
     "name": "Bahrain Bayan School",
     "tesOrganizationId": "1075886",
     "tesEmployerSlug": "bahrain-bayan-school-1075886",
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0217",
@@ -14808,7 +14842,10 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: 9 active vacancies detected across TES, GRC Search, and official school portals (20% estimated annual staff turnover).",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-02T05:35:27.453Z"
+    "lastScrapedAt": "2026-09-02T05:35:27.453Z",
+    "Profit Status": "Yes",
+    "Ownership": "UWC",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0218",
@@ -14851,13 +14888,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:22.533Z",
-    "website": null,
+    "website": "https://nisbah.edu.bh",
     "agency": "Teacher Horizons, LinkedIn, Gulf Talent",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://nisbah.edu.bh/employee",
     "name": "Naseem International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0219",
@@ -14882,7 +14922,7 @@
     "isRevalidating": true,
     "revalidationStatus": "success",
     "agency": "Britus Educational Portal, Gulf Talent, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://tenby.edu.my/setia-eco-park/work-with-us/",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:19:07.622Z",
@@ -15327,7 +15367,10 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 17 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-02T14:42:21.781Z"
+    "lastScrapedAt": "2026-09-02T14:42:21.781Z",
+    "Profit Status": "Yes",
+    "Ownership": "International Schools Partnership",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0220",
@@ -15389,7 +15432,10 @@
     "package_descriptor": "High Savings / Tier 1",
     "savingspotential": 1900,
     "savingspotentialsingle": 1900,
-    "raw_salary_notes": "Recalibrated from leadership package to standard Step 5 teacher net base: 12,000 AED net/mo (~$3,260/mo) plus provided accommodation."
+    "raw_salary_notes": "Recalibrated from leadership package to standard Step 5 teacher net base: 12,000 AED net/mo (~$3,260/mo) plus provided accommodation.",
+    "Profit Status": "Yes",
+    "Ownership": "International Schools Partnership",
+    "citySafety": "9.8"
   },
   {
     "id": "FLIS0221",
@@ -15598,7 +15644,10 @@
     "package_descriptor": "Destination Package",
     "raw_salary_notes": "Recalibrated from leadership/gross package to standard Step 5 teacher net base: €2,250 net/mo (~$2,450/mo) based on €36,000 gross/yr.",
     "savingspotential": 450,
-    "savingspotentialsingle": 450
+    "savingspotentialsingle": 450,
+    "Profit Status": "Yes",
+    "Ownership": "Globeducate",
+    "citySafety": "8.9"
   },
   {
     "id": "FLIS0222",
@@ -15631,7 +15680,7 @@
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:21.489Z",
     "agency": "Gulf Talent, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://santcugat.agorainternationalschool.es/en/work-with-us",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-09-16T14:20:05.384Z",
@@ -15663,7 +15712,10 @@
     "package_descriptor": "Destination Package",
     "savingspotential": 150,
     "savingspotentialsingle": 150,
-    "raw_salary_notes": "Recalibrated from inflated scale to Spanish private school collective agreement (Convenio ANINSEI) Step 5 teacher net base: €1,900 net/mo (~$2,075/mo) based on €30,000 gross/yr."
+    "raw_salary_notes": "Recalibrated from inflated scale to Spanish private school collective agreement (Convenio ANINSEI) Step 5 teacher net base: €1,900 net/mo (~$2,075/mo) based on €30,000 gross/yr.",
+    "Profit Status": "Yes",
+    "Ownership": "Globeducate",
+    "citySafety": "9.2"
   },
   {
     "id": "FLIS0223",
@@ -15697,7 +15749,7 @@
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:20.765Z",
     "agency": "LinkedIn, Gulf Talent",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://nobelalgarve.schoolrecruiter.com",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-09-16T14:16:01.627Z",
@@ -15728,7 +15780,10 @@
     "package_descriptor": "Culture & Travel",
     "savingspotential": 900,
     "savingspotentialsingle": 900,
-    "raw_salary_notes": "Recalibrated from inflated scale to standard Globeducate Algarve Step 5 teacher net base: €1,800 net/mo (~$1,950/mo) based on €29,000 gross/yr."
+    "raw_salary_notes": "Recalibrated from inflated scale to standard Globeducate Algarve Step 5 teacher net base: €1,800 net/mo (~$1,950/mo) based on €29,000 gross/yr.",
+    "Profit Status": "Yes",
+    "Ownership": "Globeducate",
+    "citySafety": "9.5"
   },
   {
     "id": "FLIS0224",
@@ -15860,7 +15915,10 @@
         "slug": "st-christopher-s-school-senior-1057682"
       }
     ],
-    "isCampusStub": false
+    "isCampusStub": false,
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0225",
@@ -15903,16 +15961,19 @@
       "_nanoseconds": 958000000
     },
     "lastScrapedAt": "2026-08-30T07:57:55.956Z",
-    "website": null,
+    "website": "https://isbedu.be",
     "agency": "Search Associates, Schrole, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://isbedu.be/careers-with-isbe",
     "name": "Antwerp International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0226",
@@ -15955,16 +16016,19 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:18.151Z",
-    "website": null,
+    "website": "https://www.beps.com",
     "agency": "Search Associates, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.beps.com/about/join-our-team",
     "name": "BEPS International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0227",
@@ -16007,16 +16071,19 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:23.012Z",
-    "website": null,
+    "website": "https://www.bis-school.com",
     "agency": "LinkedIn, Teacher Horizons",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.bis-school.com/careers",
     "name": "Bogaerts International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0228",
@@ -16059,16 +16126,19 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:16.600Z",
-    "website": null,
+    "website": "https://www.bisb.org",
     "agency": "LinkedIn, Teacher Horizons",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.bisb.org/vacancies",
     "name": "British International School of Brussels",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0229",
@@ -16120,7 +16190,10 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "aliases": [],
     "schoolGroup": "",
-    "group": "Direct"
+    "group": "Direct",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0230",
@@ -16163,13 +16236,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:19.514Z",
-    "website": null,
+    "website": "https://www.esi-argenteuil.be",
     "agency": "LinkedIn, Euraxess",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.esi-argenteuil.be/careers",
     "name": "European School of Bruxelles-Argenteuil",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0231",
@@ -16212,13 +16288,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:20.007Z",
-    "website": null,
+    "website": "https://www.montessori-brussels.org",
     "agency": "AMI (Association Montessori Internationale) Jobs, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.montessori-brussels.org/careers",
     "name": "International Montessori School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0232",
@@ -16261,13 +16340,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:19.524Z",
-    "website": null,
+    "website": "https://www.isgnt.be",
     "agency": "VDAB Belgium, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.isgnt.be/jobs",
     "name": "International School Ghent vzw",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0233",
@@ -16310,13 +16392,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:23.090Z",
-    "website": null,
+    "website": "https://www.isb.be",
     "agency": "Search Associates, Schrole, ISS, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://jobpage.cvwarehouse.com/?companyGuid=aa93672e-db4a-431c-ad40-8431665f0042",
     "name": "International School of Belgium",
     "tesOrganizationId": "1074131",
     "tesEmployerSlug": "international-school-of-belgium-1074131",
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0234",
@@ -16365,7 +16450,10 @@
     "name": "International School of Flanders Waterloo",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0235",
@@ -16408,13 +16496,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:20.831Z",
-    "website": null,
+    "website": "https://www.isfwaterloo.org",
     "agency": "ISF Group Portal, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://www.isfwaterloo.org/careers",
     "name": "International School of Flanders RHSG",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0236",
@@ -16463,7 +16554,10 @@
     "name": "Montgomery International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "8.8"
   },
   {
     "id": "FLIS0237",
@@ -16506,13 +16600,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:17.594Z",
-    "website": null,
+    "website": "https://abc.edu.az",
     "agency": "Teacher Horizons, Teach Away, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://abc.edu.az/accreditation-inspections",
     "name": "Azerbaijan British College",
     "tesOrganizationId": "1064480",
     "tesEmployerSlug": "azerbaijan-british-college-1064480",
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0238",
@@ -16561,7 +16658,10 @@
     "name": "Baku International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0239",
@@ -16610,7 +16710,10 @@
     "name": "Baku Oxford School",
     "tesOrganizationId": "1076164",
     "tesEmployerSlug": "baku-oxford-school-1076164",
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0240",
@@ -16653,13 +16756,16 @@
     },
     "cachedStability": null,
     "lastScrapedAt": "2026-08-30T07:56:19.997Z",
-    "website": null,
+    "website": "https://dunya.khazar.org",
     "agency": "Khazar University Portal, IB World Schools Board, LinkedIn",
-    "careersPageUrl": null,
+    "careersPageUrl": "https://jobsearch.az/companies/khazar-university-dunya-ib-school",
     "name": "Khazar University Dunya IB School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0241",
@@ -16708,7 +16814,10 @@
     "name": "Modern Educational Complex Named in Honor of Heydar Aliyev",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "For-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0242",
@@ -16757,7 +16866,10 @@
     "name": "The International School of Azerbaijan",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.623Z"
+    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "Profit Status": "Yes",
+    "Ownership": "Non-Profit",
+    "citySafety": "6.8"
   },
   {
     "id": "FLIS0243",
@@ -16778,10 +16890,30 @@
       "EIB Paris",
       "EIB de la Jonchère"
     ],
-    "updatedAt": {
-      "_seconds": 1788284336,
-      "_nanoseconds": 485000000
-    }
+    "updatedAt": "2026-09-16T15:18:20.107Z",
+    "curriculum": "French / IGCSE / IB DP",
+    "ownership": "Globeducate",
+    "Ownership": "Globeducate",
+    "Profit Status": "For-Profit",
+    "profit status": "For-Profit",
+    "approvals": "French MOE, IB World School, Cambridge International, ECIS",
+    "salaryRange": "$3,600",
+    "base_salary_eur": 3300,
+    "base_salary_usd": 3600,
+    "housingprovision": "Self-funded (€1,200–1,800/mo)",
+    "housing_status": "Self-funded",
+    "financescore": "8.1",
+    "academicscore": "8.5",
+    "totalscore": "8.3",
+    "rating": "Established",
+    "staffstudentratio": "1:10",
+    "classsize": "20",
+    "noncontacttime": "20%",
+    "website": "https://www.eibparis.com",
+    "careersPageUrl": "https://eibparis.schoolrecruiter.com",
+    "summary": "Bilingual French and international IB curriculum flagship in central Paris.",
+    "isLocked": true,
+    "isCampusStub": false
   },
   {
     "id": "FLIS0244",
@@ -16796,10 +16928,30 @@
       "ICS Paris",
       "ICS Paris School"
     ],
-    "updatedAt": {
-      "_seconds": 1788284337,
-      "_nanoseconds": 172000000
-    }
+    "updatedAt": "2026-09-16T15:18:20.107Z",
+    "curriculum": "IB Continuum (PYP, MYP, DP)",
+    "ownership": "Globeducate",
+    "Ownership": "Globeducate",
+    "Profit Status": "For-Profit",
+    "profit status": "For-Profit",
+    "approvals": "IB World School, ECIS",
+    "salaryRange": "$3,700",
+    "base_salary_eur": 3400,
+    "base_salary_usd": 3700,
+    "housingprovision": "Self-funded (€1,200–1,800/mo)",
+    "housing_status": "Self-funded",
+    "financescore": "8.2",
+    "academicscore": "8.6",
+    "totalscore": "8.4",
+    "rating": "Established",
+    "staffstudentratio": "1:9",
+    "classsize": "18",
+    "noncontacttime": "22%",
+    "website": "https://www.icsparis.fr",
+    "careersPageUrl": "https://icsparis.schoolrecruiter.com",
+    "summary": "Full IB continuum international school in the 15th arrondissement of Paris.",
+    "isLocked": true,
+    "isCampusStub": false
   },
   {
     "id": "FLIS0245",
@@ -16835,13 +16987,21 @@
     "academicscore": "7.9",
     "totalscore": "7.0",
     "rating": "Established",
-    "summary": "Globeducate network school with campuses across Cyprus, tightly compressed by Limassol living costs."
+    "summary": "Globeducate network school with campuses across Cyprus, tightly compressed by Limassol living costs.",
+    "website": "https://www.pascal.ac.cy",
+    "careersPageUrl": "https://www.pascal.ac.cy/about/about-us",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel, IB World School",
+    "profit status": "For-Profit",
+    "Ownership": "Globeducate",
+    "staffstudentratio": "1:11",
+    "classsize": "22",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0246",
     "schoolname": "Agora Madrid International School",
     "name": "Agora Madrid International School",
-    "city": "Madrid",
+    "city": "Villaviciosa de Odón, Madrid",
     "country": "Spain",
     "group": "Globeducate",
     "schoolGroup": "Globeducate",
@@ -16850,16 +17010,36 @@
       "Agora Madrid",
       "Agora Madrid International School"
     ],
-    "updatedAt": {
-      "_seconds": 1788284338,
-      "_nanoseconds": 23000000
-    }
+    "updatedAt": "2026-09-16T15:18:20.107Z",
+    "curriculum": "Spanish / IB Continuum",
+    "ownership": "Globeducate",
+    "Ownership": "Globeducate",
+    "Profit Status": "For-Profit",
+    "profit status": "For-Profit",
+    "approvals": "IB World School, Spanish MOE, Eco-Schools",
+    "salaryRange": "$2,850",
+    "base_salary_eur": 2600,
+    "base_salary_usd": 2850,
+    "housingprovision": "€700–1,000/mo allowance/self",
+    "housing_status": "Allowance",
+    "financescore": "8.1",
+    "academicscore": "8.5",
+    "totalscore": "8.3",
+    "rating": "Established",
+    "staffstudentratio": "1:10",
+    "classsize": "20",
+    "noncontacttime": "20%",
+    "website": "https://madrid.agorainternationalschool.es",
+    "careersPageUrl": "https://madrid.agorainternationalschool.es/en/work-with-us",
+    "summary": "Expansive IB World School campus located in Villaviciosa de Odón, Madrid.",
+    "isLocked": true,
+    "isCampusStub": false
   },
   {
     "id": "FLIS0248",
     "schoolname": "Cambridge House British International School",
     "name": "Cambridge House British International School",
-    "city": "Valencia",
+    "city": "Rocafort, Valencia",
     "country": "Spain",
     "group": "Globeducate",
     "schoolGroup": "Globeducate",
@@ -16868,10 +17048,30 @@
       "Cambridge House",
       "Cambridge House Valencia"
     ],
-    "updatedAt": {
-      "_seconds": 1788284338,
-      "_nanoseconds": 809000000
-    }
+    "updatedAt": "2026-09-16T15:18:20.107Z",
+    "curriculum": "UK National / IGCSE / A-Levels / BTEC",
+    "ownership": "Globeducate",
+    "Ownership": "Globeducate",
+    "Profit Status": "For-Profit",
+    "profit status": "For-Profit",
+    "approvals": "BSO Outstanding, NABSS, Spanish MOE",
+    "salaryRange": "$2,650",
+    "base_salary_eur": 2400,
+    "base_salary_usd": 2650,
+    "housingprovision": "€600–900/mo allowance/self",
+    "housing_status": "Allowance",
+    "financescore": "8.2",
+    "academicscore": "8.4",
+    "totalscore": "8.3",
+    "rating": "Established",
+    "staffstudentratio": "1:12",
+    "classsize": "24",
+    "noncontacttime": "20%",
+    "website": "https://cambridgehouse.es",
+    "careersPageUrl": "https://cambridgehouse.schoolrecruiter.com",
+    "summary": "Leading BSO-inspected British international school in Rocafort, Valencia.",
+    "isLocked": true,
+    "isCampusStub": false
   },
   {
     "id": "flis0115_emirates_hills",
@@ -17141,7 +17341,8 @@
     "schoolId": "FLIS0251",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0252",
@@ -17184,7 +17385,8 @@
     "schoolId": "FLIS0252",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0253",
@@ -17227,7 +17429,8 @@
     "schoolId": "FLIS0253",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0254",
@@ -17274,7 +17477,8 @@
     "base_salary_cny": 24000,
     "base_salary_usd": 3350,
     "raw_salary_notes": "Gross scale RMB 28,000 – 36,000 / mo normalized to ¥24,000 net ($3,350/mo) baseline",
-    "updatedAt": "2026-09-16T13:19:59.685Z"
+    "updatedAt": "2026-09-16T13:19:59.685Z",
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0255",
@@ -17321,7 +17525,8 @@
     "base_salary_cny": 24000,
     "base_salary_usd": 3350,
     "raw_salary_notes": "Gross scale RMB 27,000 – 35,000 / mo normalized to ¥24,000 net ($3,350/mo) baseline",
-    "updatedAt": "2026-09-16T13:19:59.685Z"
+    "updatedAt": "2026-09-16T13:19:59.685Z",
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0256",
@@ -17364,7 +17569,8 @@
     "schoolId": "FLIS0256",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0257",
@@ -17407,7 +17613,8 @@
     "schoolId": "FLIS0257",
     "openJobsCount": 0,
     "scrapedJobsCount": 0,
-    "scrapedJobsList": []
+    "scrapedJobsList": [],
+    "profit status": "For-Profit"
   },
   {
     "id": "FLIS0258",
@@ -17522,7 +17729,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://www.aisc.ac.cy",
+    "careersPageUrl": "https://www.aisc.ac.cy/about-us/careers",
+    "approvals": "MSA, CIS, ECIS, IB World School, Cyprus MOE",
+    "profit status": "Non-Profit",
+    "Ownership": "Private / Non-Profit",
+    "staffstudentratio": "1:10",
+    "classsize": "20",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0281",
@@ -17549,7 +17764,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://www.englishschool.ac.cy",
+    "careersPageUrl": "https://www.englishschool.ac.cy/department/careers-university-entry",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel, Erasmus+",
+    "profit status": "Non-Profit",
+    "Ownership": "Trust / Selective Grammar",
+    "staffstudentratio": "1:12",
+    "classsize": "24",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0283",
@@ -17576,7 +17799,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://foleysschool.com",
+    "careersPageUrl": "https://foleysschool.com/vacancies",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel",
+    "profit status": "For-Profit",
+    "Ownership": "Private / Family",
+    "staffstudentratio": "1:11",
+    "classsize": "22",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0282",
@@ -17603,7 +17834,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://isl.cy",
+    "careersPageUrl": "https://isl.cy/careers",
+    "approvals": "IB World School, Cyprus MOE",
+    "profit status": "For-Profit",
+    "Ownership": "Private",
+    "staffstudentratio": "1:10",
+    "classsize": "20",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0284",
@@ -17630,7 +17869,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://heritageschool.ac.cy",
+    "careersPageUrl": "https://www.carierista.com/en/partners/5162/the-heritage-private-school-ltd",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel, UNESCO APSnet",
+    "profit status": "For-Profit",
+    "Ownership": "Private",
+    "staffstudentratio": "1:11",
+    "classsize": "22",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0285",
@@ -17657,7 +17904,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://www.paphosinternationalschool.com",
+    "careersPageUrl": "https://www.globeducate.com/our-schools/cyprus/the-international-school-of-paphos",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel",
+    "profit status": "For-Profit",
+    "Ownership": "Private",
+    "staffstudentratio": "1:10",
+    "classsize": "20",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0286",
@@ -17684,7 +17939,15 @@
     "updatedAt": "2026-09-16T13:18:09.013Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "website": "https://www.americanacademy.ac.cy",
+    "careersPageUrl": "https://www.schrole.com/schools/american-academy-larnaca-junior-school",
+    "approvals": "Cyprus MOE, Cambridge International, Pearson Edexcel",
+    "profit status": "Non-Profit",
+    "Ownership": "Non-Profit Trust",
+    "staffstudentratio": "1:12",
+    "classsize": "24",
+    "noncontacttime": "20%"
   },
   {
     "id": "FLIS0287",
@@ -17726,7 +17989,8 @@
     "updatedAt": "2026-09-16T15:04:58.559Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "citySafety": "8.5"
   },
   {
     "id": "FLIS0288",
@@ -17768,7 +18032,8 @@
     "updatedAt": "2026-09-16T15:04:58.559Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "citySafety": "8.9"
   },
   {
     "id": "FLIS0289",
@@ -17811,7 +18076,8 @@
     "updatedAt": "2026-09-16T15:04:58.559Z",
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
-    "openJobsCount": 0
+    "openJobsCount": 0,
+    "citySafety": "8.9"
   },
   {
     "id": "FLIS0290",
@@ -17857,6 +18123,7 @@
     "scrapedJobsList": [],
     "scrapedJobsCount": 0,
     "openJobsCount": 0,
-    "updatedAt": "2026-09-16T15:06:36.482Z"
+    "updatedAt": "2026-09-16T15:06:36.482Z",
+    "citySafety": "8.8"
   }
 ]
