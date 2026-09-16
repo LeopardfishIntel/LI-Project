@@ -357,3 +357,17 @@ export async function runTesAdaptor(input: AdaptorInput): Promise<RawJobRecord[]
 
   return await scrapeTesPagePlaywright(url, input);
 }
+
+export async function scrapeTesEmployerHub(
+  slug: string,
+  schoolId: string,
+  schoolName?: string
+): Promise<RawJobRecord[]> {
+  return await runTesAdaptor({
+    tesEmployerSlug: slug,
+    schoolId,
+    schoolName: schoolName || slug,
+    city: "",
+    country: "",
+  });
+}
