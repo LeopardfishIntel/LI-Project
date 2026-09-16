@@ -11908,7 +11908,7 @@
     "staffstudentratio": "1:9",
     "approvals": "CIS/NEASC",
     "academicscore": "8.2",
-    "salaryRange": "$4,150.00",
+    "salaryRange": "$2,850",
     "summary": "Exceptional safety; high work-life balance.",
     "techscore": "8.0",
     "citySafety": "9.8",
@@ -11944,7 +11944,10 @@
     "name": "International School of Helsinki",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T13:57:51.677Z",
+    "base_salary_eur": 2600,
+    "base_salary_usd": 2850,
+    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,600 net/mo (~$2,850/mo) based on €4,000 gross Step 5 scale after Finnish ~32% municipal/pension deductions."
   },
   {
     "id": "FLIS0183",
@@ -11960,7 +11963,7 @@
     "staffstudentratio": "1:10",
     "approvals": "Independent",
     "academicscore": "7.8",
-    "salaryRange": "$3,850.00",
+    "salaryRange": "$2,700",
     "summary": "High security and professional autonomy.",
     "techscore": "7.5",
     "citySafety": "9.8",
@@ -11996,7 +11999,10 @@
     "name": "British School in Helsinki",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T13:57:51.677Z",
+    "base_salary_eur": 2460,
+    "base_salary_usd": 2700,
+    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,460 net/mo (~$2,700/mo) based on €3,700 gross Step 5 scale after Finnish ~32% municipal/pension deductions."
   },
   {
     "id": "FLIS0184",
@@ -12116,7 +12122,7 @@
     "staffstudentratio": "1:10",
     "approvals": "CIS",
     "academicscore": "8.5",
-    "salaryRange": "$4,250.00",
+    "salaryRange": "$3,650",
     "summary": "Flagship sustainable campus; high faculty autonomy.",
     "techscore": "8.0",
     "citySafety": "9.5",
@@ -12152,7 +12158,10 @@
     "name": "Copenhagen International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-09-16T13:57:51.677Z",
+    "base_salary_dkk": 25500,
+    "base_salary_usd": 3650,
+    "raw_salary_notes": "Adjusted to 25,500 DKK net/mo ($3,650/mo) based on 42,000 DKK gross Step 5 scale after Danish state/municipal ~39% effective taxes."
   },
   {
     "id": "FLIS0187",
@@ -12434,7 +12443,7 @@
     "staffstudentratio": "1:10",
     "approvals": "CIS",
     "academicscore": "7.5",
-    "salaryRange": "$3,150.00",
+    "salaryRange": "$2,500",
     "summary": "Lifestyle school; salary vs. rent friction.",
     "techscore": "7.5",
     "citySafety": "8.5",
@@ -12470,13 +12479,16 @@
     "name": "International School of Nice",
     "tesOrganizationId": "1059393",
     "tesEmployerSlug": "international-school-of-nice-isn-1059393",
-    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "updatedAt": "2026-09-16T13:57:51.677Z",
     "aliases": [
       "IS Nice",
       "International School of Nice"
     ],
     "schoolGroup": "Globeducate",
-    "group": "Globeducate"
+    "group": "Globeducate",
+    "base_salary_eur": 2280,
+    "base_salary_usd": 2500,
+    "raw_salary_notes": "Normalized to €2,280 net/mo ($2,500/mo) based on €37k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%)."
   },
   {
     "id": "FLIS0193",
@@ -12492,7 +12504,7 @@
     "staffstudentratio": "1:10",
     "approvals": "CIS",
     "academicscore": "7.8",
-    "salaryRange": "$3,250.00",
+    "salaryRange": "$2,600",
     "summary": "Boutique British school in high-end hub.",
     "techscore": "7.5",
     "citySafety": "8.5",
@@ -12528,13 +12540,16 @@
     "name": "Mougins School",
     "tesOrganizationId": "1055155",
     "tesEmployerSlug": "mougins-school-1055155",
-    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "updatedAt": "2026-09-16T13:57:51.677Z",
     "aliases": [
       "Mougins",
       "Mougins School"
     ],
     "schoolGroup": "Globeducate",
-    "group": "Globeducate"
+    "group": "Globeducate",
+    "base_salary_eur": 2380,
+    "base_salary_usd": 2600,
+    "raw_salary_notes": "Normalized to €2,380 net/mo ($2,600/mo) based on €39k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%)."
   },
   {
     "id": "FLIS0194",
