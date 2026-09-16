@@ -1522,31 +1522,27 @@ export function generateJobFingerprint(
   externalPostingId?: string | null,
   dateSlug?: string | null
 ): string {
-  const cleanSchool = (schoolId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
-  const cleanTitle = (title || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
-  const cleanExternal = (externalPostingId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
-  const cleanDate = (dateSlug || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
+  const cleanSchool = (schoolId || '').toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
+  
+  // Normalize title aggressively for cross-engine parity:
+  // strip parentheticals '(Aug 2026)', normalize common variations, strip non-alphanumerics
+  const normTitle = (title || '')
+    .toLowerCase()
+    .replace(/s*([^)]*)/g, '')
+    .replace(/mathematics/g, 'maths')
+    .replace(/physicals+education/g, 'pe')
+    .replace(/designs+ands+technology/g, 'dt')
+    .replace(/[^a-z0-9]/g, '');
 
   let hash = 0;
-  for (let i = 0; i < cleanTitle.length; i++) {
-    hash = ((hash << 5) - hash) + cleanTitle.charCodeAt(i);
+  for (let i = 0; i < normTitle.length; i++) {
+    hash = ((hash << 5) - hash) + normTitle.charCodeAt(i);
     hash |= 0;
   }
   const titleHash = Math.abs(hash).toString(36);
 
-  let extSuffix = '';
-  if (cleanExternal && cleanExternal.length > 2) {
-    let extHash = 0;
-    for (let i = 0; i < cleanExternal.length; i++) {
-      extHash = ((extHash << 5) - extHash) + cleanExternal.charCodeAt(i);
-      extHash |= 0;
-    }
-    extSuffix = `_${Math.abs(extHash).toString(36)}`;
-  } else if (cleanDate) {
-    extSuffix = `_${cleanDate}`;
-  }
-
-  return `fp_${cleanSchool}_${titleHash}${extSuffix}`;
+  // Unified cross-engine fingerprint
+  return `fp_${cleanSchool}_${titleHash}`;
 }
 
 // =====================================================================

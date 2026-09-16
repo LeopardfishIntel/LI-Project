@@ -152,8 +152,12 @@ export const getParentheticalYear = (raw: string): string => {
 /**
  * Returns false if the vacancy string's dates clearly fall outside the 24-month window.
  */
-export const isJobWithinLast24Months = (rawJobStr: string): boolean => {
-  const dateMatch = rawJobStr.match(/\(([^)]+)\)/);
+/**
+ * Returns false if the vacancy string's dates clearly fall outside the temporal cutoff (120 days max).
+ * Prevents stale academic cycle postings from entering featured_jobs_cache.
+ */
+export const isJobWithinTemporalCutoff = (rawJobStr: string, maxDays: number = 120): boolean => {
+  const dateMatch = rawJobStr.match(/(([^)]+))/);
   if (!dateMatch) return true;
   const content = dateMatch[1];
   const parts = content.split(';').map(s => s.trim());
@@ -168,12 +172,15 @@ export const isJobWithinLast24Months = (rawJobStr: string): boolean => {
       if (!isNaN(d.getTime())) closes = d;
     }
   }
-  const cutoff = new Date();
-  cutoff.setFullYear(cutoff.getFullYear() - 2);
+  const cutoff = new Date(Date.now() - maxDays * 24 * 60 * 60 * 1000);
 
   if (closes && closes < cutoff) return false;
   if (posted && posted < cutoff) return false;
   return true;
+};
+
+export const isJobWithinLast24Months = (rawJobStr: string): boolean => {
+  return isJobWithinTemporalCutoff(rawJobStr, 120);
 };
 
 // ─── URL Extraction ────────────────────────────────────────────────────────────

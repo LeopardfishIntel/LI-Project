@@ -236,26 +236,8 @@ export async function runIngestionPipeline(
       continue;
     }
 
-    // ── GATE 5: Composite Key Fingerprint Deduplication ─────────────────────
-    let fp = "";
-    if (isTes) {
-      const tesIdMatch = cleanApplyUrl.match(/-(\d+)\/?$/);
-      fp = tesIdMatch ? `fp_${schoolId.toLowerCase()}_tes_${tesIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
-    } else if (isNordAnglia) {
-      const naeIdMatch = cleanApplyUrl.match(/\/(\d+)\/?$/);
-      fp = naeIdMatch ? `fp_${schoolId.toLowerCase()}_nae_${naeIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
-    } else if (isCognita) {
-      const cognitaMatch = cleanApplyUrl.match(/\/requisition\/(\d+)/i);
-      fp = cognitaMatch ? `fp_${schoolId.toLowerCase()}_cognita_${cognitaMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
-    } else if (isGrc) {
-      const grcIdMatch = cleanApplyUrl.match(/\/job-details\/(\d+)/i) || cleanApplyUrl.match(/\/(\d+)\/?$/);
-      fp = grcIdMatch ? `fp_${schoolId.toLowerCase()}_${grcIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
-    } else if (isGems) {
-      const gemsIdMatch = cleanApplyUrl.match(/-(\d+)\/?$/);
-      fp = gemsIdMatch ? `fp_${schoolId.toLowerCase()}_gems_${gemsIdMatch[1]}` : generateJobFingerprint(schoolId, record.rawTitle);
-    } else {
-      fp = generateJobFingerprint(schoolId, record.rawTitle);
-    }
+    // ── GATE 5: Composite Key Fingerprint Deduplication (Cross-Engine Unified) ──
+    const fp = generateJobFingerprint(schoolId, record.rawTitle);
 
     if (seenFingerprints.has(fp)) {
       rejected++;
