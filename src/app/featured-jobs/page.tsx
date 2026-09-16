@@ -253,6 +253,7 @@ interface FeaturedJobCacheDoc {
   schoolName: string;
   city: string;
   country: string;
+  campus?: string;
   status: string;
   ingestedAtMillis: number;
   isRollingDeadline: boolean;
@@ -289,6 +290,7 @@ interface StructuredJob {
   curriculum: string;
   city: string;
   country: string;
+  campus?: string;
   /** Dynamic savings — family-status multiplier applied to savingsPotentialSingle */
   savingsPotential: number;
   schoolWebsite: string;
@@ -837,6 +839,7 @@ export default function FeaturedJobsPage() {
           schoolName: cleanSchoolName(cacheDoc.schoolName),
           schoolRating: cacheDoc.schoolRating ?? 0,
           curriculum: cacheDoc.curriculum || 'British',
+          campus: cacheDoc.campus || (cacheDoc.schoolId === 'FLIS0224' && cacheDoc.city === 'Saar' ? 'Primary (Saar)' : (cacheDoc.schoolId === 'FLIS0224' && cacheDoc.city === 'Isa Town' ? 'Senior (Isa Town)' : undefined)),
           city: cacheDoc.city || '',
           country: cacheDoc.country || '',
           savingsPotential,
@@ -1786,6 +1789,11 @@ export default function FeaturedJobsPage() {
                           >
                             <Building className="size-3.5 shrink-0" /> {job.schoolName}
                           </a>
+                          {job.campus && (
+                            <span className="bg-sky-500/10 border border-sky-500/30 text-sky-300 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                              📍 {job.campus}
+                            </span>
+                          )}
                           <span className="text-slate-600">•</span>
                           <span className="flex items-center gap-1 text-slate-300">
                             <MapPin className="size-3.5 text-slate-400 shrink-0" /> {job.city}, {job.country}

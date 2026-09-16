@@ -48,6 +48,7 @@ export interface CacheJobDocument {
   status: 'approved' | 'pending_review' | 'expired' | 'rejected';
   ingestedAtMillis: number;
   isRollingDeadline: boolean;
+  campus?: string;
   isAgencyListing?: boolean;
   agencyName?: string;
   department?: string;
@@ -80,6 +81,28 @@ function buildCacheDocument(
     srcUrls[srcName] = record.applyUrl;
   }
 
+  // Multi-campus & St. Christopher's Bahrain canonical master re-parenting
+  let targetSchoolId = record.schoolId ? record.schoolId.toUpperCase() : '';
+  let targetSchoolName = record.schoolName || fallbackSchoolName;
+  let targetCity = record.city || "";
+  let campus = record.campus || undefined;
+
+  const rawSchoolIdLower = (record.schoolId || "").toLowerCase();
+  if (rawSchoolIdLower === 'flis0224_primary' || rawSchoolIdLower.includes('flis0224_p')) {
+    targetSchoolId = 'FLIS0224';
+    targetSchoolName = "St Christopher's School";
+    targetCity = 'Saar';
+    campus = 'Primary (Saar)';
+  } else if (rawSchoolIdLower === 'flis0224_senior' || rawSchoolIdLower.includes('flis0224_s')) {
+    targetSchoolId = 'FLIS0224';
+    targetSchoolName = "St Christopher's School";
+    targetCity = 'Isa Town';
+    campus = 'Senior (Isa Town)';
+  } else if (rawSchoolIdLower === 'flis0224') {
+    targetSchoolId = 'FLIS0224';
+    targetSchoolName = "St Christopher's School";
+  }
+
   return {
     id: fingerprint,
     title: translateJobTitleToEnglish(record.rawTitle),
@@ -90,10 +113,11 @@ function buildCacheDocument(
     datePosted: record.datePosted ? String(record.datePosted) : null,
     closingDate: closingDateISO,
     closingDateMillis,
-    schoolId: record.schoolId ? record.schoolId.toUpperCase() : '',
-    schoolName: record.schoolName || fallbackSchoolName,
-    city: record.city || "",
+    schoolId: targetSchoolId,
+    schoolName: targetSchoolName,
+    city: targetCity,
     country: record.country || "",
+    campus,
     status: 'approved',
     ingestedAtMillis: Date.now(),
     isRollingDeadline: closingDateMillis === null,

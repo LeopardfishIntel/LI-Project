@@ -45,6 +45,9 @@ export interface RawJobRecord {
 
   /** Seniority / phase tier: 'Classroom Teacher' | 'Head of Department (HoD)' | 'SLT / Coordinator' */
   roleTier?: string;
+
+  /** Sub-campus designation (e.g. Primary (Saar), Senior (Isa Town)) */
+  campus?: string;
 }
 
 /**

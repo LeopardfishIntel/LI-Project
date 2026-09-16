@@ -15705,7 +15705,7 @@
     "name": "St Christopher's School",
     "tesOrganizationId": "1170107",
     "tesEmployerSlug": "st-christopher-s-school-primary-1170107",
-    "updatedAt": "2026-08-30T16:19:07.623Z",
+    "updatedAt": "2026-09-16T14:57:22.156Z",
     "revalidationCompletedAt": {
       "_seconds": 1788164344,
       "_nanoseconds": 789000000
@@ -15769,7 +15769,23 @@
     "schoolGroup": "",
     "group": "Direct",
     "housingBenefit": "Housing Allowance Included in Base",
-    "housing": "Housing Allowance Included in Base"
+    "housing": "Housing Allowance Included in Base",
+    "campuses": [
+      {
+        "id": "flis0224_primary",
+        "name": "Primary (Infant & Junior)",
+        "city": "Saar",
+        "tesId": "1170107",
+        "slug": "st-christopher-s-school-primary-1170107"
+      },
+      {
+        "id": "flis0224_senior",
+        "name": "Senior School",
+        "city": "Isa Town",
+        "tesId": "1057682",
+        "slug": "st-christopher-s-school-senior-1057682"
+      }
+    ]
   },
   {
     "id": "FLIS0225",
@@ -16791,7 +16807,9 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:28.367Z",
     "savingspotentialsingle": 2200,
-    "savingspotential": 2200
+    "savingspotential": 2200,
+    "parentId": "FLIS0115",
+    "isCampusStub": true
   },
   {
     "id": "flis0115_jumeira",
@@ -16813,7 +16831,9 @@
     "lastScrapedAt": "2026-08-30T07:55:02.846Z",
     "revalidationError": null,
     "revalidationStatus": "success",
-    "updatedAt": "2026-08-30T08:06:27.847Z"
+    "updatedAt": "2026-08-30T08:06:27.847Z",
+    "parentId": "FLIS0115",
+    "isCampusStub": true
   },
   {
     "id": "flis0115_jumeirah_park",
@@ -16837,7 +16857,9 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:28.007Z",
     "savingspotentialsingle": 2200,
-    "savingspotential": 2200
+    "savingspotential": 2200,
+    "parentId": "FLIS0115",
+    "isCampusStub": true
   },
   {
     "id": "flis0115_mira",
@@ -16859,7 +16881,9 @@
     "lastScrapedAt": "2026-08-30T07:54:45.747Z",
     "revalidationError": null,
     "revalidationStatus": "success",
-    "updatedAt": "2026-08-30T08:06:28.172Z"
+    "updatedAt": "2026-08-30T08:06:28.172Z",
+    "parentId": "FLIS0115",
+    "isCampusStub": true
   },
   {
     "id": "flis0118_academic_city",
@@ -16882,7 +16906,9 @@
     "lastScrapedAt": "2026-08-30T07:54:46.682Z",
     "revalidationError": null,
     "revalidationStatus": "success",
-    "updatedAt": "2026-08-30T08:06:29.417Z"
+    "updatedAt": "2026-08-30T08:06:29.417Z",
+    "parentId": "FLIS0118",
+    "isCampusStub": true
   },
   {
     "id": "flis0118_college",
@@ -16907,7 +16933,9 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:29.219Z",
     "savingspotentialsingle": 2200,
-    "savingspotential": 2200
+    "savingspotential": 2200,
+    "parentId": "FLIS0118",
+    "isCampusStub": true
   },
   {
     "id": "flis0118_oud_metha",
@@ -16930,7 +16958,9 @@
     "lastScrapedAt": "2026-08-30T07:54:43.308Z",
     "revalidationError": null,
     "revalidationStatus": "success",
-    "updatedAt": "2026-08-30T08:06:29.050Z"
+    "updatedAt": "2026-08-30T08:06:29.050Z",
+    "parentId": "FLIS0118",
+    "isCampusStub": true
   },
   {
     "id": "flis0224_primary",
@@ -16946,12 +16976,16 @@
     "country": "Bahrain",
     "website": "https://st-chris.schoolrecruiter.com/",
     "careersPageUrl": "https://st-chris.schoolrecruiter.com/",
-    "city": "Isa Town",
+    "city": "Saar",
     "name": "St. Christopher's School (Primary)",
     "tesOrganizationId": "1170107",
     "schoolname": "St. Christopher's School (Primary)",
     "tesEmployerSlug": "st-christopher-s-school-primary-1170107",
-    "updatedAt": "2026-08-30T16:28:01.962Z"
+    "updatedAt": "2026-09-16T14:57:22.156Z",
+    "parentId": "FLIS0224",
+    "isCampusStub": true,
+    "campusName": "Primary (Infant & Junior)",
+    "isLocked": true
   },
   {
     "id": "flis0224_senior",
@@ -16972,7 +17006,11 @@
     "tesOrganizationId": "1057682",
     "schoolname": "St. Christopher's School (Senior)",
     "tesEmployerSlug": "st-christopher-s-school-senior-1057682",
-    "updatedAt": "2026-08-30T16:28:03.157Z"
+    "updatedAt": "2026-09-16T14:57:22.156Z",
+    "parentId": "FLIS0224",
+    "isCampusStub": true,
+    "campusName": "Senior School",
+    "isLocked": true
   },
   {
     "id": "FLIS0258",

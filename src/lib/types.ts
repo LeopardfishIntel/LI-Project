@@ -56,6 +56,14 @@ export interface LocationCostOfLiving {
   lastUpdated?: any;
 }
 
+export interface SchoolCampus {
+  id?: string;
+  name: string;
+  city: string;
+  tesId?: string;
+  slug?: string;
+}
+
 export interface School {
   id: string;
   name: string;
@@ -93,6 +101,10 @@ export interface School {
   academic_Degree_req?: string;
   license_req?: string;
   noncontacttime?: string | number;
+  parentId?: string;
+  isCampusStub?: boolean;
+  campusName?: string;
+  campuses?: SchoolCampus[];
   cachedBriefing?: {
     briefing: string;
     currentHead: string;

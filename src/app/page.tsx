@@ -72,7 +72,7 @@ export default function Home() {
 
   const schoolCount = useMemo(() => {
     if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.schools;
-    const unique = new Set(schoolsData.map(s => (s.name || s.schoolname || s.id).toLowerCase().trim()));
+    const unique = new Set(schoolsData.filter(s => !s.isCampusStub).map(s => (s.name || s.schoolname || s.id).toLowerCase().trim()));
     return unique.size || COUNTER_FALLBACKS.schools;
   }, [schoolsData]);
 

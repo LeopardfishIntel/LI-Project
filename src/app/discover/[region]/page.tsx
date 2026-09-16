@@ -201,7 +201,7 @@ function DossierContent() {
       const countryName = country.country || "";
       const countryNameLower = canonicalCountry(countryName);
       const finances = finData.find(f => canonicalCountry(f.country) === canonicalCountry(countryName));
-      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(countryName));
+      const schools = schoolData.filter(s => canonicalCountry(s.country) === canonicalCountry(countryName) && !s.isCampusStub);
       const hasSchools = schools.length > 0;
       
       let fallbackSalary = 2500;
