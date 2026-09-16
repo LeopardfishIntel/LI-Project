@@ -12577,12 +12577,12 @@
     "staffstudentratio": "1:10",
     "approvals": "CIS",
     "academicscore": "7.8",
-    "salaryRange": "$3,150.00",
+    "salaryRange": "$2,500",
     "summary": "Balanced; typical Italian salary constraints.",
     "techscore": "7.5",
     "citySafety": "8.5",
     "confidence": "5.4",
-    "housingprovision": "None",
+    "housingprovision": "Not Included",
     "techecosystem": "Google",
     "curriculum": "IB",
     "staffcount": "75",
@@ -12610,10 +12610,7 @@
     "ownership": "Independent Non-Profit",
     "group": "Independent Non-Profit",
     "schoolGroupDomain": "",
-    "updatedAt": {
-      "_seconds": 1788178945,
-      "_nanoseconds": 41000000
-    },
+    "updatedAt": "2026-09-16T14:08:24.492Z",
     "revalidationCompletedAt": {
       "_seconds": 1788284788,
       "_nanoseconds": 166000000
@@ -12977,7 +12974,14 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 15 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T17:45:47.765Z"
+    "lastScrapedAt": "2026-09-01T17:45:47.765Z",
+    "base_salary_eur": 2300,
+    "base_salary_usd": 2500,
+    "housing_status": "Not Included",
+    "package_descriptor": "Culture & Travel",
+    "raw_salary_notes": "Recalibrated from senior gross scale to standard Step 5 teacher net base: €2,300 net/mo (~$2,500/mo) based on €37,500 gross/yr.",
+    "savingspotential": 750,
+    "savingspotentialsingle": 750
   },
   {
     "id": "FLIS0195",
@@ -12993,12 +12997,12 @@
     "staffstudentratio": "1:11",
     "approvals": "CIS",
     "academicscore": "7.5",
-    "salaryRange": "$3,050.00",
+    "salaryRange": "$2,450",
     "summary": "Community-focused school in maritime city.",
     "techscore": "7.5",
     "citySafety": "8.5",
     "confidence": "5.2",
-    "housingprovision": "None",
+    "housingprovision": "Not Included",
     "techecosystem": "Google",
     "curriculum": "IB",
     "staffcount": "65",
@@ -13032,10 +13036,14 @@
     "ownership": "Independent Non-Profit",
     "group": "Independent Non-Profit",
     "schoolGroupDomain": "",
-    "updatedAt": {
-      "_seconds": 1788178945,
-      "_nanoseconds": 824000000
-    }
+    "updatedAt": "2026-09-16T14:08:24.492Z",
+    "base_salary_eur": 2250,
+    "base_salary_usd": 2450,
+    "housing_status": "Not Included",
+    "package_descriptor": "Culture & Travel",
+    "raw_salary_notes": "Recalibrated from senior gross scale to standard Step 5 teacher net base: €2,250 net/mo (~$2,450/mo) based on €36,500 gross/yr.",
+    "savingspotential": 700,
+    "savingspotentialsingle": 700
   },
   {
     "id": "FLIS0196",
@@ -15393,13 +15401,13 @@
     "agency": "Teacher Horizons, LinkedIn, Gulf Talent",
     "careersPageUrl": "https://nadeenschool.com/join-our-family/#join_team",
     "tesEmployerSlug": "nadeen-school-1062752",
-    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "updatedAt": "2026-09-16T14:08:24.492Z",
     "financescore": "8.0",
-    "salaryRange": "$3,900.00",
+    "salaryRange": "$2,450",
     "country": "Italy",
     "website": "https://icsmilan.com",
     "city": "Milan",
-    "housingprovision": "Provided",
+    "housingprovision": "Not Included",
     "rating": "Highly Regarded",
     "citysafety": "8.9",
     "curriculum": "IB",
@@ -15565,7 +15573,14 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 5 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T19:35:15.049Z"
+    "lastScrapedAt": "2026-09-01T19:35:15.049Z",
+    "base_salary_eur": 2250,
+    "base_salary_usd": 2450,
+    "housing_status": "Not Included",
+    "package_descriptor": "Destination Package",
+    "raw_salary_notes": "Recalibrated from leadership/gross package to standard Step 5 teacher net base: €2,250 net/mo (~$2,450/mo) based on €36,000 gross/yr.",
+    "savingspotential": 450,
+    "savingspotentialsingle": 450
   },
   {
     "id": "FLIS0222",
