@@ -5466,7 +5466,7 @@
     "mission": "At the American International School Vienna, we empower each student with the skills and character strengths necessary to be positively impactful global citizens who strive for personal growth and excellence in an ever-changing world.",
     "vision": "A community of innovative learners realizing their chosen futures with courage, curiosity and joy.",
     "coreValues": "Respect. Aspire. Achieve.",
-    "monthlySalary": "€3,615 net",
+    "monthlySalary": "€2,500 net",
     "startingSalaryBA": "€49,000",
     "maxIncomingStep": "Step 6 (Step 1 to Step 15 progression)",
     "inflationCap": "4% annual salary scale inflation adjustment",
@@ -5494,8 +5494,10 @@
     "grossSalary5Years": "€55,000",
     "expectedSalary5Years": "€3,615/month",
     "salary5YearsExp": "€3,615/month",
-    "salary": "€3,615/month",
-    "netbase": "€3,615"
+    "salary": "€2,500/month",
+    "netbase": "€2,500",
+    "baseSalary": "€2,500",
+    "bonusPot": "+€6,306 / yr"
   },
   {
     "id": "FLIS0078",
@@ -6668,13 +6670,15 @@
     ],
     "startingSalary": "€50,456",
     "maxSalary": "€56,000",
-    "monthlySalary": "€3,440 net",
+    "monthlySalary": "€2,520 net",
     "taxExemptionStatus": "EXEMPT from Austrian Income Tax & Social Security under 1991 Austria-US Bilateral Treaties for non-Austrian staff",
     "grossSalary5Years": "€53,000",
     "expectedSalary5Years": "€3,440/month",
     "salary5YearsExp": "€3,440/month",
-    "salary": "€3,440/month",
-    "netbase": "€3,440"
+    "salary": "€2,520/month",
+    "netbase": "€2,520",
+    "baseSalary": "€2,520",
+    "bonusPot": "+€6,340 / yr"
   },
   {
     "id": "FLIS0098",
@@ -13866,9 +13870,11 @@
     "grossSalary5Years": "€45,000",
     "expectedSalary5Years": "€2,915/month",
     "salary5YearsExp": "€2,915/month",
-    "monthlySalary": "€2,915 net",
-    "salary": "€2,915/month",
-    "netbase": "€2,915"
+    "monthlySalary": "€2,050 net",
+    "salary": "€2,050/month",
+    "netbase": "€2,050",
+    "baseSalary": "€2,050",
+    "bonusPot": "+€5,040 / yr"
   },
   {
     "id": "FLIS0205",
@@ -13948,7 +13954,12 @@
     "governance": "Non-Profit Independent Board",
     "visaSupport": "Red-White-Red Card (3-7 months AMS processing supported)",
     "benefits": "ÖGK National Health Insurance, Staff Child Tuition Discount, Post-School German Language Classes, Relocation Housing Assistance, 14 Salary Payments/Year (Austria-US Bilateral Tax Exemption eligible)",
-    "studentNationalitiesCount": "65+"
+    "studentNationalitiesCount": "65+",
+    "monthlySalary": "€2,350 net",
+    "salary": "€2,350/month",
+    "netbase": "€2,350",
+    "baseSalary": "€2,350",
+    "bonusPot": "+€5,860 / yr"
   },
   {
     "id": "FLIS0206",
@@ -13997,7 +14008,12 @@
     "name": "International School Carinthia",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,280 net",
+    "salary": "€2,280/month",
+    "netbase": "€2,280",
+    "baseSalary": "€2,280",
+    "bonusPot": "+€5,670 / yr"
   },
   {
     "id": "FLIS0207",
@@ -14046,7 +14062,12 @@
     "name": "International School Innsbruck",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,480 net",
+    "salary": "€2,480/month",
+    "netbase": "€2,480",
+    "baseSalary": "€2,480",
+    "bonusPot": "+€6,210 / yr"
   },
   {
     "id": "FLIS0208",
@@ -14095,7 +14116,12 @@
     "name": "Lower Austrian International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,440 net",
+    "salary": "€2,440/month",
+    "netbase": "€2,440",
+    "baseSalary": "€2,440",
+    "bonusPot": "+€6,100 / yr"
   },
   {
     "id": "FLIS0209",
@@ -14144,7 +14170,12 @@
     "name": "Linz International School Auhof (LISA)",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,440 net",
+    "salary": "€2,440/month",
+    "netbase": "€2,440",
+    "baseSalary": "€2,440",
+    "bonusPot": "+€6,100 / yr"
   },
   {
     "id": "FLIS0210",
@@ -14193,7 +14224,12 @@
     "name": "SALIS - Salzburg International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,440 net",
+    "salary": "€2,440/month",
+    "netbase": "€2,440",
+    "baseSalary": "€2,440",
+    "bonusPot": "+€6,100 / yr"
   },
   {
     "id": "FLIS0212",
@@ -14242,7 +14278,12 @@
     "name": "Schloss Krumbach International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:19:07.622Z"
+    "updatedAt": "2026-08-30T16:19:07.622Z",
+    "monthlySalary": "€2,160 net",
+    "salary": "€2,160/month",
+    "netbase": "€2,160",
+    "baseSalary": "€2,160",
+    "bonusPot": "+€5,370 / yr"
   },
   {
     "id": "FLIS0213",
@@ -14298,7 +14339,7 @@
     "Profit Status": "Non-Profit",
     "Ownership": "Non-Profit Independent (UN / IAEA / CTBTO Associated)",
     "schroleUrl": "https://www.schrole.com/schools/vienna-international-school/",
-    "monthlySalary": "€4,800 - €6,771 base/mo (14 installments; 13th & 14th month taxed at 6%)",
+    "monthlySalary": "€3,033 net",
     "startingSalaryBA": "€67,200",
     "maxEntrySalaryPhD": "€94,794",
     "payrollFramework": "14-Month Annual Payroll: Base salaries (€67,200 – €94,794 gross/yr) are paid in 14 monthly installments. The 13th and 14th payments (June and November) are taxed at a reduced statutory 6% rate.",
@@ -14323,7 +14364,11 @@
       "health": "Full coverage under Austrian statutory health insurance (ÖGK), accident insurance, and public pension contributions.",
       "tuition": "100% tuition waiver for dependent children (treated as taxable benefit-in-kind under Austrian tax law).",
       "languageTech": "Funded German language instruction for staff and full access to school-issued hardware/LMS infrastructure."
-    }
+    },
+    "salary": "€3,033/month",
+    "netbase": "€3,033",
+    "baseSalary": "€3,033",
+    "bonusPot": "+€7,554 / yr"
   },
   {
     "id": "FLIS0214",
