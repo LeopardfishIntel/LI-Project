@@ -1518,21 +1518,40 @@ export async function moveJobToPending(schoolId: string, jobId: string, reviewed
 export function generateJobFingerprint(
   schoolId: string,
   title: string,
+  datePosted?: string | null,
   subject?: string | null,
-  externalPostingId?: string | null,
-  dateSlug?: string | null
+  externalPostingId?: string | null
 ): string {
-  const cleanSchool = (schoolId || '').toLowerCase().trim().replace(/[^a-z0-9_-]/g, '');
+  const cleanSchool = (schoolId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, "");
   
-  // Normalize title aggressively for cross-engine parity:
-  // strip parentheticals '(Aug 2026)', normalize common variations, strip non-alphanumerics
-  const normTitle = (title || '')
+  // Extract year bucket to prevent collision across academic cycles
+  let yearBucket = "2026";
+  if (datePosted) {
+    const parsed = new Date(datePosted);
+    if (!isNaN(parsed.getTime())) {
+      yearBucket = String(parsed.getFullYear());
+    } else {
+      const yrMatch = String(datePosted).match(/202[4-8]/);
+      if (yrMatch) yearBucket = yrMatch[0];
+    }
+  }
+
+  // Expanded UK/US terminology normalization matrix:
+  const normTitle = (title || "")
     .toLowerCase()
-    .replace(/s*([^)]*)/g, '')
-    .replace(/mathematics/g, 'maths')
-    .replace(/physicals+education/g, 'pe')
-    .replace(/designs+ands+technology/g, 'dt')
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\b(teacher of|lead teacher of|head of|lead)\b/g, "")
+    .replace(/\byear\s*(\d+)\b/g, "y$1")
+    .replace(/\bgrade\s*(\d+)\b/g, "g$1")
+    .replace(/\bkey\s*stage\s*(\d+)\b/g, "ks$1")
+    .replace(/\bphysical\s+education\b/g, "pe")
+    .replace(/\benglish\s+as\s+a\s+second\s+language\b/g, "esl")
+    .replace(/\benglish\s+as\s+an\s+additional\s+language\b/g, "eal")
+    .replace(/mathematics/g, "maths")
+    .replace(/design\s+and\s+technology/g, "dt")
+    .replace(/special\s+educational\s+needs/g, "sen")
+    .replace(/learning\s+support/g, "sen")
+    .replace(/[^a-z0-9]/g, "");
 
   let hash = 0;
   for (let i = 0; i < normTitle.length; i++) {
@@ -1541,8 +1560,7 @@ export function generateJobFingerprint(
   }
   const titleHash = Math.abs(hash).toString(36);
 
-  // Unified cross-engine fingerprint
-  return `fp_${cleanSchool}_${titleHash}`;
+  return "fp_" + cleanSchool + "_" + yearBucket + "_" + titleHash;
 }
 
 // =====================================================================

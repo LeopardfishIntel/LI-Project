@@ -208,3 +208,26 @@ export async function verifyJobUrlHttp(urlStr: string): Promise<{ status: 'valid
   } catch {}
   return { status: 'valid' };
 }
+
+
+/**
+ * 🔄 HTTP REDIRECT RESOLVER
+ * Follows HTTP 301/302 redirects to resolve the underlying destination URL (e.g. Lever, Workday, Eteach)
+ */
+export async function resolveRedirectUrl(urlStr: string, timeoutMs: number = 3000): Promise<string> {
+  if (!urlStr || isBlockedContentUrl(urlStr)) return urlStr || "";
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const resp = await fetch(urlStr, {
+      method: "HEAD",
+      redirect: "follow",
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" }
+    });
+    clearTimeout(timer);
+    return resp.url || urlStr;
+  } catch {
+    return urlStr;
+  }
+}

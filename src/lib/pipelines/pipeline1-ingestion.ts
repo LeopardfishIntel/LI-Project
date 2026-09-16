@@ -237,7 +237,7 @@ export async function runIngestionPipeline(
     }
 
     // ── GATE 5: Composite Key Fingerprint Deduplication (Cross-Engine Unified) ──
-    const fp = generateJobFingerprint(schoolId, record.rawTitle);
+    const fp = generateJobFingerprint(schoolId, record.rawTitle, String(record.datePosted || ""));
 
     if (seenFingerprints.has(fp)) {
       rejected++;
