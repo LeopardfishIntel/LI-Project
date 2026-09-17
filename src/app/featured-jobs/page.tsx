@@ -66,6 +66,7 @@ export const dynamic = "force-dynamic";
  */
 import { parseClosingDate } from '@/lib/crawler/dateParser';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
+import { SourceFilterBar } from '@/components/search/SourceFilterBar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -1089,15 +1090,15 @@ export default function FeaturedJobsPage() {
                 const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
         const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
 
-        if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
+        if (selectedSourceEngine === "DIRECT" && !(hasDirect || hasUwc)) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
         if (selectedSourceEngine === "TES" && !hasTes) return false;
-        if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
+        if ((selectedSourceEngine === "NORD ANGLIA" || selectedSourceEngine === "NORD_ANGLIA") && !hasNae) return false;
         if (selectedSourceEngine === "GRC" && !hasGrc) return false;
         if (selectedSourceEngine === "INSPIRED" && !hasInspired) return false;
         if (selectedSourceEngine === "TAYLORS" && !hasTaylors) return false;
                 if (selectedSourceEngine === "GEMS" && !hasGems) return false;
-        if (selectedSourceEngine === "TEACHAWAY" && !hasTeachAway) return false;
+        if ((selectedSourceEngine === "TEACHAWAY" || selectedSourceEngine === "TEACH_AWAY") && !hasTeachAway) return false;
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
         if (selectedSourceEngine === "ISP" && !hasIsp) return false;
@@ -1462,40 +1463,16 @@ export default function FeaturedJobsPage() {
                   </button>
                 </div>
 
-                {/* Expandable Source Engine Pills inside mobile card */}
+                {/* Expandable Source Engine Filter Bar inside mobile card */}
                 {engineBarOpen && (
-                  <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-slate-800 animate-in fade-in duration-200">
-                    {[
-                      { id: "ALL", label: `All (${engineCounts.ALL})` },
-                      { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
-                      { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
-                      { id: "TES", label: `TES (${engineCounts.TES || 0})` },
-                      { id: "GUARDIAN", label: `Guardian (${engineCounts.GUARDIAN || 0})` },
-                      { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"] || 0})` },
-                      { id: "INSPIRED", label: `Inspired (${engineCounts.INSPIRED || 0})` },
-                      { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
-                      { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
-                      { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
-                      { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
-                      { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
-                      { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
-                      { id: "MALVERN", label: `Malvern (${engineCounts.MALVERN || 0})` },
-                      { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` }
-                    ].map((engine) => (
-                      <button
-                        key={engine.id}
-                        type="button"
-                        onClick={() => { setSelectedSourceEngine(engine.id); setEngineBarOpen(false); }}
-                        className={cn(
-                          "px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 border cursor-pointer",
-                          selectedSourceEngine === engine.id
-                            ? "bg-[#FF6B35] border-[#FF6B35] text-white"
-                            : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white"
-                        )}
-                      >
-                        {engine.label}
-                      </button>
-                    ))}
+                  <div className="pt-2.5 border-t border-slate-800 animate-in fade-in duration-200">
+                    <SourceFilterBar
+                      engineCounts={engineCounts}
+                      totalCount={allJobs.length}
+                      activeFilter={selectedSourceEngine}
+                      onSelectFilter={(f) => { setSelectedSourceEngine(f); setEngineBarOpen(false); }}
+                      isAdmin={calculatedIsAdmin}
+                    />
                   </div>
                 )}
 
@@ -1525,54 +1502,13 @@ export default function FeaturedJobsPage() {
             {/* DESKTOP ENGINE & SORT BARS */}
             {!(loadingPublicJobs || loadingAdminJobs) && (
               <div className="hidden md:block space-y-4 mb-4">
-                <div className="bg-[#1e293b]/90 border border-slate-700/60 p-3.5 rounded-md shadow-xl flex flex-wrap items-center gap-2">
-                  {[
-                    { id: "ALL", label: `All (${engineCounts.ALL})` },
-                    { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
-                    { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
-                    { id: "TES", label: `TES (${engineCounts.TES || 0})` },
-                    { id: "GUARDIAN", label: `Guardian Jobs (${engineCounts.GUARDIAN || 0})` },
-                    { id: "NORD ANGLIA", label: `Nord Anglia (${engineCounts["NORD ANGLIA"] || 0})` },
-                    { id: "INSPIRED", label: `Inspired (${engineCounts.INSPIRED || 0})` },
-                    { id: "GLOBEDUCATE", label: `Globeducate (${engineCounts.GLOBEDUCATE || 0})` },
-                    { id: "ISP", label: `ISP (${engineCounts.ISP || 0})` },
-                    { id: "TAYLORS", label: `Taylor's (${engineCounts.TAYLORS || 0})` },
-                    { id: "GEMS", label: `GEMS (${engineCounts.GEMS || 0})` },
-                    { id: "GRC", label: `GRC (${engineCounts.GRC || 0})` },
-                    { id: "TEACHAWAY", label: `Teach Away (${engineCounts.TEACHAWAY || 0})` },
-                    { id: "MALVERN", label: `Malvern (${engineCounts.MALVERN || 0})` },
-                    { id: "UWC", label: `UWC (${engineCounts.UWC || 0})` }
-                  ].map((engine) => (
-                    <button
-                      key={engine.id}
-                      type="button"
-                      onClick={() => setSelectedSourceEngine(engine.id)}
-                      className={cn(
-                        "px-4 py-2 rounded-md text-xs font-black transition-all uppercase tracking-wider flex items-center gap-2 border shadow-sm cursor-pointer",
-                        selectedSourceEngine === engine.id
-                          ? "bg-[#FF6B35] border-[#FF6B35] text-white shadow-md shadow-[#FF6B35]/20"
-                          : "bg-black/40 border-slate-700/80 text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800/60"
-                      )}
-                    >
-                      {engine.id === "DIRECT" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "COGNITA" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
-                      {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
-                      {engine.id === "GRC" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
-                      {engine.id === "INSPIRED" && <span className="size-2 rounded-full bg-purple-400 animate-pulse" />}
-                      {engine.id === "TEACHAWAY" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "MALVERN" && <span className="size-2 rounded-full bg-rose-400 animate-pulse" />}
-                      {engine.id === "UWC" && <span className="size-2 rounded-full bg-violet-400 animate-pulse" />}
-                      {engine.id === "ISP" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "GLOBEDUCATE" && <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />}
-                      {engine.id === "TAYLORS" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "GEMS" && <span className="size-2 rounded-full bg-blue-400 animate-pulse" />}
-                      {engine.id === "GUARDIAN" && <span className="size-2 rounded-full bg-sky-400 animate-pulse" />}
-                      {engine.id === "ALL" && <span className="size-2 rounded-full bg-emerald-400" />}
-                      {engine.label}
-                    </button>
-                  ))}
-                </div>
+                <SourceFilterBar
+                  engineCounts={engineCounts}
+                  totalCount={allJobs.length}
+                  activeFilter={selectedSourceEngine}
+                  onSelectFilter={setSelectedSourceEngine}
+                  isAdmin={calculatedIsAdmin}
+                />
 
                 {filteredJobs.length > 0 && (
                   <div className="flex justify-between items-center bg-[#0b1224]/90 border border-slate-700/60 p-3.5 rounded-md shadow-lg">
