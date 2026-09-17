@@ -21,7 +21,7 @@ const ALL_SOURCES: SourceMeta[] = [
   // Job Boards & Agencies
   { key: "TES", label: "TES", category: "BOARDS_AGENCIES" },
   { key: "GRC", label: "GRC", category: "BOARDS_AGENCIES" },
-  { key: "GUARDIAN", label: "GUARDIAN JOBS", category: "BOARDS_AGENCIES" },
+  { key: "GUARDIAN", label: "GUARDIAN", category: "BOARDS_AGENCIES" },
   { key: "TEACH_AWAY", label: "TEACH AWAY", category: "BOARDS_AGENCIES" },
 
   // School Groups
@@ -90,21 +90,21 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
   });
 
   return (
-    <div className="flex flex-col gap-2.5 p-3.5 bg-slate-900/95 border border-slate-800 rounded-2xl shadow-xl backdrop-blur-md w-full">
+    <div className="flex flex-col gap-1.5 p-2 bg-slate-900/95 border border-slate-800/90 rounded-xl shadow-lg backdrop-blur-md w-full">
       {/* ROW 1: PRIMARY FEEDS & HIGH-YIELD GROUPS */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"
           onClick={() => onSelectFilter("ALL")}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
             activeFilter === "ALL"
-              ? "bg-[#FF6B35] text-white ring-2 ring-orange-400 shadow-lg shadow-orange-500/25"
+              ? "bg-[#FF6B35] text-white ring-1 ring-orange-400 shadow-md shadow-orange-500/25"
               : "bg-slate-800/90 text-slate-300 hover:bg-slate-700/80 border border-slate-700/60"
           }`}
         >
-          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           ALL
-          <span className="px-1.5 py-0.5 rounded bg-black/40 text-[10px]">{totalCount}</span>
+          <span className="px-1 py-0.2 rounded bg-black/40 text-[9.5px] font-semibold">{totalCount}</span>
         </button>
 
         {row1Items.map((item) => {
@@ -117,17 +117,17 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold tracking-tight transition-all cursor-pointer shrink-0 ${
                 isActive
-                  ? "bg-slate-100 text-slate-950 font-bold ring-2 ring-slate-300 shadow-md"
+                  ? "bg-slate-100 text-slate-950 font-bold ring-1 ring-slate-300 shadow-sm"
                   : isZero
-                  ? "bg-slate-900/60 text-slate-500 border border-slate-800/80 opacity-60 hover:opacity-100"
+                  ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50"
               }`}
             >
               {item.label}
               <span
-                className={`px-1.5 py-0.5 rounded text-[10px] ${
+                className={`px-1 py-0.2 rounded text-[9.5px] ${
                   isZero
                     ? "bg-slate-950 text-slate-600"
                     : isActive
@@ -145,7 +145,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
       <div className="h-px w-full bg-slate-800/60" />
 
       {/* ROW 2: DIRECT LINK HIGHLIGHT, SECONDARY GROUPS & INACTIVE DRAWER */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         {row2Items.map((item) => {
           const isActive = isFilterActive(item.key);
           const isDirect = item.category === "DIRECT";
@@ -157,22 +157,22 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium tracking-tight transition-all cursor-pointer shrink-0 ${
                 isDirect
                   ? isActive
-                    ? "bg-emerald-600 text-white ring-2 ring-emerald-400 shadow-lg shadow-emerald-600/30 font-bold"
+                    ? "bg-emerald-600 text-white ring-1 ring-emerald-400 shadow-md shadow-emerald-600/30 font-bold"
                     : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/50 font-semibold"
                   : isActive
-                  ? "bg-slate-200 text-slate-950 font-bold ring-2 ring-slate-400 shadow-md"
+                  ? "bg-slate-200 text-slate-950 font-bold ring-1 ring-slate-400 shadow-sm"
                   : isZero
-                  ? "bg-slate-900/60 text-slate-500 border border-slate-800/80 opacity-60 hover:opacity-100"
+                  ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/50 text-slate-300 border border-slate-700/40 hover:bg-slate-700/50"
               }`}
             >
-              {isDirect && <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />}
+              {isDirect && <Sparkles className="w-3 h-3 text-emerald-400 animate-pulse" />}
               {item.label}
               <span
-                className={`px-1.5 py-0.5 rounded text-[10px] ${
+                className={`px-1 py-0.2 rounded text-[9.5px] ${
                   isDirect
                     ? "bg-black/40 text-emerald-200 font-bold"
                     : isZero
@@ -192,10 +192,10 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
             <button
               type="button"
               onClick={() => setShowInactive(!showInactive)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors cursor-pointer"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors cursor-pointer shrink-0"
             >
-              {showInactive ? "Hide Inactive" : `+${inactiveSources.length} Inactive Feeds`}
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showInactive ? "rotate-180" : ""}`} />
+              {showInactive ? "Hide" : `+${inactiveSources.length} Inactive`}
+              <ChevronDown className={`w-3 h-3 transition-transform ${showInactive ? "rotate-180" : ""}`} />
             </button>
 
             {showInactive &&
@@ -206,7 +206,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
                     key={item.key}
                     type="button"
                     onClick={() => onSelectFilter(item.key)}
-                    className={`px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
+                    className={`px-2 py-0.5 rounded-md text-[10px] transition-colors cursor-pointer shrink-0 ${
                       isActive
                         ? "bg-slate-700 text-white font-bold border border-slate-500"
                         : "text-slate-500 bg-slate-900/40 border border-slate-800/50 hover:text-slate-400 hover:bg-slate-800/40"
@@ -221,9 +221,9 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
         {/* ADMIN OVERLAY BADGE */}
         {isAdmin && (
-          <span className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold text-amber-400 bg-amber-950/50 border border-amber-500/40 shadow-sm">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-            ADMIN: 15/15 PIPELINES VISIBLE
+          <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold text-amber-400 bg-amber-950/40 border border-amber-500/30 shrink-0">
+            <ShieldAlert className="w-3 h-3 text-amber-400" />
+            ADMIN: 15/15 PIPELINES
           </span>
         )}
       </div>
