@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, ChevronDown, ShieldAlert } from "lucide-react";
 
 interface SourceFilterBarProps {
   engineCounts: Record<string, number>;
@@ -98,13 +97,16 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
           onClick={() => onSelectFilter("ALL")}
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
             activeFilter === "ALL"
-              ? "bg-[#FF6B35] text-white ring-1 ring-orange-400 shadow-md shadow-orange-500/25"
+              ? "bg-[#FF6B35] text-white border border-[#FF6B35] shadow-md shadow-[#FF6B35]/25"
               : "bg-slate-800/90 text-slate-300 hover:bg-slate-700/80 border border-slate-700/60"
           }`}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           ALL
-          <span className="px-1 py-0.2 rounded bg-black/40 text-[9.5px] font-semibold">{totalCount}</span>
+          <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-semibold ${
+            activeFilter === "ALL" ? "bg-black/30 text-white" : "bg-black/40 text-slate-300"
+          }`}>
+            {totalCount}
+          </span>
         </button>
 
         {row1Items.map((item) => {
@@ -117,9 +119,9 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold tracking-tight transition-all cursor-pointer shrink-0 ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
                 isActive
-                  ? "bg-slate-100 text-slate-950 font-bold ring-1 ring-slate-300 shadow-sm"
+                  ? "bg-[#FF6B35] text-white border border-[#FF6B35] shadow-md shadow-[#FF6B35]/25"
                   : isZero
                   ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 border border-slate-700/50"
@@ -127,11 +129,11 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
             >
               {item.label}
               <span
-                className={`px-1 py-0.2 rounded text-[9.5px] ${
-                  isZero
+                className={`px-1.5 py-0.5 rounded text-[9.5px] font-semibold ${
+                  isActive
+                    ? "bg-black/30 text-white"
+                    : isZero
                     ? "bg-slate-950 text-slate-600"
-                    : isActive
-                    ? "bg-black/20 text-slate-950 font-bold"
                     : "bg-slate-900/80 text-slate-400"
                 }`}
               >
@@ -144,11 +146,10 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
       <div className="h-px w-full bg-slate-800/60" />
 
-      {/* ROW 2: DIRECT LINK HIGHLIGHT, SECONDARY GROUPS & INACTIVE DRAWER */}
+      {/* ROW 2: DIRECT LINK, SECONDARY GROUPS & INACTIVE DRAWER */}
       <div className="flex flex-wrap items-center gap-1.5">
         {row2Items.map((item) => {
           const isActive = isFilterActive(item.key);
-          const isDirect = item.category === "DIRECT";
           const count = getCount(item.key);
           const isZero = count === 0;
 
@@ -157,24 +158,19 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               key={item.key}
               type="button"
               onClick={() => onSelectFilter(item.key)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium tracking-tight transition-all cursor-pointer shrink-0 ${
-                isDirect
-                  ? isActive
-                    ? "bg-emerald-600 text-white ring-1 ring-emerald-400 shadow-md shadow-emerald-600/30 font-bold"
-                    : "bg-emerald-950/40 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/50 font-semibold"
-                  : isActive
-                  ? "bg-slate-200 text-slate-950 font-bold ring-1 ring-slate-400 shadow-sm"
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold tracking-tight transition-all cursor-pointer shrink-0 ${
+                isActive
+                  ? "bg-[#FF6B35] text-white border border-[#FF6B35] shadow-md shadow-[#FF6B35]/25"
                   : isZero
                   ? "bg-slate-900/50 text-slate-500 border border-slate-800/60 opacity-50 hover:opacity-100"
                   : "bg-slate-800/50 text-slate-300 border border-slate-700/40 hover:bg-slate-700/50"
               }`}
             >
-              {isDirect && <Sparkles className="w-3 h-3 text-emerald-400 animate-pulse" />}
               {item.label}
               <span
-                className={`px-1 py-0.2 rounded text-[9.5px] ${
-                  isDirect
-                    ? "bg-black/40 text-emerald-200 font-bold"
+                className={`px-1.5 py-0.5 rounded text-[9.5px] font-semibold ${
+                  isActive
+                    ? "bg-black/30 text-white"
                     : isZero
                     ? "bg-slate-950 text-slate-600"
                     : "bg-slate-900/60 text-slate-400"
@@ -195,7 +191,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
               className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors cursor-pointer shrink-0"
             >
               {showInactive ? "Hide" : `+${inactiveSources.length} Inactive`}
-              <ChevronDown className={`w-3 h-3 transition-transform ${showInactive ? "rotate-180" : ""}`} />
+              <span className="text-[8px] ml-0.5">{showInactive ? "▲" : "▼"}</span>
             </button>
 
             {showInactive &&
@@ -206,9 +202,9 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
                     key={item.key}
                     type="button"
                     onClick={() => onSelectFilter(item.key)}
-                    className={`px-2 py-0.5 rounded-md text-[10px] transition-colors cursor-pointer shrink-0 ${
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition-colors cursor-pointer shrink-0 ${
                       isActive
-                        ? "bg-slate-700 text-white font-bold border border-slate-500"
+                        ? "bg-[#FF6B35] text-white border border-[#FF6B35]"
                         : "text-slate-500 bg-slate-900/40 border border-slate-800/50 hover:text-slate-400 hover:bg-slate-800/40"
                     }`}
                   >
@@ -222,7 +218,6 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
         {/* ADMIN OVERLAY BADGE */}
         {isAdmin && (
           <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold text-amber-400 bg-amber-950/40 border border-amber-500/30 shrink-0">
-            <ShieldAlert className="w-3 h-3 text-amber-400" />
             ADMIN: 15/15 PIPELINES
           </span>
         )}
