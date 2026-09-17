@@ -86,6 +86,48 @@ export function formatLocation(cityRaw?: string, countryRaw?: string): string {
   return uniqueParts.join(', ');
 }
 
+export function sanitizeJobTitle(title?: string): string {
+  if (!title) return "Teaching Vacancy";
+  let clean = translateJobTitleToEnglish(title);
+  return clean
+    .replace(/\bTeacher of Physic\b/i, "Teacher of Physics")
+    .replace(/\bTeacher of Mathematic\b/i, "Teacher of Mathematics")
+    .replace(/\bTeacher of Econom\b/i, "Teacher of Economics")
+    .replace(/\bTeacher of Chemistr\b/i, "Teacher of Chemistry")
+    .replace(/\bTeacher of Biolog\b/i, "Teacher of Biology")
+    .replace(/\bTeacher of Geograph\b/i, "Teacher of Geography")
+    .replace(/\bTeacher of Histor\b/i, "Teacher of History")
+    .replace(/\bTeacher of Compute\b/i, "Teacher of Computing")
+    .replace(/\bTeacher of Informati\b/i, "Teacher of Informatics")
+    .replace(/\bTeacher of Busines\b/i, "Teacher of Business Studies")
+    .replace(/\bTeacher of Psycholog\b/i, "Teacher of Psychology")
+    .replace(/\bTeacher of Sociolog\b/i, "Teacher of Sociology")
+    .trim();
+}
+
+export function formatVacancyClosingDate(rawDate?: string): { text: string; dotClass: string } {
+  if (!rawDate) return { text: "· Rolling", dotClass: "bg-cyan-400" };
+  const clean = rawDate.replace(/^\(?closes:\s*/i, "").replace(/\)$/, "").trim();
+  if (!clean || clean.toLowerCase() === "rolling") {
+    return { text: "· Rolling", dotClass: "bg-cyan-400" };
+  }
+
+  try {
+    const d = new Date(clean);
+    if (!isNaN(d.getTime())) {
+      const now = new Date();
+      const diffDays = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      const formattedDate = clean.replace(/ 20\d\d$/, "");
+      if (diffDays <= 7 && diffDays >= 0) {
+        return { text: `· ${formattedDate}`, dotClass: "bg-amber-400" };
+      }
+      return { text: `· ${formattedDate}`, dotClass: "bg-emerald-400" };
+    }
+  } catch {}
+
+  return { text: `· ${clean}`, dotClass: "bg-emerald-400" };
+}
+
 const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62, CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900, TZS: 3308, KES: 165
@@ -2393,15 +2435,18 @@ function DecoderContent() {
                       </div>
 
                       {activeVacancies.length > 0 ? (
-                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 pt-0.5">
                           {activeVacancies.map((job: any, idx: number) => {
                             const isSelected = selectedOpportunity?.jobTitle?.toLowerCase() === job.title.toLowerCase() ||
                               (selectedOpportunity?.jobId && String(selectedOpportunity.jobId) === String(job.id));
 
+                            const titleClean = sanitizeJobTitle(job.title);
+                            const { text: closingText, dotClass } = formatVacancyClosingDate(job.closesDate);
+
                             const handleSelectJob = () => {
                               setSelectedOpportunity({
                                 jobId: job.id,
-                                jobTitle: job.title,
+                                jobTitle: titleClean,
                                 department: job.department,
                                 curriculum: job.curriculum,
                                 applyUrl: job.applyUrl || job.source_url || activeSchool?.careersPageUrl || activeSchool?.website,
@@ -2419,7 +2464,7 @@ function DecoderContent() {
                               const newUrl = new URL(window.location.href);
                               newUrl.searchParams.set('schoolId', activeSchool.id);
                               if (job.id) newUrl.searchParams.set('jobId', String(job.id));
-                              newUrl.searchParams.set('jobTitle', job.title);
+                              newUrl.searchParams.set('jobTitle', titleClean);
                               if (job.department) newUrl.searchParams.set('department', job.department);
                               if (job.applyUrl) newUrl.searchParams.set('applyUrl', job.applyUrl);
                               if (job.closesDate) newUrl.searchParams.set('closesDate', job.closesDate);
@@ -2430,24 +2475,29 @@ function DecoderContent() {
                               <button
                                 key={job.id || idx}
                                 onClick={handleSelectJob}
+                                title={`${titleClean} (${job.closesDate || 'Rolling'})`}
                                 className={cn(
-                                  "group w-full sm:w-auto flex flex-col sm:inline-flex sm:flex-row sm:items-center justify-between sm:justify-start gap-1 sm:gap-2 px-3 py-2 sm:py-1.5 rounded-md text-xs font-bold transition-all border text-left cursor-pointer",
+                                  "group w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md text-xs font-bold transition-all border text-left cursor-pointer",
                                   isSelected
                                     ? "bg-[#FF6B35]/20 text-white border-[#FF6B35] shadow-[0_0_12px_rgba(255,107,53,0.3)] ring-1 ring-[#FF6B35]"
-                                    : "bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border-white/10 hover:border-white/20"
+                                    : "bg-white/5 hover:bg-slate-800/80 hover:border-emerald-500/40 text-slate-200 hover:text-white border-white/10"
                                 )}
                               >
-                                <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
-                                  <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={`Source: ${job.source || 'Web Portal'}`} />
-                                  <span className="text-[11px] sm:text-xs font-bold leading-snug truncate max-w-full sm:max-w-[280px] md:max-w-[360px]">{translateJobTitleToEnglish(job.title)}</span>
-                                  <ArrowUpRight className={cn("size-3 shrink-0 sm:hidden transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-400 group-hover:text-white")} />
-                                </div>
-                                {job.closesDate && (
-                                  <span className="text-[9.5px] sm:text-[10px] text-slate-400 group-hover:text-slate-300 font-mono pt-0.5 sm:pt-0">
-                                    (Closes: {job.closesDate})
+                                <div className="flex items-center gap-2 min-w-0 flex-1">
+                                  <span className={cn("size-2 rounded-full shrink-0 shadow-sm", dotClass)} />
+                                  <span className="text-[11px] sm:text-xs font-bold leading-snug truncate">
+                                    {titleClean}
                                   </span>
-                                )}
-                                <ArrowUpRight className={cn("hidden sm:inline-block size-3 shrink-0 transition-transform", isSelected ? "text-[#FF6B35]" : "text-slate-500 group-hover:text-white group-hover:translate-x-0.5")} />
+                                  <span className="text-[10px] text-slate-400 group-hover:text-slate-300 font-mono shrink-0 whitespace-nowrap">
+                                    {closingText}
+                                  </span>
+                                </div>
+                                <ArrowUpRight className={cn(
+                                  "size-3.5 shrink-0 transition-all",
+                                  isSelected
+                                    ? "text-[#FF6B35]"
+                                    : "text-slate-400 opacity-60 group-hover:opacity-100 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                )} />
                               </button>
                             );
                           })}
