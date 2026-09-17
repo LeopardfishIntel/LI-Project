@@ -2093,11 +2093,41 @@ function DecoderContent() {
                       {selectedOpportunity && (() => {
                         const rawSources = selectedOpportunity.sources && selectedOpportunity.sources.length > 0
                           ? selectedOpportunity.sources
-                          : [selectedOpportunity.source || "Official Source"];
-
+                          : [selectedOpportunity.source || "Direct"];
+                        const applyUrlLower = String(selectedOpportunity.applyUrl || "").toLowerCase();
                         const sMap = new Map<string, string>();
-                        // Always guarantee a DIRECT / Official Website pill entry
-                        sMap.set("DIRECT", "Direct");
+
+                        // Detect URL domain signatures to ensure engine pills are accurately assigned
+                        if (applyUrlLower.includes("tes.com")) {
+                          sMap.set("TES", "TES");
+                        }
+                        if (applyUrlLower.includes("careers.nordangliaeducation.com") || applyUrlLower.includes("nordangliaeducation.com")) {
+                          sMap.set("NORD ANGLIA", "Nord Anglia");
+                        }
+                        if (applyUrlLower.includes("cognitapeople") || applyUrlLower.includes("cognita")) {
+                          sMap.set("COGNITA", "Cognita");
+                        }
+                        if (applyUrlLower.includes("inspirededu")) {
+                          sMap.set("INSPIRED", "Inspired");
+                        }
+                        if (applyUrlLower.includes("globeducate")) {
+                          sMap.set("GLOBEDUCATE", "Globeducate");
+                        }
+                        if (applyUrlLower.includes("searchassociates")) {
+                          sMap.set("SEARCH ASSOCIATES", "Search Associates");
+                        }
+                        if (applyUrlLower.includes("grcfair.org")) {
+                          sMap.set("GRC", "GRC");
+                        }
+                        if (applyUrlLower.includes("teachaway")) {
+                          sMap.set("TEACH AWAY", "Teach Away");
+                        }
+                        if (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae")) {
+                          sMap.set("GEMS", "GEMS");
+                        }
+                        if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
+                          sMap.set("GUARDIAN", "Guardian Jobs");
+                        }
 
                         rawSources.forEach((s: any) => {
                           if (!s) return;
@@ -2106,19 +2136,36 @@ function DecoderContent() {
                           let label = s;
                           if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
                           else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
-                          else if (u === "COGNITA") { key = "COGNITA"; label = "Cognita"; }
-                          else if (u === "INSPIRED") { key = "INSPIRED"; label = "Inspired"; }
-                          else if (u === "MALVERN") { key = "MALVERN"; label = "Malvern"; }
-                          else if (u === "UWC" || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
-                          else if (u === "ISP" || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
+                          else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
+                          else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
+                          else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
+                          else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
+                          else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
                           else if (u === "TES") { key = "TES"; label = "TES"; }
                           else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
+                          else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
+                          else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
+                          else if (u.includes("GRC")) { key = "GRC"; label = "GRC"; }
+                          else if (u.includes("TEACH AWAY")) { key = "TEACH AWAY"; label = "Teach Away"; }
                           else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
                           else { key = "DIRECT"; label = "Direct"; }
                           sMap.set(key, label);
                         });
 
-                        // Ensure DIRECT is processed first
+                        // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
+                        const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                        if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
+                          sMap.delete("DIRECT");
+                        }
+                        if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
+                          sMap.delete("DIRECT");
+                        }
+
+                        // If no specific source was resolved, default to Direct
+                        if (sMap.size === 0) {
+                          sMap.set("DIRECT", "Direct");
+                        }
+
                         const sortedEntries = Array.from(sMap.entries()).sort(([a], [b]) => {
                           if (a === "DIRECT") return -1;
                           if (b === "DIRECT") return 1;
@@ -2128,7 +2175,6 @@ function DecoderContent() {
                         // Deduplicate display sources & prevent identical fallback URLs
                         const resolvedPills: { label: string; url: string; key: string }[] = [];
                         const seenPillUrls = new Set<string>();
-
                         const normalizeUrl = (urlStr: string) => urlStr.toLowerCase().replace(/\/+$/, '').trim();
 
                         sortedEntries.forEach(([key, label]) => {
@@ -2152,6 +2198,8 @@ function DecoderContent() {
                               const fUrl = String(foundUrl);
                               if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
                               if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
+                              if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
+                              if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org") || fUrl.includes("theguardian.com"))) foundUrl = undefined;
                             }
                             if (!foundUrl && activeVacancies && activeVacancies.length > 0) {
                               const matchedJob = activeVacancies.find((j: any) =>
@@ -2164,6 +2212,7 @@ function DecoderContent() {
                                     const candidate = String(v);
                                     if (srcUpper === "TES" && !candidate.includes("tes.com")) continue;
                                     if (srcUpper === "SEARCH ASSOCIATES" && !candidate.includes("searchassociates.com")) continue;
+                                    if (srcUpper === "GUARDIAN" && (!candidate.includes("theguardian.com") && !candidate.includes("guardianjobs"))) continue;
                                     foundUrl = candidate;
                                     break;
                                   }
@@ -2171,24 +2220,31 @@ function DecoderContent() {
                               }
                             }
                             if (!foundUrl) {
-                              if (srcUpper.includes("NORD ANGLIA")) {
-                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || "https://careers.nordangliaeducation.com";
+                              const rawUrl = selectedOpportunity.applyUrl;
+                              if (srcUpper.includes("NORD ANGLIA") && (applyUrlLower.includes("nordanglia") || activeSchool?.careersPageUrl?.includes("nordanglia"))) {
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://careers.nordangliaeducation.com";
                               } else if (srcUpper.includes("COGNITA")) {
-                                foundUrl = activeSchool?.careersPageUrl || "https://www.cognita.com/careers/";
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://www.cognita.com/careers/";
                               } else if (srcUpper.includes("INSPIRED")) {
-                                foundUrl = activeSchool?.careersPageUrl || "https://inspirededu.com/careers";
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://inspirededu.com/careers";
+                              } else if ((srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE")) && (applyUrlLower.includes("globeducate") || activeSchool?.careersPageUrl?.includes("globeducate"))) {
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://careers.globeducate.com";
+                              } else if (srcUpper.includes("ISP") && (applyUrlLower.includes("internationalschools") || activeSchool?.careersPageUrl?.includes("internationalschools"))) {
+                                foundUrl = rawUrl || activeSchool?.careersPageUrl || "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers";
+                              } else if (srcUpper === "TES" && applyUrlLower.includes("tes.com")) {
+                                foundUrl = rawUrl;
+                              } else if (srcUpper === "GUARDIAN" && (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs"))) {
+                                foundUrl = rawUrl;
+                              } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
+                                foundUrl = rawUrl;
+                              } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
+                                foundUrl = rawUrl;
+                              } else if (srcUpper === "SEARCH ASSOCIATES" && applyUrlLower.includes("searchassociates")) {
+                                foundUrl = rawUrl;
+                              } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
+                                foundUrl = rawUrl || "https://careers.gemseducation.com";
                               } else if (srcUpper === "DIRECT") {
-                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || selectedOpportunity.applyUrl;
-                              } else if (srcUpper === "TES") {
-                                if (selectedOpportunity.applyUrl && selectedOpportunity.applyUrl.includes("tes.com")) {
-                                  foundUrl = selectedOpportunity.applyUrl;
-                                } else if (activeSchool?.tesEmployerSlug) {
-                                  foundUrl = `https://www.tes.com/jobs/employer/${activeSchool.tesEmployerSlug}`;
-                                }
-                              } else if (srcUpper === "SEARCH ASSOCIATES") {
-                                if (activeSchool?.searchAssociatesUrl) {
-                                  foundUrl = activeSchool.searchAssociatesUrl;
-                                }
+                                foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || rawUrl;
                               }
                             }
 
@@ -2210,7 +2266,7 @@ function DecoderContent() {
                           if (seenPillUrls.has(norm)) return;
                           seenPillUrls.add(norm);
 
-                          resolvedPills.push({ label, url: srcUrl, key });
+                          resolvedPills.push({ label: label === "Official Website" ? "Direct" : label, url: srcUrl, key: srcUpper });
                         });
 
                         return resolvedPills.map(({ label, url, key }) => {
@@ -2238,11 +2294,17 @@ function DecoderContent() {
                                             : (srcUpper.includes("GLOBE") || srcUpper.includes("GLOBEDUCATE"))
                                               ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
                                               : (srcUpper === "NORD ANGLIA" || srcUpper.includes("NORD ANGLIA"))
-                                                ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/30"
-                                                : "bg-[#FF6B35] border-[#FF6B35] text-white hover:bg-[#ff7e4f]"
+                                                ? "bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30"
+                                                : srcUpper === "GUARDIAN"
+                                                  ? "bg-sky-500/20 border-sky-500/40 text-sky-300 hover:bg-sky-500/30"
+                                                  : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
+                                                    ? "bg-orange-500/20 border-orange-500/40 text-orange-300 hover:bg-orange-500/30"
+                                                    : srcUpper === "GRC"
+                                                      ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
+                                                      : "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30"
                               )}
                             >
-                              {label === "Direct" ? "Official Website" : label}
+                              {label}
                               <ArrowUpRight className="size-3.5" />
                             </a>
                           );
