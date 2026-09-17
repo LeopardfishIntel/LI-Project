@@ -50,7 +50,8 @@
     "name": "German Swiss Int'l",
     "tesOrganizationId": "1057613",
     "tesEmployerSlug": "german-swiss-international-school-1057613",
-    "updatedAt": "2026-08-30T16:14:23.674Z"
+    "updatedAt": "2026-08-30T16:14:23.674Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0002",
@@ -102,7 +103,8 @@
     "name": "St. Paul's Co-ed",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0003",
@@ -154,7 +156,8 @@
     "name": "K. International",
     "tesOrganizationId": null,
     "tesEmployerSlug": "k-international-school-tokyo-1076077",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0004",
@@ -206,7 +209,8 @@
     "name": "Shanghai American",
     "tesOrganizationId": "1279504",
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0005",
@@ -258,7 +262,8 @@
     "tesOrganizationId": null,
     "schoolname": "Diocesan Boys'",
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0006",
@@ -310,7 +315,8 @@
     "name": "UWC South East Asia",
     "tesOrganizationId": "1061278",
     "tesEmployerSlug": "uwc-south-east-asia-1057094",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0007",
@@ -364,7 +370,8 @@
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.675Z",
     "savingspotentialsingle": 1400,
-    "savingspotential": 1400
+    "savingspotential": 1400,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0008",
@@ -416,7 +423,8 @@
     "name": "Shanghai High Int'l",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0009",
@@ -469,7 +477,8 @@
     "name": "Dhirubhai Ambani",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0010",
@@ -521,7 +530,8 @@
     "name": "Tanglin Trust",
     "tesOrganizationId": "1057206",
     "tesEmployerSlug": "tanglin-trust-school-1057206",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0011",
@@ -573,7 +583,8 @@
     "name": "G.T. (Ellen Yeung)",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0012",
@@ -625,7 +636,8 @@
     "name": "GD Country Garden",
     "tesOrganizationId": "1058223",
     "tesEmployerSlug": "guangdong-country-garden-school--gcgs--1058223",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0013",
@@ -677,7 +689,8 @@
     "name": "St. Stephen's",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0014",
@@ -729,7 +742,8 @@
     "name": "ACS International",
     "tesOrganizationId": "1074273",
     "tesEmployerSlug": "acs-international-singapore-1074273",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0015",
@@ -781,7 +795,8 @@
     "name": "European Azerbaijan",
     "tesOrganizationId": "1066426",
     "tesEmployerSlug": "the-european-azerbaijan-school-1066426",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0016",
@@ -833,7 +848,8 @@
     "name": "NPS International",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0017",
@@ -885,7 +901,8 @@
     "name": "The ISF Academy",
     "tesOrganizationId": "1273163",
     "tesEmployerSlug": "the-independent-schools-foundation-academy-isf-1273163",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0018",
@@ -937,7 +954,8 @@
     "name": "Dulwich Beijing",
     "tesOrganizationId": "1057433",
     "tesEmployerSlug": "dulwich-college-beijing-1057433",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0019",
@@ -989,7 +1007,8 @@
     "name": "Singapore Int'l (HK)",
     "tesOrganizationId": "1262787",
     "tesEmployerSlug": "singapore-international-school-1262787",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0020",
@@ -1041,7 +1060,8 @@
     "name": "PLK Choi Kai Yau",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0021",
@@ -1093,7 +1113,8 @@
     "name": "YK Pao School",
     "tesOrganizationId": "1057565",
     "tesEmployerSlug": "yk-pao-school-1057565",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0022",
@@ -1145,7 +1166,8 @@
     "name": "Step by Step",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0023",
@@ -1205,7 +1227,8 @@
     "name": "Dulwich Pudong",
     "tesOrganizationId": "1057370",
     "tesEmployerSlug": "dulwich-college-shanghai-pudong-dcs-1057370",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0024",
@@ -1257,7 +1280,8 @@
     "name": "SJI International",
     "tesOrganizationId": "1055929",
     "tesEmployerSlug": "sji-international-school-1055929",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0025",
@@ -1309,7 +1333,8 @@
     "name": "Canadian Int'l (HK)",
     "tesOrganizationId": "1071231",
     "tesEmployerSlug": "canadian-international-school-of-hong-kong-1071231",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0026",
@@ -1414,7 +1439,8 @@
     "name": "GEMS World Dubai",
     "tesOrganizationId": "1060996",
     "tesEmployerSlug": "gems-world-academy-dubai-1060996",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0028",
@@ -1660,7 +1686,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 7 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-02T14:36:20.972Z"
+    "lastScrapedAt": "2026-09-02T14:36:20.972Z",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0029",
@@ -1712,7 +1739,8 @@
     "name": "JESS Dubai",
     "tesOrganizationId": "1055094",
     "tesEmployerSlug": "jumeirah-english-speaking-school-jess-1055094",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0030",
@@ -1772,7 +1800,8 @@
     "name": "Neev Academy",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0031",
@@ -1824,7 +1853,8 @@
     "name": "Bombay Int'l",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0032",
@@ -1876,7 +1906,8 @@
     "name": "Hwa Chong Int'l",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0033",
@@ -1928,7 +1959,8 @@
     "name": "IS Nanshan",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0034",
@@ -1980,7 +2012,8 @@
     "name": "Wellington Shanghai",
     "tesOrganizationId": "1067101",
     "tesEmployerSlug": "wellington-college-international-shanghai-1067101",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0035",
@@ -2034,7 +2067,8 @@
     "tesEmployerSlug": "leman-international-school-chengdu-1071034",
     "updatedAt": "2026-08-30T16:14:23.675Z",
     "savingspotentialsingle": 1800,
-    "savingspotential": 1800
+    "savingspotential": 1800,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0036",
@@ -2086,7 +2120,8 @@
     "name": "GIIS SMART",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0037",
@@ -2138,7 +2173,8 @@
     "name": "New PORG Prague",
     "tesOrganizationId": "1057493",
     "tesEmployerSlug": "porg-prague-1057493",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0038",
@@ -2318,7 +2354,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 4 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T17:44:44.793Z"
+    "lastScrapedAt": "2026-09-01T17:44:44.793Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0039",
@@ -2370,7 +2407,8 @@
     "name": "St Catherine's",
     "tesOrganizationId": "1065747",
     "tesEmployerSlug": "st-catherine-s-british-school-1065747",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0040",
@@ -2498,7 +2536,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 2 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T17:44:44.811Z"
+    "lastScrapedAt": "2026-09-01T17:44:44.811Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0041",
@@ -2550,7 +2589,8 @@
     "name": "IS Monaco",
     "tesOrganizationId": "1057564",
     "tesEmployerSlug": "international-school-of-monaco-1057564",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0042",
@@ -2603,7 +2643,8 @@
     "name": "St Louis Milan",
     "tesOrganizationId": "1058481",
     "tesEmployerSlug": "st-louis-school-caviglia-1058481",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0043",
@@ -2655,7 +2696,8 @@
     "name": "Heritage Gurugram",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0044",
@@ -2857,7 +2899,8 @@
         "Firefly",
         "Seesaw"
       ]
-    }
+    },
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0045",
@@ -2909,7 +2952,8 @@
     "name": "TISB Bangalore",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0046",
@@ -2961,7 +3005,8 @@
     "name": "Calcutta Int'l",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0048",
@@ -3013,7 +3058,8 @@
     "name": "SSIS Shanghai",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0049",
@@ -3065,7 +3111,8 @@
     "name": "Dulwich Singapore",
     "tesOrganizationId": "1062744",
     "tesEmployerSlug": "dulwich-college-singapore-1062744",
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0050",
@@ -3117,7 +3164,8 @@
     "name": "Dulwich Suzhou",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.675Z"
+    "updatedAt": "2026-08-30T16:14:23.675Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0051",
@@ -3169,7 +3217,8 @@
     "name": "Aiglon College",
     "tesOrganizationId": "1057219",
     "tesEmployerSlug": "aiglon-college-1057219",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0052",
@@ -3221,7 +3270,8 @@
     "name": "ACS Athens",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0053",
@@ -3332,7 +3382,8 @@
     "raw_salary_notes": "Updated net base to €3,350/mo ($3,650/mo) reflecting actual Step 5 collective bargaining scale (~€65k gross/yr).",
     "package_descriptor": "Culture & Travel",
     "savingspotential": 1195,
-    "savingspotentialsingle": 1195
+    "savingspotentialsingle": 1195,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0055",
@@ -3425,7 +3476,8 @@
     "updatedAt": {
       "_seconds": 1788179192,
       "_nanoseconds": 304000000
-    }
+    },
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0056",
@@ -3483,7 +3535,8 @@
     "updatedAt": {
       "_seconds": 1788178944,
       "_nanoseconds": 119000000
-    }
+    },
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0057",
@@ -3633,7 +3686,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 3 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T17:44:44.822Z"
+    "lastScrapedAt": "2026-09-01T17:44:44.822Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0058",
@@ -3685,7 +3739,8 @@
     "name": "IS Lausanne",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0060",
@@ -3745,7 +3800,8 @@
     "updatedAt": {
       "_seconds": 1788178942,
       "_nanoseconds": 490000000
-    }
+    },
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0061",
@@ -3956,7 +4012,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 6 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-08-31T15:06:43.804Z"
+    "lastScrapedAt": "2026-08-31T15:06:43.804Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0062",
@@ -4008,7 +4065,8 @@
     "name": "American Milan",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0063",
@@ -4060,7 +4118,8 @@
     "name": "St George's Montreux",
     "tesOrganizationId": "1057262",
     "tesEmployerSlug": "st-george-s-international-school-1057262",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0064",
@@ -4481,7 +4540,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 15 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 25
     },
-    "lastScrapedAt": "2026-08-31T13:11:51.856Z"
+    "lastScrapedAt": "2026-08-31T13:11:51.856Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0065",
@@ -4539,7 +4599,8 @@
     "updatedAt": {
       "_seconds": 1788178943,
       "_nanoseconds": 289000000
-    }
+    },
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0066",
@@ -4597,7 +4658,8 @@
     "monthlySalary": "€2,950 net",
     "salary": "€2,950/month",
     "netbase": "€2,950",
-    "baseSalary": "€2,950"
+    "baseSalary": "€2,950",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0067",
@@ -4649,7 +4711,8 @@
     "name": "St Peter's BCN",
     "tesOrganizationId": "1056328",
     "tesEmployerSlug": "st-peter-s-school-barcelona-1056328",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0068",
@@ -4885,7 +4948,8 @@
     },
     "lastScrapedAt": "2026-09-01T17:44:44.836Z",
     "approvals": "IB World School, CIS, NEASC, ECIS",
-    "classsize": "20"
+    "classsize": "20",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0069",
@@ -4937,7 +5001,8 @@
     "name": "Aloha College",
     "tesOrganizationId": "1057357",
     "tesEmployerSlug": "aloha-college-1057357",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0070",
@@ -4995,7 +5060,8 @@
     "raw_salary_notes": "Updated net base to €3,100/mo ($3,380/mo) reflecting actual Step 5 pay scale (~€60k gross/yr).",
     "package_descriptor": "Culture & Travel",
     "savingspotential": 855,
-    "savingspotentialsingle": 855
+    "savingspotentialsingle": 855,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0071",
@@ -5048,7 +5114,8 @@
     "name": "Benjamin Franklin",
     "tesOrganizationId": "1062233",
     "tesEmployerSlug": "benjamin-franklin-international-school-1062233",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0072",
@@ -5100,7 +5167,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0073",
@@ -5152,7 +5220,8 @@
     "name": "Bonn International",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0074",
@@ -5210,7 +5279,8 @@
     "package_descriptor": "Culture & Travel",
     "savingspotential": 950,
     "savingspotentialsingle": 950,
-    "raw_salary_notes": "Recalibrated from entry support scale to standard Step 5 CAO VO collective agreement teacher scale: €3,150 net/mo (~$3,450/mo) based on €58,000 gross/yr."
+    "raw_salary_notes": "Recalibrated from entry support scale to standard Step 5 CAO VO collective agreement teacher scale: €3,150 net/mo (~$3,450/mo) based on €58,000 gross/yr.",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0075",
@@ -5262,7 +5332,8 @@
     "name": "American School BCN",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0076",
@@ -5314,7 +5385,8 @@
     "tesOrganizationId": "1079043",
     "tesEmployerSlug": "haut-lac-international-bilingual-school-1079043",
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0077",
@@ -5419,7 +5491,8 @@
     "salary": "€2,500/month",
     "netbase": "€2,500",
     "baseSalary": "€2,500",
-    "bonusPot": "+€6,306 / yr"
+    "bonusPot": "+€6,306 / yr",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0078",
@@ -5473,7 +5546,8 @@
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1800,
     "savingspotential": 1800,
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0079",
@@ -5545,7 +5619,8 @@
     "monthlySalary": "€3,050 net",
     "salary": "€3,050/month",
     "netbase": "€3,050",
-    "baseSalary": "€3,050"
+    "baseSalary": "€3,050",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0080",
@@ -5597,7 +5672,8 @@
     "name": "Riverside Prague",
     "tesOrganizationId": "1175419",
     "tesEmployerSlug": "riverside-international-school-1175419",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0081",
@@ -5649,7 +5725,8 @@
     "name": "IS Hellerup",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0082",
@@ -5701,7 +5778,8 @@
     "name": "St George's Cologne",
     "tesOrganizationId": "1058656",
     "tesEmployerSlug": "st-george-s-the-british-international-school-cologne-1058656",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0083",
@@ -5753,7 +5831,8 @@
     "name": "IS Düsseldorf",
     "tesOrganizationId": "1056279",
     "tesEmployerSlug": "international-school-of-d-sseldorf-e-v-1056279",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0084",
@@ -5805,7 +5884,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0085",
@@ -5857,7 +5937,8 @@
     "name": "Metropolitan Frankfurt",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0086",
@@ -5915,7 +5996,8 @@
       "Ermitage International School"
     ],
     "schoolGroup": "Globeducate",
-    "group": "Globeducate"
+    "group": "Globeducate",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0087",
@@ -5967,7 +6049,8 @@
     "name": "Oslo International",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0088",
@@ -6019,7 +6102,8 @@
     "name": "American School Paris",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0089",
@@ -6071,7 +6155,8 @@
     "name": "St Julian's School",
     "tesOrganizationId": "1058006",
     "tesEmployerSlug": "st-julian-s-school-1058006",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0090",
@@ -6123,7 +6208,8 @@
     "name": "American School Madrid",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0091",
@@ -6177,7 +6263,8 @@
     "tesEmployerSlug": "the-british-international-school-budapest-1057761",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1100,
-    "savingspotential": 1100
+    "savingspotential": 1100,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0092",
@@ -6229,7 +6316,8 @@
     "name": "St George's Munich",
     "tesOrganizationId": "1074432",
     "tesEmployerSlug": "st-george-s-the-british-international-school-munich-1074432",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0093",
@@ -6281,7 +6369,8 @@
     "name": "Bavarian International",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0094",
@@ -6333,7 +6422,8 @@
     "tesOrganizationId": "1055110",
     "tesEmployerSlug": "international-school-basel-reinach-campus-1055110",
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0095",
@@ -6385,7 +6475,8 @@
     "tesOrganizationId": "1059117",
     "tesEmployerSlug": "the-american-school-in-switzerland-tasis-1059117",
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0096",
@@ -6437,7 +6528,8 @@
     "name": "IS Athens",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0097",
@@ -6606,7 +6698,8 @@
     "salary": "€2,520/month",
     "netbase": "€2,520",
     "baseSalary": "€2,520",
-    "bonusPot": "+€6,340 / yr"
+    "bonusPot": "+€6,340 / yr",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0098",
@@ -6658,7 +6751,8 @@
     "name": "British BCN (Nexus)",
     "tesOrganizationId": "1169587",
     "tesEmployerSlug": "the-british-school-of-barcelona-1169587",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0099",
@@ -6710,7 +6804,8 @@
     "name": "Heidelberg Int'l",
     "tesOrganizationId": "1067664",
     "tesEmployerSlug": "heidelberg-international-school--h-i-s---1067664",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0100",
@@ -6762,7 +6857,8 @@
     "name": "NIST International",
     "tesOrganizationId": "1062814",
     "tesEmployerSlug": "nist-international-school-1062814",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0101",
@@ -6814,7 +6910,8 @@
     "name": "British International School Riyadh",
     "tesOrganizationId": "1057688",
     "tesEmployerSlug": "british-international-school-riyadh-1057688",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0102",
@@ -6866,7 +6963,8 @@
     "name": "American International School Riyadh",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0103",
@@ -6918,7 +7016,8 @@
     "name": "SEK International School Riyadh",
     "tesOrganizationId": "1260795",
     "tesEmployerSlug": "sek-international-school-riyadh-1260795",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0104",
@@ -7050,7 +7149,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 2 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-09-01T19:47:21.204Z"
+    "lastScrapedAt": "2026-09-01T19:47:21.204Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0105",
@@ -7101,7 +7201,8 @@
     "name": "Downe House Riyadh",
     "tesOrganizationId": "1262215",
     "tesEmployerSlug": "downe-house-riyadh-1262215",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0106",
@@ -7153,7 +7254,8 @@
     "name": "Al Faris International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0107",
@@ -7431,7 +7533,8 @@
     },
     "isRevalidating": false,
     "revalidationError": "job.toLowerCase is not a function",
-    "revalidationStatus": "failed"
+    "revalidationStatus": "failed",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0108",
@@ -7483,7 +7586,8 @@
     "name": "Saud International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0109",
@@ -7537,7 +7641,8 @@
     "tesEmployerSlug": "the-british-international-school-abu-dhabi-1058518",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 2400,
-    "savingspotential": 2400
+    "savingspotential": 2400,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0110",
@@ -7591,7 +7696,8 @@
     "tesEmployerSlug": "nord-anglia-international-school-abu-dhabi-1265059",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 2400,
-    "savingspotential": 2400
+    "savingspotential": 2400,
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0111",
@@ -7643,7 +7749,8 @@
     "name": "Cranleigh Abu Dhabi",
     "tesOrganizationId": "1067935",
     "tesEmployerSlug": "cranleigh-abu-dhabi-1067935",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0112",
@@ -7695,7 +7802,8 @@
     "name": "Brighton College Abu Dhabi",
     "tesOrganizationId": "1062693",
     "tesEmployerSlug": "brighton-college-abu-dhabi-1062693",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 17
   },
   {
     "id": "FLIS0113",
@@ -7747,7 +7855,8 @@
     "name": "Raha International School",
     "tesOrganizationId": "1070644",
     "tesEmployerSlug": "raha-international-school-gardens-campus-1070644",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0114",
@@ -7799,7 +7908,8 @@
     "name": "Dubai College",
     "tesOrganizationId": "1057286",
     "tesEmployerSlug": "dubai-college-uae-1057286",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0115",
@@ -7851,7 +7961,8 @@
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "city": "Dubai Emirates Hills",
     "tesOrganizationId": "1057169",
-    "tesEmployerSlug": "dubai-british-school-emirates-hills-1057169"
+    "tesEmployerSlug": "dubai-british-school-emirates-hills-1057169",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0116",
@@ -7903,7 +8014,8 @@
     "name": "Sunmarke School",
     "tesOrganizationId": "1077790",
     "tesEmployerSlug": "sunmarke-school-1077790",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 23
   },
   {
     "id": "FLIS0117",
@@ -7957,7 +8069,8 @@
     "tesEmployerSlug": "nord-anglia-international-school-dubai-1067785",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 2200,
-    "savingspotential": 2200
+    "savingspotential": 2200,
+    "openJobsCount": 15
   },
   {
     "id": "FLIS0118",
@@ -8009,7 +8122,8 @@
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "city": "Dubai Academic City",
     "tesOrganizationId": "1271801",
-    "tesEmployerSlug": "dubai-english-speaking-school-academic-city-1271801"
+    "tesEmployerSlug": "dubai-english-speaking-school-academic-city-1271801",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0119",
@@ -8061,7 +8175,8 @@
     "name": "Hartland International School",
     "tesOrganizationId": "1072119",
     "tesEmployerSlug": "hartland-international-school-1072119",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 13
   },
   {
     "id": "FLIS0120",
@@ -8208,7 +8323,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 3 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-08-31T10:00:08.460Z"
+    "lastScrapedAt": "2026-08-31T10:00:08.460Z",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0121",
@@ -8260,7 +8376,8 @@
     "name": "Repton School Dubai",
     "tesOrganizationId": "1057021",
     "tesEmployerSlug": "repton-school-dubai-1057021",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0122",
@@ -8312,7 +8429,8 @@
     "name": "Horizon International School",
     "tesOrganizationId": "1060959",
     "tesEmployerSlug": "horizon-international-school-1060959",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0123",
@@ -8366,7 +8484,8 @@
     "tesEmployerSlug": "compass-international-school-doha-1276094",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 2500,
-    "savingspotential": 2500
+    "savingspotential": 2500,
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0124",
@@ -8419,7 +8538,8 @@
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 2500,
-    "savingspotential": 2500
+    "savingspotential": 2500,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0125",
@@ -8471,7 +8591,8 @@
     "name": "British School of Kuwait",
     "tesOrganizationId": "1057365",
     "tesEmployerSlug": "the-british-school-of-kuwait-bsk-1057365",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0126",
@@ -8618,7 +8739,8 @@
       "Subsidised School Tuition",
       "End of Service Gratuity",
       "CPD"
-    ]
+    ],
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0127",
@@ -8670,7 +8792,8 @@
     "tesEmployerSlug": null,
     "agency": "Search Associates, ISS, LinkedIn",
     "website": "https://www.taism.com",
-    "updatedAt": "2026-08-30T16:53:51.364Z"
+    "updatedAt": "2026-08-30T16:53:51.364Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0128",
@@ -8736,7 +8859,8 @@
     "name": "British School of Bahrain",
     "tesOrganizationId": "1057331",
     "tesEmployerSlug": "british-school-of-bahrain-1057331",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0129",
@@ -8788,7 +8912,8 @@
     "name": "British International School Cairo",
     "tesOrganizationId": "1060109",
     "tesEmployerSlug": "the-british-international-school-cairo-1060109",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0130",
@@ -8842,7 +8967,8 @@
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "ownership": "Malvern College Family of Schools",
     "updatedAtMillis": 1788187151122,
-    "group": "Malvern College"
+    "group": "Malvern College",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0131",
@@ -8894,7 +9020,8 @@
     "name": "El Alsson School",
     "tesOrganizationId": "1056384",
     "tesEmployerSlug": "el-alsson-british-and-american-international-school-american-section-1056384",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0132",
@@ -8946,7 +9073,8 @@
     "name": "International School of Kenya",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0133",
@@ -8998,7 +9126,8 @@
     "name": "Brookhouse School",
     "tesOrganizationId": "1057702",
     "tesEmployerSlug": "brookhouse-schools-1057702",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0134",
@@ -9050,7 +9179,8 @@
     "name": "Braeburn Garden Estate",
     "tesOrganizationId": "1065558",
     "tesEmployerSlug": "braeburn-garden-estate-school-1065558",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0135",
@@ -9102,7 +9232,8 @@
     "name": "International School of Cape Town",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0136",
@@ -9154,7 +9285,8 @@
     "name": "American International School of Johannesburg",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 7
   },
   {
     "id": "FLIS0137",
@@ -9206,7 +9338,8 @@
     "name": "American International School of Cape Town",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 11
   },
   {
     "id": "FLIS0138",
@@ -9260,7 +9393,8 @@
     "tesEmployerSlug": "british-international-school-hanoi-1066631",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1600,
-    "savingspotential": 1600
+    "savingspotential": 1600,
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0139",
@@ -9314,7 +9448,8 @@
     "tesEmployerSlug": "british-international-school-ho-chi-minh-city-1252077",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1700,
-    "savingspotential": 1700
+    "savingspotential": 1700,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0140",
@@ -9366,7 +9501,8 @@
     "name": "UNIS Hanoi",
     "tesOrganizationId": "1061898",
     "tesEmployerSlug": "united-nations-international-school-of-hanoi-1061898",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0141",
@@ -9568,7 +9704,8 @@
     "updatedAt": {
       "_seconds": 1788177796,
       "_nanoseconds": 614000000
-    }
+    },
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0142",
@@ -9629,7 +9766,8 @@
     "savingspotentialsingle": 2450,
     "package_descriptor": "High Savings / Tier 1",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0143",
@@ -9690,7 +9828,8 @@
     "savingspotentialsingle": 2900,
     "package_descriptor": "High Savings / Tier 1",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0144",
@@ -9753,7 +9892,8 @@
     "schoolGroup": "Nord Anglia Education",
     "group": "Nord Anglia",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0145",
@@ -9816,7 +9956,8 @@
     "schoolGroup": "Taylor's Education Group",
     "group": "Taylor's",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0146",
@@ -9877,7 +10018,8 @@
     "savingspotentialsingle": 2750,
     "package_descriptor": "High Savings / Tier 1",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 5
   },
   {
     "id": "FLIS0147",
@@ -9938,7 +10080,8 @@
     "savingspotentialsingle": 2150,
     "package_descriptor": "High Savings / Tier 1",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0148",
@@ -9991,7 +10134,8 @@
     "name": "Shrewsbury International School Riverside",
     "tesOrganizationId": "1057793",
     "tesEmployerSlug": "shrewsbury-international-school-bangkok-riverside-1057793",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0149",
@@ -10044,7 +10188,8 @@
     "name": "Bangkok Patana School",
     "tesOrganizationId": "1054899",
     "tesEmployerSlug": "bangkok-patana-school-1054899",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0150",
@@ -10097,7 +10242,8 @@
     "name": "St. Andrews International School Sukhumvit 107",
     "tesOrganizationId": "1060428",
     "tesEmployerSlug": "st-andrews-international-school-sukhumvit-107-1060428",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0151",
@@ -10150,7 +10296,8 @@
     "name": "Brighton College Bangkok",
     "tesOrganizationId": "1078368",
     "tesEmployerSlug": "brighton-college-bangkok-krungthep-kreetha-1078368",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0152",
@@ -10203,7 +10350,8 @@
     "name": "King's College International School Bangkok",
     "tesOrganizationId": "1176707",
     "tesEmployerSlug": "king-s-college-international-school-bangkok-1176707",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0153",
@@ -10256,7 +10404,8 @@
     "name": "Rugby School Thailand",
     "tesOrganizationId": "1085372",
     "tesEmployerSlug": "rugby-school-thailand-1085372",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0154",
@@ -10309,7 +10458,8 @@
     "name": "Wellington College International Bangkok",
     "tesOrganizationId": "1161804",
     "tesEmployerSlug": "wellington-college-international-bangkok-wcib-1161804",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0155",
@@ -10362,7 +10512,8 @@
     "name": "International School Bangkok",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0156",
@@ -10415,7 +10566,8 @@
     "name": "UWC Thailand",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0157",
@@ -10469,7 +10621,8 @@
     "agency": "Search Associates, Schrole, LinkedIn",
     "careersPageUrl": "https://www.bsj.sch.id/careers",
     "name": "British School Jakarta",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0158",
@@ -10522,7 +10675,8 @@
     "name": "Jakarta Intercultural School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0159",
@@ -10575,7 +10729,8 @@
     "name": "ACG School Jakarta",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0160",
@@ -10628,7 +10783,8 @@
     "name": "Canggu Community School Bali",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0161",
@@ -10681,7 +10837,8 @@
     "name": "British School Manila",
     "tesOrganizationId": "1057671",
     "tesEmployerSlug": "the-british-school-manila-1057671",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0162",
@@ -10734,7 +10891,8 @@
     "name": "International School Manila",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 4
   },
   {
     "id": "FLIS0163",
@@ -10787,7 +10945,8 @@
     "name": "British School in Tokyo",
     "tesOrganizationId": "1057325",
     "tesEmployerSlug": "the-british-school-in-tokyo-1057325",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0164",
@@ -10970,7 +11129,8 @@
       "churn_implications_commentary": "Leopardfish Multi-Engine Audit: Stable retention pattern with 4 active vacancies detected across TES, GRC Search, and official school portals.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-08-31T14:43:43.998Z"
+    "lastScrapedAt": "2026-08-31T14:43:43.998Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0165",
@@ -11023,7 +11183,8 @@
     "name": "Rugby School Japan",
     "tesOrganizationId": "1221682",
     "tesEmployerSlug": "rugby-school-japan-1221682",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0166",
@@ -11076,7 +11237,8 @@
     "name": "Harrow International School Appi",
     "tesOrganizationId": "1219867",
     "tesEmployerSlug": "harrow-international-school-appi-1219867",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0167",
@@ -11129,7 +11291,8 @@
     "name": "St. Maur International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0168",
@@ -11182,7 +11345,8 @@
     "name": "Yokohama International School",
     "tesOrganizationId": "1058204",
     "tesEmployerSlug": "yokohama-international-school-1058204",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0169",
@@ -11235,7 +11399,8 @@
     "name": "Canadian Academy Kobe",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0170",
@@ -11288,7 +11453,8 @@
     "tesOrganizationId": "1055417",
     "tesEmployerSlug": "seoul-foreign-school-1055417",
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "South Korea"
+    "country": "South Korea",
+    "openJobsCount": 9
   },
   {
     "id": "FLIS0171",
@@ -11341,7 +11507,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "South Korea"
+    "country": "South Korea",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0172",
@@ -11394,7 +11561,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "South Korea"
+    "country": "South Korea",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0173",
@@ -11447,7 +11615,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "South Korea"
+    "country": "South Korea",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0174",
@@ -11500,7 +11669,8 @@
     "name": "Concordia International School Shanghai",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 12
   },
   {
     "id": "FLIS0175",
@@ -11553,7 +11723,8 @@
     "name": "International School Beijing",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0176",
@@ -11606,7 +11777,8 @@
     "name": "Western Academy of Beijing",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0177",
@@ -11660,7 +11832,8 @@
     "tesEmployerSlug": "the-british-school-warsaw-1057760",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1200,
-    "savingspotential": 1200
+    "savingspotential": 1200,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0178",
@@ -11713,7 +11886,8 @@
     "name": "Akademeia High School",
     "tesOrganizationId": "1164028",
     "tesEmployerSlug": "akademeia-high-school-1164028",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0179",
@@ -11796,7 +11970,8 @@
       "senior_leadership_churn_percentage": 0,
       "staffroom_commentary": "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time."
     },
-    "lastScrapedAt": "2026-08-31T10:00:15.252Z"
+    "lastScrapedAt": "2026-08-31T10:00:15.252Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0180",
@@ -11851,7 +12026,8 @@
     "tesEmployerSlug": "prague-british-international-school-kamyk-1057016",
     "updatedAt": "2026-08-30T16:14:23.676Z",
     "savingspotentialsingle": 1300,
-    "savingspotential": 1300
+    "savingspotential": 1300,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0181",
@@ -11917,7 +12093,8 @@
     "package_descriptor": "Culture & Travel",
     "savingspotential": 650,
     "savingspotentialsingle": 650,
-    "raw_salary_notes": "Recalibrated from inflated scale to regional Spanish collective scale Step 5 teacher net base: €1,950 net/mo (~$2,125/mo) based on €32,000 gross/yr."
+    "raw_salary_notes": "Recalibrated from inflated scale to regional Spanish collective scale Step 5 teacher net base: €1,950 net/mo (~$2,125/mo) based on €32,000 gross/yr.",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0182",
@@ -11972,7 +12149,8 @@
     "updatedAt": "2026-09-16T13:57:51.677Z",
     "base_salary_eur": 2600,
     "base_salary_usd": 2850,
-    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,600 net/mo (~$2,850/mo) based on €4,000 gross Step 5 scale after Finnish ~32% municipal/pension deductions."
+    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,600 net/mo (~$2,850/mo) based on €4,000 gross Step 5 scale after Finnish ~32% municipal/pension deductions.",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0183",
@@ -12027,7 +12205,8 @@
     "updatedAt": "2026-09-16T13:57:51.677Z",
     "base_salary_eur": 2460,
     "base_salary_usd": 2700,
-    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,460 net/mo (~$2,700/mo) based on €3,700 gross Step 5 scale after Finnish ~32% municipal/pension deductions."
+    "raw_salary_notes": "Recalibrated to pure 12-month net take-home: €2,460 net/mo (~$2,700/mo) based on €3,700 gross Step 5 scale after Finnish ~32% municipal/pension deductions.",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0184",
@@ -12079,7 +12258,8 @@
     "name": "Stockholm International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0185",
@@ -12131,7 +12311,8 @@
     "name": "British International School of Stockholm",
     "tesOrganizationId": "1082172",
     "tesEmployerSlug": "british-international-school-of-stockholm-ekeby-campus-1082172",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0186",
@@ -12186,7 +12367,8 @@
     "updatedAt": "2026-09-16T13:57:51.677Z",
     "base_salary_dkk": 25500,
     "base_salary_usd": 3650,
-    "raw_salary_notes": "Adjusted to 25,500 DKK net/mo ($3,650/mo) based on 42,000 DKK gross Step 5 scale after Danish state/municipal ~39% effective taxes."
+    "raw_salary_notes": "Adjusted to 25,500 DKK net/mo ($3,650/mo) based on 42,000 DKK gross Step 5 scale after Danish state/municipal ~39% effective taxes.",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0187",
@@ -12238,7 +12420,8 @@
     "name": "Southbank International School",
     "tesOrganizationId": "1023050",
     "tesEmployerSlug": "southbank-international-school-hampstead-campus-1023050",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0188",
@@ -12290,7 +12473,8 @@
     "name": "ACS Cobham International School",
     "tesOrganizationId": "1054365",
     "tesEmployerSlug": "acs-cobham-international-school-1054365",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0189",
@@ -12342,7 +12526,8 @@
     "tesOrganizationId": "1058183",
     "tesEmployerSlug": "st-george-s-international-school-luxembourg-1058183",
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Luxembourg"
+    "country": "Luxembourg",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0190",
@@ -12394,7 +12579,8 @@
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
     "updatedAt": "2026-08-30T16:14:23.676Z",
-    "country": "Luxembourg"
+    "country": "Luxembourg",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0191",
@@ -12452,7 +12638,8 @@
     "monthlySalary": "€2,850 net",
     "salary": "€2,850/month",
     "netbase": "€2,850",
-    "baseSalary": "€2,850"
+    "baseSalary": "€2,850",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0192",
@@ -12513,7 +12700,8 @@
     "group": "Globeducate",
     "base_salary_eur": 2280,
     "base_salary_usd": 2500,
-    "raw_salary_notes": "Normalized to €2,280 net/mo ($2,500/mo) based on €37k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%)."
+    "raw_salary_notes": "Normalized to €2,280 net/mo ($2,500/mo) based on €37k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%).",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0193",
@@ -12574,7 +12762,8 @@
     "group": "Globeducate",
     "base_salary_eur": 2380,
     "base_salary_usd": 2600,
-    "raw_salary_notes": "Normalized to €2,380 net/mo ($2,600/mo) based on €39k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%)."
+    "raw_salary_notes": "Normalized to €2,380 net/mo ($2,600/mo) based on €39k gross/yr Step 5 scale after French social charges (~22%) and withholding tax (~10%).",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0194",
@@ -12994,7 +13183,8 @@
     "package_descriptor": "Culture & Travel",
     "raw_salary_notes": "Recalibrated from senior gross scale to standard Step 5 teacher net base: €2,300 net/mo (~$2,500/mo) based on €37,500 gross/yr.",
     "savingspotential": 750,
-    "savingspotentialsingle": 750
+    "savingspotentialsingle": 750,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0195",
@@ -13056,7 +13246,8 @@
     "package_descriptor": "Culture & Travel",
     "raw_salary_notes": "Recalibrated from senior gross scale to standard Step 5 teacher net base: €2,250 net/mo (~$2,450/mo) based on €36,500 gross/yr.",
     "savingspotential": 700,
-    "savingspotentialsingle": 700
+    "savingspotentialsingle": 700,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0196",
@@ -13108,7 +13299,8 @@
     "name": "St. Paul's School Brazil",
     "tesOrganizationId": "1057345",
     "tesEmployerSlug": "st-paul-s-school-1057345",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0197",
@@ -13168,7 +13360,8 @@
     "name": "British School Rio de Janeiro",
     "tesOrganizationId": "1059187",
     "tesEmployerSlug": "the-british-school-rio-de-janeiro-botafogo-campus-1059187",
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0198",
@@ -13228,7 +13421,8 @@
     "name": "Graded School Sao Paulo",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.677Z"
+    "updatedAt": "2026-08-30T16:14:23.677Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0199",
@@ -13318,7 +13512,8 @@
       "senior_leadership_churn_percentage": 0,
       "staffroom_commentary": "No active public vacancies have been detected for this institution within the current 12-month recruitment cycle. This indicates either an exceptionally high staff retention profile or the utilization of localized, non-indexed internal application portals. Quantitative stability metrics cannot be calculated at this time."
     },
-    "lastScrapedAt": "2026-08-31T10:49:43.964Z"
+    "lastScrapedAt": "2026-08-31T10:49:43.964Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0200",
@@ -13370,7 +13565,8 @@
     "name": "Markham College Peru",
     "tesOrganizationId": "1057093",
     "tesEmployerSlug": "markham-college-1057093",
-    "updatedAt": "2026-08-30T16:14:23.677Z"
+    "updatedAt": "2026-08-30T16:14:23.677Z",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0201",
@@ -13428,7 +13624,8 @@
     "tesEmployerSlug": "the-sultan-s-school-1054897",
     "agency": "Teacher Horizons, LinkedIn",
     "website": "https://sultansschool.org",
-    "updatedAt": "2026-08-30T16:53:51.948Z"
+    "updatedAt": "2026-08-30T16:53:51.948Z",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0202",
@@ -13748,7 +13945,8 @@
       "churn_implications_commentary": "Parklane seems to have a pretty settled teaching staff at the moment, though there's a bit of movement in the leadership team with a couple of new headship and senior appointments over the last year. Across the rest of the school, we've spotted about seven secondary roles and two primary classroom positions advertised. With eleven vacancies in total, that's about a 13.8% turnover rate, which is completely normal for an international school as standard two-year contracts come to an end. It looks like they're mostly using TES to find their new classroom teachers.",
       "senior_leadership_churn_percentage": 0
     },
-    "lastScrapedAt": "2026-08-31T15:06:46.497Z"
+    "lastScrapedAt": "2026-08-31T15:06:46.497Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0203",
@@ -13806,7 +14004,8 @@
     "tesEmployerSlug": null,
     "agency": "Search Associates, Schrole, Teacher Horizons, CIS / ISS",
     "website": "https://www.abaoman.org",
-    "updatedAt": "2026-08-30T16:53:52.149Z"
+    "updatedAt": "2026-08-30T16:53:52.149Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0204",
@@ -13890,7 +14089,8 @@
     "baseSalary": "€2,050",
     "bonusPot": "+€5,040 / yr",
     "Profit Status": "Private / Cognita Group",
-    "citySafety": "8.3"
+    "citySafety": "8.3",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0205",
@@ -13977,7 +14177,8 @@
     "baseSalary": "€2,350",
     "bonusPot": "+€5,860 / yr",
     "Ownership": "Non-Profit Independent Christian Board",
-    "citySafety": "7.9"
+    "citySafety": "7.9",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0206",
@@ -14034,7 +14235,8 @@
     "bonusPot": "+€5,670 / yr",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.2"
+    "citySafety": "8.2",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0207",
@@ -14091,7 +14293,8 @@
     "bonusPot": "+€6,210 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "7.9"
+    "citySafety": "7.9",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0208",
@@ -14148,7 +14351,8 @@
     "bonusPot": "+€6,100 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "7.4"
+    "citySafety": "7.4",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0209",
@@ -14205,7 +14409,8 @@
     "bonusPot": "+€6,100 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "7.7"
+    "citySafety": "7.7",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0210",
@@ -14262,7 +14467,8 @@
     "bonusPot": "+€6,100 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "8.1"
+    "citySafety": "8.1",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0212",
@@ -14319,7 +14525,8 @@
     "bonusPot": "+€5,370 / yr",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0213",
@@ -14405,7 +14612,8 @@
     "netbase": "€3,033",
     "baseSalary": "€3,033",
     "bonusPot": "+€7,554 / yr",
-    "citySafety": "7.9"
+    "citySafety": "7.9",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0214",
@@ -14457,7 +14665,8 @@
     "updatedAt": "2026-08-30T16:19:07.622Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0215",
@@ -14509,7 +14718,8 @@
     "updatedAt": "2026-08-30T16:19:07.622Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0216",
@@ -14561,7 +14771,8 @@
     "updatedAt": "2026-08-30T16:19:07.622Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0217",
@@ -14845,7 +15056,8 @@
     "lastScrapedAt": "2026-09-02T05:35:27.453Z",
     "Profit Status": "Yes",
     "Ownership": "UWC",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0218",
@@ -14897,7 +15109,8 @@
     "updatedAt": "2026-08-30T16:19:07.622Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0219",
@@ -15370,7 +15583,8 @@
     "lastScrapedAt": "2026-09-02T14:42:21.781Z",
     "Profit Status": "Yes",
     "Ownership": "International Schools Partnership",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 10
   },
   {
     "id": "FLIS0220",
@@ -15435,7 +15649,8 @@
     "raw_salary_notes": "Recalibrated from leadership package to standard Step 5 teacher net base: 12,000 AED net/mo (~$3,260/mo) plus provided accommodation.",
     "Profit Status": "Yes",
     "Ownership": "International Schools Partnership",
-    "citySafety": "9.8"
+    "citySafety": "9.8",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0221",
@@ -15647,7 +15862,8 @@
     "savingspotentialsingle": 450,
     "Profit Status": "Yes",
     "Ownership": "Globeducate",
-    "citySafety": "8.9"
+    "citySafety": "8.9",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0222",
@@ -15715,7 +15931,8 @@
     "raw_salary_notes": "Recalibrated from inflated scale to Spanish private school collective agreement (Convenio ANINSEI) Step 5 teacher net base: €1,900 net/mo (~$2,075/mo) based on €30,000 gross/yr.",
     "Profit Status": "Yes",
     "Ownership": "Globeducate",
-    "citySafety": "9.2"
+    "citySafety": "9.2",
+    "openJobsCount": 3
   },
   {
     "id": "FLIS0223",
@@ -15783,7 +16000,8 @@
     "raw_salary_notes": "Recalibrated from inflated scale to standard Globeducate Algarve Step 5 teacher net base: €1,800 net/mo (~$1,950/mo) based on €29,000 gross/yr.",
     "Profit Status": "Yes",
     "Ownership": "Globeducate",
-    "citySafety": "9.5"
+    "citySafety": "9.5",
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0224",
@@ -15918,7 +16136,8 @@
     "isCampusStub": false,
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0225",
@@ -15973,7 +16192,8 @@
     "group": "Direct",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0226",
@@ -16028,7 +16248,8 @@
     "group": "Direct",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0227",
@@ -16083,7 +16304,8 @@
     "group": "Direct",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0228",
@@ -16138,7 +16360,8 @@
     "group": "Direct",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0229",
@@ -16193,7 +16416,8 @@
     "group": "Direct",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 1
   },
   {
     "id": "FLIS0230",
@@ -16245,7 +16469,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0231",
@@ -16297,7 +16522,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0232",
@@ -16349,7 +16575,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0233",
@@ -16401,7 +16628,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.5"
+    "citySafety": "8.5",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0234",
@@ -16453,7 +16681,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0235",
@@ -16505,7 +16734,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0236",
@@ -16557,7 +16787,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "8.8"
+    "citySafety": "8.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0237",
@@ -16609,7 +16840,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0238",
@@ -16661,7 +16893,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0239",
@@ -16713,7 +16946,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0240",
@@ -16765,7 +16999,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0241",
@@ -16817,7 +17052,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "For-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0242",
@@ -16869,7 +17105,8 @@
     "updatedAt": "2026-08-30T16:19:07.623Z",
     "Profit Status": "Yes",
     "Ownership": "Non-Profit",
-    "citySafety": "6.8"
+    "citySafety": "6.8",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0243",
@@ -16913,7 +17150,8 @@
     "careersPageUrl": "https://eibparis.schoolrecruiter.com",
     "summary": "Bilingual French and international IB curriculum flagship in central Paris.",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 6
   },
   {
     "id": "FLIS0244",
@@ -16951,7 +17189,8 @@
     "careersPageUrl": "https://icsparis.schoolrecruiter.com",
     "summary": "Full IB continuum international school in the 15th arrondissement of Paris.",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0245",
@@ -16995,7 +17234,8 @@
     "Ownership": "Globeducate",
     "staffstudentratio": "1:11",
     "classsize": "22",
-    "noncontacttime": "20%"
+    "noncontacttime": "20%",
+    "openJobsCount": 8
   },
   {
     "id": "FLIS0246",
@@ -17033,7 +17273,8 @@
     "careersPageUrl": "https://madrid.agorainternationalschool.es/en/work-with-us",
     "summary": "Expansive IB World School campus located in Villaviciosa de Odón, Madrid.",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 2
   },
   {
     "id": "FLIS0248",
@@ -17071,7 +17312,8 @@
     "careersPageUrl": "https://cambridgehouse.schoolrecruiter.com",
     "summary": "Leading BSO-inspected British international school in Rocafort, Valencia.",
     "isLocked": true,
-    "isCampusStub": false
+    "isCampusStub": false,
+    "openJobsCount": 0
   },
   {
     "id": "flis0115_emirates_hills",
@@ -17097,7 +17339,8 @@
     "savingspotentialsingle": 2200,
     "savingspotential": 2200,
     "parentId": "FLIS0115",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0115_jumeira",
@@ -17121,7 +17364,8 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:27.847Z",
     "parentId": "FLIS0115",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0115_jumeirah_park",
@@ -17147,7 +17391,8 @@
     "savingspotentialsingle": 2200,
     "savingspotential": 2200,
     "parentId": "FLIS0115",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0115_mira",
@@ -17171,7 +17416,8 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:28.172Z",
     "parentId": "FLIS0115",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0118_academic_city",
@@ -17196,7 +17442,8 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:29.417Z",
     "parentId": "FLIS0118",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0118_college",
@@ -17223,7 +17470,8 @@
     "savingspotentialsingle": 2200,
     "savingspotential": 2200,
     "parentId": "FLIS0118",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0118_oud_metha",
@@ -17248,7 +17496,8 @@
     "revalidationStatus": "success",
     "updatedAt": "2026-08-30T08:06:29.050Z",
     "parentId": "FLIS0118",
-    "isCampusStub": true
+    "isCampusStub": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0224_primary",
@@ -17273,7 +17522,8 @@
     "parentId": "FLIS0224",
     "isCampusStub": true,
     "campusName": "Primary (Infant & Junior)",
-    "isLocked": true
+    "isLocked": true,
+    "openJobsCount": 0
   },
   {
     "id": "flis0224_senior",
@@ -17298,7 +17548,8 @@
     "parentId": "FLIS0224",
     "isCampusStub": true,
     "campusName": "Senior School",
-    "isLocked": true
+    "isLocked": true,
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0251",
@@ -17658,7 +17909,8 @@
     "paidInUSD": true,
     "scrapedJobsCount": 0,
     "scrapedJobsList": [],
-    "updatedAt": "2026-09-14T12:00:41.664Z"
+    "updatedAt": "2026-09-14T12:00:41.664Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0259",
@@ -17702,7 +17954,8 @@
     "paidInUSD": true,
     "scrapedJobsCount": 0,
     "scrapedJobsList": [],
-    "updatedAt": "2026-09-14T12:00:41.664Z"
+    "updatedAt": "2026-09-14T12:00:41.664Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0280",
