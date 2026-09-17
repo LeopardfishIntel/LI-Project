@@ -2328,12 +2328,6 @@ function DecoderContent() {
                       </button>
                     </div>
                   </div>
-
-                  <div className="pt-2 mt-2">
-                    <p className="text-xs md:text-sm text-slate-300 font-semibold leading-relaxed">
-                      Estimated take-home pay, living costs, and lifestyle breakdown—customizable by household size and savings goals.
-                    </p>
-                  </div>
                 </div>
               )}
               <div className="bg-[#0b1224] border border-white/5 p-5 md:p-6 shadow-2xl relative rounded-sm">
