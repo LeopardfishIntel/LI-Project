@@ -208,10 +208,9 @@ export async function runIngestionPipeline(
     const isGems = (srcUpper.includes("GEMS") || (record.applyUrl && record.applyUrl.includes("careers.gemseducation.com/")));
     const isGuardian = (srcUpper.includes("GUARDIAN") || (record.applyUrl && (record.applyUrl.includes("theguardian.com") || record.applyUrl.includes("guardianjobs"))));
     const isTaylors = (srcUpper.includes("TAYLOR") || (record.applyUrl && record.applyUrl.includes("taylors")));
-    const isSearchAssociates = (srcUpper.includes("SEARCH ASSOCIATES") || (record.applyUrl && record.applyUrl.includes("searchassociates")));
     const isDirectWeb = (srcUpper.includes("DIRECT") || srcUpper.includes("SCHOOL WEB") || srcUpper.includes("WEBSITE") || srcUpper.includes("OFFICIAL") || srcUpper.includes("ATS")) && record.applyUrl && !record.applyUrl.includes("google.com/maps");
 
-    const isRecognizedSource = isTes || isNordAnglia || isGrc || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobeducate || isGems || isGuardian || isTaylors || isSearchAssociates || isDirectWeb;
+    const isRecognizedSource = isTes || isNordAnglia || isGrc || isInspired || isTeachAway || isCognita || isMalvern || isUwc || isIsp || isGlobeducate || isGems || isGuardian || isTaylors || isDirectWeb;
 
     if (!isRecognizedSource) {
       rejected++;

@@ -106,7 +106,6 @@ const formatDateCustom = (dateInput: any): string => {
 
 const getGroupPortalUrl = (groupName: string): string => {
   const gUpper = String(groupName || "").toUpperCase();
-  if (gUpper.includes("SEARCH ASSOCIATES") || gUpper.includes("SEARCHASSOCIATES")) return "https://www.searchassociates.com/leadership-vacancies/";
   if (gUpper.includes("INSPIRED")) return "https://jobs.inspirededu.com";
   if (gUpper.includes("COGNITA")) return "https://cognitapeople.csod.com";
   if (gUpper.includes("NORD ANGLIA")) return "https://careers.nordangliaeducation.com";
@@ -684,8 +683,7 @@ export default function FeaturedJobsPage() {
         const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
         const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
         const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
-        const isSA = sourceUpper.includes('SEARCH ASSOCIATES') || sourceUpper.includes('SEARCH_ASSOCIATES') || applyUrlLower.includes('searchassociates');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isSA) return;
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -949,7 +947,6 @@ export default function FeaturedJobsPage() {
     let uwc = 0;
     let isp = 0;
     let globe = 0;
-    let searchAssociates = 0;
     let taylors = 0;
     let gems = 0;
     let guardian = 0;
@@ -973,9 +970,8 @@ export default function FeaturedJobsPage() {
       const hasUwc = jobSrcUpper.includes("UWC") || sourcesUpper.some((s) => s.includes("UWC")) || applyUrlLower.includes("uwc.org");
       const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || applyUrlLower.includes("internationalschools");
       const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
-      const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES"));
-        const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSA && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
+              const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
 
       if (hasDirect) direct++;
       if (hasTes) tes++;
@@ -988,15 +984,13 @@ export default function FeaturedJobsPage() {
       if (hasUwc) uwc++;
       if (hasIsp) isp++;
       if (hasGlobe) globe++;
-      if (hasSA) searchAssociates++;
-      if (hasTaylors) taylors++;
+            if (hasTaylors) taylors++;
       if (hasGems) gems++;
       if (hasGuardian) guardian++;
     });
     return {
       ALL: allJobs.length,
       DIRECT: direct,
-      "SEARCH ASSOCIATES": searchAssociates,
       COGNITA: cognita,
       TES: tes,
       "NORD ANGLIA": nae,
@@ -1092,12 +1086,10 @@ export default function FeaturedJobsPage() {
         const hasTaylors = jobSrcUpper.includes("TAYLOR") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("TAYLOR")) || applyUrlLower.includes("taylors");
         const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("ESF") || String(s || "").toUpperCase().includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
         const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
-        const hasSA = jobSrcUpper.includes("SEARCH ASSOCIATES") || jobSrcUpper.includes("SEARCH_ASSOCIATES") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("SEARCH ASSOCIATES") || String(s || "").toUpperCase().includes("SEARCH_ASSOCIATES"));
-        const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasSA && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
+                const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
 
         if (selectedSourceEngine === "DIRECT" && !hasDirect) return false;
-        if (selectedSourceEngine === "SEARCH ASSOCIATES" && !hasSA) return false;
         if (selectedSourceEngine === "COGNITA" && !hasCognita) return false;
         if (selectedSourceEngine === "TES" && !hasTes) return false;
         if (selectedSourceEngine === "NORD ANGLIA" && !hasNae) return false;
@@ -1166,7 +1158,6 @@ export default function FeaturedJobsPage() {
 
     const engineDisplayNames: Record<string, string> = {
       "DIRECT": "Direct School Portals",
-      "SEARCH ASSOCIATES": "Search Associates",
       "COGNITA": "Cognita Schools",
       "TES": "TES (Times Educational Supplement)",
       "NORD ANGLIA": "Nord Anglia Education",
@@ -1477,7 +1468,6 @@ export default function FeaturedJobsPage() {
                     {[
                       { id: "ALL", label: `All (${engineCounts.ALL})` },
                       { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
-                      { id: "SEARCH ASSOCIATES", label: `Search (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                       { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
                       { id: "TES", label: `TES (${engineCounts.TES || 0})` },
                       { id: "GUARDIAN", label: `Guardian (${engineCounts.GUARDIAN || 0})` },
@@ -1539,7 +1529,6 @@ export default function FeaturedJobsPage() {
                   {[
                     { id: "ALL", label: `All (${engineCounts.ALL})` },
                     { id: "DIRECT", label: `Direct (${engineCounts.DIRECT || 0})` },
-                    { id: "SEARCH ASSOCIATES", label: `Search Associates (${engineCounts["SEARCH ASSOCIATES"] || 0})` },
                     { id: "COGNITA", label: `Cognita (${engineCounts.COGNITA || 0})` },
                     { id: "TES", label: `TES (${engineCounts.TES || 0})` },
                     { id: "GUARDIAN", label: `Guardian Jobs (${engineCounts.GUARDIAN || 0})` },
@@ -1566,7 +1555,6 @@ export default function FeaturedJobsPage() {
                       )}
                     >
                       {engine.id === "DIRECT" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
-                      {engine.id === "SEARCH ASSOCIATES" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
                       {engine.id === "COGNITA" && <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />}
                       {engine.id === "TES" && <span className="size-2 rounded-full bg-indigo-400 animate-pulse" />}
                       {engine.id === "NORD ANGLIA" && <span className="size-2 rounded-full bg-amber-400 animate-pulse" />}
@@ -1670,7 +1658,6 @@ export default function FeaturedJobsPage() {
                             LeopardfishIntel does not currently have any active <strong className="text-white font-bold">{
                               {
                                 "DIRECT": "Direct School Portals",
-                                "SEARCH ASSOCIATES": "Search Associates",
                                 "COGNITA": "Cognita Schools",
                                 "TES": "TES (Times Educational Supplement)",
                                 "NORD ANGLIA": "Nord Anglia Education",
@@ -1920,7 +1907,6 @@ export default function FeaturedJobsPage() {
                                     let key = u;
                                     let label = s;
                                     if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
-                                    else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
                                     else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
                                     else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
                                     else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
@@ -1936,7 +1922,7 @@ export default function FeaturedJobsPage() {
                                   });
 
                                   // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                                  const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
                                   if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
                                     sMap.delete("DIRECT");
                                   }
@@ -1980,7 +1966,6 @@ export default function FeaturedJobsPage() {
                                           norm === "https://jobs.inspirededu.com" ||
                                           norm === "https://cognitapeople.csod.com" ||
                                           norm === "https://www.teachaway.com/teaching-jobs-abroad" ||
-                                          norm === "https://www.searchassociates.com/leadership-vacancies" ||
                                           norm === "https://uwc.org/careers/vacancies" ||
                                           norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
                                           norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide" ||
@@ -1996,9 +1981,8 @@ export default function FeaturedJobsPage() {
                                       if (foundUrl) {
                                         const fUrl = String(foundUrl);
                                         if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                                        if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
                                          if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
-                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
+                                        if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org"))) foundUrl = undefined;
                                       }
                                       if (!foundUrl) {
                                         const rawUrl = (job as any).applyUrl || job.source_url;
@@ -2018,9 +2002,7 @@ export default function FeaturedJobsPage() {
                                           foundUrl = rawUrl;
                                         } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
                                           foundUrl = rawUrl;
-                                        } else if (srcUpper === "SEARCH ASSOCIATES" && applyUrlLower.includes("searchassociates")) {
-                                           foundUrl = rawUrl;
-                                         } else if (srcUpper === "GUARDIAN" && (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs"))) {
+                                        } else if (srcUpper === "GUARDIAN" && (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs"))) {
                                            foundUrl = rawUrl;
                                         } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
                                           foundUrl = rawUrl;

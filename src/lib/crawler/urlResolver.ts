@@ -154,7 +154,7 @@ export function isUnlinkedAgencyLanderUrl(urlStr: string, schoolName: string): b
   const lowerUrl = urlStr.toLowerCase();
 
   const isAgencyDomain = [
-    'searchassociates.com', 'teacherhorizons.com', 'edvectus.com',
+    'teacherhorizons.com', 'edvectus.com',
     'teachaway.com', 'eteach.com'
   ].some(domain => lowerUrl.includes(domain));
 

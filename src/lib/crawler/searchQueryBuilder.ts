@@ -133,7 +133,6 @@ export function buildTier3SchoolAgentQueries(schoolName: string): string[] {
   return [
     formatGroundingSiteQuery(cleanSchoolName, "edvectus.com"),
     formatGroundingSiteQuery(cleanSchoolName, "schrole.com"),
-    formatGroundingSiteQuery(cleanSchoolName, "searchassociates.com"),
     formatGroundingSiteQuery(cleanSchoolName, "teacherhorizons.com"),
     formatGroundingSiteQuery(cleanSchoolName, "iss.edu"),
     formatGroundingSiteQuery(cleanSchoolName, "iscresearch.com")

@@ -757,7 +757,6 @@ function DecoderContent() {
     if (s.includes('cognita') || url.includes('cognita')) return 'bg-sky-400 border-sky-300 shadow-[0_0_6px_rgba(56,189,248,0.6)]';
     if (s.includes('tes') || url.includes('tes.com')) return 'bg-indigo-400 border-indigo-300 shadow-[0_0_6px_rgba(129,140,248,0.6)]';
     if (s.includes('schrole') || url.includes('schrole.com')) return 'bg-purple-400 border-purple-300 shadow-[0_0_6px_rgba(192,132,252,0.6)]';
-    if (s.includes('search associates') || url.includes('searchassociates')) return 'bg-amber-400 border-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.6)]';
     if (s.includes('nord anglia') || url.includes('nordanglia')) return 'bg-amber-400 border-amber-300 shadow-[0_0_6px_rgba(251,191,36,0.6)]';
     if (s.includes('grc') || url.includes('grcfair')) return 'bg-cyan-400 border-cyan-300 shadow-[0_0_6px_rgba(34,211,238,0.6)]';
     if (s.includes('inspired') || url.includes('inspirededu')) return 'bg-purple-400 border-purple-300 shadow-[0_0_6px_rgba(192,132,252,0.6)]';
@@ -2157,9 +2156,6 @@ function DecoderContent() {
                         if (applyUrlLower.includes("globeducate")) {
                           sMap.set("GLOBEDUCATE", "Globeducate");
                         }
-                        if (applyUrlLower.includes("searchassociates")) {
-                          sMap.set("SEARCH ASSOCIATES", "Search Associates");
-                        }
                         if (applyUrlLower.includes("grcfair.org")) {
                           sMap.set("GRC", "GRC");
                         }
@@ -2179,7 +2175,6 @@ function DecoderContent() {
                           let key = u;
                           let label = s;
                           if (u === "GLOBE" || u === "GLOBEDUCATE") { key = "GLOBEDUCATE"; label = "Globeducate"; }
-                          else if (u.includes("SEARCH ASSOCIATES") || u.includes("SEARCH_ASSOCIATES")) { key = "SEARCH ASSOCIATES"; label = "Search Associates"; }
                           else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
                           else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
                           else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
@@ -2197,7 +2192,7 @@ function DecoderContent() {
                         });
 
                         // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
-                        const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("searchassociates") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
+                        const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
                         if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
                           sMap.delete("DIRECT");
                         }
@@ -2241,9 +2236,8 @@ function DecoderContent() {
                             if (foundUrl) {
                               const fUrl = String(foundUrl);
                               if (srcUpper === "TES" && !fUrl.includes("tes.com")) foundUrl = undefined;
-                              if (srcUpper === "SEARCH ASSOCIATES" && !fUrl.includes("searchassociates.com")) foundUrl = undefined;
                               if (srcUpper === "GUARDIAN" && (!fUrl.includes("theguardian.com") && !fUrl.includes("guardianjobs"))) foundUrl = undefined;
-                              if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("searchassociates") || fUrl.includes("grcfair.org") || fUrl.includes("theguardian.com"))) foundUrl = undefined;
+                              if (srcUpper === "DIRECT" && (fUrl.includes("tes.com") || fUrl.includes("grcfair.org") || fUrl.includes("theguardian.com"))) foundUrl = undefined;
                             }
                             if (!foundUrl && activeVacancies && activeVacancies.length > 0) {
                               const matchedJob = activeVacancies.find((j: any) =>
@@ -2255,7 +2249,6 @@ function DecoderContent() {
                                   if (k.toUpperCase().trim() === srcUpper && v) {
                                     const candidate = String(v);
                                     if (srcUpper === "TES" && !candidate.includes("tes.com")) continue;
-                                    if (srcUpper === "SEARCH ASSOCIATES" && !candidate.includes("searchassociates.com")) continue;
                                     if (srcUpper === "GUARDIAN" && (!candidate.includes("theguardian.com") && !candidate.includes("guardianjobs"))) continue;
                                     foundUrl = candidate;
                                     break;
@@ -2282,8 +2275,6 @@ function DecoderContent() {
                               } else if (srcUpper === "GRC" && applyUrlLower.includes("grcfair.org")) {
                                 foundUrl = rawUrl;
                               } else if (srcUpper.includes("TEACH AWAY") && applyUrlLower.includes("teachaway")) {
-                                foundUrl = rawUrl;
-                              } else if (srcUpper === "SEARCH ASSOCIATES" && applyUrlLower.includes("searchassociates")) {
                                 foundUrl = rawUrl;
                               } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
                                 foundUrl = rawUrl || "https://careers.gemseducation.com";

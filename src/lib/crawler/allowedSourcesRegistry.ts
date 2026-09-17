@@ -48,7 +48,6 @@ export const TIER_1_PLATFORMS: Record<string, string> = {
   'jobs.theguardian.com': 'Guardian Jobs',
   'guardianjobs.com': 'Guardian Jobs',
   'schrole.com': 'Schrole',
-  'searchassociates.com': 'Search Associates',
   'teacherhorizons.com': 'Teacher Horizons',
   'iss.edu': 'ISS',
   'webbersed.com': "Webber's Ed",
