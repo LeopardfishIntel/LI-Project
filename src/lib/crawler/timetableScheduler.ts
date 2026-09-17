@@ -8,8 +8,8 @@ export interface EngineScheduleConfig {
   engineKey: string;
   sourceName: string;
   method: string;
-  peakSchedule: "DAILY" | "MWF" | "SUNDAY";
-  offPeakSchedule: "MWF" | "MONDAY" | "EVERY_14_DAYS";
+  peakSchedule: "DAILY" | "MWF" | "TUESDAY_THURSDAY" | "SUNDAY";
+  offPeakSchedule: "MWF" | "TUESDAY_THURSDAY" | "MONDAY" | "EVERY_14_DAYS";
   utcStartWindow: string;
   utcEndWindow: string;
   targetDurationMinutes: number;
@@ -110,8 +110,8 @@ export const CRAWLER_TIMETABLE: Record<string, EngineScheduleConfig> = {
     engineKey: "TEACH_AWAY",
     sourceName: "Teach Away",
     method: "Lightweight HTML",
-    peakSchedule: "MWF",
-    offPeakSchedule: "MONDAY",
+    peakSchedule: "TUESDAY_THURSDAY",
+    offPeakSchedule: "TUESDAY_THURSDAY",
     utcStartWindow: "04:30",
     utcEndWindow: "04:45",
     targetDurationMinutes: 15
@@ -169,6 +169,8 @@ export function shouldEngineRunToday(engineKey: string, date: Date = new Date())
       return true;
     case "MWF":
       return dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5;
+    case "TUESDAY_THURSDAY":
+      return dayOfWeek === 2 || dayOfWeek === 4;
     case "MONDAY":
       return dayOfWeek === 1;
     case "SUNDAY":
