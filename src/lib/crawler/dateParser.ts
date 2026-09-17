@@ -179,3 +179,29 @@ export function triageVacancyLifecycle(
     closingDate,
   };
 }
+
+/**
+ * 🕒 RELATIVE DATE PARSER
+ * Converts relative timestamp strings (e.g., "Posted 2 days ago", "3 weeks ago")
+ * into normalized ISO date strings.
+ */
+export function parseRelativeDate(relativeStr: string): string {
+  if (!relativeStr || typeof relativeStr !== "string") return new Date().toISOString();
+  const now = new Date();
+  const match = relativeStr.match(/(\d+)\s+(day|week|month|hour|minute)s?\s+ago/i);
+  if (!match) {
+    const directDate = new Date(relativeStr);
+    return !isNaN(directDate.getTime()) ? directDate.toISOString() : now.toISOString();
+  }
+
+  const num = parseInt(match[1], 10);
+  const unit = match[2].toLowerCase();
+
+  if (unit === "minute") now.setMinutes(now.getMinutes() - num);
+  if (unit === "hour") now.setHours(now.getHours() - num);
+  if (unit === "day") now.setDate(now.getDate() - num);
+  if (unit === "week") now.setDate(now.getDate() - num * 7);
+  if (unit === "month") now.setMonth(now.getMonth() - num);
+
+  return now.toISOString();
+}

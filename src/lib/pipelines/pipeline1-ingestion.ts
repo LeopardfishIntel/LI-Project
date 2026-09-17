@@ -60,6 +60,8 @@ export interface CacheJobDocument {
   schoolWebsite?: string;
   isVolatileMarket?: boolean;
   paidInUSD?: boolean;
+  startDate?: string | null;
+  isMidYearReplacement?: boolean;
 }
 
 function buildCacheDocument(
@@ -102,6 +104,12 @@ function buildCacheDocument(
     targetSchoolId = 'FLIS0224';
     targetSchoolName = "St Christopher's School";
   }
+
+  const rawStart = (record as any).startDate || null;
+  const isMidYearReplacement = Boolean(
+    (rawStart && (rawStart.toLowerCase().includes("asap") || rawStart.toLowerCase().includes("immediate") || rawStart.toLowerCase().includes("january") || rawStart.toLowerCase().includes("term 2"))) ||
+    (record.rawTitle && (record.rawTitle.toLowerCase().includes("maternity") || record.rawTitle.toLowerCase().includes("immediate start") || record.rawTitle.toLowerCase().includes("asap")))
+  );
 
   return {
     id: fingerprint,

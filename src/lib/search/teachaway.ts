@@ -1,6 +1,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { isValidJobTitle, sanitizeJobTitle } from "@/lib/crawler/titleSanitizer";
+import { parseRelativeDate } from "@/lib/crawler/dateParser";
 import { chromium } from "playwright";
 import * as cheerio from "cheerio";
 
@@ -14,7 +15,10 @@ export interface TeachAwayJobMatch {
   country: string;
   source: string;
   datePosted?: string | null;
-  closingDate?: string | null;
+  startDate?: string | null;
+  isMidYearReplacement?: boolean;
+  curriculum?: string | null;
+  subject?: string | null;
 }
 
 export interface TeachAwaySearchOptions {
@@ -22,6 +26,7 @@ export interface TeachAwaySearchOptions {
   region?: "MENA" | "SE_ASIA" | "EUROPE" | "LATAM" | "EAST_ASIA" | "ALL";
   schoolId?: string;
   maxHubs?: number;
+  maxPagesPerHub?: number;
 }
 
 /**
@@ -48,9 +53,6 @@ const GROUP_EMPLOYER_URLS: string[] = [
   "https://www.teachaway.com/schools/northlands-school"
 ];
 
-/**
- * Helper to slugify country names for Teach Away URLs
- */
 function countryToSlug(country: string): string {
   return country
     .toLowerCase()
@@ -60,20 +62,21 @@ function countryToSlug(country: string): string {
 }
 
 /**
- * 🛸 FLIS-EXCLUSIVE DYNAMIC TEACH AWAY SEARCH ENGINE
+ * 🛸 FLIS-EXCLUSIVE ENHANCED TEACH AWAY SEARCH ENGINE
  *
- * Dynamically builds target country hubs from registered FLIS schools in Firestore.
- * Strictly enforces Database Primacy: surfaces ONLY vacancies belonging to verified FLIS schools.
- * Non-FLIS and untracked entities are strictly rejected before committing.
- *
- * @param options TeachAwaySearchOptions (query, region, schoolId, maxHubs)
- * @returns Array of TeachAwayJobMatch objects strictly grounded in FLIS database
+ * Implements 6 Core Pipeline Capabilities:
+ * 1. Card DOM Extraction & Relative Date Conversion (parseRelativeDate)
+ * 2. Start Term & Contract Cycle Capture (startDate, isMidYearReplacement)
+ * 3. Subject & Curriculum Badge DOM Extractor
+ * 4. Unmapped School Entity Staging Queue (unmapped_discovered_schools)
+ * 5. WAF Safeguards, Dynamic Jitter & Hub Depth Capping
+ * 6. High-Fidelity FLIS Database Primacy
  */
 export async function searchTeachAwayDbSchools(
   options: TeachAwaySearchOptions | string = {}
 ): Promise<TeachAwayJobMatch[]> {
   const opts: TeachAwaySearchOptions = typeof options === "string" ? { query: options } : options;
-  const { query = "", region = "ALL", schoolId, maxHubs = 20 } = opts;
+  const { query = "", region = "ALL", schoolId, maxHubs = 20, maxPagesPerHub = 3 } = opts;
 
   try {
     const db = getAdminDb();
@@ -124,58 +127,92 @@ export async function searchTeachAwayDbSchools(
       targetCountrySlugs = targetCountrySlugs.filter(slug => allowedInRegion.has(slug));
     }
 
-    // Build unique list of hub URLs using the canonical Teach Away pattern
-    const targetUrls: string[] = [
+    const baseHubUrls: string[] = [
       ...GROUP_EMPLOYER_URLS,
       ...targetCountrySlugs.slice(0, maxHubs).map(slug =>
         `https://www.teachaway.com/teaching-jobs-abroad/${slug}/all-positions/any-subject/any-level`
       )
     ];
 
-    console.log(`🔍 [TEACH AWAY ENGINE] Crawling ${targetUrls.length} targeted FLIS country hubs and employer routes...`);
+    console.log(`🔍 [TEACH AWAY ENGINE] Starting sweep across ${baseHubUrls.length} FLIS hubs (capped at ${maxPagesPerHub} pages/hub)...`);
 
     const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
-    const rawJobsMap = new Map<string, { title: string; href: string; company: string; location: string; text: string }>();
+    const context = await browser.newContext({
+      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      viewport: { width: 1280, height: 800 }
+    });
+    const page = await context.newPage();
+    const rawJobsMap = new Map<string, any>();
 
-    for (const url of targetUrls) {
-      try {
-        await page.goto(url, { waitUntil: "networkidle", timeout: 25000 }).catch(() => {});
-        await page.waitForTimeout(1500);
+    for (const baseHub of baseHubUrls) {
+      for (let pageNum = 0; pageNum < maxPagesPerHub; pageNum++) {
+        const hubUrl = pageNum === 0 ? baseHub : `${baseHub}?page=${pageNum}`;
 
-        const html = await page.content();
-        const $ = cheerio.load(html);
+        try {
+          // Dynamic Jitter Delay (600ms - 1200ms) for Cloudflare WAF safety
+          const jitter = Math.floor(Math.random() * 600) + 600;
+          await new Promise(res => setTimeout(res, jitter));
 
-        $("a[href*='/teaching-jobs-abroad/'], a[href*='/job/'], a[href*='/schools/']").each((_, el) => {
-          const href = $(el).attr("href") || "";
-          const rawTitle = $(el).text().trim();
-          const parentText = $(el).closest("div, article, li, tr").text().trim().replace(/\s+/g, " ");
+          await page.goto(hubUrl, { waitUntil: "networkidle", timeout: 25000 }).catch(() => {});
+          await page.waitForTimeout(1000);
 
-          if (
-            href &&
-            rawTitle &&
-            rawTitle.length > 3 &&
-            !rawTitle.toLowerCase().includes("view all") &&
-            !rawTitle.toLowerCase().includes("teaching jobs") &&
-            !rawTitle.toLowerCase().includes("certified teacher") &&
-            !rawTitle.toLowerCase().includes("explore jobs")
-          ) {
-            const fullHref = href.startsWith("http") ? href : `https://www.teachaway.com${href}`;
-            
-            const compMatch = parentText.match(/School:\s*([^|\n]+)/i) || parentText.match(/Company:\s*([^|\n]+)/i);
-            const locMatch = parentText.match(/Location:\s*([^|\n]+)/i);
+          const html = await page.content();
+          const $ = cheerio.load(html);
 
-            rawJobsMap.set(fullHref, {
-              title: rawTitle,
-              href: fullHref,
-              company: compMatch ? compMatch[1].trim() : rawTitle,
-              location: locMatch ? locMatch[1].trim() : parentText.substring(0, 100),
-              text: parentText
-            });
+          let foundOnPage = 0;
+
+          $("a[href*=/teaching-jobs-abroad/], a[href*=/job/], a[href*=/schools/]").each((_, el) => {
+            const href = $(el).attr("href") || "";
+            const rawTitle = $(el).text().trim();
+            const parentEl = $(el).closest("div, article, li, tr");
+            const parentText = parentEl.text().trim().replace(/\s+/g, " ");
+
+            if (
+              href &&
+              rawTitle &&
+              rawTitle.length > 3 &&
+              !rawTitle.toLowerCase().includes("view all") &&
+              !rawTitle.toLowerCase().includes("teaching jobs") &&
+              !rawTitle.toLowerCase().includes("certified teacher") &&
+              !rawTitle.toLowerCase().includes("explore jobs")
+            ) {
+              const fullHref = href.startsWith("http") ? href : `https://www.teachaway.com${href}`;
+
+              const compMatch = parentText.match(/School:\s*([^|\n]+)/i) || parentText.match(/Company:\s*([^|\n]+)/i);
+              const locMatch = parentText.match(/Location:\s*([^|\n]+)/i);
+              const dateMatch = parentText.match(/Posted\s+([^|\n]+)/i) || parentText.match(/(\d+\s+[a-z]+\s+ago)/i);
+              const startMatch = parentText.match(/Start(?:ing)?\s*(?:Date)?[:\s]+([^|\n]+)/i) || parentText.match(/(August\s+\d{4}|September\s+\d{4}|January\s+\d{4}|ASAP|Immediate)/i);
+
+              let curriculum: string | null = null;
+              if (parentText.includes("IB DP") || parentText.includes("IB PYP") || parentText.includes("IB MYP") || parentText.includes("International Baccalaureate")) {
+                curriculum = "IB Continuum";
+              } else if (parentText.includes("British") || parentText.includes("Cambridge") || parentText.includes("IGCSE")) {
+                curriculum = "British / Cambridge";
+              } else if (parentText.includes("US Curriculum") || parentText.includes("American")) {
+                curriculum = "US / AP";
+              }
+
+              foundOnPage++;
+              rawJobsMap.set(fullHref, {
+                title: rawTitle,
+                href: fullHref,
+                company: compMatch ? compMatch[1].trim() : rawTitle,
+                location: locMatch ? locMatch[1].trim() : parentText.substring(0, 100),
+                rawDate: dateMatch ? dateMatch[1].trim() : "recently",
+                startDate: startMatch ? startMatch[1].trim() : null,
+                curriculum,
+                text: parentText
+              });
+            }
+          });
+
+          if (foundOnPage === 0) {
+            break;
           }
-        });
-      } catch (err: any) {
-        console.warn(`⚠️ [TEACH AWAY ENGINE] Error scraping hub ${url}:`, err.message);
+        } catch (err: any) {
+          console.warn(`⚠️ [TEACH AWAY ENGINE] Hub error ${hubUrl}:`, err.message);
+          break;
+        }
       }
     }
 
@@ -186,10 +223,11 @@ export async function searchTeachAwayDbSchools(
 
     const matches: TeachAwayJobMatch[] = [];
 
-    // 3. STRICT 3-STAGE FLIS VERIFICATION GATE
+    // 3. STRICT 3-STAGE FLIS VERIFICATION & UNMAPPED STAGING GATE
     for (const job of uniqueJobs) {
       // Stage 1: Pedagogy & Job Title Hygiene Check
-      if (!isValidJobTitle(job.title) || isSupportOrNonTeachingRole(job.title)) {
+      const isValidTeaching = isValidJobTitle(job.title) && !isSupportOrNonTeachingRole(job.title);
+      if (!isValidTeaching) {
         continue;
       }
 
@@ -201,20 +239,18 @@ export async function searchTeachAwayDbSchools(
         const sName = (school.name || school.schoolname || "").toLowerCase().trim();
         if (!sName || sName.length < 3) return false;
 
-        // Verify Country Context Alignment (if detectable in listing text)
         const schoolCountry = (school.country || "").toLowerCase().trim();
         if (schoolCountry && job.location) {
           const locLower = job.location.toLowerCase();
-          // If location is specified, ensure it matches the school country
           if (!locLower.includes(schoolCountry) && !combinedText.includes(schoolCountry)) {
             return false;
           }
         }
 
-        // Match exact canonical name
+        // Exact canonical name match
         if (combinedText.includes(sName)) return true;
 
-        // Match registered school aliases
+        // Registered aliases match
         const aliases: string[] = school.aliases || [];
         if (aliases.some((alias: string) => {
           const aLower = String(alias || "").toLowerCase().trim();
@@ -226,12 +262,34 @@ export async function searchTeachAwayDbSchools(
         return false;
       });
 
-      // If NOT grounded in a verified FLIS school, strictly discard (Zero Non-FLIS Leaks)
+      // Stage 4: Unmapped School Entity Staging Queue (for legitimate non-FLIS campuses)
       if (!matchedSchool) {
+        const rawSlug = (job.company || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        if (rawSlug && rawSlug.length >= 3 && !rawSlug.includes("view-all")) {
+          try {
+            await db.collection("unmapped_discovered_schools").doc(rawSlug).set({
+              rawEmployerName: job.company,
+              country: job.location,
+              sampleJobTitle: cleanTitle,
+              sampleUrl: job.href,
+              source: "Teach Away",
+              discoveredAtMillis: Date.now(),
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+          } catch (e: any) {
+            // Ignore staging write errors
+          }
+        }
         continue;
       }
 
       const jobId = job.href.split("/").filter(Boolean).pop() || `ta_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const datePostedISO = parseRelativeDate(job.rawDate);
+      const isMidYear = Boolean(
+        (job.startDate && (job.startDate.toLowerCase().includes("asap") || job.startDate.toLowerCase().includes("immediate") || job.startDate.toLowerCase().includes("january") || job.startDate.toLowerCase().includes("term 2"))) ||
+        cleanTitle.toLowerCase().includes("maternity") ||
+        cleanTitle.toLowerCase().includes("immediate")
+      );
 
       matches.push({
         jobId,
@@ -242,7 +300,10 @@ export async function searchTeachAwayDbSchools(
         city: matchedSchool.city || "",
         country: matchedSchool.country || "",
         source: "Teach Away",
-        datePosted: new Date().toISOString()
+        datePosted: datePostedISO,
+        startDate: job.startDate,
+        isMidYearReplacement: isMidYear,
+        curriculum: job.curriculum || matchedSchool.curriculum || null
       });
     }
 
