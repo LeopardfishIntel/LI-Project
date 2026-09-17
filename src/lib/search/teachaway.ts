@@ -161,47 +161,42 @@ export async function searchTeachAwayDbSchools(
 
           let foundOnPage = 0;
 
-          $("a[href*=/teaching-jobs-abroad/], a[href*=/job/], a[href*=/schools/]").each((_, el) => {
-            const href = $(el).attr("href") || "";
-            const rawTitle = $(el).text().trim();
-            const parentEl = $(el).closest("div, article, li, tr");
-            const parentText = parentEl.text().trim().replace(/\s+/g, " ");
-
-            if (
-              href &&
-              rawTitle &&
-              rawTitle.length > 3 &&
-              !rawTitle.toLowerCase().includes("view all") &&
-              !rawTitle.toLowerCase().includes("teaching jobs") &&
-              !rawTitle.toLowerCase().includes("certified teacher") &&
-              !rawTitle.toLowerCase().includes("explore jobs")
-            ) {
+          $("div, article, li").each((_, el) => {
+            const cardText = $(el).text().trim().replace(/\s+/g, " ");
+            if (cardText.includes("View Details") || cardText.includes("Quick Apply")) {
+              const a = $(el).find("a[href*=\"/teaching-jobs-abroad/\"]").first();
+              const href = a.attr("href");
+              if (!href) return;
               const fullHref = href.startsWith("http") ? href : `https://www.teachaway.com${href}`;
+              if (fullHref.includes("/all-positions/") || fullHref.includes("/certified-teacher/") || fullHref.includes("/esl-teaching/") || fullHref.includes("/events/")) return;
 
-              const compMatch = parentText.match(/School:\s*([^|\n]+)/i) || parentText.match(/Company:\s*([^|\n]+)/i);
-              const locMatch = parentText.match(/Location:\s*([^|\n]+)/i);
-              const dateMatch = parentText.match(/Posted\s+([^|\n]+)/i) || parentText.match(/(\d+\s+[a-z]+\s+ago)/i);
-              const startMatch = parentText.match(/Start(?:ing)?\s*(?:Date)?[:\s]+([^|\n]+)/i) || parentText.match(/(August\s+\d{4}|September\s+\d{4}|January\s+\d{4}|ASAP|Immediate)/i);
+              let title = a.text().trim();
+              if (!title || title === "View Details" || title === "Quick Apply") {
+                const parts = cardText.split(/(?:View Details|Quick Apply)/)[0].trim().split(" ");
+                title = parts.slice(0, 5).join(" ");
+              }
 
               let curriculum: string | null = null;
-              if (parentText.includes("IB DP") || parentText.includes("IB PYP") || parentText.includes("IB MYP") || parentText.includes("International Baccalaureate")) {
+              if (cardText.includes("IB DP") || cardText.includes("IB PYP") || cardText.includes("IB MYP") || cardText.includes("International Baccalaureate")) {
                 curriculum = "IB Continuum";
-              } else if (parentText.includes("British") || parentText.includes("Cambridge") || parentText.includes("IGCSE")) {
+              } else if (cardText.includes("British") || cardText.includes("Cambridge") || cardText.includes("IGCSE")) {
                 curriculum = "British / Cambridge";
-              } else if (parentText.includes("US Curriculum") || parentText.includes("American")) {
+              } else if (cardText.includes("US Curriculum") || cardText.includes("American")) {
                 curriculum = "US / AP";
               }
 
+              const startMatch = cardText.match(/Start(?:ing)?\s*(?:in\s+)?([A-Za-z]+\s+\d{4})/i) || cardText.match(/(August\s+\d{4}|September\s+\d{4}|January\s+\d{4}|ASAP|Immediate)/i);
+
               foundOnPage++;
               rawJobsMap.set(fullHref, {
-                title: rawTitle,
+                title,
                 href: fullHref,
-                company: compMatch ? compMatch[1].trim() : rawTitle,
-                location: locMatch ? locMatch[1].trim() : parentText.substring(0, 100),
-                rawDate: dateMatch ? dateMatch[1].trim() : "recently",
-                startDate: startMatch ? startMatch[1].trim() : null,
+                company: cardText,
+                location: cardText,
+                rawDate: "recently",
+                startDate: startMatch ? startMatch[1] : null,
                 curriculum,
-                text: parentText
+                text: cardText
               });
             }
           });
