@@ -3255,10 +3255,8 @@
     "ownership": "501(c)(3) Foundation",
     "citysafety": "9.0",
     "lastSync": "2026-05-26T10:41:07.832Z",
-    "scrapedJobsCount": 1,
-    "scrapedJobsList": [
-      "Substitute Teacher (Posted: Recently; Closes: 30 days) - School Web || https://www.isp.cz/careers/faculty-vacancies/substitute-teacher"
-    ],
+    "scrapedJobsCount": 0,
+    "scrapedJobsList": [],
     "revalidationError": null,
     "isRevalidating": true,
     "cachedStability": null,
@@ -3274,7 +3272,8 @@
     "name": "IS Prague",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
-    "updatedAt": "2026-08-30T16:14:23.676Z"
+    "updatedAt": "2026-08-30T16:14:23.676Z",
+    "openJobsCount": 0
   },
   {
     "id": "FLIS0054",
