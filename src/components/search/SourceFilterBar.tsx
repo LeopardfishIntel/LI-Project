@@ -32,6 +32,7 @@ const ALL_SOURCES: SourceMeta[] = [
   { key: "NORD_ANGLIA", label: "NORD ANGLIA", category: "GROUPS" },
   { key: "TAYLORS", label: "TAYLOR'S", category: "GROUPS" },
   { key: "MALVERN", label: "MALVERN", category: "GROUPS" },
+  { key: "UWC", label: "UWC", category: "GROUPS" },
 
   // Direct Links
   { key: "DIRECT", label: "DIRECT", category: "DIRECT" },
@@ -48,9 +49,6 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
 
   // Robust count resolver supporting key aliases (e.g. TEACH_AWAY / TEACHAWAY, NORD_ANGLIA / NORD ANGLIA)
   const getCount = (key: string): number => {
-    if (key === "DIRECT") {
-      return (engineCounts.DIRECT || 0) + (engineCounts.UWC || 0);
-    }
     const spacedKey = key.replace(/_/g, " ");
     const strippedKey = key.replace(/_/g, "");
     return (
