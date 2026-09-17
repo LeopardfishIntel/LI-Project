@@ -24,6 +24,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useRouter } from 'next/navigation';
 import { canonicalCountry, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
+import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -918,7 +919,7 @@ function DecoderContent() {
     const rawList = mergedList
       .filter(job => job.cacheStatus !== 'rejected')   // skip jobs that were never validated
       .filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
-      .filter(job => !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city, activeSchool?.country, job.schoolId, activeSchool?.id));
+      .filter(job => isValidJobTitle(job.title) && !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city, activeSchool?.country, job.schoolId, activeSchool?.id));
 
     // 🎯 SMART DEDUPLICATION (PRESERVING GENUINE EXTRA POSITIONS WHILE STOPPING RE-SCRAPE DUPLICATES)
     const result: any[] = [];
@@ -1032,6 +1033,7 @@ function DecoderContent() {
 
     // 1. Filter out non-job section titles, generic web headings & city/campus mismatches
     const validJobs = rawList.filter((j: any) =>
+      isValidJobTitle(j.title) &&
       !isInvalidNonJobTitle(j.title) &&
       !isCityOrCampusMismatch(j.title, activeSchool?.city, activeSchool?.country, j.schoolId, activeSchool?.id)
     );
