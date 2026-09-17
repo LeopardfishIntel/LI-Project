@@ -798,20 +798,19 @@ export default function FeaturedJobsPage() {
               sourceUrlsMap["TES"] = cacheDoc.applyUrl;
             }
 
-            const isGroupDeepLink = cacheDoc.applyUrl && (
-              applyUrlLower.includes("nordangliaeducation.com") ||
-              applyUrlLower.includes("inspirededu.com") ||
-              applyUrlLower.includes("cognitapeople.csod.com") ||
-              applyUrlLower.includes("taylors.edu.my") ||
-              applyUrlLower.includes("tenby.edu.my") ||
-              applyUrlLower.includes("esf.edu.hk") ||
-              applyUrlLower.includes("gemseducation.com") ||
-              applyUrlLower.includes("globeducate") ||
-              applyUrlLower.includes("internationalschools") ||
-              applyUrlLower.includes("uwc.org")
+            const isMatchingGroupUrl = cacheDoc.applyUrl && (
+              (gUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordangliaeducation.com")) ||
+              (gUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu.com")) ||
+              (gUpper.includes("COGNITA") && applyUrlLower.includes("cognitapeople.csod.com")) ||
+              ((gUpper.includes("TAYLOR") || gUpper.includes("TENBY")) && (applyUrlLower.includes("taylors.edu.my") || applyUrlLower.includes("tenby.edu.my"))) ||
+              (gUpper.includes("ESF") && (applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk"))) ||
+              (gUpper.includes("GEMS") && (applyUrlLower.includes("gemseducation.com") || applyUrlLower.includes("gems.ae"))) ||
+              (gUpper.includes("GLOBE") && applyUrlLower.includes("globeducate")) ||
+              (gUpper.includes("ISP") && applyUrlLower.includes("internationalschools")) ||
+              (gUpper.includes("UWC") && applyUrlLower.includes("uwc.org"))
             ) && !applyUrlLower.endsWith("/careers") && cacheDoc.applyUrl !== "https://careers.nordangliaeducation.com";
 
-            if (isGroupDeepLink) {
+            if (isMatchingGroupUrl) {
               if (!sourcesList.includes(groupLabel)) {
                 sourcesList.unshift(groupLabel);
               }
@@ -964,7 +963,7 @@ export default function FeaturedJobsPage() {
       const hasEsf = jobSrcUpper.includes("ESF") || jobSrcUpper.includes("ENGLISH SCHOOLS FOUNDATION") || sourcesUpper.some((s) => s.includes("ESF") || s.includes("ENGLISH SCHOOLS FOUNDATION")) || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
       const hasGems = jobSrcUpper.includes("GEMS") || sourcesUpper.some((s) => s.includes("GEMS")) || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
       const hasTes = jobSrcUpper === "TES" || sourcesUpper.includes("TES") || applyUrlLower.includes("tes.com");
-      const hasNae = jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia");
+      const hasNae = (jobSrcUpper === "NORD ANGLIA" || sourcesUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordanglia")) && !applyUrlLower.includes("gemseducation") && !applyUrlLower.includes("gems.ae") && !jobSrcUpper.includes("GEMS");
       const hasGrc = (jobSrcUpper === "GRC" || sourcesUpper.includes("GRC") || applyUrlLower.includes("grcfair")) && !applyUrlLower.includes("tes.com");
       const hasInspired = jobSrcUpper.includes("INSPIRED") || sourcesUpper.some((s) => s.includes("INSPIRED")) || applyUrlLower.includes("inspirededu");
       const hasTeachAway = jobSrcUpper.includes("TEACH AWAY") || sourcesUpper.some((s) => s.includes("TEACH AWAY")) || applyUrlLower.includes("teachaway");
