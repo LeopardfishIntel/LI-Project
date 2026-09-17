@@ -282,6 +282,20 @@ export async function runIngestionPipeline(
     await saveScrapedJobs(schoolId, mappedJobs);
   }
 
+  // 🕒 Checkpoint school sweep timestamp in Firestore
+  try {
+    const { getAdminDb } = await import("@/firebase/admin");
+    const db = getAdminDb();
+    if (db) {
+      await db.collection("schools").doc(schoolId).set({
+        lastSweptAtMillis: Date.now(),
+        lastSweptDate: new Date().toISOString()
+      }, { merge: true });
+    }
+  } catch (err: any) {
+    console.warn(`⚠️ [PIPELINE 1] Failed to update lastSweptAtMillis on ${schoolId}:`, err.message);
+  }
+
   const cacheResults = await Promise.all(cacheDocs.map(d => writeToCacheCollection(d)));
 
   // 🧹 Auto-purge stale TES vacancies for this school
