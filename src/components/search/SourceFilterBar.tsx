@@ -218,7 +218,7 @@ export const SourceFilterBar: React.FC<SourceFilterBarProps> = ({
         {/* ADMIN OVERLAY BADGE */}
         {isAdmin && (
           <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold text-amber-400 bg-amber-950/40 border border-amber-500/30 shrink-0">
-            ADMIN: 15/15 PIPELINES
+            ADMIN: ${ALL_SOURCES.length}/${ALL_SOURCES.length} PIPELINES
           </span>
         )}
       </div>
