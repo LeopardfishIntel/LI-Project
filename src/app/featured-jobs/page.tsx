@@ -1924,7 +1924,9 @@ export default function FeaturedJobsPage() {
                                       }
                                       if (!foundUrl) {
                                         const rawUrl = (job as any).applyUrl || job.source_url;
-                                        if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
+                                        if (srcUpper.includes("MALVERN") && (job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                           foundUrl = (job as any).directUrl;
+                                         } else if (srcUpper.includes("NORD ANGLIA") && applyUrlLower.includes("nordanglia") && !isGenericUrl(rawUrl)) {
                                           foundUrl = rawUrl;
                                         } else if (srcUpper.includes("INSPIRED") && applyUrlLower.includes("inspirededu") && !isGenericUrl(rawUrl)) {
                                           foundUrl = rawUrl;

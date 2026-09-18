@@ -11,6 +11,7 @@ import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { sanitizeUrl } from "../urlResolver";
 import { sanitizeJobTitle } from "../titleSanitizer";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
+import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -298,7 +299,7 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
       const title = cleanJobTitle(rawTitle, input.schoolName);
       if (!title || isSupportOrNonTeachingRole(title)) continue;
 
-      records.push({
+      const rec: RawJobRecord = {
         rawTitle: title,
         source: "TES",
         applyUrl: item.href,
@@ -309,7 +310,24 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
         datePosted: deepData.datePosted,
         closingDate: deepData.closingDate,
         status: "approved",
-      });
+      };
+
+      if (isMalvernCampus(input.schoolId, input.schoolName)) {
+        const directUrl = await enrichMalvernDirectUrl(
+          item.href,
+          input.schoolId,
+          null,
+          input.careersPageUrl || input.schoolWebsite
+        );
+        rec.directUrl = directUrl;
+        rec.sources = ['TES', 'Malvern'];
+        rec.sourceUrls = {
+          TES: item.href,
+          Malvern: directUrl,
+        };
+      }
+
+      records.push(rec);
     }
 
     console.log(`🔴 [TES PLAYWRIGHT] Discovered ${records.length} academic vacancy link(s) on ${url}`);
@@ -342,6 +360,26 @@ export async function runTesAdaptor(input: AdaptorInput): Promise<RawJobRecord[]
         for (const posting of jsonLdPostings) {
           const record = jobPostingToRecord(posting, input);
           if (record && record.rawTitle && record.applyUrl && record.applyUrl.includes("tes.com/jobs/vacancy/")) {
+            if (isMalvernCampus(input.schoolId, input.schoolName)) {
+              let outboundUrl: string | null = null;
+              if (posting.directApplyUrl && typeof posting.directApplyUrl === 'string') {
+                outboundUrl = sanitizeUrl(posting.directApplyUrl);
+              } else if (posting.sameAs && typeof posting.sameAs === 'string' && !posting.sameAs.includes('tes.com')) {
+                outboundUrl = sanitizeUrl(posting.sameAs);
+              }
+              const directUrl = await enrichMalvernDirectUrl(
+                record.applyUrl,
+                input.schoolId,
+                outboundUrl,
+                input.careersPageUrl || input.schoolWebsite
+              );
+              record.directUrl = directUrl;
+              record.sources = ['TES', 'Malvern'];
+              record.sourceUrls = {
+                TES: record.applyUrl,
+                Malvern: directUrl,
+              };
+            }
             records.push(record);
           }
         }

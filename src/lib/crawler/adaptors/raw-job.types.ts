@@ -13,6 +13,15 @@ export interface RawJobRecord {
   /** Direct deep-link to the job advert page; null if not discoverable */
   applyUrl: string | null;
 
+  /** Direct school portal / application URL (e.g. for Malvern or direct campus career link) */
+  directUrl?: string | null;
+
+  /** Multi-engine source list, e.g. ['TES', 'Malvern'] */
+  sources?: string[];
+
+  /** Engine source URLs map, e.g. { TES: '...', Malvern: '...' } */
+  sourceUrls?: Record<string, string>;
+
   /** Human-readable source label, e.g. 'TES', 'Schrole', 'School Web', 'Jobs.cz' */
   source: string;
 

@@ -18,6 +18,7 @@ import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
+import { isMalvernCampus } from "../search/malvern";
 import type { RawJobRecord } from "../crawler/adaptors/raw-job.types";
 
 export interface IngestionResult {
@@ -38,6 +39,7 @@ export interface CacheJobDocument {
   group?: string;
   ownership?: string;
   applyUrl: string;
+  directUrl?: string | null;
   datePosted: string | null;
   closingDate: string | null;
   closingDateMillis: number | null;
@@ -78,9 +80,25 @@ function buildCacheDocument(
     : null;
 
   const srcName = record.source || "TES";
-  const srcUrls: Record<string, string> = {};
-  if (record.applyUrl) {
+  const srcUrls: Record<string, string> = { ...(record.sourceUrls || {}) };
+  if (record.applyUrl && !srcUrls[srcName]) {
     srcUrls[srcName] = record.applyUrl;
+  }
+
+  const initialSources = record.sources && record.sources.length > 0
+    ? [...record.sources]
+    : [srcName];
+
+  let directUrl = record.directUrl || null;
+  let groupName = (record as any).group || undefined;
+  if (isMalvernCampus(record.schoolId, record.schoolName)) {
+    groupName = 'Malvern College';
+    if (!initialSources.includes('Malvern')) {
+      initialSources.push('Malvern');
+    }
+    if (directUrl && !srcUrls['Malvern']) {
+      srcUrls['Malvern'] = directUrl;
+    }
   }
 
   // Multi-campus & St. Christopher's Bahrain canonical master re-parenting
@@ -115,8 +133,10 @@ function buildCacheDocument(
     id: fingerprint,
     title: translateJobTitleToEnglish(record.rawTitle),
     source: srcName,
-    sources: [srcName],
+    sources: initialSources,
     sourceUrls: srcUrls,
+    directUrl,
+    group: groupName,
     applyUrl: record.applyUrl || "",
     datePosted: record.datePosted ? String(record.datePosted) : null,
     closingDate: closingDateISO,
@@ -161,10 +181,13 @@ async function writeToCacheCollection(doc: CacheJobDocument): Promise<{ isNew: b
         const mergedUrls = { ...(exData.sourceUrls || {}), ...(doc.sourceUrls || {}) };
         if (exData.applyUrl) mergedUrls[exData.source || "Official Source"] = exData.applyUrl;
         if (doc.applyUrl) mergedUrls[doc.source] = doc.applyUrl;
+        if (doc.directUrl) mergedUrls["Malvern"] = doc.directUrl;
 
         await existingDoc.ref.update({
           sources: mergedSources,
           sourceUrls: mergedUrls,
+          directUrl: doc.directUrl || exData.directUrl || null,
+          group: doc.group || exData.group || null,
           updatedAtMillis: Date.now()
         });
         console.log(`🛸 [PIPELINE 1] Merged dual listing sources for "${doc.title}":`, mergedSources);
