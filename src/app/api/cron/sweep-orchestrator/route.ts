@@ -5,7 +5,6 @@ import { isEngineCoolingDown } from "@/lib/crawler/safetyEngine";
 import { searchIspDbSchools } from "@/lib/search/isp";
 import { searchGlobeducateDbSchools } from "@/lib/search/globeducate";
 import { searchUwcDbSchools } from "@/lib/search/uwc";
-import { searchMalvernDbSchools } from "@/lib/search/malvern";
 import { searchCognitaDbSchools } from "@/lib/search/cognita";
 import { searchInspiredDbSchools } from "@/lib/search/inspired";
 import { searchTeachAwayDbSchools } from "@/lib/search/teachaway";
@@ -38,7 +37,6 @@ export async function GET(request: Request) {
       ISP: searchIspDbSchools,
       GLOBEDUCATE: searchGlobeducateDbSchools,
       UWC: searchUwcDbSchools,
-      MALVERN: searchMalvernDbSchools,
       COGNITA: searchCognitaDbSchools,
       INSPIRED: searchInspiredDbSchools,
       TEACH_AWAY: searchTeachAwayDbSchools,

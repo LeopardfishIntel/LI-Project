@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef, ChangeEvent } from 'react';
-import { jsPDF } from 'jspdf';
 import {
   Lock, Banknote, Loader2, Zap, ShoppingCart,
   Home, Clock, Wallet, Car, Ship, CalendarDays,
@@ -399,6 +398,7 @@ export default function PreparePage() {
   }, [budget.total, arrivalAllowance]);
 
   const downloadIkeaPdf = async () => {
+    const { jsPDF } = await import('jspdf');
     const doc = new jsPDF();
 
     // Header
@@ -467,6 +467,7 @@ export default function PreparePage() {
     doc.save(`Leopardfish_${titlePrefix}_${selectedCountry.replace(/\s+/g, '_')}.pdf`);
   };
   const downloadBriefingPdf = async () => {
+    const { jsPDF } = await import('jspdf');
     const doc = new jsPDF();
     const primary = [20, 20, 20];
     const textMain = [40, 40, 40];

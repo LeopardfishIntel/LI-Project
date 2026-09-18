@@ -1,6 +1,7 @@
 import { getAdminDb } from "@/firebase/admin";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
 import { isValidJobTitle, sanitizeJobTitle } from "@/lib/crawler/titleSanitizer";
+import { matchSchoolEntity } from "@/lib/crawler/entityMatcher";
 import { parseRelativeDate } from "@/lib/crawler/dateParser";
 import { chromium } from "playwright";
 import * as cheerio from "cheerio";
@@ -229,33 +230,19 @@ export async function searchTeachAwayDbSchools(
       const cleanTitle = sanitizeJobTitle(job.title);
       const combinedText = `${cleanTitle} ${job.company} ${job.location} ${job.text}`.toLowerCase();
 
-      // Stage 2 & 3: Strict FLIS School Match & Geographical Alignment
-      const matchedSchool = dbSchools.find((school: any) => {
-        const sName = (school.name || school.schoolname || "").toLowerCase().trim();
-        if (!sName || sName.length < 3) return false;
-
-        const schoolCountry = (school.country || "").toLowerCase().trim();
-        if (schoolCountry && job.location) {
-          const locLower = job.location.toLowerCase();
-          if (!locLower.includes(schoolCountry) && !combinedText.includes(schoolCountry)) {
-            return false;
-          }
+      // Stage 2 & 3: Multi-Factor Entity Matcher with FLIS Grounding
+      let matchedSchool: any = null;
+      for (const school of dbSchools) {
+        const matchRes = matchSchoolEntity(school, {
+          candidateText: combinedText,
+          country: job.location,
+          sourceUrl: job.href
+        });
+        if (matchRes.isMatch) {
+          matchedSchool = school;
+          break;
         }
-
-        // Exact canonical name match
-        if (combinedText.includes(sName)) return true;
-
-        // Registered aliases match
-        const aliases: string[] = school.aliases || [];
-        if (aliases.some((alias: string) => {
-          const aLower = String(alias || "").toLowerCase().trim();
-          return aLower.length >= 3 && combinedText.includes(aLower);
-        })) {
-          return true;
-        }
-
-        return false;
-      });
+      }
 
       // Stage 4: Unmapped School Entity Staging Queue (for legitimate non-FLIS campuses)
       if (!matchedSchool) {

@@ -12,7 +12,6 @@ import {
   HeartPulse, Laptop, Building, Sliders, BarChart3,
   Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2, Plane
 } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc, query, where } from 'firebase/firestore';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
@@ -2801,6 +2800,32 @@ function DecoderContent() {
                         <span className="text-[11px] font-black text-slate-400 uppercase italic tracking-widest leading-normal">Total outgoings</span>
                         <span className="text-[18px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
+
+                      {/* ⚠️ FAMILY +3 CONTRACT ADVISORY */}
+                      {(settings.familyStatus.includes('+3') || settings.familyStatus.toLowerCase().includes('3')) && (
+                        <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-sm space-y-1 text-left animate-in fade-in slide-in-from-top-1 duration-200">
+                          <div className="flex items-center gap-1.5 text-amber-400">
+                            <AlertTriangle className="size-3.5 shrink-0 text-amber-400" />
+                            <span className="text-[10px] font-black uppercase tracking-wider">Family +3 Contract Advisory</span>
+                          </div>
+                          <p className="text-[10.5px] text-slate-300 leading-relaxed font-medium">
+                            Tuition seats for a 3rd child may not be fully covered by the employer, and provided staff housing is often restricted to 2–3 bedroom configurations. Please check tuition subsidies and housing allocations directly with the school.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* ℹ️ FAMILY +1 & +2 TUITION COVERAGE ADVISORY */}
+                      {(settings.familyStatus.includes('+1') || settings.familyStatus.includes('+2') || settings.familyStatus === 'Family +1' || settings.familyStatus === 'Family +2') && (
+                        <div className="mt-3 p-3 bg-sky-500/10 border border-sky-500/30 rounded-sm space-y-1 text-left animate-in fade-in slide-in-from-top-1 duration-200">
+                          <div className="flex items-center gap-1.5 text-sky-400">
+                            <Info className="size-3.5 shrink-0 text-sky-400" />
+                            <span className="text-[10px] font-black uppercase tracking-wider">Dependent Tuition Advisory</span>
+                          </div>
+                          <p className="text-[10.5px] text-slate-300 leading-relaxed font-medium">
+                            Tuition may not be 100% fully covered (many schools provide partial subsidies or require registration / capital levy contributions). Please check exact dependent tuition terms directly with the school.
+                          </p>
+                        </div>
+                      )}
 
 
                     </div>

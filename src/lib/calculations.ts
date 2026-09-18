@@ -102,6 +102,9 @@ export function isHousingProvided(housingProvision?: string, intelHousingProvide
     lower.includes('on-campus housing') ||
     lower.includes('free housing') ||
     lower.includes('on campus housing') ||
+    lower.includes('furnished housing') ||
+    lower.includes('furnished accommodation') ||
+    lower.includes('housing allowance') ||
     lower.startsWith('on-campus') ||
     lower.startsWith('on campus')
   );
@@ -184,6 +187,7 @@ export interface FamilyProfileInfo {
 
 export const FAMILY_PROFILES: FamilyProfileInfo[] = [
   { value: "single", label: "Single", personCount: 1, childrenCount: 0, scalar: 1.0, ikeaScalar: 1.0, pKey: "single" },
+  { value: "couple", label: "Couple", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
   { value: "married-sole", label: "Married (sole earner)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
   { value: "married-dual", label: "Married (dual income)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
   { value: "family-1", label: "Family +1", personCount: 3, childrenCount: 1, scalar: 2.3, ikeaScalar: 1.85, pKey: "family1Child" },
@@ -200,9 +204,10 @@ export function getProfileByLabel(label: string): FamilyProfileInfo {
     (normalizedLabel.includes("family") && normalizedLabel.includes("1") && p.value === "family-1") ||
     (normalizedLabel.includes("family") && normalizedLabel.includes("2") && p.value === "family-2") ||
     (normalizedLabel.includes("family") && (normalizedLabel.includes("3") || normalizedLabel.includes("more") || normalizedLabel.includes("+3")) && p.value === "family-3") ||
-    (normalizedLabel.includes("sole") && p.value === "married-sole") ||
     (normalizedLabel.includes("dual") && p.value === "married-dual") ||
-    ((normalizedLabel.includes("couple") || normalizedLabel.includes("married") || normalizedLabel.includes("husband") || normalizedLabel.includes("wife")) && p.value === "married-sole")
+    (normalizedLabel.includes("sole") && p.value === "married-sole") ||
+    (normalizedLabel.includes("couple") && p.value === "couple") ||
+    ((normalizedLabel.includes("married") || normalizedLabel.includes("husband") || normalizedLabel.includes("wife")) && p.value === "couple")
   );
   
   return profile || FAMILY_PROFILES[0];
@@ -566,6 +571,48 @@ export function calculateOutflows(
 /**
  * 🧮 LOCAL SAVINGS SCORE
  */
+/**
+ * 🛡️ MENA EXCHANGE RATE GUARDRAIL
+ * Converts local high-value MENA currencies (OMR, KWD, BHD, JOD) to USD if entered as unscaled local values (< 2,000 USD threshold).
+ * Examples:
+ * - 1,550 OMR in Oman -> ~4,017 USD
+ * - 1,200 KWD in Kuwait -> ~3,908 USD
+ * - 1,400 BHD in Bahrain -> ~3,704 USD
+ * - 1,500 JOD in Jordan -> ~2,117 USD
+ */
+export function normalizeMenaSalaryUSD(salary: number | string, countryName?: string): number {
+  const num = typeof salary === 'number' ? salary : parseFloat(String(salary || '').replace(/[^0-9.]/g, '')) || 0;
+  if (num <= 0) return num;
+
+  const c = canonicalCountry(countryName || '');
+  
+  // High-value MENA currencies where standard monthly salaries are typically 1,000 - 2,500 local units
+  if (num < 2000) {
+    if (c.includes('oman') || c.includes('muscat')) {
+      const usdRate = RATES['USD'] || 1.27;
+      const omrRate = RATES['OMR'] || 0.49;
+      return Math.round((num / omrRate) * usdRate);
+    }
+    if (c.includes('kuwait')) {
+      const usdRate = RATES['USD'] || 1.27;
+      const kwdRate = RATES['KWD'] || 0.39;
+      return Math.round((num / kwdRate) * usdRate);
+    }
+    if (c.includes('bahrain')) {
+      const usdRate = RATES['USD'] || 1.27;
+      const bhdRate = RATES['BHD'] || 0.48;
+      return Math.round((num / bhdRate) * usdRate);
+    }
+    if (c.includes('jordan') || c.includes('amman')) {
+      const usdRate = RATES['USD'] || 1.27;
+      const jodRate = RATES['JOD'] || 0.90;
+      return Math.round((num / jodRate) * usdRate);
+    }
+  }
+
+  return num;
+}
+
 export function calculateSurplus(
   localNetUSD: number,
   familyStatusOrAdults: string | number,
@@ -601,10 +648,7 @@ export function calculateSurplus(
 
   const totalOut = calculateOutflows(adults, children, cityData, isHousingProvided, schoolLoc || cityData);
   const rawSurplus = localNetUSD - totalOut;
-  const isFamily = children > 0;
-  const maxCap = isFamily ? 4400 : 5700;
-  
-  return Math.min(rawSurplus, maxCap);
+  return rawSurplus;
 }
 
 
@@ -614,11 +658,20 @@ export function calculateSchoolSavingsForStatus(
   colRecord: any,
   housingProvision: string = "",
   country: string = "",
-  paidInUSD?: boolean
+  paidInUSD?: boolean,
+  partnerSalary?: number
 ): number {
+  const normalizedSalary = normalizeMenaSalaryUSD(salaryNum, country);
   const statusLower = (familyStatus || "").toLowerCase();
   const isDual = statusLower.includes("dual");
-  const effectiveSalary = isDual ? Math.round(salaryNum * 1.85) : salaryNum;
+  let effectiveSalary = normalizedSalary;
+  if (partnerSalary !== undefined && partnerSalary !== null && !isNaN(Number(partnerSalary))) {
+    effectiveSalary = salaryNum + Number(partnerSalary);
+  } else if (isDual) {
+    effectiveSalary = Math.round(salaryNum * 1.85);
+  } else {
+    effectiveSalary = salaryNum;
+  }
   
   const isProv = isHousingProvided(housingProvision);
 

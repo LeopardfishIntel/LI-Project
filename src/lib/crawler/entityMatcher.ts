@@ -277,8 +277,12 @@ export function matchSchoolEntity(
     };
   }
 
-  // 3. Alias Array match
-  const aliases = school.aliases || [];
+  // 3. Alias & Group Array match
+  const aliases = Array.from(new Set([
+    ...(school.aliases || []),
+    ...((school as any).group ? [(school as any).group] : []),
+    ...((school as any).schoolGroup ? [(school as any).schoolGroup] : []),
+  ]));
   for (const alias of aliases) {
     const aLower = alias.toLowerCase().trim();
     if (candidateLower === aLower || (aLower.length >= 6 && candidateLower.includes(aLower))) {

@@ -19,6 +19,8 @@ import { doc, updateDoc } from 'firebase/firestore';
 import type { School, LocationCostOfLiving } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   MapPin,
   Building,
@@ -48,12 +50,63 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
-import { calculateSurplus, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
+import { calculateSurplus, normalizeMenaSalaryUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
+import dynamic from 'next/dynamic';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+
+const SchoolBudgetChart = dynamic(
+  () => import('recharts').then((recharts) => {
+    return function ChartComponent({ expenses, surplus, costsColor }: { expenses: number; surplus: number; costsColor: string }) {
+      const { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } = recharts;
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={[
+                { name: 'Monthly Costs', value: expenses },
+                { name: 'Surplus Potential', value: Math.max(0, surplus) }
+              ]}
+              cx="50%"
+              cy="70%"
+              startAngle={180}
+              endAngle={0}
+              innerRadius={65}
+              outerRadius={85}
+              paddingAngle={2}
+              dataKey="value"
+              stroke="none"
+              label={({ percent }: any) => `${(percent * 100).toFixed(0)}%`}
+              labelLine={false}
+            >
+              <Cell fill={costsColor} />
+              <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#020617',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '2px',
+                fontSize: '10px',
+                color: '#fff'
+              }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      );
+    };
+  }),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full flex items-center justify-center">
+        <span className="text-[10px] font-mono text-slate-500 tracking-widest animate-pulse">PREPARING CHART DATA...</span>
+      </div>
+    )
+  }
+);
 
 const ACRONYMS: Record<string, string> = {
   'CIS': 'Council of International Schools',
@@ -155,7 +208,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
   // 💰 Aggressive Finance Mapping declared at the very top to prevent Temporal Dead Zone ReferenceErrors
   const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || '—';
-  const salaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
+  const rawSalaryNum = typeof rawFinance === 'number' ? rawFinance : parseFloat(String(rawFinance).replace(/[^0-9.]/g, '')) || 3000;
+  const salaryNum = normalizeMenaSalaryUSD(rawSalaryNum, school?.country || (school as any)?.location);
 
   const [briefing, setBriefing] = React.useState<{ briefing: string, currentHead: string, ownership: string, generatedAt?: string } | null>(null);
   const [isBriefingLoading, setIsBriefingLoading] = React.useState(false);
@@ -167,6 +221,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [mounted, setMounted] = React.useState(false);
   const [isDossierInitialized, setIsDossierInitialized] = React.useState(false);
   const [selectedFamilyStatus, setSelectedFamilyStatus] = React.useState<'single' | 'couple' | 'family'>('single');
+  const [partnerSalary, setPartnerSalary] = React.useState<string | number>('');
 
   // Synchronize initial selection on mount / change if not initialized yet
   React.useEffect(() => {
@@ -202,6 +257,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
       const savedProfile = localStorage.getItem('lf_profile');
       if (savedProfile) {
         const parsed = JSON.parse(savedProfile);
+        if (parsed.partnerSalary !== undefined) {
+          setPartnerSalary(parsed.partnerSalary);
+        }
         if (parsed.qualifications && Array.isArray(parsed.qualifications) && parsed.qualifications.length > 0) {
           setSelectedQualification(parsed.qualifications[0]);
         } else if (typeof parsed.qualifications === 'string') {
@@ -316,7 +374,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     async function fetchBriefing() {
       if (!school || !isDossierInitialized) return;
 
-      const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}_${adults}_${children}`;
+      const partnerSalaryNum = parseFloat(String(partnerSalary)) || 0;
+      const cacheKey = `${activeCurrencyCode}_${selectedFamilyStatus}_${adults}_${children}_${partnerSalaryNum}`;
 
       // 🛡️ 1. Cache Hit Gate: Attempt immediate load
       const currentCache = school.cachedBriefings?.[cacheKey] || 
@@ -382,7 +441,8 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
         
         const singleTotalExpenses = singleRent + singleUtilities + singleInternet + singleMobile + singleFood + singleDining + singleTransport + singleMedical;
 
-        const monthlyTotal = salaryNum * 1.18;
+        const partnerSalaryNum = parseFloat(String(partnerSalary)) || 0;
+        const monthlyTotal = (salaryNum * 1.18) + partnerSalaryNum;
         const surplus = calculateSurplus(monthlyTotal, adults, children, locationData, isHousingProvidedVal, school);
         const expenses = Math.max(0, monthlyTotal - surplus);
 
@@ -423,7 +483,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
           userProfile: {
             age: 30,
             familyStatus: selectedFamilyStatus,
-            spouseWorking: selectedFamilyStatus === 'couple',
+            spouseWorking: selectedFamilyStatus === 'couple' && (parseFloat(String(partnerSalary)) > 0),
             children: children
           },
           country: school.country,
@@ -488,7 +548,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     }
     
     fetchBriefing();
-  }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus, adults, children]);
+  }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus, adults, children, partnerSalary]);
 
   if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton />;
   if (!school) notFound();
@@ -621,7 +681,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
                           { id: 'single', name: 'Single Teacher', desc: '1 Adult, 0 Dependents', icon: UserIcon },
-                          { id: 'couple', name: 'Dual Income', desc: '2 Adults, 0 Dependents', icon: Users },
+                          { id: 'couple', name: 'Couple / Married', desc: '2 Adults, 0 Dependents', icon: Users },
                           { id: 'family', name: 'Family Profile', desc: 'Active Dependents', icon: GraduationCap }
                         ].map((profile) => {
                           const IconComp = profile.icon;
@@ -858,6 +918,38 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                     setChildren={setChildren}
                     variant="ghost"
                   />
+                  {adults >= 2 && (
+                    <div className="mt-4 pt-3 border-t border-white/10 space-y-1.5">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
+                          <Users className="size-3 text-primary" /> Partner Monthly Salary (Optional)
+                        </label>
+                        {partnerSalary !== '' && (
+                          <button 
+                            type="button"
+                            onClick={() => setPartnerSalary('')}
+                            className="text-[9px] text-slate-500 hover:text-slate-300 underline cursor-pointer"
+                          >
+                            Reset to zsh
+                          </button>
+                        )}
+                      </div>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="100"
+                        placeholder="Enter partner USD earnings or leave zsh for sole earner"
+                        value={partnerSalary}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPartnerSalary(e.target.value)}
+                        className="bg-black/40 border-white/10 text-white text-xs h-8 placeholder:text-slate-600 focus:border-primary"
+                      />
+                      <p className="text-[9px] text-muted-foreground italic">
+                        {parseFloat(String(partnerSalary)) > 0
+                          ? `Dual Income: +${formatCurrency(convertUSD(parseFloat(String(partnerSalary))), activeCurrencyCode)} partner earnings included.`
+                          : 'Sole Earner: Assuming partner is non-earning or on career break.'}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* SECTION 2: SCHOOL MEDIAN */}
@@ -870,12 +962,22 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                     <TrendingUp className="size-5 text-primary opacity-50" />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <p className="text-4xl font-black text-white italic tracking-tighter">
-                      {formatCurrency(convertUSD(salaryNum * 1.18), activeCurrencyCode)}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground mt-2 w-full italic leading-relaxed">
-                      Projected mid-career baseline for this school.
-                    </p>
+                    {(() => {
+                      const pSal = parseFloat(String(partnerSalary)) || 0;
+                      const totalIncome = (salaryNum * 1.18) + pSal;
+                      return (
+                        <>
+                          <p className="text-4xl font-black text-white italic tracking-tighter">
+                            {formatCurrency(convertUSD(totalIncome), activeCurrencyCode)}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground mt-2 w-full italic leading-relaxed">
+                            {pSal > 0
+                              ? `Combined Household Gross (${formatCurrency(convertUSD(salaryNum * 1.18), activeCurrencyCode)} teacher + ${formatCurrency(convertUSD(pSal), activeCurrencyCode)} partner).`
+                              : 'Projected mid-career baseline for this school.'}
+                          </p>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -889,19 +991,20 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
 
                   {(() => {
                     // 🛰️ TACTICAL SITUATIONAL MAPPING
+                    const pSal = parseFloat(String(partnerSalary)) || 0;
                     let situation = 'single';
                     let label = 'Single Teacher';
                     if (adults >= 2 && children === 0) {
                       situation = 'couple';
-                      label = 'Dual Income Couple';
+                      label = pSal > 0 ? 'Dual Income Couple' : 'Married Couple (Sole Earner)';
                     } else if (children > 0) {
                       situation = 'family-2';
-                      label = adults >= 2 ? 'Family (2 Adults + Kids)' : 'Family (Single Parent)';
+                      label = adults >= 2 ? (pSal > 0 ? 'Family (Dual Income + Kids)' : 'Family (Sole Earner + Kids)') : 'Family (Single Parent)';
                     }
 
                     const isHousingProvidedVal = isHousingProvided(school.housingprovision, school.intel?.housing?.provided);
-                    const surplus = calculateSurplus(salaryNum * 1.18, adults, children, locationData, isHousingProvidedVal, school);
-                    const monthlyTotal = salaryNum * 1.18;
+                    const monthlyTotal = (salaryNum * 1.18) + pSal;
+                    const surplus = calculateSurplus(monthlyTotal, adults, children, locationData, isHousingProvidedVal, school);
                     const expenses = Math.max(0, monthlyTotal - surplus);
                     const isLoss = surplus < 0;
                     const costsColor = isLoss ? '#b91c1c' : '#1e293b';
@@ -916,39 +1019,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                         <div className="space-y-6">
                           <div className="relative flex flex-col items-center">
                             <div className="h-44 w-full -mb-16">
-                              {mounted ? (
-                                <ResponsiveContainer width="100%" height="100%">
-                                  <PieChart>
-                                    <Pie
-                                      data={[
-                                        { name: 'Monthly Costs', value: expenses },
-                                        { name: 'Surplus Potential', value: Math.max(0, surplus) }
-                                      ]}
-                                      cx="50%"
-                                      cy="70%"
-                                      startAngle={180}
-                                      endAngle={0}
-                                      innerRadius={65}
-                                      outerRadius={85}
-                                      paddingAngle={2}
-                                      dataKey="value"
-                                      stroke="none"
-                                      label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                                      labelLine={false}
-                                    >
-                                      <Cell fill={costsColor} />
-                                      <Cell fill="#10B981" className="drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                                    </Pie>
-                                    <Tooltip
-                                      contentStyle={{ backgroundColor: '#020617', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px', fontSize: '10px', color: '#fff' }}
-                                    />
-                                  </PieChart>
-                                </ResponsiveContainer>
-                              ) : (
-                                <div className="h-full w-full flex items-center justify-center">
-                                  <span className="text-[10px] font-mono text-slate-500 tracking-widest animate-pulse">PREPARING CHART DATA...</span>
-                                </div>
-                              )}
+                              <SchoolBudgetChart expenses={expenses} surplus={surplus} costsColor={costsColor} />
                             </div>
                             <div className="text-center relative z-10 mt-6 space-y-0">
                               <p className={cn(

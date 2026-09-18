@@ -21,7 +21,7 @@
  */
 
 import type { CacheJobDocument } from './pipeline1-ingestion';
-import { calculateSchoolSavingsForStatus } from '../calculations';
+import { calculateSchoolSavingsForStatus, normalizeMenaSalaryUSD } from '../calculations';
 
 // ─── Savings Potential Calculation ────────────────────────────────────────────
 
@@ -129,6 +129,8 @@ function computeSavingsByStatus(
       paidInUSD
     );
   });
+  map["Couple"] = map["Married (sole earner)"];
+  map["Couple (Dual Income)"] = map["Married (dual income)"];
 
   return map;
 }
@@ -138,10 +140,11 @@ function computeSavingsPotentialSingle(
   colRecord: any | null
 ): number {
   const country = (schoolData?.country || '').toLowerCase();
-  const baseSalary =
+  const rawSalary =
     parseFloat(String(schoolData?.salaryRange || schoolData?.salary || schoolData?.netbase || '').replace(/[^0-9.]/g, '')) ||
     REGIONAL_SALARY_FALLBACK[country] ||
     3000;
+  const baseSalary = normalizeMenaSalaryUSD(rawSalary, country);
 
   if (!colRecord) return Math.max(0, Math.round(baseSalary));
 

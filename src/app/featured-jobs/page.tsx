@@ -79,7 +79,7 @@ import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } fro
 import { useTeacher } from '@/firebase/firestore/use-teacher';
 import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
-import { canonicalCountry, calculateSchoolSavingsForStatus, findCostOfLiving } from '@/lib/calculations';
+import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryUSD, findCostOfLiving } from '@/lib/calculations';
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 
 const cleanSchoolName = (raw: string): string => {
@@ -743,7 +743,8 @@ export default function FeaturedJobsPage() {
         let savingsPotential = cacheDoc.savingsByStatus?.[familyStatus] ?? cacheDoc.savingsByStatus?.[statusKey];
         if (savingsPotential === undefined) {
           const school = schoolsMap[cacheDoc.schoolId];
-          const salaryNum = parseFloat(String(school?.salaryRange || school?.salary || cacheDoc.salaryRange || "").replace(/[^0-9.]/g, "")) || 3500;
+          const rawSalary = parseFloat(String(school?.salaryRange || school?.salary || cacheDoc.salaryRange || "").replace(/[^0-9.]/g, "")) || 3500;
+          const salaryNum = normalizeMenaSalaryUSD(rawSalary, cacheDoc.country || school?.country);
           const colRecord = findCostOfLiving(cacheDoc.city || school?.city, cacheDoc.country || school?.country, colData || []);
           const housingProvision = school?.housingprovision || cacheDoc.housingProvision || "";
           savingsPotential = calculateSchoolSavingsForStatus(
@@ -752,7 +753,8 @@ export default function FeaturedJobsPage() {
             colRecord,
             housingProvision,
             cacheDoc.country || school?.country || "",
-            cacheDoc.paidInUSD
+            cacheDoc.paidInUSD,
+            (teacherProfile as any)?.partnerSalary
           );
         }
 
