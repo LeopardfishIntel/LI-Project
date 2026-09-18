@@ -81,6 +81,7 @@ import { collection, doc, updateDoc, collectionGroup, query, where } from 'fireb
 import { cn } from '@/lib/utils';
 import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryUSD, findCostOfLiving } from '@/lib/calculations';
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
+import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 
 const cleanSchoolName = (raw: string): string => {
   if (!raw) return "";
@@ -112,7 +113,7 @@ const getGroupPortalUrl = (groupName: string): string => {
   if (gUpper.includes("NORD ANGLIA")) return "https://careers.nordangliaeducation.com";
   if (gUpper.includes("TEACH AWAY")) return "https://www.teachaway.com/teaching-jobs-abroad";
   if (gUpper.includes("ALDAR")) return "https://www.aldareducation.com";
-  if (gUpper.includes("TAALEEM")) return "https://taaleem.ae";
+  if (gUpper.includes("TAALEEM")) return "https://careers.taaleem.ae/en/job-search-results/";
   if (gUpper.includes("QATAR FOUNDATION")) return "https://qf.org.qa";
   if (gUpper.includes("BLOOM")) return "https://bloomeducation.com";
   if (gUpper.includes("UWC") || gUpper.includes("UNITED WORLD COLLEGE")) return "https://uwc.org/careers/vacancies/";
@@ -684,7 +685,8 @@ export default function FeaturedJobsPage() {
         const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
         const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
         const isGuardian = sourceUpper.includes('GUARDIAN') || applyUrlLower.includes('theguardian.com') || applyUrlLower.includes('guardianjobs');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian) return;
+        const isTaaleem = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, (cacheDoc as any).group || (cacheDoc as any).ownership) || sourceUpper.includes('TAALEEM') || applyUrlLower.includes('taaleem.ae');
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem) return;
         // Status guard (janitor may not have run yet for very stale docs)
         const rawStatus = String(cacheDoc.status || '').toUpperCase();
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
@@ -730,6 +732,10 @@ export default function FeaturedJobsPage() {
               if (newSrc.toUpperCase().includes("NORD ANGLIA")) {
                 existing.sourceUrls["Nord Anglia"] = cacheDoc.applyUrl;
                 existing.sourceUrls["NORD ANGLIA"] = cacheDoc.applyUrl;
+              }
+              if (newSrc.toUpperCase().includes("TAALEEM")) {
+                existing.sourceUrls["Taaleem"] = cacheDoc.applyUrl;
+                existing.sourceUrls["TAALEEM"] = cacheDoc.applyUrl;
               }
             }
           }
@@ -777,11 +783,14 @@ export default function FeaturedJobsPage() {
         }
 
         // System-Wide Dual-Portal Auto-Enrichment across all Search Engines
-        if (schoolGroup) {
-          const groupPortalUrl = getGroupPortalUrl(schoolGroup);
-          if (groupPortalUrl) {
-            let groupLabel = schoolGroup;
-            const gUpper = schoolGroup.toUpperCase();
+        const isTaaleemJob = isTaaleemSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup) || (schoolGroup || "").toUpperCase().includes("TAALEEM") || (cacheDoc.source || "").toUpperCase().includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
+
+        if (schoolGroup || isTaaleemJob) {
+          const effectiveGroup = schoolGroup || (isTaaleemJob ? "Taaleem" : "");
+          const groupPortalUrl = getGroupPortalUrl(effectiveGroup);
+          if (groupPortalUrl || isTaaleemJob) {
+            let groupLabel = effectiveGroup;
+            const gUpper = effectiveGroup.toUpperCase();
             if (gUpper.includes("INSPIRED")) groupLabel = "Inspired Education";
             else if (gUpper.includes("COGNITA")) groupLabel = "Cognita";
             else if (gUpper.includes("NORD ANGLIA")) groupLabel = "Nord Anglia";
@@ -793,10 +802,23 @@ export default function FeaturedJobsPage() {
             else if (gUpper.includes("TAYLOR") || gUpper.includes("TENBY")) groupLabel = "Taylor's Education";
             else if (gUpper.includes("ESF") || gUpper.includes("ENGLISH SCHOOLS FOUNDATION")) groupLabel = "ESF";
             else if (gUpper.includes("GEMS")) groupLabel = "GEMS Education";
+            else if (gUpper.includes("TAALEEM") || isTaaleemJob) groupLabel = "Taaleem";
 
             if (cacheDoc.applyUrl && cacheDoc.applyUrl.includes("tes.com") && !sourcesList.includes("TES")) {
               sourcesList.push("TES");
               sourceUrlsMap["TES"] = cacheDoc.applyUrl;
+            }
+
+            if (isTaaleemJob) {
+              if (!sourcesList.includes("Taaleem")) {
+                sourcesList.push("Taaleem");
+              }
+              const existingTaaleemUrl = (cacheDoc as any).directUrl || sourceUrlsMap["Taaleem"] || sourceUrlsMap["TAALEEM"];
+              const finalTaaleemUrl = (existingTaaleemUrl && existingTaaleemUrl.includes("taaleem.ae") && !existingTaaleemUrl.endsWith("/careers") && existingTaaleemUrl !== "https://careers.taaleem.ae/" && existingTaaleemUrl !== "https://taaleem.ae")
+                ? existingTaaleemUrl
+                : resolveTaaleemDirectUrl(cacheDoc.title || (cacheDoc as any).jobTitle || "", cacheDoc.schoolName || "").canonicalUrl;
+              sourceUrlsMap["Taaleem"] = finalTaaleemUrl;
+              sourceUrlsMap["TAALEEM"] = finalTaaleemUrl;
             }
 
             const isMatchingGroupUrl = cacheDoc.applyUrl && (
@@ -806,12 +828,13 @@ export default function FeaturedJobsPage() {
               ((gUpper.includes("TAYLOR") || gUpper.includes("TENBY")) && (applyUrlLower.includes("taylors.edu.my") || applyUrlLower.includes("tenby.edu.my"))) ||
               (gUpper.includes("ESF") && (applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk"))) ||
               (gUpper.includes("GEMS") && (applyUrlLower.includes("gemseducation.com") || applyUrlLower.includes("gems.ae"))) ||
+              (gUpper.includes("TAALEEM") && applyUrlLower.includes("taaleem.ae")) ||
               (gUpper.includes("GLOBE") && applyUrlLower.includes("globeducate")) ||
               (gUpper.includes("ISP") && applyUrlLower.includes("internationalschools")) ||
               (gUpper.includes("UWC") && applyUrlLower.includes("uwc.org"))
             ) && !applyUrlLower.endsWith("/careers") && cacheDoc.applyUrl !== "https://careers.nordangliaeducation.com";
 
-            if (isMatchingGroupUrl) {
+            if (isMatchingGroupUrl && !isTaaleemJob) {
               if (!sourcesList.includes(groupLabel)) {
                 sourcesList.unshift(groupLabel);
               }
@@ -1205,6 +1228,7 @@ export default function FeaturedJobsPage() {
       "UWC": "United World Colleges (UWC)",
       "GUARDIAN": "Guardian Jobs",
       "GUARDIAN JOBS": "Guardian Jobs",
+      "TAALEEM": "Taaleem",
     };
 
     const name = engineDisplayNames[engineId] || engineId;
@@ -1835,8 +1859,15 @@ export default function FeaturedJobsPage() {
                                   const applyUrlLower = String((job as any).applyUrl || job.source_url || "").toLowerCase();
                                   const sMap = new Map<string, string>();
 
+                                  const isTaaleemCard = isTaaleemSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group) ||
+                                    String((job as any).schoolGroup || "").toUpperCase().includes("TAALEEM") ||
+                                    String(job.source || "").toUpperCase().includes("TAALEEM") ||
+                                    (job.sources && job.sources.some((s: string) => String(s).toUpperCase().includes("TAALEEM"))) ||
+                                    applyUrlLower.includes("taaleem.ae") ||
+                                    Boolean(job.sourceUrls && (job.sourceUrls["TAALEEM"] || job.sourceUrls["Taaleem"]));
+
                                   // Detect URL domain signatures to ensure engine pills are accurately assigned
-                                  if (applyUrlLower.includes("tes.com")) {
+                                  if (applyUrlLower.includes("tes.com") || (job.sourceUrls && (job.sourceUrls["TES"] || job.sourceUrls["tes"])) || rawSources.some((s: any) => String(s || "").toUpperCase() === "TES")) {
                                     sMap.set("TES", "TES");
                                   }
                                   if (applyUrlLower.includes("careers.nordangliaeducation.com")) {
@@ -1861,11 +1892,14 @@ export default function FeaturedJobsPage() {
                                     sMap.set("TEACH AWAY", "Teach Away");
                                   }
                                   if (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae")) {
-                                      sMap.set("GEMS", "GEMS");
-                                    }
-                                    if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
-                                      sMap.set("GUARDIAN", "Guardian Jobs");
-                                    }
+                                    sMap.set("GEMS", "GEMS");
+                                  }
+                                  if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
+                                    sMap.set("GUARDIAN", "Guardian Jobs");
+                                  }
+                                  if (isTaaleemCard) {
+                                    sMap.set("TAALEEM", "Taaleem");
+                                  }
 
                                   rawSources.forEach((s: any) => {
                                     if (!s) return;
@@ -1882,10 +1916,10 @@ export default function FeaturedJobsPage() {
                                     else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
                                     else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                                     else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
-                                     else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
-                                     else if (u.includes("BLOOM")) { key = "BLOOM"; label = "Bloom"; }
-                                     else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
-                                     else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
+                                    else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
+                                    else if (u.includes("BLOOM")) { key = "BLOOM"; label = "Bloom"; }
+                                    else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
+                                    else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
                                     else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
                                     else { key = "DIRECT"; label = "Direct"; }
                                     sMap.set(key, label);
@@ -1897,6 +1931,9 @@ export default function FeaturedJobsPage() {
                                     sMap.delete("DIRECT");
                                   }
                                   if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
+                                    sMap.delete("DIRECT");
+                                  }
+                                  if (isTaaleemCard) {
                                     sMap.delete("DIRECT");
                                   }
 
@@ -1940,7 +1977,13 @@ export default function FeaturedJobsPage() {
                                           norm === "https://internationalschools.wd3.myworkdayjobs.com/en-us/ispcareers" ||
                                           norm === "https://careers.globeducate.com/work-with-us/opportunities-worldwide" ||
                                           norm === "https://careers.gemseducation.com" ||
-                                          norm === "https://www.gemseducation.com"
+                                          norm === "https://www.gemseducation.com" ||
+                                          norm === "https://taaleem.ae" ||
+                                          norm === "https://www.taaleem.ae" ||
+                                          norm === "https://www.taaleem.ae/careers" ||
+                                          norm === "https://careers.taaleem.ae" ||
+                                          norm === "https://careers.taaleem.ae/en" ||
+                                          norm === "https://careers.taaleem.ae/en/job-search"
                                         );
                                       };
 
@@ -1978,6 +2021,14 @@ export default function FeaturedJobsPage() {
                                            foundUrl = rawUrl;
                                         } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
                                           foundUrl = rawUrl;
+                                        } else if (srcUpper.includes("TAALEEM")) {
+                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                            foundUrl = (job as any).directUrl;
+                                          } else if (applyUrlLower.includes("taaleem.ae") && !isGenericUrl(rawUrl)) {
+                                            foundUrl = rawUrl;
+                                          } else {
+                                            foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
+                                          }
                                         } else if (srcUpper === "DIRECT") {
                                           if (job.schoolWebsite && job.schoolWebsite !== "#") {
                                             foundUrl = job.schoolWebsite;
@@ -2026,6 +2077,8 @@ export default function FeaturedJobsPage() {
                                             ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
                                             : srcUpper === "GRC"
                                             ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20"
+                                            : srcUpper.includes("TAALEEM")
+                                            ? "bg-teal-500/10 border-teal-500/30 text-teal-400 hover:bg-teal-500/20"
                                             : srcUpper === "GUARDIAN"
                                              ? "bg-sky-500/10 border-sky-500/30 text-sky-400 hover:bg-sky-500/20"
                                              : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))

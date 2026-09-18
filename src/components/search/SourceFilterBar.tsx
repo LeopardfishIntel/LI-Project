@@ -20,7 +20,6 @@ export type SourceEngineKey =
   | "TES"
   | "GRC"
   | "GUARDIAN"
-  | "TEACH_AWAY"
   | "GEMS"
   | "GLOBEDUCATE"
   | "ISP"
@@ -41,7 +40,6 @@ export const ALL_SOURCES: SourceMeta[] = [
   { key: "TES", label: "TES", category: "BOARDS_AGENCIES" },
   { key: "GRC", label: "GRC", category: "BOARDS_AGENCIES" },
   { key: "GUARDIAN", label: "GUARDIAN", category: "BOARDS_AGENCIES" },
-  { key: "TEACH_AWAY", label: "TEACH AWAY", category: "BOARDS_AGENCIES" },
 
   // School Groups (Includes Direct MENA Operators)
   { key: "GEMS", label: "GEMS", category: "GROUPS" },

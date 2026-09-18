@@ -24,6 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useRouter } from 'next/navigation';
 import { canonicalCountry, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
+import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -2139,8 +2140,15 @@ function DecoderContent() {
                         const applyUrlLower = String(selectedOpportunity.applyUrl || "").toLowerCase();
                         const sMap = new Map<string, string>();
 
+                        const isTaaleemSchoolJob = isTaaleemSchool(activeSchool?.id || (selectedOpportunity as any).schoolId, activeSchool?.schoolname || activeSchool?.name || (selectedOpportunity as any).schoolName, (activeSchool as any)?.ownership || (activeSchool as any)?.group || (selectedOpportunity as any).schoolGroup) ||
+                          String((activeSchool as any)?.ownership || (activeSchool as any)?.group || (selectedOpportunity as any).schoolGroup || "").toUpperCase().includes("TAALEEM") ||
+                          String(selectedOpportunity.source || "").toUpperCase().includes("TAALEEM") ||
+                          rawSources.some((s: any) => String(s || "").toUpperCase().includes("TAALEEM")) ||
+                          applyUrlLower.includes("taaleem.ae") ||
+                          Boolean(selectedOpportunity.sourceUrls && (selectedOpportunity.sourceUrls["TAALEEM"] || selectedOpportunity.sourceUrls["Taaleem"]));
+
                         // Detect URL domain signatures to ensure engine pills are accurately assigned
-                        if (applyUrlLower.includes("tes.com")) {
+                        if (applyUrlLower.includes("tes.com") || (selectedOpportunity.sourceUrls && (selectedOpportunity.sourceUrls["TES"] || selectedOpportunity.sourceUrls["tes"])) || rawSources.some((s: any) => String(s || "").toUpperCase() === "TES")) {
                           sMap.set("TES", "TES");
                         }
                         if (applyUrlLower.includes("careers.nordangliaeducation.com") || applyUrlLower.includes("nordangliaeducation.com")) {
@@ -2167,6 +2175,9 @@ function DecoderContent() {
                         if (applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs")) {
                           sMap.set("GUARDIAN", "Guardian Jobs");
                         }
+                        if (isTaaleemSchoolJob) {
+                          sMap.set("TAALEEM", "Taaleem");
+                        }
 
                         rawSources.forEach((s: any) => {
                           if (!s) return;
@@ -2183,6 +2194,7 @@ function DecoderContent() {
                           else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
                           else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                           else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
+                          else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
                           else if (u.includes("GRC")) { key = "GRC"; label = "GRC"; }
                           else if (u.includes("TEACH AWAY")) { key = "TEACH AWAY"; label = "Teach Away"; }
                           else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
@@ -2196,6 +2208,9 @@ function DecoderContent() {
                           sMap.delete("DIRECT");
                         }
                         if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
+                          sMap.delete("DIRECT");
+                        }
+                        if (isTaaleemSchoolJob) {
                           sMap.delete("DIRECT");
                         }
 
@@ -2277,6 +2292,12 @@ function DecoderContent() {
                                 foundUrl = rawUrl;
                               } else if ((srcUpper === "GEMS" || srcUpper.includes("GEMS")) && (applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS")))) {
                                 foundUrl = rawUrl || "https://careers.gemseducation.com";
+                              } else if (srcUpper.includes("TAALEEM")) {
+                                if (selectedOpportunity.applyUrl && selectedOpportunity.applyUrl.includes("taaleem.ae") && !selectedOpportunity.applyUrl.endsWith("/careers") && selectedOpportunity.applyUrl !== "https://careers.taaleem.ae/") {
+                                  foundUrl = selectedOpportunity.applyUrl;
+                                } else {
+                                  foundUrl = resolveTaaleemDirectUrl(selectedOpportunity.jobTitle || "", activeSchool?.name || activeSchool?.schoolname || (selectedOpportunity as any).schoolName || "").canonicalUrl;
+                                }
                               } else if (srcUpper === "DIRECT") {
                                 foundUrl = activeSchool?.careersPageUrl || activeSchool?.website || activeSchool?.schooljp || rawUrl;
                               }
@@ -2329,7 +2350,9 @@ function DecoderContent() {
                                               ? "bg-cyan-500/20 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/30"
                                               : (srcUpper === "NORD ANGLIA" || srcUpper.includes("NORD ANGLIA"))
                                                 ? "bg-amber-500/20 border-amber-500/40 text-amber-300 hover:bg-amber-500/30"
-                                                : srcUpper === "GUARDIAN"
+                                                : srcUpper.includes("TAALEEM")
+                                                  ? "bg-teal-500/20 border-teal-500/40 text-teal-300 hover:bg-teal-500/30"
+                                                  : srcUpper === "GUARDIAN"
                                                   ? "bg-sky-500/20 border-sky-500/40 text-sky-300 hover:bg-sky-500/30"
                                                   : (srcUpper === "GEMS" || srcUpper.includes("GEMS"))
                                                     ? "bg-orange-500/20 border-orange-500/40 text-orange-300 hover:bg-orange-500/30"

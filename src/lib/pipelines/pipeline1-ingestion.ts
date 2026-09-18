@@ -19,6 +19,7 @@ import { generateJobFingerprint, saveScrapedJobs } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
 import { isMalvernCampus } from "../search/malvern";
+import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
 import type { RawJobRecord } from "../crawler/adaptors/raw-job.types";
 
 export interface IngestionResult {
@@ -89,6 +90,12 @@ function buildCacheDocument(
     ? [...record.sources]
     : [srcName];
 
+  // Multi-campus & St. Christopher's Bahrain canonical master re-parenting
+  let targetSchoolId = record.schoolId ? record.schoolId.toUpperCase() : '';
+  let targetSchoolName = record.schoolName || fallbackSchoolName;
+  let targetCity = record.city || "";
+  let campus = record.campus || undefined;
+
   let directUrl = record.directUrl || null;
   let groupName = (record as any).group || undefined;
   if (isMalvernCampus(record.schoolId, record.schoolName)) {
@@ -101,11 +108,32 @@ function buildCacheDocument(
     }
   }
 
-  // Multi-campus & St. Christopher's Bahrain canonical master re-parenting
-  let targetSchoolId = record.schoolId ? record.schoolId.toUpperCase() : '';
-  let targetSchoolName = record.schoolName || fallbackSchoolName;
-  let targetCity = record.city || "";
-  let campus = record.campus || undefined;
+  if (isTaaleemSchool(record.schoolId, record.schoolName, (record as any).group)) {
+    groupName = 'Taaleem';
+    const resolvedTaaleem = resolveTaaleemDirectUrl(
+      record.rawTitle || (record as any).title || '',
+      record.schoolName || fallbackSchoolName,
+      directUrl || record.applyUrl
+    );
+    const taaleemUrl = resolvedTaaleem.canonicalUrl;
+    if (resolvedTaaleem.campus && !campus) {
+      campus = resolvedTaaleem.campus;
+    }
+    if (record.applyUrl && record.applyUrl.includes('tes.com')) {
+      if (!initialSources.includes('TES')) initialSources.push('TES');
+      srcUrls['TES'] = record.applyUrl;
+    }
+    if (!initialSources.includes('Taaleem')) {
+      initialSources.push('Taaleem');
+    }
+    if (taaleemUrl) {
+      srcUrls['Taaleem'] = taaleemUrl;
+      srcUrls['TAALEEM'] = taaleemUrl;
+    }
+    if (!directUrl || !directUrl.includes('taaleem.ae')) {
+      directUrl = taaleemUrl;
+    }
+  }
 
   const rawSchoolIdLower = (record.schoolId || "").toLowerCase();
   if (rawSchoolIdLower === 'flis0224_primary' || rawSchoolIdLower.includes('flis0224_p')) {
