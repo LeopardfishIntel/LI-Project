@@ -953,6 +953,10 @@ export default function FeaturedJobsPage() {
     let taylors = 0;
     let gems = 0;
     let guardian = 0;
+    let taaleem = 0;
+    let bloom = 0;
+    let aldar = 0;
+    let qatarFoundation = 0;
     allJobs.forEach(job => {
       const jobSrcUpper = String(job.source || "").toUpperCase();
       const sourcesUpper = (job.sources || [job.source]).map((s) => String(s || "").toUpperCase());
@@ -974,7 +978,11 @@ export default function FeaturedJobsPage() {
       const hasIsp = jobSrcUpper.includes("ISP") || sourcesUpper.some((s) => s.includes("ISP")) || applyUrlLower.includes("internationalschools");
       const hasGlobe = jobSrcUpper.includes("GLOBE") || jobSrcUpper.includes("GLOBEDUCATE") || sourcesUpper.some((s) => s.includes("GLOBE") || s.includes("GLOBEDUCATE")) || applyUrlLower.includes("globeducate");
               const hasGuardian = jobSrcUpper.includes("GUARDIAN") || sourcesUpper.some((s) => String(s || "").toUpperCase().includes("GUARDIAN")) || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
-        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian;
+        const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
+        const hasBloom = jobSrcUpper.includes("BLOOM") || sourcesUpper.some((s) => s.includes("BLOOM")) || applyUrlLower.includes("bloomeducation") || schoolGroupUpper.includes("BLOOM");
+        const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
+        const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
+        const hasDirect = (jobSrcUpper.includes("DIRECT") || jobSrcUpper.includes("OFFICIAL") || jobSrcUpper.includes("WEBSITE") || jobSrcUpper.includes("SCHOOL WEB") || jobSrcUpper.includes("SCHOOL ATS") || sourcesUpper.some(s => s.includes("DIRECT") || s.includes("OFFICIAL") || s.includes("WEBSITE") || s.includes("SCHOOL WEB") || s.includes("SCHOOL ATS"))) && !hasTes && !hasCognita && !hasNae && !hasInspired && !hasGrc && !hasTeachAway && !hasTaylors && !hasEsf && !hasGems && !hasGuardian && !hasTaaleem && !hasBloom && !hasAldar && !hasQatarFoundation;
 
       if (hasDirect) direct++;
       if (hasTes) tes++;
@@ -990,6 +998,10 @@ export default function FeaturedJobsPage() {
             if (hasTaylors) taylors++;
       if (hasGems) gems++;
       if (hasGuardian) guardian++;
+      if (hasTaaleem) taaleem++;
+      if (hasBloom) bloom++;
+      if (hasAldar) aldar++;
+      if (hasQatarFoundation) qatarFoundation++;
     });
     return {
       ALL: allJobs.length,
@@ -997,6 +1009,7 @@ export default function FeaturedJobsPage() {
       COGNITA: cognita,
       TES: tes,
       "NORD ANGLIA": nae,
+      NORD_ANGLIA: nae,
       GRC: grc,
       INSPIRED: inspired,
       GLOBEDUCATE: globe,
@@ -1006,7 +1019,13 @@ export default function FeaturedJobsPage() {
       MALVERN: malvern,
       UWC: uwc,
       TEACHAWAY: teachaway,
-      GUARDIAN: guardian
+      TEACH_AWAY: teachaway,
+      GUARDIAN: guardian,
+      TAALEEM: taaleem,
+      BLOOM: bloom,
+      ALDAR: aldar,
+      QATAR_FOUNDATION: qatarFoundation,
+      "QATAR FOUNDATION": qatarFoundation,
     };
   }, [allJobs]);
 
@@ -1104,8 +1123,17 @@ export default function FeaturedJobsPage() {
         if (selectedSourceEngine === "MALVERN" && !hasMalvern) return false;
         if (selectedSourceEngine === "UWC" && !hasUwc) return false;
         if (selectedSourceEngine === "ISP" && !hasIsp) return false;
+        const hasTaaleem = jobSrcUpper.includes("TAALEEM") || sourcesUpper.some((s) => s.includes("TAALEEM")) || applyUrlLower.includes("taaleem") || schoolGroupUpper.includes("TAALEEM");
+        const hasBloom = jobSrcUpper.includes("BLOOM") || sourcesUpper.some((s) => s.includes("BLOOM")) || applyUrlLower.includes("bloomeducation") || schoolGroupUpper.includes("BLOOM");
+        const hasAldar = jobSrcUpper.includes("ALDAR") || sourcesUpper.some((s) => s.includes("ALDAR")) || applyUrlLower.includes("aldareducation") || schoolGroupUpper.includes("ALDAR");
+        const hasQatarFoundation = jobSrcUpper.includes("QATAR FOUNDATION") || jobSrcUpper.includes("QATAR_FOUNDATION") || sourcesUpper.some((s) => s.includes("QATAR FOUNDATION") || s.includes("QATAR_FOUNDATION")) || applyUrlLower.includes("qf.org.qa") || applyUrlLower.includes("qatar-foundation") || schoolGroupUpper.includes("QATAR FOUNDATION");
+
         if ((selectedSourceEngine === "GLOBE" || selectedSourceEngine === "GLOBEDUCATE") && !hasGlobe) return false;
         if (selectedSourceEngine === "GUARDIAN" && !hasGuardian) return false;
+        if (selectedSourceEngine === "TAALEEM" && !hasTaaleem) return false;
+        if (selectedSourceEngine === "BLOOM" && !hasBloom) return false;
+        if (selectedSourceEngine === "ALDAR" && !hasAldar) return false;
+        if ((selectedSourceEngine === "QATAR_FOUNDATION" || selectedSourceEngine === "QATAR FOUNDATION") && !hasQatarFoundation) return false;
       }
 
       return true;
@@ -1854,6 +1882,10 @@ export default function FeaturedJobsPage() {
                                     else if (u.includes("NORD ANGLIA")) { key = "NORD ANGLIA"; label = "Nord Anglia"; }
                                     else if (u.includes("GEMS")) { key = "GEMS"; label = "GEMS"; }
                                     else if (u.includes("GUARDIAN")) { key = "GUARDIAN"; label = "Guardian Jobs"; }
+                                     else if (u.includes("TAALEEM")) { key = "TAALEEM"; label = "Taaleem"; }
+                                     else if (u.includes("BLOOM")) { key = "BLOOM"; label = "Bloom"; }
+                                     else if (u.includes("ALDAR")) { key = "ALDAR"; label = "Aldar"; }
+                                     else if (u.includes("QATAR FOUNDATION") || u.includes("QATAR_FOUNDATION")) { key = "QATAR_FOUNDATION"; label = "Qatar Foundation"; }
                                     else if (u.includes("OFFICIAL") || u.includes("WEBSITE") || u.includes("DIRECT") || u.includes("SCHOOL")) { key = "DIRECT"; label = "Direct"; }
                                     else { key = "DIRECT"; label = "Direct"; }
                                     sMap.set(key, label);

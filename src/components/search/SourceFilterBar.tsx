@@ -16,14 +16,34 @@ interface SourceMeta {
   category: "BOARDS_AGENCIES" | "GROUPS" | "DIRECT";
 }
 
-const ALL_SOURCES: SourceMeta[] = [
+export type SourceEngineKey =
+  | "TES"
+  | "GRC"
+  | "GUARDIAN"
+  | "TEACH_AWAY"
+  | "GEMS"
+  | "GLOBEDUCATE"
+  | "ISP"
+  | "INSPIRED"
+  | "COGNITA"
+  | "NORD_ANGLIA"
+  | "TAYLORS"
+  | "MALVERN"
+  | "TAALEEM"
+  | "BLOOM"
+  | "ALDAR"
+  | "QATAR_FOUNDATION"
+  | "UWC"
+  | "DIRECT";
+
+export const ALL_SOURCES: SourceMeta[] = [
   // Job Boards & Agencies
   { key: "TES", label: "TES", category: "BOARDS_AGENCIES" },
   { key: "GRC", label: "GRC", category: "BOARDS_AGENCIES" },
   { key: "GUARDIAN", label: "GUARDIAN", category: "BOARDS_AGENCIES" },
   { key: "TEACH_AWAY", label: "TEACH AWAY", category: "BOARDS_AGENCIES" },
 
-  // School Groups
+  // School Groups (Includes Direct MENA Operators)
   { key: "GEMS", label: "GEMS", category: "GROUPS" },
   { key: "GLOBEDUCATE", label: "GLOBEDUCATE", category: "GROUPS" },
   { key: "ISP", label: "ISP", category: "GROUPS" },
@@ -32,6 +52,10 @@ const ALL_SOURCES: SourceMeta[] = [
   { key: "NORD_ANGLIA", label: "NORD ANGLIA", category: "GROUPS" },
   { key: "TAYLORS", label: "TAYLOR'S", category: "GROUPS" },
   { key: "MALVERN", label: "MALVERN", category: "GROUPS" },
+  { key: "TAALEEM", label: "TAALEEM", category: "GROUPS" },
+  { key: "BLOOM", label: "BLOOM", category: "GROUPS" },
+  { key: "ALDAR", label: "ALDAR", category: "GROUPS" },
+  { key: "QATAR_FOUNDATION", label: "QATAR FOUNDATION", category: "GROUPS" },
   { key: "UWC", label: "UWC", category: "GROUPS" },
 
   // Direct Links
