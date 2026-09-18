@@ -39,7 +39,8 @@ export async function GET(request: Request) {
         headers: {
           'X-RateLimit-Limit': String(limit),
           'X-RateLimit-Remaining': String(remaining),
-          'X-Cache': 'HIT'
+          'X-Cache': 'HIT',
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
         }
       }
     );
@@ -66,7 +67,8 @@ export async function GET(request: Request) {
         headers: {
           'X-RateLimit-Limit': String(limit),
           'X-RateLimit-Remaining': String(remaining),
-          'X-Cache': bypass ? 'BYPASS' : 'MISS'
+          'X-Cache': bypass ? 'BYPASS' : 'MISS',
+          'Cache-Control': bypass ? 'no-store, must-revalidate' : 'public, s-maxage=3600, stale-while-revalidate=86400'
         }
       }
     );
