@@ -3974,7 +3974,7 @@ function DecoderContent() {
                       key: 'profit',
                       label: 'Profit Status',
                       icon: <Building className="size-5 text-sky-400" />,
-                      value: (activeSchool as any).profitstatus || (activeSchool as any).profit_status || 'For-Profit'
+                      value: (activeSchool as any).profitstatus || (activeSchool as any).profitStatus || (activeSchool as any).profit_status || (activeSchool as any).profit || 'For-Profit'
                     },
 
 

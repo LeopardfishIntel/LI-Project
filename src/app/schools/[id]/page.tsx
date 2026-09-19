@@ -569,7 +569,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const website = school.websiteUrl || school.website;
 
   const matrixItems = [
-    { key: 'profit', label: 'Profit Status', value: (school as any).profitstatus || (school as any).profit_status || 'For-Profit' },
+    { key: 'profit', label: 'Profit Status', value: (school as any).profitstatus || (school as any).profitStatus || (school as any).profit_status || (school as any).profit || 'For-Profit' },
     { key: 'housing', label: 'Housing Provision', value: housing },
     { key: 'health', label: 'Health Coverage', value: categorizeInsurance(health as string) },
     { key: 'curriculum', label: 'Curriculum', value: curriculum },
