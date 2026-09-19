@@ -95,13 +95,13 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
     sameSexRecognition: 'criminalized_strict',
     femaleSponsoringMale: 'restricted_difficult',
     trailingSpouseWork: 'prohibited_on_dependent_visa',
-    badges: ['Marriage Cert Mandatory', 'Strict Dependent Visa Rules'],
+    badges: ['Marriage Cert Mandatory', 'School Housing Strict', 'Separate Work Visas for Unmarried'],
     guidance: {
-      unmarried: 'Attested marriage certificate required for family visa sponsorship and joint residential lease agreements.',
-      sameSex: 'Same-sex partnerships are not recognized for visa or legal purposes; candidates must apply independently as single educators.',
-      femaleSponsor: 'Female sponsorship of male spouses is subject to Royal Oman Police (ROP) approval and specific salary thresholds.',
-      trailingSpouse: 'Trailing spouses on family joining visas are not authorized to work without transferring to an employment visa.',
-      dualTeacher: 'Dual-teacher hires are provided with a shared family villa or married allowance tier.'
+      unmarried: 'An attested marriage certificate is required for spousal visa sponsorship and school-provided family housing. While private rental enforcement varies across landlords, unmarried partners cannot sponsor one another and must hold separate employment contracts and work visas.',
+      sameSex: 'Same-sex partnerships are not recognized for visa or legal purposes under Omani law. Candidate pairs must apply independently as single educators and maintain personal discretion.',
+      femaleSponsor: 'Note: While teaching salaries easily satisfy ROP income rules, female sponsorship of a male spouse requires additional school HR administrative clearance with the Royal Oman Police.',
+      trailingSpouse: 'Trailing spouses on family joining visas are strictly not authorized to work locally. Any employment requires securing a separate job offer and transferring to an independent employer-sponsored work visa.',
+      dualTeacher: 'Dual-teacher hires benefit from combining single base salaries with shared school-provided housing or joint married housing stipends, plus dual annual flight allowances.'
     }
   },
   china: {

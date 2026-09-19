@@ -245,18 +245,50 @@ export default function CoupleCountryAdvisoryPanel({
                   <Users className="size-4 shrink-0 text-slate-400" />
                   <span>Unmarried Cohabitation & Visas in {advisory.country}</span>
                 </div>
-                <div className="p-3.5 bg-white/[0.03] border border-white/10 rounded-lg space-y-2 text-slate-200 whitespace-normal break-words">
-                  <p className="leading-relaxed">{advisory.guidance.unmarried}</p>
-                </div>
-                <div className="text-[11.5px] text-slate-400 border-t border-white/5 pt-2 whitespace-normal break-words">
-                  <strong className="text-slate-200">Sponsorship & Housing Rule in {advisory.country}: </strong>
-                  {advisory.cohabitationStatus === 'illegal_strict' ? (
-                    <span className="text-rose-400 font-bold">An attested marriage certificate is required for spousal visa sponsorship and shared school accommodation.</span>
-                  ) : advisory.cohabitationStatus === 'decriminalized_no_visa' ? (
-                    <span className="text-slate-300 font-bold">Unmarried partners can share private housing, but schools require independent employment contracts and separate work visas.</span>
-                  ) : (
-                    <span className="text-teal-400 font-bold">Spousal visas and joint school housing allowances are available with standard documentation.</span>
-                  )}
+
+                {/* Structured Callout Card with Left-Border Accent */}
+                <div className={cn(
+                  "p-4 rounded-lg space-y-3 whitespace-normal break-words border bg-white/[0.02]",
+                  advisory.cohabitationStatus === 'illegal_strict'
+                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    : advisory.cohabitationStatus === 'decriminalized_no_visa'
+                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-teal-500 border-white/10 bg-teal-500/[0.03]"
+                )}>
+                  <p className="text-slate-200 leading-relaxed font-normal">
+                    {advisory.guidance.unmarried}
+                  </p>
+
+                  <div className="pt-2.5 border-t border-white/10 space-y-2 text-[11.5px]">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                      <span className="font-bold text-slate-200 shrink-0 sm:min-w-[140px]">
+                        • Sponsorship & Visas:
+                      </span>
+                      <span className="text-slate-300">
+                        {advisory.marriageCertMandatory
+                          ? "An attested marriage certificate is strictly required for spousal visa sponsorship. Unmarried partners cannot sponsor one another."
+                          : "Unmarried partners can qualify for dependent or partner residency with eligible civil or de facto documentation."}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                      <span className="font-bold text-slate-200 shrink-0 sm:min-w-[140px]">
+                        • Housing Reality:
+                      </span>
+                      <span className="text-slate-300">
+                        <strong className="text-white">School-Provided Housing</strong> strictly enforces marriage certificates for shared staff accommodation. In <strong className="text-white">Private Rentals</strong>, landlord enforcement varies, but both individuals still require independent legal residency and work visas.
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                      <span className="font-bold text-slate-200 shrink-0 sm:min-w-[140px]">
+                        • Dual-Contract Strategy:
+                      </span>
+                      <span className="text-slate-300">
+                        Unmarried teaching partners should apply as two independent single candidates, securing separate contracts and individual work visas.
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -267,11 +299,22 @@ export default function CoupleCountryAdvisoryPanel({
                   <Briefcase className="size-4 shrink-0 text-slate-400" />
                   <span>Trailing Spouse Work Rights in {advisory.country}</span>
                 </div>
-                <div className="p-3.5 bg-white/[0.03] border border-white/10 rounded-lg space-y-2 text-slate-200 whitespace-normal break-words">
-                  <p className="leading-relaxed">{advisory.guidance.trailingSpouse}</p>
+
+                {/* Main Trailing Spouse Card */}
+                <div className={cn(
+                  "p-3.5 rounded-lg space-y-2 border bg-white/[0.02] whitespace-normal break-words",
+                  advisory.trailingSpouseWork === 'prohibited_on_dependent_visa'
+                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    : advisory.trailingSpouseWork === 'separate_work_visa_only' || advisory.trailingSpouseWork === 'loc_permit_required'
+                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                )}>
+                  <p className="leading-relaxed text-slate-200">{advisory.guidance.trailingSpouse}</p>
                 </div>
-                <div className="p-3 bg-white/[0.02] border border-white/10 rounded-lg space-y-1 whitespace-normal break-words">
-                  <span className="text-[11px] font-bold text-[#F8FAFC]">
+
+                {/* Female Teacher Sponsoring Male Spouse (Amber Accent) */}
+                <div className="p-3.5 bg-amber-500/[0.03] border border-white/10 border-l-4 border-l-amber-500 rounded-lg space-y-1.5 whitespace-normal break-words">
+                  <span className="text-[11.5px] font-bold text-[#F8FAFC]">
                     Female Teacher Sponsoring Male Spouse in {advisory.country}:
                   </span>
                   <p className="text-[11.5px] text-slate-300 leading-relaxed">
@@ -279,11 +322,11 @@ export default function CoupleCountryAdvisoryPanel({
                   </p>
                 </div>
 
-                {/* Integrated Tuition Guidance for Family Profiles */}
+                {/* Integrated Tuition Guidance for Family Profiles (Amber Accent) */}
                 {hasDependents && (
-                  <div className="p-3 bg-white/[0.02] border border-white/10 rounded-lg space-y-1.5">
+                  <div className="p-3.5 bg-amber-500/[0.03] border border-white/10 border-l-4 border-l-amber-500 rounded-lg space-y-1.5">
                     <div className="flex items-center gap-2 text-[#F8FAFC] font-semibold text-xs">
-                      <GraduationCap className="size-3.5 text-slate-400 shrink-0" />
+                      <GraduationCap className="size-4 text-amber-400 shrink-0" />
                       <span>{isFamily3 ? `Family +3 Tuition & Housing Allocation in ${advisory.country}` : `Dependent Child Tuition & Housing Terms in ${advisory.country}`}</span>
                     </div>
                     <p className="text-[11.5px] text-slate-300 leading-relaxed">
@@ -291,7 +334,7 @@ export default function CoupleCountryAdvisoryPanel({
                         ? `Tuition seats for a 3rd child are rarely 100% covered under standard international school contracts in ${advisory.country}. Additionally, provided staff housing is typically restricted to 2–3 bedroom configurations.`
                         : `International schools in ${advisory.country} typically provide tuition discounts or full coverage for 1–2 dependent children, subject to seat availability and capital levies.`}
                     </p>
-                    <p className="text-[10.5px] text-slate-400 italic">
+                    <p className="text-[10.5px] text-amber-300/90 italic">
                       💡 Advisory Tip: Always verify whether capital levies, registration fees, and school bus transportation are included or charged as out-of-pocket expenses by schools in {advisory.country}.
                     </p>
                   </div>
@@ -305,19 +348,21 @@ export default function CoupleCountryAdvisoryPanel({
                   <Home className="size-4 shrink-0 text-slate-400" />
                   <span>Teaching Couples Housing & Contract Packaging in {advisory.country}</span>
                 </div>
-                <div className="p-3.5 bg-white/[0.03] border border-white/10 rounded-lg space-y-2 text-slate-200 whitespace-normal break-words">
-                  <p className="leading-relaxed">{advisory.guidance.dualTeacher}</p>
-                </div>
-                <div className="text-[11.5px] text-slate-400 border-t border-white/5 pt-2 whitespace-normal break-words">
-                  <strong className="text-slate-200">Financial Impact in {advisory.country}: </strong>
-                  Dual-income educator households in {advisory.country} international schools typically achieve 2× to 3× higher annual net savings rates by pooling accommodation allowances and double flight tickets.
+
+                {/* Financial Advantage Card (Emerald Accent) */}
+                <div className="p-3.5 bg-emerald-500/[0.03] border border-white/10 border-l-4 border-l-emerald-500 rounded-lg space-y-2.5 whitespace-normal break-words">
+                  <p className="leading-relaxed text-slate-200">{advisory.guidance.dualTeacher}</p>
+                  <div className="text-[11.5px] text-slate-300 border-t border-white/10 pt-2 whitespace-normal break-words">
+                    <strong className="text-emerald-400">Financial Advantage in {advisory.country}: </strong>
+                    Dual-income educator households in {advisory.country} international schools typically achieve 2× to 3× higher annual net savings rates by pooling accommodation allowances and double annual flight allocations.
+                  </div>
                 </div>
 
-                {/* Integrated Tuition Guidance for Family Profiles */}
+                {/* Integrated Tuition Guidance for Family Profiles (Amber Accent) */}
                 {hasDependents && (
-                  <div className="p-3 bg-white/[0.02] border border-white/10 rounded-lg space-y-1.5">
+                  <div className="p-3.5 bg-amber-500/[0.03] border border-white/10 border-l-4 border-l-amber-500 rounded-lg space-y-1.5">
                     <div className="flex items-center gap-2 text-[#F8FAFC] font-semibold text-xs">
-                      <GraduationCap className="size-3.5 text-slate-400 shrink-0" />
+                      <GraduationCap className="size-4 text-amber-400 shrink-0" />
                       <span>{isFamily3 ? `Family +3 Tuition & Housing Allocation in ${advisory.country}` : `Dependent Child Tuition & Housing Terms in ${advisory.country}`}</span>
                     </div>
                     <p className="text-[11.5px] text-slate-300 leading-relaxed">
@@ -325,7 +370,7 @@ export default function CoupleCountryAdvisoryPanel({
                         ? `Tuition seats for a 3rd child are rarely 100% covered under standard international school contracts in ${advisory.country}. Additionally, provided staff housing is typically restricted to 2–3 bedroom configurations.`
                         : `International schools in ${advisory.country} typically provide tuition discounts or full coverage for 1–2 dependent children, subject to seat availability and capital levies.`}
                     </p>
-                    <p className="text-[10.5px] text-slate-400 italic">
+                    <p className="text-[10.5px] text-amber-300/90 italic">
                       💡 Advisory Tip: Always verify whether capital levies, registration fees, and school bus transportation are included or charged as out-of-pocket expenses by schools in {advisory.country}.
                     </p>
                   </div>
@@ -339,12 +384,20 @@ export default function CoupleCountryAdvisoryPanel({
                   <Scale className="size-4 shrink-0 text-slate-400" />
                   <span>LGBTQ+ Recognition & Discretion in {advisory.country}</span>
                 </div>
-                <div className="p-3.5 bg-white/[0.03] border border-white/10 rounded-lg space-y-2 text-slate-200 whitespace-normal break-words">
-                  <p className="leading-relaxed">{advisory.guidance.sameSex}</p>
+
+                {/* Hard Legal Dealbreaker / Warning Card (Rose Accent) */}
+                <div className="p-3.5 bg-rose-500/[0.03] border border-white/10 border-l-4 border-l-rose-500 rounded-lg space-y-2 whitespace-normal break-words">
+                  <p className="leading-relaxed text-slate-200">{advisory.guidance.sameSex}</p>
                 </div>
-                <div className="text-[11.5px] text-slate-400 border-t border-white/5 pt-2 whitespace-normal break-words">
-                  <strong className="text-slate-200">Recruitment & Housing Practice: </strong>
-                  <span className="text-rose-400/90 font-medium">International school recruitment agencies advise applying as two independent single educators with individual contracts, separate work permits, and standard local discretion.</span>
+
+                {/* Recruitment Practice Card */}
+                <div className="p-3.5 bg-rose-500/[0.02] border border-white/10 border-l-4 border-l-rose-500/80 rounded-lg space-y-1.5 whitespace-normal break-words">
+                  <span className="text-[11.5px] font-bold text-[#F8FAFC]">
+                    Recruitment & Housing Practice in {advisory.country}:
+                  </span>
+                  <p className="text-[11.5px] text-slate-300 leading-relaxed">
+                    International school recruitment agencies advise applying as two independent single educators with individual contracts, separate work permits, and standard local discretion.
+                  </p>
                 </div>
               </div>
             )}
