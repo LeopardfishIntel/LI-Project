@@ -13094,12 +13094,12 @@
     "staffstudentratio": "1:11",
     "approvals": "CIS",
     "academicscore": "8.5",
-    "salaryRange": "$3,650.00",
+    "salaryRange": "$4,166 - $5,000",
     "summary": "Leading bilingual; strong non-profit heritage.",
     "techscore": "8.0",
     "citySafety": "7.0",
     "confidence": "8.4",
-    "housingprovision": "Allowance",
+    "housingprovision": "Consolidated Allowance (Included in Base Salary)",
     "techecosystem": "1:1 iPad",
     "curriculum": "UK/IB",
     "staffcount": "175",
@@ -13130,8 +13130,11 @@
     "name": "Markham College Peru",
     "tesOrganizationId": "1057093",
     "tesEmployerSlug": "markham-college-1057093",
-    "updatedAt": "2026-08-30T16:14:23.677Z",
-    "openJobsCount": 2
+    "updatedAt": "2026-09-19T06:39:47.612Z",
+    "openJobsCount": 2,
+    "base_salary_usd": 4583,
+    "housing_status": "Consolidated Allowance",
+    "isLocked": true
   },
   {
     "id": "FLIS0201",

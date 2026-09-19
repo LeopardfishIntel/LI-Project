@@ -132,22 +132,31 @@ export async function POST(req: NextRequest) {
     if (action === "revert" && schoolId) {
       const master = masterSchools.find((s) => s.id === schoolId);
       if (master) {
-        await updateDocument("schools", schoolId, {
-          ...master,
-          isLocked: true,
-          updatedAt: new Date().toISOString()
-        });
+        if (field) {
+          const revertVal = master[field] !== undefined ? master[field] : null;
+          await updateDocument("schools", schoolId, {
+            [field]: revertVal,
+            isLocked: true,
+            updatedAt: new Date().toISOString()
+          });
+        } else {
+          const updatePayload: any = { ...master, isLocked: true, updatedAt: new Date().toISOString() };
+          LOCKED_FIELDS.forEach((f) => {
+            updatePayload[f] = master[f] !== undefined ? master[f] : null;
+          });
+          await updateDocument("schools", schoolId, updatePayload);
+        }
       }
       return NextResponse.json({ success: true, message: "Reverted " + schoolId + " to master snapshot." });
     }
 
     if (action === "revert_all") {
       for (const master of masterSchools) {
-        await updateDocument("schools", master.id, {
-          ...master,
-          isLocked: true,
-          updatedAt: new Date().toISOString()
+        const updatePayload: any = { ...master, isLocked: true, updatedAt: new Date().toISOString() };
+        LOCKED_FIELDS.forEach((f) => {
+          updatePayload[f] = master[f] !== undefined ? master[f] : null;
         });
+        await updateDocument("schools", master.id, updatePayload);
       }
       return NextResponse.json({ success: true, message: "Reverted all schools to master snapshot." });
     }
@@ -155,13 +164,13 @@ export async function POST(req: NextRequest) {
     if (action === "approve" && schoolId && field) {
       const idx = masterSchools.findIndex((s) => s.id === schoolId);
       if (idx >= 0) {
-        masterSchools[idx][field] = newValue;
+        masterSchools[idx][field] = newValue !== undefined ? newValue : null;
         masterSchools[idx].isLocked = true;
         masterSchools[idx].updatedAt = new Date().toISOString();
         saveMasterSnapshot(masterSchools);
 
         await updateDocument("schools", schoolId, {
-          [field]: newValue,
+          [field]: newValue !== undefined ? newValue : null,
           isLocked: true,
           updatedAt: new Date().toISOString()
         });
@@ -172,7 +181,10 @@ export async function POST(req: NextRequest) {
     if (action === "approve_all") {
       const liveDocs = await getCollectionDocs("schools");
       const liveMap = new Map<string, any>();
-      liveDocs.forEach((d: any) => liveMap.set(d.id, d));
+      liveDocs.forEach((d: any) => {
+        const data = typeof d.data === "function" ? d.data() : d;
+        liveMap.set(d.id, { ...data, id: d.id });
+      });
 
       for (let i = 0; i < masterSchools.length; i++) {
         const live = liveMap.get(masterSchools[i].id);
