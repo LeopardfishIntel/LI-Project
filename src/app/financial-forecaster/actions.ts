@@ -87,9 +87,15 @@ function reconstructJobBoardUrl(vacancy: ScrapedVacancy, schoolBaseUrl: string, 
   });
 }
 
-function getSchoolBaseUrl(schoolId: string, schoolName: string): string {
+function getSchoolBaseUrl(schoolId: string, schoolName: string, website?: string): string {
+  if (website && website.startsWith("http")) {
+    return website;
+  }
   const lowerName = schoolName.toLowerCase();
   const lowerId = schoolId.toLowerCase();
+  if (lowerName.includes("english school") && (lowerName.includes("nicosia") || lowerName.includes("cyprus")) || lowerId === "flis0281") {
+    return "https://www.englishschool.ac.cy";
+  }
   if (lowerName.includes("parklane") || lowerId.includes("parklane") || lowerId === "flis0202") {
     return "https://www.parklane-is.cz";
   }

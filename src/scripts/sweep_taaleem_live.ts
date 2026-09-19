@@ -2,7 +2,7 @@
  * 🏫 SWEEP TAALEEM LIVE ATS DIRECT VACANCIES & CROSS-LINK CACHE
  */
 
-import { syncTaaleemNetworkToCache } from "@/lib/search/taaleem";
+import { syncTaaleemNetworkToCache } from "@/lib/crawler/sync-taaleem";
 
 async function main() {
   console.log("🚀 Starting live Taaleem ATS network sweep & cross-linking...");
