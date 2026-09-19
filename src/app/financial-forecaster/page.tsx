@@ -1438,13 +1438,13 @@ function DecoderContent() {
     let scalar = 1.0;
     let pKey = "single";
 
-    // 🎯 STRICT FAMILY MAPPING PROTOCOL
+    // 🎯 STRICT FAMILY MAPPING PROTOCOL (OECD Equivalence Scaling)
     if (status === "Single") { personCount = 1; scalar = 1.0; pKey = "single"; }
-    else if (status === "Couple") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
-    else if (status === "Married (sole earner)" || status === "Married (dual income)") { personCount = 2; scalar = 1.9; pKey = "marriedDualIncome"; }
-    else if (status === "Family +1") { personCount = 3; scalar = 2.3; pKey = "family1Child"; }
-    else if (status === "Family +2") { personCount = 4; scalar = 2.65; pKey = "family2Children"; }
-    else if (status === "Family +3") { personCount = 5; scalar = 3.0; pKey = "family3PlusChildren"; }
+    else if (status === "Couple") { personCount = 2; scalar = 1.6; pKey = "marriedDualIncome"; }
+    else if (status === "Married (sole earner)" || status === "Married (dual income)") { personCount = 2; scalar = 1.6; pKey = "marriedDualIncome"; }
+    else if (status === "Family +1") { personCount = 3; scalar = 2.0; pKey = "family1Child"; }
+    else if (status === "Family +2") { personCount = 4; scalar = 2.4; pKey = "family2Children"; }
+    else if (status === "Family +3") { personCount = 5; scalar = 2.8; pKey = "family3PlusChildren"; }
 
     const adults = (status === "Single") ? 1 : 2;
     const children = status === "Family +1" ? 1 : (status === "Family +2" ? 2 : (status === "Family +3" ? 3 : 0));

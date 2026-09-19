@@ -2444,18 +2444,18 @@ export function calculateSafeguardedSavings(params: {
   if (familyStatus === "Single") {
     rentKey = "rent1br";
     scalar = 1.0;
-  } else if (familyStatus.includes("sole earner") || familyStatus.includes("dual income") || familyStatus.includes("Married")) {
+  } else if (familyStatus.includes("sole earner") || familyStatus.includes("dual income") || familyStatus.includes("Married") || familyStatus.includes("Couple")) {
     rentKey = "rent2br";
-    scalar = 1.9;
+    scalar = 1.6;
   } else if (familyStatus.includes("+1")) {
     rentKey = "rent3br";
-    scalar = 2.3;
+    scalar = 2.0;
   } else if (familyStatus.includes("+2")) {
     rentKey = "rent3br";
-    scalar = 2.65;
+    scalar = 2.4;
   } else if (familyStatus.includes("+3")) {
     rentKey = "rent3br";
-    scalar = 3.0;
+    scalar = 2.8;
   }
 
   let rentCost = 0;

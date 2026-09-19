@@ -187,12 +187,12 @@ export interface FamilyProfileInfo {
 
 export const FAMILY_PROFILES: FamilyProfileInfo[] = [
   { value: "single", label: "Single", personCount: 1, childrenCount: 0, scalar: 1.0, ikeaScalar: 1.0, pKey: "single" },
-  { value: "couple", label: "Couple", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
-  { value: "married-sole", label: "Married (sole earner)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
-  { value: "married-dual", label: "Married (dual income)", personCount: 2, childrenCount: 0, scalar: 1.9, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
-  { value: "family-1", label: "Family +1", personCount: 3, childrenCount: 1, scalar: 2.3, ikeaScalar: 1.85, pKey: "family1Child" },
-  { value: "family-2", label: "Family +2", personCount: 4, childrenCount: 2, scalar: 2.65, ikeaScalar: 2.2, pKey: "family2Children" },
-  { value: "family-3", label: "Family +3", personCount: 5, childrenCount: 3, scalar: 3.0, ikeaScalar: 2.58, pKey: "family3PlusChildren" },
+  { value: "couple", label: "Couple", personCount: 2, childrenCount: 0, scalar: 1.6, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
+  { value: "married-sole", label: "Married (sole earner)", personCount: 2, childrenCount: 0, scalar: 1.6, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
+  { value: "married-dual", label: "Married (dual income)", personCount: 2, childrenCount: 0, scalar: 1.6, ikeaScalar: 1.4, pKey: "marriedDualIncome" },
+  { value: "family-1", label: "Family +1", personCount: 3, childrenCount: 1, scalar: 2.0, ikeaScalar: 1.85, pKey: "family1Child" },
+  { value: "family-2", label: "Family +2", personCount: 4, childrenCount: 2, scalar: 2.4, ikeaScalar: 2.2, pKey: "family2Children" },
+  { value: "family-3", label: "Family +3", personCount: 5, childrenCount: 3, scalar: 2.8, ikeaScalar: 2.58, pKey: "family3PlusChildren" },
 ];
 
 export function getProfileByLabel(label: string): FamilyProfileInfo {
