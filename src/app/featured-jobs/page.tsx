@@ -1983,7 +1983,7 @@ export default function FeaturedJobsPage() {
                                           norm === "https://www.taaleem.ae/careers" ||
                                           norm === "https://careers.taaleem.ae" ||
                                           norm === "https://careers.taaleem.ae/en" ||
-                                          norm === "https://careers.taaleem.ae/en/job-search"
+                                          norm === "https://careers.taaleem.ae/en/job-search" || norm.includes("job-search-results") || norm.includes("keyword=")
                                         );
                                       };
 
