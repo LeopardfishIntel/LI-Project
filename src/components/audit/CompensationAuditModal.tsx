@@ -136,9 +136,12 @@ export function CompensationAuditModal({
   const isSecured = driftCount === 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div 
+      className="fixed inset-x-0 bottom-0 top-[60px] sm:top-[68px] z-50 flex items-start justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto"
+      onClick={onClose}
+    >
       <div 
-        className="relative w-full max-w-5xl bg-[#070c18] border border-slate-800 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-5xl bg-[#070c18] border border-slate-800 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-100px)] my-2 sm:my-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* MODAL HEADER */}
