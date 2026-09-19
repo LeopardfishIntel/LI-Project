@@ -1,3 +1,5 @@
+import axios from "axios";
+import * as cheerio from "cheerio";
 /**
  * 🏫 TAALEEM CANONICAL RESOLVER, ATS SWEEPER & CAMPUS REGISTRY
  *
@@ -23,30 +25,145 @@ export interface TaaleemSchoolMeta {
   canonicalName: string;
   city: string;
   country: string;
+  tesEmployerUrl?: string;
 }
 
 export const TAALEEM_CAMPUS_MAP: Record<string, TaaleemSchoolMeta> = {
-  "dubai british school jumeirah park": { schoolId: "FLIS0115_JUMEIRAH_PARK", canonicalName: "Dubai British School Jumeirah Park", city: "Dubai", country: "United Arab Emirates" },
-  "dubai british school emirates hills": { schoolId: "FLIS0115_EMIRATES_HILLS", canonicalName: "Dubai British School Emirates Hills", city: "Dubai", country: "United Arab Emirates" },
-  "dubai british school - mira": { schoolId: "FLIS0115_MIRA", canonicalName: "Dubai British School Mira", city: "Dubai", country: "United Arab Emirates" },
-  "dubai british school - jumeira": { schoolId: "FLIS0115_JUMEIRA", canonicalName: "Dubai British School Jumeira", city: "Dubai", country: "United Arab Emirates" },
-  "dubai british school": { schoolId: "FLIS0115", canonicalName: "Dubai British School", city: "Dubai", country: "United Arab Emirates" },
-  "dubai british foundation": { schoolId: "FLIS0115_DBF", canonicalName: "Dubai British Foundation", city: "Dubai", country: "United Arab Emirates" },
-  "raha international school kcc": { schoolId: "FLIS0113", canonicalName: "Raha International School (Khalifa City)", city: "Abu Dhabi", country: "United Arab Emirates" },
-  "raha international school gc": { schoolId: "FLIS0113", canonicalName: "Raha International School (Gardens Campus)", city: "Abu Dhabi", country: "United Arab Emirates" },
-  "raha international school": { schoolId: "FLIS0113", canonicalName: "Raha International School", city: "Abu Dhabi", country: "United Arab Emirates" },
-  "greenfield international school": { schoolId: "FLIS0116_GIS", canonicalName: "Greenfield International School", city: "Dubai", country: "United Arab Emirates" },
-  "jumeira baccalaureate school": { schoolId: "FLIS0114_JBS", canonicalName: "Jumeira Baccalaureate School", city: "Dubai", country: "United Arab Emirates" },
-  "uptown international school": { schoolId: "FLIS0117_UIS", canonicalName: "Uptown International School", city: "Dubai", country: "United Arab Emirates" },
-  "dubai heights academy": { schoolId: "FLIS0118_DHA", canonicalName: "Dubai Heights Academy", city: "Dubai", country: "United Arab Emirates" },
-  "jebel ali school": { schoolId: "FLIS0119_JAS", canonicalName: "Jebel Ali School", city: "Dubai", country: "United Arab Emirates" },
-  "harrow international school-dubai": { schoolId: "FLIS_HARROW_DXB", canonicalName: "Harrow International School Dubai", city: "Dubai", country: "United Arab Emirates" },
-  "harrow international school abu dhabi": { schoolId: "FLIS_HARROW_AUH", canonicalName: "Harrow International School Abu Dhabi", city: "Abu Dhabi", country: "United Arab Emirates" },
-  "dubai schools al barsha": { schoolId: "FLIS_DS_BARSHA", canonicalName: "Dubai Schools Al Barsha", city: "Dubai", country: "United Arab Emirates" },
-  "dubai schools al khawaneej": { schoolId: "FLIS_DS_KHAWANEEJ", canonicalName: "Dubai Schools Al Khawaneej", city: "Dubai", country: "United Arab Emirates" },
-  "dubai school nad al sheba": { schoolId: "FLIS_DS_NAS", canonicalName: "Dubai School Nad Al Sheba", city: "Dubai", country: "United Arab Emirates" },
-  "lycée libanais francophone privé meydan": { schoolId: "FLIS_LLFP_MEYDAN", canonicalName: "Lycée Libanais Francophone Privé Meydan", city: "Dubai", country: "United Arab Emirates" },
-  "taaleem": { schoolId: "FLIS0115", canonicalName: "Taaleem Education", city: "Dubai", country: "United Arab Emirates" }
+  "dubai british school jumeirah park": { 
+    schoolId: "FLIS0115_JUMEIRAH_PARK", 
+    canonicalName: "Dubai British School Jumeirah Park", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-jumeirah-park-1081671"
+  },
+  "dubai british school emirates hills": { 
+    schoolId: "FLIS0115_EMIRATES_HILLS", 
+    canonicalName: "Dubai British School Emirates Hills", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-emirates-hills-1057169"
+  },
+  "dubai british school - mira": { 
+    schoolId: "FLIS0115_MIRA", 
+    canonicalName: "Dubai British School Mira", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-mira-1255316"
+  },
+  "dubai british school - jumeira": { 
+    schoolId: "FLIS0115_JUMEIRA", 
+    canonicalName: "Dubai British School Jumeira", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-jumeira-1265177"
+  },
+  "dubai british school": { 
+    schoolId: "FLIS0115", 
+    canonicalName: "Dubai British School", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/dubai-british-school-emirates-hills-1057169"
+  },
+  "dubai british foundation": { 
+    schoolId: "FLIS0115_DBF", 
+    canonicalName: "Dubai British Foundation", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "raha international school kcc": { 
+    schoolId: "FLIS0113", 
+    canonicalName: "Raha International School (Khalifa City)", 
+    city: "Abu Dhabi", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
+  },
+  "raha international school gc": { 
+    schoolId: "FLIS0113", 
+    canonicalName: "Raha International School (Gardens Campus)", 
+    city: "Abu Dhabi", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
+  },
+  "raha international school": { 
+    schoolId: "FLIS0113", 
+    canonicalName: "Raha International School", 
+    city: "Abu Dhabi", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/raha-international-school-gardens-campus-1070644"
+  },
+  "greenfield international school": { 
+    schoolId: "FLIS0116_GIS", 
+    canonicalName: "Greenfield International School", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "jumeira baccalaureate school": { 
+    schoolId: "FLIS0114_JBS", 
+    canonicalName: "Jumeira Baccalaureate School", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "uptown international school": { 
+    schoolId: "FLIS0117_UIS", 
+    canonicalName: "Uptown International School", 
+    city: "Dubai", 
+    country: "United Arab Emirates",
+    tesEmployerUrl: "https://www.tes.com/jobs/employer/uptown-international-school-1081669"
+  },
+  "dubai heights academy": { 
+    schoolId: "FLIS0118_DHA", 
+    canonicalName: "Dubai Heights Academy", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "jebel ali school": { 
+    schoolId: "FLIS0119_JAS", 
+    canonicalName: "Jebel Ali School", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "harrow international school-dubai": { 
+    schoolId: "FLIS_HARROW_DXB", 
+    canonicalName: "Harrow International School Dubai", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "harrow international school abu dhabi": { 
+    schoolId: "FLIS_HARROW_AUH", 
+    canonicalName: "Harrow International School Abu Dhabi", 
+    city: "Abu Dhabi", 
+    country: "United Arab Emirates" 
+  },
+  "dubai schools al barsha": { 
+    schoolId: "FLIS_DS_BARSHA", 
+    canonicalName: "Dubai Schools Al Barsha", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "dubai schools al khawaneej": { 
+    schoolId: "FLIS_DS_KHAWANEEJ", 
+    canonicalName: "Dubai Schools Al Khawaneej", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "dubai school nad al sheba": { 
+    schoolId: "FLIS_DS_NAS", 
+    canonicalName: "Dubai School Nad Al Sheba", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "lycée libanais francophone privé meydan": { 
+    schoolId: "FLIS_LLFP_MEYDAN", 
+    canonicalName: "Lycée Libanais Francophone Privé Meydan", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  },
+  "taaleem": { 
+    schoolId: "FLIS0115", 
+    canonicalName: "Taaleem Education", 
+    city: "Dubai", 
+    country: "United Arab Emirates" 
+  }
 };
 
 /**
@@ -169,6 +286,72 @@ function normalizeTitleKey(t: string): string {
 /**
  * 🧹 SYNC & CROSS-LINK ALL TAALEEM DIRECT VACANCIES TO FIRESTORE CACHE
  */
+/**
+ * Fetches all live TES vacancies for a given TES employer portal URL
+ */
+async function fetchTesEmployerVacancies(employerUrl: string): Promise<Array<{ title: string; tesUrl: string }>> {
+  if (!employerUrl) return [];
+  try {
+    const res = await axios.get(employerUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" },
+      timeout: 10000,
+    });
+    const $ = cheerio.load(res.data);
+    const jobs: Array<{ title: string; tesUrl: string }> = [];
+    $("a[href*=\"/jobs/vacancy/\"]").each((_, el) => {
+      const href = $(el).attr("href");
+      const title = $(el).find(".job-v2-mobile-title strong, strong").first().text().trim() || $(el).text().trim();
+      if (href && !jobs.some(j => j.tesUrl === href)) {
+        const fullHref = href.startsWith("http") ? href : `https://www.tes.com${href}`;
+        jobs.push({ title, tesUrl: fullHref });
+      }
+    });
+    return jobs;
+  } catch (e: any) {
+    console.warn(`⚠️ [TAALEEM ENGINE] Could not fetch TES vacancies for ${employerUrl}: ${e.message}`);
+    return [];
+  }
+}
+
+/**
+ * 🧹 SYNC & CROSS-LINK ALL TAALEEM DIRECT VACANCIES TO FIRESTORE CACHE
+ */
+
+const SUBJECT_KEYWORDS: Record<string, string[]> = {
+  librarian: ["librar"],
+  science: ["science", "biology", "chemistry", "physics"],
+  maths: ["math", "mathematics"],
+  english: ["english", "literature", "language and lit"],
+  humanities: ["humanities", "history", "politics", "psychology", "geography"],
+  social_studies: ["social studies", "uae social"],
+  islamic: ["islamic"],
+  arabic: ["arabic"],
+  pe: ["head of pe", "pe teacher", "pe ", " pe", "(pe)", "physical education"],
+  music: ["music"],
+  art: ["art", "drama", "theatre"],
+  mfl: ["mfl", "french", "spanish"],
+  homeroom: ["homeroom", "primary teacher", "early years", "eyfs", "ks1", "ks2", "kindergarten"],
+  counselor: ["counsel"],
+  inclusion: ["inclusion", "learning support", "sen", "special needs"],
+};
+
+function detectSubject(title: string): string | null {
+  const t = (title || "").toLowerCase();
+  for (const [subj, keywords] of Object.entries(SUBJECT_KEYWORDS)) {
+    if (keywords.some(k => t.includes(k))) return subj;
+  }
+  return null;
+}
+
+function findBestTesMatch(jobTitle: string, tesList: Array<{ title: string; tesUrl: string }>): string | undefined {
+  const subj = detectSubject(jobTitle);
+  if (subj) {
+    const match = tesList.find(t => detectSubject(t.rawTitle || t.cleanTitle || t.title || "") === subj);
+    if (match) return match.tesUrl;
+  }
+  return undefined;
+}
+
 export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; crossLinked: number }> {
   console.log("🏫 [TAALEEM ENGINE] Starting full network direct sweep and cache synchronization...");
   const rawJobs = await sweepAllTaaleemNetwork();
@@ -197,7 +380,41 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       salaryRange: "$4,200.00",
       housingprovision: "Provided",
     };
-    companyToSchoolMap.set(companyKey, { ...sDoc, canonicalName: meta.canonicalName, schoolId: meta.schoolId });
+    companyToSchoolMap.set(companyKey, { 
+      ...sDoc, 
+      canonicalName: meta.canonicalName, 
+      schoolId: meta.schoolId,
+      tesEmployerUrl: meta.tesEmployerUrl 
+    });
+  }
+
+  // 1. Sweep active TES employer vacancies for all Taaleem campuses
+  console.log("🔍 [TAALEEM ENGINE] Sweeping active TES employer vacancies for cross-linking...");
+  const tesJobsBySchool = new Map<string, Array<{ rawTitle: string; cleanTitle: string; normKey: string; tesUrl: string }>>();
+  
+  const uniqueEmployers = new Map<string, { schoolId: string; tesEmployerUrl: string }>();
+  for (const meta of Object.values(TAALEEM_CAMPUS_MAP)) {
+    if (meta.tesEmployerUrl && !uniqueEmployers.has(meta.tesEmployerUrl)) {
+      uniqueEmployers.set(meta.tesEmployerUrl, { schoolId: meta.schoolId, tesEmployerUrl: meta.tesEmployerUrl });
+    }
+  }
+
+  for (const { schoolId, tesEmployerUrl } of uniqueEmployers.values()) {
+    const scrapedTes = await fetchTesEmployerVacancies(tesEmployerUrl);
+    if (scrapedTes.length > 0) {
+      if (!tesJobsBySchool.has(schoolId)) tesJobsBySchool.set(schoolId, []);
+      for (const tJob of scrapedTes) {
+        const cleanT = cleanTaaleemJobTitle(tJob.title);
+        const normK = normalizeTitleKey(cleanT);
+        tesJobsBySchool.get(schoolId)!.push({
+          rawTitle: tJob.title,
+          cleanTitle: cleanT,
+          normKey: normK,
+          tesUrl: tJob.tesUrl,
+        });
+      }
+      console.log(`   ✓ [TES] Scraped ${scrapedTes.length} active vacancies from ${tesEmployerUrl}`);
+    }
   }
 
   let ingestedCount = 0;
@@ -244,6 +461,25 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
     const idMatch = applyUrl.match(/-(\d+)\/?$/);
     const docId = idMatch ? `taaleem_${idMatch[1]}` : `taaleem_${Buffer.from(applyUrl).toString("base64url").slice(0, 20)}`;
 
+    // Match with TES vacancies
+    const schoolTesList = tesJobsBySchool.get(schoolId) || [];
+    const matchedTesUrl = findBestTesMatch(rawTitle, schoolTesList) || findBestTesMatch(cleanTitle, schoolTesList);
+
+    // Fallback to school TES employer portal if individual TES post was not matched
+    const finalTesUrl = matchedTesUrl || matchedMeta.tesEmployerUrl;
+
+    const sources = ["Taaleem"];
+    const sourceUrls: Record<string, string> = {
+      Taaleem: applyUrl,
+      TAALEEM: applyUrl,
+    };
+
+    if (finalTesUrl) {
+      sources.unshift("TES");
+      sourceUrls["TES"] = finalTesUrl;
+      sourceUrls["tes"] = finalTesUrl;
+    }
+
     const cacheDoc = {
       id: docId,
       jobId: docId,
@@ -253,12 +489,9 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       schoolName: schoolName,
       city: matchedMeta.city || "Dubai",
       country: matchedMeta.country || "United Arab Emirates",
-      source: "Taaleem",
-      sources: ["Taaleem"],
-      sourceUrls: {
-        Taaleem: applyUrl,
-        TAALEEM: applyUrl,
-      },
+      source: finalTesUrl ? "TES" : "Taaleem",
+      sources: sources,
+      sourceUrls: sourceUrls,
       applyUrl: applyUrl,
       directUrl: applyUrl,
       curriculum: extractTaaleemCurriculumTrack(rawTitle, job.description).join(", "),
@@ -277,9 +510,9 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
     ingestedCount++;
   }
 
-  console.log(`✅ [TAALEEM ENGINE] Successfully ingested ${ingestedCount} direct Taaleem vacancies.`);
+  console.log(`✅ [TAALEEM ENGINE] Successfully ingested ${ingestedCount} direct Taaleem vacancies with dual links.`);
 
-  // Now cross-link all existing dual-listed TES jobs in featured_jobs_cache
+  // Cross-link existing dual-listed TES jobs in featured_jobs_cache
   let crossLinkedCount = 0;
   const cacheSnap = await db.collection("featured_jobs_cache").get();
 
@@ -312,7 +545,6 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
     // Find best direct match
     let matchedDirect = directCandidates.find(c => c.normKey === dNorm || dNorm.includes(c.normKey) || c.normKey.includes(dNorm));
     if (!matchedDirect) {
-      // Word overlap score
       const dWords = dNorm.split(" ").filter(w => w.length > 2);
       let bestScore = 0;
       for (const cand of directCandidates) {
