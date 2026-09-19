@@ -182,7 +182,7 @@ Additional Context:
 Instructions:
 1. **Style**: Strictly UK English. Use authentic British staffroom terms where natural (e.g., SLT, PPA time, TLR, prep time, supply cover, key stages, Head of Dept, staffroom vibe, cost of living, standard of living, school day).
 2. **Goal**: Say the exact same things, but completely reworded. If the source briefing is ~600 words, make this reworded version around ~500-600 words as well, formatted beautifully in 3 to 4 strong, detailed paragraphs separated by double newlines (\\n\\n).
-3. **No Direct Copying**: Do not copy exact sentences or structural headers word-for-word. It must read like a completely distinct colleague-to-colleague advisory sharing the exact same ground-truth facts.
+3. **No Direct Copying**: Do not copy exact sentences or structural headers word-for-word. It must read like a completely distinct colleague-to-colleague advice sharing the exact same ground-truth facts.
 4. **Tone**: Warm, candid, authoritative, and supportive. Focus on what it's *actually* like on the ground for a teacher of this profile.
 
 Provide only the reworded text. No intro or outro.`,

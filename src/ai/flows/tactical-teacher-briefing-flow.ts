@@ -31,13 +31,13 @@ const SALARY_INTEL_COUNTRIES = new Set([
 function buildAdvisoryCommentary(input: z.infer<typeof TacticalBriefingInputSchema>) {
   let additionalAdvisory = "";
 
-  // 1. 13th/14th Month Multiplier Advisory
+  // 1. 13th/14th Month Multiplier Advice
   const normCountry = input.country?.toLowerCase().trim() || "";
   const has13thOr14th = Array.from(SALARY_INTEL_COUNTRIES).some(
     c => normCountry.includes(c) || (c.length > 3 && normCountry.length > 3 && c.includes(normCountry))
   );
   if (has13thOr14th) {
-    additionalAdvisory += `\n\nAdvisory: Because ${input.country || "the target country"} utilizes a 13th and/or 14th-month salary system (or seasonal bonus equivalents), you are highly encouraged to verify the exact structural amount, payroll distribution schedule, and statutory tax reductions with the school's HR department.`;
+    additionalAdvisory += `\n\nAdvice: Because ${input.country || "the target country"} utilises a 13th and/or 14th-month salary system (or seasonal bonus equivalents), you are highly encouraged to verify the exact structural amount, payroll distribution schedule, and statutory tax reductions with the school's HR department.`;
   }
 
   // 2. Dependent Tuition Safeguard

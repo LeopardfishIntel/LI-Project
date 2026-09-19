@@ -3025,12 +3025,12 @@ function DecoderContent() {
                         <span className="text-[18px] font-black text-white tabular-nums leading-normal">{currency} {Math.round(analysis?.totalOut || 0).toLocaleString()}</span>
                       </div>
 
-                      {/* ⚠️ FAMILY +3 CONTRACT ADVISORY */}
+                      {/* ⚠️ FAMILY +3 CONTRACT ADVICE */}
                       {(settings.familyStatus.includes('+3') || settings.familyStatus.toLowerCase().includes('3')) && (
                         <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-sm space-y-1 text-left animate-in fade-in slide-in-from-top-1 duration-200">
                           <div className="flex items-center gap-1.5 text-amber-400">
                             <AlertTriangle className="size-3.5 shrink-0 text-amber-400" />
-                            <span className="text-[10px] font-black uppercase tracking-wider">Family +3 Contract Advisory</span>
+                            <span className="text-[10px] font-black uppercase tracking-wider">Family +3 Contract Advice</span>
                           </div>
                           <p className="text-[10.5px] text-slate-300 leading-relaxed font-medium">
                             Tuition seats for a 3rd child may not be fully covered by the employer, and provided staff housing is often restricted to 2–3 bedroom configurations. Please check tuition subsidies and housing allocations directly with the school.
@@ -3038,12 +3038,12 @@ function DecoderContent() {
                         </div>
                       )}
 
-                      {/* ℹ️ FAMILY +1 & +2 TUITION COVERAGE ADVISORY */}
+                      {/* ℹ️ FAMILY +1 & +2 TUITION COVERAGE ADVICE */}
                       {(settings.familyStatus.includes('+1') || settings.familyStatus.includes('+2') || settings.familyStatus === 'Family +1' || settings.familyStatus === 'Family +2') && (
                         <div className="mt-3 p-3 bg-sky-500/10 border border-sky-500/30 rounded-sm space-y-1 text-left animate-in fade-in slide-in-from-top-1 duration-200">
                           <div className="flex items-center gap-1.5 text-sky-400">
                             <Info className="size-3.5 shrink-0 text-sky-400" />
-                            <span className="text-[10px] font-black uppercase tracking-wider">Dependent Tuition Advisory</span>
+                            <span className="text-[10px] font-black uppercase tracking-wider">Dependent Tuition Advice</span>
                           </div>
                           <p className="text-[10.5px] text-slate-300 leading-relaxed font-medium">
                             Tuition may not be 100% fully covered (many schools provide partial subsidies or require registration / capital levy contributions). Please check exact dependent tuition terms directly with the school.
