@@ -3989,14 +3989,14 @@ function DecoderContent() {
                       key: 'classSize',
                       label: 'Class Size',
                       icon: <Building className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.classSize || activeSchool.classsize || '—'
+                      value: activeSchool.intel?.classSize || activeSchool.classsize || (activeSchool as any).classSize || '—'
                     },
                     {
                       key: 'contact',
                       label: 'Non-Contact Time',
                       icon: <Clock className="size-5 text-sky-400" />,
                       value: (() => {
-                        const raw = activeSchool.intel?.nonContactTime || (activeSchool as any).noncontacttime;
+                        const raw = activeSchool.intel?.nonContactTime || (activeSchool as any).noncontacttime || (activeSchool as any).non_contact_time || (activeSchool as any).nonContactTime;
                         if (raw === undefined || raw === null || raw === '' || raw === '—') return '—';
                         const s = String(raw).trim();
                         return s.endsWith('%') ? s : `${s}%`;
@@ -4006,7 +4006,7 @@ function DecoderContent() {
                       key: 'accreditation',
                       label: 'Accreditation',
                       icon: <Award className="size-5 text-sky-400" />,
-                      value: activeSchool.intel?.accreditation || (activeSchool as any).approvals || 'International'
+                      value: activeSchool.intel?.accreditation || (activeSchool as any).approvals || (activeSchool as any).accreditation || 'International'
                     },
                   ];
 
@@ -4062,7 +4062,7 @@ function DecoderContent() {
                           <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1.5">
                             <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Visa & Deployment Intel</p>
                             <div className="text-xs text-slate-300 font-medium leading-relaxed space-y-1.5">
-                              <p>{(activeSchool.intel?.visaRestrictions || activeReq?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
+                              <p>{(activeSchool.intel?.visaRestrictions || (activeSchool as any).visa || (activeSchool as any).visa_details || activeReq?.visa_notes || 'Standard regional requirements apply.').replace(/\.([A-Z])/g, '. $1')}</p>
                               <div className="pt-1.5 border-t border-white/5 text-xs text-slate-300 font-medium leading-relaxed flex flex-col gap-1.5">
                                 {(activeReq?.max_age_f || activeReq?.max_age_m) && (
                                   <span className="leading-tight">• Max Age: {activeReq.max_age_f} (F) / {activeReq.max_age_m} (M)</span>
@@ -4119,6 +4119,12 @@ function DecoderContent() {
                               <p className="text-xs text-emerald-100 font-bold leading-relaxed">{activeSchool.taxExemptionStatus}</p>
                             </div>
                           )}
+                          {((activeSchool as any).tax_details || (activeSchool as any).taxDetails || (activeSchool as any).taxation) && !activeSchool.taxExemptionStatus && (
+                            <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1 md:col-span-2">
+                              <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Tax & Payroll Structure</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).tax_details || (activeSchool as any).taxDetails || (activeSchool as any).taxation}</p>
+                            </div>
+                          )}
                           {(activeSchool as any).payrollFramework && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1 md:col-span-2">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">14-Month Payroll Structure & Tax Advantage</p>
@@ -4131,34 +4137,34 @@ function DecoderContent() {
                               <p className="text-xs text-slate-300 font-medium leading-relaxed">{(activeSchool as any).positionalAllowances}</p>
                             </div>
                           )}
-                          {(activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance) && (
+                          {(activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance || (activeSchool as any).housing_provision || (activeSchool as any).housing_status) && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Housing & Boarding Perks</p>
-                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance}</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.housingBenefit || (activeSchool as any).housingprovision || (activeSchool as any).housingAllowance || (activeSchool as any).housing_provision || (activeSchool as any).housing_status}</p>
                             </div>
                           )}
-                          {(activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage) && (
+                          {(activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage || (activeSchool as any).health) && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Healthcare & Social Security</p>
-                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage}</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.healthcoverage || (activeSchool as any).healthInsurance || (activeSchool as any).healthCoverage || (activeSchool as any).health}</p>
                             </div>
                           )}
-                          {activeSchool.tuitionBenefit && (
+                          {(activeSchool.tuitionBenefit || (activeSchool as any).tuition || (activeSchool as any).tuition_benefit) && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Dependent Child Tuition Benefit</p>
-                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.tuitionBenefit}</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.tuitionBenefit || (activeSchool as any).tuition || (activeSchool as any).tuition_benefit}</p>
                             </div>
                           )}
-                          {(activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance) && (
+                          {(activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance || (activeSchool as any).relocation) && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Relocation & Immigration Support</p>
-                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance}</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.relocationBenefit || (activeSchool as any).relocationAllowance || (activeSchool as any).relocation}</p>
                             </div>
                           )}
-                          {(activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights) && (
+                          {(activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights || (activeSchool as any).flights) && (
                             <div className="bg-black/30 border border-white/5 rounded-sm p-3 space-y-1">
                               <p className="text-[10px] font-black uppercase text-[#d95f02] tracking-wider">Travel & Home Leave Subsidies</p>
-                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights}</p>
+                              <p className="text-xs text-slate-300 font-medium leading-relaxed">{activeSchool.travelBenefit || (activeSchool as any).flightAllowance || (activeSchool as any).annualFlights || (activeSchool as any).flights}</p>
                             </div>
                           )}
                           {(activeSchool as any).languageAndTechSupport && (
