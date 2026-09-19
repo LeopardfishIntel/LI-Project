@@ -10,7 +10,7 @@ import {
   Briefcase, ChevronDown, RefreshCw, HelpCircle,
   Home, Utensils, Wifi, Smartphone, Coffee, TramFront, Stethoscope, Award, TrendingUp, Users, Building2, HeartHandshake,
   HeartPulse, Laptop, Building, Sliders, BarChart3,
-  Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2, Plane
+  Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2, Plane, Maximize2, Minimize2, X
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
 import { collection, doc, query, where } from 'firebase/firestore';
@@ -490,6 +490,9 @@ function DecoderContent() {
   const [stabilityCountdown, setStabilityCountdown] = useState(90);
   const [stabilityError, setStabilityError] = useState<string | null>(null);
   const [turnoverUnlocked, setTurnoverUnlocked] = useState(false);
+  const [isLedgerModalOpen, setIsLedgerModalOpen] = useState(false);
+  const [ledgerSearchTerm, setLedgerSearchTerm] = useState("");
+  const [ledgerFilterCycle, setLedgerFilterCycle] = useState<"ALL" | "CURRENT" | "HISTORIC">("ALL");
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [requestedSchoolId, setRequestedSchoolId] = useState<string | null>(null);
   const [requestedSchoolName, setRequestedSchoolName] = useState<string | null>(null);
@@ -736,17 +739,24 @@ function DecoderContent() {
   }, []);
 
   const normalizeJobTitleKey = useCallback((title: string): string => {
-    if (!title || typeof title !== 'string') return '';
+    if (!title || typeof title !== "string") return "";
     let clean = title
-      .replace(/\([^)]*\)/g, '')
-      .replace(/\(.*$/, '')
-      .replace(/\b(misk\s+schools|reigate\s+grammar|downe\s+house|al\s+faris|british\s+international).*$/gi, '')
-      .toLowerCase()
-      .replace(/\b(school\s*year|sy|academic\s*year)?\s*202[4-7](\s*[\/-]\s*202[4-7])?\b/gi, '')
-      .replace(/\b(pos(ition)?|ref|full[\s-]?time|part[\s-]?time)\b/gi, '')
-      .replace(/[^a-z0-9\s]/g, '')
-      .replace(/\s+/g, ' ')
+      .replace(/\([^)]*\)/g, "")
+      .replace(/\(.*$/, "")
+      .toLowerCase();
+
+    // Strip campus and school noise
+    clean = clean
+      .replace(/\b(raha\s+international(\s+school)?|raha\s+gardens(\s+campus)?|gardens\s+campus|khalifa\s+city(\s+campus)?|kcc|gc|ris)\b/gi, "")
+      .replace(/\b(dubai\s+british(\s+school)?|emirates\s+hills|jumeirah\s+park|mira|jumeira|dbs|dbf)\b/gi, "")
+      .replace(/\b(immediate\s+start|maternity\s+cover|temp\s+role|january\s+start|august\s+202[4-7]|jan\s+202[4-7]|january\s+202[4-7]|academic\s+year.*|202[4-7](\s*[\/-]\s*202[4-7])?)\b/gi, "")
+      .replace(/\b(school\s*year|sy|academic\s*year)?\s*202[4-7](\s*[\/-]\s*202[4-7])?\b/gi, "")
+      .replace(/\b(misk\s+schools|reigate\s+grammar|downe\s+house|al\s+faris|british\s+international).*$/gi, "")
+      .replace(/\b(pos(ition)?|ref|full[\s-]?time|part[\s-]?time|btec|sec|secondary|primary)\b/gi, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
       .trim();
+
     return clean;
   }, []);
 
@@ -920,21 +930,26 @@ function DecoderContent() {
       .filter(job => job.rawPostedDate >= twentyFourMonthsAgo)
       .filter(job => isValidJobTitle(job.title) && !isInvalidNonJobTitle(job.title) && !isCityOrCampusMismatch(job.title, activeSchool?.city, activeSchool?.country, job.schoolId, activeSchool?.id));
 
-    // 🎯 SMART DEDUPLICATION (PRESERVING GENUINE EXTRA POSITIONS WHILE STOPPING RE-SCRAPE DUPLICATES)
+    // 🎯 SMART DEDUPLICATION (PRESERVING GENUINE EXTRA POSITIONS WHILE COLLAPSING MULTI-PORTAL DUAL LISTINGS)
     const result: any[] = [];
     rawList.forEach((job: any) => {
-      const jobNormKey = normalizeJobTitleKey(job.title);
+      const jobNormKey = normalizeJobTitleKey(job.title || job.rawTitle || "");
 
       const matchIndex = result.findIndex((existing: any) => {
         // 1. Exact ID match
         if (existing.id && job.id && existing.id === job.id) return true;
 
-        // 2. Same normalized job title key (collapses re-scrapes of exact same position)
-        const existingNormKey = normalizeJobTitleKey(existing.title);
-        if (jobNormKey && existingNormKey && jobNormKey === existingNormKey) return true;
+        // 2. Same normalized job title key or substring match (collapses multi-portal dual-listings)
+        const existingNormKey = normalizeJobTitleKey(existing.title || existing.rawTitle || "");
+        if (jobNormKey && existingNormKey) {
+          if (jobNormKey === existingNormKey) return true;
+          if (jobNormKey.length > 3 && existingNormKey.length > 3) {
+            if (jobNormKey.includes(existingNormKey) || existingNormKey.includes(jobNormKey)) return true;
+          }
+        }
 
         // 3. Exact applyUrl match (same specific web listing)
-        if (existing.applyUrl && job.applyUrl && existing.applyUrl === job.applyUrl && !job.applyUrl.endsWith('/career/') && !job.applyUrl.endsWith('/careers')) return true;
+        if (existing.applyUrl && job.applyUrl && existing.applyUrl === job.applyUrl && !job.applyUrl.endsWith("/career/") && !job.applyUrl.endsWith("/careers")) return true;
 
         return false;
       });
@@ -943,19 +958,38 @@ function DecoderContent() {
         result.push(job);
       } else {
         const existing = result[matchIndex];
+        
+        // Merge sources into existing item
+        const existingSources = existing.sources || [existing.source || "Web"];
+        const newSources = job.sources || [job.source || "Web"];
+        newSources.forEach((s: string) => {
+          if (!existingSources.includes(s)) existingSources.push(s);
+        });
+        existing.sources = existingSources;
+        if (existingSources.length > 1) {
+          existing.source = existingSources.join(" / ");
+        }
+
+        // Merge sourceUrls
+        if (job.sourceUrls) {
+          existing.sourceUrls = { ...(existing.sourceUrls || {}), ...job.sourceUrls };
+        }
+
         if (existing.isRolling && !job.isRolling) {
-          result[matchIndex] = job;
+          result[matchIndex] = { ...job, sources: existingSources, sourceUrls: existing.sourceUrls };
         } else if (!existing.isRolling && job.isRolling) {
           // Keep explicit non-rolling closed record
-        } else if (job.status === 'open' && existing.status !== 'open') {
-          result[matchIndex] = job;
+        } else if (job.status === "open" && existing.status !== "open") {
+          result[matchIndex] = { ...job, sources: existingSources, sourceUrls: existing.sourceUrls };
         } else if (job.status === existing.status) {
           if (job.rawClosesDate && existing.rawClosesDate && job.rawClosesDate > existing.rawClosesDate) {
-            result[matchIndex] = job;
+            result[matchIndex] = { ...job, sources: existingSources, sourceUrls: existing.sourceUrls };
           }
         }
       }
     });
+
+
 
     return result.sort((a, b) => {
       if (a.status === 'open' && b.status !== 'open') return -1;
@@ -2596,7 +2630,174 @@ function DecoderContent() {
                         </div>
                       </TooltipContent>
                     </Tooltip>
-                  </TooltipProvider>
+              
+      {/* 🪟 FULL-SCREEN EXPANDED DISCOVERED VACANCIES LEDGER MODAL */}
+      {isLedgerModalOpen && activeSchool && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-[#070d18] border border-white/15 rounded-xl shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/10 bg-slate-900/70">
+              <div className="space-y-1 min-w-0 flex-1 mr-4">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="size-2.5 rounded-full bg-teal-400 animate-pulse" />
+                  <h3 className="text-sm sm:text-base font-black uppercase text-white tracking-wider truncate">
+                    Discovered Vacancies Ledger
+                  </h3>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30 shrink-0">
+                    {allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT").length} Current • {allProcessedJobs.filter(j => j.recruitmentCycle === "HISTORIC_Y1").length} Historic
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 font-medium truncate">
+                  {activeSchool.schoolname || activeSchool.school || activeSchool.name} • {activeSchool.city || "—"}, {activeSchool.country || "—"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsLedgerModalOpen(false)}
+                className="size-8 rounded-lg flex items-center justify-center bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/10 transition-colors shrink-0"
+                title="Close"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Filter / Search Bar */}
+            <div className="p-3 sm:p-4 bg-white/[0.02] border-b border-white/5 flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative flex-1 w-full">
+                <input
+                  type="text"
+                  value={ledgerSearchTerm}
+                  onChange={(e) => setLedgerSearchTerm(e.target.value)}
+                  placeholder="Search positions by title, subject, department, or portal..."
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-teal-500/50"
+                />
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                {(["ALL", "CURRENT", "HISTORIC"] as const).map((cycle) => {
+                  const count = cycle === "ALL" 
+                    ? allProcessedJobs.length 
+                    : cycle === "CURRENT" 
+                      ? allProcessedJobs.filter(j => j.recruitmentCycle === "CURRENT").length 
+                      : allProcessedJobs.filter(j => j.recruitmentCycle === "HISTORIC_Y1").length;
+                  return (
+                    <button
+                      key={cycle}
+                      type="button"
+                      onClick={() => setLedgerFilterCycle(cycle)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider transition-all flex-1 sm:flex-initial",
+                        ledgerFilterCycle === cycle
+                          ? "bg-teal-500 text-black shadow-lg shadow-teal-500/20"
+                          : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      {cycle === "ALL" ? "All (" + count + ")" : cycle === "CURRENT" ? "Current (" + count + ")" : "Historic (" + count + ")"}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Body - Scrollable Job List */}
+            <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-2.5">
+              {(() => {
+                const searchLower = ledgerSearchTerm.toLowerCase().trim();
+                const filtered = allProcessedJobs.filter((job) => {
+                  if (ledgerFilterCycle === "CURRENT" && job.recruitmentCycle !== "CURRENT") return false;
+                  if (ledgerFilterCycle === "HISTORIC" && job.recruitmentCycle !== "HISTORIC_Y1") return false;
+                  if (!searchLower) return true;
+                  const titleMatch = (job.title || "").toLowerCase().includes(searchLower);
+                  const deptMatch = (job.department || "").toLowerCase().includes(searchLower);
+                  const srcMatch = (job.source || "").toLowerCase().includes(searchLower);
+                  const sourcesMatch = Array.isArray(job.sources) && job.sources.some((s: string) => String(s).toLowerCase().includes(searchLower));
+                  return titleMatch || deptMatch || srcMatch || sourcesMatch;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="py-12 text-center text-slate-500 text-xs font-semibold">
+                      No discovered vacancies matching your search criteria.
+                    </div>
+                  );
+                }
+
+                return filtered.map((job, idx) => (
+                  <div 
+                    key={"modal-job-" + idx} 
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <span className={cn("size-2 rounded-full border shrink-0", getSourceColorDot(job.source, job.applyUrl))} title={"Source: " + (job.source || 'Web Portal')} />
+                      <span className="text-slate-500 font-bold tracking-tight text-[10px] shrink-0 w-5">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-slate-200 text-xs truncate" title={job.title}>
+                            {job.title || "Unknown Position"}
+                          </span>
+                          {job.department && (
+                            <span className="text-[9px] font-bold text-slate-400 bg-white/5 px-1.5 py-0.5 rounded shrink-0">
+                              {job.department}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] text-slate-500 flex-wrap">
+                          <span>Source: <strong className="text-slate-400 font-semibold">{job.source}</strong></span>
+                          {job.postedDate && (
+                            <span>• Listed: <span className="text-slate-400">{job.postedDate}</span></span>
+                          )}
+                          {job.closesDate && (
+                            <span>• Closes: <span className="text-slate-400">{job.closesDate}</span></span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 justify-between sm:justify-end pl-8 sm:pl-0">
+                      <span className={cn(
+                        "text-[9px] font-black uppercase px-2 py-0.5 rounded border shrink-0",
+                        job.status === 'open'
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                      )}>
+                        {job.status === 'open' ? (job.closesDate ? "Closes: " + job.closesDate : 'Open') : 'Closed'}
+                      </span>
+                      {job.applyUrl && (
+                        <a
+                          href={job.applyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 px-2.5 py-1 rounded bg-teal-500/15 text-teal-300 hover:bg-teal-500 hover:text-black font-bold text-[10px] border border-teal-500/30 transition-all shrink-0"
+                        >
+                          <span>Portal</span>
+                          <ArrowUpRight className="size-2.5" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 sm:p-4 border-t border-white/10 bg-black/40 flex items-center justify-between text-[11px] text-slate-400">
+              <span className="text-[10px] text-slate-500 hidden sm:inline">
+                * Dual-listed vacancies across multiple platforms are deduplicated and counted as a single position.
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsLedgerModalOpen(false)}
+                className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded font-bold text-xs transition-colors ml-auto"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </TooltipProvider>
                 </div>
 
                 {/* Main Grid: Outgoings & Incomes */}
@@ -3623,7 +3824,7 @@ function DecoderContent() {
                                         <div className="border border-white/5 bg-black/10 rounded-sm">
                                           <details className="group" open>
                                             <summary className="flex items-center justify-between p-2.5 cursor-pointer select-none text-[10px] font-black uppercase tracking-wider text-sky-400 hover:bg-white/5 transition-colors">
-                                              <span>
+                                              <span className="truncate flex-1 mr-2">
                                                 View Discovered Vacancies ({processedJobs12.length} Current, {historicJobs.length} Historic)
                                                 {activeSchool && (
                                                   <span className="text-slate-300 font-bold tracking-normal normal-case ml-1.5">
@@ -3631,7 +3832,22 @@ function DecoderContent() {
                                                   </span>
                                                 )}
                                               </span>
-                                              <ChevronDown className="size-3 text-slate-500 group-open:rotate-180 transition-transform" />
+                                              <div className="flex items-center gap-1.5 shrink-0">
+                                                <button
+                                                  type="button"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setIsLedgerModalOpen(true);
+                                                  }}
+                                                  className="flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 transition-colors text-[9px] font-bold"
+                                                  title="Expand Full Discovered Vacancies Ledger"
+                                                >
+                                                  <Maximize2 className="size-3 text-teal-400" />
+                                                  <span className="text-teal-300">Expand</span>
+                                                </button>
+                                                <ChevronDown className="size-3 text-slate-500 group-open:rotate-180 transition-transform" />
+                                              </div>
                                             </summary>
                                             <div className="p-3 border-t border-white/5 space-y-4 bg-[#0b1224]/50 max-h-60 overflow-y-auto">
                                               <p className="text-[11px] text-slate-400 italic pb-2 border-b border-white/5">

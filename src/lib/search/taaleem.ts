@@ -343,7 +343,7 @@ function detectSubject(title: string): string | null {
   return null;
 }
 
-function findBestTesMatch(jobTitle: string, tesList: Array<{ title: string; tesUrl: string }>): string | undefined {
+function findBestTesMatch(jobTitle: string, tesList: Array<{ rawTitle?: string; cleanTitle?: string; title?: string; tesUrl: string }>): string | undefined {
   const subj = detectSubject(jobTitle);
   if (subj) {
     const match = tesList.find(t => detectSubject(t.rawTitle || t.cleanTitle || t.title || "") === subj);
