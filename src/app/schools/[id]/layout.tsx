@@ -44,6 +44,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function SchoolLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function SchoolLayout({ params, children }: Props) {
+  const { id } = await params;
+  const school = SCHOOLS.find((s) => s.id === id);
+
+  const jsonLd = school
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'EducationalOrganization',
+        name: school.name,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: school.city || undefined,
+          addressCountry: school.country,
+        },
+        description: `Verified compensation scales, benefits, and contract intelligence for educators at ${school.name}.`,
+        url: `https://leopardfishintel.com/schools/${id}/`,
+      }
+    : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      {children}
+    </>
+  );
 }
