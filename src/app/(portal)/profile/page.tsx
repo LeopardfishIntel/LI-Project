@@ -242,6 +242,20 @@ export default function ProfilePage() {
                                     <Clock className="size-3 text-amber-400/80" />
                                     Resets in: <strong className="text-slate-200">{timeUntilReset || "midnight"}</strong>
                                 </p>
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (typeof window !== "undefined") {
+                                            window.dispatchEvent(new CustomEvent("lfi:open-intel-modal", {
+                                                detail: { isDataLock: true, category: "Salary" }
+                                            }));
+                                        }
+                                    }}
+                                    className="w-full mt-1.5 p-2 bg-[#d95f02]/10 hover:bg-[#d95f02]/20 border border-[#d95f02]/30 text-[#d95f02] font-bold text-[10px] uppercase tracking-wider rounded-sm flex items-center justify-center transition-all cursor-pointer hover:scale-[1.01]"
+                                >
+                                    <span>Request Extra Views (+20)</span>
+                                </button>
                             </CardContent>
                         </Card>
                     </div>
