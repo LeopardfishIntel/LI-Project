@@ -150,9 +150,20 @@ const intelIcons = {
   profit: <Building className="w-5 h-5 text-azure" />,
 };
 
-function SchoolProfileSkeleton() {
+function SchoolProfileSkeleton({ schoolId }: { schoolId?: string }) {
+  const fallbackLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "url": schoolId ? `https://leopardfishintel.com/schools/${schoolId}` : "https://leopardfishintel.com/schools/",
+    "name": schoolId || "International School Dossier"
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 bg-[#020617] space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(fallbackLd) }}
+      />
       <Skeleton className="h-[40vh] w-full rounded-sm bg-white/5" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -550,7 +561,7 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     fetchBriefing();
   }, [school?.id, locationData?.id, activeCurrencyCode, isDossierInitialized, selectedFamilyStatus, adults, children, partnerSalary]);
 
-  if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton />;
+  if (!mounted || isSchoolLoading) return <SchoolProfileSkeleton schoolId={id} />;
   if (!school) notFound();
 
   // Data Normalization
@@ -580,8 +591,36 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     { key: 'accreditation', label: 'Accreditation', value: school.intel?.accreditation || (school as any).approvals || 'International' },
   ];
 
+  // 🛰️ Schema.org EducationalOrganization structured data for rich search results
+  const schoolJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": name,
+    "description": school.summary || school.description || `International teaching package, salary forecast, and living cost analysis for ${name} in ${school.city || ''}, ${school.country || ''}.`,
+    "url": `https://leopardfishintel.com/schools/${id}`,
+    "image": school.imageUrl || undefined,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": school.city || school.location || undefined,
+      "addressCountry": school.country || undefined,
+    },
+    "sameAs": [website, (school as any).careersUrl].filter(Boolean),
+    "offers": (school as any).netbase ? {
+      "@type": "Offer",
+      "category": "Teacher Compensation",
+      "priceCurrency": (school as any).currency || "USD",
+      "price": (school as any).netbase,
+      "description": `Estimated net base salary of ${(school as any).currency || "$"}${(school as any).netbase}/mo with housing (${housing}) and health coverage (${health}).`
+    } : undefined
+  };
+
   return (
     <div className="min-h-screen bg-[#020617]">
+      {/* 🛰️ JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd) }}
+      />
       <section className="relative h-64 md:h-[50vh] w-full">
         <Image
           src={school.imageUrl || 'https://picsum.photos/seed/school/1920/1080'}

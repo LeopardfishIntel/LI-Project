@@ -18,6 +18,7 @@ const TransmitIntelligenceInputSchema = z.object({
   organisation: z.string().describe('The targeted school or agency.'),
   location: z.string().describe('The city or country of the intel.'),
   content: z.string().describe('The narrative payload.'),
+  attachmentName: z.string().optional().describe('Optional attached document or screenshot name.'),
   authorId: z.string().optional().describe('The UID of the transmitting agent.'),
   authorEmail: z.string().optional().describe('The email of the transmitting agent.'),
 });
@@ -50,6 +51,7 @@ export const transmitIntelligenceFlow = getAI().defineFlow(
       organisation: input.organisation,
       location: input.location,
       original_content: input.content,
+      attachment_name: input.attachmentName || null,
       clean_text: moderation.clean_text,
       status: moderation.status,
       safety_flags: moderation.safety_flags,

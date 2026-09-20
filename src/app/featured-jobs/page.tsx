@@ -1251,10 +1251,62 @@ export default function FeaturedJobsPage() {
     );
   };
 
-  if (!mounted) return null;
+  // 🛰️ Schema.org JobPosting ItemList structured data for Google for Jobs & Rich Snippets
+  const jobsJsonLd = useMemo(() => {
+    if (!sortedJobs || sortedJobs.length === 0) return null;
+    const topJobs = sortedJobs.slice(0, 30);
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": topJobs.map((job: any, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "JobPosting",
+          "title": job.jobTitle || job.title,
+          "description": job.description || `International teaching vacancy for ${job.jobTitle || job.title} at ${job.schoolName} in ${job.city || ''}, ${job.country || ''}. Estimated package surplus: £${job.savingsPotentialSingle || job.savingsPotential || 0}/mo.`,
+          "identifier": {
+            "@type": "PropertyValue",
+            "name": job.schoolName,
+            "value": job.jobId || job.id || `job-${index}`
+          },
+          "datePosted": job.scrapedDate || new Date().toISOString().split('T')[0],
+          "validThrough": job.closingDateMillis ? new Date(job.closingDateMillis).toISOString() : undefined,
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": job.schoolName,
+            "sameAs": job.schoolWebsite || undefined
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": job.city,
+              "addressCountry": job.country
+            }
+          },
+          "directApply": true,
+          "url": job.applyUrl || `https://leopardfishintel.com/featured-jobs/`
+        }
+      }))
+    };
+  }, [sortedJobs]);
+
+  const fallbackPageLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Featured Vacancies | Leopardfish Intel",
+    "description": "Curated international teaching jobs with tax-adjusted salary packages, living costs, and net savings potential.",
+    "url": "https://leopardfishintel.com/featured-jobs/"
+  };
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 p-4 md:p-8 lg:p-12 font-sans selection:bg-[#d95f02]">
+      {/* 🛰️ JSON-LD Structured Data for Job Postings & SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobsJsonLd || fallbackPageLd) }}
+      />
       <div className="max-w-7xl mx-auto space-y-3 md:space-y-8 animate-in fade-in duration-500">
         
         {/* Header Section */}

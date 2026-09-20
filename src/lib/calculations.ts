@@ -7,7 +7,9 @@ export const RATES: Record<string, number> = {
   CZK: 30.2, AED: 4.65, EUR: 1.18, GBP: 1.0, SAR: 4.75, QAR: 4.62,
   CHF: 1.12, DKK: 8.85, USD: 1.27, AZN: 2.15, HKD: 9.85, JPY: 190, 
   SGD: 1.7, MYR: 5.9, THB: 45, CNY: 9.1, BRL: 6.5, ARS: 1200, OMR: 0.49,
-  KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900
+  KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900,
+  TWD: 41.5, TRY: 44.0, KZT: 630.0, KHR: 5200.0, GHS: 19.2, NGN: 2050.0, ETB: 158.0, MAD: 12.8, CLP: 1220.0, PAB: 1.28,
+  BGN: 2.30, RSD: 138.0
 };
 
 export const canonicalCountry = (c: string) => {
@@ -26,6 +28,7 @@ export const canonicalCountry = (c: string) => {
   if (n.includes("monaco")) return "monaco";
   if (n.includes("azerbaijan")) return "azerbaijan";
   if (n.includes("cyprus")) return "cyprus";
+  if (n.includes("turkey") || n.includes("türkiye")) return "turkey";
   return n;
 };
 
@@ -143,6 +146,21 @@ export const INTELLIGENCE_TIERS: Record<string, { adv: number, cul: number }> = 
   "tanzania": { adv: 3, cul: 1 },
   "peru": { adv: 3, cul: 2 },
   "new zealand": { adv: 3, cul: 1 },
+  "taiwan": { adv: 2, cul: 3 },
+  "turkey": { adv: 2, cul: 3 },
+  "kazakhstan": { adv: 3, cul: 2 },
+  "cambodia": { adv: 3, cul: 3 },
+  "ghana": { adv: 2, cul: 3 },
+  "nigeria": { adv: 2, cul: 2 },
+  "ethiopia": { adv: 3, cul: 3 },
+  "morocco": { adv: 2, cul: 3 },
+  "chile": { adv: 3, cul: 2 },
+  "panama": { adv: 2, cul: 2 },
+  "bulgaria": { adv: 2, cul: 2 },
+  "croatia": { adv: 2, cul: 3 },
+  "serbia": { adv: 2, cul: 2 },
+  "slovakia": { adv: 2, cul: 2 },
+  "latvia": { adv: 1, cul: 2 },
 };
 
 export function getStrategicScores(countryName: string, region: string) {

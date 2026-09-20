@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FloatingIntelButton } from "@/components/floating-intel-button";
+import { FieldIntelligenceModal } from "@/components/field-intelligence-modal";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             <Footer />
             <FloatingIntelButton />
+            <FieldIntelligenceModal />
             <AnalyticsTracker />
           </div>
         </Providers>

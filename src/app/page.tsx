@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import type { School, AppMetrics } from '@/lib/types';
+import { MARITAL_ADVISORIES } from '@/lib/marital-advisories';
 import goldfishImg from '@/assets/goldfish.jpg';
 import evaluateSchoolImg from '@/assets/evaluate-school.jpg';
 import featuredJobsImg from '@/assets/featured-jobs.png';
@@ -31,9 +32,9 @@ const features = [
 
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
 const COUNTER_FALLBACKS = {
-  schools: 251,
+  schools: 276,
   vacancies: 68,
-  countries: 46,
+  countries: 66,
   visits: 1525,
   comparisons: 303
 };
@@ -77,11 +78,12 @@ export default function Home() {
   }, [schoolsData]);
 
   const countryCount = useMemo(() => {
-    if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.countries;
-    const uniqueSchools = Array.from(new Map(schoolsData.map(s => [(s.name || s.schoolname || s.id).toLowerCase().trim(), s])).values());
-    const countries = new Set(uniqueSchools.map(s => s.country).filter(Boolean));
-    return countries.size || COUNTER_FALLBACKS.countries;
-  }, [schoolsData]);
+    const schoolCountries = (schoolsData || []).map(s => s.country).filter(Boolean);
+    const colCountries = (colData || []).map((c: any) => c.country || c.countryName).filter(Boolean);
+    const advisoryCountries = Object.values(MARITAL_ADVISORIES).map(a => a.country);
+    const all = new Set([...schoolCountries, ...colCountries, ...advisoryCountries].map(c => c.toLowerCase().trim()));
+    return all.size || COUNTER_FALLBACKS.countries;
+  }, [schoolsData, colData]);
 
   const vacanciesCount = useMemo(() => {
     if (!featuredJobsData || featuredJobsData.length === 0) return COUNTER_FALLBACKS.vacancies;
