@@ -140,11 +140,13 @@ export default function ProfilePage() {
                                 {isEditing ? (
                                     <div className="grid grid-cols-2 gap-1 mt-2">
                                         {FAMILY_STATUS.map(v => (
-                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, familyStatus: v})} className={cn("py-2 text-[8px] font-bold border transition-all uppercase", editBuffer?.familyStatus === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>{v.replace('Family ', '')}</button>
+                                            <button key={v} onClick={() => setEditBuffer({...editBuffer, familyStatus: v})} className={cn("py-2 text-[8px] font-bold border transition-all uppercase", editBuffer?.familyStatus === v ? "bg-[#d95f02] border-[#d95f02] text-white" : "bg-white/5 border-white/10 text-slate-600 hover:text-white")}>
+                                                {v === "Family" ? "Couple" : v.replace('Family ', '')}
+                                            </button>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-xl font-black italic">{teacher?.familyStatus || "N/A"}</p>
+                                    <p className="text-xl font-black italic">{teacher?.familyStatus === "Family" ? "Couple" : (teacher?.familyStatus || "N/A")}</p>
                                 )}
                             </CardContent>
                         </Card>
