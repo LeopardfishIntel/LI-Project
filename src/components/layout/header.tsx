@@ -482,7 +482,7 @@ export default function Header() {
                       </div>
                     </div>
 
-                    {/* AI UPLIFT ACTION BUTTON */}
+                    {/* EXTRA VIEWS ACTION BUTTON */}
                     <button
                       type="button"
                       onClick={() => {
@@ -493,10 +493,9 @@ export default function Header() {
                           }));
                         }
                       }}
-                      className="w-full p-2.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer hover:scale-[1.01]"
+                      className="w-full p-2.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center transition-all cursor-pointer hover:scale-[1.01]"
                     >
-                      <Zap className="size-3.5" />
-                      <span>Request AI Uplift (+20)</span>
+                      <span>Request Extra Views (+20)</span>
                     </button>
 
                     {/* DOSSIER PROFILE LINK */}
@@ -507,7 +506,7 @@ export default function Header() {
                     >
                       <span className="flex items-center gap-2">
                         <UserIcon className="size-3.5 text-slate-400" />
-                        Confidential Educator Dossier
+                        Profile
                       </span>
                       <ExternalLink className="size-3 text-slate-500" />
                     </a>
@@ -596,10 +595,9 @@ export default function Header() {
                     }));
                   }
                 }}
-                className="w-full p-2 bg-primary/10 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-1.5"
+                className="w-full p-2 bg-primary/10 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center"
               >
-                <Zap className="size-3.5" />
-                <span>Request AI Uplift (+20)</span>
+                <span>Request Extra Views (+20)</span>
               </button>
               <div className="flex gap-2 pt-1 border-t border-white/5">
                 <a
