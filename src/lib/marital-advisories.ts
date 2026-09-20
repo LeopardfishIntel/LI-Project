@@ -197,13 +197,13 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
     sameSexRecognition: 'recognized',
     femaleSponsoringMale: 'standard',
     trailingSpouseWork: 'full_rights',
-    badges: ['Civil Partnerships (Pareja de Hecho) Recognized', 'Same-Sex Marriage Fully Recognized', 'Spousal Work Rights Included'],
+    badges: ['Pareja de Hecho Recognized', 'Same-Sex Marriage Equality', 'Full Spousal Work Rights Included'],
     guidance: {
-      unmarried: 'Spain recognizes registered de facto unions (Pareja de Hecho) for residency sponsorship in many autonomous communities, alongside traditional marriage certificates.',
-      sameSex: 'Full legal, marriage, and visa equality under Spanish law. Same-sex spouses enjoy identical family reunification and residency rights.',
-      femaleSponsor: 'Equal rights across all genders. Either spouse can sponsor family reunification once legal requirements are satisfied.',
-      trailingSpouse: 'Family members holding a residence visa via family reunification generally have the right to live and work in Spain without requiring a separate work authorization.',
-      dualTeacher: 'Dual-teacher pairs receive two distinct contracts governed by the Spanish Convenio Colectivo labor framework with standard taxation.'
+      unmarried: 'Spain recognizes registered civil partnerships (Pareja de Hecho) and durable cohabitation for dependent residency. Because Pareja de Hecho is registered at the autonomous community level following local empadronamiento, non-EU couples applying from abroad typically present an apostilled home-country civil union or documented continuous cohabitation (joint leases/accounts); non-working partners can also enter via Digital Nomad or Non-Lucrative visas and register locally.',
+      sameSex: 'Full legal equality under Spanish law (enacted 2005). Same-sex spouses and registered partners enjoy identical family reunification, residency, and tax rights.',
+      femaleSponsor: 'Completely equal and gender-neutral under Spanish immigration law (Ley de Extranjería). Male and female educators face identical sponsorship thresholds.',
+      trailingSpouse: 'Family members and Pareja de Hecho partners granted residence under family reunification (or EU citizen family regime) have the full, automatic legal right to work and freelance in Spain without a separate work permit.',
+      dualTeacher: 'International schools in Spain actively recruit teaching couples without regard to marital status. Educators receive individual Convenio Colectivo employment contracts, public healthcare (Seguridad Social), and 14-month annual salary installments.'
     }
   },
   'united kingdom': {
