@@ -20,6 +20,15 @@ export function ClearanceRibbon() {
   const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
 
   const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isRelocationPassActive = Boolean(
+    teacherProfile?.relocation_pass_active &&
+    teacherProfile?.relocation_pass_expires_at &&
+    new Date(teacherProfile.relocation_pass_expires_at).getTime() > Date.now()
+  );
+  const daysLeft = isRelocationPassActive && teacherProfile?.relocation_pass_expires_at
+    ? Math.max(1, Math.ceil((new Date(teacherProfile.relocation_pass_expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
+
   const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
   const isPro = teacherProfile?.tier === 'pro' || isAdmin;
@@ -57,7 +66,13 @@ export function ClearanceRibbon() {
         <div className="flex flex-wrap items-center gap-2">
           <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-slate-300">
             <ShieldCheck className="size-4 text-emerald-400 shrink-0" />
-            Clearance: <span className="text-emerald-400 font-mono">{isAdmin ? "Admin Intel (FLI007)" : "Verified K-12"}</span>
+            Clearance: <span className="text-emerald-400 font-mono">{
+              isAdmin 
+                ? "Admin Intel (FLI007)" 
+                : isRelocationPassActive 
+                  ? `Relocation Pass (${daysLeft}d left · 20/day)` 
+                  : "Verified K-12"
+            }</span>
           </span>
           <span className="text-slate-700 hidden sm:inline">|</span>
           <span className={cn(

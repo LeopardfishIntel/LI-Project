@@ -141,6 +141,11 @@ export interface TeacherProfile {
   last_quota_reset_date?: string;
   expedited_uplifts_count?: number;
   contributions_count?: number;
+  daily_contributions_count?: number;
+  last_contribution_date?: string;
+  relocation_pass_active?: boolean;
+  relocation_pass_expires_at?: string;
+  domestic_baseline_submitted?: boolean;
   tier?: 'free' | 'pro';
   createdAt?: string;
   current_city?: string;
