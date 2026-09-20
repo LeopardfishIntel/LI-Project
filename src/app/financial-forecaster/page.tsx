@@ -3054,7 +3054,10 @@ function DecoderContent() {
                     <div className="space-y-5">
 
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Coins className="w-4 h-4 text-emerald-400 shrink-0" />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
+                        </div>
                         <span className="text-[13px] font-black text-white whitespace-nowrap shrink-0">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
 
