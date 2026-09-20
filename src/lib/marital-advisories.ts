@@ -248,13 +248,13 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
     sameSexRecognition: 'recognized',
     femaleSponsoringMale: 'standard',
     trailingSpouseWork: 'full_rights',
-    badges: ['Strictly Gender-Neutral Sponsorship', 'Full Spousal Work Rights', 'Legal Cohabitation Recognized'],
+    badges: ['Strictly Gender-Neutral Sponsorship', 'Full Spousal Work Rights (A-Card)', 'Legal Cohabitation Recognized'],
     guidance: {
-      unmarried: 'Belgium recognizes registered legal cohabitation (Wettelijke Samenwoning / Cohabitation Légale) and proven durable relationships for family reunification visas, alongside legal marriage certificates.',
-      sameSex: 'Full legal equality under Belgian law. Same-sex married couples and registered partners enjoy identical family reunification and residency rights.',
-      femaleSponsor: 'Completely equal and gender-neutral: Belgian and EU law applies identical criteria across all genders. A female teacher faces no additional administrative hurdles, higher salary thresholds, or special clearances when sponsoring a male spouse.',
-      trailingSpouse: 'Full work rights: Under Belgian Single Permit and family reunification regulations, a trailing spouse holding a dependent residence card (A-Card) is legally authorized to look for and accept local employment without a separate work permit.',
-      dualTeacher: 'Dual-teacher couples receive independent Belgian employment contracts, comprehensive national health insurance, and individual 13.92-month salary structures.'
+      unmarried: 'Belgium recognizes registered legal cohabitation (Wettelijke Samenwoning / Cohabitation Légale) and proven durable relationships (2+ years cohabitation or common child) for family reunification visas, alongside legal marriage certificates.',
+      sameSex: 'Full legal marriage and cohabitation equality under Belgian law. Same-sex married couples and registered partners enjoy identical family reunification and residency rights.',
+      femaleSponsor: 'Completely equal and gender-neutral: Belgian and EU law applies identical requirements across all genders. A female teacher faces no additional administrative hurdles, higher salary requirements, or special clearances when sponsoring a male spouse.',
+      trailingSpouse: 'Full work rights: Under Belgian Single Permit regulations, a trailing spouse or registered partner granted family reunification residency (A-Card) is legally authorized to look for and accept employment in Belgium without requiring a separate work permit.',
+      dualTeacher: 'Dual-teacher couples receive independent Belgian employment contracts, comprehensive national mutual healthcare (Mutualité/Ziekenfonds), and individual 13.92-month salary structures.'
     }
   },
   austria: {
@@ -392,6 +392,499 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
       trailingSpouse: 'Beneficiary visa holders cannot work in Colombia; they must apply for their own principal work visa (Visa M or V con permiso de trabajo).',
       dualTeacher: 'Dual-hire international educators receive independent contracts and standard expat healthcare benefits.'
     }
+  },
+  malaysia: {
+    country: 'Malaysia',
+    region: 'Southeast Asia',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'loc_permit_required',
+    badges: ['Marriage Cert for Dependent Pass', 'Cohabitation Legal in Private Housing', 'EP Gender Parity'],
+    guidance: {
+      unmarried: 'Unmarried expatriates can legally rent and live together in private condominiums. However, Malaysian immigration (ESD) strictly requires a legalized marriage certificate to issue a Dependant Pass (DP). Unmarried partners must secure their own Employment Pass (EP).',
+      sameSex: 'Same-sex marriages and civil unions are not recognized by Malaysian immigration. Same-sex teacher couples must apply as two independent single candidates on individual Employment Passes, and exercise discretion in public forums.',
+      femaleSponsor: 'Female educators holding an Employment Pass (Category I or II, earning RM 5,000+/month) can sponsor their male spouses for a Dependant Pass under standard ESD guidelines.',
+      trailingSpouse: 'A spouse holding a Dependant Pass can take up employment in Malaysia by obtaining a "Permission to Work" endorsement stamp from immigration or converting to a standalone Employment Pass.',
+      dualTeacher: 'International schools in Kuala Lumpur, Penang, and Johor frequently hire teaching couples, providing either two single housing allowances or a consolidated family condominium allowance.'
+    }
+  },
+  'hong kong': {
+    country: 'Hong Kong',
+    region: 'East Asia',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Full Dependent Work Rights', 'QT Ruling: Same-Sex Dependent Visas', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'While casual cohabitation does not qualify for visas, Hong Kong Immigration recognizes legally registered civil partnerships and same-sex overseas marriages for dependent visas following the landmark Court of Final Appeal QT ruling.',
+      sameSex: 'Following legal precedents (QT and Leung cases), Hong Kong Immigration grants dependent spousal visas to same-sex partners legally married or in civil partnerships entered into abroad, along with spousal benefits and tax joint assessment.',
+      femaleSponsor: 'Completely equal and gender-neutral: Female educators holding General Employment Policy (GEP) or Quality Migrant visas can sponsor male spouses with standard salary and genuine relationship documentation.',
+      trailingSpouse: 'Full work authorization: Spouses holding a dependent visa under the General Employment Policy (GEP) are legally permitted to take up any employment or establish a business in Hong Kong without seeking immigration permission.',
+      dualTeacher: 'Teaching couples in Hong Kong receive two independent MPF pension contributions, separate medical insurance plans, and can pool substantial school housing allowances to secure premium island or Kowloon apartments.'
+    }
+  },
+  bahrain: {
+    country: 'Bahrain',
+    region: 'Middle East',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'illegal_strict',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'salary_threshold',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Attested Marriage Cert for Family Visa', 'Separate Work Permits for Trailing Spouse', 'Expat Compounds Common'],
+    guidance: {
+      unmarried: 'Cohabitation of unmarried couples is legally restricted. An attested marriage certificate is required for family residence permits (CPR). Expatriate teaching partners without marriage certificates must secure independent single work permits and contracts.',
+      sameSex: 'Same-sex marriages are not legally recognized under Bahraini family code. Couples should apply as two individual educators on independent work visas, maintaining discretion.',
+      femaleSponsor: 'A female teacher holding an LMRA work permit can sponsor a male spouse for family residency if meeting the government minimum monthly salary threshold (typically BHD 400–1,000 depending on category).',
+      trailingSpouse: 'A trailing spouse on a dependent family visa cannot work locally. If they secure employment at a school or private company, they must transfer to an independent employer-sponsored LMRA work permit.',
+      dualTeacher: 'Schools in Bahrain commonly provide teaching couples with a furnished 2–3 bedroom compound villa/apartment or a single married housing allowance.'
+    }
+  },
+  cyprus: {
+    country: 'Cyprus',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['EU Civil Cohabitation Recognized', 'Full Spousal Work Rights', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Cyprus recognizes registered civil partnerships (Civil Cohabitation Agreement) for family reunification and residency purposes, alongside marriage certificates.',
+      sameSex: 'Civil partnerships between same-sex couples have been legal in Cyprus since 2015 with equal family residency and healthcare rights.',
+      femaleSponsor: 'Strictly gender-neutral under Cyprus and EU migration regulations.',
+      trailingSpouse: 'Spouses and registered partners entering through family reunification obtain access to employment and self-employment in Cyprus under standard immigration law.',
+      dualTeacher: 'Teaching couples receive independent employment contracts, 13th-month salary bonuses, and General Healthcare System (GeSY) registration.'
+    }
+  },
+  india: {
+    country: 'India',
+    region: 'Global',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Marriage Cert Required for X-Visa', 'Employment Visa Required to Work', 'Decriminalized (Sec 377 Struck Down)'],
+    guidance: {
+      unmarried: 'Live-in relationships are legally recognized in Indian civil law for domestic protection, but Indian immigration (FRRO) strictly requires an apostilled marriage certificate for an X-Entry (dependent) visa. Unmarried partners must secure their own Employment Visas.',
+      sameSex: 'Same-sex relationships are decriminalized (Supreme Court Section 377 repeal). However, same-sex marriages and civil unions are not recognized for dependent visas; partners must apply as independent single educators.',
+      femaleSponsor: 'Female expatriates holding an Employment Visa (earning above the statutory USD 25,000/year minimum) can sponsor their male spouses for an X-Entry visa without distinction.',
+      trailingSpouse: 'An X-Entry dependent visa strictly prohibits employment in India. A trailing spouse wishing to work or teach must convert to their own independent Employment Visa sponsored by an employer meeting salary thresholds.',
+      dualTeacher: 'Dual-teacher couples receive individual employment contracts and standard expat compensation packages with shared school-provided housing.'
+    }
+  },
+  azerbaijan: {
+    country: 'Azerbaijan',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Legalized Marriage Cert for TRP', 'Work Permit Required for Spousal Employment'],
+    guidance: {
+      unmarried: 'Cohabitation in private residential housing is standard in Baku. However, the State Migration Service requires an apostilled marriage certificate to issue a Temporary Residence Permit (TRP) based on family ties.',
+      sameSex: 'Same-sex relationships are decriminalized, but same-sex marriages are not recognized for migration or family reunification. Couples should apply as independent single candidates.',
+      femaleSponsor: 'Female educators holding a work permit and TRP can sponsor their non-working male husbands under standard migration rules.',
+      trailingSpouse: 'A spouse holding a family-based TRP cannot work legally in Azerbaijan without obtaining an employer-sponsored individual work permit.',
+      dualTeacher: 'Dual hires receive individual contracts, USD/AZN pegged salaries, and school-provided city apartment accommodation.'
+    }
+  },
+  czechia: {
+    country: 'Czechia',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Free Labor Market Access for Spouses', 'Registered Partnerships Recognized', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Czechia recognizes registered partnerships and proven durable cohabiting relationships for EU and long-term family reunification residency permits.',
+      sameSex: 'Registered partnerships for same-sex couples have been legally recognized since 2006, granting full spousal reunification and immigration parity.',
+      femaleSponsor: 'Fully gender-neutral under Czech immigration legislation (Act on the Residence of Foreigners).',
+      trailingSpouse: 'Spouses holding a long-term residence permit for the purpose of family reunification enjoy free access to the Czech labor market without requiring a separate work permit.',
+      dualTeacher: 'Teaching couples receive independent Czech employment contracts, mandatory state health insurance (VZP/OZP), and standard paid holidays.'
+    }
+  },
+  vietnam: {
+    country: 'Vietnam',
+    region: 'Southeast Asia',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Legalized Marriage for TT Visa', 'Work Permit Required for Spousal Work', 'Socially Safe & Tolerant'],
+    guidance: {
+      unmarried: 'Unmarried expat couples can freely rent and cohabit in private apartments throughout Hanoi, HCMC, and Da Nang. However, Vietnamese immigration requires a legalized, consular-authenticated marriage certificate for a TT (dependent) visa or temporary residence card (TRC).',
+      sameSex: 'Vietnam has no laws banning same-sex relations and holds inclusive attitudes, but foreign same-sex marriages are not legally recognized for dependent TT visas. Partners should obtain independent work permits.',
+      femaleSponsor: 'Female teachers holding a valid Work Permit and LD (Labor) TRC can sponsor their male spouses for a TT dependent visa on equal terms.',
+      trailingSpouse: 'A TT dependent visa does not grant the right to work. A trailing spouse wishing to teach or work must obtain their own official Work Permit / Work Permit Exemption from the Department of Labor (DoLISA).',
+      dualTeacher: 'Schools offer dual single contracts with two health insurance policies and either two single housing allowances or a premium 2–3 bedroom family apartment allowance.'
+    }
+  },
+  indonesia: {
+    country: 'Indonesia',
+    region: 'Southeast Asia',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Legalized Marriage Cert for Family ITAS', 'Strict Prohibition on Dependent Work', 'Expat Housing Tolerant'],
+    guidance: {
+      unmarried: 'While expatriates in private gated housing or Jakarta/Bali apartments experience little scrutiny, Indonesian immigration (Ditjen Imigrasi) strictly requires an apostilled/legalized marriage certificate to issue an ITAS Keluarga (family dependent visa).',
+      sameSex: 'Same-sex marriages and civil partnerships are not recognized under Indonesian law. Same-sex teacher couples must apply as two independent single candidates on separate Working ITAS (E312) permits, maintaining personal privacy.',
+      femaleSponsor: 'Female expatriate teachers holding an official Working ITAS can sponsor their legal male spouses and children for dependent ITAS (C317).',
+      trailingSpouse: 'A trailing spouse on a dependent ITAS (ITAS Ikut Suami/Istri) is strictly prohibited from taking up any paid employment or private tutoring. To work, they must convert to their own school-sponsored Working ITAS.',
+      dualTeacher: 'Dual hires receive two independent base contracts, two annual flight allowances, and typically a combined 3-bedroom expat house or generous housing stipend.'
+    }
+  },
+  brazil: {
+    country: 'Brazil',
+    region: 'Americas',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['União Estável Recognized for Visas', 'Full Spousal Work Rights (CTPS)', 'Same-Sex Marriage Equality'],
+    guidance: {
+      unmarried: 'Brazil recognizes stable de facto unions (União Estável) for Family Reunification Visas (VITEM XI) with reasonable documentation (joint lease, shared bank accounts, or public deed).',
+      sameSex: 'Brazil enacted nationwide same-sex marriage equality in 2013; same-sex spouses and União Estável partners enjoy identical visa and immigration rights.',
+      femaleSponsor: 'Strictly equal under Brazilian immigration law (Lei de Migração Nº 13.445).',
+      trailingSpouse: 'Family reunification visa holders in Brazil are legally permitted to work and can obtain a Carteira de Trabalho (CTPS) upon registering with the Federal Police (CRNM).',
+      dualTeacher: 'International schools provide teaching couples with individual CLT or international contracts, private medical plans (Bradesco/Amil), and CLT 13th-month salary provisions.'
+    }
+  },
+  greece: {
+    country: 'Greece',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Marriage Equality (2024)', 'Cohabitation Agreements Recognized', 'Spousal Work Authorization'],
+    guidance: {
+      unmarried: 'Greece recognizes cohabitation agreements (Symphono Symviosis) and registered partnerships for residence permit and family reunification purposes.',
+      sameSex: 'Greece legalized same-sex civil marriage and spousal adoption in 2024, granting full equality under immigration and family statutes.',
+      femaleSponsor: 'Equal criteria across all genders under standard Greek immigration code.',
+      trailingSpouse: 'A spouse or partner granted a family reunification residence permit has the legal right to access the Greek labor market on an equal footing.',
+      dualTeacher: 'Both teachers receive individual contracts, mandatory EFKA social security contributions, and 14-month annual salary installments.'
+    }
+  },
+  egypt: {
+    country: 'Egypt',
+    region: 'Middle East',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'illegal_strict',
+    sameSexRecognition: 'criminalized_strict',
+    femaleSponsoringMale: 'restricted_difficult',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Legalized Marriage Cert Mandatory', 'Dependent Work Prohibited', 'Independent Single Work Visas Required'],
+    guidance: {
+      unmarried: 'Cohabitation between unmarried couples is legally restricted. International schools require an attested marriage certificate to provide shared staff housing or family residency. Unmarried partners must apply as independent single educators.',
+      sameSex: 'Same-sex relationships face severe legal penalties in Egypt, and foreign same-sex marriages are not recognized. Absolute privacy and discretion regarding personal status is mandatory.',
+      femaleSponsor: 'Historically, Egyptian immigration rules place stricter hurdles on female expatriates sponsoring adult male spouses. School HR sponsorship assistance should be verified in advance.',
+      trailingSpouse: 'A spouse holding a dependent tourist/residence visa cannot legally work or freelance in Egypt without obtaining an independent work permit from the Ministry of Manpower.',
+      dualTeacher: 'Teaching couples in Cairo or Alexandria typically receive shared furnished campus or compound accommodation and two international salary packages.'
+    }
+  },
+  kenya: {
+    country: 'Kenya',
+    region: 'Africa',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'criminalized_strict',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Legal Marriage for Dependants Pass', 'Work Prohibited on Dependants Pass', 'Class D Work Permit Required to Work'],
+    guidance: {
+      unmarried: 'Unmarried expatriates can cohabit in private rentals in Nairobi or Mombasa. However, the Kenya Department of Immigration Services requires an apostilled marriage certificate to issue a Dependants Pass (Class C/M).',
+      sameSex: 'Same-sex sexual activity is criminalized under Kenyan penal code, and same-sex unions are not recognized for visas. Strict personal discretion is required.',
+      femaleSponsor: 'Female educators holding a valid Class D Work Permit can sponsor their male spouses for a Dependants Pass under standard criteria.',
+      trailingSpouse: 'A Dependants Pass explicitly prohibits the holder from engaging in any employment, trade, or profession in Kenya. To teach or work, the spouse must apply for their own Class D Work Permit.',
+      dualTeacher: 'Teaching couples at international schools in Nairobi receive individual dollar/KES contracts, dual medical coverage, and either shared secure housing or dual allowances.'
+    }
+  },
+  'south africa': {
+    country: 'South Africa',
+    region: 'Africa',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'loc_permit_required',
+    badges: ['Life Partnership Recognized', 'Section 11(6) Work Endorsement', 'Full Constitutional Marriage Equality'],
+    guidance: {
+      unmarried: 'South Africa recognizes permanent heterosexual and same-sex life partnerships (2+ years cohabitation) for Spousal Visas (Section 11(6)) without requiring formal marriage.',
+      sameSex: 'South Africa was the first nation globally to enshrine LGBTQ+ non-discrimination in its constitution and legalized same-sex marriage in 2006. Full equality applies in all visa matters.',
+      femaleSponsor: 'Complete gender parity under the South African Immigration Act.',
+      trailingSpouse: 'A trailing spouse holding a Section 11(6) Spousal Visa can obtain an endorsement allowing them to work, study, or conduct a business upon presenting an offer of employment.',
+      dualTeacher: 'Teaching couples receive independent South African employment contracts with standard medical aid (Discovery/Momentum) and retirement contributions.'
+    }
+  },
+  argentina: {
+    country: 'Argentina',
+    region: 'Americas',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Unión Convivencial Recognized', 'Full Spousal Work Rights (DNI)', 'Pioneering Marriage Equality'],
+    guidance: {
+      unmarried: 'Argentina recognizes registered cohabitation unions (Unión Convivencial, 2+ years) for family reunification residency (Radicación por Reunificación Familiar).',
+      sameSex: 'Argentina legalized same-sex marriage in 2010 (Matrimonio Igualitario) with complete legal, immigration, and family equality.',
+      femaleSponsor: 'Equal rights across all genders under the Dirección Nacional de Migraciones (DNM).',
+      trailingSpouse: 'A trailing spouse granted temporary or permanent residency receives a National Identity Document (DNI) granting full legal authorization to work in Argentina.',
+      dualTeacher: 'Dual hires receive two independent employment contracts under Argentine labor regulations, often with USD/ARS dual-currency indexing.'
+    }
+  },
+  denmark: {
+    country: 'Denmark',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Nordic Cohabitation Model (18-24 Mo)', 'Automatic Spousal Work Rights', 'Exemplary Gender Parity'],
+    guidance: {
+      unmarried: 'Denmark recognizes cohabiting partners (Samlever) for family reunification permits if the couple can document at least 18–24 months of shared residence at the same address.',
+      sameSex: 'Full marriage equality and identical family reunification rights under Danish law.',
+      femaleSponsor: 'Strict gender equality under Danish immigration service (SIRI) regulations.',
+      trailingSpouse: 'An accompanying spouse or registered partner granted a residence permit through SIRI has an immediate, unrestricted right to work in Denmark.',
+      dualTeacher: 'Both educators receive independent Danish contracts, full CPR healthcare access, and standard ATP/pension schemes.'
+    }
+  },
+  philippines: {
+    country: 'Philippines',
+    region: 'Southeast Asia',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Apostilled Marriage for 9(g) Dependent', 'AEP Required for Spousal Employment', 'Socially Hospitable & Safe'],
+    guidance: {
+      unmarried: 'Cohabitation in private condominiums is standard in Manila and Cebu. However, the Bureau of Immigration requires an apostilled marriage certificate for a 9(g) Dependent Visa. Unmarried partners must secure their own 9(g) Work Visas.',
+      sameSex: 'Same-sex relationships are socially accepted and safe, but same-sex marriages are not recognized under Philippine family law for visa sponsorship. Candidates should apply as independent single teachers.',
+      femaleSponsor: 'Female educators holding a 9(g) Commercial/Working Visa can sponsor their legal male spouses as dependents without hindrance.',
+      trailingSpouse: 'A dependent 9(g) visa does not permit local employment. To work, a spouse must obtain an Alien Employment Permit (AEP) from DOLE and convert to a principal 9(g) visa.',
+      dualTeacher: 'International schools in Manila typically offer dual contracts with independent flight tickets, healthcare, and shared housing allowances.'
+    }
+  },
+  poland: {
+    country: 'Poland',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Full Labor Access for TRC Spouses', 'Legal Marriage for Official Family Reunification', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Cohabitation is completely legal in private housing. However, for non-EU educators applying for official Voivodeship family reunification Temporary Residence Cards (Karta Pobytu), a legal marriage certificate is required.',
+      sameSex: 'Same-sex unions are not recognized for official family reunification visas under Polish immigration law. Partners should apply as independent single educators.',
+      femaleSponsor: 'Fully equal criteria across all genders under standard Polish foreign national residency acts.',
+      trailingSpouse: 'A spouse granted a Temporary Residence Permit for family reunification with a work permit holder is entitled to perform work in Poland without a separate work permit.',
+      dualTeacher: 'Teaching couples receive independent Polish employment contracts (Umowa o Pracę) with full ZUS social insurance and NFZ healthcare.'
+    }
+  },
+  finland: {
+    country: 'Finland',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Avoliitto Cohabitation Recognized (2 Yrs)', 'Unrestricted Right to Work', 'Full Nordic Equality'],
+    guidance: {
+      unmarried: 'Finland recognizes cohabiting partners (Avoliitto) for residence permits on the basis of family ties if the couple has lived together for at least 2 years continuously or has a shared child.',
+      sameSex: 'Full marriage equality with identical family reunification rights and social protections under Finnish law.',
+      femaleSponsor: 'Strict gender equality under Finnish Immigration Service (Migri) statutes.',
+      trailingSpouse: 'A residence permit granted on the basis of family ties gives the trailing spouse an unrestricted, automatic right to work in Finland.',
+      dualTeacher: 'Both educators receive independent collective agreement (OVTES) contracts, Kela healthcare registration, and standard occupational pension benefits.'
+    }
+  },
+  sweden: {
+    country: 'Sweden',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Sambo Partnership Recognized', 'Full Spousal Work Rights', 'Complete Marriage Equality'],
+    guidance: {
+      unmarried: 'Sweden recognizes registered cohabitants (Sambo) for residence permits with proof of living together or intent to cohabit in Sweden.',
+      sameSex: 'Full marriage and cohabitation equality under Swedish law (Migrationsverket).',
+      femaleSponsor: 'Complete gender parity under Swedish immigration policy.',
+      trailingSpouse: 'An accompanying spouse or sambo partner receiving a residence permit linked to a work permit holder obtains full, unrestricted work authorization in Sweden.',
+      dualTeacher: 'Teaching couples receive separate employment contracts, Försäkringskassan social insurance, and standard Swedish collective terms.'
+    }
+  },
+  luxembourg: {
+    country: 'Luxembourg',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['PACS Registered Partnership Recognized', 'Full Spousal Work Access', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Luxembourg recognizes registered partnerships (PACS / Partenariat enregistré) and proven durable relationships for family reunification residence permits alongside marriage.',
+      sameSex: 'Same-sex marriages and PACS partnerships enjoy full legal equality and identical immigration rights.',
+      femaleSponsor: 'Equal standards across all genders under Luxembourg Directorate of Immigration rules.',
+      trailingSpouse: 'Family members joining a third-country worker through family reunification are entitled to pursue salaried or self-employed activity in Luxembourg without an additional labor market test.',
+      dualTeacher: 'Both educators receive independent contracts with CNS public healthcare and mandatory pension contributions.'
+    }
+  },
+  jordan: {
+    country: 'Jordan',
+    region: 'Middle East',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'illegal_strict',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'restricted_difficult',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Attested Marriage Cert Mandatory', 'Independent Work Permits Required'],
+    guidance: {
+      unmarried: 'Marriage certificates are strictly required for shared accommodation and dependent residence permits. Unmarried partners must apply as independent single educators.',
+      sameSex: 'Same-sex relationships are not recognized under civil or religious family law. Discretion is recommended, and couples should apply as two independent single candidates.',
+      femaleSponsor: 'Residency sponsorship of an adult husband by a female foreign resident involves Ministry of Interior security clearances and specific profession criteria.',
+      trailingSpouse: 'A trailing spouse on a dependent residence permit cannot work without obtaining a separate work permit approved by the Ministry of Labor.',
+      dualTeacher: 'International schools in Amman provide teaching couples with shared furnished housing or single family allowances and dual flight benefits.'
+    }
+  },
+  monaco: {
+    country: 'Monaco',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Contrat de Vie Commune Recognized', 'Monaco Residency Standards', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Monaco recognizes civil life contracts (Contrat de Vie Commune) and foreign registered partnerships for residency cohabitation.',
+      sameSex: 'Civil partnerships (Contrat de Vie Commune) are available to same-sex couples with equal residency rights.',
+      femaleSponsor: 'Equal criteria under Monegasque Public Security residency regulations.',
+      trailingSpouse: 'A dependent resident in Monaco must obtain a work permit from the Employment Service (Service de l\'Emploi) to accept local salaried employment.',
+      dualTeacher: 'Dual hires receive individual contracts with CCSS social security coverage.'
+    }
+  },
+  norway: {
+    country: 'Norway',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Samboer Cohabitation Rights (2 Yrs)', 'Full Spousal Work Authorization', 'Exemplary Gender Equality'],
+    guidance: {
+      unmarried: 'Norway recognizes cohabitants (Samboer) for family immigration permits (UDI) if the couple has lived together for at least two years or expects a child together.',
+      sameSex: 'Full marriage and cohabitation equality under Norwegian law with identical spousal immigration benefits.',
+      femaleSponsor: 'Complete gender parity under the Norwegian Immigration Directorate (UDI).',
+      trailingSpouse: 'A family immigration residence permit grants the spouse or cohabitant unrestricted authorization to work or establish a business in Norway.',
+      dualTeacher: 'Teaching pairs receive individual Norwegian employment contracts with National Insurance Scheme (Folketrygden) inclusion.'
+    }
+  },
+  hungary: {
+    country: 'Hungary',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Marriage Cert for Family Reunification', 'Labor Market Access on D-Visa', 'Cohabitation Legal in Housing'],
+    guidance: {
+      unmarried: 'Cohabitation in private rentals is normal and legal. For non-EU third-country national family reunification residence permits (OIF), a legal marriage certificate is required.',
+      sameSex: 'Same-sex marriages are not recognized under the Hungarian constitution for family reunification. Couples should apply as independent single educators.',
+      femaleSponsor: 'Standard gender-neutral criteria under the National Directorate-General for Aliens Policing.',
+      trailingSpouse: 'A spouse holding a family reunification residence permit can work in Hungary subject to standard notification or joint permit rules.',
+      dualTeacher: 'Dual-teaching couples receive two independent Hungarian contracts with mandatory TB health fund enrollment.'
+    }
+  },
+  romania: {
+    country: 'Romania',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['EU Family Reunification (IGI)', 'Spousal Work Authorization', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Cohabitation in private residential housing is standard in Bucharest. Official family reunification residence permits issued by the General Inspectorate for Immigration (IGI) require a legalized marriage certificate.',
+      sameSex: 'Same-sex marriages and civil partnerships are not currently recognized under Romanian domestic law for family reunification. Couples should secure independent work visas.',
+      femaleSponsor: 'Equal criteria across all genders under Romanian immigration legislation.',
+      trailingSpouse: 'A spouse who receives a temporary residence permit for family reunification is entitled to work in Romania without needing a separate work authorization notice.',
+      dualTeacher: 'Teaching couples receive independent Romanian employment contracts and public healthcare (CNAS) coverage.'
+    }
+  },
+  peru: {
+    country: 'Peru',
+    region: 'Americas',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['Apostilled Marriage / Unión de Hecho', 'Carné de Extranjería', 'Separate Work Authorization Required'],
+    guidance: {
+      unmarried: 'Peru recognizes de facto unions (Unión de Hecho) registered in public registries (SUNARP), alongside apostilled marriage certificates for Residencia por Familiar de Residente.',
+      sameSex: 'Same-sex relationships are legal and safe, but same-sex marriages from abroad are not recognized for immigration resident visas. Candidates should apply on separate work contracts.',
+      femaleSponsor: 'Standard equal rights for female educators sponsoring family dependents via Migraciones Perú.',
+      trailingSpouse: 'A dependent resident (Familiar de Residente) holding a Carné de Extranjería must apply for a change of immigration status or work permit to accept local employment.',
+      dualTeacher: 'Dual-teacher hires receive individual teaching contracts and school-provided or subsidized housing in Lima.'
+    }
+  },
+  'costa rica': {
+    country: 'Costa Rica',
+    region: 'Americas',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Same-Sex Marriage Equality', 'Vínculo Familiar Residence', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Costa Rica recognizes de facto unions (Unión de Hecho) declared before a family court or notary for dependent residency under Dirección General de Migración y Extranjería (DGME).',
+      sameSex: 'Costa Rica legalized same-sex marriage in 2020 with full constitutional equality in marriage, family reunification, and social security (CCSS).',
+      femaleSponsor: 'Strict gender equality under Costa Rican immigration laws.',
+      trailingSpouse: 'Spouses and recognized partners holding a Residencia Temporal por Vínculo can engage in remunerated activities upon registration with the CCSS.',
+      dualTeacher: 'Teaching couples receive individual contracts with CCSS medical benefits and shared housing allowances in San José.'
+    }
+  },
+  tanzania: {
+    country: 'Tanzania',
+    region: 'Africa',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'criminalized_strict',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Legal Marriage for Class C Pass', 'Work Prohibited on Dependent Pass', 'Separate Class A/B Permits Required'],
+    guidance: {
+      unmarried: 'Cohabitation in private residential expat compounds in Dar es Salaam or Arusha is standard. However, the Immigration Services Department strictly requires a legalized marriage certificate for a Class C Dependant Pass.',
+      sameSex: 'Same-sex sexual activity is criminalized under Tanzanian law. Foreign same-sex unions are not recognized. Absolute privacy and discretion is necessary, and couples must apply as independent single educators.',
+      femaleSponsor: 'Female teachers holding a valid Class B Work Permit can sponsor male spouses for a Class C Dependant Pass under standard regulations.',
+      trailingSpouse: 'A Class C Dependant Pass strictly prohibits the holder from taking up any paid employment or volunteer work in Tanzania. To work, the spouse must obtain their own Class B Work Permit.',
+      dualTeacher: 'International schools provide dual single contracts, shared furnished housing or generous housing allowances, and comprehensive evacuation/medical insurance.'
+    }
   }
 };
 
@@ -403,12 +896,12 @@ export const DEFAULT_ADVISORY: CoupleCountryAdvisory = {
   sameSexRecognition: 'unrecognized_safe',
   femaleSponsoringMale: 'standard',
   trailingSpouseWork: 'separate_work_visa_only',
-  badges: ['Check Host-Nation Visa Regulations', 'Independent Visas for Unmarried'],
+  badges: ['Verify Host-Nation Immigration Guidelines', 'Independent Visas for Unmarried'],
   guidance: {
-    unmarried: 'In most international jurisdictions outside Western Europe and parts of the Americas, dependent spousal visas require a government-recognized, apostilled marriage certificate. Unmarried couples should confirm whether independent work contracts are required.',
-    sameSex: 'Same-sex relationships and civil unions are subject to host-country immigration laws. Where local law does not recognize same-sex marriage for dependent visas, both partners should apply as independent single hires.',
-    femaleSponsor: 'In select jurisdictions, female expatriate employees may face distinct salary or administrative criteria when sponsoring a non-working male spouse. Check with the school HR department during the offer stage.',
-    trailingSpouse: 'Holding a dependent spousal visa does not automatically confer local work rights. Trailing spouses planning to work locally or freelance should verify local work permit requirements.',
+    unmarried: 'Unmarried couples should verify host-nation family visa regulations with the school HR department. In jurisdictions where spousal sponsorship requires a legal marriage certificate, unmarried partners should secure independent work contracts.',
+    sameSex: 'Same-sex partnerships and civil unions are subject to host-country immigration laws. Where local law does not recognize same-sex marriage for dependent visas, both partners should apply as independent single hires.',
+    femaleSponsor: 'Host-country immigration policies may have specific salary or documentation requirements when an expatriate employee sponsors a non-working spouse.',
+    trailingSpouse: 'Holding a dependent spousal visa does not automatically confer local work rights. Trailing spouses planning to work locally should verify whether independent work permits are required.',
     dualTeacher: 'Dual-teacher pairs should clarify with the school whether housing benefits provide two separate single housing stipends or a consolidated shared family apartment/allowance.'
   }
 };
@@ -421,29 +914,59 @@ export function getCoupleAdvisory(countryRaw?: string): CoupleCountryAdvisory {
     return MARITAL_ADVISORIES[canon];
   }
 
-  // Alias checks
-  if (canon.includes('emirates') || canon.includes('dubai') || canon.includes('abu dhabi') || canon.includes('uae')) return MARITAL_ADVISORIES['uae'];
+  // Exact & Word Boundary Alias checks
+  if (canon.includes('emirates') || canon.includes('dubai') || canon.includes('abu dhabi') || canon === 'uae') return MARITAL_ADVISORIES['uae'];
   if (canon.includes('saudi')) return MARITAL_ADVISORIES['saudi arabia'];
   if (canon.includes('korea')) return MARITAL_ADVISORIES['south korea'];
-  if (canon.includes('uk') || canon.includes('britain') || canon.includes('england') || canon.includes('scotland')) return MARITAL_ADVISORIES['united kingdom'];
-  if (canon.includes('spain')) return MARITAL_ADVISORIES['spain'];
-  if (canon.includes('germany')) return MARITAL_ADVISORIES['germany'];
+  if (canon.includes('uk') || canon.includes('britain') || canon.includes('england') || canon.includes('scotland') || canon.includes('united kingdom')) return MARITAL_ADVISORIES['united kingdom'];
+  if (canon.includes('spain') || canon.includes('madrid') || canon.includes('barcelona')) return MARITAL_ADVISORIES['spain'];
+  if (canon.includes('germany') || canon.includes('berlin') || canon.includes('munich') || canon.includes('frankfurt')) return MARITAL_ADVISORIES['germany'];
   if (canon.includes('belgium') || canon.includes('brussels') || canon.includes('antwerp')) return MARITAL_ADVISORIES['belgium'];
   if (canon.includes('austria') || canon.includes('vienna')) return MARITAL_ADVISORIES['austria'];
-  if (canon.includes('france') || canon.includes('paris') || canon.includes('nice')) return MARITAL_ADVISORIES['france'];
-  if (canon.includes('switz') || canon.includes('geneva') || canon.includes('zurich') || canon.includes('lausanne')) return MARITAL_ADVISORIES['switzerland'];
-  if (canon.includes('italy') || canon.includes('milan') || canon.includes('rome')) return MARITAL_ADVISORIES['italy'];
-  if (canon.includes('netherland') || canon.includes('dutch') || canon.includes('amsterdam')) return MARITAL_ADVISORIES['netherlands'];
-  if (canon.includes('portugal') || canon.includes('lisbon')) return MARITAL_ADVISORIES['portugal'];
-  if (canon.includes('china') || canon.includes('shanghai') || canon.includes('beijing')) return MARITAL_ADVISORIES['china'];
+  if (canon.includes('france') || canon.includes('paris') || canon.includes('nice') || canon.includes('lyon')) return MARITAL_ADVISORIES['france'];
+  if (canon.includes('switz') || canon.includes('geneva') || canon.includes('zurich') || canon.includes('lausanne') || canon.includes('basel')) return MARITAL_ADVISORIES['switzerland'];
+  if (canon.includes('italy') || canon.includes('milan') || canon.includes('rome') || canon.includes('florence')) return MARITAL_ADVISORIES['italy'];
+  if (canon.includes('netherland') || canon.includes('dutch') || canon.includes('amsterdam') || canon.includes('rotterdam') || canon.includes('hague')) return MARITAL_ADVISORIES['netherlands'];
+  if (canon.includes('portugal') || canon.includes('lisbon') || canon.includes('porto')) return MARITAL_ADVISORIES['portugal'];
+  if (canon.includes('china') || canon.includes('shanghai') || canon.includes('beijing') || canon.includes('guangzhou') || canon.includes('shenzhen')) return MARITAL_ADVISORIES['china'];
+  if (canon.includes('hong kong') || canon.includes('hong kong sar') || canon === 'hk') return MARITAL_ADVISORIES['hong kong'];
   if (canon.includes('singapore')) return MARITAL_ADVISORIES['singapore'];
-  if (canon.includes('japan') || canon.includes('tokyo')) return MARITAL_ADVISORIES['japan'];
-  if (canon.includes('thailand') || canon.includes('bangkok')) return MARITAL_ADVISORIES['thailand'];
+  if (canon.includes('japan') || canon.includes('tokyo') || canon.includes('osaka') || canon.includes('yokohama')) return MARITAL_ADVISORIES['japan'];
+  if (canon.includes('thailand') || canon.includes('bangkok') || canon.includes('phuket') || canon.includes('chiang mai')) return MARITAL_ADVISORIES['thailand'];
+  if (canon.includes('malaysia') || canon.includes('kuala lumpur') || canon.includes('penang')) return MARITAL_ADVISORIES['malaysia'];
   if (canon.includes('qatar') || canon.includes('doha')) return MARITAL_ADVISORIES['qatar'];
+  if (canon.includes('bahrain') || canon.includes('manama')) return MARITAL_ADVISORIES['bahrain'];
   if (canon.includes('kuwait')) return MARITAL_ADVISORIES['kuwait'];
-  if (canon.includes('oman') || canon.includes('muscat')) return MARITAL_ADVISORIES['oman'];
-  if (canon.includes('mexico')) return MARITAL_ADVISORIES['mexico'];
-  if (canon.includes('colombia')) return MARITAL_ADVISORIES['colombia'];
+  // Precise word match for Oman to prevent collision with Romania
+  if (canon === 'oman' || canon.startsWith('oman ') || canon.endsWith(' oman') || canon.includes('muscat')) return MARITAL_ADVISORIES['oman'];
+  if (canon.includes('romania') || canon.includes('bucharest')) return MARITAL_ADVISORIES['romania'];
+  if (canon.includes('cyprus') || canon.includes('nicosia') || canon.includes('limassol')) return MARITAL_ADVISORIES['cyprus'];
+  if (canon.includes('czech') || canon.includes('prague')) return MARITAL_ADVISORIES['czechia'];
+  if (canon.includes('india') || canon.includes('delhi') || canon.includes('mumbai') || canon.includes('bangalore')) return MARITAL_ADVISORIES['india'];
+  if (canon.includes('azerbaijan') || canon.includes('baku')) return MARITAL_ADVISORIES['azerbaijan'];
+  if (canon.includes('vietnam') || canon.includes('hanoi') || canon.includes('ho chi minh') || canon.includes('saigon')) return MARITAL_ADVISORIES['vietnam'];
+  if (canon.includes('indonesia') || canon.includes('jakarta') || canon.includes('bali')) return MARITAL_ADVISORIES['indonesia'];
+  if (canon.includes('brazil') || canon.includes('sao paulo') || canon.includes('rio de janeiro')) return MARITAL_ADVISORIES['brazil'];
+  if (canon.includes('greece') || canon.includes('athens')) return MARITAL_ADVISORIES['greece'];
+  if (canon.includes('egypt') || canon.includes('cairo')) return MARITAL_ADVISORIES['egypt'];
+  if (canon.includes('kenya') || canon.includes('nairobi')) return MARITAL_ADVISORIES['kenya'];
+  if (canon.includes('south africa') || canon.includes('johannesburg') || canon.includes('cape town')) return MARITAL_ADVISORIES['south africa'];
+  if (canon.includes('argentina') || canon.includes('buenos aires')) return MARITAL_ADVISORIES['argentina'];
+  if (canon.includes('denmark') || canon.includes('copenhagen')) return MARITAL_ADVISORIES['denmark'];
+  if (canon.includes('philippine') || canon.includes('manila')) return MARITAL_ADVISORIES['philippines'];
+  if (canon.includes('poland') || canon.includes('warsaw') || canon.includes('krakow')) return MARITAL_ADVISORIES['poland'];
+  if (canon.includes('finland') || canon.includes('helsinki')) return MARITAL_ADVISORIES['finland'];
+  if (canon.includes('sweden') || canon.includes('stockholm')) return MARITAL_ADVISORIES['sweden'];
+  if (canon.includes('luxembourg')) return MARITAL_ADVISORIES['luxembourg'];
+  if (canon.includes('jordan') || canon.includes('amman')) return MARITAL_ADVISORIES['jordan'];
+  if (canon.includes('monaco')) return MARITAL_ADVISORIES['monaco'];
+  if (canon.includes('norway') || canon.includes('oslo')) return MARITAL_ADVISORIES['norway'];
+  if (canon.includes('hungary') || canon.includes('budapest')) return MARITAL_ADVISORIES['hungary'];
+  if (canon.includes('peru') || canon.includes('lima')) return MARITAL_ADVISORIES['peru'];
+  if (canon.includes('costa rica') || canon.includes('san jose')) return MARITAL_ADVISORIES['costa rica'];
+  if (canon.includes('tanzania') || canon.includes('dar es salaam') || canon.includes('zanzibar')) return MARITAL_ADVISORIES['tanzania'];
+  if (canon.includes('mexico') || canon.includes('mexico city')) return MARITAL_ADVISORIES['mexico'];
+  if (canon.includes('colombia') || canon.includes('bogota')) return MARITAL_ADVISORIES['colombia'];
 
   return {
     ...DEFAULT_ADVISORY,

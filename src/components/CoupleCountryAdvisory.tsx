@@ -265,9 +265,11 @@ export default function CoupleCountryAdvisoryPanel({
                         • Sponsorship & Visas:
                       </span>
                       <span className="text-slate-300">
-                        {advisory.marriageCertMandatory
-                          ? "An attested marriage certificate is strictly required for spousal visa sponsorship. Unmarried partners cannot sponsor one another."
-                          : "Unmarried partners can qualify for dependent or partner residency with eligible civil or de facto documentation."}
+                        {advisory.cohabitationStatus === 'recognized_with_visas'
+                          ? "Unmarried partners can qualify for dependent or partner residency (e.g., registered civil cohabitation or de facto documentation) without a formal marriage certificate."
+                          : advisory.cohabitationStatus === 'decriminalized_no_visa'
+                          ? "Cohabitation in private housing is legal, but dependent spousal visas require a recognized legal marriage certificate. Unmarried partners must hold independent employment visas."
+                          : "An attested, apostilled marriage certificate is strictly required for spousal visa sponsorship. Unmarried partners cannot sponsor one another."}
                       </span>
                     </div>
 
@@ -276,16 +278,24 @@ export default function CoupleCountryAdvisoryPanel({
                         • Housing Reality:
                       </span>
                       <span className="text-slate-300">
-                        <strong className="text-white">School-Provided Housing</strong> strictly enforces marriage certificates for shared staff accommodation. In <strong className="text-white">Private Rentals</strong>, landlord enforcement varies, but both individuals still require independent legal residency and work visas.
+                        {advisory.cohabitationStatus === 'recognized_with_visas'
+                          ? <span>Cohabitation is completely unrestricted across private rentals and school-provided accommodations. Landlords and schools do not require marriage certificates.</span>
+                          : advisory.cohabitationStatus === 'decriminalized_no_visa'
+                          ? <span>Unmarried couples can legally share private rental accommodations. For school-provided faculty housing, allocation policies vary by institution (some offer joint units, others separate single housing).</span>
+                          : <span><strong className="text-white">School-Provided Housing</strong> strictly enforces marriage certificates for shared staff accommodation. In <strong className="text-white">Private Rentals</strong>, tenancy enforcement is strictly bound by local law.</span>}
                       </span>
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
                       <span className="font-bold text-slate-200 shrink-0 sm:min-w-[140px]">
-                        • Dual-Contract Strategy:
+                        • Contract Strategy:
                       </span>
                       <span className="text-slate-300">
-                        Unmarried teaching partners should apply as two independent single candidates, securing separate contracts and individual work visas.
+                        {advisory.cohabitationStatus === 'recognized_with_visas'
+                          ? "Teaching couples can either hold dual independent contracts or enter via partner sponsorship with full local residency and work authorization."
+                          : advisory.cohabitationStatus === 'decriminalized_no_visa'
+                          ? "Unmarried teaching partners should secure dual independent contracts with separate work visas/permits sponsored by the school."
+                          : "Unmarried teaching partners should apply as two independent single candidates, securing separate contracts, individual work visas, and separate single housing."}
                       </span>
                     </div>
                   </div>
@@ -382,21 +392,43 @@ export default function CoupleCountryAdvisoryPanel({
               <div className="space-y-3 w-full min-w-0">
                 <div className="flex items-center gap-2 text-[#F8FAFC] font-bold text-sm">
                   <Scale className="size-4 shrink-0 text-slate-400" />
-                  <span>LGBTQ+ Recognition & Discretion in {advisory.country}</span>
+                  <span>LGBTQ+ Recognition & Legal Standing in {advisory.country}</span>
                 </div>
 
-                {/* Hard Legal Dealbreaker / Warning Card (Rose Accent) */}
-                <div className="p-3.5 bg-rose-500/[0.03] border border-white/10 border-l-4 border-l-rose-500 rounded-lg space-y-2 whitespace-normal break-words">
+                {/* Legal Standing Card */}
+                <div className={cn(
+                  "p-3.5 rounded-lg space-y-2 border whitespace-normal break-words",
+                  advisory.sameSexRecognition === 'recognized'
+                    ? "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                    : advisory.sameSexRecognition === 'unrecognized_safe'
+                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                )}>
                   <p className="leading-relaxed text-slate-200">{advisory.guidance.sameSex}</p>
                 </div>
 
-                {/* Recruitment Practice Card */}
-                <div className="p-3.5 bg-rose-500/[0.02] border border-white/10 border-l-4 border-l-rose-500/80 rounded-lg space-y-1.5 whitespace-normal break-words">
+                {/* Recruitment & Housing Practice Card */}
+                <div className={cn(
+                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border",
+                  advisory.sameSexRecognition === 'recognized'
+                    ? "border-l-4 border-l-emerald-500/80 border-white/10 bg-emerald-500/[0.02]"
+                    : advisory.sameSexRecognition === 'unrecognized_safe'
+                    ? "border-l-4 border-l-amber-500/80 border-white/10 bg-amber-500/[0.02]"
+                    : "border-l-4 border-l-rose-500/80 border-white/10 bg-rose-500/[0.02]"
+                )}>
                   <span className="text-[11.5px] font-bold text-[#F8FAFC]">
-                    Recruitment & Housing Practice in {advisory.country}:
+                    {advisory.sameSexRecognition === 'recognized'
+                      ? `Legal Protection & Inclusivity in ${advisory.country}:`
+                      : advisory.sameSexRecognition === 'unrecognized_safe'
+                      ? `Recruitment & Visas in ${advisory.country}:`
+                      : `Recruitment & Discretion in ${advisory.country}:`}
                   </span>
                   <p className="text-[11.5px] text-slate-300 leading-relaxed">
-                    International school recruitment agencies advise applying as two independent single educators with individual contracts, separate work permits, and standard local discretion.
+                    {advisory.sameSexRecognition === 'recognized'
+                      ? `Same-sex marriage and registered partnerships enjoy full legal equality and statutory anti-discrimination protections in ${advisory.country}. International schools welcome LGBTQ+ educator couples openly with equal spousal benefits.`
+                      : advisory.sameSexRecognition === 'unrecognized_safe'
+                      ? `While same-sex relationships are socially safe and legal, host-nation immigration does not recognize same-sex marriages for dependent visas. Partners should secure independent employer-sponsored work permits.`
+                      : `Host-nation laws do not recognize LGBTQ+ partnerships. International school recruitment agencies advise applying as two independent single candidates with separate work permits and practicing standard personal discretion.`}
                   </p>
                 </div>
               </div>
@@ -414,13 +446,13 @@ export default function CoupleCountryAdvisoryPanel({
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-bold text-slate-200 truncate">
-                  {hasPartnerIncome ? "Joint Household Mode Active" : "Have a partner earning income?"}
+                  {hasPartnerIncome ? "Joint Household Mode Active" : "Add partner monthly net salary to calculate your joint savings surplus."}
                 </p>
-                <p className="text-[9.5px] sm:text-[10px] text-slate-400 truncate">
-                  {hasPartnerIncome 
-                    ? `Current partner net: ${currency} ${parsedPartnerSalary.toLocaleString()}/mo`
-                    : "Add partner monthly net salary to calculate joint savings surplus."}
-                </p>
+                {hasPartnerIncome && (
+                  <p className="text-[9.5px] sm:text-[10px] text-slate-400 truncate">
+                    Current partner net: {currency} {parsedPartnerSalary.toLocaleString()}/mo
+                  </p>
+                )}
               </div>
             </div>
 
