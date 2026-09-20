@@ -1,0 +1,1282 @@
+{
+  "hong kong": {
+    "name": "Hong Kong",
+    "rawCurricula": [
+      "German/British",
+      "HKDSE/IB",
+      "IB / Bilingual",
+      "SG / IB",
+      "IGCSE / IB",
+      "IB / Ontario"
+    ],
+    "frameworks": [
+      "british",
+      "ib"
+    ]
+  },
+  "tokyo": {
+    "name": "Tokyo",
+    "rawCurricula": [
+      "IB",
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "shanghai": {
+    "name": "Shanghai",
+    "rawCurricula": [
+      "US / IB",
+      "IGCSE / IB",
+      "British / IB",
+      "SG / IGCSE / IB",
+      "US/AP"
+    ],
+    "frameworks": [
+      "ib",
+      "american",
+      "british"
+    ]
+  },
+  "singapore": {
+    "name": "Singapore",
+    "rawCurricula": [
+      "IB / UWC",
+      "British / IB",
+      "IGCSE / IB",
+      "CBSE / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "amman": {
+    "name": "Amman",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "mumbai": {
+    "name": "Mumbai",
+    "rawCurricula": [
+      "IB / IGCSE",
+      "IGCSE / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "foshan": {
+    "name": "Foshan",
+    "rawCurricula": [
+      "IB / CIE"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "baku": {
+    "name": "Baku",
+    "rawCurricula": [
+      "IB",
+      "UK",
+      "US"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "beijing": {
+    "name": "Beijing",
+    "rawCurricula": [
+      "British / IB",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "noida": {
+    "name": "Noida",
+    "rawCurricula": [
+      "CBSE / IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "doha": {
+    "name": "Doha",
+    "rawCurricula": [
+      "IB",
+      "UK/IB",
+      "US"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "dubai": {
+    "name": "Dubai",
+    "rawCurricula": [
+      "IB",
+      "British / IB",
+      "UK",
+      "UK/IB",
+      "American"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "abu dhabi": {
+    "name": "Abu Dhabi",
+    "rawCurricula": [
+      "British / US / IB",
+      "UK/IB",
+      "UK",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "bengaluru": {
+    "name": "Bengaluru",
+    "rawCurricula": [
+      "IB",
+      "IGCSE / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "shenzhen": {
+    "name": "Shenzhen",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "chengdu": {
+    "name": "Chengdu",
+    "rawCurricula": [
+      "IB / US"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "prague": {
+    "name": "Prague",
+    "rawCurricula": [
+      "IB DP",
+      "IB",
+      "IGCSE / IB DP",
+      "English Nat. / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "paris": {
+    "name": "Paris",
+    "rawCurricula": [
+      "French / IB",
+      "US / IB / AP"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "athens": {
+    "name": "Athens",
+    "rawCurricula": [
+      "British / IB",
+      "US / IB",
+      "IB / US"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "milan": {
+    "name": "Milan",
+    "rawCurricula": [
+      "British / IB",
+      "US / IB",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "monaco": {
+    "name": "Monaco",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "gurugram": {
+    "name": "Gurugram",
+    "rawCurricula": [
+      "IB/IGCSE/CBSE"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "muscat": {
+    "name": "Muscat",
+    "rawCurricula": [
+      "British (iGCSE, A-Level)",
+      "UK/A-Level",
+      "US/AP",
+      "IB (PYP, MYP, DP)",
+      "Cambridge (iGCSE), Omani Ministry, IBDP"
+    ],
+    "frameworks": [
+      "british",
+      "american",
+      "ib"
+    ]
+  },
+  "kolkata": {
+    "name": "Kolkata",
+    "rawCurricula": [
+      "GCE/IGCSE/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "manila": {
+    "name": "Manila",
+    "rawCurricula": [
+      "British / IB",
+      "UK/A-Level",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "suzhou": {
+    "name": "Suzhou",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "villars": {
+    "name": "Villars",
+    "rawCurricula": [
+      "British / IB",
+      "IB / French / US"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "frankfurt": {
+    "name": "Frankfurt",
+    "rawCurricula": [
+      "IB",
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "alicante": {
+    "name": "Alicante",
+    "rawCurricula": [
+      "British"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "rome": {
+    "name": "Rome",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "barcelona": {
+    "name": "Barcelona",
+    "rawCurricula": [
+      "British / IB / Spanish",
+      "IB",
+      "US / IB / AP",
+      "US / IB",
+      "British / IB",
+      "IB / Spanish"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "lausanne": {
+    "name": "Lausanne",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "waterloo": {
+    "name": "Waterloo",
+    "rawCurricula": [
+      "US / IB",
+      "IB/US",
+      "IB / UK",
+      "UK / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american",
+      "british"
+    ]
+  },
+  "montreux": {
+    "name": "Montreux",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "lisbon": {
+    "name": "Lisbon",
+    "rawCurricula": [
+      "IB / Portuguese",
+      "British / IB / Port.",
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "zurich": {
+    "name": "Zurich",
+    "rawCurricula": [
+      "IB / US"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "brussels": {
+    "name": "Brussels",
+    "rawCurricula": [
+      "British / IB",
+      "US / IB",
+      "IB",
+      "UK"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "madrid": {
+    "name": "Madrid",
+    "rawCurricula": [
+      "IB",
+      "US / IB / AP"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "marbella": {
+    "name": "Marbella",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "munich": {
+    "name": "Munich",
+    "rawCurricula": [
+      "IB",
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "leysin": {
+    "name": "Leysin",
+    "rawCurricula": [
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "bonn": {
+    "name": "Bonn",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "amsterdam": {
+    "name": "Amsterdam",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "st-légier": {
+    "name": "St-Légier",
+    "rawCurricula": [
+      "IB / Swiss"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "vienna": {
+    "name": "Vienna",
+    "rawCurricula": [
+      "US / IB",
+      "IB (PYP, MYP, DP)",
+      "US Common Core & IB DP",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "geneva": {
+    "name": "Geneva",
+    "rawCurricula": [
+      "Multilingual"
+    ],
+    "frameworks": []
+  },
+  "copenhagen": {
+    "name": "Copenhagen",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "cologne": {
+    "name": "Cologne",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "düsseldorf": {
+    "name": "Düsseldorf",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "zug": {
+    "name": "Zug",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "oslo": {
+    "name": "Oslo",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "budapest": {
+    "name": "Budapest",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "basel": {
+    "name": "Basel",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "lugano": {
+    "name": "Lugano",
+    "rawCurricula": [
+      "US / IB / AP"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "heidelberg": {
+    "name": "Heidelberg",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "bangkok": {
+    "name": "Bangkok",
+    "rawCurricula": [
+      "IB",
+      "UK/A-Level",
+      "UK/IB",
+      "US/AP/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "riyadh": {
+    "name": "Riyadh",
+    "rawCurricula": [
+      "UK/A-Level",
+      "US/IB",
+      "IB",
+      "UK",
+      "IB/National",
+      "UK/US"
+    ],
+    "frameworks": [
+      "british",
+      "ib",
+      "american"
+    ]
+  },
+  "dubai emirates hills": {
+    "name": "Dubai Emirates Hills",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "dubai academic city": {
+    "name": "Dubai Academic City",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "kuwait city": {
+    "name": "Kuwait City",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "hamala": {
+    "name": "Hamala",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "cairo": {
+    "name": "Cairo",
+    "rawCurricula": [
+      "UK/IB",
+      "UK/US/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "nairobi": {
+    "name": "Nairobi",
+    "rawCurricula": [
+      "IB/US",
+      "UK/iGCSE",
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american",
+      "british"
+    ]
+  },
+  "cape town": {
+    "name": "Cape Town",
+    "rawCurricula": [
+      "UK/A-Level",
+      "US/AP"
+    ],
+    "frameworks": [
+      "british",
+      "american"
+    ]
+  },
+  "johannesburg": {
+    "name": "Johannesburg",
+    "rawCurricula": [
+      "IB/US"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "hanoi": {
+    "name": "Hanoi",
+    "rawCurricula": [
+      "UK/IB",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "hcmc": {
+    "name": "HCMC",
+    "rawCurricula": [
+      "UK/IB",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "kuala lumpur": {
+    "name": "Kuala Lumpur",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "johor": {
+    "name": "Johor",
+    "rawCurricula": [
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "kl": {
+    "name": "KL",
+    "rawCurricula": [
+      "UK/IB",
+      "US/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "seremban": {
+    "name": "Seremban",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "chonburi": {
+    "name": "Chonburi",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "phuket": {
+    "name": "Phuket",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "jakarta": {
+    "name": "Jakarta",
+    "rawCurricula": [
+      "UK/IB",
+      "US/AP/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "bali": {
+    "name": "Bali",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "chiba": {
+    "name": "Chiba",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "appi kogen": {
+    "name": "Appi Kogen",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "yokohama": {
+    "name": "Yokohama",
+    "rawCurricula": [
+      "IB/US",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "kobe": {
+    "name": "Kobe",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "seoul": {
+    "name": "Seoul",
+    "rawCurricula": [
+      "IB/US"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "songdo": {
+    "name": "Songdo",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "jeju": {
+    "name": "Jeju",
+    "rawCurricula": [
+      "IB",
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "warsaw": {
+    "name": "Warsaw",
+    "rawCurricula": [
+      "UK/IB",
+      "UK/A-Level",
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "bucharest": {
+    "name": "Bucharest",
+    "rawCurricula": [
+      "UK/IB",
+      "IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "bilbao": {
+    "name": "Bilbao",
+    "rawCurricula": [
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "helsinki": {
+    "name": "Helsinki",
+    "rawCurricula": [
+      "IB",
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "stockholm": {
+    "name": "Stockholm",
+    "rawCurricula": [
+      "IB",
+      "UK/iGCSE"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "london": {
+    "name": "London",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "surrey": {
+    "name": "Surrey",
+    "rawCurricula": [
+      "IB/US"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "luxembourg": {
+    "name": "Luxembourg",
+    "rawCurricula": [
+      "UK/A-Level",
+      "IB/US"
+    ],
+    "frameworks": [
+      "british",
+      "ib",
+      "american"
+    ]
+  },
+  "nice": {
+    "name": "Nice",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "mougins": {
+    "name": "Mougins",
+    "rawCurricula": [
+      "UK/A-Level"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "turin": {
+    "name": "Turin",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "genoa": {
+    "name": "Genoa",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "sao paulo": {
+    "name": "Sao Paulo",
+    "rawCurricula": [
+      "UK/IB",
+      "US/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "rio": {
+    "name": "Rio",
+    "rawCurricula": [
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "buenos aires": {
+    "name": "Buenos Aires",
+    "rawCurricula": [
+      "UK / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "lima": {
+    "name": "Lima",
+    "rawCurricula": [
+      "UK/IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "st. gilgen": {
+    "name": "St. Gilgen",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "velden": {
+    "name": "Velden",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "innsbruck": {
+    "name": "Innsbruck",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "st. pölten": {
+    "name": "St. Pölten",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "linz": {
+    "name": "Linz",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "salzburg": {
+    "name": "Salzburg",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "krumbach": {
+    "name": "Krumbach",
+    "rawCurricula": [
+      "UK, IBDP"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "manama": {
+    "name": "Manama",
+    "rawCurricula": [
+      "UK/ IB",
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british",
+      "american"
+    ]
+  },
+  "juffair": {
+    "name": "Juffair",
+    "rawCurricula": [
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "san josé": {
+    "name": "San José",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "riffa": {
+    "name": "Riffa",
+    "rawCurricula": [
+      "IB",
+      "IB & US Curriculum"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "shah alam": {
+    "name": "Shah Alam",
+    "rawCurricula": [
+      "British / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "lagoa": {
+    "name": "Lagoa",
+    "rawCurricula": [
+      "British"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "isa town": {
+    "name": "Isa Town",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "ekeren": {
+    "name": "Ekeren",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "tervuren": {
+    "name": "Tervuren",
+    "rawCurricula": [
+      "US"
+    ],
+    "frameworks": [
+      "american"
+    ]
+  },
+  "ghent": {
+    "name": "Ghent",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "antwerp": {
+    "name": "Antwerp",
+    "rawCurricula": [
+      "UK"
+    ],
+    "frameworks": [
+      "british"
+    ]
+  },
+  "rhode-saint-genèse": {
+    "name": "Rhode-Saint-Genèse",
+    "rawCurricula": [
+      "UK / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "british"
+    ]
+  },
+  "moshi": {
+    "name": "Moshi",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "arusha": {
+    "name": "Arusha",
+    "rawCurricula": [
+      "IB"
+    ],
+    "frameworks": [
+      "ib"
+    ]
+  },
+  "the hague": {
+    "name": "The Hague",
+    "rawCurricula": [
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "stavanger": {
+    "name": "Stavanger",
+    "rawCurricula": [
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  },
+  "sintra": {
+    "name": "Sintra",
+    "rawCurricula": [
+      "US / IB"
+    ],
+    "frameworks": [
+      "ib",
+      "american"
+    ]
+  }
+}

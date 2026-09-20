@@ -14,10 +14,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth, db } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileByLabel } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
+import type { TeacherProfile } from '@/lib/types';
+import { getTimeUntilLocalMidnight } from '@/lib/utils/timeUtils';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
@@ -51,6 +53,34 @@ export default function PreparePage() {
   const firestore = useFirestore();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+
+  // 🛰️ Teacher Profile & Allowance Gating for Relocation Calculator
+  const teacherDocRef = useMemo(() => (user && db ? doc(db, 'teachers', user.uid) : null), [user]);
+  const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
+  const [timeUntilReset, setTimeUntilReset] = useState<string>('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      setTimeUntilReset(getTimeUntilLocalMidnight().formatted);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
+  const used = teacherProfile?.evaluations_used ?? 0;
+  const isPro = teacherProfile?.tier === 'pro' || isAdmin;
+  const remainingEvaluations = Math.max(0, allowance - used);
+  const isOverLimit = !isPro && !!user && (used >= allowance);
+  const isGuest = !user;
+
+  const handleOpenDataLock = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('lfi:open-intel-modal'));
+    }
+  };
 
   // 🛰️ Relocation Checklist State
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
@@ -807,6 +837,38 @@ export default function PreparePage() {
 
   if (!mounted || isLoadingSchools) return <div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02]" /></div>;
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-12 selection:bg-[#d95f02] flex items-center justify-center">
+        <div className="max-w-xl w-full text-center space-y-6 bg-[#0b1224] border border-amber-500/30 p-8 md:p-12 rounded-sm shadow-2xl relative">
+          <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+            <Lock className="size-8" />
+          </div>
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+              🔒 GUEST PREVIEW MODE
+            </div>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-white italic">
+              The Ultimate Arrival Plan & Buffer Suite
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Sign up free with your verified international teaching background to unlock contract scrutiny protocols, dynamic arrival buffer calculators, IKEA field kits, and paperwork checklists with your 25 daily evaluations.
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              <Zap className="size-4" />
+              Claim 25 Free Evaluations & Unlock Prepare →
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="container mx-auto px-4 md:px-12 py-10 text-white bg-[#020617] min-h-screen font-sans"
@@ -1274,6 +1336,104 @@ export default function PreparePage() {
         )}
       </div>
 
+      {isGuest ? (
+        <div className="max-w-7xl mx-auto mb-6">
+          <Card className="bg-[#0b1224] border-amber-500/30 p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+              <Coins className="size-64 text-amber-400" />
+            </div>
+            <div className="max-w-xl mx-auto space-y-6 relative z-10">
+              <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                <Lock className="size-8" />
+              </div>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+                  🔒 GUEST PREVIEW MODE
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white italic">
+                  Unlock Relocation Runway Calculator
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Sign up free with your verified international teaching background to unlock live dynamic startup buffers, IKEA kit estimations, excess baggage/shipping calculators, and custom 45-day emergency runways.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+                <div className="p-3 bg-white/[0.02] border border-white/10 rounded-sm">
+                  <p className="text-[11px] font-black text-amber-400 uppercase tracking-wider">🛋️ IKEA Field Kits</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Standardized inventory costs for furnished vs unfurnished arrivals.</p>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 rounded-sm">
+                  <p className="text-[11px] font-black text-amber-400 uppercase tracking-wider">🛄 Logistics Buffer</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Excess airline baggage rates vs sea freight shipping estimates.</p>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 rounded-sm">
+                  <p className="text-[11px] font-black text-amber-400 uppercase tracking-wider">🛡️ 45-Day Runway</p>
+                  <p className="text-[10px] text-slate-400 mt-1">First-payday cash buffer modeled on school deposit schedules.</p>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                  <Zap className="size-4" />
+                  Claim 25 Free Evaluations & Unlock Calculator →
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </div>
+      ) : isOverLimit ? (
+        <div className="max-w-7xl mx-auto mb-6">
+          <Card className="bg-[#0b1224] border-amber-500/30 p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
+            <div className="max-w-xl mx-auto space-y-6 relative z-10">
+              <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                <Lock className="size-8" />
+              </div>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+                  🔒 DAILY EVALUATION LIMIT REACHED
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white italic">
+                  Daily Quota Reached ({allowance}/{allowance} Used)
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Your daily evaluations refresh automatically at midnight local time (<strong>in {timeUntilReset || 'a few hours'}</strong>). Need to run relocation calculations right now?
+                </p>
+              </div>
+
+              <div className="p-4 bg-white/[0.02] border border-white/10 rounded-sm text-left space-y-1">
+                <div className="flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-wider">
+                  <Zap className="size-3.5" />
+                  ⚡ Instant AI Recruitment Uplift
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Tell our AI desk your hiring research scenario for an instant <strong>+20 evaluation bonus</strong> with rollover protection.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <button
+                  type="button"
+                  onClick={handleOpenDataLock}
+                  className="flex-1 py-3.5 px-6 bg-gradient-to-r from-primary via-orange-600 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  ⚡ Request AI Uplift (+20 Credits)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenDataLock}
+                  className="py-3.5 px-6 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold uppercase text-xs tracking-wider rounded-sm transition-all cursor-pointer"
+                >
+                  🛡️ Share Intel (+10 Credits)
+                </button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      ) : (
       <div className="max-w-7xl mx-auto space-y-5 mb-6">
 
         {/* Tactical Warning Alert Moved Down */}
@@ -1756,6 +1916,7 @@ export default function PreparePage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* 🛡️ MISSION PHASE: STEP 03 */}
       <div className="mb-6">

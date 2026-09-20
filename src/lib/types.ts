@@ -120,13 +120,33 @@ export interface School {
 }
 
 export interface TeacherProfile {
-  uid: string;
+  uid?: string;
   email: string;
   id?: string; 
+  teacherId?: string;
+  role?: string;
+  name?: string;
   displayName?: string;
   fullName?: string;
   avatarUrl?: string;
   isVerifiedTeacher?: boolean;
+  user_type?: 'certified' | 'standard' | 'international_teacher';
+  curriculum_framework?: string;
+  has_k12_license?: boolean;
+  evaluations_allowance?: number;
+  evaluations_used?: number;
+  daily_evaluations_used?: number;
+  daily_base_quota?: number;
+  bonus_credits?: number;
+  last_quota_reset_date?: string;
+  expedited_uplifts_count?: number;
+  contributions_count?: number;
+  tier?: 'free' | 'pro';
+  createdAt?: string;
+  current_city?: string;
+  current_school?: string;
+  integrity_flag?: string;
+  flag_reason?: string;
   qualifications?: string[];
   experience?: string;
   yearsOfExperience?: string | number; 

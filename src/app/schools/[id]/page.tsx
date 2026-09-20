@@ -14,9 +14,10 @@ function formatLocation(cityRaw?: string, countryRaw?: string): string {
   return uniqueParts.join(', ');
 }
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { useDoc, useFirestore, useMemoFirebase, db, useAuth } from '@/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
-import type { School, LocationCostOfLiving } from '@/lib/types';
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import type { School, LocationCostOfLiving, TeacherProfile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +44,9 @@ import {
   HeartHandshake,
   FileText,
   ChevronDown,
+  Lock,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
 import { CostOfLivingCalculator } from '@/components/cost-of-living-calculator';
 import { cn } from '@/lib/utils';
@@ -210,12 +214,115 @@ function BriefingConsoleLoader() {
   );
 }
 
+import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
+
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const { user } = useAuth();
 
   // FIXED: Standardize hook usage for Isomorphic Bridge
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
+
+  // 🛰️ Teacher Profile & Daily Allowance Gating (24-Hour Reset with Rollover)
+  const teacherDocRef = React.useMemo(() => (user && db ? doc(db, 'teachers', user.uid) : null), [user]);
+  const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
+  
+  const [mounted, setMounted] = React.useState(false);
+  const [timeUntilReset, setTimeUntilReset] = React.useState<string>('');
+
+  React.useEffect(() => {
+    setMounted(true);
+    const updateTime = () => {
+      setTimeUntilReset(getTimeUntilLocalMidnight().formatted);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
+  const used = teacherProfile?.evaluations_used ?? 0;
+  const isPro = teacherProfile?.tier === 'pro' || isAdmin;
+  const remainingEvaluations = Math.max(0, allowance - used);
+  const isOverLimit = !isPro && !!user && (used >= allowance);
+
+  const [guestViewCount, setGuestViewCount] = React.useState<number>(0);
+  const [isGuestOverLimit, setIsGuestOverLimit] = React.useState<boolean>(false);
+  const hasCountedEvaluationRef = React.useRef(false);
+
+  // Guest 3-Evaluation view tracking
+  React.useEffect(() => {
+    if (!user && mounted && school) {
+      try {
+        const schoolKey = ((school as any)?.schoolId || school?.id || id || '').toLowerCase().trim();
+        if (!schoolKey) return;
+        const storedViews: string[] = JSON.parse(localStorage.getItem('lfi_guest_evaluated_schools') || '[]');
+        if (storedViews.includes(schoolKey)) {
+          setGuestViewCount(storedViews.length);
+          if (storedViews.length > 3) {
+            setIsGuestOverLimit(true);
+          } else {
+            setIsGuestOverLimit(false);
+          }
+        } else {
+          if (storedViews.length >= 3) {
+            setIsGuestOverLimit(true);
+            setGuestViewCount(storedViews.length);
+          } else {
+            const updated = [...storedViews, schoolKey];
+            localStorage.setItem('lfi_guest_evaluated_schools', JSON.stringify(updated));
+            setGuestViewCount(updated.length);
+            setIsGuestOverLimit(false);
+          }
+        }
+      } catch (e) {
+        // Safe fallback
+      }
+    } else if (user) {
+      setIsGuestOverLimit(false);
+    }
+  }, [user, mounted, school, id]);
+
+  // Auto-reset daily quota on new day arrival (preserving bonus credits rollover)
+  React.useEffect(() => {
+    if (user && db && teacherProfile) {
+      const today = getLocalDateString();
+      if (teacherProfile.last_quota_reset_date && teacherProfile.last_quota_reset_date !== today) {
+        const teacherDoc = doc(db, 'teachers', user.uid);
+        const bonusRollover = teacherProfile.bonus_credits || 0;
+        updateDoc(teacherDoc, {
+          daily_evaluations_used: 0,
+          evaluations_used: 0,
+          daily_base_quota: 20,
+          evaluations_allowance: 20 + bonusRollover,
+          last_quota_reset_date: today
+        }).catch(err => console.warn('Could not reset daily quota:', err));
+      }
+    }
+  }, [user, teacherProfile]);
+
+  React.useEffect(() => {
+    if (user && db && school && !hasCountedEvaluationRef.current && !isOverLimit) {
+      hasCountedEvaluationRef.current = true;
+      const teacherDoc = doc(db, 'teachers', user.uid);
+      updateDoc(teacherDoc, {
+        evaluations_used: increment(1),
+        daily_evaluations_used: increment(1)
+      }).catch(err => console.warn('Could not increment evaluations_used:', err));
+    }
+  }, [user, school, isOverLimit]);
+
+  const handleOpenDataLock = () => {
+    window.dispatchEvent(new CustomEvent('lfi:open-intel-modal', {
+      detail: {
+        isDataLock: true,
+        schoolName: school?.schoolname || school?.name,
+        location: [school?.city || school?.location, school?.country].filter(Boolean).join(', '),
+        category: 'Salary'
+      }
+    }));
+  };
 
   // 💰 Aggressive Finance Mapping declared at the very top to prevent Temporal Dead Zone ReferenceErrors
   const rawFinance = school?.intel?.salary?.value || school?.finance || (school as any)?.salary || (school as any)?.monthlySalary || (school as any)?.salaryValue || '—';
@@ -229,7 +336,6 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [currency, setCurrency] = React.useState('USD');
   const [adults, setAdults] = React.useState(1);
   const [children, setChildren] = React.useState(0);
-  const [mounted, setMounted] = React.useState(false);
   const [isDossierInitialized, setIsDossierInitialized] = React.useState(false);
   const [selectedFamilyStatus, setSelectedFamilyStatus] = React.useState<'single' | 'couple' | 'family'>('single');
   const [partnerSalary, setPartnerSalary] = React.useState<string | number>('');
@@ -704,7 +810,73 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                   <BookOpen className="size-24 text-primary" />
                 </div>
                 <CardContent className="pt-8">
-                  {!isDossierInitialized ? (
+                  {isGuestOverLimit ? (
+                    <div className="py-8 px-4 text-center space-y-6">
+                      <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                        <Lock className="size-8" />
+                      </div>
+                      <div className="space-y-2 max-w-lg mx-auto">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+                          🔒 3 FREE EVALUATIONS COMPLETED
+                        </div>
+                        <h4 className="text-2xl font-black uppercase italic tracking-tight text-white">
+                          Guest Limit Reached
+                        </h4>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          You have explored your 3 complimentary school evaluations in Guest Mode. Register your free verified educator account to unlock 25 evaluations daily, full contract audits, and relocation insights.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto pt-2">
+                        <Link
+                          href="/signup"
+                          className="flex-1 py-3.5 px-4 bg-gradient-to-r from-primary via-orange-600 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all text-center"
+                        >
+                          Unlock 25 Free Evaluations →
+                        </Link>
+                        <Link
+                          href="/login"
+                          className="py-3.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold uppercase text-xs rounded-sm transition-all text-center"
+                        >
+                          Log In
+                        </Link>
+                      </div>
+                    </div>
+                  ) : isOverLimit ? (
+                    <div className="py-8 px-4 text-center space-y-6">
+                      <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                        <Lock className="size-8" />
+                      </div>
+                      <div className="space-y-2 max-w-lg mx-auto">
+                        <h4 className="text-2xl font-black uppercase italic tracking-tight text-white">
+                          🔒 Daily Quota Reached ({allowance}/{allowance} Used)
+                        </h4>
+                        <p className="text-xs text-slate-300 leading-relaxed">
+                          Your daily evaluations refresh automatically at midnight local time (<strong>in {timeUntilReset || 'a few hours'}</strong>). Need to compare offers right now?
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-white/[0.02] border border-white/10 rounded-sm max-w-md mx-auto text-left space-y-1">
+                        <div className="flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-wider">
+                          <Zap className="size-3.5" />
+                          ⚡ Instant AI Recruitment Uplift
+                        </div>
+                        <p className="text-[11px] text-slate-400 leading-relaxed">
+                          Tell our AI desk your hiring research scenario for an instant <strong>+20 evaluation bonus</strong> with rollover protection.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+                        <button
+                          type="button"
+                          onClick={handleOpenDataLock}
+                          className="flex-1 py-3.5 px-4 bg-gradient-to-r from-primary via-orange-600 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                        >
+                          ⚡ Request AI Uplift (+20 Credits)
+                        </button>
+                      </div>
+                    </div>
+                  ) : !isDossierInitialized ? (
                     <div className="space-y-6 py-4">
                       <div className="text-center space-y-2 mb-6">
                         <div className="inline-flex items-center justify-center size-12 bg-primary/10 rounded-full border border-primary/20 text-primary mb-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useEffect, useState, useMemo, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
     MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap,
@@ -10,7 +10,9 @@ import {
 } from 'lucide-react';
 // 🛰️ Added useUser to the import
 import { useFirestore, useCollection, useMemoFirebase, useUser, setDocumentNonBlocking, useDoc } from '@/firebase';
-import { collection, doc, increment } from 'firebase/firestore';
+import { collection, doc, increment, updateDoc } from 'firebase/firestore';
+import Link from 'next/link';
+import type { TeacherProfile } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -295,6 +297,14 @@ function DecideContent() {
 
     const { data: exchangeRates } = useDoc<any>(useMemoFirebase(() => (mounted && firestore ? doc(firestore, 'system', 'exchange_rates') : null), [firestore, mounted]));
 
+    const teacherDocRef = useMemo(() => (user && firestore ? doc(firestore, 'teachers', user.uid) : null), [user, firestore]);
+    const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
+    const allowance = teacherProfile?.evaluations_allowance ?? 20;
+    const used = teacherProfile?.evaluations_used ?? 0;
+    const isPro = teacherProfile?.tier === 'pro' || isAdmin;
+    const remainingEvaluations = Math.max(0, allowance - used);
+    const isOverLimit = !isPro && !!user && (used >= allowance);
+
     useEffect(() => {
         if (!mounted) return;
         setApiLoading(true);
@@ -323,6 +333,23 @@ function DecideContent() {
     const [isUnlocked, setIsUnlocked] = useState(false);
     const [aiBriefing, setAiBriefing] = useState<any>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+
+    const hasCountedInitialRef = useRef(false);
+
+    // Initial 3 schools consumption on first load
+    useEffect(() => {
+        if (!hasCountedInitialRef.current && user && firestore && teacherProfile && !isPro) {
+            const activeCount = selectedIds.filter(Boolean).length;
+            if (activeCount > 0) {
+                hasCountedInitialRef.current = true;
+                const teacherDoc = doc(firestore, 'teachers', user.uid);
+                updateDoc(teacherDoc, {
+                    evaluations_used: increment(activeCount),
+                    daily_evaluations_used: increment(activeCount),
+                }).catch(err => console.warn('Could not increment decide initial load evaluations:', err));
+            }
+        }
+    }, [user, firestore, teacherProfile, selectedIds, isPro]);
 
     // 🎯 RE-CALCULATION TRIGGER (Reacts to ColData / school selection arrival)
     useEffect(() => {
@@ -446,7 +473,24 @@ function DecideContent() {
     }, [netSalaries, manualSalaries, adjustments, familyStatus, selectedIds, mounted]);
 
     const handleSchoolSelect = (val: string, index: number) => {
+        if (!val || val === selectedIds[index]) return;
+
+        if (isOverLimit) {
+            window.dispatchEvent(new CustomEvent('lfi:open-intel-modal'));
+            return;
+        }
+
         const nextIds = [...selectedIds]; nextIds[index] = val; setSelectedIds(nextIds);
+
+        // Deduct 1 point per school load/swap
+        if (user && firestore && !isPro) {
+            const teacherDoc = doc(firestore, 'teachers', user.uid);
+            updateDoc(teacherDoc, {
+                evaluations_used: increment(1),
+                daily_evaluations_used: increment(1),
+            }).catch(err => console.warn('Could not increment decide school selection evaluations:', err));
+        }
+
         const school = schools?.find((s: any) => s.id === val);
         if (school) {
             const sCity = String(getSchoolField(school, ['city', 'town', 'location']) || '');
@@ -678,6 +722,38 @@ function DecideContent() {
     }, [shootoutMatrix]);
 
     if (!mounted || apiLoading) return <div className="h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="animate-spin text-[#d95f02] size-10" /></div>;
+
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-12 selection:bg-[#d95f02] flex items-center justify-center">
+                <div className="max-w-xl w-full text-center space-y-6 bg-[#0b1224] border border-amber-500/30 p-8 md:p-12 rounded-sm shadow-2xl relative">
+                    <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                        <Lock className="size-8" />
+                    </div>
+                    <div className="space-y-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+                            🔒 GUEST PREVIEW MODE
+                        </div>
+                        <h2 className="text-3xl font-black uppercase tracking-tight text-white italic">
+                            Compare & Decide Multi-Offer Matrix
+                        </h2>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Sign up free with your verified international teaching background to compare side-by-side packages, surplus potential, and flight/housing benefits across up to 3 schools with your 25 daily evaluations.
+                        </p>
+                    </div>
+                    <div className="pt-2">
+                        <Link
+                            href="/signup"
+                            className="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                        >
+                            <Zap className="size-4" />
+                            Claim 25 Free Evaluations & Unlock Compare →
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-8 selection:bg-[#d95f02]">

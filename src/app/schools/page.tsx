@@ -2,20 +2,37 @@
 
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, BookOpen, ArrowRight, Loader2 } from 'lucide-react';
-import { useCollection, db } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { Search, MapPin, BookOpen, ArrowRight, Loader2, ShieldAlert, Lock, Compass } from 'lucide-react';
+import { useCollection, useDoc, db, useAuth } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
+import type { TeacherProfile } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 function SchoolDirectoryContent() {
+  const { user, loading: isAuthLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const searchParams = useSearchParams();
+
+  // 🛡️ Admin Verification Gate
+  const teacherDocRef = useMemo(() => (user && db ? doc(db, 'teachers', user.uid) : null), [user]);
+  const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
+
+  const isAdmin = Boolean(
+    user && (
+      user.email === 'fred@leopardfish.intel' ||
+      user.uid === 'FLI007' ||
+      user.email?.includes('admin') ||
+      (teacherProfile as any)?.role === 'admin' ||
+      (teacherProfile as any)?.teacherId === 'FLI007'
+    )
+  );
 
   // 🛡️ Hydration Guard & Query Param Scanner
   useEffect(() => {
@@ -28,7 +45,7 @@ function SchoolDirectoryContent() {
   }, [searchParams]);
 
   // 🛡️ Logic Gate: Prevent collection() call if db is undefined during build
-  const schoolsCollection = db ? collection(db, 'schools') : null;
+  const schoolsCollection = db && isAdmin ? collection(db, 'schools') : null;
   const { data: schools, isLoading } = useCollection<any>(schoolsCollection);
 
   const filteredSchools = useMemo(() => {
@@ -59,6 +76,69 @@ function SchoolDirectoryContent() {
       setHasSearched(true);
     }
   };
+
+  if (!mounted || isAuthLoading) {
+    return (
+      <div className="min-h-[70vh] bg-[#020617] flex items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-[#d95f02]" />
+      </div>
+    );
+  }
+
+  // 🔒 NON-ADMIN GATE SCREEN
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[80vh] bg-[#020617] flex items-center justify-center p-4 md:p-8">
+        <div className="max-w-xl w-full space-y-6 bg-slate-950/80 border border-white/10 p-6 md:p-8 rounded-sm shadow-2xl backdrop-blur-md text-center">
+          <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+            <Lock className="size-8" />
+          </div>
+
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-wider">
+              <ShieldAlert className="size-3.5" />
+              Administrative Staging Gate
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-white italic">
+              School Directory In Private Beta
+            </h1>
+            <p className="text-xs md:text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
+              The 490+ school dossier directory is currently undergoing administrative index calibration and is accessible exclusively to clearance administrators.
+            </p>
+          </div>
+
+          <div className="p-4 rounded bg-white/[0.02] border border-white/10 text-xs text-slate-300 text-left space-y-1">
+            <span className="text-white font-bold block uppercase tracking-wider text-[10px]">Public Intelligence Available:</span>
+            <p className="text-slate-400">
+              You can still freely use the <strong>Financial Forecaster</strong>, explore <strong>Featured Vacancies</strong>, and view <strong>Regional Discovery Hubs</strong>.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <Link href="/financial-forecaster" className="flex-1">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold gap-2 text-xs">
+                <Compass className="size-4" />
+                Financial Forecaster
+              </Button>
+            </Link>
+            <Link href="/featured-jobs" className="flex-1">
+              <Button variant="outline" className="w-full border-white/20 text-white hover:bg-white/10 text-xs font-bold">
+                Featured Vacancies
+              </Button>
+            </Link>
+          </div>
+
+          {!user && (
+            <div className="pt-2 text-center">
+              <Link href="/login" className="text-xs font-mono text-primary hover:underline uppercase tracking-wider">
+                Admin Sign In →
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (!mounted) return null;
 

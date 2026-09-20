@@ -2,11 +2,12 @@
 
 import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
 import { 
   ShieldCheck, Loader2, ArrowLeft, TrendingUp, 
   Lock, Zap, GraduationCap, Star, Info, Scale, Compass, Heart, Banknote, ChevronDown, ChevronUp, AlertTriangle, ChevronRight
 } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useAuth } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { canonicalCountry, RATES, calculateLocalSavingsScore, getStrategicScores, matchesRegion } from '@/lib/calculations';
@@ -151,6 +152,7 @@ function DossierContent() {
   const searchParams = useSearchParams();
   const routeParams = useParams();
   const firestore = useFirestore();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [expandedSafety, setExpandedSafety] = useState<number | null>(null);
   const [benchmark, setBenchmark] = useState<'USD' | 'GBP' | 'EUR' | 'Local'>('GBP');
@@ -339,6 +341,38 @@ function DossierContent() {
   }, [params, reqsData, finData, schoolData, routeParams, benchmark]);
 
   if (!mounted || !params) return <div className="min-h-screen bg-[#020617]" />;
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[#020617] text-slate-200 font-sans p-6 md:p-12 selection:bg-[#d95f02] flex items-center justify-center">
+        <div className="max-w-xl w-full text-center space-y-6 bg-[#0b1224] border border-amber-500/30 p-8 md:p-12 rounded-sm shadow-2xl relative">
+          <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+            <Lock className="size-8" />
+          </div>
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+              🔒 GUEST PREVIEW MODE
+            </div>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-white italic">
+              Regional Suitability Dossier
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Sign up free with your verified international teaching background to unlock country intelligence scores, surplus projections, and school stability metrics with your 25 daily evaluations.
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              <Zap className="size-4" />
+              Claim 25 Free Evaluations & Unlock Dossier →
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-6 md:p-12 font-sans selection:bg-[#d95f02]">

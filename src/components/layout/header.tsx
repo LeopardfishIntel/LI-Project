@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User as UserIcon, LogOut, LogIn, Menu, X, RefreshCw, AlertTriangle, CheckCircle2, ShieldCheck, Database, Wrench, ChevronDown, ChevronUp, ExternalLink, AlertCircle, Check } from "lucide-react"; 
+import { User as UserIcon, LogOut, LogIn, Menu, X, RefreshCw, AlertTriangle, CheckCircle2, ShieldCheck, Database, Wrench, ChevronDown, ChevronUp, ExternalLink, AlertCircle, Check, Zap, Clock, Sparkles } from "lucide-react"; 
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { auth, db } from "@/firebase"; 
-import { doc, getDoc, collection, getDocs, writeBatch } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, writeBatch, onSnapshot } from "firebase/firestore";
+import type { TeacherProfile } from "@/lib/types";
+import { getTimeUntilLocalMidnight } from "@/lib/utils/timeUtils";
 import { Input } from "@/components/ui/input";
 import { AdminAuditDropdown } from "@/components/layout/AdminAuditDropdown";
 import { CompensationAuditModal } from "@/components/audit/CompensationAuditModal";
@@ -62,6 +64,9 @@ export default function Header() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [operativeName, setOperativeName] = useState<string>("FRED");
   const [teacherId, setTeacherId] = useState<string>("FLI007");
+  const [teacherProfile, setTeacherProfile] = useState<TeacherProfile | null>(null);
+  const [timeUntilReset, setTimeUntilReset] = useState<string>("");
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Parity Monitor State
@@ -71,7 +76,21 @@ export default function Header() {
   const [parityState, setParityState] = useState<ParityState | null>(null);
   const [expandedSchoolId, setExpandedSchoolId] = useState<string | null>(null);
 
-  const isAdmin = Boolean(user && (teacherId === "FLI007" || user.email?.includes("admin")));
+  const isUserAdmin = Boolean(user && (user.email === "fred@leopardfish.intel" || user.email?.includes("admin") || teacherProfile?.role === "admin" || teacherId === "FLI007"));
+  const isAdmin = isUserAdmin;
+  const allowance = isUserAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
+  const used = teacherProfile?.evaluations_used ?? 0;
+  const remainingEvaluations = Math.max(0, allowance - used);
+  const percentUsed = Math.min(100, Math.round((remainingEvaluations / allowance) * 100));
+
+  useEffect(() => {
+    const updateTime = () => {
+      setTimeUntilReset(getTimeUntilLocalMidnight().formatted);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const runParityCheck = async () => {
     setParityState((prev) => ({
@@ -303,24 +322,31 @@ export default function Header() {
 
   useEffect(() => {
     setMounted(true);
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+    let unsubscribeProfile: (() => void) | null = null;
+    const unsubscribeAuth = onAuthStateChanged(auth, (u) => {
       setUser(u);
+      if (unsubscribeProfile) {
+        unsubscribeProfile();
+        unsubscribeProfile = null;
+      }
       if (u) {
-        try {
-          const docRef = doc(db, "teachers", u.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            // Pulling Fred and FLI007 from your Firestore 'teachers' collection
-            setOperativeName(data.firstName || "FRED"); 
+        const docRef = doc(db, "teachers", u.uid);
+        unsubscribeProfile = onSnapshot(docRef, (snap) => {
+          if (snap.exists()) {
+            const data = snap.data() as TeacherProfile;
+            setTeacherProfile(data);
+            setOperativeName(data.name || (data as any).firstName || "FRED"); 
             setTeacherId(data.teacherId || data.id || "FLI007");
           }
-        } catch (error) {
-          console.error("Intelligence Retrieval Failed:", error);
-        }
+        });
+      } else {
+        setTeacherProfile(null);
       }
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+    };
   }, []);
 
   useEffect(() => {
@@ -375,11 +401,15 @@ export default function Header() {
           )}
 
           {user ? (
-            <div className="flex items-center gap-3">
-              {/* THE CLICKABLE DOSSIER LINK */}
-              <a 
-                href="/profile" 
-                className="flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10 group hover:bg-white/10 hover:border-[#d95f02]/50 transition-all cursor-pointer"
+            <div className="relative">
+              {/* INTERACTIVE PROFILE PILL WITH CLEARANCE TRIGGER */}
+              <button 
+                type="button"
+                onClick={() => setIsProfileMenuOpen(prev => !prev)}
+                className={cn(
+                  "flex items-center gap-2.5 bg-white/5 hover:bg-white/10 p-1 pr-3 rounded-full border transition-all cursor-pointer",
+                  isProfileMenuOpen ? "border-primary bg-white/10 shadow-lg shadow-primary/10" : "border-white/10 hover:border-white/20"
+                )}
               >
                 <div className="size-8 bg-gradient-to-br from-[#0b1224] to-[#1f2937] border border-[#d95f02]/30 rounded-full flex items-center justify-center">
                   <UserIcon className="size-4 text-[#d95f02]" />
@@ -390,22 +420,133 @@ export default function Header() {
                     {teacherId}
                   </p>
                 </div>
-              </a>
-
-              {/* LOGOUT */}
-              <button 
-                onClick={() => signOut(auth)} 
-                title="Abort Mission"
-                className="p-2 hover:bg-rose-500/10 rounded-full group transition-colors"
-              >
-                <LogOut className="size-4 text-slate-500 group-hover:text-rose-500" />
+                <span className="hidden sm:inline-flex items-center text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/40 text-emerald-300 border border-emerald-500/20">
+                  ⚡ {remainingEvaluations}
+                </span>
+                <ChevronDown className={cn("size-3.5 text-slate-400 transition-transform duration-200", isProfileMenuOpen && "rotate-180")} />
               </button>
+
+              {/* PROFILE & CLEARANCE DROPDOWN POPOVER */}
+              {isProfileMenuOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setIsProfileMenuOpen(false)} 
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-80 bg-[#0b1224]/95 border border-white/10 rounded-sm shadow-2xl backdrop-blur-xl p-4 space-y-3.5 z-50 animate-in fade-in slide-in-from-top-2 duration-200 text-left">
+                    {/* USER HEADER IDENT */}
+                    <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                      <div>
+                        <div className="text-xs font-black uppercase text-white">{operativeName}</div>
+                        <div className="text-[10px] font-mono text-slate-400">{user.email}</div>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-[#007FFF] px-2 py-0.5 bg-[#007FFF]/10 border border-[#007FFF]/20 rounded">
+                        {teacherId}
+                      </span>
+                    </div>
+
+                    {/* CLEARANCE BADGE */}
+                    <div className="flex items-center justify-between p-2.5 bg-white/[0.02] border border-white/5 rounded-sm">
+                      <span className="text-[11px] font-medium text-slate-300 flex items-center gap-1.5">
+                        <ShieldCheck className="size-3.5 text-emerald-400" />
+                        Clearance
+                      </span>
+                      <span className="text-[10px] font-mono font-bold uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                        {isUserAdmin ? "Admin Intel (FLI007)" : "Verified K-12"}
+                      </span>
+                    </div>
+
+                    {/* DAILY QUOTA & PROGRESS BAR */}
+                    <div className="p-3 bg-slate-900/80 border border-white/5 rounded-sm space-y-2">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+                          ⚡ Evaluations Today
+                        </span>
+                        <span className="font-mono font-bold text-emerald-300">
+                          {remainingEvaluations} / {allowance} left
+                        </span>
+                      </div>
+
+                      <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-gradient-to-r from-emerald-500 via-amber-500 to-primary h-full rounded-full transition-all duration-300" 
+                          style={{ width: `${percentUsed}%` }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+                        <span className="flex items-center gap-1 font-mono">
+                          <Clock className="size-3 text-amber-400" />
+                          Resets in: <strong className="text-slate-200">{timeUntilReset || "midnight"}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* AI UPLIFT ACTION BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        if (typeof window !== "undefined") {
+                          window.dispatchEvent(new CustomEvent("lfi:open-intel-modal", {
+                            detail: { isDataLock: true, category: "Salary" }
+                          }));
+                        }
+                      }}
+                      className="w-full p-2.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer hover:scale-[1.01]"
+                    >
+                      <Zap className="size-3.5" />
+                      <span>Request AI Uplift (+20)</span>
+                    </button>
+
+                    {/* DOSSIER PROFILE LINK */}
+                    <a
+                      href="/profile"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center justify-between p-2 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-sm transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <UserIcon className="size-3.5 text-slate-400" />
+                        Confidential Educator Dossier
+                      </span>
+                      <ExternalLink className="size-3 text-slate-500" />
+                    </a>
+
+                    <div className="h-px bg-white/5" />
+
+                    {/* SIGN OUT */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        signOut(auth);
+                      }}
+                      className="w-full flex items-center gap-2 p-2 text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-sm transition-colors cursor-pointer"
+                    >
+                      <LogOut className="size-3.5 text-rose-400" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
-            <a href="/login" className="hidden sm:flex items-center gap-2 bg-[#d95f02] text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-              <LogIn className="size-4" />
-              Secure Access
-            </a>
+            <div className="hidden sm:flex items-center gap-2">
+              <a 
+                href="/login" 
+                className="flex items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 px-3.5 py-2 rounded-none text-[10px] font-black uppercase tracking-widest transition-all"
+              >
+                <LogIn className="size-3.5 text-slate-400" />
+                Guest
+              </a>
+              <a 
+                href="/signup" 
+                className="flex items-center gap-1.5 bg-gradient-to-r from-[#d95f02] via-orange-600 to-amber-600 text-white px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest hover:brightness-110 shadow-md shadow-[#d95f02]/20 transition-all"
+              >
+                <ShieldCheck className="size-3.5" />
+                Register
+              </a>
+            </div>
           )}
 
           {/* MOBILE MENU BUTTON */}
@@ -434,15 +575,71 @@ export default function Header() {
               {link.name}
             </a>
           ))}
-          {!user && (
-            <a 
-              href="/login" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="mt-2 flex items-center gap-2 bg-[#d95f02] text-white px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
-            >
-              <LogIn className="size-4" />
-              Secure Access
-            </a>
+          {user ? (
+            <div className="mt-2 p-3 bg-white/5 border border-white/10 rounded-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-black uppercase text-white">{operativeName}</div>
+                  <div className="text-[10px] font-mono text-slate-400">{teacherId}</div>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  ⚡ {remainingEvaluations}/{allowance} Today
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(new CustomEvent("lfi:open-intel-modal", {
+                      detail: { isDataLock: true, category: "Salary" }
+                    }));
+                  }
+                }}
+                className="w-full p-2 bg-primary/10 border border-primary/30 text-primary font-bold text-xs uppercase tracking-wider rounded-sm flex items-center justify-center gap-1.5"
+              >
+                <Zap className="size-3.5" />
+                <span>Request AI Uplift (+20)</span>
+              </button>
+              <div className="flex gap-2 pt-1 border-t border-white/5">
+                <a
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex-1 p-2 bg-white/5 text-center text-xs font-bold text-slate-200 rounded-sm"
+                >
+                  Profile
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    signOut(auth);
+                  }}
+                  className="p-2 bg-rose-500/10 text-rose-400 text-xs font-bold rounded-sm px-4"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-2 flex flex-col gap-2">
+              <a 
+                href="/login" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+              >
+                <LogIn className="size-4 text-slate-400" />
+                Guest
+              </a>
+              <a 
+                href="/signup" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 bg-gradient-to-r from-[#d95f02] via-orange-600 to-amber-600 text-white px-4 py-3 justify-center rounded-none text-[12px] font-black uppercase tracking-widest hover:brightness-110 shadow-md shadow-[#d95f02]/20 transition-all"
+              >
+                <ShieldCheck className="size-4" />
+                Register Free
+              </a>
+            </div>
           )}
         </div>
       )}

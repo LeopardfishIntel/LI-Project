@@ -13,7 +13,10 @@ import {
   Sparkles, ArrowUpRight, MapPin, Calendar, Star, Loader2, Plane, Maximize2, Minimize2, X
 } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase, useDoc, useAuth } from '@/firebase';
-import { collection, doc, query, where } from 'firebase/firestore';
+import { collection, doc, query, where, updateDoc, increment } from 'firebase/firestore';
+import type { TeacherProfile } from '@/lib/types';
+import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
+import Link from 'next/link';
 import { rewordDossierBriefing, getSchoolStabilityReport } from './actions';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import { cn } from '@/lib/utils';
@@ -444,6 +447,49 @@ function DecoderContent() {
   const firestore = useFirestore();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [timeUntilReset, setTimeUntilReset] = useState<string>('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      setTimeUntilReset(getTimeUntilLocalMidnight().formatted);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const teacherDocRef = useMemoFirebase(() => (mounted && user && firestore ? doc(firestore, 'teachers', user.uid) : null), [firestore, mounted, user]);
+  const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
+
+  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
+  const used = teacherProfile?.evaluations_used ?? 0;
+  const isPro = teacherProfile?.tier === 'pro' || isAdmin;
+  const remainingEvaluations = Math.max(0, allowance - used);
+  const isOverLimit = !isPro && !!user && (used >= allowance);
+
+  const [guestViewCount, setGuestViewCount] = useState<number>(0);
+  const [isGuestOverLimit, setIsGuestOverLimit] = useState<boolean>(false);
+  const evaluatedSchoolsRef = useRef<Set<string>>(new Set());
+
+  // Auto-reset daily quota on new day arrival for logged in teachers
+  useEffect(() => {
+    if (user && firestore && teacherProfile) {
+      const today = getLocalDateString();
+      if (teacherProfile.last_quota_reset_date && teacherProfile.last_quota_reset_date !== today) {
+        const teacherDoc = doc(firestore, 'teachers', user.uid);
+        const bonusRollover = teacherProfile.bonus_credits || 0;
+        updateDoc(teacherDoc, {
+          daily_evaluations_used: 0,
+          evaluations_used: 0,
+          daily_base_quota: 20,
+          evaluations_allowance: 20 + bonusRollover,
+          last_quota_reset_date: today
+        }).catch(err => console.warn('Could not reset daily quota in forecaster:', err));
+      }
+    }
+  }, [user, firestore, teacherProfile]);
+
   const [lastSelectedOpportunity, setLastSelectedOpportunity] = useState<any>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<{
     jobId?: string;
@@ -653,6 +699,64 @@ function DecoderContent() {
     );
     return found?.name || found?.schoolname || found?.schoolName || found?.institutionName || null;
   }, [allSchools, requestedSchoolId, directSchoolDoc, requestedSchoolName]);
+
+  // Track guest (up to 3 views) and authenticated views on activeSchool change
+  useEffect(() => {
+    if (!mounted || !activeSchool) return;
+
+    const schoolKey = (activeSchool.id || activeSchool.schoolId || settings.schoolId || '').toLowerCase().trim();
+    if (!schoolKey) return;
+
+    if (!user) {
+      try {
+        const storedViews: string[] = JSON.parse(localStorage.getItem('lfi_guest_evaluated_schools') || '[]');
+        if (storedViews.includes(schoolKey)) {
+          setGuestViewCount(storedViews.length);
+          if (storedViews.length > 3) {
+            setIsGuestOverLimit(true);
+          } else {
+            setIsGuestOverLimit(false);
+          }
+        } else {
+          if (storedViews.length >= 3) {
+            setIsGuestOverLimit(true);
+            setGuestViewCount(storedViews.length);
+          } else {
+            const updated = [...storedViews, schoolKey];
+            localStorage.setItem('lfi_guest_evaluated_schools', JSON.stringify(updated));
+            setGuestViewCount(updated.length);
+            setIsGuestOverLimit(false);
+          }
+        }
+      } catch (e) {
+        // Safe fallback
+      }
+    } else {
+      setIsGuestOverLimit(false);
+      // Authenticated user view tracking
+      if (firestore && !evaluatedSchoolsRef.current.has(schoolKey) && !isOverLimit) {
+        evaluatedSchoolsRef.current.add(schoolKey);
+        const teacherDoc = doc(firestore, 'teachers', user.uid);
+        updateDoc(teacherDoc, {
+          evaluations_used: increment(1),
+          daily_evaluations_used: increment(1),
+        }).catch((err) => console.warn('Could not increment evaluations_used:', err));
+      }
+    }
+  }, [mounted, activeSchool, user, firestore, isOverLimit, settings.schoolId]);
+
+  const handleOpenDataLock = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('lfi:open-intel-modal', {
+        detail: {
+          isDataLock: true,
+          schoolName: activeSchool?.schoolname || activeSchool?.name,
+          location: [activeSchool?.city || activeSchool?.location, activeSchool?.country].filter(Boolean).join(', '),
+          category: 'Salary'
+        }
+      }));
+    }
+  };
 
 
 
@@ -2144,8 +2248,89 @@ function DecoderContent() {
                 </div>
               </div>
             )
+          ) : isGuestOverLimit ? (
+            <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-6">
+              <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                <Lock className="size-8" />
+              </div>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-black uppercase tracking-widest">
+                  🔒 3 FREE EVALUATIONS COMPLETED
+                </div>
+                <h2 className="text-3xl font-black uppercase tracking-tight text-white italic">
+                  Guest Limit Reached
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  You have explored your 3 complimentary school evaluations in Guest Mode. Register for your free verified educator account to unlock 25 evaluations daily, salary indexes, and contract audits.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                  <Zap className="size-4" />
+                  Claim 25 Free Evaluations & Unlock →
+                </Link>
+                <Link
+                  href="/login"
+                  className="inline-flex items-center justify-center py-3.5 px-6 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold uppercase text-xs rounded-sm transition-all"
+                >
+                  Log In
+                </Link>
+              </div>
+            </div>
+          ) : isOverLimit ? (
+            <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-6">
+              <div className="size-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto text-amber-400">
+                <Lock className="size-8" />
+              </div>
+              <div className="space-y-2">
+                <h4 className="text-2xl font-black uppercase italic tracking-tight text-white">
+                  🔒 Daily Quota Reached ({allowance}/{allowance} Used)
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Your daily evaluations refresh automatically at midnight local time (<strong>in {timeUntilReset || 'a few hours'}</strong>). Need to evaluate offers right now?
+                </p>
+              </div>
+              <div className="p-4 bg-white/[0.02] border border-white/10 rounded-sm max-w-md mx-auto text-left space-y-1">
+                <div className="flex items-center gap-1.5 text-[#d95f02] text-xs font-bold uppercase tracking-wider">
+                  <Zap className="size-3.5" />
+                  ⚡ Instant AI Recruitment Uplift
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Tell our AI desk your hiring research scenario for an instant <strong>+20 evaluation bonus</strong> with rollover protection.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto pt-2">
+                <button
+                  type="button"
+                  onClick={handleOpenDataLock}
+                  className="flex-1 py-3.5 px-4 bg-gradient-to-r from-primary via-orange-600 to-amber-600 text-white font-black uppercase text-xs tracking-wider rounded-sm shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  ⚡ Request AI Uplift (+20 Credits)
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="max-w-5xl mx-auto space-y-4 animate-in fade-in duration-500">
+              {/* Guest Evaluation Counter Banner */}
+              {!user && guestViewCount > 0 && (
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-sm text-xs text-amber-200">
+                  <div className="flex items-center gap-2">
+                    <Lock className="size-3.5 text-amber-400 shrink-0" />
+                    <span>
+                      <strong>Guest Evaluation:</strong> {guestViewCount} of 3 free school evaluations used.
+                    </span>
+                  </div>
+                  <Link 
+                    href="/signup" 
+                    className="text-[11px] font-bold text-amber-400 hover:text-amber-300 underline uppercase tracking-wider shrink-0"
+                  >
+                    Claim 25 Evaluations/Day Free →
+                  </Link>
+                </div>
+              )}
 
               {/* 🎯 Replicated Evaluating Opportunity Card at Top of Page */}
               {selectedOpportunity && (
