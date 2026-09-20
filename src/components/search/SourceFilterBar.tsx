@@ -29,7 +29,6 @@ export type SourceEngineKey =
   | "TAYLORS"
   | "MALVERN"
   | "TAALEEM"
-  | "BLOOM"
   | "ALDAR"
   | "QATAR_FOUNDATION"
   | "UWC"
@@ -51,7 +50,6 @@ export const ALL_SOURCES: SourceMeta[] = [
   { key: "TAYLORS", label: "TAYLOR'S", category: "GROUPS" },
   { key: "MALVERN", label: "MALVERN", category: "GROUPS" },
   { key: "TAALEEM", label: "TAALEEM", category: "GROUPS" },
-  { key: "BLOOM", label: "BLOOM", category: "GROUPS" },
   { key: "ALDAR", label: "ALDAR", category: "GROUPS" },
   { key: "QATAR_FOUNDATION", label: "QATAR FOUNDATION", category: "GROUPS" },
   { key: "UWC", label: "UWC", category: "GROUPS" },
