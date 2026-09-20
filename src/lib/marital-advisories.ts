@@ -240,6 +240,125 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
       dualTeacher: 'Dual-teaching couples receive two independent public or private school contracts.'
     }
   },
+  belgium: {
+    country: 'Belgium',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Strictly Gender-Neutral Sponsorship', 'Full Spousal Work Rights', 'Legal Cohabitation Recognized'],
+    guidance: {
+      unmarried: 'Belgium recognizes registered legal cohabitation (Wettelijke Samenwoning / Cohabitation Légale) and proven durable relationships for family reunification visas, alongside legal marriage certificates.',
+      sameSex: 'Full legal equality under Belgian law. Same-sex married couples and registered partners enjoy identical family reunification and residency rights.',
+      femaleSponsor: 'Completely equal and gender-neutral: Belgian and EU law applies identical criteria across all genders. A female teacher faces no additional administrative hurdles, higher salary thresholds, or special clearances when sponsoring a male spouse.',
+      trailingSpouse: 'Full work rights: Under Belgian Single Permit and family reunification regulations, a trailing spouse holding a dependent residence card (A-Card) is legally authorized to look for and accept local employment without a separate work permit.',
+      dualTeacher: 'Dual-teacher couples receive independent Belgian employment contracts, comprehensive national health insurance, and individual 13.92-month salary structures.'
+    }
+  },
+  austria: {
+    country: 'Austria',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Red-White-Red Card Plus', 'Full Spousal Work Rights', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Cohabitation is legal. However, Austrian family reunification (Familienzusammenführung) visas require a legal marriage certificate or registered partnership.',
+      sameSex: 'Austria fully recognizes same-sex marriage with identical spousal visa sponsorship and family rights.',
+      femaleSponsor: 'Strictly gender-neutral: Female educators can sponsor their male spouses under standard national income and health insurance thresholds.',
+      trailingSpouse: 'A trailing spouse receiving a Red-White-Red Card Plus (Rot-Weiß-Rot – Karte Plus) receives unrestricted access to the Austrian labor market.',
+      dualTeacher: 'Both educators receive independent contracts governed by Austrian labor law with 14 monthly salary installments per year.'
+    }
+  },
+  france: {
+    country: 'France',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['PACS Civil Unions Recognized', 'Full Spousal Work Rights', 'Passeport Talent Accompanying Spouse'],
+    guidance: {
+      unmarried: 'France recognizes PACS (Pacte Civil de Solidarité) civil partnerships and registered cohabitation for long-stay visas and residency.',
+      sameSex: 'Same-sex marriages and civil unions enjoy identical legal and immigration standing.',
+      femaleSponsor: 'Complete gender parity under French immigration code (CESEDA).',
+      trailingSpouse: 'Spouses holding a "Passeport Talent (Famille)" or "Vie Privée et Familiale" residence permit have unrestricted rights to work in France.',
+      dualTeacher: 'Teaching couples receive independent French employment contracts with full access to the Sécurité Sociale national healthcare system.'
+    }
+  },
+  switzerland: {
+    country: 'Switzerland',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'decriminalized_no_visa',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Cantonal B-Permit Work Rights', 'Same-Sex Marriage Recognized', 'Gender-Neutral Sponsorship'],
+    guidance: {
+      unmarried: 'Cohabitation is standard. Swiss family regroupment (Familiennachzug) visas for non-EU/EFTA citizens require a recognized marriage certificate or registered partnership.',
+      sameSex: 'Marriage equality is codified in Swiss law with identical dependent B/L permit rights.',
+      femaleSponsor: 'Fully equal criteria across all genders with standard cantonal financial self-sufficiency thresholds.',
+      trailingSpouse: 'Family members holding a B-permit for family reunification can take up employment or self-employment throughout Switzerland upon cantonal registration.',
+      dualTeacher: 'Teaching pairs receive individual Swiss contracts with local pension (BVG / 2nd Pillar) and cantonal family allowances.'
+    }
+  },
+  italy: {
+    country: 'Italy',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Permesso di Soggiorno Motivi Familiari', 'Full Spousal Work Rights', 'Unione Civile Recognized'],
+    guidance: {
+      unmarried: 'Italy recognizes registered de facto cohabitations (Convivenza di Fatto) and civil unions for family residency purposes.',
+      sameSex: 'Same-sex civil unions (Unioni Civili) enjoy full spousal reunification and immigration equality.',
+      femaleSponsor: 'Equal criteria for male and female sponsors under standard Nulla Osta family clearance procedures.',
+      trailingSpouse: 'A "Permesso di Soggiorno per Motivi Familiari" automatically permits the holder to engage in employed or self-employed work in Italy.',
+      dualTeacher: 'Dual hires receive individual contracts with standard Italian CCNL education framework terms.'
+    }
+  },
+  netherlands: {
+    country: 'Netherlands',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Unmarried Partner Sponsorship Allowed', 'Arbeid Vrij Toegestaan (Free to Work)', 'Full Gender Equality'],
+    guidance: {
+      unmarried: 'The IND allows Highly Skilled Migrants and standard work visa holders to sponsor unmarried partners who can prove an exclusive relationship.',
+      sameSex: 'The Netherlands pioneered marriage equality; same-sex spouses and partners have identical immigration status.',
+      femaleSponsor: 'Complete gender parity under Dutch immigration rules.',
+      trailingSpouse: 'The residence permit for the partner of a knowledge worker carries the endorsement "Arbeid vrij toegestaan" (free to work without a work permit).',
+      dualTeacher: 'Dual-teacher pairs receive separate employment contracts, 8% holiday allowances (vakantiegeld), and standard CAO benefits.'
+    }
+  },
+  portugal: {
+    country: 'Portugal',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['União de Facto Recognized', 'Automatic Spousal Work Rights', 'AIMA Family Reunification'],
+    guidance: {
+      unmarried: 'Portugal recognizes de facto unions (União de Facto, 2+ years living together) for family reunification visas (Art. 98/107).',
+      sameSex: 'Full marriage equality and identical family reunification rights.',
+      femaleSponsor: 'Equal rights across all genders with standard minimum wage / living cost sufficiency checks.',
+      trailingSpouse: 'Residence permits issued for family reunification grant immediate, unrestricted rights to work or freelance in Portugal.',
+      dualTeacher: 'Both teachers receive individual contracts with social security contributions (Segurança Social).'
+    }
+  },
   mexico: {
     country: 'Mexico',
     region: 'Americas',
@@ -309,6 +428,13 @@ export function getCoupleAdvisory(countryRaw?: string): CoupleCountryAdvisory {
   if (canon.includes('uk') || canon.includes('britain') || canon.includes('england') || canon.includes('scotland')) return MARITAL_ADVISORIES['united kingdom'];
   if (canon.includes('spain')) return MARITAL_ADVISORIES['spain'];
   if (canon.includes('germany')) return MARITAL_ADVISORIES['germany'];
+  if (canon.includes('belgium') || canon.includes('brussels') || canon.includes('antwerp')) return MARITAL_ADVISORIES['belgium'];
+  if (canon.includes('austria') || canon.includes('vienna')) return MARITAL_ADVISORIES['austria'];
+  if (canon.includes('france') || canon.includes('paris') || canon.includes('nice')) return MARITAL_ADVISORIES['france'];
+  if (canon.includes('switz') || canon.includes('geneva') || canon.includes('zurich') || canon.includes('lausanne')) return MARITAL_ADVISORIES['switzerland'];
+  if (canon.includes('italy') || canon.includes('milan') || canon.includes('rome')) return MARITAL_ADVISORIES['italy'];
+  if (canon.includes('netherland') || canon.includes('dutch') || canon.includes('amsterdam')) return MARITAL_ADVISORIES['netherlands'];
+  if (canon.includes('portugal') || canon.includes('lisbon')) return MARITAL_ADVISORIES['portugal'];
   if (canon.includes('china') || canon.includes('shanghai') || canon.includes('beijing')) return MARITAL_ADVISORIES['china'];
   if (canon.includes('singapore')) return MARITAL_ADVISORIES['singapore'];
   if (canon.includes('japan') || canon.includes('tokyo')) return MARITAL_ADVISORIES['japan'];
