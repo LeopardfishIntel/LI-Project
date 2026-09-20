@@ -322,8 +322,15 @@ export default function CoupleCountryAdvisoryPanel({
                   <p className="leading-relaxed text-slate-200">{advisory.guidance.trailingSpouse}</p>
                 </div>
 
-                {/* Female Teacher Sponsoring Male Spouse (Amber Accent) */}
-                <div className="p-3.5 bg-amber-500/[0.03] border border-white/10 border-l-4 border-l-amber-500 rounded-lg space-y-1.5 whitespace-normal break-words">
+                {/* Female Teacher Sponsoring Male Spouse */}
+                <div className={cn(
+                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border",
+                  advisory.femaleSponsoringMale === 'prohibited' || advisory.femaleSponsoringMale === 'restricted_difficult'
+                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    : advisory.femaleSponsoringMale === 'salary_threshold'
+                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                )}>
                   <span className="text-[11.5px] font-bold text-[#F8FAFC]">
                     Female Teacher Sponsoring Male Spouse in {advisory.country}:
                   </span>
