@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useUser, useDoc, setDocumentNonBlocking } from '@/firebase';
-import { auth } from "@/firebase/utils/memo"; // 🛰️ Added for reset protocol
-import { sendPasswordResetEmail } from "firebase/auth"; // 🛰️ Added for reset protocol
+import { auth } from "@/firebase/utils/memo";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -11,9 +11,10 @@ import { Button } from '@/components/ui/button';
 import { 
   Loader2, Fingerprint, MapPin, Calendar, 
   Users, ShieldCheck, Edit3, Save, X,
-  KeyRound, Mail, CheckCircle2, AlertCircle // 🛡️ Tactical icons added
+  KeyRound, Mail, CheckCircle2, AlertCircle, Clock, Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getTimeUntilLocalMidnight } from '@/lib/utils/timeUtils';
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
@@ -25,6 +26,7 @@ export default function ProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [editBuffer, setEditBuffer] = useState<any>(null);
+    const [timeUntilReset, setTimeUntilReset] = useState<string>("");
     
     // 🛰️ Reset Protocol States
     const [resetLoading, setResetLoading] = useState(false);
@@ -35,12 +37,27 @@ export default function ProfilePage() {
         customId ? `teachers/${customId}` : null
     );
 
+    const isUserAdmin = Boolean(isAdmin || customId === "FLI007" || teacher?.role === "admin" || teacher?.teacherId === "FLI007");
+    const allowance = isUserAdmin ? 1000 : (teacher?.evaluations_allowance ?? 20);
+    const used = teacher?.evaluations_used ?? 0;
+    const remainingEvaluations = Math.max(0, allowance - used);
+    const percentUsed = Math.min(100, Math.round((remainingEvaluations / allowance) * 100));
+
     useEffect(() => { 
         setMounted(true); 
         if (teacher) {
             setEditBuffer(teacher);
         }
     }, [teacher]);
+
+    useEffect(() => {
+        const updateTime = () => {
+            setTimeUntilReset(getTimeUntilLocalMidnight().formatted);
+        };
+        updateTime();
+        const interval = setInterval(updateTime, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSave = async () => {
         if (!customId) return;
@@ -50,7 +67,7 @@ export default function ProfilePage() {
         setIsSaving(false);
     };
 
-    // 🛰️ SECURITY PROTOCOL: Dispatching the encrypted reset link
+    // 🛰️ SECURITY: Dispatching the encrypted reset link
     const handleResetPassword = async () => {
         const userEmail = auth.currentUser?.email;
         if (!userEmail) return;
@@ -77,7 +94,7 @@ export default function ProfilePage() {
 
     return (
         <div className="container mx-auto px-4 py-12 bg-[#020617] min-h-screen text-white">
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="max-w-5xl mx-auto space-y-8">
                 
                 {/* 🛡️ DOSSIER HEADER */}
                 <div className="flex flex-col md:flex-row gap-8 items-start md:items-center justify-between border-b border-white/10 pb-8">
@@ -117,7 +134,7 @@ export default function ProfilePage() {
                             </>
                         ) : (
                             <Button onClick={() => setIsEditing(true)} variant="outline" className="border-white/10 hover:border-[#d95f02] hover:text-[#d95f02] bg-transparent rounded-none uppercase font-black text-[10px] tracking-[0.2em] h-10 px-6">
-                                <Edit3 className="mr-2 size-3" /> Modify Dossier
+                                <Edit3 className="mr-2 size-3" /> Modify
                             </Button>
                         )}
                     </div>
@@ -127,7 +144,7 @@ export default function ProfilePage() {
                 {dataLoading ? (
                     <div className="flex justify-center py-12"><Loader2 className="animate-spin text-slate-500" /></div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         
                         {/* STATUS CARD */}
                         <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden group">
@@ -204,10 +221,33 @@ export default function ProfilePage() {
                                 )}
                             </CardContent>
                         </Card>
+
+                        {/* DAILY SEARCHES & TIMING CARD */}
+                        <Card className="bg-[#0b1224] border-white/5 relative overflow-hidden">
+                            <CardHeader className="flex flex-row items-center gap-2 pb-2">
+                                <Clock className="size-4 text-amber-400" />
+                                <CardTitle className="text-[10px] font-black uppercase tracking-widest text-slate-500">Daily Searches</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2.5">
+                                <p className="text-xl font-black italic text-emerald-400">
+                                    {remainingEvaluations} <span className="text-xs text-slate-400 font-normal">/ {allowance} left</span>
+                                </p>
+                                <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                    <div 
+                                        className="bg-gradient-to-r from-emerald-500 via-amber-500 to-[#d95f02] h-full rounded-full transition-all duration-300" 
+                                        style={{ width: `${percentUsed}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                                    <Clock className="size-3 text-amber-400/80" />
+                                    Resets in: <strong className="text-slate-200">{timeUntilReset || "midnight"}</strong>
+                                </p>
+                            </CardContent>
+                        </Card>
                     </div>
                 )}
 
-                {/* 🔐 SECURITY PROTOCOLS SECTION */}
+                {/* 🔐 SECURITY SECTION */}
                 <div className="mt-12 pt-8 border-t border-white/10">
                     <div className="bg-white/5 border border-white/5 p-8 shadow-2xl">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -216,7 +256,7 @@ export default function ProfilePage() {
                                     <KeyRound className="size-6 text-[#d95f02]" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black uppercase italic tracking-tight text-white leading-none">Security Protocols</h3>
+                                    <h3 className="text-lg font-black uppercase italic tracking-tight text-white leading-none">Security</h3>
                                     <p className="text-[10px] text-slate-500 uppercase font-bold tracking-[0.2em] mt-2 flex items-center gap-2">
                                         <Mail className="size-3" /> {auth.currentUser?.email || "Uplink Secure"}
                                     </p>
