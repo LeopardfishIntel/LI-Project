@@ -16,7 +16,7 @@ export default function Footer() {
             
             <div className="flex gap-5">
               <Link 
-                href="https://www.linkedin.com/in/leopardfish-travels-24b28267/" 
+                href="https://www.linkedin.com/company/leopardfishintel/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 prefetch={false}

@@ -28,6 +28,40 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://leopardfishintel.com"),
   title: "Leopardfish Intel | Strategic Insight for International Educators",
   description: "Military-grade precision intel for international educators, teacher salary forecasters, cost of living breakdowns, and school retention data.",
+  applicationName: "Leopardfish Intel",
+  authors: [{ name: "Leopardfish Intelligence Network" }],
+  keywords: [
+    "international school salary",
+    "international teaching jobs",
+    "cost of living calculator",
+    "expat teacher savings",
+    "international school reviews",
+    "teacher retention rate",
+    "education tactical intelligence"
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://leopardfishintel.com",
+    siteName: "Leopardfish Intel",
+    title: "Leopardfish Intel | Strategic Insight for International Educators",
+    description: "Military-grade precision intel for international educators, teacher salary forecasters, cost of living breakdowns, and school retention data.",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Leopardfish Intel - Strategic Insight for International Educators",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Leopardfish Intel | Strategic Insight for International Educators",
+    description: "Military-grade precision intel for international educators, teacher salary forecasters, cost of living breakdowns, and school retention data.",
+    creator: "@leopardfishintel",
+    images: ["/twitter-image"],
+  },
   robots: {
     index: true,
     follow: true,
@@ -44,9 +78,43 @@ export const metadata: Metadata = {
   },
 };
 
+const rootJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://leopardfishintel.com/#organization",
+      "name": "Leopardfish Intel",
+      "url": "https://leopardfishintel.com",
+      "logo": "https://leopardfishintel.com/assets/logo.svg",
+      "description": "Strategic intelligence, financial forecasting, and verified data for international educators worldwide."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://leopardfishintel.com/#website",
+      "url": "https://leopardfishintel.com",
+      "name": "Leopardfish Intel",
+      "publisher": {
+        "@id": "https://leopardfishintel.com/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://leopardfishintel.com/schools?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(rootJsonLd) }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${montserrat.variable} font-sans antialiased min-h-screen bg-background text-white selection:bg-primary selection:text-white overflow-x-hidden`}
       >
