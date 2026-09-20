@@ -264,3 +264,8 @@ school_id,school_name,city,country,curriculum,savings_potential_single_usd,acade
 "FLIS0249_ARUSHA","UWC East Africa (Arusha Campus)","Arusha","Tanzania","IB","","","https://employ.uwcea.org","","","East Africa"
 "FLIS0249_MOSHI","UWC East Africa (Moshi Campus)","Moshi","Tanzania","IB","","","https://employ.uwcea.org","","","East Africa"
 "FLIS0250","Riffa Views International School","Riffa","Bahrain","IB & US Curriculum","","8.3","https://www.rvis.edu.bh/careers","https://www.rvis.edu.bh/","",""
+"FLIS0291","American School of The Hague","The Hague","Netherlands","US / IB","","9.1","https://www.ash.nl/about/careers","https://www.ash.nl","",""
+"FLIS0292","American International School of Bucharest","Bucharest","Romania","IB","","8.9","https://www.aisb.ro/careers","https://www.aisb.ro","",""
+"FLIS0293","American School of Warsaw","Warsaw","Poland","US / IB","","8.9","https://www.aswarsaw.org/careers","https://www.aswarsaw.org","",""
+"FLIS0294","International School of Stavanger","Stavanger","Norway","US / IB","","8.8","https://www.isstavanger.no/careers","https://www.isstavanger.no","",""
+"FLIS0295","Carlucci American International School of Lisbon","Sintra / Lisbon","Portugal","US / IB","","8.7","https://www.caislisbon.org/join-us/work-at-caisl","https://www.caislisbon.org","",""
