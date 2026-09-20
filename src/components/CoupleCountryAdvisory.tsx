@@ -248,12 +248,12 @@ export default function CoupleCountryAdvisoryPanel({
 
                 {/* Structured Callout Card with Left-Border Accent */}
                 <div className={cn(
-                  "p-4 rounded-lg space-y-3 whitespace-normal break-words border bg-white/[0.02]",
+                  "p-4 rounded-lg space-y-3 whitespace-normal break-words border border-white/10",
                   advisory.cohabitationStatus === 'illegal_strict'
-                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    ? "border-l-4 border-l-rose-500 bg-rose-500/[0.03]"
                     : advisory.cohabitationStatus === 'decriminalized_no_visa'
-                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
-                    : "border-l-4 border-l-teal-500 border-white/10 bg-teal-500/[0.03]"
+                    ? "border-l-4 border-l-amber-500 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-teal-500 bg-teal-500/[0.03]"
                 )}>
                   <p className="text-slate-200 leading-relaxed font-normal">
                     {advisory.guidance.unmarried}
@@ -312,24 +312,24 @@ export default function CoupleCountryAdvisoryPanel({
 
                 {/* Main Trailing Spouse Card */}
                 <div className={cn(
-                  "p-3.5 rounded-lg space-y-2 border bg-white/[0.02] whitespace-normal break-words",
+                  "p-3.5 rounded-lg space-y-2 border border-white/10 whitespace-normal break-words",
                   advisory.trailingSpouseWork === 'prohibited_on_dependent_visa'
-                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    ? "border-l-4 border-l-rose-500 bg-rose-500/[0.03]"
                     : advisory.trailingSpouseWork === 'separate_work_visa_only' || advisory.trailingSpouseWork === 'loc_permit_required'
-                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
-                    : "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                    ? "border-l-4 border-l-amber-500 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-emerald-500 bg-emerald-500/[0.03]"
                 )}>
                   <p className="leading-relaxed text-slate-200">{advisory.guidance.trailingSpouse}</p>
                 </div>
 
                 {/* Female Teacher Sponsoring Male Spouse */}
                 <div className={cn(
-                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border",
+                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border border-white/10",
                   advisory.femaleSponsoringMale === 'prohibited' || advisory.femaleSponsoringMale === 'restricted_difficult'
-                    ? "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    ? "border-l-4 border-l-rose-500 bg-rose-500/[0.03]"
                     : advisory.femaleSponsoringMale === 'salary_threshold'
-                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
-                    : "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                    ? "border-l-4 border-l-amber-500 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-emerald-500 bg-emerald-500/[0.03]"
                 )}>
                   <span className="text-[11.5px] font-bold text-[#F8FAFC]">
                     Female Teacher Sponsoring Male Spouse in {advisory.country}:
@@ -404,24 +404,24 @@ export default function CoupleCountryAdvisoryPanel({
 
                 {/* Legal Standing Card */}
                 <div className={cn(
-                  "p-3.5 rounded-lg space-y-2 border whitespace-normal break-words",
+                  "p-3.5 rounded-lg space-y-2 border border-white/10 whitespace-normal break-words",
                   advisory.sameSexRecognition === 'recognized'
-                    ? "border-l-4 border-l-emerald-500 border-white/10 bg-emerald-500/[0.03]"
+                    ? "border-l-4 border-l-emerald-500 bg-emerald-500/[0.03]"
                     : advisory.sameSexRecognition === 'unrecognized_safe'
-                    ? "border-l-4 border-l-amber-500 border-white/10 bg-amber-500/[0.03]"
-                    : "border-l-4 border-l-rose-500 border-white/10 bg-rose-500/[0.03]"
+                    ? "border-l-4 border-l-amber-500 bg-amber-500/[0.03]"
+                    : "border-l-4 border-l-rose-500 bg-rose-500/[0.03]"
                 )}>
                   <p className="leading-relaxed text-slate-200">{advisory.guidance.sameSex}</p>
                 </div>
 
                 {/* Recruitment & Housing Practice Card */}
                 <div className={cn(
-                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border",
+                  "p-3.5 rounded-lg space-y-1.5 whitespace-normal break-words border border-white/10",
                   advisory.sameSexRecognition === 'recognized'
-                    ? "border-l-4 border-l-emerald-500/80 border-white/10 bg-emerald-500/[0.02]"
+                    ? "border-l-4 border-l-emerald-500/80 bg-emerald-500/[0.02]"
                     : advisory.sameSexRecognition === 'unrecognized_safe'
-                    ? "border-l-4 border-l-amber-500/80 border-white/10 bg-amber-500/[0.02]"
-                    : "border-l-4 border-l-rose-500/80 border-white/10 bg-rose-500/[0.02]"
+                    ? "border-l-4 border-l-amber-500/80 bg-amber-500/[0.02]"
+                    : "border-l-4 border-l-rose-500/80 bg-rose-500/[0.02]"
                 )}>
                   <span className="text-[11.5px] font-bold text-[#F8FAFC]">
                     {advisory.sameSexRecognition === 'recognized'
