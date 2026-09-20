@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 import { canonicalCountry, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
+import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import CoupleCountryAdvisoryPanel from '@/components/CoupleCountryAdvisory';
 
 export interface SavingsBadgeConfig {
@@ -708,6 +709,10 @@ function DecoderContent() {
     if (!schoolKey) return;
 
     if (!user) {
+      if (isSearchCrawler()) {
+        setIsGuestOverLimit(false);
+        return;
+      }
       try {
         const storedViews: string[] = JSON.parse(localStorage.getItem('lfi_guest_evaluated_schools') || '[]');
         if (storedViews.includes(schoolKey)) {

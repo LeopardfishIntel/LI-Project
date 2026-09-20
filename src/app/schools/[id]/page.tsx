@@ -54,6 +54,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { getTacticalBriefing } from '@/ai/flows/tactical-teacher-briefing-flow';
 import { getCountryRequirements } from '../actions';
+import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import { calculateSurplus, normalizeMenaSalaryUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
 import dynamic from 'next/dynamic';
@@ -251,9 +252,13 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
   const [isGuestOverLimit, setIsGuestOverLimit] = React.useState<boolean>(false);
   const hasCountedEvaluationRef = React.useRef(false);
 
-  // Guest 3-Evaluation view tracking
+  // Guest 3-Evaluation view tracking (Search bots are 100% exempt)
   React.useEffect(() => {
     if (!user && mounted && school) {
+      if (isSearchCrawler()) {
+        setIsGuestOverLimit(false);
+        return;
+      }
       try {
         const schoolKey = ((school as any)?.schoolId || school?.id || id || '').toLowerCase().trim();
         if (!schoolKey) return;
