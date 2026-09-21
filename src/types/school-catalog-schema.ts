@@ -8,7 +8,10 @@ export const SchoolRecordSchema = z.object({
   city: z.string(),
   aliases: z.array(z.string()).default([]),
   group: z.string().default("Standalone"),
-  profitStatus: z.enum(["For-Profit", "Non-Profit"]).default("Non-Profit"),
+  profitStatus: z.union([
+    z.enum(["For-Profit", "Non-Profit"]),
+    z.string().transform(s => s.toLowerCase().includes("non-profit") ? "Non-Profit" : "For-Profit")
+  ]).default("Non-Profit"),
   
   // Curriculum
   curriculum: z.string(),
