@@ -32,7 +32,7 @@ const features = [
 
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
 const COUNTER_FALLBACKS = {
-  schools: 276,
+  schools: 325,
   vacancies: 68,
   countries: 66,
   visits: 1525,
