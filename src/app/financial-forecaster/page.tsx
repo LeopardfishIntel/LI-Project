@@ -2827,8 +2827,12 @@ function DecoderContent() {
                           </p>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent side="left" className="w-60 bg-[#0b1224]/95 backdrop-blur-md border border-white/15 text-white p-3 shadow-2xl rounded-sm z-50">
-                        <div className="space-y-1.5">
+                      <TooltipContent side="left" className="w-64 bg-[#0b1224]/95 backdrop-blur-md border border-white/15 text-white p-3 shadow-2xl rounded-lg z-50">
+                        <div className="space-y-2">
+                          <p className="text-[10px] text-slate-400 font-semibold border-b border-white/10 pb-1.5">
+                            Derived from weighted scores across Financial Surplus (50%), Package Quality (30%), and Turnover Stability (20%).
+                          </p>
+                          <div className="space-y-1.5">
                             <div className="flex items-center justify-between text-[11px]">
                               <span className="font-bold text-slate-300">Academic Rigor</span>
                               <span className="font-mono font-black text-amber-400">{subScores.academic.toFixed(1)} / 10</span>
@@ -2845,6 +2849,7 @@ function DecoderContent() {
                               <span className="font-bold text-slate-300">Leadership &amp; Stability</span>
                               <span className="font-mono font-black text-indigo-400">{subScores.leadership.toFixed(1)} / 10</span>
                             </div>
+                          </div>
                         </div>
                       </TooltipContent>
                     </Tooltip>
@@ -3418,6 +3423,14 @@ function DecoderContent() {
                             );
                           })()}
 
+                          {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
+                          <p className="text-[10px] text-slate-400/90 mt-2.5 pt-2 border-t border-white/5 italic flex items-center justify-between flex-wrap gap-1">
+                            <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
+                            <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline not-italic font-bold inline-flex items-center gap-0.5">
+                              View Methodology &rarr;
+                            </a>
+                          </p>
+
                           {/* 🇯🇵 JAPAN COMPENSATION STRUCTURE BREAKDOWN (COLLAPSIBLE DROPDOWN WITH BONUS MONTH CONTROLS INCLUDED) */}
                           {String(analysis?.activeSchool?.country || analysis?.sCountry || "").toLowerCase().includes("japan") && (
                             <div className="mt-4 w-full bg-sky-950/40 border border-sky-500/30 rounded-sm shadow-md overflow-hidden text-left transition-all duration-300">
@@ -3705,19 +3718,19 @@ function DecoderContent() {
 
                       // 2. Digital Infrastructure & Streaming Copy
                       const isGfwOrCensored = ['china', 'united arab emirates', 'saudi arabia', 'qatar', 'oman', 'egypt', 'russia', 'turkey', 'vietnam', 'myanmar'].includes(cName);
-                      let digitalCopy = "High-speed fiber & uncensored internet. Optional VPN (~$5–8/mo) used for home-country streaming & UK/US media access.";
+                      let digitalCopy = "High-speed fiber & uncensored internet. Most expat educators set up their personal communication and streaming tools prior to arrival.";
                       if (cName === 'czech republic' || cName === 'czechia') {
-                        digitalCopy = "Gigabit fiber internet & EU roaming. 100% uncensored access. Optional VPN (~$5–8/mo) used for home streaming (BBC iPlayer, US Hulu).";
+                        digitalCopy = "Gigabit fiber internet & EU roaming. 100% uncensored access. Standard personal streaming tools used for home media (BBC iPlayer, US Hulu).";
                       } else if (cName === 'monaco' || cName === 'france') {
-                        digitalCopy = "High-speed fiber & EU roaming. Fully uncensored. Optional VPN (~$5–8/mo) for home-country streaming & UK/US media.";
+                        digitalCopy = "High-speed fiber & EU roaming. Fully uncensored. Standard personal streaming tools used for home-country media.";
                       } else if (cName === 'china') {
-                        digitalCopy = "CRITICAL PRE-DEPARTURE SETUP: Local ISPs & app stores block VPN downloads inside China. You MUST install stealth VPNs (Astrill / LetsVPN) BEFORE departure. Great Firewall blocks Google, WhatsApp, YouTube.";
+                        digitalCopy = "Connectivity & Digital Ecosystem: International communications and domestic platforms require specialized setup. Most expat educators configure their communication and connectivity tools prior to departure.";
                       } else if (['united arab emirates', 'qatar', 'saudi arabia', 'oman'].includes(cName)) {
-                        digitalCopy = "PRE-DEPARTURE SETUP REQUIRED: Local ISPs block VPN download portals & WhatsApp/FaceTime VoIP calling. Download & configure VPN apps BEFORE departure to maintain VoIP & streaming access.";
+                        digitalCopy = "Connectivity & VoIP Access: Local ISPs restrict certain VoIP and streaming portals. Most expat teachers set up their personal communication tools prior to arrival.";
                       } else if (['egypt', 'russia', 'turkey', 'vietnam', 'myanmar'].includes(cName)) {
-                        digitalCopy = "PRE-DEPARTURE SETUP ADVISED: In-country VPN download portals and protocols are throttled by local ISPs. Install obfuscated VPN apps PRIOR to arrival for banking & streaming.";
+                        digitalCopy = "Connectivity & Streaming Access: In-country bandwidth and external gateway access can be variable. Most educators configure their personal digital tools prior to relocation.";
                       } else if (cName === 'argentina') {
-                        digitalCopy = "Uncensored internet. Paid VPN required (~$8–10/mo) for accessing home-country streaming services (CNN, BBC iPlayer, Netflix) and overseas banking.";
+                        digitalCopy = "Uncensored internet. Standard personal digital tools used for accessing home-country streaming services (CNN, BBC iPlayer, Netflix) and overseas banking.";
                       }
 
                       // 3. Currency & Money Transfers Copy & Inflation Data

@@ -1270,6 +1270,14 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                               </p>
                             </div>
                           </div>
+
+                          {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
+                          <p className="text-[10px] text-slate-400/90 pt-2 italic flex items-center justify-between flex-wrap gap-1 border-t border-white/5">
+                            <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
+                            <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline not-italic font-bold inline-flex items-center gap-0.5">
+                              View Methodology &rarr;
+                            </a>
+                          </p>
                         </div>
                       </>
                     )
