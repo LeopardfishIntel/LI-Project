@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 import { getAdminDb } from '../src/firebase/admin';
-import { runSchoolWebsiteAdaptor } from '../src/lib/crawler/adaptors/school-website-adaptor';
+import { runSchoolWebsiteAdaptor, EXCLUDED_NO_INDEPENDENT_PORTAL_IDS } from '../src/lib/crawler/adaptors/school-website-adaptor';
 import { runIngestionPipeline } from '../src/lib/pipelines/pipeline1-ingestion';
 import { runJanitorPipeline } from '../src/lib/pipelines/pipeline3-janitor';
 
@@ -30,6 +30,8 @@ async function main() {
   const schoolsSnap = await db.collection('schools').get();
   const schoolDocs = schoolsSnap.docs.filter((doc: any) => {
     const s = doc.data();
+    const id = doc.id.toUpperCase().trim();
+    if (EXCLUDED_NO_INDEPENDENT_PORTAL_IDS.has(id)) return false;
     return Boolean(s.careersPageUrl || s.website);
   });
 

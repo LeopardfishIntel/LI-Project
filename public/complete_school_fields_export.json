@@ -14079,7 +14079,7 @@
     "lastScrapedAt": "2026-08-30T07:56:31.095Z",
     "website": "https://www.innsbruck-iis.at",
     "agency": "Karriere.at, Tirol.gv.at Job Portal, LinkedIn",
-    "careersPageUrl": "https://www.innsbruck-iis.at/careers",
+    "careersPageUrl": "",
     "name": "International School Innsbruck",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14091,7 +14091,9 @@
     "bonusPot": "+€6,210 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "7.9"
+    "citySafety": "7.9",
+    "hasIndependentCareerPortal": false,
+    "excludeFromDirectSearch": true
   },
   {
     "id": "FLIS0208",
@@ -14136,7 +14138,7 @@
     "lastScrapedAt": "2026-08-30T07:56:24.682Z",
     "website": "https://www.lais.at",
     "agency": "Karriere.at, LinkedIn",
-    "careersPageUrl": "https://www.lais.at/contact",
+    "careersPageUrl": "",
     "name": "Lower Austrian International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14148,7 +14150,9 @@
     "bonusPot": "+€6,100 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "7.4"
+    "citySafety": "7.4",
+    "hasIndependentCareerPortal": false,
+    "excludeFromDirectSearch": true
   },
   {
     "id": "FLIS0209",
@@ -14250,7 +14254,7 @@
     "lastScrapedAt": "2026-08-30T07:56:27.793Z",
     "website": "https://www.sais.at",
     "agency": "Karriere.at, LinkedIn",
-    "careersPageUrl": "https://www.sais.at/employment",
+    "careersPageUrl": "",
     "name": "SALIS - Salzburg International School",
     "tesOrganizationId": null,
     "tesEmployerSlug": null,
@@ -14262,7 +14266,9 @@
     "bonusPot": "+€6,100 / yr",
     "Profit Status": "Yes",
     "Ownership": "Public",
-    "citySafety": "8.1"
+    "citySafety": "8.1",
+    "hasIndependentCareerPortal": false,
+    "excludeFromDirectSearch": true
   },
   {
     "id": "FLIS0212",

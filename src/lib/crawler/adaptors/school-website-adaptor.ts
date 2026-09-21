@@ -53,11 +53,23 @@ function parsedStringToRecord(rawJob: string, input: AdaptorInput): RawJobRecord
   };
 }
 
+export const EXCLUDED_NO_INDEPENDENT_PORTAL_IDS = new Set([
+  'FLIS0207', // International School Innsbruck (Austria)
+  'FLIS0208', // Lower Austrian International School (Austria)
+  'FLIS0210', // SALIS - Salzburg International School (Austria)
+]);
+
 export async function runSchoolWebsiteAdaptor(
   input: AdaptorInput,
   hasPrimary: boolean = true,
   hasSecondary: boolean = true
 ): Promise<RawJobRecord[]> {
+  const normId = (input.schoolId || '').toUpperCase().trim();
+  if (normId && EXCLUDED_NO_INDEPENDENT_PORTAL_IDS.has(normId)) {
+    console.log(`ℹ️ [SCHOOL WEB ADAPTOR] Skipping direct crawl for ${normId} (${input.schoolName}): No independent school-owned career portal.`);
+    return [];
+  }
+
   console.log(`🟢 [SCHOOL WEB ADAPTOR] Starting for ${input.schoolName}...`);
 
   const records: RawJobRecord[] = [];
