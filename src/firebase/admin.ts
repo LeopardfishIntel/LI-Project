@@ -12,7 +12,7 @@ import {
   increment
 } from 'firebase/firestore';
 
-let adminDb: any = null;
+export let adminDb: any = null;
 
 try {
   if (typeof window === 'undefined') {

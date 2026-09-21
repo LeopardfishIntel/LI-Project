@@ -514,6 +514,7 @@ function DecoderContent() {
     partnerSalary: "0",
     familyStatus: "Single"
   });
+  const [benchmarkSalary, setBenchmarkSalary] = useState("0");
 
   const [responsibilityAllowance, setResponsibilityAllowance] = useState("0");
   const [extraIncome, setExtraIncome] = useState("0");
@@ -1535,6 +1536,7 @@ function DecoderContent() {
         monthlyLocal = Math.round(usdToLocal(median));
       }
 
+      setBenchmarkSalary(monthlyLocal.toString());
       setSettings(prev => ({ ...prev, netSalary: monthlyLocal.toString() }));
     }
   }, [settings.schoolId, activeSchool, currency, currentRates]);
@@ -2117,18 +2119,43 @@ function DecoderContent() {
 
             <div className="pt-3 border-t border-white/5 space-y-3">
               <div className="space-y-2">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed">Monthly net salary ({currency})</label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
-                      Based on a median salary for a qualified teacher with five years experience. If you have an offer, input this here.
-                    </TooltipContent>
-                  </Tooltip>
+                <div className="flex items-center justify-between gap-1 mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed">Monthly net salary ({currency})</label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="cursor-help"><Info className="size-2.5 text-sky-400" /></span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" align="start" className="bg-[#0b1224] border-white/10 text-white text-[9px] uppercase font-bold p-2 max-w-xs shadow-xl z-50">
+                        Based on a median salary for a qualified teacher with five years experience. If you have an offer, input this here.
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary && (
+                    <button
+                      type="button"
+                      onClick={() => setSettings(prev => ({ ...prev, netSalary: benchmarkSalary }))}
+                      className="text-[8.5px] font-bold text-amber-400 hover:text-amber-300 underline tracking-wider uppercase transition-colors shrink-0"
+                      title="Reset to 5-Year Benchmark"
+                    >
+                      Reset to Benchmark
+                    </button>
+                  )}
                 </div>
-                <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm", noSpinners)} />
+                <div className="relative">
+                  <Input type="number" value={settings.netSalary} onChange={(e) => setSettings({ ...settings, netSalary: e.target.value })} className={cn("bg-black/40 border-white/10 h-10 font-black text-sm pr-28", noSpinners)} />
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                    {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary ? (
+                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        Your Offer
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                        5-Yr Benchmark
+                      </span>
+                    )}
+                  </div>
+                </div>
                 {analysis?.isConvertedFromAnnual && (
                   <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 p-2 rounded-sm leading-snug">
                     <span>💡 Annual salary detected ({parseFloat(settings.netSalary).toLocaleString()} {currency}/yr) — converted to monthly net base of {currency} {analysis.baseNet.toLocaleString()}/mo.</span>
@@ -3246,7 +3273,18 @@ function DecoderContent() {
                       <div className="flex justify-between items-center border-b border-white/5 pb-2">
                         <div className="flex items-center gap-2 shrink-0">
                           <Coins className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider leading-normal whitespace-nowrap shrink-0">Monthly net base</span>
+                            {benchmarkSalary && benchmarkSalary !== "0" && settings.netSalary !== benchmarkSalary ? (
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                Your Offer
+                              </span>
+                            ) : (
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                                5-Yr Benchmark
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <span className="text-[13px] font-black text-white whitespace-nowrap shrink-0">{currency} {parseFloat(settings.netSalary).toLocaleString()}</span>
                       </div>
