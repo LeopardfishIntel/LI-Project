@@ -49,7 +49,7 @@ school_id,school_name,city,country,curriculum,savings_potential_single_usd,acade
 "FLIS0049","Dulwich Singapore","Singapore","Singapore","British / IB","","9.6","https://singapore.dulwich.org/careers","https://singapore.dulwich.org/careers","",""
 "FLIS0050","Dulwich Suzhou","Suzhou","China","British / IB","","9.0","https://suzhou.dulwich.org/careers","https://suzhou.dulwich.org/careers","",""
 "FLIS0051","Aiglon College","Villars","Switzerland","British / IB","","9.4","https://www.aiglon.ch/careers","https://www.aiglon.ch/careers","",""
-"FLIS0052","ACS Athens","Athens","Greece","US / IB","","8.5","https://www.acs.gr/careers","https://www.acs.gr/careers","",""
+"FLIS0052","Bahrain Middle High School (DoDEA)","Manama","Bahrain","US / AP / DoDEA","","8.2","https://bahrainmhs.dodea.edu","https://bahrainmhs.dodea.edu/school-employment","",""
 "FLIS0053","IS Prague","Prague","Czechia","IB","","8.8","https://www.isp.cz/careers","https://www.isp.cz/careers","",""
 "FLIS0054","Frankfurt Int'l","Frankfurt","Germany","IB","","9.3","https://www.fis.edu/careers","https://www.fis.edu/careers","",""
 "FLIS0055","King's College School Alicante","Alicante","Spain","British","","8.6","https://alicante.kingscollegeschool.es/careers/","https://alicante.kingscollegeschool.es/careers/","Inspired Education",""
@@ -267,10 +267,10 @@ school_id,school_name,city,country,curriculum,savings_potential_single_usd,acade
 "FLIS0293","American School of Warsaw","Warsaw","Poland","US / IB","","8.9","https://www.aswarsaw.org/careers","https://www.aswarsaw.org","",""
 "FLIS0294","International School of Stavanger","Stavanger","Norway","US / IB","","8.8","https://www.isstavanger.no/careers","https://www.isstavanger.no","",""
 "FLIS0295","Carlucci American International School of Lisbon","Sintra / Lisbon","Portugal","US / IB","","8.7","https://www.caislisbon.org/join-us/work-at-caisl","https://www.caislisbon.org","",""
-"FLIS0251","Malvern College Hong Kong","Hong Kong (Tai Po)","Hong Kong SAR","IB (PYP, MYP, DP)","","8.7","https://malverncollege.org.hk","https://malverncollege.org.hk",
-"FLIS0252","Malvern College Pre-School HK (Island West)","Hong Kong (Sai Ying Pun)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://malvernpreschool.hk",
-"FLIS0253","Malvern College Pre-School HK (Coronation Circle)","Hong Kong (West Kowloon)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://malvernpreschool.hk",
-"FLIS0254","Malvern College Qingdao","Qingdao","China","UK Curriculum, IGCSE, A-Levels, AP","","8.5","https://malverncollegeqd.com","https://malverncollegeqd.com",
-"FLIS0255","Malvern College Chengdu","Chengdu","China","UK Curriculum, IGCSE, A-Levels","","8.5","https://malvernchengdu.cn","https://malvernchengdu.cn",
-"FLIS0256","Malvern College Riyadh","Riyadh","Saudi Arabia","UK National Curriculum, IGCSE, A-Levels","","8.6","https://malverncollegeryadh.com","https://malverncollegeryadh.com",
-"FLIS0257","Malvern College São Paulo","São Paulo","Brazil","UK Curriculum, IB Diploma Framework","","7.9","https://malverncollegesaopaulo.com","https://malverncollegesaopaulo.com",
+"FLIS0251","Malvern College Hong Kong","Hong Kong (Tai Po)","Hong Kong SAR","IB (PYP, MYP, DP)","","8.7","https://malverncollege.org.hk","https://malverncollege.org.hk/staff-and-management/work-with-us/",
+"FLIS0252","Malvern College Pre-School HK (Island West)","Hong Kong (Sai Ying Pun)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://www.malvernpreschool.hk/careers/",
+"FLIS0253","Malvern College Pre-School HK (Coronation Circle)","Hong Kong (West Kowloon)","Hong Kong SAR","EYFS & Reggio Emilia","","8.5","https://malvernpreschool.hk","https://www.malvernpreschool.hk/careers/",
+"FLIS0254","Malvern College Qingdao","Qingdao","China","UK Curriculum, IGCSE, A-Levels, AP","","8.5","https://malverncollegeqd.com","https://malverncollegeinternational.org/work-with-us/",
+"FLIS0255","Malvern College Chengdu","Chengdu","China","UK Curriculum, IGCSE, A-Levels","","8.5","https://malvernchengdu.cn","https://www.malvernchengdu.cn/en/careers/",
+"FLIS0256","Malvern College Riyadh","Riyadh","Saudi Arabia","UK National Curriculum, IGCSE, A-Levels","","8.6","https://malverncollegeryadh.com","https://malverncollegeinternational.org/work-with-us/",
+"FLIS0257","Malvern College São Paulo","São Paulo","Brazil","UK Curriculum, IB Diploma Framework","","7.9","https://malverncollegesaopaulo.com.br","https://malverncollegeinternational.org/work-with-us/",
