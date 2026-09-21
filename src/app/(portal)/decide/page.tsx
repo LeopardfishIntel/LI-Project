@@ -1142,6 +1142,14 @@ function DecideContent() {
                     ))}
                 </div>
 
+                {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
+                <div className="mt-4 p-3 bg-white/[0.02] border border-white/5 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-400 italic">
+                    <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
+                    <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline not-italic font-bold shrink-0">
+                        View Methodology &rarr;
+                    </a>
+                </div>
+
 
 
                 {/* 🏆 STRATEGIC DECISION SUMMARY */}
