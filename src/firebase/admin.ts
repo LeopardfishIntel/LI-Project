@@ -1555,13 +1555,15 @@ export function generateJobFingerprint(
     try {
       if (candidateUrlOrId.startsWith("http")) {
         const u = new URL(candidateUrlOrId);
-        u.searchParams.delete("utm_source");
-        u.searchParams.delete("utm_medium");
-        u.searchParams.delete("utm_campaign");
-        u.searchParams.delete("utm_content");
-        u.searchParams.delete("ref");
-        u.searchParams.delete("source");
-        u.searchParams.delete("fbclid");
+        const TRACKING_PARAMS = [
+          "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+          "ref", "source", "fbclid", "gclid", "trk", "sid",
+          "gh_jid", "gh_src", "lever-origin", "lever-source", "jobvite_ref",
+          "bamboohr_source", "schrole_id", "tes_source", "source_id"
+        ];
+        for (const p of TRACKING_PARAMS) {
+          u.searchParams.delete(p);
+        }
         invariantKey = u.origin + u.pathname;
       } else {
         invariantKey = candidateUrlOrId.trim().toLowerCase();

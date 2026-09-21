@@ -264,16 +264,21 @@ export async function scrapePage(url: string, options: ScrapeOptions = {}): Prom
             links.push({ href: frameUrl, text: 'Embedded ATS Portal' });
           }
           try {
-            const frameLinks = await frame.evaluate(() => {
+            // Guard child frame evaluation with a 2500ms timeout threshold
+            const frameLinksPromise = frame.evaluate(() => {
               const anchors = Array.from(document.querySelectorAll('a[href]'));
               return anchors.map(a => ({
                 href: (a as HTMLAnchorElement).href,
                 text: (a.textContent || '').trim()
               })).filter(item => item.href.startsWith('http'));
             });
-            links.push(...frameLinks);
+            const timeoutPromise = new Promise<ExtractedLink[]>((resolve) => setTimeout(() => resolve([]), 2500));
+            const frameLinks = await Promise.race([frameLinksPromise, timeoutPromise]);
+            if (Array.isArray(frameLinks)) {
+              links.push(...frameLinks);
+            }
           } catch {
-            // Cross-origin frame security restrictions are gracefully caught
+            // Cross-origin frame security restrictions or detached frames are gracefully caught
           }
         }
       } catch {
