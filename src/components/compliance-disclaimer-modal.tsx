@@ -11,15 +11,23 @@ const SIX_WEEKS_MS = 42 * 24 * 60 * 60 * 1000; // 42 days
 
 // 🛡️ Data & Calculation Routes (Trigger Modal on First Visit / After 6 Weeks)
 const DATA_ROUTE_PREFIXES = [
-  '/evaluate',
-  '/compare',
+  '/financial-forecaster',
+  '/featured-jobs',
   '/schools',
-  '/jobs',
   '/decide',
   '/discover',
   '/search',
   '/matrix',
-  '/prepare'
+  '/prepare',
+  '/calculators',
+  '/churn-calculator',
+  '/find-your-fit',
+  '/evaluate',
+  '/compare',
+  '/jobs',
+  '/dashboard',
+  '/profile',
+  '/staging-preview'
 ];
 
 // 📄 Exempt Informational & Static Routes (Skip Modal)
@@ -32,7 +40,10 @@ const EXEMPT_EXACT_ROUTES = new Set([
   '/contact',
   '/auth',
   '/login',
-  '/register'
+  '/signup',
+  '/register',
+  '/enquiry',
+  '/admin'
 ]);
 
 export function ComplianceDisclaimerModal() {
