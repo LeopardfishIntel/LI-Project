@@ -32,11 +32,11 @@ const features = [
 
 // 🛰️ HARDCODED FALLBACKS (If DB is slow)
 const COUNTER_FALLBACKS = {
-  schools: 325,
+  schools: 335,
   vacancies: 68,
-  countries: 66,
-  visits: 1525,
-  comparisons: 303
+  countries: 75,
+  visits: 2277,
+  comparisons: 368
 };
 
 function TacticalButton({ href, label, className }: { href: string; label: string; className?: string }) {
