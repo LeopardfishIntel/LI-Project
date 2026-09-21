@@ -7,18 +7,18 @@ import { useAuth, db } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
 const STORAGE_KEY = 'lfi_compliance_disclaimer_v1';
-const SIX_WEEKS_MS = 42 * 24 * 60 * 60 * 1000; // 42 days
+const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000; // 90 days (3 Months)
 
-// 🛡️ Data & Calculation Routes (Trigger Modal on First Visit / After 6 Weeks)
+// 🛡️ Data & Calculation Routes (Trigger Modal on First Visit / After 3 Months)
 const DATA_ROUTE_PREFIXES = [
   '/financial-forecaster',
   '/featured-jobs',
   '/schools',
   '/decide',
+  '/prepare',
   '/discover',
   '/search',
   '/matrix',
-  '/prepare',
   '/calculators',
   '/churn-calculator',
   '/find-your-fit',
@@ -73,7 +73,7 @@ export function ComplianceDisclaimerModal() {
         const parsed = JSON.parse(stored);
         if (parsed?.acceptedAt && typeof parsed.acceptedAt === 'number') {
           const age = Date.now() - parsed.acceptedAt;
-          if (age < SIX_WEEKS_MS) {
+          if (age < THREE_MONTHS_MS) {
             needsAcceptance = false;
           }
         }
@@ -265,7 +265,7 @@ export function ComplianceDisclaimerModal() {
         <div className="p-4 sm:p-6 bg-slate-900/80 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
             <span className="inline-block size-2 rounded-full bg-emerald-400" />
-            <span>Compliance Verified • Valid for 6 Weeks</span>
+            <span>Compliance Verified • Valid for 3 Months</span>
           </div>
 
           <button
