@@ -171,7 +171,7 @@ export function ComplianceDisclaimerModal() {
             <h2 id="compliance-modal-title" className="text-base sm:text-lg font-bold text-amber-400 tracking-tight leading-snug">
               Before you dive in — a quick bit to keep the compliance team happy!
             </h2>
-            <p className="text-xs text-slate-400 leading-normal">
+            <p className="text-[13px] text-slate-300 leading-normal">
               When crunching the numbers and comparing posts, there are a few key principles to keep in focus:
             </p>
           </div>
@@ -187,11 +187,11 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center shrink-0">
                   <Scale className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-indigo-300 text-xs">
+                <h3 className="font-bold text-indigo-300 text-[13px] sm:text-[13.5px]">
                   Why Benchmarking Works (Apples-to-Apples)
                 </h3>
               </div>
-              <p className="text-slate-400 text-[11.5px] leading-relaxed">
+              <p className="text-slate-300 text-[12.5px] sm:text-[13px] leading-relaxed">
                 Raw salaries on paper rarely tell the full story. Between tax-free perks, housing allowances, and local living costs, comparing two international offers face-to-value is like comparing apples to oranges. Our engine normalises tax, housing, and purchasing power so you can compare true financial surplus on a level playing field.
               </p>
             </div>
@@ -202,11 +202,11 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-blue-500/15 text-blue-300 flex items-center justify-center shrink-0">
                   <ShieldCheck className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-sky-300 text-xs">
+                <h3 className="font-bold text-sky-300 text-[13px] sm:text-[13.5px]">
                   Consistent Data, Not Forum Noise
                 </h3>
               </div>
-              <p className="text-slate-400 text-[11.5px] leading-relaxed">
+              <p className="text-slate-300 text-[12.5px] sm:text-[13px] leading-relaxed">
                 Forum threads and word-of-mouth reviews offer fragmented, individual perspectives based on personal lifestyle choices. We use uniform, objective data models applied systematically across every school and region—giving you an unbiased, standardised baseline rather than anecdotal hearsay.
               </p>
             </div>
@@ -217,11 +217,11 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-cyan-500/15 text-cyan-300 flex items-center justify-center shrink-0">
                   <Calculator className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-cyan-300 text-xs">
+                <h3 className="font-bold text-cyan-300 text-[13px] sm:text-[13.5px]">
                   Indicative Benchmark Estimates
                 </h3>
               </div>
-              <p className="text-slate-400 text-[11.5px] leading-relaxed">
+              <p className="text-slate-300 text-[12.5px] sm:text-[13px] leading-relaxed">
                 All our surplus calculations, cost-of-living figures, and net take-home estimates are non-binding mathematical models. They use standardised OECD cost-of-living baselines, 5-year payscale assumptions, net salaries, and expected local tax rules. They are designed as a solid comparative guide for your research — not a guaranteed job offer or formal financial advice.
               </p>
             </div>
@@ -232,11 +232,11 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center shrink-0">
                   <ExternalLink className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-emerald-300 text-xs">
+                <h3 className="font-bold text-emerald-300 text-[13px] sm:text-[13.5px]">
                   Straight to the Official Source
                 </h3>
               </div>
-              <p className="text-slate-400 text-[11.5px] leading-relaxed">
+              <p className="text-slate-300 text-[12.5px] sm:text-[13px] leading-relaxed">
                 Every job vacancy and PDF specification on the platform links directly to the hiring school&apos;s official public website or HR portal. We never host application forms or alter official job specs.
               </p>
             </div>
@@ -248,18 +248,18 @@ export function ComplianceDisclaimerModal() {
               <div className="size-6 rounded-md bg-amber-500/15 text-amber-300 flex items-center justify-center shrink-0">
                 <Scale className="size-3.5" />
               </div>
-              <h3 className="font-semibold text-amber-300 text-xs">
+              <h3 className="font-bold text-amber-300 text-[13px] sm:text-[13.5px]">
                 Do Your Own Due Diligence
               </h3>
             </div>
-            <p className="text-slate-400 text-[11.5px] leading-relaxed">
+            <p className="text-slate-300 text-[12.5px] sm:text-[13px] leading-relaxed">
               Your actual take-home pay and savings will depend on your specific payscale step, family setup, spending habits, dependent school fee coverage, and personal tax status. It is your responsibility to verify exact contract details directly with the school before signing on the dotted line.
             </p>
           </div>
 
           {/* Closing acknowledgement text */}
-          <div className="text-[11px] text-slate-400 bg-slate-950/40 px-3.5 py-2.5 rounded-lg border border-slate-800/80 leading-relaxed text-center sm:text-left">
-            By clicking <strong className="text-slate-200">&quot;Got It — Show Me the Data&quot;</strong>, you acknowledge that these tools are provided for comparative research purposes only. Happy hunting!
+          <div className="text-[12px] text-slate-300 bg-slate-950/40 px-3.5 py-2.5 rounded-lg border border-slate-800/80 leading-relaxed text-center sm:text-left">
+            By clicking <strong className="text-white">&quot;Got It — Show Me the Data&quot;</strong>, you acknowledge that these tools are provided for comparative research purposes only. Happy hunting!
           </div>
         </div>
 
