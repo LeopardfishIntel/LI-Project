@@ -89,14 +89,23 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /\b(what\s+our\b|say\s+about\b|teacher\s+training|initial\s+teacher|pgce|why\s+teach|why\s+work|why\s+choose|meet\s+our|meet\s+the|working\s+at|life\s+at|life\s+in|living\s+in|about\s+us|about\s+our|inspection\s+reports?|real\s+life\s+experiences?|work\s+experience|people|starting\s+school|check\s+out\s+our|open\s+house|virtual\s+events?|primary\s+years?|secondary\s+years?|children\s+and\s+dependents?|compensation\s*&\s*benefits|weekday\s+english|summer\s+english|substitute\s+opportunities|support\s+staff\s+openings|administrator\s+openings|our\s+teachers|leadership\s*&\s*governance|general\s+applications?|speculative\s+applications?|talent\s+pool|parent\s+portal|skip\s+to\s+content|art\s+gallery|awards\s*&\s*achievements?|newsletter|scholarships?|shadow\s+teachers?|it'?s\s+an\s+experience)\b/i,
   /<[^>]+>/i, // Raw HTML tags (e.g. <img...)
 
-  // Standalone Campus Names, Governance, Location Headers, and Division Section Pages
+  // Leadership Messages, Welcomes & Forewords (Direct & Possessive)
   /\b(from\s+the\s+(head|principal|director|president|superintendent|dean|chair|board|college|school)|message\s+from|letter\s+from|welcome\s+from|welcome\s+to|supervisory\s+board|learning\s+experience|careers\s+programme|msmusical|musical\s*:)\b/i,
+  /\b(head('?s)?|principal('?s)?|headmaster('?s)?|headmistress('?s)?|director('?s)?|superintendent('?s)?|president('?s)?|chair('?s)?|dean('?s)?)\s+(welcome|message|address|desk|letter|statement|report|vision|foreword|introduction)\b/i,
+
+  // Tenders, Procurement & Commercial Contracts
+  /\b(tenders?|tender\s+invitation|procurement\s+tender|jobs\s+and\s+tenders|tenders\s+and\s+contracts|contract\s+notice)\b/i,
+
+  // School History, Governance, Heritage & Campus Pages
+  /\b(school\s+history|history\s+of\s+the\s+school|our\s+heritage|governing\s+body|board\s+of\s+governors|school\s+council|founder'?s\s+day|campus\s+tour|virtual\s+tour|school\s+song|school\s+anthem)\b/i,
+
+  // Standalone Campus Names, Governance, Location Headers, and Division Section Pages
   /\b(primary\s+school\s*\([^)]*\)|secondary\s+school\s*\([^)]*\)|middle\s+school\s*\([^)]*\)|high\s+school\s*\([^)]*\)|elementary\s+school\s*\([^)]*\))\b/i,
   /^(primary\s+school\s+haimhausen|secondary\s+school\s+haimhausen|primary\s+school\s+city\s+campus|primary\s+school\s+mathematics|middle\s+school\s+mathematics|middle\s+school\s+biology|bavarian\s+international\s+school|diplomatic\s+quarter|destination\s+riyadh|partnerships|open\s+days|faq'?s|lower\s+primary\s+schools|upper\s+primary\s+schools|drama|arts|music|english|primary|secondary|middle\s+school|high\s+school)$/i,
 
   // Generic Non-Position Page Titles & Standalone Section Headers
-  /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities|open\s+days)\b/i,
-  /^(primary\s+year\s+programme(\s+@\s+\w+)?|diploma\s+programme(\s+@\s+\w+)?|middle\s+years\s+programme|upper\s+school|middle\s+school|elementary\s+school|primary\s+school|secondary\s+school|high\s+school|junior\s+school|senior\s+school|whole\s+school|early\s+years|kindergarten|performing\s+arts|international\s+baccalaureate|student\s+leadership|curriculum|admissions|careers|vacancies|employment|partnerships|open\s+days)$/i,
+  /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities|open\s+days|jobs\s+and\s+tenders|work\s+with\s+us|join\s+our\s+team|career\s+opportunities|working\s+with\s+us)\b/i,
+  /^(primary\s+year\s+programme(\s+@\s+\w+)?|diploma\s+programme(\s+@\s+\w+)?|middle\s+years\s+programme|upper\s+school|middle\s+school|elementary\s+school|primary\s+school|secondary\s+school|high\s+school|junior\s+school|senior\s+school|whole\s+school|early\s+years|kindergarten|performing\s+arts|international\s+baccalaureate|student\s+leadership|curriculum|admissions|careers|vacancies|employment|partnerships|open\s+days|jobs\s+and\s+tenders)$/i,
 ];
 
 /**

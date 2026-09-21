@@ -425,26 +425,23 @@ export function hasClosedPositionNegativeBanner(html: string | null | undefined)
 
 /**
  * 🔒 MANDATORY JOB ADVERT SIGNAL CHECK
- * Verifies that a web page HTML/text contains explicit recruitment & vacancy signals:
- * - Application signals: "apply", "submit application", "how to apply", "application form"
- * - Temporal & Structural signals: "closing date", "deadline", "start date", "commencing", "job description", "responsibilities"
+ * Verifies that a web page HTML/text contains explicit recruitment & vacancy signals across multiple categories:
+ * - Category 1: Explicit Vacancy & Application Instructions (e.g. "submit application", "person specification", "job description")
+ * - Category 2: Deadlines & Dates (e.g. "closing date", "application deadline", "start date")
+ * - Category 3: Contract & Employment Terms (e.g. "full-time position", "maternity cover", "fixed term contract")
  */
 export function hasJobAdvertSignals(htmlOrText: string | null | undefined): boolean {
   if (!htmlOrText) return false;
   const lower = htmlOrText.toLowerCase();
 
-  const requiredSignalPatterns = [
-    /\b(closing\s+date|deadline|closes|valid\s+through)\b/i,
-    /\b(start\s+date|commencing|contract\s+type|full\s*time|part\s*time)\b/i,
-    /\b(apply|apply\s+now|how\s+to\s+apply|application\s+form|submit\s+application|job\s+description|key\s+responsibilities|person\s+specification|reporting\s+to)\b/i,
-  ];
+  const category1Spec = /\b(apply\s+for\s+this\s+(post|role|position)|how\s+to\s+apply|submit\s+(your\s+)?(application|cv|resume)|application\s+form|job\s+description|person\s+specification|key\s+responsibilities|candidate\s+pack|job\s+specification|download\s+job\s+details|download\s+(the\s+)?(full\s+)?spec(ification)?)\b/i;
+  const category2Dates = /\b(closing\s+date|application\s+deadline|closes\s*:|valid\s+through|start\s+date\s*:|commencing\s+(in\s+)?(aug|august|sep|september|jan|january|term\s+\d|\d{4}))\b/i;
+  const category3Contract = /\b(full\s*-?\s*time\s+(post|role|position|teacher)|part\s*-?\s*time\s+(post|role|position)|permanent\s+contract|fixed\s*-?\s*term|maternity\s+cover|teaching\s+post|academic\s+vacancy)\b/i;
 
-  let signalMatches = 0;
-  for (const pattern of requiredSignalPatterns) {
-    if (pattern.test(lower)) {
-      signalMatches++;
-    }
-  }
+  let score = 0;
+  if (category1Spec.test(lower)) score++;
+  if (category2Dates.test(lower)) score++;
+  if (category3Contract.test(lower)) score++;
 
-  return signalMatches >= 1;
+  return score >= 2;
 }

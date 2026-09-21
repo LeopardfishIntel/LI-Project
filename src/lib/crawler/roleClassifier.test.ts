@@ -43,10 +43,21 @@ function runTests() {
   assert(isSupportOrNonTeachingRole("Live Stream(opens in new window/tab)"), true, "Live Stream widget is support");
   assert(isSupportOrNonTeachingRole("LinkedIn(opens in new window/tab)"), true, "LinkedIn link is support");
   assert(isSupportOrNonTeachingRole("YouTube(opens in new window/tab)"), true, "YouTube link is support");
-  assert(isSupportOrNonTeachingRole("Primary Year Programme @ ISP"), true, "PYP section header is support");
+  // Leadership Welcomes, Governance & Tenders (MUST BE TRUE / EXCLUDED)
+  assert(isSupportOrNonTeachingRole("Head's Welcome"), true, "Head's Welcome is rejected");
+  assert(isSupportOrNonTeachingRole("Principal's Message"), true, "Principal's Message is rejected");
+  assert(isSupportOrNonTeachingRole("Headmaster's Desk"), true, "Headmaster's Desk is rejected");
+  assert(isSupportOrNonTeachingRole("Director's Vision"), true, "Director's Vision is rejected");
+  assert(isSupportOrNonTeachingRole("Jobs and Tenders"), true, "Jobs and Tenders is rejected");
+  assert(isSupportOrNonTeachingRole("Procurement Tender Notice"), true, "Procurement Tender Notice is rejected");
+  assert(isSupportOrNonTeachingRole("School History"), true, "School History is rejected");
+  assert(isSupportOrNonTeachingRole("Board of Governors"), true, "Board of Governors is rejected");
+  assert(isSupportOrNonTeachingRole("Work With Us"), true, "Work With Us header is rejected");
 
   // Academic / Teaching roles (MUST BE FALSE / RETAINED)
   assert(isSupportOrNonTeachingRole("Teacher of English"), false, "Teacher of English is retained");
+  assert(isSupportOrNonTeachingRole("Teacher of Mathematics"), false, "Teacher of Mathematics is retained");
+  assert(isSupportOrNonTeachingRole("Head of Science"), false, "Head of Science is retained");
   assert(isSupportOrNonTeachingRole("Primary Teacher - August 2026"), false, "Primary Teacher is retained");
   assert(isSupportOrNonTeachingRole("Secondary PE Teacher"), false, "Secondary PE Teacher is retained");
   assert(isSupportOrNonTeachingRole("Head of Humanities"), false, "Head of Humanities is retained");
