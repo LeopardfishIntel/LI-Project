@@ -10,7 +10,7 @@ import { scrapePage } from "./scraperEngine";
 import { extractJobPostingsFromHtml } from "./adaptors/tes-adaptor";
 import { sanitizeUrl, isBlockedContentUrl } from "./urlResolver";
 import type { AdaptorInput, RawJobRecord } from "./adaptors/raw-job.types";
-import { isSupportOrNonTeachingRole } from "./roleClassifier";
+import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "./roleClassifier";
 import { hasClosedPositionNegativeBanner, hasJobAdvertSignals } from "./adaptors/adaptor-utils";
 
 const VACANCY_PATH_PATTERNS = [
@@ -178,7 +178,7 @@ export async function crawlCareersLandingPage(
     const isAtsUrl = ATS_DOMAINS.some(d => cleanSubUrl.toLowerCase().includes(d));
     if (isAtsUrl) {
       const title = link.text.replace(/apply|click here|view job|details/i, '').trim();
-      if (title && title.length >= 4 && !isSupportOrNonTeachingRole(title)) {
+      if (title && isStrictAcademicTeachingRole(title)) {
         records.push({
           rawTitle: title,
           applyUrl: cleanSubUrl,
@@ -208,7 +208,7 @@ export async function crawlCareersLandingPage(
       const subPostings = extractJobPostingsFromHtml(subResult.html);
       for (const posting of subPostings) {
         const title = (posting.title || posting.name || link.text || '').trim();
-        if (title && title.length >= 4 && !isSupportOrNonTeachingRole(title)) {
+        if (title && isStrictAcademicTeachingRole(title)) {
           records.push({
             rawTitle: title,
             applyUrl: cleanSubUrl,
@@ -236,7 +236,7 @@ export async function crawlCareersLandingPage(
 
       const hasAdvertSignals = hasJobAdvertSignals(subResult.html);
 
-      if (hasAdvertSignals && cleanTitle && cleanTitle.length >= 4 && !isSupportOrNonTeachingRole(cleanTitle)) {
+      if (hasAdvertSignals && isStrictAcademicTeachingRole(cleanTitle)) {
         records.push({
           rawTitle: cleanTitle,
           applyUrl: cleanSubUrl,

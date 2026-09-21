@@ -13,7 +13,7 @@ import { translateJobTitleToEnglish } from "@/lib/utils/titleTranslator";
  *   - Deduplicates by Unique TES Vacancy ID (`fp_<schoolId>_tes_<vacancyId>`)
  */
 
-import { isSupportOrNonTeachingRole } from "../crawler/roleClassifier";
+import { isSupportOrNonTeachingRole, isStrictAcademicTeachingRole } from "../crawler/roleClassifier";
 import { purgeStaleTesVacancies } from "../crawler/adaptors/tes-adaptor";
 import { generateJobFingerprint, saveScrapedJobs } from "@/firebase/admin";
 import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser";
@@ -286,9 +286,9 @@ export async function runIngestionPipeline(
     seenUrls.add(cleanApplyUrl);
 
     // ── GATE 2: Role Classifier (Academic Teaching Roles Only) ───────────────
-    if (isSupportOrNonTeachingRole(record.rawTitle)) {
+    if (!isStrictAcademicTeachingRole(record.rawTitle)) {
       rejected++;
-      reasons.push(`[ROLE_FILTER] "${record.rawTitle}"`);
+      reasons.push(`[ROLE_FILTER_NON_ACADEMIC] "${record.rawTitle}"`);
       continue;
     }
 

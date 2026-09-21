@@ -85,9 +85,13 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   // Facilities / Services / Giving Funds / General School Pages
   /\b(cafeteria|falcons'?\s*nest|distinguished\s+speakers?\s+fund|leadership\s+and\s+service|the\s+arts|annual\s+report|strategic\s+plan|university\s+destinations|faculty\s+and\s+staff|e-shop|testing\s+centre|facility\s+booking)\b/i,
 
+  // Conversational Phrases & Web Navigation Headers (e.g. "What our teachers say", "Teacher Training")
+  /\b(what\s+our\b|say\s+about\b|teacher\s+training|initial\s+teacher|pgce|why\s+teach|why\s+work|why\s+choose|meet\s+our|meet\s+the|working\s+at|life\s+at|life\s+in|living\s+in|about\s+us|about\s+our|inspection\s+reports?|real\s+life\s+experiences?|work\s+experience|people|starting\s+school|check\s+out\s+our|open\s+house|virtual\s+events?|primary\s+years?|secondary\s+years?|children\s+and\s+dependents?|compensation\s*&\s*benefits|weekday\s+english|summer\s+english|substitute\s+opportunities|support\s+staff\s+openings|administrator\s+openings|our\s+teachers|leadership\s*&\s*governance|general\s+applications?|speculative\s+applications?|talent\s+pool|parent\s+portal|skip\s+to\s+content|art\s+gallery|awards\s*&\s*achievements?|newsletter|scholarships?|shadow\s+teachers?|it'?s\s+an\s+experience)\b/i,
+  /<[^>]+>/i, // Raw HTML tags (e.g. <img...)
+
   // Standalone Campus Names, Governance, Location Headers, and Division Section Pages
   /\b(supervisory\s+board|message\s+from\s+head\s+of\s+school|principal'?s?\s+message|headteacher'?s?\s+message|superintendent'?s?\s+welcome|director\s+general'?s?\s+welcome|learning\s+experience|careers\s+programme|msmusical|musical\s*:)\b/i,
-  /^(primary\s+school\s+haimhausen|secondary\s+school\s+haimhausen|primary\s+school\s+city\s+campus|primary\s+school\s+mathematics|middle\s+school\s+mathematics|middle\s+school\s+biology|bavarian\s+international\s+school|diplomatic\s+quarter|destination\s+riyadh|partnerships|open\s+days|faq'?s|lower\s+primary\s+schools|upper\s+primary\s+schools)$/i,
+  /^(primary\s+school\s+haimhausen|secondary\s+school\s+haimhausen|primary\s+school\s+city\s+campus|primary\s+school\s+mathematics|middle\s+school\s+mathematics|middle\s+school\s+biology|bavarian\s+international\s+school|diplomatic\s+quarter|destination\s+riyadh|partnerships|open\s+days|faq'?s|lower\s+primary\s+schools|upper\s+primary\s+schools|drama|arts|music|english|primary|secondary|middle\s+school|high\s+school)$/i,
 
   // Generic Non-Position Page Titles & Standalone Section Headers
   /\b(current\s+openings|job\s+openings|career\s+openings|vacancies|employment\s+opportunities|open\s+days)\b/i,
@@ -129,9 +133,31 @@ export function isSupportOrNonTeachingRole(title: string | null | undefined): bo
   const cleanTitle = title.trim();
   if (!cleanTitle) return true;
 
+  if (cleanTitle.length < 5 || cleanTitle.length > 80) return true;
+
   if (isNonK12InstitutionRole(cleanTitle)) {
     return true;
   }
 
   return NON_TEACHING_SUPPORT_PATTERNS.some(pat => pat.test(cleanTitle));
 }
+
+/**
+ * Positive Academic Whitelist Validator:
+ * Ensures the title contains an actual academic educator noun/role structure.
+ */
+export function isStrictAcademicTeachingRole(title: string | null | undefined): boolean {
+  if (!title || typeof title !== 'string') return false;
+  const cleanTitle = title.trim();
+  if (!cleanTitle) return false;
+
+  if (isSupportOrNonTeachingRole(cleanTitle)) {
+    return false;
+  }
+
+  // Must contain a legitimate academic position noun
+  const academicNounPattern = /\b(teacher|teacher of|head of|director of|principal|vice principal|deputy head|assistant head|coordinator|counselor|counsellor|librarian|specialist|instructor|educator|lecturer|dean|homeroom|pyp|myp|dp|igcse|eyfs|ks1|ks2|ks3|ks4|ks5|early years|kindergarten|primary|secondary)\b/i;
+
+  return academicNounPattern.test(cleanTitle);
+}
+
