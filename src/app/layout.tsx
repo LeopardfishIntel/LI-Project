@@ -6,6 +6,7 @@ import Footer from "@/components/layout/footer";
 import { FloatingIntelButton } from "@/components/floating-intel-button";
 import { FieldIntelligenceModal } from "@/components/field-intelligence-modal";
 import { ComplianceDisclaimerModal } from "@/components/compliance-disclaimer-modal";
+import { MethodologyModal } from "@/components/methodology-modal";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
 
@@ -131,6 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <FloatingIntelButton />
             <FieldIntelligenceModal />
             <ComplianceDisclaimerModal />
+            <MethodologyModal />
             <AnalyticsTracker />
           </div>
         </Providers>

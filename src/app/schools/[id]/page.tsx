@@ -57,6 +57,7 @@ import { getCountryRequirements } from '../actions';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import { calculateSurplus, normalizeMenaSalaryUSD, RATES, isHousingProvided, getZoneLocationWeights } from '@/lib/calculations';
 import { logTelemetryEvent } from '@/lib/telemetry';
+import { openMethodologyModal } from '@/components/methodology-modal';
 import dynamic from 'next/dynamic';
 import { formatCurrency } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -1272,12 +1273,16 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                           </div>
 
                           {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
-                          <p className="text-[10px] text-slate-400/90 pt-2 italic flex items-center justify-between flex-wrap gap-1 border-t border-white/5">
+                          <div className="text-[10px] text-slate-400/90 pt-2 italic flex items-center justify-between flex-wrap gap-1 border-t border-white/5">
                             <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
-                            <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline not-italic font-bold inline-flex items-center gap-0.5">
+                            <button
+                              type="button"
+                              onClick={() => openMethodologyModal()}
+                              className="text-primary hover:underline not-italic font-bold inline-flex items-center gap-0.5 cursor-pointer bg-transparent border-0 p-0"
+                            >
                               View Methodology &rarr;
-                            </a>
-                          </p>
+                            </button>
+                          </div>
                         </div>
                       </>
                     )

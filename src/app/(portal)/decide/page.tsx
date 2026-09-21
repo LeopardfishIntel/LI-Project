@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getInflationRate } from '@/lib/calculations';
+import { openMethodologyModal } from '@/components/methodology-modal';
 
 const RATES: Record<string, number> = {};
 Object.keys(BASE_RATES).forEach(k => {
@@ -1145,9 +1146,13 @@ function DecideContent() {
                 {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
                 <div className="mt-4 p-3 bg-white/[0.02] border border-white/5 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-400 italic">
                     <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
-                    <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline not-italic font-bold shrink-0">
+                    <button
+                        type="button"
+                        onClick={() => openMethodologyModal()}
+                        className="text-teal-400 hover:text-teal-300 hover:underline not-italic font-bold shrink-0 cursor-pointer bg-transparent border-0 p-0"
+                    >
                         View Methodology &rarr;
-                    </a>
+                    </button>
                 </div>
 
 

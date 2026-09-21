@@ -49,6 +49,8 @@ export default function Footer() {
         {/* Bottom Bar: Horizontal Legal Nodes */}
         <div className="mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-wrap justify-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-600">
+            <Link href="/methodology" prefetch={false} className="hover:text-teal-400 transition-colors">Methodology</Link>
+            <span className="text-gray-800/40 select-none">•</span>
             <Link href="#" prefetch={false} className="hover:text-white transition-colors">Privacy policy</Link>
             <span className="text-gray-800/40 select-none">•</span>
             <Link href="#" prefetch={false} className="hover:text-white transition-colors">Terms of service</Link>

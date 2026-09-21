@@ -30,6 +30,7 @@ import { isValidJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import CoupleCountryAdvisoryPanel from '@/components/CoupleCountryAdvisory';
+import { openMethodologyModal } from '@/components/methodology-modal';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -3424,12 +3425,16 @@ function DecoderContent() {
                           })()}
 
                           {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
-                          <p className="text-[10px] text-slate-400/90 mt-2.5 pt-2 border-t border-white/5 italic flex items-center justify-between flex-wrap gap-1">
+                          <div className="text-[10px] text-slate-400/90 mt-2.5 pt-2 border-t border-white/5 italic flex items-center justify-between flex-wrap gap-1">
                             <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
-                            <a href="/methodology" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline not-italic font-bold inline-flex items-center gap-0.5">
+                            <button 
+                              type="button"
+                              onClick={() => openMethodologyModal()}
+                              className="text-teal-400 hover:text-teal-300 hover:underline not-italic font-bold inline-flex items-center gap-0.5 cursor-pointer bg-transparent border-0 p-0"
+                            >
                               View Methodology &rarr;
-                            </a>
-                          </p>
+                            </button>
+                          </div>
 
                           {/* 🇯🇵 JAPAN COMPENSATION STRUCTURE BREAKDOWN (COLLAPSIBLE DROPDOWN WITH BONUS MONTH CONTROLS INCLUDED) */}
                           {String(analysis?.activeSchool?.country || analysis?.sCountry || "").toLowerCase().includes("japan") && (
