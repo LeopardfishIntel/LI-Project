@@ -168,7 +168,7 @@ export function ComplianceDisclaimerModal() {
             <ShieldCheck className="size-5" />
           </div>
           <div className="space-y-0.5">
-            <h2 id="compliance-modal-title" className="text-base sm:text-lg font-bold text-slate-100 tracking-tight leading-snug">
+            <h2 id="compliance-modal-title" className="text-base sm:text-lg font-bold text-amber-400 tracking-tight leading-snug">
               Before you dive in — a quick bit to keep the compliance team happy!
             </h2>
             <p className="text-xs text-slate-400 leading-normal">
@@ -187,7 +187,7 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center shrink-0">
                   <Scale className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-slate-200 text-xs">
+                <h3 className="font-semibold text-indigo-300 text-xs">
                   Why Benchmarking Works (Apples-to-Apples)
                 </h3>
               </div>
@@ -202,7 +202,7 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-blue-500/15 text-blue-300 flex items-center justify-center shrink-0">
                   <ShieldCheck className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-slate-200 text-xs">
+                <h3 className="font-semibold text-sky-300 text-xs">
                   Consistent Data, Not Forum Noise
                 </h3>
               </div>
@@ -217,7 +217,7 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-cyan-500/15 text-cyan-300 flex items-center justify-center shrink-0">
                   <Calculator className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-slate-200 text-xs">
+                <h3 className="font-semibold text-cyan-300 text-xs">
                   Indicative Benchmark Estimates
                 </h3>
               </div>
@@ -232,7 +232,7 @@ export function ComplianceDisclaimerModal() {
                 <div className="size-6 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center shrink-0">
                   <ExternalLink className="size-3.5" />
                 </div>
-                <h3 className="font-semibold text-slate-200 text-xs">
+                <h3 className="font-semibold text-emerald-300 text-xs">
                   Straight to the Official Source
                 </h3>
               </div>
@@ -248,7 +248,7 @@ export function ComplianceDisclaimerModal() {
               <div className="size-6 rounded-md bg-amber-500/15 text-amber-300 flex items-center justify-center shrink-0">
                 <Scale className="size-3.5" />
               </div>
-              <h3 className="font-semibold text-slate-200 text-xs">
+              <h3 className="font-semibold text-amber-300 text-xs">
                 Do Your Own Due Diligence
               </h3>
             </div>
