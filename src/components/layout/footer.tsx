@@ -51,9 +51,9 @@ export default function Footer() {
           <div className="flex flex-wrap justify-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-600">
             <Link href="/methodology" prefetch={false} className="hover:text-teal-400 transition-colors">Methodology</Link>
             <span className="text-gray-800/40 select-none">•</span>
-            <Link href="#" prefetch={false} className="hover:text-white transition-colors">Privacy policy</Link>
+            <Link href="/privacy" prefetch={false} className="hover:text-emerald-400 transition-colors">Privacy policy</Link>
             <span className="text-gray-800/40 select-none">•</span>
-            <Link href="#" prefetch={false} className="hover:text-white transition-colors">Terms of service</Link>
+            <Link href="/terms" prefetch={false} className="hover:text-amber-400 transition-colors">Terms of service</Link>
             <span className="text-gray-800/40 select-none">•</span>
             <Link href="/admin" prefetch={false} className="hover:text-white transition-colors">Data hub</Link>
           </div>
