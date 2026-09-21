@@ -90,7 +90,8 @@ const NON_TEACHING_SUPPORT_PATTERNS: RegExp[] = [
   /<[^>]+>/i, // Raw HTML tags (e.g. <img...)
 
   // Standalone Campus Names, Governance, Location Headers, and Division Section Pages
-  /\b(supervisory\s+board|message\s+from\s+head\s+of\s+school|principal'?s?\s+message|headteacher'?s?\s+message|superintendent'?s?\s+welcome|director\s+general'?s?\s+welcome|learning\s+experience|careers\s+programme|msmusical|musical\s*:)\b/i,
+  /\b(from\s+the\s+(head|principal|director|president|superintendent|dean|chair|board|college|school)|message\s+from|letter\s+from|welcome\s+from|welcome\s+to|supervisory\s+board|learning\s+experience|careers\s+programme|msmusical|musical\s*:)\b/i,
+  /\b(primary\s+school\s*\([^)]*\)|secondary\s+school\s*\([^)]*\)|middle\s+school\s*\([^)]*\)|high\s+school\s*\([^)]*\)|elementary\s+school\s*\([^)]*\))\b/i,
   /^(primary\s+school\s+haimhausen|secondary\s+school\s+haimhausen|primary\s+school\s+city\s+campus|primary\s+school\s+mathematics|middle\s+school\s+mathematics|middle\s+school\s+biology|bavarian\s+international\s+school|diplomatic\s+quarter|destination\s+riyadh|partnerships|open\s+days|faq'?s|lower\s+primary\s+schools|upper\s+primary\s+schools|drama|arts|music|english|primary|secondary|middle\s+school|high\s+school)$/i,
 
   // Generic Non-Position Page Titles & Standalone Section Headers
@@ -155,8 +156,8 @@ export function isStrictAcademicTeachingRole(title: string | null | undefined): 
     return false;
   }
 
-  // Must contain a legitimate academic position noun
-  const academicNounPattern = /\b(teacher|teacher of|head of|director of|principal|vice principal|deputy head|assistant head|coordinator|counselor|counsellor|librarian|specialist|instructor|educator|lecturer|dean|homeroom|pyp|myp|dp|igcse|eyfs|ks1|ks2|ks3|ks4|ks5|early years|kindergarten|primary|secondary)\b/i;
+  // Must contain a legitimate academic position noun (preventing generic division/header matching)
+  const academicNounPattern = /\b(teacher|teacher of|head of\s+(?!college|school|board|admissions|finance|marketing|hr|operations|facilities|it\b|communications)|principal|vice principal|deputy head|assistant head|coordinator|counselor|counsellor|librarian|specialist|instructor|educator|lecturer|homeroom|pyp\s+teacher|myp\s+teacher|dp\s+teacher|igcse\s+teacher|eyfs\s+teacher|primary\s+teacher|secondary\s+teacher|kindergarten\s+teacher|early\s+years\s+teacher|learning\s+coach)\b/i;
 
   return academicNounPattern.test(cleanTitle);
 }

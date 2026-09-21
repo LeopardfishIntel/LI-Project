@@ -76,6 +76,13 @@ export function isCandidateVacancyUrl(href: string, anchorText: string): boolean
   if (
     lowerUrl.endsWith('#') ||
     lowerUrl.includes('/about-us') ||
+    lowerUrl.includes('/about/') ||
+    lowerUrl.includes('/welcome') ||
+    lowerUrl.includes('/campus/') ||
+    lowerUrl.includes('/dover-campus') ||
+    lowerUrl.includes('/east-campus') ||
+    lowerUrl.includes('/primary-school') ||
+    lowerUrl.includes('/secondary-school') ||
     lowerUrl.includes('/contact-us') ||
     lowerUrl.includes('/site-map') ||
     lowerUrl.includes('/staff-directory') ||
@@ -95,6 +102,11 @@ export function isCandidateVacancyUrl(href: string, anchorText: string): boolean
     lowerUrl.includes('facebook.com') ||
     lowerUrl.includes('instagram.com') ||
     lowerUrl.includes('veracross.eu') ||
+    lowerText.includes('from the head') ||
+    lowerText.includes('from the principal') ||
+    lowerText.includes('message from') ||
+    lowerText.includes('welcome to') ||
+    lowerText.includes('welcome from') ||
     lowerText.includes('parent teacher association') ||
     lowerText.includes('pta') ||
     lowerText.includes('(opens in new window/tab)')
