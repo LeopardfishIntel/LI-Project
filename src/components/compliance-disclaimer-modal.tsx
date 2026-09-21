@@ -61,17 +61,12 @@ export function ComplianceDisclaimerModal() {
     return DATA_ROUTE_PREFIXES.some(prefix => cleanPath.startsWith(prefix) || path.startsWith(prefix));
   }, []);
 
-  // Hydrate mounted state on client
+  // Evaluate storage state immediately on mount or route change
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Evaluate storage state on route change or initial load
-  useEffect(() => {
-    if (!mounted || !pathname) return;
+    if (!pathname) return;
 
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
       let needsAcceptance = true;
 
       if (stored) {
@@ -95,8 +90,10 @@ export function ComplianceDisclaimerModal() {
       if (isDataRoute(pathname)) {
         setIsOpen(true);
       }
+    } finally {
+      setMounted(true);
     }
-  }, [mounted, pathname, isDataRoute]);
+  }, [pathname, isDataRoute]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
