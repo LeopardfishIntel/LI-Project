@@ -182,7 +182,7 @@ export function ComplianceDisclaimerModal() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {/* Principle 1: Why Benchmarking Works (Apples-to-Apples) */}
-            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="size-6 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center shrink-0">
                   <Scale className="size-3.5" />
@@ -197,7 +197,7 @@ export function ComplianceDisclaimerModal() {
             </div>
 
             {/* Principle 2: Consistent Data, Not Forum Noise */}
-            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="size-6 rounded-md bg-blue-500/15 text-blue-300 flex items-center justify-center shrink-0">
                   <ShieldCheck className="size-3.5" />
@@ -212,7 +212,7 @@ export function ComplianceDisclaimerModal() {
             </div>
 
             {/* Principle 3: Indicative Benchmark Estimates */}
-            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="size-6 rounded-md bg-cyan-500/15 text-cyan-300 flex items-center justify-center shrink-0">
                   <Calculator className="size-3.5" />
@@ -227,7 +227,7 @@ export function ComplianceDisclaimerModal() {
             </div>
 
             {/* Principle 4: Straight to the Official Source */}
-            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 flex flex-col justify-between space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2">
                 <div className="size-6 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center shrink-0">
                   <ExternalLink className="size-3.5" />
