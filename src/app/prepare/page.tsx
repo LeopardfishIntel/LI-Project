@@ -20,6 +20,7 @@ import { calculateBudget, canonicalCountry, RATES, FAMILY_PROFILES, getProfileBy
 import { logTelemetryEvent } from '@/lib/telemetry';
 import type { TeacherProfile } from '@/lib/types';
 import { getTimeUntilLocalMidnight } from '@/lib/utils/timeUtils';
+import { checkIsAdmin } from '@/lib/auth/admin';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 
@@ -51,7 +52,7 @@ const IKEA_KIT_ITEMS = [
 
 export default function PreparePage() {
   const firestore = useFirestore();
-  const { user } = useAuth();
+  const { user, isAdmin: authIsAdmin, customId } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   // 🛰️ Teacher Profile & Allowance Gating for Relocation Calculator
@@ -68,12 +69,12 @@ export default function PreparePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isAdmin = checkIsAdmin(user, teacherProfile, customId, authIsAdmin);
   const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
   const isPro = teacherProfile?.tier === 'pro' || isAdmin;
   const remainingEvaluations = Math.max(0, allowance - used);
-  const isOverLimit = !isPro && !!user && (used >= allowance);
+  const isOverLimit = !isAdmin && !isPro && !!user && (used >= allowance);
   const isGuest = !user;
 
   const handleOpenDataLock = () => {

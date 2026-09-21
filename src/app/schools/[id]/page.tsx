@@ -16,6 +16,7 @@ function formatLocation(cityRaw?: string, countryRaw?: string): string {
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { useDoc, useFirestore, useMemoFirebase, db, useAuth } from '@/firebase';
+import { checkIsAdmin } from '@/lib/auth/admin';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import type { School, LocationCostOfLiving, TeacherProfile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -220,7 +221,7 @@ import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeU
 
 export default function SchoolProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
-  const { user } = useAuth();
+  const { user, isAdmin: authIsAdmin, customId } = useAuth();
 
   // FIXED: Standardize hook usage for Isomorphic Bridge
   const { data: school, isLoading: isSchoolLoading } = useDoc<School>(doc(db, 'schools', id));
@@ -242,12 +243,12 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
     return () => clearInterval(interval);
   }, []);
 
-  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isAdmin = checkIsAdmin(user, teacherProfile, customId, authIsAdmin);
   const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
   const isPro = teacherProfile?.tier === 'pro' || isAdmin;
   const remainingEvaluations = Math.max(0, allowance - used);
-  const isOverLimit = !isPro && !!user && (used >= allowance);
+  const isOverLimit = !isAdmin && !isPro && !!user && (used >= allowance);
 
   const [guestViewCount, setGuestViewCount] = React.useState<number>(0);
   const [isGuestOverLimit, setIsGuestOverLimit] = React.useState<boolean>(false);

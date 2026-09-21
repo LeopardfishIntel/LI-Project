@@ -15,13 +15,14 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getTimeUntilLocalMidnight } from '@/lib/utils/timeUtils';
+import { checkIsAdmin } from '@/lib/auth/admin';
 
 const AGE_RANGES = ["25-34", "35-49", "50-54", "55-60", "61-64", "65+"];
 const FAMILY_STATUS = ["Single", "Family", "Family +1", "Family +2", "Family +3"];
 const REGIONS = ["SE Asia", "East Asia", "Middle East", "Europe", "Africa", "Americas"];
 
 export default function ProfilePage() {
-    const { customId, isAdmin, loading: authLoading } = useUser();
+    const { user, customId, isAdmin, loading: authLoading } = useUser();
     const [mounted, setMounted] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -37,7 +38,7 @@ export default function ProfilePage() {
         customId ? `teachers/${customId}` : null
     );
 
-    const isUserAdmin = Boolean(isAdmin || customId === "FLI007" || teacher?.role === "admin" || teacher?.teacherId === "FLI007");
+    const isUserAdmin = checkIsAdmin(user, teacher, customId, isAdmin);
     const allowance = isUserAdmin ? 1000 : (teacher?.evaluations_allowance ?? 20);
     const used = teacher?.evaluations_used ?? 0;
     const remainingEvaluations = Math.max(0, allowance - used);

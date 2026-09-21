@@ -54,6 +54,7 @@ import { cn } from '@/lib/utils';
 import { collection, doc, updateDoc, increment } from 'firebase/firestore';
 import type { School, TeacherProfile } from '@/lib/types';
 import { matchInternationalSchool } from '@/lib/utils/schoolMatcher';
+import { checkIsAdmin } from '@/lib/auth/admin';
 import type { SchoolData } from '@/data/schools';
 
 export function FieldIntelligenceModal() {
@@ -101,7 +102,7 @@ export function FieldIntelligenceModal() {
   // Midnight reset clock
   const [timeUntilReset, setTimeUntilReset] = useState<string>('');
 
-  const { user } = useUser();
+  const { user, isAdmin: authIsAdmin, customId } = useUser();
   const { toast } = useToast();
   const firestore = useFirestore();
 
@@ -117,7 +118,7 @@ export function FieldIntelligenceModal() {
   );
   const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
 
-  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isAdmin = checkIsAdmin(user, teacherProfile, customId, authIsAdmin);
   const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
   const remainingEvaluations = Math.max(0, allowance - used);

@@ -11,6 +11,7 @@ import { auth, db } from "@/firebase";
 import { doc, getDoc, collection, getDocs, writeBatch, onSnapshot } from "firebase/firestore";
 import type { TeacherProfile } from "@/lib/types";
 import { getTimeUntilLocalMidnight } from "@/lib/utils/timeUtils";
+import { checkIsAdmin } from "@/lib/auth/admin";
 import { Input } from "@/components/ui/input";
 import { AdminAuditDropdown } from "@/components/layout/AdminAuditDropdown";
 import { CompensationAuditModal } from "@/components/audit/CompensationAuditModal";
@@ -76,7 +77,7 @@ export default function Header() {
   const [parityState, setParityState] = useState<ParityState | null>(null);
   const [expandedSchoolId, setExpandedSchoolId] = useState<string | null>(null);
 
-  const isUserAdmin = Boolean(user && (user.email === "fred@leopardfish.intel" || user.email?.includes("admin") || teacherProfile?.role === "admin" || teacherId === "FLI007"));
+  const isUserAdmin = checkIsAdmin(user, teacherProfile, teacherId);
   const isAdmin = isUserAdmin;
   const allowance = isUserAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;

@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode, useMemo } fr
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, doc, onSnapshot } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
+import { checkIsAdmin } from "@/lib/auth/admin";
 
 // 🚀 TACTICAL CONFIG (Consolidated from .env.local)
 export const firebaseConfig = {
@@ -80,22 +81,23 @@ export function FirebaseClientProvider({ children }: { children: ReactNode }) {
         document.cookie = `__session=${token}; path=/; SameSite=Lax${isSecure ? '; Secure' : ''}`;
 
         // 🎯 REAL-TIME IDENTITY SENTRY
+        const emailIsAdmin = checkIsAdmin(u);
         const userRef = doc(db, "users", u.uid);
         const unsubDoc = onSnapshot(userRef, (snap) => {
           if (snap.exists()) {
             const data = snap.data();
-            const currentRole = data.role || 'standard';
+            const currentRole = data.role || (emailIsAdmin ? 'admin' : 'standard');
             
-            // Check for explicit admin flag or admin role
-            const adminStatus = data.isAdmin === true || currentRole === 'admin';
+            // Check for explicit admin flag or admin role or verified admin email
+            const adminStatus = emailIsAdmin || data.isAdmin === true || currentRole === 'admin' || data.customId === 'FLI007';
             
             setRole(currentRole as UserRole);
             setIsAdmin(adminStatus);
-            setCustomId(data.customId || null); // 🕵️ AGENT 007 LINK
+            setCustomId(data.customId || (emailIsAdmin ? 'FLI007' : null)); // 🕵️ AGENT 007 LINK
           } else {
-            setRole('standard');
-            setIsAdmin(false);
-            setCustomId(null);
+            setRole(emailIsAdmin ? 'admin' : 'standard');
+            setIsAdmin(emailIsAdmin);
+            setCustomId(emailIsAdmin ? 'FLI007' : null);
           }
           setLoading(false);
         });

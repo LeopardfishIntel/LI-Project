@@ -31,6 +31,7 @@ import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
 import { isSearchCrawler } from '@/lib/utils/crawler-detection';
 import CoupleCountryAdvisoryPanel from '@/components/CoupleCountryAdvisory';
 import { openMethodologyModal } from '@/components/methodology-modal';
+import { checkIsAdmin } from '@/lib/auth/admin';
 
 export interface SavingsBadgeConfig {
   label: string;
@@ -447,7 +448,7 @@ const processAndFilterJobs = (jobs: string[]) => {
 function DecoderContent() {
   const router = useRouter();
   const firestore = useFirestore();
-  const { user } = useAuth();
+  const { user, isAdmin: authIsAdmin, customId } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [timeUntilReset, setTimeUntilReset] = useState<string>('');
 
@@ -463,12 +464,12 @@ function DecoderContent() {
   const teacherDocRef = useMemoFirebase(() => (mounted && user && firestore ? doc(firestore, 'teachers', user.uid) : null), [firestore, mounted, user]);
   const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
 
-  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isAdmin = checkIsAdmin(user, teacherProfile, customId, authIsAdmin);
   const allowance = isAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
   const used = teacherProfile?.evaluations_used ?? 0;
   const isPro = teacherProfile?.tier === 'pro' || isAdmin;
   const remainingEvaluations = Math.max(0, allowance - used);
-  const isOverLimit = !isPro && !!user && (used >= allowance);
+  const isOverLimit = !isAdmin && !isPro && !!user && (used >= allowance);
 
   const [guestViewCount, setGuestViewCount] = useState<number>(0);
   const [isGuestOverLimit, setIsGuestOverLimit] = useState<boolean>(false);

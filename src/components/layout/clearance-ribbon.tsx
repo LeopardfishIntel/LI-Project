@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShieldCheck, Lock, Clock, Zap, Sparkles } from 'lucide-react';
 import { useAuth, useDoc, db } from '@/firebase';
+import { checkIsAdmin } from '@/lib/auth/admin';
 import { doc } from 'firebase/firestore';
 import { getTimeUntilLocalMidnight, getLocalDateString } from '@/lib/utils/timeUtils';
 import { cn } from '@/lib/utils';
@@ -12,14 +13,14 @@ import type { TeacherProfile } from '@/lib/types';
 
 export function ClearanceRibbon() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, isAdmin: authIsAdmin, customId } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [timeUntilReset, setTimeUntilReset] = useState<string>('');
 
   const teacherDocRef = React.useMemo(() => (user && db ? doc(db, 'teachers', user.uid) : null), [user]);
   const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
 
-  const isAdmin = Boolean(user && (user.email === 'fred@leopardfish.intel' || user.email?.includes('admin') || teacherProfile?.role === 'admin' || teacherProfile?.teacherId === 'FLI007'));
+  const isAdmin = checkIsAdmin(user, teacherProfile, customId, authIsAdmin);
   const isRelocationPassActive = Boolean(
     teacherProfile?.relocation_pass_active &&
     teacherProfile?.relocation_pass_expires_at &&

@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label';
 import { Tooltip as RadixTooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { canonicalCountry, FAMILY_PROFILES, getProfileByLabel, getCOLField, findCostOfLiving, RATES as BASE_RATES, getMacroRiskTier, isHousingProvided, getZoneLocationWeights, getInflationRate } from '@/lib/calculations';
 import { openMethodologyModal } from '@/components/methodology-modal';
+import { checkIsAdmin } from '@/lib/auth/admin';
 
 const RATES: Record<string, number> = {};
 Object.keys(BASE_RATES).forEach(k => {
@@ -300,11 +301,12 @@ function DecideContent() {
 
     const teacherDocRef = useMemo(() => (user && firestore ? doc(firestore, 'teachers', user.uid) : null), [user, firestore]);
     const { data: teacherProfile } = useDoc<TeacherProfile>(teacherDocRef);
-    const allowance = teacherProfile?.evaluations_allowance ?? 20;
+    const effectiveAdmin = checkIsAdmin(user, teacherProfile, customId, isAdmin);
+    const allowance = effectiveAdmin ? 1000 : (teacherProfile?.evaluations_allowance ?? 20);
     const used = teacherProfile?.evaluations_used ?? 0;
-    const isPro = teacherProfile?.tier === 'pro' || isAdmin;
+    const isPro = teacherProfile?.tier === 'pro' || effectiveAdmin;
     const remainingEvaluations = Math.max(0, allowance - used);
-    const isOverLimit = !isPro && !!user && (used >= allowance);
+    const isOverLimit = !effectiveAdmin && !isPro && !!user && (used >= allowance);
 
     useEffect(() => {
         if (!mounted) return;
