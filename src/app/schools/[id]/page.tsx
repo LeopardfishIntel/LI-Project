@@ -1272,16 +1272,19 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                             </div>
                           </div>
 
-                          {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
-                          <div className="text-[10px] text-slate-400/90 pt-2 italic flex items-center justify-between flex-wrap gap-1 border-t border-white/5">
-                            <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
-                            <button
-                              type="button"
-                              onClick={() => openMethodologyModal()}
-                              className="text-primary hover:underline not-italic font-bold inline-flex items-center gap-0.5 cursor-pointer bg-transparent border-0 p-0"
-                            >
-                              View Methodology &rarr;
-                            </button>
+                          {/* ⚖️ FINANCIAL MICRO-DISCLAIMER (COMPRESSED TO 2 LINES) */}
+                          <div className="text-[9.5px] sm:text-[10px] text-slate-400/90 pt-2 border-t border-white/5 italic leading-tight space-y-0.5">
+                            <p className="text-left">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
+                            <p className="flex items-center justify-between gap-1 text-left">
+                              <span>Individual savings vary.</span>
+                              <button
+                                type="button"
+                                onClick={() => openMethodologyModal()}
+                                className="text-primary hover:underline not-italic font-bold inline-flex items-center gap-0.5 cursor-pointer bg-transparent border-0 p-0 shrink-0"
+                              >
+                                View Methodology &rarr;
+                              </button>
+                            </p>
                           </div>
                         </div>
                       </>

@@ -1143,16 +1143,19 @@ function DecideContent() {
                     ))}
                 </div>
 
-                {/* ⚖️ FINANCIAL MICRO-DISCLAIMER */}
-                <div className="mt-4 p-3 bg-white/[0.02] border border-white/5 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-400 italic">
-                    <span>*Indicative model based on OECD baselines and mid-payscale assumptions. Individual savings vary.</span>
-                    <button
-                        type="button"
-                        onClick={() => openMethodologyModal()}
-                        className="text-teal-400 hover:text-teal-300 hover:underline not-italic font-bold shrink-0 cursor-pointer bg-transparent border-0 p-0"
-                    >
-                        View Methodology &rarr;
-                    </button>
+                {/* ⚖️ FINANCIAL MICRO-DISCLAIMER (COMPRESSED TO 2 LINES) */}
+                <div className="mt-4 p-3 bg-white/[0.02] border border-white/5 rounded-sm text-[9.5px] sm:text-[10px] text-slate-400 italic leading-tight space-y-0.5">
+                    <p className="text-left">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
+                    <p className="flex items-center justify-between gap-1 text-left">
+                        <span>Individual savings vary.</span>
+                        <button
+                            type="button"
+                            onClick={() => openMethodologyModal()}
+                            className="text-teal-400 hover:text-teal-300 hover:underline not-italic font-bold shrink-0 cursor-pointer bg-transparent border-0 p-0"
+                        >
+                            View Methodology &rarr;
+                        </button>
+                    </p>
                 </div>
 
 
