@@ -180,8 +180,38 @@ export function ComplianceDisclaimerModal() {
         {/* Modal Body - Scrollable */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm leading-relaxed text-slate-200 divide-y divide-slate-800/80">
           
-          {/* Principle 1 */}
+          {/* Principle 1: Why Benchmarking Works (Apples-to-Apples) */}
           <div className="pt-1 flex items-start gap-3 sm:gap-3.5">
+            <div className="size-8 rounded-lg bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center text-indigo-400 shrink-0 mt-0.5">
+              <Scale className="size-4" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
+                <span>Why Benchmarking Works (Apples-to-Apples)</span>
+              </h3>
+              <p className="text-slate-300 text-xs sm:text-[13px] leading-relaxed">
+                Raw salaries on paper rarely tell the full story. Between tax-free perks, housing allowances, and local living costs, comparing two international offers face-to-value is like comparing apples to oranges. Our engine normalises tax, housing, and purchasing power so you can compare true financial surplus on a level playing field.
+              </p>
+            </div>
+          </div>
+
+          {/* Principle 2: Consistent Data, Not Forum Noise */}
+          <div className="pt-4 flex items-start gap-3 sm:gap-3.5">
+            <div className="size-8 rounded-lg bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
+              <ShieldCheck className="size-4" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
+                <span>Consistent Data, Not Forum Noise</span>
+              </h3>
+              <p className="text-slate-300 text-xs sm:text-[13px] leading-relaxed">
+                Forum threads and word-of-mouth reviews offer fragmented, individual perspectives based on personal lifestyle choices. We use uniform, objective data models applied systematically across every school and region—giving you an unbiased, standardised baseline rather than anecdotal hearsay.
+              </p>
+            </div>
+          </div>
+
+          {/* Principle 3: Indicative Benchmark Estimates */}
+          <div className="pt-4 flex items-start gap-3 sm:gap-3.5">
             <div className="size-8 rounded-lg bg-cyan-500/10 border border-cyan-500/25 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
               <Calculator className="size-4" />
             </div>
@@ -195,7 +225,7 @@ export function ComplianceDisclaimerModal() {
             </div>
           </div>
 
-          {/* Principle 2 */}
+          {/* Principle 4: Straight to the Official Source */}
           <div className="pt-4 flex items-start gap-3 sm:gap-3.5">
             <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
               <ExternalLink className="size-4" />
@@ -210,7 +240,7 @@ export function ComplianceDisclaimerModal() {
             </div>
           </div>
 
-          {/* Principle 3 */}
+          {/* Principle 5: Do Your Own Due Diligence */}
           <div className="pt-4 flex items-start gap-3 sm:gap-3.5">
             <div className="size-8 rounded-lg bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
               <Scale className="size-4" />
