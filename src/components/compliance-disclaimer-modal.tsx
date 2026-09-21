@@ -49,20 +49,26 @@ const EXEMPT_EXACT_ROUTES = new Set([
 export function ComplianceDisclaimerModal() {
   const pathname = usePathname();
   const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [hasChecked, setHasChecked] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
 
   // Check whether current route requires compliance disclaimer
   const isDataRoute = useCallback((path: string | null): boolean => {
     if (!path) return false;
-    if (EXEMPT_EXACT_ROUTES.has(path)) return false;
-    return DATA_ROUTE_PREFIXES.some(prefix => path.startsWith(prefix));
+    const cleanPath = path.replace(/\/$/, '') || '/';
+    if (EXEMPT_EXACT_ROUTES.has(cleanPath)) return false;
+    return DATA_ROUTE_PREFIXES.some(prefix => cleanPath.startsWith(prefix) || path.startsWith(prefix));
+  }, []);
+
+  // Hydrate mounted state on client
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   // Evaluate storage state on route change or initial load
   useEffect(() => {
-    if (!pathname) return;
+    if (!mounted || !pathname) return;
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -89,10 +95,8 @@ export function ComplianceDisclaimerModal() {
       if (isDataRoute(pathname)) {
         setIsOpen(true);
       }
-    } finally {
-      setHasChecked(true);
     }
-  }, [pathname, isDataRoute]);
+  }, [mounted, pathname, isDataRoute]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -148,7 +152,7 @@ export function ComplianceDisclaimerModal() {
     setIsAccepting(false);
   };
 
-  if (!hasChecked || !isOpen) return null;
+  if (!mounted || !isOpen) return null;
 
   return (
     <div 
