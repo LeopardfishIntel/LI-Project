@@ -6,7 +6,7 @@ import {
     MapPin, Loader2, ArrowLeft, TrendingUp, ShieldAlert, Target, Zap,
     BookOpen, Activity, Wallet, Receipt, Globe2, Users, AlertTriangle,
     ExternalLink, Clock, Home, GraduationCap, BarChart3, Info, Scale, PlusCircle,
-    ShieldCheck, Fingerprint, Lock // 🛰️ Added Lock
+    ShieldCheck, Fingerprint, Lock, Camera
 } from 'lucide-react';
 // 🛰️ Added useUser to the import
 import { useFirestore, useCollection, useMemoFirebase, useUser, setDocumentNonBlocking, useDoc } from '@/firebase';
@@ -334,6 +334,34 @@ function DecideContent() {
     const [isUnlocked, setIsUnlocked] = useState(false);
     const [aiBriefing, setAiBriefing] = useState<any>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
+    const comparisonCanvasRef = useRef<HTMLDivElement>(null);
+
+    const handleExportImage = async () => {
+        if (!comparisonCanvasRef.current) return;
+        setIsExporting(true);
+        try {
+            const html2canvas = (await import('html2canvas')).default;
+            const canvas = await html2canvas(comparisonCanvasRef.current, {
+                background: '#020617',
+                backgroundColor: '#020617',
+                scale: 2, // 2x high-resolution crisp retina capture
+                useCORS: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0,
+            } as any);
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.download = `Leopardfish-Compare-Matrix-${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('Failed to export comparison image:', err);
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     const hasCountedInitialRef = useRef(false);
 
@@ -807,13 +835,57 @@ function DecideContent() {
                                 </div>
                             </div>
 
+                            {/* 📸 EXPORT IMAGE BUTTON */}
+                            <button
+                                type="button"
+                                onClick={handleExportImage}
+                                disabled={isExporting}
+                                className="py-1 px-4 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 hover:border-teal-500/50 text-teal-300 rounded-sm flex items-center justify-center gap-2 h-[52px] font-black text-[11px] uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                                title="Download clean high-res PNG of this 3-column analysis"
+                            >
+                                {isExporting ? (
+                                    <>
+                                        <Loader2 className="size-4 animate-spin text-teal-400" />
+                                        <span>Exporting...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Camera className="size-4 text-teal-400" />
+                                        <span>📸 Export Image</span>
+                                    </>
+                                )}
+                            </button>
+
                         </div>
                     </div>
 
 
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                {/* 🎨 COMPARISON CANVAS (Target for Image Export & Screenshots) */}
+                <div ref={comparisonCanvasRef} className="space-y-4 pt-1 bg-[#020617] p-2 sm:p-3 rounded-sm">
+                    {/* ⚡ IN-CANVAS BRAND WATERMARK (Renders in all screenshots and exported images) */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0b1224] border border-white/10 rounded-sm shadow-md">
+                        <div className="flex items-center gap-2.5">
+                            <div className="size-6 bg-[#d95f02] rounded-sm flex items-center justify-center font-black text-white text-xs shadow-sm shrink-0">
+                                ⚡
+                            </div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-xs font-black tracking-wider text-white uppercase">LEOPARDFISH INTEL</span>
+                                <span className="text-slate-600 font-normal">|</span>
+                                <span className="text-xs font-black tracking-wider text-[#d95f02] uppercase">COMPARE &amp; DECIDE</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 text-[10px] font-semibold text-slate-400">
+                            <span>Benchmark: <strong className="text-teal-400 font-mono">{benchmark}</strong></span>
+                            <span className="text-slate-700">•</span>
+                            <span>Household: <strong className="text-slate-200">{FAMILY_PROFILES.find(p => p.value === familyStatus)?.label || familyStatus}</strong></span>
+                            <span className="text-slate-700 hidden sm:inline">•</span>
+                            <span className="text-slate-400 font-mono hidden sm:inline">leopardfishintel.com</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     {[0, 1, 2].map((i) => (
                         <div key={i} className="space-y-3 bg-[#0b1224]/80 p-3 border border-[#007FFF]/40 rounded-sm shadow-2xl flex flex-col transition-all hover:border-[#007FFF]/60">
                             <div className="grid grid-cols-2 gap-2">
@@ -1338,6 +1410,7 @@ function DecideContent() {
                         </div>
                     </div>
                 )}
+                </div>
             </div>
         </div>
     );
