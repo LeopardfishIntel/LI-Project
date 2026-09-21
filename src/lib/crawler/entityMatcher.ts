@@ -151,7 +151,7 @@ function normalizeCountryName(c: string): string {
   if (lower === "fr" || lower.includes("france")) return "france";
   if (lower === "br" || lower.includes("brazil")) return "brazil";
   if (lower === "es" || lower.includes("spain")) return "spain";
-  if (lower === "ae" || lower.includes("emirates") || lower.includes("dubai") || lower.includes("abu dhabi")) return "united arab emirates";
+  if (lower === "ae" || lower === "uae" || lower.includes("uae") || lower.includes("emirates") || lower.includes("dubai") || lower.includes("abu dhabi") || lower.includes("sharjah")) return "united arab emirates";
   if (lower === "mm" || lower.includes("myanmar")) return "myanmar";
   if (lower === "jo" || lower.includes("jordan")) return "jordan";
   if (lower === "kw" || lower.includes("kuwait")) return "kuwait";

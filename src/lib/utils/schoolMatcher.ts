@@ -21,12 +21,20 @@ const INSTITUTION_KEYWORDS = [
   'center', 'centre', 'seminary', 'kindergarten', 'schulen'
 ];
 
+const normalizeCountry = (country: string): string => {
+  const c = country?.trim() || '';
+  if (c.toUpperCase() === 'UAE' || c.toLowerCase() === 'united arab emirates') {
+    return 'United Arab Emirates';
+  }
+  return c;
+};
+
 // Convert global registry entries to SchoolData interface
 const GLOBAL_SCHOOLS: SchoolData[] = (rawGlobalSchools as Array<{ name: string; city: string; country: string; curriculum?: string }>).map((s, idx) => ({
   id: `global_${idx}`,
   name: s.name,
   city: s.city,
-  country: s.country,
+  country: normalizeCountry(s.country),
   curriculum: s.curriculum || 'IB / International'
 }));
 
@@ -40,7 +48,7 @@ for (const s of SCHOOLS) {
     if (!CITY_LOOKUP.has(key)) {
       CITY_LOOKUP.set(key, {
         city: s.city.trim(),
-        country: s.country?.trim() || ''
+        country: normalizeCountry(s.country?.trim() || '')
       });
     }
   }
@@ -53,7 +61,7 @@ for (const s of GLOBAL_SCHOOLS) {
     if (!CITY_LOOKUP.has(key)) {
       CITY_LOOKUP.set(key, {
         city: s.city.trim(),
-        country: s.country?.trim() || ''
+        country: normalizeCountry(s.country?.trim() || '')
       });
     }
   }
@@ -146,8 +154,9 @@ export function matchInternationalSchool(userInput: string, existingCity = ''): 
     const sName = (s.name || '').toLowerCase();
     const sCity = (s.city || '').toLowerCase();
     const sCountry = (s.country || '').toLowerCase();
+    const countryAliases = (sCountry.includes('united arab emirates') || sCountry === 'uae') ? 'uae emirates dubai abu dhabi sharjah' : '';
     
-    const schoolWords = `${sName} ${sCity} ${sCountry}`
+    const schoolWords = `${sName} ${sCity} ${sCountry} ${countryAliases}`
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
       .filter(w => w.length > 0 && !COMMON_STOPWORDS.has(w));
@@ -178,6 +187,7 @@ export function matchInternationalSchool(userInput: string, existingCity = ''): 
       const sName = (s.name || '').toLowerCase();
       const sCity = (s.city || '').toLowerCase();
       const sCountry = (s.country || '').toLowerCase();
+      const countryAliases = (sCountry.includes('united arab emirates') || sCountry === 'uae') ? 'uae emirates dubai abu dhabi sharjah' : '';
 
       if (sName === query && !exactMatch) {
         exactMatch = s;
@@ -190,7 +200,7 @@ export function matchInternationalSchool(userInput: string, existingCity = ''): 
 
       if (seenNames.has(s.name.toLowerCase())) continue;
 
-      const schoolWords = `${sName} ${sCity} ${sCountry}`
+      const schoolWords = `${sName} ${sCity} ${sCountry} ${countryAliases}`
         .replace(/[^\w\s]/g, ' ')
         .split(/\s+/)
         .filter(w => w.length > 0 && !COMMON_STOPWORDS.has(w));

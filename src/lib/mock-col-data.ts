@@ -22,7 +22,7 @@ export const mockCostOfLivingData: Omit<LocationCostOfLiving, 'id' | 'lastUpdate
   {
     locationName: 'Dubai',
     locationType: 'city',
-    countryName: 'UAE',
+    countryName: 'United Arab Emirates',
     currencyCode: 'AED',
     averageMealCost: 60,
     monthlyRent1BR: 7500,
@@ -39,7 +39,7 @@ export const mockCostOfLivingData: Omit<LocationCostOfLiving, 'id' | 'lastUpdate
   {
     locationName: 'Abu Dhabi',
     locationType: 'city',
-    countryName: 'UAE',
+    countryName: 'United Arab Emirates',
     currencyCode: 'AED',
     averageMealCost: 55,
     monthlyRent1BR: 6500,

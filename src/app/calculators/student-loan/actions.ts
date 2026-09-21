@@ -39,7 +39,9 @@ export async function calculateRepayment(input: CalculationInput): Promise<Calcu
     if (input.loanType === 'UK') {
       const planKey = (input.ukPlan || 'Plan_1').replace(' ', '_');
       const plan = config.UK_Config_2026[planKey];
-      const country = config.Country_Bands_2026[input.countryName];
+      const country = config.Country_Bands_2026[input.countryName] || 
+        (input.countryName === 'United Arab Emirates' ? config.Country_Bands_2026['UAE'] : undefined) ||
+        (input.countryName === 'UAE' ? config.Country_Bands_2026['United Arab Emirates'] : undefined);
 
       if (!plan || !country) {
         throw new Error(`Incomplete Intel: Thresholds for ${input.countryName} or ${input.ukPlan} are unavailable.`);

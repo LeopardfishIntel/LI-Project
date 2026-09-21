@@ -814,6 +814,7 @@ export const INFLATION_RATE_MAP: Record<string, string> = {
   'austria': '2.2%',
   'portugal': '2.2%',
   'united arab emirates': '2.1%',
+  'uae': '2.1%',
   'indonesia': '2.1%',
   'malaysia': '1.9%',
   'hong kong': '1.8%',

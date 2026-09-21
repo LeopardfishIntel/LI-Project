@@ -1340,7 +1340,7 @@
   {
     "id": "FLIS0027",
     "financescore": "9.6",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "18-22",
     "city": "Dubai",
     "rating": "Good",
@@ -1391,7 +1391,7 @@
   {
     "id": "FLIS0028",
     "financescore": "8.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "20",
     "city": "Abu Dhabi",
     "rating": "Good",
@@ -1636,7 +1636,7 @@
   {
     "id": "FLIS0029",
     "financescore": "9.0",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "18-22",
     "city": "Dubai",
     "rating": "Good",
@@ -7380,7 +7380,7 @@
   {
     "id": "FLIS0109",
     "financescore": "7.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "24",
     "city": "Abu Dhabi",
     "rating": "Highly Regarded",
@@ -7433,7 +7433,7 @@
   {
     "id": "FLIS0110",
     "financescore": "7.8",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "city": "Abu Dhabi",
     "rating": "Highly Regarded",
@@ -7486,7 +7486,7 @@
   {
     "id": "FLIS0111",
     "financescore": "8.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "20",
     "city": "Abu Dhabi",
     "rating": "World-Class",
@@ -7537,7 +7537,7 @@
   {
     "id": "FLIS0112",
     "financescore": "8.2",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "city": "Abu Dhabi",
     "rating": "Outstanding",
@@ -7588,7 +7588,7 @@
   {
     "id": "FLIS0113",
     "financescore": "7.8",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "24",
     "city": "Abu Dhabi",
     "rating": "Highly Regarded",
@@ -7639,7 +7639,7 @@
   {
     "id": "FLIS0114",
     "financescore": "8.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "20",
     "city": "Dubai",
     "rating": "World-Class",
@@ -7690,7 +7690,7 @@
   {
     "id": "FLIS0115",
     "financescore": "8.0",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "24",
     "rating": "Outstanding",
     "totalscore": "8.2",
@@ -7741,7 +7741,7 @@
   {
     "id": "FLIS0116",
     "financescore": "7.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "25",
     "city": "Dubai",
     "rating": "Highly Regarded",
@@ -7792,7 +7792,7 @@
   {
     "id": "FLIS0117",
     "financescore": "8.2",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "city": "Dubai",
     "rating": "Outstanding",
@@ -7845,7 +7845,7 @@
   {
     "id": "FLIS0118",
     "financescore": "8.8",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "rating": "World-Class",
     "totalscore": "8.6",
@@ -7896,7 +7896,7 @@
   {
     "id": "FLIS0119",
     "financescore": "7.8",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "20",
     "city": "Dubai",
     "rating": "Highly Regarded",
@@ -7947,7 +7947,7 @@
   {
     "id": "FLIS0120",
     "financescore": "7.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "city": "Dubai",
     "rating": "Highly Regarded",
@@ -8093,7 +8093,7 @@
   {
     "id": "FLIS0121",
     "financescore": "8.5",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "22",
     "city": "Dubai",
     "rating": "Outstanding",
@@ -8144,7 +8144,7 @@
   {
     "id": "FLIS0122",
     "financescore": "7.2",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "classsize": "24",
     "city": "Dubai",
     "rating": "Highly Regarded",
@@ -16384,7 +16384,7 @@
   },
   {
     "id": "flis0115_emirates_hills",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Emirates Hills",
     "city": "Dubai Emirates Hills",
     "schoolId": "flis0115_emirates_hills",
@@ -16411,7 +16411,7 @@
   },
   {
     "id": "flis0115_jumeira",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Jumeira",
     "city": "Dubai Jumeira",
     "schoolId": "flis0115_jumeira",
@@ -16436,7 +16436,7 @@
   },
   {
     "id": "flis0115_jumeirah_park",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Jumeirah Park",
     "city": "Dubai Jumeirah Park",
     "schoolId": "flis0115_jumeirah_park",
@@ -16463,7 +16463,7 @@
   },
   {
     "id": "flis0115_mira",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Mira",
     "city": "Dubai Mira",
     "schoolId": "flis0115_mira",
@@ -16488,7 +16488,7 @@
   },
   {
     "id": "flis0118_academic_city",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Academic City",
     "careersPageUrl": "https://dess.sch.ae/work-at-dess",
     "city": "Dubai Academic City",
@@ -16514,7 +16514,7 @@
   },
   {
     "id": "flis0118_college",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai College",
     "careersPageUrl": "https://dess.sch.ae/work-at-dess",
     "city": "Dubai College",
@@ -16542,7 +16542,7 @@
   },
   {
     "id": "flis0118_oud_metha",
-    "country": "UAE",
+    "country": "United Arab Emirates",
     "campusName": "Dubai Oud Metha",
     "careersPageUrl": "https://dess.sch.ae/work-at-dess",
     "city": "Dubai Oud Metha",

@@ -34,8 +34,10 @@ const BAND_MULTIPLIERS: Record<string, number> = {
 
 const COUNTRY_CONFIG: Record<string, { band: string; currency: string }> = {
   'United Kingdom': { band: 'Band 4', currency: 'GBP' },
+  'United Arab Emirates': { band: 'Band 4', currency: 'AED' },
   'UAE': { band: 'Band 4', currency: 'AED' },
   'USA': { band: 'Band 5', currency: 'USD' },
+  'United States': { band: 'Band 5', currency: 'USD' },
   'Switzerland': { band: 'Band 5', currency: 'CHF' },
   'Singapore': { band: 'Band 4', currency: 'SGD' },
   'Japan': { band: 'Band 3', currency: 'JPY' },
