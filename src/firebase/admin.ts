@@ -1515,34 +1515,24 @@ export async function moveJobToPending(schoolId: string, jobId: string, reviewed
 // =====================================================================
 
 /**
- * Standardizes title, subject, and hierarchy level to generate a deterministic fingerprint
- * for identifying identical vacancies across multiple sources (e.g. TES vs Direct Portal).
+ * Generates an invariant, deterministic SHA-256 fingerprint for identifying identical vacancies
+ * across multiple crawl passes and sources, eliminating daily duplicate inflation.
+ *
+ * Fingerprint = SHA256(schoolId + normalizedTitle + canonicalUrlOrJobId)
  */
 export function generateJobFingerprint(
   schoolId: string,
   title: string,
-  datePosted?: string | null,
-  subject?: string | null,
-  externalPostingId?: string | null
+  datePostedOrSubject?: string | null,
+  canonicalUrlOrId?: string | null,
+  externalPostingIdOrDate?: string | null
 ): string {
   const cleanSchool = (schoolId || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, "");
   
-  // Extract year bucket to prevent collision across academic cycles
-  let yearBucket = "2026";
-  if (datePosted) {
-    const parsed = new Date(datePosted);
-    if (!isNaN(parsed.getTime())) {
-      yearBucket = String(parsed.getFullYear());
-    } else {
-      const yrMatch = String(datePosted).match(/202[4-8]/);
-      if (yrMatch) yearBucket = yrMatch[0];
-    }
-  }
-
   // Expanded UK/US terminology normalization matrix:
   const normTitle = (title || "")
     .toLowerCase()
-    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\s*\([^)]*\)/g, " ")
     .replace(/\b(teacher of|lead teacher of|head of|lead)\b/g, "")
     .replace(/\byear\s*(\d+)\b/g, "y$1")
     .replace(/\bgrade\s*(\d+)\b/g, "g$1")
@@ -1556,14 +1546,48 @@ export function generateJobFingerprint(
     .replace(/learning\s+support/g, "sen")
     .replace(/[^a-z0-9]/g, "");
 
-  let hash = 0;
-  for (let i = 0; i < normTitle.length; i++) {
-    hash = ((hash << 5) - hash) + normTitle.charCodeAt(i);
-    hash |= 0;
-  }
-  const titleHash = Math.abs(hash).toString(36);
+  // Determine invariant ID or canonical URL fragment
+  const candidateUrlOrId = [canonicalUrlOrId, externalPostingIdOrDate, datePostedOrSubject]
+    .find(val => val && typeof val === 'string' && (val.startsWith("http") || val.includes("/") || val.startsWith("job_") || (val.length > 8 && !val.match(/^\d{4}-\d{2}-\d{2}/))));
 
-  return "fp_" + cleanSchool + "_" + yearBucket + "_" + titleHash;
+  let invariantKey = "";
+  if (candidateUrlOrId) {
+    try {
+      if (candidateUrlOrId.startsWith("http")) {
+        const u = new URL(candidateUrlOrId);
+        u.searchParams.delete("utm_source");
+        u.searchParams.delete("utm_medium");
+        u.searchParams.delete("utm_campaign");
+        u.searchParams.delete("utm_content");
+        u.searchParams.delete("ref");
+        u.searchParams.delete("source");
+        u.searchParams.delete("fbclid");
+        invariantKey = u.origin + u.pathname;
+      } else {
+        invariantKey = candidateUrlOrId.trim().toLowerCase();
+      }
+    } catch {
+      invariantKey = candidateUrlOrId.trim().toLowerCase();
+    }
+  }
+
+  // Deterministic SHA-256 payload
+  const rawPayload = `${cleanSchool}::${normTitle}::${invariantKey}`;
+  let hashHex = "";
+  try {
+    const crypto = require("crypto");
+    hashHex = crypto.createHash("sha256").update(rawPayload).digest("hex").substring(0, 16);
+  } catch {
+    let h = 0;
+    for (let i = 0; i < rawPayload.length; i++) {
+      h = ((h << 5) - h) + rawPayload.charCodeAt(i);
+      h |= 0;
+    }
+    hashHex = Math.abs(h).toString(16).padStart(8, '0');
+  }
+
+  const shortTitle = normTitle.substring(0, 18) || "role";
+  return `fp_${cleanSchool}_${shortTitle}_${hashHex}`;
 }
 
 // =====================================================================

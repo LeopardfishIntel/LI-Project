@@ -34,7 +34,8 @@ const BLOCKED_DOMAINS = [
   'optimizely.com'
 ];
 
-const BLOCKED_RESOURCE_TYPES = new Set(['image', 'media', 'font', 'imageset']);
+const BLOCKED_RESOURCE_TYPES = new Set(['image', 'media', 'font', 'imageset', 'stylesheet']);
+const BLOCKED_ASSET_EXTENSIONS = /\.(png|jpe?g|svg|webp|gif|ico|css|woff2?|ttf|eot|mp4|webm|avi|mov)(\?.*)?$/i;
 
 const CLOUDFLARE_SIGNATURES = [
   'just a moment...',
@@ -194,7 +195,7 @@ export async function scrapePage(url: string, options: ScrapeOptions = {}): Prom
         });
       });
 
-      // 🚀 Performance Optimization: Intercept & abort heavy non-essential assets
+      // 🚀 Performance Optimization: Intercept & abort heavy non-essential assets (CSS, images, fonts, media)
       if (blockResources) {
         await page.route('**/*', (route) => {
           const request = route.request();
@@ -206,8 +207,8 @@ export async function scrapePage(url: string, options: ScrapeOptions = {}): Prom
             return route.abort();
           }
 
-          // Block heavy media/images/fonts
-          if (BLOCKED_RESOURCE_TYPES.has(resourceType)) {
+          // Block static media, styles, fonts by resource type or file extension
+          if (BLOCKED_RESOURCE_TYPES.has(resourceType) || BLOCKED_ASSET_EXTENSIONS.test(reqUrl)) {
             return route.abort();
           }
 
@@ -243,7 +244,7 @@ export async function scrapePage(url: string, options: ScrapeOptions = {}): Prom
       // Check anti-bot block
       const isBlocked = checkIsBlocked(status, html);
 
-      // Extract all links
+      // Extract all links from the primary document
       const links: ExtractedLink[] = await page.evaluate(() => {
         const anchors = Array.from(document.querySelectorAll('a[href]'));
         return anchors.map(a => ({
@@ -251,6 +252,33 @@ export async function scrapePage(url: string, options: ScrapeOptions = {}): Prom
           text: (a.textContent || '').trim()
         })).filter(item => item.href.startsWith('http'));
       });
+
+      // 🖼️ FIX 1.B: Recursive iFrame & Embedded ATS Traversal
+      // Inspect nested frames (BambooHR, Workday, SchoolRecruiter, Greenhouse, Lever, Tes widgets)
+      try {
+        const frames = page.frames();
+        for (const frame of frames) {
+          if (frame === page.mainFrame()) continue;
+          const frameUrl = frame.url();
+          if (frameUrl && frameUrl.startsWith('http')) {
+            links.push({ href: frameUrl, text: 'Embedded ATS Portal' });
+          }
+          try {
+            const frameLinks = await frame.evaluate(() => {
+              const anchors = Array.from(document.querySelectorAll('a[href]'));
+              return anchors.map(a => ({
+                href: (a as HTMLAnchorElement).href,
+                text: (a.textContent || '').trim()
+              })).filter(item => item.href.startsWith('http'));
+            });
+            links.push(...frameLinks);
+          } catch {
+            // Cross-origin frame security restrictions are gracefully caught
+          }
+        }
+      } catch {
+        // Continue if frame evaluation encounters detached state
+      }
 
       const sanitizedLinks = links
         .map(l => ({ href: sanitizeUrl(l.href) || l.href, text: l.text }))
