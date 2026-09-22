@@ -1277,14 +1277,15 @@
       "_nanoseconds": 706000000
     },
     "lastScrapedAt": "2026-08-30T07:57:18.705Z",
-    "website": "https://www.cdnis.edu.hk/careers",
+    "website": "https://www.cdnis.edu.hk",
     "agency": "Search Associates, Schrole, LinkedIn, JobsDB Hong Kong",
-    "careersPageUrl": "https://www.cdnis.edu.hk/careers",
+    "careersPageUrl": "https://www.cdnis.edu.hk/employment/admin-faculty",
     "name": "Canadian Int'l (HK)",
     "tesOrganizationId": "1071231",
     "tesEmployerSlug": "canadian-international-school-of-hong-kong-1071231",
     "updatedAt": "2026-08-30T16:14:23.675Z",
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "careersUrl": "https://www.cdnis.edu.hk/employment/admin-faculty"
   },
   {
     "id": "FLIS0026",

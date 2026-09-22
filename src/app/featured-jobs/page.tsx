@@ -7,6 +7,25 @@ export interface SavingsBadgeConfig {
   description: string;
 }
 
+export function calculateOverallMatchScore(savingsPotential: number, schoolRating: number): number {
+  // 1. Normalize Net Monthly Savings:
+  // £0 -> 15% floor, £3,000+/mo -> 100%
+  const clampedSavings = Math.max(0, savingsPotential || 0);
+  const normalizedSavings = Math.min(100, Math.max(15, (clampedSavings / 3000) * 100));
+
+  // 2. Normalize School Rating:
+  // Ratings are on a 1.0 to 10.0 scale (e.g. 8.5/10 -> 85%)
+  // Default unrated / missing schools to a 7.0 baseline (70%)
+  const ratingValue = schoolRating && schoolRating > 0 ? (schoolRating <= 10 ? schoolRating * 10 : schoolRating) : 70;
+  const normalizedRating = Math.min(100, Math.max(20, ratingValue));
+
+  // 3. 50% Net Savings + 50% School Score
+  const blendedScore = Math.round(0.50 * normalizedSavings + 0.50 * normalizedRating);
+
+  // Clamp output to 45% - 99% for realistic match range
+  return Math.min(99, Math.max(45, blendedScore));
+}
+
 export function getSavingsBadgeConfig(monthlySurplus: number): SavingsBadgeConfig {
   if (monthlySurplus >= 2800) {
     return {
@@ -73,8 +92,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useState, useEffect, useMemo } from 'react';
 import { 
   Info, Search, SlidersHorizontal, MapPin, Calendar, Building, Star, BookOpen, 
-  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, ShieldCheck, Building2, HeartHandshake
+  Coins, GraduationCap, ArrowUpRight, Loader2, AlertCircle, Users, Check, Trash2, RefreshCw, Clock, ShieldCheck, Building2, HeartHandshake, Sparkles, PlusCircle
 } from 'lucide-react';
+import { AddVacancyModal } from '@/components/admin/AddVacancyModal';
 import { useCollection, useFirestore, useMemoFirebase, useAuth, useDoc, db } from '@/firebase';
 import { useTeacher } from '@/firebase/firestore/use-teacher';
 import { collection, doc, updateDoc, collectionGroup, query, where } from 'firebase/firestore';
@@ -267,6 +287,7 @@ interface FeaturedJobCacheDoc {
   curriculum?: string;
   schoolRating?: number;
   schoolWebsite?: string;
+  directUrl?: string;
   isVolatileMarket?: boolean;
   paidInUSD?: boolean;
 }
@@ -281,6 +302,7 @@ interface StructuredJob {
   schoolGroup?: string;
   source_url: string;
   sourceUrls?: Record<string, string>;
+  directUrl?: string;
   date_listed: string | null;
   date_closing: string | null;
   status: string;
@@ -362,9 +384,10 @@ export default function FeaturedJobsPage() {
   const [minSavings, setMinSavings] = useState<number>(0);
   const [minRating, setMinRating] = useState<number>(0);
   const [familyStatus, setFamilyStatus] = useState<string>("Single");
-  const [sortBy, setSortBy] = useState<string>("Projected Savings");
+  const [sortBy, setSortBy] = useState<string>("LF Overall Match");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [engineBarOpen, setEngineBarOpen] = useState(false);
+  const [isAddVacancyModalOpen, setIsAddVacancyModalOpen] = useState(false);
   
   // Refresh loading states
   const [refreshingSchools, setRefreshingSchools] = useState<Record<string, boolean>>({});
@@ -843,6 +866,15 @@ export default function FeaturedJobsPage() {
           }
         }
 
+        const directCandidate = (cacheDoc as any).directUrl || (cacheDoc as any).direct_url || sourceUrlsMap['Direct'] || sourceUrlsMap['DIRECT'] || cacheDoc.schoolWebsite || schoolObj?.careersPageUrl || schoolObj?.careersUrl || (schoolObj?.website && schoolObj.website !== '#' ? schoolObj.website : undefined);
+        if (directCandidate && typeof directCandidate === 'string' && directCandidate.startsWith('http') && !directCandidate.includes('tes.com') && !directCandidate.includes('grcfair.org') && !directCandidate.includes('teachaway') && !directCandidate.includes('theguardian.com') && !directCandidate.includes('guardianjobs')) {
+          if (!sourcesList.includes('Direct')) {
+            sourcesList.push('Direct');
+          }
+          sourceUrlsMap['Direct'] = directCandidate;
+          sourceUrlsMap['DIRECT'] = directCandidate;
+        }
+
         jobsList.push({
           id: cacheDoc.id,
           title: sanitizeJobTitle(cacheDoc.title || 'Teaching Vacancy', cacheDoc.schoolName),
@@ -850,6 +882,7 @@ export default function FeaturedJobsPage() {
           source: cacheDoc.source || 'Official Source',
           sources: sourcesList,
           sourceUrls: sourceUrlsMap,
+          directUrl: directCandidate,
           schoolGroup,
           source_url: cacheDoc.applyUrl || '',
           date_listed: cacheDoc.datePosted
@@ -867,7 +900,7 @@ export default function FeaturedJobsPage() {
           city: cacheDoc.city || '',
           country: cacheDoc.country || '',
           savingsPotential,
-          schoolWebsite: cacheDoc.schoolWebsite || '',
+          schoolWebsite: cacheDoc.schoolWebsite || (typeof directCandidate === 'string' ? directCandidate : ''),
           paidInUSD: cacheDoc.paidInUSD,
           ingestedAtMillis: cacheDoc.ingestedAtMillis || null,
           scrapedAtRaw: cacheDoc.ingestedAtMillis
@@ -1159,15 +1192,23 @@ export default function FeaturedJobsPage() {
   // Sort Logic
   const sortedJobs = useMemo(() => {
     const jobs = [...filteredJobs];
-    if (sortBy === "Projected Savings") {
-      return jobs.sort((a, b) => b.savingsPotential - a.savingsPotential);
-    } else if (sortBy === "School Score") {
-      return jobs.sort((a, b) => b.schoolRating - a.schoolRating);
-    } else if (sortBy === "Most recent") {
+    if (sortBy === "LF Overall Match" || sortBy === "Overall Match") {
       return jobs.sort((a, b) => {
-        const dateA = a.date_listed ? new Date(a.date_listed).getTime() : 0;
-        const dateB = b.date_listed ? new Date(b.date_listed).getTime() : 0;
-        return dateB - dateA;
+        const matchA = calculateOverallMatchScore(a.savingsPotential || 0, a.schoolRating || 0);
+        const matchB = calculateOverallMatchScore(b.savingsPotential || 0, b.schoolRating || 0);
+        if (matchB !== matchA) return matchB - matchA;
+        return (b.savingsPotential || 0) - (a.savingsPotential || 0);
+      });
+    } else if (sortBy === "LF Projected Savings" || sortBy === "Projected Savings") {
+      return jobs.sort((a, b) => b.savingsPotential - a.savingsPotential);
+    } else if (sortBy === "LF School Scores" || sortBy === "School Score") {
+      return jobs.sort((a, b) => b.schoolRating - a.schoolRating);
+    } else if (sortBy === "Most recent" || sortBy === "Recently Added") {
+      return jobs.sort((a, b) => {
+        const timeA = (a as any).ingestedAtMillis || (a.scrapedAtRaw?.seconds ? a.scrapedAtRaw.seconds * 1000 : (a.date_listed ? new Date(a.date_listed).getTime() : 0));
+        const timeB = (b as any).ingestedAtMillis || (b.scrapedAtRaw?.seconds ? b.scrapedAtRaw.seconds * 1000 : (b.date_listed ? new Date(b.date_listed).getTime() : 0));
+        if (timeB !== timeA) return timeB - timeA;
+        return (b.savingsPotential || 0) - (a.savingsPotential || 0);
       });
     } else if (sortBy === "Oldest (by closing date)") {
       return jobs.sort((a, b) => {
@@ -1328,13 +1369,23 @@ export default function FeaturedJobsPage() {
             </p>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2.5 items-center">
             {calculatedIsAdmin && (
               <>
                 <button
+                  type="button"
+                  onClick={() => setIsAddVacancyModalOpen(true)}
+                  className="bg-emerald-500/15 hover:bg-emerald-500 border border-emerald-500/40 text-emerald-300 hover:text-white px-3.5 py-2 text-xs font-black uppercase tracking-wider transition-all rounded-sm flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-950/40"
+                  title="Directly input and publish or stage a school vacancy"
+                >
+                  <PlusCircle className="size-3.5 text-emerald-400 group-hover:text-white" />
+                  <span>+ Add Vacancy</span>
+                </button>
+
+                <button
                   onClick={handleRunFullSweep}
                   disabled={isSweeping}
-                  className="bg-[#D96B27]/10 hover:bg-[#D96B27] border border-[#D96B27]/30 text-[#D96B27] hover:text-white px-4 py-2 text-xs font-black uppercase tracking-wider transition-all rounded-sm flex items-center gap-1.5"
+                  className="bg-[#D96B27]/10 hover:bg-[#D96B27] border border-[#D96B27]/30 text-[#D96B27] hover:text-white px-3 py-2 text-xs font-black uppercase tracking-wider transition-all rounded-sm flex items-center gap-1.5"
                 >
                   {isSweeping ? (
                     <>
@@ -1369,8 +1420,6 @@ export default function FeaturedJobsPage() {
                 </div>
               </>
             )}
-            
-
           </div>
         </div>
 
@@ -1508,7 +1557,7 @@ export default function FeaturedJobsPage() {
                 setMinSavings(0);
                 setMinRating(0);
                 setFamilyStatus("Single");
-                setSortBy("Projected Savings");
+                setSortBy("LF Overall Match");
               }}
               className="w-full h-9 md:h-11 border border-slate-700/80 text-xs font-bold text-slate-400 hover:text-white hover:border-slate-500 transition-all rounded-md"
             >
@@ -1588,8 +1637,9 @@ export default function FeaturedJobsPage() {
                       onChange={(e) => setSortBy(e.target.value)}
                       className="bg-[#1e293b] border border-slate-700/80 text-white rounded px-2.5 py-1 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                     >
-                      <option value="Projected Savings">Savings</option>
-                      <option value="School Score">Score</option>
+                      <option value="LF Overall Match">Match</option>
+                      <option value="LF Projected Savings">Savings</option>
+                      <option value="LF School Scores">Score</option>
                       <option value="Most recent">Recent</option>
                       <option value="Oldest (by closing date)">Closing</option>
                     </select>
@@ -1643,8 +1693,9 @@ export default function FeaturedJobsPage() {
                         onChange={(e) => setSortBy(e.target.value)}
                         className="bg-black/40 border border-slate-700/80 text-white rounded-md h-9 px-3 text-xs focus:border-[#FF6B35] outline-none font-bold cursor-pointer"
                       >
-                        <option value="Projected Savings">Projected Savings</option>
-                        <option value="School Score">School Score</option>
+                        <option value="LF Overall Match">LF Overall Match</option>
+                        <option value="LF Projected Savings">LF Projected Savings</option>
+                        <option value="LF School Scores">LF School Scores</option>
                         <option value="Most recent">Most Recent</option>
                         <option value="Oldest (by closing date)">Oldest (by closing date)</option>
                       </select>
@@ -1971,7 +2022,8 @@ export default function FeaturedJobsPage() {
 
                                   // Only add DIRECT if it is genuinely a direct school listing or dual-listed with a direct website
                                   const isPureAggregator = applyUrlLower.includes("tes.com") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs") || applyUrlLower.includes("grcfair.org") || applyUrlLower.includes("teachaway");
-                                  if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL"))) {
+                                  const hasExplicitDirect = Boolean((job as any).directUrl || (job.sourceUrls && (job.sourceUrls["DIRECT"] || job.sourceUrls["Direct"])));
+                                  if (isPureAggregator && !rawSources.some(s => String(s).toUpperCase().includes("DIRECT") || String(s).toUpperCase().includes("OFFICIAL")) && !hasExplicitDirect) {
                                     sMap.delete("DIRECT");
                                   }
                                   if (sMap.has("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae") || rawSources.some((s: any) => String(s || "").toUpperCase().includes("GEMS"))) {
@@ -2074,7 +2126,11 @@ export default function FeaturedJobsPage() {
                                             foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
                                           }
                                         } else if (srcUpper === "DIRECT") {
-                                          if (job.schoolWebsite && job.schoolWebsite !== "#") {
+                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                            foundUrl = (job as any).directUrl;
+                                          } else if (job.sourceUrls && (job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"]) && !isGenericUrl(job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"])) {
+                                            foundUrl = job.sourceUrls["Direct"] || job.sourceUrls["DIRECT"];
+                                          } else if (job.schoolWebsite && job.schoolWebsite !== "#") {
                                             foundUrl = job.schoolWebsite;
                                           } else if (!isPureAggregator) {
                                             foundUrl = rawUrl;
@@ -2245,6 +2301,19 @@ export default function FeaturedJobsPage() {
               </div>
             )}
             
+            {/* Admin Add Vacancy Modal */}
+            {calculatedIsAdmin && (
+              <AddVacancyModal
+                isOpen={isAddVacancyModalOpen}
+                onClose={() => setIsAddVacancyModalOpen(false)}
+                schools={schoolsData || []}
+                adminUserId={user?.uid || user?.email || "admin"}
+                onSuccess={() => {
+                  // Optional: trigger refresh if needed
+                }}
+              />
+            )}
+
           </main>
         </div>
       </div>

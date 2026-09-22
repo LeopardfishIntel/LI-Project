@@ -272,7 +272,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </div>
             <p className="text-xs text-slate-400">
-              To exercise any of these rights, submit a request to <a href="mailto:privacy@leopardfishintel.com" className="text-emerald-400 underline hover:text-emerald-300">privacy@leopardfishintel.com</a>.
+              To exercise any of these rights, submit a request to <a href="mailto:roger@leopardfishintel.com" className="text-emerald-400 underline hover:text-emerald-300">roger@leopardfishintel.com</a>.
             </p>
           </div>
         </section>
@@ -286,7 +286,7 @@ export default function PrivacyPolicyPage() {
           <div className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-2 text-sm text-slate-300">
             <p>For privacy-related inquiries, data requests, or compliance questions:</p>
             <div className="space-y-1 text-xs font-mono text-slate-400 pt-2">
-              <p>• <strong>Email:</strong> <a href="mailto:privacy@leopardfishintel.com" className="text-emerald-400 underline hover:text-emerald-300">privacy@leopardfishintel.com</a></p>
+              <p>• <strong>Email:</strong> <a href="mailto:roger@leopardfishintel.com" className="text-emerald-400 underline hover:text-emerald-300">roger@leopardfishintel.com</a></p>
               <p>• <strong>Data Controller:</strong> Leopard Fish Intel Compliance Office</p>
             </div>
           </div>
