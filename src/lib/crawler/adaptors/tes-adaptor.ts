@@ -12,6 +12,7 @@ import { sanitizeUrl } from "../urlResolver";
 import { sanitizeJobTitle } from "../titleSanitizer";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
 import { isMalvernCampus, enrichMalvernDirectUrl } from "../../search/malvern";
+import { isEsfSchool, enrichEsfDirectUrl } from "../../search/esf";
 
 const TES_BASE = "https://www.tes.com";
 const STEALTH_HEADERS: Readonly<Record<string, string>> = Object.freeze({
@@ -325,6 +326,19 @@ async function scrapeTesPagePlaywright(url: string, input: AdaptorInput): Promis
           TES: item.href,
           Malvern: directUrl,
         };
+      } else if (isEsfSchool(input.schoolId, input.schoolName, null, item.href)) {
+        const directUrl = await enrichEsfDirectUrl(
+          item.href,
+          input.schoolId,
+          null,
+          input.careersPageUrl || input.schoolWebsite
+        );
+        rec.directUrl = directUrl;
+        rec.sources = ['TES', 'ESF'];
+        rec.sourceUrls = {
+          TES: item.href,
+          ESF: directUrl,
+        };
       }
 
       records.push(rec);
@@ -378,6 +392,25 @@ export async function runTesAdaptor(input: AdaptorInput): Promise<RawJobRecord[]
               record.sourceUrls = {
                 TES: record.applyUrl,
                 Malvern: directUrl,
+              };
+            } else if (isEsfSchool(input.schoolId, input.schoolName, null, record.applyUrl)) {
+              let outboundUrl: string | null = null;
+              if (posting.directApplyUrl && typeof posting.directApplyUrl === 'string') {
+                outboundUrl = sanitizeUrl(posting.directApplyUrl);
+              } else if (posting.sameAs && typeof posting.sameAs === 'string' && !posting.sameAs.includes('tes.com')) {
+                outboundUrl = sanitizeUrl(posting.sameAs);
+              }
+              const directUrl = await enrichEsfDirectUrl(
+                record.applyUrl,
+                input.schoolId,
+                outboundUrl,
+                input.careersPageUrl || input.schoolWebsite
+              );
+              record.directUrl = directUrl;
+              record.sources = ['TES', 'ESF'];
+              record.sourceUrls = {
+                TES: record.applyUrl,
+                ESF: directUrl,
               };
             }
             records.push(record);

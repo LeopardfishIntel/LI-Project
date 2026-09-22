@@ -20,6 +20,7 @@ import { parseClosingDate, triageVacancyLifecycle } from "../crawler/dateParser"
 import { isWhitelistedSchool } from "../crawler/schoolWhitelist";
 import { isMalvernCampus } from "../search/malvern";
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from "../search/taaleem";
+import { isEsfSchool, ESF_PORTAL_URL } from "../search/esf";
 import type { RawJobRecord } from "../crawler/adaptors/raw-job.types";
 
 export interface IngestionResult {
@@ -132,6 +133,22 @@ function buildCacheDocument(
     }
     if (!directUrl || !directUrl.includes('taaleem.ae')) {
       directUrl = taaleemUrl;
+    }
+  }
+
+  if (isEsfSchool(record.schoolId, record.schoolName, (record as any).group, record.applyUrl)) {
+    groupName = 'English Schools Foundation';
+    if (!initialSources.includes('ESF')) {
+      initialSources.push('ESF');
+    }
+    const esfDirect = directUrl || (record.applyUrl?.includes('myworkdayjobs.com/ESF') ? record.applyUrl : ESF_PORTAL_URL);
+    if (!srcUrls['ESF']) {
+      srcUrls['ESF'] = esfDirect;
+      srcUrls['esf'] = esfDirect;
+    }
+    if (record.applyUrl && record.applyUrl.includes('tes.com')) {
+      if (!initialSources.includes('TES')) initialSources.push('TES');
+      srcUrls['TES'] = record.applyUrl;
     }
   }
 

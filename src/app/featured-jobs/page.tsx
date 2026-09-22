@@ -102,6 +102,7 @@ import { cn } from '@/lib/utils';
 import { canonicalCountry, calculateSchoolSavingsForStatus, normalizeMenaSalaryUSD, findCostOfLiving } from '@/lib/calculations';
 import { sanitizeJobTitle } from '@/lib/crawler/titleSanitizer';
 import { isTaaleemSchool, resolveTaaleemDirectUrl } from '@/lib/search/taaleem';
+import { isEsfSchool, ESF_PORTAL_URL } from '@/lib/search/esf';
 
 const cleanSchoolName = (raw: string): string => {
   if (!raw) return "";
@@ -795,7 +796,7 @@ export default function FeaturedJobsPage() {
         }
 
         const schoolObj = schoolsMap[cacheDoc.schoolId];
-        const schoolGroup = schoolObj?.ownership || schoolObj?.group || cacheDoc.group || cacheDoc.ownership || "";
+        let schoolGroup = schoolObj?.ownership || schoolObj?.group || cacheDoc.group || cacheDoc.ownership || "";
 
         const sourcesList = cacheDoc.sources ? [...cacheDoc.sources] : [cacheDoc.source || "Official Source"];
         const sourceUrlsMap: Record<string, string> = { ...((cacheDoc as any).sourceUrls || {}) };
@@ -841,6 +842,17 @@ export default function FeaturedJobsPage() {
                 : resolveTaaleemDirectUrl(cacheDoc.title || (cacheDoc as any).jobTitle || "", cacheDoc.schoolName || "").canonicalUrl;
               sourceUrlsMap["Taaleem"] = finalTaaleemUrl;
               sourceUrlsMap["TAALEEM"] = finalTaaleemUrl;
+            }
+
+            const isEsfJob = isEsfSchool(cacheDoc.schoolId, cacheDoc.schoolName, schoolGroup, cacheDoc.applyUrl);
+            if (isEsfJob) {
+              schoolGroup = 'English Schools Foundation';
+              if (!sourcesList.includes("ESF")) {
+                sourcesList.push("ESF");
+              }
+              const existingEsfUrl = (cacheDoc as any).directUrl || sourceUrlsMap["ESF"] || sourceUrlsMap["esf"] || ESF_PORTAL_URL;
+              sourceUrlsMap["ESF"] = existingEsfUrl;
+              sourceUrlsMap["esf"] = existingEsfUrl;
             }
 
             const isMatchingGroupUrl = cacheDoc.applyUrl && (
@@ -1996,6 +2008,9 @@ export default function FeaturedJobsPage() {
                                   if (isTaaleemCard) {
                                     sMap.set("TAALEEM", "Taaleem");
                                   }
+                                  if (applyUrlLower.includes("esf.wd102.myworkdayjobs.com") || applyUrlLower.includes("esf.edu.hk") || isEsfSchool(job.schoolId, job.schoolName, (job as any).schoolGroup || (job as any).group, applyUrlLower)) {
+                                    sMap.set("ESF", "ESF");
+                                  }
 
                                   rawSources.forEach((s: any) => {
                                     if (!s) return;
@@ -2006,6 +2021,7 @@ export default function FeaturedJobsPage() {
                                     else if (u.includes("COGNITA")) { key = "COGNITA"; label = "Cognita"; }
                                     else if (u.includes("INSPIRED")) { key = "INSPIRED"; label = "Inspired"; }
                                     else if (u.includes("MALVERN")) { key = "MALVERN"; label = "Malvern"; }
+                                    else if (u.includes("ESF") || u.includes("ENGLISH SCHOOLS FOUNDATION")) { key = "ESF"; label = "ESF"; }
                                     else if (u.includes("UWC") || u.includes("UNITED WORLD COLLEGE")) { key = "UWC"; label = "UWC"; }
                                     else if (u.includes("ISP") || u.includes("INTERNATIONAL SCHOOLS PARTNERSHIP")) { key = "ISP"; label = "ISP"; }
                                     else if (u === "TES") { key = "TES"; label = "TES"; }
@@ -2125,6 +2141,14 @@ export default function FeaturedJobsPage() {
                                           } else {
                                             foundUrl = resolveTaaleemDirectUrl(job.title || "", job.schoolName || "").canonicalUrl;
                                           }
+                                        } else if (srcUpper === "ESF" || srcUpper.includes("ESF")) {
+                                          if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
+                                            foundUrl = (job as any).directUrl;
+                                          } else if (job.sourceUrls && (job.sourceUrls["ESF"] || job.sourceUrls["esf"]) && !isGenericUrl(job.sourceUrls["ESF"] || job.sourceUrls["esf"])) {
+                                            foundUrl = job.sourceUrls["ESF"] || job.sourceUrls["esf"];
+                                          } else {
+                                            foundUrl = ESF_PORTAL_URL;
+                                          }
                                         } else if (srcUpper === "DIRECT") {
                                           if ((job as any).directUrl && !isGenericUrl((job as any).directUrl)) {
                                             foundUrl = (job as any).directUrl;
@@ -2167,6 +2191,8 @@ export default function FeaturedJobsPage() {
                                             ? "bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20"
                                             : srcUpper.includes("MALVERN")
                                             ? "bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20"
+                                            : (srcUpper === "ESF" || srcUpper.includes("ESF"))
+                                            ? "bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
                                             : srcUpper.includes("UWC")
                                             ? "bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20"
                                             : srcUpper.includes("ISP")
