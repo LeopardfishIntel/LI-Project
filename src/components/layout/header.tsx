@@ -114,8 +114,6 @@ export default function Header() {
       const schoolDocIds = new Set(schoolSnap.docs.map(doc => (doc.data().schoolId || doc.id).toUpperCase().trim()));
 
       const todayMs = Date.now();
-      const seenUrls = new Set<string>();
-      const seenJobKeys = new Set<string>();
       const countsBySchool: Record<string, number> = {};
       const schoolCacheJobs: Record<string, CachedJobDetail[]> = {};
       const schoolFlaggedJobs: Record<string, FlaggedJobDetail[]> = {};
@@ -123,8 +121,15 @@ export default function Header() {
 
       featuredSnap.docs.forEach((d) => {
         const cacheDoc = d.data();
-        const sId = (cacheDoc.schoolId || "").toUpperCase().trim();
-        if (!sId || sId.startsWith("AGNT") || !schoolDocIds.has(sId)) return;
+        let sId = (cacheDoc.schoolId || "").toUpperCase().trim();
+        if (!sId || sId.startsWith("AGNT")) return;
+
+        if (!schoolDocIds.has(sId)) {
+          const baseId = sId.split('_')[0];
+          if (schoolDocIds.has(baseId)) {
+            sId = baseId;
+          }
+        }
 
         if (!schoolCacheJobs[sId]) schoolCacheJobs[sId] = [];
         if (!schoolFlaggedJobs[sId]) schoolFlaggedJobs[sId] = [];
@@ -132,7 +137,6 @@ export default function Header() {
         const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
         const rawStatus = String(cacheDoc.status || "").toUpperCase();
         const applyUrl = String(cacheDoc.applyUrl || cacheDoc.source_url || "").trim();
-        const applyUrlLower = applyUrl.toLowerCase();
         const source = String(cacheDoc.source || "Direct");
 
         if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") {
@@ -143,48 +147,6 @@ export default function Header() {
           schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Expired deadline", source, applyUrl });
           return;
         }
-
-        const sourceUpper = source.toUpperCase();
-        const isTes = sourceUpper.includes("TES") || applyUrlLower.includes("tes.com");
-        const isNae = sourceUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordangliaeducation.com");
-        const isGrc = sourceUpper.includes("GRC") || applyUrlLower.includes("grcfair.org");
-        const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
-        const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
-        const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
-        const schoolNameUpper = String(cacheDoc.schoolName || cacheDoc.schoolname || cacheDoc.name || "").toUpperCase();
-        const schoolGroupUpper = String(cacheDoc.schoolGroup || cacheDoc.group || "").toUpperCase();
-        const sIdUpper = String(cacheDoc.schoolId || "").toUpperCase();
-        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege") || schoolGroupUpper.includes("MALVERN") || schoolNameUpper.includes("MALVERN") || ["FLIS0130", "FLIS0164"].includes(sIdUpper);
-        const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
-        const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
-        const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
-        const isTaylors = sourceUpper.includes("TAYLOR") || applyUrlLower.includes("taylors");
-        const isEsf = sourceUpper.includes("ESF") || sourceUpper.includes("ENGLISH SCHOOLS FOUNDATION") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
-        const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
-        const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
-        
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) {
-          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: `Unrecognized source (${source})`, source, applyUrl });
-          return;
-        }
-
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) {
-          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Duplicate apply URL", source, applyUrl });
-          return;
-        }
-        if (applyUrlLower) seenUrls.add(applyUrlLower);
-
-        if (!isValidJobTitle(title)) {
-          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Non-academic or support role (filtered by guardrail)", source, applyUrl });
-          return;
-        }
-
-        const jobKey = `${sId.toLowerCase()}_${title.toLowerCase().trim()}`;
-        if (seenJobKeys.has(jobKey)) {
-          schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Duplicate job title already active for school", source, applyUrl });
-          return;
-        }
-        seenJobKeys.add(jobKey);
 
         totalFeatured++;
         countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
@@ -249,9 +211,8 @@ export default function Header() {
         getDocs(collection(db, "schools")),
       ]);
 
+      const schoolDocIds = new Set(schoolSnap.docs.map(doc => (doc.data().schoolId || doc.id).toUpperCase().trim()));
       const todayMs = Date.now();
-      const seenUrls = new Set<string>();
-      const seenJobKeys = new Set<string>();
       const countsBySchool: Record<string, number> = {};
 
       featuredSnap.docs.forEach((d) => {
@@ -260,41 +221,17 @@ export default function Header() {
         if (rawStatus === 'EXPIRED' || rawStatus === 'CLOSED' || rawStatus === 'REJECTED' || rawStatus === 'PENDING_REVIEW' || rawStatus === 'PENDING') return;
         if (cacheDoc.closingDateMillis && cacheDoc.closingDateMillis < todayMs) return;
 
-        const sourceUpper = String(cacheDoc.source || '').toUpperCase();
-        const applyUrlLower = String(cacheDoc.applyUrl || '').toLowerCase();
-        const isTes = sourceUpper.includes('TES') || applyUrlLower.includes('tes.com');
-        const isNae = sourceUpper.includes('NORD ANGLIA') || applyUrlLower.includes('nordangliaeducation.com');
-        const isGrc = sourceUpper.includes('GRC') || applyUrlLower.includes('grcfair.org');
-        const isInspired = sourceUpper.includes('INSPIRED') || applyUrlLower.includes('inspirededu.com');
-        const isTeachAway = sourceUpper.includes('TEACH AWAY') || applyUrlLower.includes('teachaway.com');
-        const isCognita = sourceUpper.includes('COGNITA') || applyUrlLower.includes('cognitapeople.csod.com');
-        const schoolNameUpper = String(cacheDoc.schoolName || cacheDoc.schoolname || cacheDoc.name || "").toUpperCase();
-        const schoolGroupUpper = String(cacheDoc.schoolGroup || cacheDoc.group || "").toUpperCase();
-        const sIdUpper = String(cacheDoc.schoolId || "").toUpperCase();
-        const isMalvern = sourceUpper.includes('MALVERN') || applyUrlLower.includes('malverncollege') || schoolGroupUpper.includes('MALVERN') || schoolNameUpper.includes('MALVERN') || ['FLIS0130', 'FLIS0164'].includes(sIdUpper);
-        const isUwc = sourceUpper.includes('UWC') || sourceUpper.includes('UNITED WORLD COLLEGE') || applyUrlLower.includes('uwc.org');
-        const isIsp = sourceUpper.includes('ISP') || sourceUpper.includes('INTERNATIONAL SCHOOLS PARTNERSHIP') || applyUrlLower.includes('internationalschools.wd3.myworkdayjobs.com');
-        const isGlobe = sourceUpper.includes('GLOBE') || sourceUpper.includes('GLOBEDUCATE') || applyUrlLower.includes('globeducate');
-        const isTaylors = sourceUpper.includes('TAYLOR') || applyUrlLower.includes('taylors');
-        const isEsf = sourceUpper.includes('ESF') || sourceUpper.includes('ENGLISH SCHOOLS FOUNDATION') || applyUrlLower.includes('esf.edu.hk') || applyUrlLower.includes('esf.org.hk');
-        const isGems = sourceUpper.includes('GEMS') || applyUrlLower.includes('gemseducation') || applyUrlLower.includes('gems.ae');
-        const isOfficial = sourceUpper.includes('OFFICIAL') || sourceUpper.includes('WEBSITE') || sourceUpper.includes('DIRECT') || sourceUpper.includes('SCHOOL');
-        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial) return;
+        let sId = (cacheDoc.schoolId || "").toUpperCase().trim();
+        if (!sId || sId.startsWith("AGNT")) return;
 
-        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
-        if (applyUrlLower) seenUrls.add(applyUrlLower);
-
-        const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
-        if (!isValidJobTitle(title)) return;
-
-        const sId = (cacheDoc.schoolId || "").toUpperCase();
-        const jobKey = `${(cacheDoc.schoolId || '').toLowerCase().trim()}_${title.toLowerCase().trim()}`;
-        if (seenJobKeys.has(jobKey)) return;
-        seenJobKeys.add(jobKey);
-
-        if (sId) {
-          countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
+        if (!schoolDocIds.has(sId)) {
+          const baseId = sId.split('_')[0];
+          if (schoolDocIds.has(baseId)) {
+            sId = baseId;
+          }
         }
+
+        countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
       });
 
       const batch = writeBatch(db);
