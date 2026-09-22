@@ -113,37 +113,37 @@ export const TAALEEM_CAMPUS_MAP: Record<string, TaaleemSchoolMeta> = {
     country: "United Arab Emirates" 
   },
   "harrow international school-dubai": { 
-    schoolId: "FLIS_HARROW_DXB", 
+    schoolId: "FLIS0361", 
     canonicalName: "Harrow International School Dubai", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "harrow international school abu dhabi": { 
-    schoolId: "FLIS_HARROW_AUH", 
+    schoolId: "FLIS0364", 
     canonicalName: "Harrow International School Abu Dhabi", 
     city: "Abu Dhabi", 
     country: "United Arab Emirates" 
   },
   "dubai schools al barsha": { 
-    schoolId: "FLIS_DS_BARSHA", 
+    schoolId: "FLIS0362", 
     canonicalName: "Dubai Schools Al Barsha", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "dubai schools al khawaneej": { 
-    schoolId: "FLIS_DS_KHAWANEEJ", 
+    schoolId: "FLIS0365", 
     canonicalName: "Dubai Schools Al Khawaneej", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "dubai school nad al sheba": { 
-    schoolId: "FLIS_DS_NAS", 
+    schoolId: "FLIS0363", 
     canonicalName: "Dubai School Nad Al Sheba", 
     city: "Dubai", 
     country: "United Arab Emirates" 
   },
   "lycée libanais francophone privé meydan": { 
-    schoolId: "FLIS_LLFP_MEYDAN", 
+    schoolId: "FLIS0366", 
     canonicalName: "Lycée Libanais Francophone Privé Meydan", 
     city: "Dubai", 
     country: "United Arab Emirates" 

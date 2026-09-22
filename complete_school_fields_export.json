@@ -17412,5 +17412,77 @@
     "openJobsCount": 0,
     "updatedAt": "2026-09-16T15:06:36.482Z",
     "citySafety": "8.8"
+  },
+  {
+    "id": "FLIS0361",
+    "schoolId": "FLIS0361",
+    "name": "Harrow International School Dubai",
+    "schoolName": "Harrow International School Dubai",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "curriculum": "UK / British",
+    "group": "Taaleem",
+    "openJobsCount": 3,
+    "websiteUrl": "https://careers.taaleem.ae"
+  },
+  {
+    "id": "FLIS0362",
+    "schoolId": "FLIS0362",
+    "name": "Dubai Schools Al Barsha",
+    "schoolName": "Dubai Schools Al Barsha",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "curriculum": "American / MOE",
+    "group": "Taaleem",
+    "openJobsCount": 4,
+    "websiteUrl": "https://careers.taaleem.ae"
+  },
+  {
+    "id": "FLIS0363",
+    "schoolId": "FLIS0363",
+    "name": "Dubai School Nad Al Sheba",
+    "schoolName": "Dubai School Nad Al Sheba",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "curriculum": "American / MOE",
+    "group": "Taaleem",
+    "openJobsCount": 2,
+    "websiteUrl": "https://careers.taaleem.ae"
+  },
+  {
+    "id": "FLIS0364",
+    "schoolId": "FLIS0364",
+    "name": "Harrow International School Abu Dhabi",
+    "schoolName": "Harrow International School Abu Dhabi",
+    "city": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "curriculum": "UK / British",
+    "group": "Taaleem",
+    "openJobsCount": 0,
+    "websiteUrl": "https://careers.taaleem.ae"
+  },
+  {
+    "id": "FLIS0365",
+    "schoolId": "FLIS0365",
+    "name": "Dubai Schools Al Khawaneej",
+    "schoolName": "Dubai Schools Al Khawaneej",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "curriculum": "American / MOE",
+    "group": "Taaleem",
+    "openJobsCount": 0,
+    "websiteUrl": "https://careers.taaleem.ae"
+  },
+  {
+    "id": "FLIS0366",
+    "schoolId": "FLIS0366",
+    "name": "Lycée Libanais Francophone Privé Meydan",
+    "schoolName": "Lycée Libanais Francophone Privé Meydan",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "curriculum": "French / IB",
+    "group": "Taaleem",
+    "openJobsCount": 0,
+    "websiteUrl": "https://careers.taaleem.ae"
   }
 ]
