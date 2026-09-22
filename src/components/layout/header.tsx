@@ -182,6 +182,20 @@ export default function Header() {
         }
       });
 
+      // Check for any countsBySchool that did not map to an existing school document
+      Object.entries(countsBySchool).forEach(([sId, count]) => {
+        if (!schoolDocIds.has(sId)) {
+          mismatches.push({
+            schoolId: sId,
+            schoolName: 'Unindexed School Document',
+            featuredCount: count,
+            schoolCount: 0,
+            cachedJobs: schoolCacheJobs[sId] || [],
+            flaggedJobs: schoolFlaggedJobs[sId] || [],
+          });
+        }
+      });
+
       setParityState({
         loading: false,
         totalFeatured,
@@ -623,7 +637,7 @@ export default function Header() {
               </div>
             </div>
 
-            {parityState && parityState.mismatches.length > 0 ? (
+            {parityState && (parityState.mismatches.length > 0 || !parityState.isMatch) ? (
               <div className="border border-amber-500/30 bg-amber-950/20 rounded-lg p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
