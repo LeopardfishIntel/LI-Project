@@ -6,7 +6,6 @@
  * links to the ESF Workday portal (https://esf.wd102.myworkdayjobs.com/ESF).
  */
 
-import { getAdminDb } from '@/firebase/admin';
 
 export const ESF_PORTAL_URL = 'https://esf.wd102.myworkdayjobs.com/ESF';
 
@@ -75,23 +74,6 @@ export async function enrichEsfDirectUrl(
     return memoryFallbackUrl;
   }
 
-  // 3. Fallback: Check Firestore school doc
-  try {
-    const db = getAdminDb();
-    if (db && flisSchoolId) {
-      const schoolDoc = await db.collection('schools').doc(flisSchoolId.toUpperCase().trim()).get();
-      if (schoolDoc.exists) {
-        const data = schoolDoc.data();
-        const candidateUrl = data?.careersPageUrl || data?.website;
-        if (candidateUrl && candidateUrl.includes('myworkdayjobs.com/ESF')) {
-          return candidateUrl;
-        }
-      }
-    }
-  } catch (error) {
-    console.warn(`[ESF Resolver] Failed to fetch URL for ${flisSchoolId}:`, error);
-  }
-
-  // 4. Default to canonical ESF Workday portal
+  // 3. Default to canonical ESF Workday portal
   return ESF_PORTAL_URL;
 }

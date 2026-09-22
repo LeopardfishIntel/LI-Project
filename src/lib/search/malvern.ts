@@ -6,7 +6,6 @@
  * links or falls back to canonical campus career URLs in Firestore.
  */
 
-import { getAdminDb } from '@/firebase/admin';
 
 export const MALVERN_CAMPUS_IDS = new Set([
   'FLIS0130', // Malvern College Egypt
@@ -60,24 +59,7 @@ export async function enrichMalvernDirectUrl(
     return memoryFallbackUrl;
   }
 
-  // 3. Fallback: Retrieve canonical career URL from Firestore for the specific Malvern campus
-  try {
-    const db = getAdminDb();
-    if (db && flisSchoolId) {
-      const schoolDoc = await db.collection('schools').doc(flisSchoolId.toUpperCase().trim()).get();
-      if (schoolDoc.exists) {
-        const data = schoolDoc.data();
-        const candidateUrl = data?.careersPageUrl || data?.website;
-        if (candidateUrl && candidateUrl !== '#' && !candidateUrl.includes('tes.com')) {
-          return candidateUrl;
-        }
-      }
-    }
-  } catch (error) {
-    console.warn(`[Malvern Resolver] Failed to fetch fallback URL for ${flisSchoolId}:`, error);
-  }
-
-  // 4. Default fallback to TES listing URL if no direct link exists
+  // 3. Default fallback to TES listing URL if no direct link exists
   return tesJobUrl;
 }
 
