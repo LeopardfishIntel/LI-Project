@@ -207,14 +207,48 @@ export async function createAdminJobAction(
       updatedAt: now.toISOString(),
     };
 
-    // Dual-commit
+    // Dual-commit with school auto-provisioning and openJobsCount sync
     if (adminDb) {
       const batch = adminDb.batch();
       
       const cacheRef = adminDb.collection('featured_jobs_cache').doc(jobId);
       batch.set(cacheRef, cacheDocPayload, { merge: true });
 
-      const subRef = adminDb.collection('schools').doc(schoolId).collection('jobs').doc(jobId);
+      const schoolDocRef = adminDb.collection('schools').doc(schoolId);
+      const schoolDocSnap = await schoolDocRef.get();
+      
+      if (!schoolDocSnap.exists) {
+        // Auto-provision school document if creating for a newly referenced institution
+        batch.set(schoolDocRef, {
+          id: schoolId,
+          schoolId: schoolId,
+          name: schoolName,
+          schoolName: schoolName,
+          officialName: schoolName,
+          city: city,
+          country: country,
+          curriculum: curriculum || 'International',
+          group: group || '',
+          openJobsCount: status === 'approved' ? 1 : 0,
+          salaryRange: `$${Math.round(savingsPotentialSingle * 1.6)}.00`,
+          savingspotential: savingsPotentialSingle,
+          savingspotentialsingle: savingsPotentialSingle,
+          housingprovision: 'Allowance',
+          isLocked: true,
+          createdAt: now,
+          updatedAt: now,
+          lastJobSyncAt: now,
+        }, { merge: true });
+      } else if (status === 'approved') {
+        const currentCount = schoolDocSnap.data()?.openJobsCount || 0;
+        batch.update(schoolDocRef, {
+          openJobsCount: currentCount + 1,
+          lastJobSyncAt: now,
+          updatedAt: now,
+        });
+      }
+
+      const subRef = schoolDocRef.collection('jobs').doc(jobId);
       batch.set(subRef, subcollectionJobPayload, { merge: true });
 
       await batch.commit();
