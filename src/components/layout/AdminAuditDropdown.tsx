@@ -44,7 +44,7 @@ export function AdminAuditDropdown({
     const fetchCompensationAudit = async () => {
       try {
         setLoadingComp(true);
-        const res = await fetch("/api/admin/audit/compensation-drift");
+        const res = await fetch("/api/admin/audit/compensation-drift/");
         if (res.ok) {
           const data: CompensationAuditSummary = await res.json();
           if (isMounted) setCompSummary(data);
@@ -215,7 +215,7 @@ export function AdminAuditDropdown({
                       ? "bg-emerald-950 text-emerald-400 border border-emerald-800/50" 
                       : "bg-rose-950 text-rose-300 border border-rose-800/50"
                   )}>
-                    {loadingComp ? "Checking..." : !hasDriftAlert ? "254 Secured" : `${driftCount} Drifts`}
+                    {loadingComp ? "Checking..." : !hasDriftAlert ? `${compSummary?.totalProtected ?? 351} Secured` : `${driftCount} Drifts`}
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 mt-0.5 leading-tight">

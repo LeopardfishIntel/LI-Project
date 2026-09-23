@@ -8,14 +8,19 @@ import {
   RotateCcw, 
   CheckCheck, 
   Lock, 
-  X, 
-  ArrowRight,
   Database,
   Building2,
   FileSpreadsheet
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CompensationDrift, CompensationAuditSummary } from "@/types/audit";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription 
+} from "@/components/ui/dialog";
 
 interface CompensationAuditModalProps {
   isOpen: boolean;
@@ -37,7 +42,7 @@ export function CompensationAuditModal({
     setLoading(true);
     setStatusMessage(null);
     try {
-      const res = await fetch("/api/admin/audit/compensation-drift");
+      const res = await fetch("/api/admin/audit/compensation-drift/");
       if (!res.ok) throw new Error("Failed to fetch compensation audit");
       const data: CompensationAuditSummary = await res.json();
       setSummary(data);
@@ -59,7 +64,7 @@ export function CompensationAuditModal({
   const handleRevert = async (schoolId: string, field?: string) => {
     setActionLoading(`revert-${schoolId}`);
     try {
-      const res = await fetch("/api/admin/audit/compensation-drift", {
+      const res = await fetch("/api/admin/audit/compensation-drift/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "revert", schoolId, field })
@@ -77,7 +82,7 @@ export function CompensationAuditModal({
   const handleApprove = async (schoolId: string, field: string, newValue: any) => {
     setActionLoading(`approve-${schoolId}-${field}`);
     try {
-      const res = await fetch("/api/admin/audit/compensation-drift", {
+      const res = await fetch("/api/admin/audit/compensation-drift/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "approve", schoolId, field, newValue })
@@ -96,7 +101,7 @@ export function CompensationAuditModal({
     if (!confirm("Are you sure you want to revert all detected drifts to master snapshot baseline values?")) return;
     setActionLoading("revert-all");
     try {
-      const res = await fetch("/api/admin/audit/compensation-drift", {
+      const res = await fetch("/api/admin/audit/compensation-drift/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "revert_all" })
@@ -115,7 +120,7 @@ export function CompensationAuditModal({
     if (!confirm("Are you sure you want to approve all live production values and overwrite the master snapshot?")) return;
     setActionLoading("approve-all");
     try {
-      const res = await fetch("/api/admin/audit/compensation-drift", {
+      const res = await fetch("/api/admin/audit/compensation-drift/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "approve_all" })
@@ -130,46 +135,34 @@ export function CompensationAuditModal({
     }
   };
 
-  if (!isOpen) return null;
-
   const driftCount = summary?.driftCount ?? 0;
   const isSecured = driftCount === 0;
+  const totalProtected = summary?.totalProtected ?? 351;
 
   return (
-    <div 
-      className="fixed inset-x-0 bottom-0 top-[60px] sm:top-[68px] z-50 flex items-start justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto"
-      onClick={onClose}
-    >
-      <div 
-        className="relative w-full max-w-5xl bg-[#070c18] border border-slate-800 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-100px)] my-2 sm:my-4"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-5xl bg-[#070c18] border border-slate-800 text-slate-100 shadow-2xl p-0 max-h-[90vh] overflow-hidden flex flex-col">
         {/* MODAL HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/80 bg-slate-950/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-orange-950/60 border border-orange-500/40 text-orange-400">
-              <Lock className="size-5" />
+        <div className="px-6 py-4 border-b border-slate-800/80 bg-slate-950/80">
+          <DialogHeader className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black tracking-widest uppercase bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded">
+                System Intelligence Audit
+              </span>
+              <span className="text-[10px] font-mono text-slate-400">
+                {summary?.lastAuditedAt ? new Date(summary.lastAuditedAt).toLocaleTimeString() : ""}
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black tracking-widest uppercase bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded">
-                  System Intelligence Audit
-                </span>
-                <span className="text-[10px] font-mono text-slate-400">
-                  {summary?.lastAuditedAt ? new Date(summary.lastAuditedAt).toLocaleTimeString() : ""}
-                </span>
+            <DialogTitle className="text-lg font-black uppercase text-white tracking-wide flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-orange-950/60 border border-orange-500/40 text-orange-400">
+                <Lock className="size-4" />
               </div>
-              <h3 className="text-base font-black uppercase text-white tracking-wide mt-0.5">
-                Compensation & Net Baseline Monitor
-              </h3>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
-          >
-            <X className="size-5" />
-          </button>
+              <span>Compensation & Net Baseline Monitor</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Protect 12-month net salaries, housing provisions, and package tiers against scraper drift across all registered institutions.
+            </DialogDescription>
+          </DialogHeader>
         </div>
 
         {/* STATUS ALERT NOTIFICATION */}
@@ -190,7 +183,7 @@ export function CompensationAuditModal({
                 <Database className="size-4 text-slate-400" />
               </div>
               <p className="text-2xl font-black text-white mt-1">
-                {summary?.totalProtected ?? 254} <span className="text-xs font-normal text-slate-400">Schools</span>
+                {totalProtected} <span className="text-xs font-normal text-slate-400">Schools</span>
               </p>
             </div>
 
@@ -232,7 +225,7 @@ export function CompensationAuditModal({
                 <ShieldCheck className="size-6" />
               </div>
               <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-                All 254 Step 5 Compensation Baselines are Synchronized & Locked
+                All {totalProtected} Step 5 Compensation Baselines are Synchronized & Locked
               </h4>
               <p className="text-xs text-slate-400 max-w-md mx-auto">
                 No unauthorized modifications, scraper overwrites, or exchange rate drifts detected against master snapshot.
@@ -352,7 +345,7 @@ export function CompensationAuditModal({
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
