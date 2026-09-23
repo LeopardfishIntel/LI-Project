@@ -276,7 +276,13 @@ interface FeaturedJobCacheDoc {
   country: string;
   campus?: string;
   status: string;
-  ingestedAtMillis: number;
+  ingestedAtMillis?: number;
+  createdAtMillis?: number;
+  updatedAtMillis?: number;
+  createdAt?: any;
+  updatedAt?: any;
+  scrapedAtRaw?: any;
+  scrapedAt?: any;
   isRollingDeadline: boolean;
   // Fields populated by Pipeline 2
   searchTokens?: string[];
@@ -319,9 +325,55 @@ interface StructuredJob {
   schoolWebsite: string;
   paidInUSD?: boolean;
   ingestedAtMillis?: number | null;
+  createdAtMillis?: number | null;
+  updatedAtMillis?: number | null;
+  createdAt?: any;
+  updatedAt?: any;
   scrapedAtRaw?: any;
+  datePosted?: string | null;
   closesDateRaw?: Date | null;
   isRollingDeadline?: boolean;
+}
+
+function parseTimestampRobust(val: any): number {
+  if (!val) return 0;
+  if (typeof val === 'number') {
+    return val < 10000000000 ? val * 1000 : val;
+  }
+  if (typeof val === 'object') {
+    if (typeof val.toMillis === 'function') return val.toMillis();
+    if (typeof val.toDate === 'function') return val.toDate().getTime();
+    if (val.seconds) return val.seconds * 1000 + (val.nanoseconds ? Math.floor(val.nanoseconds / 1e6) : 0);
+    if (val instanceof Date) return val.getTime();
+  }
+  if (typeof val === 'string') {
+    const parsed = Date.parse(val);
+    if (!isNaN(parsed)) return parsed;
+  }
+  return 0;
+}
+
+export function getJobSortTimestamp(job: any): number {
+  if (!job) return 0;
+  const candidates = [
+    job.updatedAtMillis,
+    job.createdAtMillis,
+    job.ingestedAtMillis,
+    job.updatedAt,
+    job.createdAt,
+    job.scrapedAtRaw,
+    job.scrapedAt,
+    job.datePosted,
+    job.date_posted,
+    job.date_listed,
+    job.reviewedAt,
+  ];
+
+  for (const c of candidates) {
+    const ts = parseTimestampRobust(c);
+    if (ts > 0) return ts;
+  }
+  return 0;
 }
 
 const buildEvalUrl = (job: any, famStatus: string, preferredEngine?: string) => {
@@ -915,9 +967,14 @@ export default function FeaturedJobsPage() {
           schoolWebsite: cacheDoc.schoolWebsite || (typeof directCandidate === 'string' ? directCandidate : ''),
           paidInUSD: cacheDoc.paidInUSD,
           ingestedAtMillis: cacheDoc.ingestedAtMillis || null,
-          scrapedAtRaw: cacheDoc.ingestedAtMillis
+          createdAtMillis: cacheDoc.createdAtMillis || null,
+          updatedAtMillis: cacheDoc.updatedAtMillis || null,
+          createdAt: cacheDoc.createdAt || null,
+          updatedAt: cacheDoc.updatedAt || null,
+          datePosted: cacheDoc.datePosted || null,
+          scrapedAtRaw: cacheDoc.scrapedAtRaw || cacheDoc.scrapedAt || (cacheDoc.ingestedAtMillis
             ? { seconds: Math.floor(cacheDoc.ingestedAtMillis / 1000) }
-            : null,
+            : null),
           closesDateRaw: closesDate,
           isRollingDeadline: !closesDate,
         });
@@ -1217,8 +1274,8 @@ export default function FeaturedJobsPage() {
       return jobs.sort((a, b) => b.schoolRating - a.schoolRating);
     } else if (sortBy === "Most recent" || sortBy === "Recently Added") {
       return jobs.sort((a, b) => {
-        const timeA = (a as any).ingestedAtMillis || (a.scrapedAtRaw?.seconds ? a.scrapedAtRaw.seconds * 1000 : (a.date_listed ? new Date(a.date_listed).getTime() : 0));
-        const timeB = (b as any).ingestedAtMillis || (b.scrapedAtRaw?.seconds ? b.scrapedAtRaw.seconds * 1000 : (b.date_listed ? new Date(b.date_listed).getTime() : 0));
+        const timeA = getJobSortTimestamp(a);
+        const timeB = getJobSortTimestamp(b);
         if (timeB !== timeA) return timeB - timeA;
         return (b.savingsPotential || 0) - (a.savingsPotential || 0);
       });
