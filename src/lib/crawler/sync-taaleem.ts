@@ -198,6 +198,27 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       sourceUrls["tes"] = finalTesUrl;
     }
 
+    let closingDate: string | null = null;
+    let closingDateMillis: number | null = null;
+
+    if (job.expDate) {
+      const expStr = String(job.expDate).trim();
+      const relMatch = expStr.match(/expires\s+in\s+(\d+)\s+days?/i) || expStr.match(/^in\s+(\d+)\s+days?$/i);
+      if (relMatch) {
+        const days = parseInt(relMatch[1], 10);
+        const target = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+        closingDate = target.toISOString().split("T")[0];
+        closingDateMillis = target.getTime();
+      } else {
+        const dOnly = expStr.split(" ")[0].replace(/\//g, "-");
+        const parsed = new Date(dOnly);
+        if (!isNaN(parsed.getTime())) {
+          closingDate = dOnly;
+          closingDateMillis = parsed.getTime();
+        }
+      }
+    }
+
     const cacheDoc = {
       id: docId,
       jobId: docId,
@@ -215,8 +236,10 @@ export async function syncTaaleemNetworkToCache(): Promise<{ ingested: number; c
       curriculum: extractTaaleemCurriculumTrack(rawTitle, job.description).join(", "),
       startTerm: extractTaaleemStartTerm(rawTitle, job.description),
       roleTier: extractTaaleemRoleTier(rawTitle, job.description),
-      datePosted: job.crtDate ? String(job.crtDate).split(" ")[0] : null,
-      closingDate: job.expDate ? String(job.expDate).split(" ")[0] : null,
+      datePosted: job.crtDate ? String(job.crtDate).split(" ")[0].replace(/\//g, "-") : null,
+      closingDate: closingDate,
+      closingDateMillis: closingDateMillis,
+      isRollingDeadline: !closingDate,
       status: "APPROVED",
       group: "Taaleem",
       ownership: "Taaleem",
