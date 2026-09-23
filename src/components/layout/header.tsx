@@ -113,7 +113,12 @@ export default function Header() {
 
       const schoolDocIds = new Set(schoolSnap.docs.map(doc => (doc.data().schoolId || doc.id).toUpperCase().trim()));
 
-      const todayMs = Date.now();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayMs = today.getTime();
+      const seenJobKeys = new Set<string>();
+      const seenUrls = new Set<string>();
+
       const countsBySchool: Record<string, number> = {};
       const schoolCacheJobs: Record<string, CachedJobDetail[]> = {};
       const schoolFlaggedJobs: Record<string, FlaggedJobDetail[]> = {};
@@ -137,7 +142,31 @@ export default function Header() {
         const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
         const rawStatus = String(cacheDoc.status || "").toUpperCase();
         const applyUrl = String(cacheDoc.applyUrl || cacheDoc.source_url || "").trim();
+        const applyUrlLower = applyUrl.toLowerCase();
         const source = String(cacheDoc.source || "Direct");
+        const sourceUpper = source.toUpperCase();
+
+        const isTes = sourceUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const isNae = sourceUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordangliaeducation.com");
+        const isGrc = sourceUpper.includes("GRC") || applyUrlLower.includes("grcfair.org");
+        const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
+        const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
+        const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
+        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege");
+        const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
+        const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
+        const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
+        const isTaylors = sourceUpper.includes("TAYLOR") || applyUrlLower.includes("taylors");
+        const isEsf = sourceUpper.includes("ESF") || sourceUpper.includes("ENGLISH SCHOOLS FOUNDATION") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
+        const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
+        const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
+        const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+        const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
+        const isEureka = sourceUpper.includes("EUREKA");
+
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka) {
+          return;
+        }
 
         if (rawStatus === "EXPIRED" || rawStatus === "CLOSED" || rawStatus === "REJECTED" || rawStatus === "PENDING_REVIEW" || rawStatus === "PENDING") {
           schoolFlaggedJobs[sId].push({ id: d.id, title, reason: `Inactive status (${rawStatus})`, source, applyUrl });
@@ -147,6 +176,14 @@ export default function Header() {
           schoolFlaggedJobs[sId].push({ id: d.id, title, reason: "Expired deadline", source, applyUrl });
           return;
         }
+        if (!title || title.length < 3) return;
+
+        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower) seenUrls.add(applyUrlLower);
+
+        const jobKey = `${sId.toLowerCase()}_${title.toLowerCase()}`;
+        if (seenJobKeys.has(jobKey)) return;
+        seenJobKeys.add(jobKey);
 
         totalFeatured++;
         countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
@@ -226,7 +263,11 @@ export default function Header() {
       ]);
 
       const schoolDocIds = new Set(schoolSnap.docs.map(doc => (doc.data().schoolId || doc.id).toUpperCase().trim()));
-      const todayMs = Date.now();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayMs = today.getTime();
+      const seenJobKeys = new Set<string>();
+      const seenUrls = new Set<string>();
       const countsBySchool: Record<string, number> = {};
 
       featuredSnap.docs.forEach((d) => {
@@ -244,6 +285,39 @@ export default function Header() {
             sId = baseId;
           }
         }
+
+        const title = String(cacheDoc.title || cacheDoc.jobTitle || "").trim();
+        const applyUrl = String(cacheDoc.applyUrl || cacheDoc.source_url || "").trim();
+        const applyUrlLower = applyUrl.toLowerCase();
+        const sourceUpper = String(cacheDoc.source || "Direct").toUpperCase();
+
+        const isTes = sourceUpper.includes("TES") || applyUrlLower.includes("tes.com");
+        const isNae = sourceUpper.includes("NORD ANGLIA") || applyUrlLower.includes("nordangliaeducation.com");
+        const isGrc = sourceUpper.includes("GRC") || applyUrlLower.includes("grcfair.org");
+        const isInspired = sourceUpper.includes("INSPIRED") || applyUrlLower.includes("inspirededu.com");
+        const isTeachAway = sourceUpper.includes("TEACH AWAY") || applyUrlLower.includes("teachaway.com");
+        const isCognita = sourceUpper.includes("COGNITA") || applyUrlLower.includes("cognitapeople.csod.com");
+        const isMalvern = sourceUpper.includes("MALVERN") || applyUrlLower.includes("malverncollege");
+        const isUwc = sourceUpper.includes("UWC") || sourceUpper.includes("UNITED WORLD COLLEGE") || applyUrlLower.includes("uwc.org");
+        const isIsp = sourceUpper.includes("ISP") || sourceUpper.includes("INTERNATIONAL SCHOOLS PARTNERSHIP") || applyUrlLower.includes("internationalschools.wd3.myworkdayjobs.com");
+        const isGlobe = sourceUpper.includes("GLOBE") || sourceUpper.includes("GLOBEDUCATE") || applyUrlLower.includes("globeducate");
+        const isTaylors = sourceUpper.includes("TAYLOR") || applyUrlLower.includes("taylors");
+        const isEsf = sourceUpper.includes("ESF") || sourceUpper.includes("ENGLISH SCHOOLS FOUNDATION") || applyUrlLower.includes("esf.edu.hk") || applyUrlLower.includes("esf.org.hk");
+        const isGems = sourceUpper.includes("GEMS") || applyUrlLower.includes("gemseducation") || applyUrlLower.includes("gems.ae");
+        const isOfficial = sourceUpper.includes("OFFICIAL") || sourceUpper.includes("WEBSITE") || sourceUpper.includes("DIRECT") || sourceUpper.includes("SCHOOL");
+        const isGuardian = sourceUpper.includes("GUARDIAN") || applyUrlLower.includes("theguardian.com") || applyUrlLower.includes("guardianjobs");
+        const isTaaleem = sId.startsWith("FLIS036") || ["FLIS0113", "FLIS0114", "FLIS0114_JBS", "FLIS0115", "FLIS0115_JUMEIRAH_PARK", "FLIS0115_JUMEIRA", "FLIS0116", "FLIS0116_GIS", "FLIS0117", "FLIS0117_UIS", "FLIS0119", "FLIS0119_JAS"].includes(sId) || sourceUpper.includes("TAALEEM") || applyUrlLower.includes("taaleem.ae");
+        const isEureka = sourceUpper.includes("EUREKA");
+
+        if (!isTes && !isNae && !isGrc && !isInspired && !isTeachAway && !isCognita && !isMalvern && !isUwc && !isIsp && !isGlobe && !isTaylors && !isEsf && !isGems && !isOfficial && !isGuardian && !isTaaleem && !isEureka) return;
+        if (!title || title.length < 3) return;
+
+        if (applyUrlLower && seenUrls.has(applyUrlLower)) return;
+        if (applyUrlLower) seenUrls.add(applyUrlLower);
+
+        const jobKey = `${sId.toLowerCase()}_${title.toLowerCase()}`;
+        if (seenJobKeys.has(jobKey)) return;
+        seenJobKeys.add(jobKey);
 
         countsBySchool[sId] = (countsBySchool[sId] || 0) + 1;
       });
