@@ -867,10 +867,12 @@ export default function Header() {
       )}
 
       {/* COMPENSATION & NET BASELINE AUDIT MODAL */}
-      <CompensationAuditModal
-        isOpen={isCompensationModalOpen}
-        onClose={() => setIsCompensationModalOpen(false)}
-      />
+      {isAdmin && isCompensationModalOpen && (
+        <CompensationAuditModal
+          isOpen={isCompensationModalOpen}
+          onClose={() => setIsCompensationModalOpen(false)}
+        />
+      )}
     </header>
   );
 }

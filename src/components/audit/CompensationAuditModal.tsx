@@ -135,6 +135,8 @@ export function CompensationAuditModal({
     }
   };
 
+  if (!isOpen) return null;
+
   const driftCount = summary?.driftCount ?? 0;
   const isSecured = driftCount === 0;
   const totalProtected = summary?.totalProtected ?? 351;
