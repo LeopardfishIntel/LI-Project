@@ -684,7 +684,16 @@ function DecideContent() {
             const socialLocal = getVal(getCOLField(col, ['diningSocial', 'social', 'dining']), pKey, scalar) * rate * lifestyleMult * diningWeight;
             const manualLocal = parseFloat(adjustments[index].home) || 0;
 
-            const totalLocalCost = rentLocal + groceryLocal + utilityLocal + connectivityLocal + transportLocal + socialLocal + manualLocal;
+            // Integer Sum Rounding: Calculate totalLocalCost directly from the sum of already-rounded line item integers
+            // so the displayed Total Monthly Outgoings matches the exact sum of the numbers above it line-by-line.
+            const rRent = Math.round(rentLocal);
+            const rGrocery = Math.round(groceryLocal);
+            const rUtilityNet = Math.round(utilityLocal + connectivityLocal);
+            const rTransport = Math.round(transportLocal);
+            const rSocial = Math.round(socialLocal);
+            const rManual = Math.round(manualLocal);
+
+            const totalLocalCost = rRent + rGrocery + rUtilityNet + rTransport + rSocial + rManual;
             const surplusLocal = totalLocalIn - totalLocalCost;
             const workload = calculateWorkload(school);
             const rawSafety = parseFloat(String(getSchoolField(school, ['citysafety', 'safety']) || "7.2")) * 10;

@@ -1760,7 +1760,19 @@ function DecoderContent() {
 
     const manualCost = safeParse(manualAdjustments);
 
-    const totalOut = rentCost + groceriesCost + utilitiesCost + connectivityCost + transportCost + socialCost + medicalCost + manualCost;
+    // Integer Sum Rounding: Calculate totalOut directly from the sum of already-rounded line item integers
+    // so the displayed TOTAL OUTGOINGS always matches the exact sum of the numbers above it line-by-line.
+    const rRent = isProvided ? 0 : Math.round(rentCost);
+    const rGroceries = Math.round(groceriesCost);
+    const rUtilities = Math.round(utilitiesCost);
+    const rInternet = Math.round(internetCost);
+    const rMobile = Math.round(mobileCost);
+    const rTransport = Math.round(transportCost);
+    const rSocial = Math.round(socialCost);
+    const rMedical = Math.round(medicalCost);
+    const rManual = Math.round(manualCost);
+
+    const totalOut = rRent + rGroceries + rUtilities + rInternet + rMobile + rTransport + rSocial + rMedical + rManual;
     const surplus = totalIn - totalOut;
     const rateOfSaving = totalIn > 0 ? Math.round((surplus / totalIn) * 100) : 0;
 
