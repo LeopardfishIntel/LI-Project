@@ -106,12 +106,15 @@ export function getZoneLocationWeights(schoolOrLocation?: any): ZoneLocationWeig
  * Fixes issue where "Free On-Campus Housing", "On-Campus Housing", etc., were not auto-selecting provided housing.
  * Also ensures "Not Provided" does not falsely match.
  */
-export function isHousingProvided(housingProvision?: string, intelHousingProvided?: boolean): boolean {
-  if (intelHousingProvided === true) return true;
+export function isHousingProvided(housingProvision?: string | boolean, intelHousingProvided?: boolean): boolean {
+  if (intelHousingProvided === true || housingProvision === true) return true;
   if (!housingProvision) return false;
-  const lower = String(housingProvision).toLowerCase();
-  if (lower.includes('not provided') || lower.includes('no housing')) return false;
+  const lower = String(housingProvision).toLowerCase().trim();
+  if (lower.includes('not provided') || lower.includes('no housing') || lower === 'no' || lower === 'false') return false;
   return (
+    lower === 'yes' ||
+    lower === 'true' ||
+    lower.startsWith('yes') ||
     lower.includes('provided') ||
     lower.includes('free on-campus') ||
     lower.includes('on-campus housing') ||
