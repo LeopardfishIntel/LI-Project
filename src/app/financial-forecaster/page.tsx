@@ -3517,9 +3517,9 @@ function DecoderContent() {
                           })()}
 
                           {/* ⚖️ FINANCIAL MICRO-DISCLAIMER (COMPRESSED TO 2 LINES) */}
-                          <div className="text-[9.5px] sm:text-[10px] text-slate-400/90 mt-2.5 pt-2 border-t border-white/5 italic leading-tight space-y-0.5">
-                            <p className="text-left">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
-                            <p className="flex items-center justify-between gap-1 text-left">
+                          <div className="text-[9.5px] sm:text-[10px] text-slate-400/90 mt-2.5 pt-2 px-0 border-t border-white/5 italic leading-tight space-y-0.5">
+                            <p className="text-left pl-0 ml-0">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
+                            <p className="flex items-center justify-between gap-1 text-left pl-0 ml-0">
                               <span>Individual savings vary.</span>
                               <button 
                                 type="button"
@@ -3561,13 +3561,13 @@ function DecoderContent() {
                                 <div className="p-4 pt-2 border-t border-sky-500/20 animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
                                   <div className="space-y-2 text-[11px] text-slate-300 leading-relaxed font-sans pt-1">
                                     <p>
-                                      <strong className="text-white font-bold">12-Month Disbursement:</strong> Unlike traditional Japanese corporate contracts (which divide an annual figure into 14 parts for summer/winter bonuses), international schools in Japan disburse your agreed annual base salary in 12 equal monthly payments across the year.
+                                      <strong className="text-white font-bold">12-Month Base Payroll:</strong> International schools in Japan disburse agreed annual base salaries across 12 equal monthly payments covering teaching terms and paid vacation periods.
                                     </p>
                                     <p>
-                                      <strong className="text-white font-bold">No Statutory 13th/14th Month:</strong> Japanese labor law does not require 13th or 14th-month pay. Western international schools (such as Malvern, BST, Rugby) run a standard UK-style 12-month payroll structure covering teaching terms and paid vacation.
+                                      <strong className="text-white font-bold">Expatriate Gratuity Structure:</strong> Leading schools such as BST include an annual contract gratuity payment for overseas-recruited staff (per official 2024–25 benefits schedules) rather than statutory Japanese bonus splits.
                                     </p>
                                     <p>
-                                      <strong className="text-white font-bold">Separate Allowances & Benefits:</strong> Any cash or non-cash perks (housing allowance, airfare, relocation fees, or contract completion gratuities) are separate line items in your offer letter rather than extra salary months. You can use the additional income field above to include these.
+                                      <strong className="text-white font-bold">Separate Allowances & Benefits:</strong> Key expat provisions (90% housing subsidies, annual return flights, relocation allowances, and 100% daily commuting pass reimbursements) are structured as dedicated contract line items.
                                     </p>
                                   </div>
 

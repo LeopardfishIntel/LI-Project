@@ -1227,9 +1227,9 @@ function DecideContent() {
                 </div>
 
                 {/* ⚖️ FINANCIAL MICRO-DISCLAIMER (COMPRESSED TO 2 LINES) */}
-                <div className="mt-4 p-3 bg-white/[0.02] border border-white/5 rounded-sm text-[9.5px] sm:text-[10px] text-slate-400 italic leading-tight space-y-0.5">
-                    <p className="text-left">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
-                    <p className="flex items-center justify-between gap-1 text-left">
+                <div className="mt-4 pt-2 px-0 border-t border-white/5 text-[9.5px] sm:text-[10px] text-slate-400 italic leading-tight space-y-0.5">
+                    <p className="text-left pl-0 ml-0">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
+                    <p className="flex items-center justify-between gap-1 text-left pl-0 ml-0">
                         <span>Individual savings vary.</span>
                         <button
                             type="button"

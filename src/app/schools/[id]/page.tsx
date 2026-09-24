@@ -1274,9 +1274,9 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
                           </div>
 
                           {/* ⚖️ FINANCIAL MICRO-DISCLAIMER (COMPRESSED TO 2 LINES) */}
-                          <div className="text-[9.5px] sm:text-[10px] text-slate-400/90 pt-2 border-t border-white/5 italic leading-tight space-y-0.5">
-                            <p className="text-left">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
-                            <p className="flex items-center justify-between gap-1 text-left">
+                          <div className="text-[9.5px] sm:text-[10px] text-slate-400/90 pt-2 px-0 border-t border-white/5 italic leading-tight space-y-0.5">
+                            <p className="text-left pl-0 ml-0">*Indicative model based on OECD baselines and mid-payscale assumptions.</p>
+                            <p className="flex items-center justify-between gap-1 text-left pl-0 ml-0">
                               <span>Individual savings vary.</span>
                               <button
                                 type="button"
@@ -1391,21 +1391,21 @@ export default function SchoolProfilePage({ params }: { params: Promise<{ id: st
               <div className="p-6 pt-2 border-t border-sky-500/20 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 text-xs text-slate-300 leading-relaxed font-sans">
                   <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
-                    <p className="font-black text-white uppercase text-[11px] tracking-wide">12-Month Disbursement</p>
+                    <p className="font-black text-white uppercase text-[11px] tracking-wide">12-Month Base Payroll</p>
                     <p className="text-[11px] text-slate-400">
-                      Unlike traditional Japanese corporate contracts (which divide annual pay into 14 parts for summer/winter bonuses), international schools in Japan disburse your agreed annual base salary in 12 equal monthly payments across the year.
+                      International schools in Japan disburse agreed annual base salaries across 12 equal monthly payments covering teaching terms and paid vacation periods.
                     </p>
                   </div>
                   <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
-                    <p className="font-black text-white uppercase text-[11px] tracking-wide">No Statutory 13th/14th Month</p>
+                    <p className="font-black text-white uppercase text-[11px] tracking-wide">Expatriate Gratuity Structure</p>
                     <p className="text-[11px] text-slate-400">
-                      Japanese labor law does not require 13th or 14th-month pay. Western international schools (such as Malvern, BST, Rugby) run a standard UK-style 12-month payroll structure covering teaching terms and paid vacation periods.
+                      Leading schools such as BST include an annual contract gratuity payment for overseas-recruited staff (per official 2024–25 benefits schedules) rather than statutory Japanese bonus splits.
                     </p>
                   </div>
                   <div className="p-3 bg-black/40 border border-white/5 rounded-lg space-y-1">
                     <p className="font-black text-white uppercase text-[11px] tracking-wide">Separate Allowances &amp; Benefits</p>
                     <p className="text-[11px] text-slate-400">
-                      Any cash or non-cash perks (housing allowances, airfare allowances, relocation fees, or contract completion gratuities) are separate line items in your offer letter rather than extra salary months. You can use the additional income field above to include these.
+                      Key expat provisions (90% housing subsidies, annual return flights, relocation allowances, and 100% daily commuting pass reimbursements) are structured as dedicated contract line items.
                     </p>
                   </div>
                 </div>
