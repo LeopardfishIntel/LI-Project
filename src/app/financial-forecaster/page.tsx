@@ -1566,7 +1566,7 @@ function DecoderContent() {
 
       const isExplicitMonthly = /month|monthly|\/mo/i.test(str);
       // Annual to Monthly Conversion: if median >= 10,000 in major currencies or >= 120,000 in local currencies, divide by 12 unless explicitly marked /mo
-      const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR'].includes(currency);
+      const isHighValCurr = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'SGD', 'NZD', 'AED', 'SAR', 'QAR', 'BHD', 'KWD', 'OMR', 'AZN'].includes(currency) || isUSD;
       const isAnnualVal = isHighValCurr ? median >= 10000 : median >= 120000;
       if (isAnnualVal && !isExplicitMonthly) {
         median = Math.round(median / 12);
