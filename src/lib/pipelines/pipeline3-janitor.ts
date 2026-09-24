@@ -25,6 +25,8 @@ export interface JanitorRunResult {
   durationMs: number;
 }
 
+import { isPastAcademicIntake, triageVacancyLifecycle } from '@/lib/crawler/dateParser';
+
 // ─── Admin SDK helpers ────────────────────────────────────────────────────────
 
 async function getDb() {
@@ -45,14 +47,13 @@ async function expireOverdueJobs(db: any, now: number): Promise<{ expired: numbe
   }
 
   try {
-    // Query all non-expired cache docs whose closing date has passed
+    // Query all non-expired cache docs
     const snap = await db.collection('featured_jobs_cache')
-      .where('closingDateMillis', '<', now)
       .where('status', 'in', ['approved', 'pending_review'])
       .get();
 
     if (snap.empty) {
-      console.log('🛸 [PIPELINE 3] No overdue jobs to expire.');
+      console.log('🛸 [PIPELINE 3] No active jobs found.');
       return { expired, mirrorErrors, errors };
     }
 
@@ -61,6 +62,24 @@ async function expireOverdueJobs(db: any, now: number): Promise<{ expired: numbe
 
     snap.docs.forEach((docSnap: any) => {
       const data = docSnap.data();
+      const rawTitle = data.title || data.rawTitle || '';
+      const rawClosing = data.closingDate || data.date_closing;
+      const datePosted = data.datePosted || data.date_listed || data.scrapedAt;
+      const closingDateMillis = data.closingDateMillis;
+
+      // Evaluate whether overdue, past intake, or stale rolling deadline (>42d)
+      let isExpired = false;
+      if (closingDateMillis && closingDateMillis < now) {
+        isExpired = true;
+      } else {
+        const triage = triageVacancyLifecycle(rawClosing, datePosted, new Date(now), rawTitle);
+        if (triage.status === 'expired') {
+          isExpired = true;
+        }
+      }
+
+      if (!isExpired) return;
+
       // Expire the cache document
       batch.set(docSnap.ref, { status: 'expired' }, { merge: true });
       expired++;

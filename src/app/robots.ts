@@ -10,6 +10,8 @@ export default function robots(): MetadataRoute.Robots {
         "/api/",
         "/staging-preview",
         "/auth",
+        "/schools/",
+        "/schools/*",
       ],
     },
     sitemap: "https://leopardfishintel.com/sitemap.xml",

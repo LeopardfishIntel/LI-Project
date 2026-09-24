@@ -6,6 +6,16 @@ import { ShieldCheck, Compass, Sparkles } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'International School Directory & Salary Data | Leopardfish Intel',
   description: 'Explore verified compensation benchmarks, contract packages, and financial intelligence across 490+ international schools worldwide.',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
   alternates: {
     canonical: 'https://leopardfishintel.com/schools/',
   },

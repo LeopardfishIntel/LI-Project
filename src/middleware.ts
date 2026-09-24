@@ -4,29 +4,55 @@ import type { NextRequest } from 'next/server';
 /**
  * 🛰️ LEOPARDFISH TACTICAL MIDDLEWARE
  * Logic: Checks for a valid session before allowing entry to protected zones.
- * Optimized to prevent the 12s compilation hang by avoiding heavy SDK imports.
+ * Ensures priority marketing, forecaster, and intelligence routes remain 100% public
+ * to allow search engine crawlers and unauthenticated visitors direct access without login redirection.
  */
 export function middleware(request: NextRequest) {
-  // 🛡️ THE SESSION KEY: Required by Firebase App Hosting for session persistence
+  // 🛡️ THE SESSION KEY: Required by Firebase App Hosting & auth cookies
   const session = request.cookies.get('__session')?.value;
   const { pathname } = request.nextUrl;
 
-  // 1. DEFINE PROTECTED ZONES (Excluding schools to allow public beta testing access)
+  // 1. PRIORITY PUBLIC TARGET PAGES (Zero auth gating; accessible to visitors & crawlers)
+  const isPublicRoute =
+    pathname === '/' ||
+    pathname.startsWith('/evaluate') ||
+    pathname.startsWith('/compare') ||
+    pathname.startsWith('/jobs') ||
+    pathname.startsWith('/job') ||
+    pathname.startsWith('/featured-jobs') ||
+    pathname.startsWith('/financial-forecaster') ||
+    pathname.startsWith('/discover') ||
+    pathname.startsWith('/prepare') ||
+    pathname.startsWith('/calculators') ||
+    pathname.startsWith('/churn-calculator') ||
+    pathname.startsWith('/framework-mismatch') ||
+    pathname.startsWith('/find-your-fit') ||
+    pathname.startsWith('/methodology') ||
+    pathname.startsWith('/privacy') ||
+    pathname.startsWith('/terms') ||
+    pathname.startsWith('/partners') ||
+    pathname.startsWith('/schools');
+
+  if (isPublicRoute) {
+    return NextResponse.next();
+  }
+
+  // 2. DEFINE PROTECTED ZONES
   const isProtectedRoute = 
     pathname.startsWith('/admin') || 
     pathname.startsWith('/dashboard') || 
     pathname.startsWith('/profile');
 
-  // 2. GUEST REDIRECT: Kick unauthorized users to signup
+  // 3. GUEST REDIRECT: Kick unauthorized users from protected routes to login
   if (isProtectedRoute && !session) {
-    const loginUrl = new URL('/signup', request.url);
+    const loginUrl = new URL('/login', request.url);
     // 🛰️ INTEL: Pass the original path so they return here after auth
     loginUrl.searchParams.set('from', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // 3. AUTH REDIRECT: Prevent logged-in users from hitting signup again
-  if (pathname === '/signup' && session) {
+  // 4. AUTH REDIRECT: Prevent already logged-in users from hitting login/signup again
+  if ((pathname === '/login' || pathname === '/signup') && session) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -36,14 +62,17 @@ export function middleware(request: NextRequest) {
 
 /**
  * 🎯 TACTICAL MATCHER
- * Instead of matching EVERYTHING, we only trigger on specific routes 
- * to maximize performance and minimize build-time module bloat.
+ * Filters out internal Next.js assets, static assets, and favicon files
  */
 export const config = {
   matcher: [
-    '/admin/:path*',
-    '/dashboard/:path*',
-    '/profile/:path*',
-    '/signup',
+    /*
+     * Match all request paths except for:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt, icon.png (metadata/favicon assets)
+     * - api routes
+     */
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|icon.png|assets|api).*)',
   ],
 };

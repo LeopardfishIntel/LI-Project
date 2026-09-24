@@ -14,6 +14,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: 'School Profile Not Found | Leopardfish Intel',
       description: 'The requested international school profile could not be found.',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
@@ -25,6 +29,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+      },
+    },
     alternates: {
       canonical: `https://leopardfishintel.com/schools/${id}/`,
     },

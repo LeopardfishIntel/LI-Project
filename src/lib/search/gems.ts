@@ -11,6 +11,7 @@ import { getAdminDb } from "@/firebase/admin";
 import { isEngineCoolingDown, injectRequestJitter, recordSchoolSweepAnomaly } from "@/lib/crawler/safetyEngine";
 import { sweepAllGemsNetwork, cleanGemsJobTitle, extractCurriculumTrack, extractStartTerm, extractRoleTier } from "@/lib/crawler/adaptors/gems-adaptor";
 import { isSupportOrNonTeachingRole } from "@/lib/crawler/roleClassifier";
+import { isPastAcademicIntake } from "@/lib/crawler/dateParser";
 
 export interface GemsJobMatch {
   jobId: string;
@@ -183,6 +184,15 @@ export async function searchGemsDbSchools(query: string = ""): Promise<GemsJobMa
       const rawTitle = String(job.title || "").trim();
       if (!rawTitle || isSupportOrNonTeachingRole(rawTitle)) continue;
 
+      // 🛑 Gate 3: Reject past academic intakes or expired years (e.g., "August 2025", "Posted 2 years ago")
+      if (
+        isPastAcademicIntake(rawTitle).isPast ||
+        isPastAcademicIntake(job.description).isPast ||
+        isPastAcademicIntake(job.crtDate).isPast
+      ) {
+        continue;
+      }
+
       const rawCompany = String(job.companyName || job.company_name || "").trim().toLowerCase();
       if (!rawCompany) continue;
 
@@ -296,7 +306,7 @@ export async function searchGemsDbSchools(query: string = ""): Promise<GemsJobMa
           status: "approved",
           date_listed: datePosted || "Recently",
           date_closing: rawExpDate || "Open Until Filled",
-          closingDateMillis: rawExpDate ? new Date(rawExpDate).getTime() : Date.now() + 60 * 24 * 60 * 60 * 1000,
+          closingDateMillis: rawExpDate ? new Date(rawExpDate).getTime() : Date.now() + 42 * 24 * 60 * 60 * 1000,
           curriculum,
           startTerm,
           roleTier,

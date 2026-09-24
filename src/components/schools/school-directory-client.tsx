@@ -22,11 +22,11 @@ export function SchoolDirectoryClient({ initialSchools }: Props) {
       const q = query.toLowerCase();
       result = result.filter(
         (s) =>
-          s.name.toLowerCase().includes(q) ||
-          s.city.toLowerCase().includes(q) ||
-          s.country.toLowerCase().includes(q) ||
-          s.curriculum.toLowerCase().includes(q) ||
-          s.id.toLowerCase().includes(q)
+          (s.name || '').toLowerCase().includes(q) ||
+          (s.city || '').toLowerCase().includes(q) ||
+          (s.country || '').toLowerCase().includes(q) ||
+          (s.curriculum || '').toLowerCase().includes(q) ||
+          (s.id || '').toLowerCase().includes(q)
       );
     }
 
@@ -83,7 +83,7 @@ export function SchoolDirectoryClient({ initialSchools }: Props) {
               <div className="flex items-center gap-2 text-slate-400">
                 <span className="inline-flex items-center gap-1 text-[11px] text-slate-300">
                   <BookOpen className="size-3 text-slate-400" />
-                  {school.curriculum.split('/')[0]}
+                  {String(school.curriculum || 'IB').split('/')[0].trim()}
                 </span>
                 {school.financescore && (
                   <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-mono">

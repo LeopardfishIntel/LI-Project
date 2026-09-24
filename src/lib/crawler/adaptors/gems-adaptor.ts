@@ -9,6 +9,7 @@
 import { chromium } from "playwright";
 import type { AdaptorInput, RawJobRecord } from "./raw-job.types";
 import { isSupportOrNonTeachingRole } from "../roleClassifier";
+import { isPastAcademicIntake } from "../dateParser";
 
 /**
  * 🎯 ENFORCES SHORT JOB TITLE ONLY (Capped at 60 Characters Maximum)
@@ -73,10 +74,22 @@ export function extractStartTerm(title: string, description?: string): string {
   const combined = `${title} ${description || ""}`;
 
   if (/\bimmediate(?:ly)?\b/i.test(combined)) return "Immediate";
-  if (/\baug(?:ust)?\s*(?:2026|2027)?\b/i.test(combined)) return "August 2026";
-  if (/\bsep(?:t(?:ember)?)?\s*(?:2026|2027)?\b/i.test(combined)) return "September 2026";
-  if (/\bjan(?:uary)?\s*(?:2026|2027)?\b/i.test(combined)) return "January 2027";
-  if (/\bapr(?:il)?\s*(?:2026|2027)?\b/i.test(combined)) return "April 2026";
+
+  const match = combined.match(/\b(aug(?:ust)?|sep(?:t(?:ember)?)?|jan(?:uary)?|apr(?:il)?)\s*(20\d{2})?\b/i);
+  if (match) {
+    const rawMonth = match[1].toLowerCase();
+    const explicitYear = match[2];
+    let monthName = "August";
+    if (rawMonth.startsWith("sep")) monthName = "September";
+    else if (rawMonth.startsWith("jan")) monthName = "January";
+    else if (rawMonth.startsWith("apr")) monthName = "April";
+
+    if (explicitYear) {
+      return `${monthName} ${explicitYear}`;
+    }
+    const currentYear = new Date().getFullYear();
+    return `${monthName} ${currentYear}`;
+  }
 
   return "August 2026";
 }
@@ -187,6 +200,14 @@ export async function runGemsAdaptor(
   for (const job of matchingJobs) {
     const rawTitle = String(job.title || "").trim();
     if (!rawTitle || isSupportOrNonTeachingRole(rawTitle)) continue;
+
+    if (
+      isPastAcademicIntake(rawTitle).isPast ||
+      isPastAcademicIntake(job.description).isPast ||
+      isPastAcademicIntake(job.crtDate).isPast
+    ) {
+      continue;
+    }
 
     const relativeUrl = String(job.url || job.apply_url || job.applyUrl || "");
     const applyUrl = relativeUrl.startsWith("http") ? relativeUrl : `https://careers.gemseducation.com${relativeUrl}`;

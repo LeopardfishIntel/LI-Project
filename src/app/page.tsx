@@ -30,12 +30,12 @@ const features = [
   { title: "SAVINGS TARGETING", desc: "New: Work out the exact number you need to meet your personal wealth and savings goals.", icon: Target, color: "text-[#007FFF]" }
 ];
 
-// 🛰️ HARDCODED FALLBACKS (If DB is slow)
+// 🛰️ HARDCODED FALLBACKS (If DB is slow or cold start)
 const COUNTER_FALLBACKS = {
-  schools: 335,
-  vacancies: 68,
-  countries: 75,
-  visits: 2277,
+  schools: 462,
+  vacancies: 333,
+  countries: 68,
+  visits: 2317,
   comparisons: 368
 };
 
@@ -73,17 +73,15 @@ export default function Home() {
 
   const schoolCount = useMemo(() => {
     if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.schools;
-    const unique = new Set(schoolsData.filter(s => !s.isCampusStub).map(s => (s.name || s.schoolname || s.id).toLowerCase().trim()));
-    return unique.size || COUNTER_FALLBACKS.schools;
+    return schoolsData.length || COUNTER_FALLBACKS.schools;
   }, [schoolsData]);
 
   const countryCount = useMemo(() => {
-    const schoolCountries = (schoolsData || []).map(s => s.country).filter(Boolean);
-    const colCountries = (colData || []).map((c: any) => c.country || c.countryName).filter(Boolean);
-    const advisoryCountries = Object.values(MARITAL_ADVISORIES).map(a => a.country);
-    const all = new Set([...schoolCountries, ...colCountries, ...advisoryCountries].map(c => c.toLowerCase().trim()));
-    return all.size || COUNTER_FALLBACKS.countries;
-  }, [schoolsData, colData]);
+    if (!schoolsData || schoolsData.length === 0) return COUNTER_FALLBACKS.countries;
+    const schoolCountries = schoolsData.map(s => s.country).filter(Boolean);
+    const unique = new Set(schoolCountries.map(c => c.toLowerCase().trim()));
+    return unique.size || COUNTER_FALLBACKS.countries;
+  }, [schoolsData]);
 
   const vacanciesCount = useMemo(() => {
     if (!featuredJobsData || featuredJobsData.length === 0) return COUNTER_FALLBACKS.vacancies;
@@ -122,7 +120,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-[#020617] text-white/90 selection:bg-[#d95f02]">
 
       {/* 🏔️ HERO SECTION */}
-      <section className="relative w-full h-[82vh] flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
+      <section className="relative w-full min-h-[82vh] md:h-[82vh] py-10 md:py-0 flex flex-col items-center justify-center overflow-hidden border-b border-white/5 px-4 text-center">
         <Image src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop" alt="Intelligence background" fill priority className="absolute inset-0 w-full h-full object-cover opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#020617] z-10"></div>
 
@@ -159,9 +157,9 @@ export default function Home() {
             <TacticalButton href="/decide" label="Compare Schools" className="w-52 sm:w-56 h-16" />
           </div>
 
-          <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-10 w-full border-t border-white/10 pt-6">
-            {counters.map((c) => (
-              <div key={c.label} className="flex flex-col items-center space-y-1 group">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 lg:gap-10 w-full border-t border-white/10 pt-6">
+            {counters.map((c, idx) => (
+              <div key={c.label} className={cn("flex flex-col items-center space-y-1 group", idx === 4 ? "col-span-2 sm:col-span-1" : "")}>
                 <c.icon className={cn("size-5 transition-transform group-hover:scale-110", c.color)} />
                 <span className={cn(
                   "text-3xl md:text-4xl font-black tracking-tighter transition-all tabular-nums",

@@ -2,6 +2,7 @@ import {
   parseClosingDate, 
   triageVacancyLifecycle, 
   isRollingDeadlineString,
+  isPastAcademicIntake,
   parseRelativeDate
 } from './dateParser';
 
@@ -49,17 +50,14 @@ function runTests() {
   assertEqual(r4.closingDate?.getMonth(), 9, 'Date range month is Oct');
 
   // 5. Smart US vs European Disambiguation:
-  // European unambiguous: 25/08/2026
   const rEU = parseClosingDate('25/08/2026');
   assertEqual(rEU.closingDate?.getDate(), 25, '25/08/2026 day is 25');
   assertEqual(rEU.closingDate?.getMonth(), 7, '25/08/2026 month is Aug (7)');
 
-  // US unambiguous: 08/25/2026
   const rUS = parseClosingDate('08/25/2026');
   assertEqual(rUS.closingDate?.getDate(), 25, '08/25/2026 day is 25');
   assertEqual(rUS.closingDate?.getMonth(), 7, '08/25/2026 month is Aug (7)');
 
-  // Ambiguous: 10/05/2026 -> Defaults to EU (10th May)
   const rAmb = parseClosingDate('10/05/2026');
   assertEqual(rAmb.closingDate?.getDate(), 10, '10/05/2026 defaults to EU day 10');
   assertEqual(rAmb.closingDate?.getMonth(), 4, '10/05/2026 defaults to EU month May (4)');
@@ -76,11 +74,12 @@ function runTests() {
   assertEqual(rISO.isRollingDeadline, false, '2026-10-15 is parsed');
   assertEqual(rISO.closingDate?.getFullYear(), 2026, '2026-10-15 year is 2026');
 
-  // 8. Rolling Deadline Phrases
+  // 8. Rolling / Unlimited Deadline Phrases
   const rollingPhrases = [
     'Rolling basis',
     'Until filled',
     'Open until filled',
+    'Unlimited',
     'ASAP',
     'Ongoing',
     'Immediate start',
@@ -93,32 +92,46 @@ function runTests() {
     assertEqual(res.closingDate, null, `Phrase "${phrase}" has closingDate null`);
   }
 
-  // 9. Lifecycle Triage: Future Date -> approved
+  // 9. Past Academic Intake & Year Mentions
   const refDate = new Date('2026-08-18T12:00:00Z');
-  const triageFuture = triageVacancyLifecycle('15 Oct 2026', null, refDate);
-  assertEqual(triageFuture.status, 'approved', 'Future date resolves to approved');
-  assertEqual(triageFuture.isRollingDeadline, false, 'Future date is not rolling');
+  const pastCheck1 = isPastAcademicIntake('Islamic B Teacher - August 2025', refDate);
+  assertEqual(pastCheck1.isPast, true, 'August 2025 is detected as past intake');
 
-  // 10. Lifecycle Triage: Past Date -> expired
-  const triagePast = triageVacancyLifecycle('15 Jan 2025', null, refDate);
-  assertEqual(triagePast.status, 'expired', 'Past date resolves to expired');
+  const futureCheck = isPastAcademicIntake('Teacher of Mathematics - August 2026', refDate);
+  assertEqual(futureCheck.isPast, false, 'August 2026 is detected as active intake');
 
-  // 11. Lifecycle Triage: 45-day rolling staleness rule
+  const futureCheck2 = isPastAcademicIntake('Head of Science - August 2027', refDate);
+  assertEqual(futureCheck2.isPast, false, 'August 2027 is detected as active intake');
+
+  const relAgeStale = isPastAcademicIntake('Posted 2 years ago', refDate);
+  assertEqual(relAgeStale.isPast, true, 'Posted 2 years ago is detected as expired relative age');
+
+  const relAgeFresh = isPastAcademicIntake('Posted 3 days ago', refDate);
+  assertEqual(relAgeFresh.isPast, false, 'Posted 3 days ago is detected as fresh');
+
+  // 10. Lifecycle Triage: Past intake title -> expired
+  const triageTitlePast = triageVacancyLifecycle('Unlimited', null, refDate, 'Islamic B Teacher - August 2025');
+  assertEqual(triageTitlePast.status, 'expired', 'Past intake in title triggers expired triage');
+
+  // 11. Lifecycle Triage: 42-day rolling staleness rule
   // Case A: Recent rolling job (10 days old) -> approved
   const tenDaysAgo = new Date(refDate.getTime() - 10 * 24 * 60 * 60 * 1000);
   const triageRecentRolling = triageVacancyLifecycle('Rolling basis', tenDaysAgo, refDate);
-  assertEqual(triageRecentRolling.status, 'approved', 'Recent rolling vacancy is approved');
+  assertEqual(triageRecentRolling.status, 'approved', 'Recent rolling vacancy (10d) is approved');
   assertEqual(triageRecentRolling.isStaleRolling, false, 'Recent rolling is not stale');
 
-  // Case B: Stale rolling job (50 days old) -> expired
-  const fiftyDaysAgo = new Date(refDate.getTime() - 50 * 24 * 60 * 60 * 1000);
-  const triageStaleRolling = triageVacancyLifecycle('Rolling basis', fiftyDaysAgo, refDate);
-  assertEqual(triageStaleRolling.status, 'expired', 'Old rolling vacancy (>45d) is expired');
-  assertEqual(triageStaleRolling.isStaleRolling, true, 'Old rolling is marked stale');
+  // Case B: Stale rolling job (45 days old > 42 days) -> expired
+  const fortyFiveDaysAgo = new Date(refDate.getTime() - 45 * 24 * 60 * 60 * 1000);
+  const triageStaleRolling = triageVacancyLifecycle('Rolling basis', fortyFiveDaysAgo, refDate);
+  assertEqual(triageStaleRolling.status, 'expired', 'Rolling vacancy older than 42 days is expired');
+  assertEqual(triageStaleRolling.isStaleRolling, true, 'Rolling vacancy is marked stale');
 
-  // 12. Relative Date Parser
+  // 12. Relative Date Parser with Years
   const relResult = parseRelativeDate('Posted 3 days ago');
   assertEqual(typeof relResult, 'string', 'parseRelativeDate returns an ISO string');
+
+  const relYearResult = parseRelativeDate('Posted 2 years ago');
+  assertEqual(typeof relYearResult, 'string', 'parseRelativeDate parses years');
 
   console.log(`\n📊 Date Parser Test Summary: ${passed} passed, ${failed} failed.`);
   if (failed > 0) {

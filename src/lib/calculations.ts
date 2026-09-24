@@ -9,7 +9,7 @@ export const RATES: Record<string, number> = {
   SGD: 1.7, MYR: 5.9, THB: 45, CNY: 9.1, BRL: 6.5, ARS: 1200, OMR: 0.49,
   KRW: 1750, VND: 32000, IDR: 20000, KWD: 0.39, BHD: 0.48, EGP: 60, JOD: 0.90, ZAR: 24, MXN: 21, COP: 4900,
   TWD: 41.5, TRY: 44.0, KZT: 630.0, KHR: 5200.0, GHS: 19.2, NGN: 2050.0, ETB: 158.0, MAD: 12.8, CLP: 1220.0, PAB: 1.28,
-  BGN: 2.30, RSD: 138.0
+  BGN: 2.30, RSD: 138.0, NPR: 175.0, LKR: 390.0, BND: 1.70, UYU: 52.0, GEL: 3.50, UZS: 16200.0
 };
 
 export const canonicalCountry = (c: string) => {
@@ -29,6 +29,18 @@ export const canonicalCountry = (c: string) => {
   if (n.includes("azerbaijan")) return "azerbaijan";
   if (n.includes("cyprus")) return "cyprus";
   if (n.includes("turkey") || n.includes("türkiye")) return "turkey";
+  if (n.includes("japan") || n.includes("tokyo")) return "japan";
+  if (n.includes("nepal") || n.includes("kathmandu")) return "nepal";
+  if (n.includes("sri lanka") || n.includes("colombo")) return "sri lanka";
+  if (n.includes("lithuania") || n.includes("vilnius")) return "lithuania";
+  if (n.includes("croatia") || n.includes("zagreb") || n.includes("split")) return "croatia";
+  if (n.includes("panama")) return "panama";
+  if (n.includes("malta") || n.includes("valletta")) return "malta";
+  if (n.includes("uzbek") || n.includes("tashkent")) return "uzbekistan";
+  if (n.includes("brunei")) return "brunei";
+  if (n.includes("uruguay") || n.includes("montevideo")) return "uruguay";
+  if (n.includes("venezuela") || n.includes("caracas")) return "venezuela";
+  if (n.includes("georgia") || n.includes("tbilisi")) return "georgia";
   return n;
 };
 
@@ -241,37 +253,82 @@ export function getCOLField(data: any, keys: string[]): any {
 export function findCostOfLiving(city: string, country: string, costOfLivingList: any[]): any {
   if (!costOfLivingList || costOfLivingList.length === 0) return null;
   
-  const cleanStr = (s: any) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+  const cleanStr = (s: any) => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
   
   const sCity = cleanStr(city);
   const sCountry = cleanStr(canonicalCountry(country));
 
-  const matches = costOfLivingList.filter((c: any) => {
-    const cCity = cleanStr(c.city || c.city_name || "");
-    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || ""));
-    const cId = cleanStr(c.id || c._id || "");
-    
-    return (
-      (sCity && cCity && sCity === cCity) ||
-      (sCountry && cCountry && sCountry === cCountry) ||
-      (sCity && cId && (cId === sCity || cId.includes(sCity))) ||
-      (sCountry && cId && (cId === sCountry || cId.includes(sCountry))) ||
-      (sCountry === "hongkong" && (cCity.includes("hongkong") || cId.includes("hongkong"))) ||
-      (sCountry === "unitedarabemirates" && (cCountry.includes("uae") || cId.includes("uae"))) ||
-      (sCountry === "unitedkingdom" && (cCountry.includes("england") || cId.includes("england") || cId.includes("london"))) ||
-      (sCountry === "czechia" && (cCountry.includes("czech") || cId.includes("prague"))) ||
-      (sCountry === "tanzania" && (cCountry.includes("tanzania") || cId.includes("tanzania") || cId.includes("arusha") || cId.includes("moshi")))
+  if (sCountry === "monaco" || sCity === "monaco") {
+    const flis0193Col = costOfLivingList.find((c: any) =>
+      cleanStr(c.id || "").includes("flis0193") ||
+      cleanStr(c.city || "").includes("mougins") ||
+      cleanStr(c.id || "").includes("france") ||
+      canonicalCountry(c.country || "") === "france"
     );
+    if (flis0193Col) return flis0193Col;
+  }
+
+  const countryMatches = costOfLivingList.filter((c: any) => {
+    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || c.countryName || ""));
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    return cCountry === sCountry ||
+      cId === sCountry ||
+      cId.includes(sCountry) ||
+      (sCountry === "hongkong" && (cCity.includes("hongkong") || cId.includes("hongkong"))) ||
+      (sCountry === "unitedarabemirates" && (cCountry.includes("uae") || cId.includes("uae") || cCountry.includes("emirates"))) ||
+      (sCountry === "unitedkingdom" && (cCountry.includes("england") || cId.includes("england") || cId.includes("london") || cId.includes("uk"))) ||
+      (sCountry === "singapore" && (cCity.includes("singapore") || cId.includes("singapore")));
   });
 
-  if (matches.length === 0) {
+  if (countryMatches.length === 0) {
     if (sCountry === "portugal") return costOfLivingList.find((c: any) => cleanStr(c.country || "").includes("spain") || cleanStr(c.id || "").includes("spain")) || costOfLivingList[0];
-    if (sCountry === "monaco") return costOfLivingList.find((c: any) => cleanStr(c.city || "").includes("paris") || cleanStr(c.id || "").includes("france")) || costOfLivingList[0];
     if (sCountry === "cyprus" || sCountry === "azerbaijan") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("istanbul") || cleanStr(c.country || "").includes("turkey")) || costOfLivingList[0];
     if (sCountry === "peru") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("bogota") || cleanStr(c.country || "").includes("colombia") || cleanStr(c.country || "").includes("chile")) || costOfLivingList[0];
     return null;
   }
-  return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes("groceries") || k.toLowerCase().includes("rent"))) || matches[0] || null;
+
+  // 1. Exact city name or ID match
+  const exactCity = countryMatches.find((c: any) => {
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    return (sCity && cCity && sCity === cCity) || (sCity && (cId === sCity || cId === sCity + sCountry || cId === sCity + "-" + sCountry || cId.startsWith(sCity + "-")));
+  });
+  if (exactCity) return exactCity;
+
+  // 2. Primary city match (starts with sCity and not 'outside' / 'regional')
+  const primaryCity = countryMatches.find((c: any) => {
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    const isOutside = cId.includes("outside") || cCity.includes("outside") || cId.includes("regional") || cCity.includes("regional");
+    return sCity && !isOutside && (cCity.startsWith(sCity) || cId.startsWith(sCity) || cId.startsWith(sCity + "-"));
+  });
+  if (primaryCity) return primaryCity;
+
+  // 3. Substring city match (not outside/regional)
+  const subCity = countryMatches.find((c: any) => {
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    const isOutside = cId.includes("outside") || cCity.includes("outside") || cId.includes("regional") || cCity.includes("regional");
+    return sCity && !isOutside && (cCity.includes(sCity) || cId.includes(sCity));
+  });
+  if (subCity) return subCity;
+
+  // 4. Regional / Outside match for secondary cities
+  const regionalMatch = countryMatches.find((c: any) => {
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    return cId.includes("outside") || cCity.includes("outside") || cId.includes("regional") || cCity.includes("regional");
+  });
+  if (regionalMatch && sCity && !["tokyo", "london", "paris", "beijing", "shanghai", "bangkok"].includes(sCity)) {
+    return regionalMatch;
+  }
+
+  // 5. National country document
+  const nationalDoc = countryMatches.find((c: any) => cleanStr(c.id || c._id || "") === sCountry);
+  if (nationalDoc) return nationalDoc;
+
+  return countryMatches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes("groceries") || k.toLowerCase().includes("rent"))) || countryMatches[0] || null;
 }
 
 export const PROFILE_MAP: Record<string, string> = {

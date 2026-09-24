@@ -1454,22 +1454,62 @@ function DecoderContent() {
       if (flis0193Col) return flis0193Col;
     }
 
-    const matches = costOfLiving.filter((c: any) =>
-      normalize(c.city || c.city_name) === sCity ||
-      (sCity.includes("joburg") && normalize(c.city || c.city_name).includes("johannesburg")) ||
-      canonicalCountry(c.country || '') === sCountry ||
-      normalize(c.id) === sCity || normalize(c.id) === sCountry
-    );
-
-    if (matches.length === 0) return null;
-
-    const cityMatch = matches.find((c: any) => {
-      const cCity = normalize(c.city || c.city_name || c.id || '');
-      return (sCity && cCity && (cCity.includes(sCity) || sCity.includes(cCity) || ((sCity.includes('joburg') || sCity.includes('johannesburg')) && cCity.includes('johannesburg'))));
+    const countryMatches = costOfLiving.filter((c: any) => {
+      const cCountry = canonicalCountry(c.country || c.countryName || '');
+      const cCity = normalize(c.city || c.cityName || '');
+      const cId = normalize(c.id);
+      return cCountry === sCountry ||
+        cId === sCountry ||
+        cId.includes(sCountry) ||
+        (sCountry === 'hong kong' && (cCity.includes('hongkong') || cId.includes('hongkong'))) ||
+        (sCountry === 'united arab emirates' && (cCountry.includes('uae') || cId.includes('uae') || cCountry.includes('emirates'))) ||
+        (sCountry === 'united kingdom' && (cCountry.includes('england') || cId.includes('england') || cId.includes('london') || cId.includes('uk'))) ||
+        (sCountry === 'singapore' && (cCity.includes('singapore') || cId.includes('singapore')));
     });
-    if (cityMatch) return cityMatch;
 
-    return matches.find((c: any) => Object.keys(c).some(k => k.toLowerCase().includes('groceries') || k.toLowerCase().includes('rent'))) || matches[0];
+    if (countryMatches.length === 0) return null;
+
+    // 1. Exact city name or ID match
+    const exactCity = countryMatches.find((c: any) => {
+      const cCity = normalize(c.city || c.cityName || '');
+      const cId = normalize(c.id);
+      return (sCity && cCity && sCity === cCity) || (sCity && (cId === sCity || cId === sCity + sCountry || cId === sCity + '-' + sCountry || cId.startsWith(sCity + '-')));
+    });
+    if (exactCity) return exactCity;
+
+    // 2. Primary city match (starts with sCity and not 'outside' / 'regional' unless sCity is outside)
+    const primaryCity = countryMatches.find((c: any) => {
+      const cCity = normalize(c.city || c.cityName || '');
+      const cId = normalize(c.id);
+      const isOutside = cId.includes('outside') || cCity.includes('outside') || cId.includes('regional') || cCity.includes('regional');
+      return sCity && !isOutside && (cCity.startsWith(sCity) || cId.startsWith(sCity) || cId.startsWith(sCity + '-'));
+    });
+    if (primaryCity) return primaryCity;
+
+    // 3. Substring city match (not outside/regional)
+    const subCity = countryMatches.find((c: any) => {
+      const cCity = normalize(c.city || c.cityName || '');
+      const cId = normalize(c.id);
+      const isOutside = cId.includes('outside') || cCity.includes('outside') || cId.includes('regional') || cCity.includes('regional');
+      return sCity && !isOutside && (cCity.includes(sCity) || cId.includes(sCity));
+    });
+    if (subCity) return subCity;
+
+    // 4. Regional / Outside match for secondary cities
+    const regionalMatch = countryMatches.find((c: any) => {
+      const cCity = normalize(c.city || c.cityName || '');
+      const cId = normalize(c.id);
+      return cId.includes('outside') || cCity.includes('outside') || cId.includes('regional') || cCity.includes('regional');
+    });
+    if (regionalMatch && sCity && !['tokyo', 'london', 'paris', 'beijing', 'shanghai', 'bangkok'].includes(sCity)) {
+      return regionalMatch;
+    }
+
+    // 5. National country document
+    const nationalDoc = countryMatches.find((c: any) => normalize(c.id) === sCountry);
+    if (nationalDoc) return nationalDoc;
+
+    return countryMatches[0];
   }, [activeSchool, costOfLiving]);
 
   const activeReq = useMemo(() => {

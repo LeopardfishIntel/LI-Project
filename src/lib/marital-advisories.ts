@@ -1200,6 +1200,175 @@ export const MARITAL_ADVISORIES: Record<string, CoupleCountryAdvisory> = {
       trailingSpouse: 'A spouse or registered partner granted a temporary residence permit for family reunification has full legal rights to work for any employer in Latvia.',
       dualTeacher: 'Teaching couples receive independent employment contracts, social tax contributions (VSAA), and private medical coverage.'
     }
+  },
+  nepal: {
+    country: 'Nepal',
+    region: 'Global',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'legal',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: [
+      'USD Expat Package',
+      'Low Living Costs',
+      'Separate Spousal Work Visa'
+    ],
+    guidance: {
+      unmarried: 'Unmarried cohabitation for foreign expatriates is legal and widely accepted in Kathmandu residential zones (Sanepa, Jhamsikhel). However, dependent visa sponsorship requires an official marriage certificate.',
+      sameSex: 'Nepal possesses progressive constitutional protections for LGBTQ+ rights. Foreign same-sex marriages do not confer automatic dependent work visas; both teachers should apply for independent work permits with the school.',
+      femaleSponsor: 'Female educators can sponsor dependent family members through the Department of Immigration under standard procedures.',
+      trailingSpouse: 'A non-working spouse on a dependent visa cannot work locally without obtaining an independent work permit from the Ministry of Labour.',
+      dualTeacher: 'Dual-teaching couples are warmly welcomed by international schools in Kathmandu, which provide large furnished family accommodation and joint relocation allowances.'
+    }
+  },
+  'sri lanka': {
+    country: 'Sri Lanka',
+    region: 'Global',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'legal',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: [
+      'USD Pegged Contracts',
+      'Tropical Island Lifestyle',
+      'Marriage Cert for Dependent Visa'
+    ],
+    guidance: {
+      unmarried: 'Unmarried expat couples can legally share private residential accommodations in Colombo and coastal hubs without legal impediments. Spousal residence visa sponsorship requires a legalized marriage certificate.',
+      sameSex: 'Decriminalization reforms are advancing. Same-sex couples should secure separate individual employment contracts and exercise general discretion in formal and public documentation.',
+      femaleSponsor: 'Female expat teachers can sponsor non-working husbands on dependent residence visas with school administrative support.',
+      trailingSpouse: 'Spouses holding dependent residence visas cannot work locally without converting to an employer-sponsored work visa.',
+      dualTeacher: 'International schools in Colombo offer generous joint housing allowances or spacious coastal apartments along with comprehensive family healthcare.'
+    }
+  },
+  lithuania: {
+    country: 'Lithuania',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: [
+      'EU / Schengen Rights',
+      'Direct Spousal Work Rights',
+      'Hague Apostille Accepted'
+    ],
+    guidance: {
+      unmarried: 'Lithuania recognizes registered partnerships and proven cohabitation for temporary residence permit sponsorship alongside traditional civil marriage.',
+      sameSex: 'Same-sex couples enjoy civil protections and safe living environments in Vilnius and Kaunas. Spousal/partner family reunification is processed under standard Migration Department (MIGRIS) rules.',
+      femaleSponsor: 'Strictly equal treatment under Lithuanian and EU equality laws.',
+      trailingSpouse: 'A spouse granted a Temporary Residence Permit under family reunification is granted immediate, unrestricted legal rights to work in Lithuania.',
+      dualTeacher: 'Teaching pairs receive independent contracts, Compulsory Health Insurance (PSD), and access to state-of-the-art digital infrastructure.'
+    }
+  },
+  malta: {
+    country: 'Malta',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: [
+      'English Official Language',
+      '#1 Rainbow Europe Index',
+      'Free Public Buses'
+    ],
+    guidance: {
+      unmarried: 'Malta legally recognizes cohabitation through the Cohabitation Act, allowing unmarried partners to apply for residency with valid documentation.',
+      sameSex: 'Malta is recognized as one of the most progressive nations globally for LGBTQ+ equality (#1 on the ILGA Rainbow Europe Index), with full equal marriage and spousal residency rights.',
+      femaleSponsor: 'Strictly equal sponsorship criteria under Identity Malta regulations.',
+      trailingSpouse: 'Dependent spouses can obtain work authorization under Identity Malta Single Permit regulations with full legal employment rights.',
+      dualTeacher: 'Both educators receive independent teaching contracts under the Council for the Teaching Profession Malta warrant system.'
+    }
+  },
+  uzbekistan: {
+    country: 'Uzbekistan',
+    region: 'Europe',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'legal',
+    sameSexRecognition: 'unrecognized_caution',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['High USD Savings', 'Silk Road Expat Hub', 'Separate Spousal Work Visa'],
+    guidance: {
+      unmarried: 'Unmarried cohabitation for foreign expatriates is legal and common in Tashkent modern residential towers. Spousal visa sponsorship requires a legal marriage certificate.',
+      sameSex: 'Same-sex relations are restricted under local statutes; international teachers must apply on independent individual work visas and maintain personal discretion.',
+      femaleSponsor: 'Female educators can sponsor dependent family members through the Ministry of Internal Affairs migration department.',
+      trailingSpouse: 'Trailing spouses require an independent work permit to take up local employment.',
+      dualTeacher: 'International schools provide generous joint expat housing or individual contract allocations.'
+    }
+  },
+  brunei: {
+    country: 'Brunei',
+    region: 'Southeast Asia',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'illegal_strict',
+    sameSexRecognition: 'criminalized_strict',
+    femaleSponsoringMale: 'restricted_difficult',
+    trailingSpouseWork: 'prohibited_on_dependent_visa',
+    badges: ['Tax-Free Sultanate', 'Luxury Free Housing', 'Attested Marriage Cert Required'],
+    guidance: {
+      unmarried: 'Cohabitation outside marriage is restricted under local laws. Unmarried couples must apply as independent single hires with separate accommodation allocations.',
+      sameSex: 'Strict legal restrictions apply; candidates must apply as independent single educators and exercise absolute discretion in personal documentation.',
+      femaleSponsor: 'Female expatriates can sponsor dependent husbands subject to immigration approval and school administrative support.',
+      trailingSpouse: 'Employment on a dependent pass is prohibited without converting to an employer-sponsored work pass.',
+      dualTeacher: 'Dual-teacher couples receive spacious executive detached houses on or near campus with high tax-free savings.'
+    }
+  },
+  uruguay: {
+    country: 'Uruguay',
+    region: 'Americas',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'recognized_with_visas',
+    sameSexRecognition: 'recognized',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Progressive Civil Rights', 'Full Spousal Work Rights', 'High Democratic Stability'],
+    guidance: {
+      unmarried: 'Uruguay recognizes registered concubinage (cohabitation) for residency sponsorship alongside civil marriage.',
+      sameSex: 'Uruguay was among the earliest Latin American nations to enact equal marriage rights, providing full legal equality and spousal visa benefits.',
+      femaleSponsor: 'Strictly equal criteria under Uruguayan immigration law.',
+      trailingSpouse: 'Spouses and recognized partners holding temporary or permanent residency have immediate legal rights to work in Uruguay.',
+      dualTeacher: 'Both educators receive separate employment contracts under standard Uruguayan labor protections.'
+    }
+  },
+  venezuela: {
+    country: 'Venezuela',
+    region: 'Americas',
+    marriageCertMandatory: true,
+    cohabitationStatus: 'legal',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'separate_work_visa_only',
+    badges: ['USD Expat Hardship Package', 'Gated Compound Housing', 'Separate Work Visa Required'],
+    guidance: {
+      unmarried: 'Foreign teachers can cohabitate in private expat housing; dependent visa sponsorship requires an authenticated marriage certificate.',
+      sameSex: 'Foreign same-sex marriages do not confer automatic spousal visas; both educators must apply on separate teaching contracts.',
+      femaleSponsor: 'Standard dependent sponsorship procedures apply through SAIME with school HR assistance.',
+      trailingSpouse: 'Spouses holding dependent visas must secure independent work authorization to take up local employment.',
+      dualTeacher: 'International schools provide fully secure gated family residences and comprehensive USD expat hardship packages.'
+    }
+  },
+  georgia: {
+    country: 'Georgia',
+    region: 'Europe',
+    marriageCertMandatory: false,
+    cohabitationStatus: 'legal',
+    sameSexRecognition: 'unrecognized_safe',
+    femaleSponsoringMale: 'standard',
+    trailingSpouseWork: 'full_rights',
+    badges: ['Liberal Visa Regime', 'High Expat Safety', 'Hague Apostille Accepted'],
+    guidance: {
+      unmarried: 'Unmarried expat couples can legally share private residential accommodations in Tbilisi and Batumi without restrictions.',
+      sameSex: 'Foreign same-sex couples live safely in Tbilisi; however, spousal residency is processed individually under Georgia\'s liberal work and residence frameworks.',
+      femaleSponsor: 'Equal sponsorship criteria under the Public Service Hall framework.',
+      trailingSpouse: 'Residency permit holders under family reunification have legal rights to work or freelance locally.',
+      dualTeacher: 'International schools provide competitive joint allowances or centrally located furnished apartments.'
+    }
   }
 };
 
@@ -1297,6 +1466,15 @@ export function getCoupleAdvisory(countryRaw?: string): CoupleCountryAdvisory {
   if (canon.includes('serbia') || canon.includes('belgrade')) return MARITAL_ADVISORIES['serbia'];
   if (canon.includes('slovakia') || canon.includes('bratislava')) return MARITAL_ADVISORIES['slovakia'];
   if (canon.includes('latvia') || canon.includes('riga')) return MARITAL_ADVISORIES['latvia'];
+  if (canon.includes('nepal') || canon.includes('kathmandu')) return MARITAL_ADVISORIES['nepal'];
+  if (canon.includes('sri lanka') || canon.includes('colombo')) return MARITAL_ADVISORIES['sri lanka'];
+  if (canon.includes('lithuania') || canon.includes('vilnius')) return MARITAL_ADVISORIES['lithuania'];
+  if (canon.includes('malta') || canon.includes('valletta')) return MARITAL_ADVISORIES['malta'];
+  if (canon.includes('uzbek') || canon.includes('tashkent')) return MARITAL_ADVISORIES['uzbekistan'];
+  if (canon.includes('brunei')) return MARITAL_ADVISORIES['brunei'];
+  if (canon.includes('uruguay') || canon.includes('montevideo')) return MARITAL_ADVISORIES['uruguay'];
+  if (canon.includes('venezuela') || canon.includes('caracas')) return MARITAL_ADVISORIES['venezuela'];
+  if (canon.includes('georgia') || canon.includes('tbilisi')) return MARITAL_ADVISORIES['georgia'];
 
   return {
     ...DEFAULT_ADVISORY,

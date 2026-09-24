@@ -22,14 +22,21 @@ const normalizeCountry = (country: string): string => {
   return c;
 };
 
+const normalizeCurriculum = (raw: any): string => {
+  if (!raw) return 'IB / K-12';
+  if (Array.isArray(raw)) return raw.filter(Boolean).join(' / ');
+  if (typeof raw === 'string') return raw;
+  return String(raw);
+};
+
 export const SCHOOLS: SchoolData[] = (rawSchools as any[])
   .filter((s) => Boolean(s.id))
   .map((s) => ({
-    id: s.id,
-    name: s.name || s.schoolname || s.schoolName || 'International School',
-    city: s.city || '',
-    country: normalizeCountry(s.country || ''),
-    curriculum: s.curriculum || s.intel?.curriculum || 'IB / K-12',
+    id: String(s.id),
+    name: String(s.name || s.schoolname || s.schoolName || 'International School'),
+    city: String(s.city || ''),
+    country: normalizeCountry(String(s.country || '')),
+    curriculum: normalizeCurriculum(s.curriculum || s.intel?.curriculum),
     salaryRange: s.salaryRange || s.salary_range || undefined,
     summary: s.summary || undefined,
     financescore: s.financescore || undefined,

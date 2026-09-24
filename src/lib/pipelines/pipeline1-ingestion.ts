@@ -77,9 +77,17 @@ function buildCacheDocument(
   const closingDateISO = parsedDate.closingDate
     ? parsedDate.closingDate.toISOString().split("T")[0]
     : null;
-  const closingDateMillis = parsedDate.closingDate
+    
+  let closingDateMillis = parsedDate.closingDate
     ? parsedDate.closingDate.getTime()
     : null;
+
+  // 🛡️ Gate 3: 42-Day Cap for Rolling / Unlimited Deadlines
+  if (!closingDateMillis) {
+    const postTime = record.datePosted ? new Date(record.datePosted).getTime() : NaN;
+    const baseTime = !isNaN(postTime) ? postTime : Date.now();
+    closingDateMillis = baseTime + 42 * 24 * 60 * 60 * 1000;
+  }
 
   const srcName = record.source || "TES";
   const srcUrls: Record<string, string> = { ...(record.sourceUrls || {}) };
@@ -309,11 +317,16 @@ export async function runIngestionPipeline(
       continue;
     }
 
-    // ── GATE 3: Expired Closing Date Check ──────────────────────────────────
-    const triage = triageVacancyLifecycle(String(record.closingDate || ''), record.datePosted);
+    // ── GATE 3: Expired Closing Date & Past Intake Check ───────────────────
+    const triage = triageVacancyLifecycle(
+      String(record.closingDate || ''), 
+      record.datePosted, 
+      new Date(), 
+      record.rawTitle
+    );
     if (triage.status === "expired") {
       rejected++;
-      reasons.push(`[EXPIRED_JOB_REJECTED] "${record.rawTitle}" (${record.closingDate})`);
+      reasons.push(`[EXPIRED_JOB_REJECTED] "${record.rawTitle}" (${record.closingDate || 'undated'}: ${triage.expiryReason || 'expired'})`);
       continue;
     }
 
