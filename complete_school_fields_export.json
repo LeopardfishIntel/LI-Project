@@ -17274,7 +17274,10 @@
     "housingprovision": "No",
     "techecosystem": "Mixed LMS",
     "citysafety": "7.9",
-    "curriculum": "IB",
+    "curriculum": [
+      "Austrian National Curriculum",
+      "IB DP"
+    ],
     "staffcount": "85",
     "schoolname": "International School Innsbruck",
     "worklifescore": "8.1",
@@ -17306,7 +17309,7 @@
     "bonusPot": "+€6,210 / yr",
     "baseSalary": "€2,480",
     "salary": "€2,480/month",
-    "website": "https://www.innsbruck-iis.at",
+    "website": "https://www.agibk.at/en/international-school.html",
     "revalidationCompletedAt": {
       "_nanoseconds": 96000000,
       "_seconds": 1788076591
@@ -17323,11 +17326,8 @@
     "hasIndependentCareerPortal": false,
     "careersPageUrl": "",
     "excludeFromDirectSearch": true,
-    "careersUrl": "",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "careersUrl": "https://www.agibk.at/en/international-school/our-school.html",
+    "updatedAt": "2026-09-24T13:13:26.499Z"
   },
   {
     "financescore": "8.5",
@@ -17348,7 +17348,10 @@
     "housingprovision": "Yes",
     "techecosystem": "Mixed LMS",
     "citysafety": "7.4",
-    "curriculum": "IB",
+    "curriculum": [
+      "Austrian National Curriculum",
+      "IB DP"
+    ],
     "staffcount": "26",
     "schoolname": "Lower Austrian International School",
     "worklifescore": "7.8",
@@ -17380,7 +17383,7 @@
     "bonusPot": "+€6,100 / yr",
     "baseSalary": "€2,440",
     "salary": "€2,440/month",
-    "website": "https://www.lais.at",
+    "website": "https://www.borglsp-stpoelten.ac.at/schulformen/lais-lower-austrian-international-school",
     "revalidationCompletedAt": {
       "_nanoseconds": 684000000,
       "_seconds": 1788076584
@@ -17397,11 +17400,8 @@
     "hasIndependentCareerPortal": false,
     "careersPageUrl": "",
     "excludeFromDirectSearch": true,
-    "careersUrl": "",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "careersUrl": "https://www.borglsp-stpoelten.ac.at",
+    "updatedAt": "2026-09-24T13:13:26.499Z"
   },
   {
     "financescore": "8.8",
@@ -17494,7 +17494,10 @@
     "housingprovision": "No",
     "techecosystem": "Mixed LMS",
     "citysafety": "8.1",
-    "curriculum": "IB",
+    "curriculum": [
+      "Austrian National Curriculum",
+      "IB DP"
+    ],
     "staffcount": "40",
     "schoolname": "SALIS - Salzburg International School",
     "worklifescore": "8.1",
@@ -17526,7 +17529,7 @@
     "bonusPot": "+€6,100 / yr",
     "baseSalary": "€2,440",
     "salary": "€2,440/month",
-    "website": "https://www.sais.at",
+    "website": "https://www.bgzaunergasse.at/salis-englisch",
     "revalidationCompletedAt": {
       "_nanoseconds": 795000000,
       "_seconds": 1788076587
@@ -17543,11 +17546,8 @@
     "hasIndependentCareerPortal": false,
     "careersPageUrl": "",
     "excludeFromDirectSearch": true,
-    "careersUrl": "",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "careersUrl": "https://www.bgzaunergasse.at/salis-englisch",
+    "updatedAt": "2026-09-24T13:13:26.499Z"
   },
   {
     "financescore": "5.2",
@@ -21117,7 +21117,11 @@
     "schooljp": "https://www.uwcea.org",
     "tesEmployerSlug": "uwc-east-africa-1082531",
     "tesOrganizationId": "1082531",
-    "curriculum": "IB",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "curriculumTier": "IB World School (PYP, MYP, DP)",
     "ibWorldSchool": true,
     "accreditation": "CIS, MSA, IB World School, UWC Movement",
@@ -21213,12 +21217,10 @@
     "schoolId": "FLIS0249",
     "isCampusStub": false,
     "housingprovision": "Accommodation Included: Provided single-story compound housing with 24/7 security",
-    "careersUrl": "https://employ.uwcea.org",
+    "careersUrl": "https://www.uwcea.org/careers",
     "netbase": 2000,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.uwcea.org"
   },
   {
     "financescore": "8.5",
@@ -22673,7 +22675,11 @@
     "city": "Bucharest",
     "housingprovision": "Allowance ($800 - $1,400/mo)",
     "totalscore": "8.9",
-    "curriculum": "IB PYP, IB MYP, IB DP",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "numericalrating": "8.9",
     "schoolname": "American International School of Bucharest",
     "tesEmployerSlug": null,
@@ -22689,10 +22695,8 @@
     "careersUrl": "https://www.aisb.ro/careers",
     "legalCountryKey": "romania",
     "openJobsCount": 0,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.aisb.ro"
   },
   {
     "salaryRange": "$2,700 - $4,000 / mo net",
@@ -22706,7 +22710,10 @@
     "city": "Warsaw",
     "housingprovision": "Allowance ($900 - $1,500/mo)",
     "totalscore": "8.9",
-    "curriculum": "US Curriculum, IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "numericalrating": "8.9",
     "schoolname": "American School of Warsaw",
     "tesEmployerSlug": null,
@@ -22722,10 +22729,8 @@
     "careersUrl": "https://www.aswarsaw.org/careers",
     "legalCountryKey": "poland",
     "openJobsCount": 0,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.aswarsaw.org"
   },
   {
     "salaryRange": "32,000 - 45,000 NOK / mo net",
@@ -22739,7 +22744,11 @@
     "city": "Stavanger",
     "housingprovision": "Not Included",
     "totalscore": "8.8",
-    "curriculum": "AP, IB DP, IGCSE",
+    "curriculum": [
+      "US Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "numericalrating": "8.8",
     "schoolname": "International School of Stavanger",
     "tesEmployerSlug": null,
@@ -22755,10 +22764,8 @@
     "careersUrl": "https://www.isstavanger.no/careers",
     "legalCountryKey": "norway",
     "openJobsCount": 0,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.isstavanger.no"
   },
   {
     "salaryRange": "€1,900 - €2,800 / mo net (14 installments)",
@@ -22772,7 +22779,10 @@
     "city": "Sintra / Lisbon",
     "housingprovision": "Not Included",
     "totalscore": "8.7",
-    "curriculum": "US Curriculum, IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "numericalrating": "8.7",
     "schoolname": "Carlucci American International School of Lisbon",
     "tesEmployerSlug": null,
@@ -22785,13 +22795,11 @@
     "currency": "EUR",
     "location": "Sintra / Lisbon",
     "id": "FLIS0257",
-    "careersUrl": "https://www.caislisbon.org/join-us/work-at-caisl",
+    "careersUrl": "https://www.caisl.pt/careers",
     "legalCountryKey": "portugal",
     "openJobsCount": 0,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.caisl.pt"
   },
   {
     "salaryRange": "$2,400 - $3,500 / mo net",
@@ -25560,7 +25568,9 @@
     "summary": "Flagship KHDA 'Outstanding' primary school in Umm Suqeim with premier salary packages and high staff retention.",
     "website": "https://kings-edu.com/dubai",
     "housingprovision": "Provided or AED 7,500/mo allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057077",
     "intel": {
@@ -25590,10 +25600,8 @@
     "officialDomain": "kings-edu.com/dubai",
     "name": "Kings' School Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://kings-edu.com/careers"
   },
   {
     "financescore": "9.4",
@@ -25619,7 +25627,11 @@
     "summary": "Expansive 'Outstanding' all-through campus offering top-tier British curriculum secondary education and competitive expat benefits.",
     "website": "https://kings-edu.com/albarsha",
     "housingprovision": "Provided or AED 8,000/mo allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070851",
     "intel": {
@@ -25649,10 +25661,8 @@
     "officialDomain": "kings-edu.com/albarsha",
     "name": "Kings' School Al Barsha",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://kings-edu.com/careers"
   },
   {
     "financescore": "9.3",
@@ -25678,7 +25688,9 @@
     "summary": "Boutique Kings' campus in Nad Al Sheba with excellent student outcomes and high financial package benchmark scores.",
     "website": "https://kings-edu.com/nadalsheba",
     "housingprovision": "Provided or AED 7,500/mo allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070852",
     "intel": {
@@ -25708,10 +25720,8 @@
     "officialDomain": "kings-edu.com/nadalsheba",
     "name": "Kings' School Nad Al Sheba",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://kings-edu.com/careers"
   },
   {
     "financescore": "9.6",
@@ -25737,7 +25747,11 @@
     "summary": "Ultra-premium academically ambitious IB World School offering top-decile UAE salary and housing allocations.",
     "website": "https://nlcsdubai.ae",
     "housingprovision": "Provided luxury apartment or AED 9,000/mo allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1083411",
     "intel": {
@@ -25767,10 +25781,8 @@
     "officialDomain": "nlcsdubai.ae",
     "name": "North London Collegiate School Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://nlcsdubai.ae/careers"
   },
   {
     "financescore": "9.4",
@@ -25794,9 +25806,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 15,000 - 20,000 / month",
     "summary": "Prestigious UK heritage brand in Al Barsha South with outstanding facilities and attractive tax-free savings potential.",
-    "website": "https://brightoncollegedubai.ae",
+    "website": "https://www.brightoncollegedubai.ae",
     "housingprovision": "Provided furnished apartment or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1167203",
     "intel": {
@@ -25828,10 +25844,8 @@
     "openJobsCount": 3,
     "lastSweptDate": "2026-09-23T13:36:04.979Z",
     "lastSweptAtMillis": 1790170564979,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://www.brightoncollegedubai.ae/careers"
   },
   {
     "financescore": "9.3",
@@ -25855,9 +25869,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 15,000 - 19,500 / month",
     "summary": "Historic 500-year-old British brand's flagship Dubai campus featuring state-of-the-art eco-friendly infrastructure.",
-    "website": "https://rgsgdubai.ae",
+    "website": "https://www.rgsgd.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1215401",
     "intel": {
@@ -25887,10 +25905,8 @@
     "officialDomain": "rgsgdubai.ae",
     "name": "Royal Grammar School Guildford Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://www.rgsgd.com/careers"
   },
   {
     "financescore": "9.5",
@@ -25914,9 +25930,13 @@
     "phase": "Secondary only",
     "salaryRange": "AED 14,500 - 19,000 / month",
     "summary": "GEMS' flagship British secondary school in Jumeirah, consistently judged Outstanding with elite academic outcomes.",
-    "website": "https://gemsjc.com",
+    "website": "https://www.gemsjc.com",
     "housingprovision": "Provided accommodation or housing allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1055854",
     "intel": {
@@ -25948,10 +25968,8 @@
     "openJobsCount": 2,
     "lastSweptDate": "2026-09-23T13:36:16.647Z",
     "lastSweptAtMillis": 1790170576647,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.1",
@@ -25975,9 +25993,14 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "First full IB continuum school in the UAE, operating under Innoventures Education with solid institutional benchmark scores.",
-    "website": "https://diadubai.com",
+    "website": "https://www.diadubai.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "IB CP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057183",
     "intel": {
@@ -26007,10 +26030,8 @@
     "officialDomain": "diadubai.com",
     "name": "Dubai International Academy Emirates Hills",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.diadubai.com/careers-dia-eh"
   },
   {
     "financescore": "9.5",
@@ -26034,9 +26055,12 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 14,500 - 19,500 / month",
     "summary": "GEMS' sole 'Outstanding' rated American/IB curriculum school offering high savings potential and expansive facilities.",
-    "website": "https://gemsaa-dubai.com",
+    "website": "https://www.dubaiamericanacademy.com",
     "housingprovision": "Provided housing or AED 8,000/mo allowance",
-    "curriculum": "American (AERO / AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057211",
     "intel": {
@@ -26066,10 +26090,8 @@
     "officialDomain": "gemsaa-dubai.com",
     "name": "GEMS Dubai American Academy",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.4",
@@ -26093,9 +26115,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 14,000 - 18,500 / month",
     "summary": "Highly decorated 'Outstanding' all-through British/IB flagship located off Al Sufouh road.",
-    "website": "https://wellingtoninternationalschool.com",
+    "website": "https://www.wellingtoninternationalschool.com",
     "housingprovision": "Provided apartment or allowance",
-    "curriculum": "British (NCfE / GCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057214",
     "intel": {
@@ -26125,10 +26151,8 @@
     "officialDomain": "wellingtoninternationalschool.com",
     "name": "GEMS Wellington International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.1",
@@ -26152,9 +26176,14 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Large modern mega-campus in Silicon Oasis offering dual British and IB pathways with strong professional growth.",
-    "website": "https://wellingtonacademy-so.com",
+    "website": "https://www.gemswellingtonacademy-so.com",
     "housingprovision": "Provided apartment or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057212",
     "intel": {
@@ -26184,10 +26213,8 @@
     "officialDomain": "wellingtonacademy-so.com",
     "name": "GEMS Wellington Academy Silicon Oasis",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.4",
@@ -26211,9 +26238,11 @@
     "phase": "Primary only",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Long-established Outstanding primary institution in Jumeirah acting as direct feeder to Jumeirah College.",
-    "website": "https://jumeirahprimaryschool.com",
+    "website": "https://www.jumeirahprimaryschool.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057213",
     "intel": {
@@ -26243,10 +26272,8 @@
     "officialDomain": "jumeirahprimaryschool.com",
     "name": "GEMS Jumeirah Primary School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "8.8",
@@ -26270,9 +26297,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,500 - 17,000 / month",
     "summary": "Tech-focused British curriculum school located in The Villa community offering strong vocational and academic routes.",
-    "website": "https://gemsfirstpointschool-thevilla.com",
+    "website": "https://www.gemsfirstpointschool-thevilla.com",
     "housingprovision": "Provided apartment or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels / BTEC)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1083321",
     "intel": {
@@ -26302,10 +26333,8 @@
     "officialDomain": "gemsfirstpointschool-thevilla.com",
     "name": "GEMS FirstPoint School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "8.5",
@@ -26329,9 +26358,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 11,500 - 15,500 / month",
     "summary": "High-density budget-friendly British school with high vacancy output and steady expat entry-level demand.",
-    "website": "https://gemsfoundersschool-dubai.com",
+    "website": "https://www.gemsfoundersschool-dubai.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1060996",
     "intel": {
@@ -26363,10 +26396,8 @@
       "_nanoseconds": 477000000
     },
     "openJobsCount": 2,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "8.7",
@@ -26390,9 +26421,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,000 - 16,500 / month",
     "summary": "Popular British school in Motor City featuring specialized leadership streams and expansive athletic grounds.",
-    "website": "https://gemsmetropoleschool-motorcity.com",
+    "website": "https://www.gemsmetropoleschool-dubai.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070861",
     "intel": {
@@ -26422,10 +26457,8 @@
     "officialDomain": "gemsmetropoleschool-motorcity.com",
     "name": "GEMS Metropole School Motor City",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.0",
@@ -26449,9 +26482,11 @@
     "phase": "Primary only",
     "salaryRange": "AED 13,000 - 17,000 / month",
     "summary": "Only Outstanding rated school in Al Mizhar area, specializing in primary British education.",
-    "website": "https://royaldubaischool.com",
+    "website": "https://www.royaldubaischool.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057210",
     "intel": {
@@ -26481,10 +26516,8 @@
     "officialDomain": "royaldubaischool.com",
     "name": "GEMS Royal Dubai School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "8.3",
@@ -26508,9 +26541,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 11,000 - 15,000 / month",
     "summary": "Affordable British curriculum school in Dubailand providing entry opportunities for early-career overseas teachers.",
-    "website": "https://thewinchesterschool-dubai.com",
+    "website": "https://www.winchesterschool-dubai.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057215",
     "intel": {
@@ -26540,10 +26577,8 @@
     "officialDomain": "thewinchesterschool-dubai.com",
     "name": "GEMS Winchester School Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "8.6",
@@ -26567,9 +26602,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,000 - 16,000 / month",
     "summary": "Established high-volume British school in Jebel Ali offering strong internal progression within GEMS.",
-    "website": "https://winchesterschool.com",
+    "website": "https://www.thewinchesterschool.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057216",
     "intel": {
@@ -26599,10 +26638,8 @@
     "officialDomain": "winchesterschool.com",
     "name": "The Winchester School Jebel Ali",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.gemseducation.com/Careers"
   },
   {
     "financescore": "9.3",
@@ -26628,7 +26665,11 @@
     "summary": "One of Dubai's oldest heritage schools, now operating under Taaleem in a modern Damac Hills facility.",
     "website": "https://jebelalischool.org",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057220",
     "intel": {
@@ -26658,10 +26699,8 @@
     "officialDomain": "jebelalischool.org",
     "name": "Jebel Ali School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.taaleem.ae/careers"
   },
   {
     "financescore": "9.0",
@@ -26685,9 +26724,14 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "Full IB World Continuum school in Dubai Investment Park managed by Taaleem.",
-    "website": "https://gischool.ae",
+    "website": "https://gisdubai.ae",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP / IBCP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "IB CP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057222",
     "intel": {
@@ -26717,10 +26761,8 @@
     "officialDomain": "gischool.ae",
     "name": "Greenfield International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.taaleem.ae/careers"
   },
   {
     "financescore": "9.1",
@@ -26744,9 +26786,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Flagship IB institution serving Mirdif with robust facilities and competitive compensation packages.",
-    "website": "https://uis.ae",
+    "website": "https://uisdubai.ae",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057221",
     "intel": {
@@ -26776,10 +26822,8 @@
     "officialDomain": "uis.ae",
     "name": "Uptown International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.taaleem.ae/careers"
   },
   {
     "financescore": "9.6",
@@ -26802,9 +26846,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 16,000 - 22,000 / month",
     "summary": "Upcoming premium UK heritage launch in partnership with Taaleem targeting ultra-tier international talent.",
-    "website": "https://harrowdubai.ae",
+    "website": "https://www.harrowdubai.ae",
     "housingprovision": "Provided luxury accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": null,
     "intel": {
@@ -26834,10 +26882,8 @@
       "_nanoseconds": 43000000
     },
     "openJobsCount": 3,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.aislharrow.com/work-with-us/"
   },
   {
     "financescore": "9.4",
@@ -26863,7 +26909,12 @@
     "summary": "Premier French/German bilingual IB day and boarding school in Healthcare City, now part of Nord Anglia.",
     "website": "https://sisd.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "IB (PYP / MYP / DP) Bilingual (EN/FR/DE)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "Bilingual (English/French/German)"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1078502",
     "intel": {
@@ -26895,10 +26946,8 @@
     "openJobsCount": 6,
     "lastSweptDate": "2026-09-23T13:37:11.121Z",
     "lastSweptAtMillis": 1790170631121,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://sisd.ae/careers"
   },
   {
     "financescore": "9.5",
@@ -26922,9 +26971,14 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 14,000 - 18,500 / month",
     "summary": "Award-winning British school near Miracle Garden renowned for top-tier staff satisfaction and leadership culture.",
-    "website": "https://safacommunityschool.com",
+    "website": "https://www.safacommunityschool.com",
     "housingprovision": "Provided modern apartment or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels / BTEC)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "BTEC"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1077578",
     "intel": {
@@ -26956,10 +27010,8 @@
     "openJobsCount": 1,
     "lastSweptDate": "2026-09-23T13:37:17.415Z",
     "lastSweptAtMillis": 1790170637415,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.safacommunityschool.com/careers"
   },
   {
     "financescore": "9.2",
@@ -26983,9 +27035,11 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 17,500 / month",
     "summary": "State-of-the-art Meydan campus offering high-quality primary and middle-years British education.",
-    "website": "https://safabritishschool.com",
+    "website": "https://www.safabritishschool.com",
     "housingprovision": "Provided apartment or allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-3)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1060960",
     "intel": {
@@ -27015,10 +27069,8 @@
     "officialDomain": "safabritishschool.com",
     "name": "Safa British School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.safabritishschool.com/careers"
   },
   {
     "financescore": "9.1",
@@ -27044,7 +27096,11 @@
     "summary": "Established British curriculum school in Al Safa with authentic UK feel, now backed by ISP group.",
     "website": "https://englishcollege.ac.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057187",
     "intel": {
@@ -27074,10 +27130,8 @@
     "officialDomain": "englishcollege.ac.ae",
     "name": "The English College Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://englishcollege.ac.ae/careers"
   },
   {
     "financescore": "9.4",
@@ -27103,7 +27157,9 @@
     "summary": "KHDA Outstanding primary specialist school in Town Square operating under Cognita Schools.",
     "website": "https://horizonenglishschool.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057288",
     "intel": {
@@ -27133,10 +27189,8 @@
     "officialDomain": "horizonenglishschool.com",
     "name": "Horizon English School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://horizonenglishschool.com/careers"
   },
   {
     "financescore": "9.0",
@@ -27160,9 +27214,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "Sister school to Sunmarke, situated in The Greens with strong positive education focus.",
-    "website": "https://ris.ae",
+    "website": "https://www.risdubai.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057193",
     "intel": {
@@ -27192,10 +27250,8 @@
     "officialDomain": "ris.ae",
     "name": "Regent International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://forteseducation.com/careers"
   },
   {
     "financescore": "9.3",
@@ -27219,9 +27275,11 @@
     "phase": "Primary only",
     "salaryRange": "AED 13,500 - 17,500 / month",
     "summary": "Highly praised primary-only British school in Sports City known for exemplary community culture.",
-    "website": "https://vhprimary.com",
+    "website": "https://www.vhprimary.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070868",
     "intel": {
@@ -27251,10 +27309,8 @@
     "officialDomain": "vhprimary.com",
     "name": "Victory Heights Primary School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.vhprimary.com/careers"
   },
   {
     "financescore": "9.4",
@@ -27278,9 +27334,14 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 14,000 - 18,500 / month",
     "summary": "Non-profit Al Futtaim foundation school in Festival City judged Outstanding with premier packages.",
-    "website": "https://disdubai.ae",
+    "website": "https://www.disdubai.ae",
     "housingprovision": "Provided villa/apartment or allowance",
-    "curriculum": "British (NCfE / IGCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP",
+      "IB CP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057176",
     "intel": {
@@ -27310,10 +27371,8 @@
     "officialDomain": "disdubai.ae",
     "name": "Deira International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://www.disdubai.ae/careers"
   },
   {
     "financescore": "9.2",
@@ -27339,7 +27398,9 @@
     "summary": "First eco-sustainable British curriculum school in Dubai, equipped with indoor tropical biodomes.",
     "website": "https://thearborschool.ae",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1188102",
     "intel": {
@@ -27369,10 +27430,8 @@
     "officialDomain": "thearborschool.ae",
     "name": "The Arbor School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:18:21.488Z",
+    "careersUrl": "https://thearborschool.ae/careers"
   },
   {
     "financescore": "8.9",
@@ -27396,9 +27455,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "ESOL Education IB continuum school located in Sustainable City with focus on environmental literacy.",
-    "website": "https://fairgreen.ae",
+    "website": "https://www.fairgreen.ae",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1188105",
     "intel": {
@@ -27423,15 +27486,13 @@
     "officialDomain": "fairgreen.ae",
     "name": "Fairgreen International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    },
+    "updatedAt": "2026-09-24T13:18:21.488Z",
     "lastJobSyncAt": {
       "_seconds": 1790189382,
       "_nanoseconds": 658000000
     },
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "careersUrl": "https://www.fairgreen.ae/careers"
   },
   {
     "financescore": "9.0",
@@ -27455,9 +27516,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,000 / month",
     "summary": "Flagship ISP British school in Dubailand recipient of international design and inquiry awards.",
-    "website": "https://theaquilaschool.com",
+    "website": "https://www.theaquilaschool.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "BTEC"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1188101",
     "intel": {
@@ -27482,15 +27547,14 @@
     "officialDomain": "theaquilaschool.com",
     "name": "The Aquila School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    },
+    "updatedAt": "2026-09-24T13:19:51.147Z",
     "lastJobSyncAt": {
       "_seconds": 1790189382,
       "_nanoseconds": 658000000
     },
-    "openJobsCount": 6
+    "openJobsCount": 6,
+    "careersUrl": "https://www.theaquilaschool.com/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "9.0",
@@ -27514,9 +27578,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Branch of the 600-year-old Durham School UK, situated in Dubai Investments Park.",
-    "website": "https://durhamdubai.com",
+    "website": "https://www.durhamdubai.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1250101",
     "intel": {
@@ -27541,15 +27609,14 @@
     "officialDomain": "durhamdubai.com",
     "name": "Durham School Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    },
+    "updatedAt": "2026-09-24T13:19:51.148Z",
     "lastJobSyncAt": {
       "_seconds": 1790189382,
       "_nanoseconds": 658000000
     },
-    "openJobsCount": 3
+    "openJobsCount": 3,
+    "careersUrl": "https://www.durhamdubai.com/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.9",
@@ -27572,9 +27639,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Dubai campus of New York's renowned Dwight School, specializing in personalized IB pathways.",
-    "website": "https://dwight.ae",
+    "website": "https://www.dwight.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1188104",
     "intel": {
@@ -27604,10 +27675,9 @@
     "officialDomain": "dwight.ae",
     "name": "Dwight School Dubai",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.dwight.ae/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.8",
@@ -27631,9 +27701,12 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,500 - 17,000 / month",
     "summary": "Innoventures-managed US/IB school located in Umm Suqeim offering US High School Diploma and IB.",
-    "website": "https://collegiate.ae",
+    "website": "https://www.collegiate.sch.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "American (NY State Standards) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057184",
     "intel": {
@@ -27663,10 +27736,9 @@
     "officialDomain": "collegiate.ae",
     "name": "Collegiate International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.collegiate.sch.ae/careers-cis",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.9",
@@ -27690,9 +27762,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "Co-educational IB World school in Umm Suqeim featuring multi-national student body.",
-    "website": "https://rwadubai.com",
+    "website": "https://www.rwadubai.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057182",
     "intel": {
@@ -27722,10 +27798,9 @@
     "officialDomain": "rwadubai.com",
     "name": "Raffles World Academy",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.rwadubai.com/careers-rwa",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.9",
@@ -27749,9 +27824,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,000 / month",
     "summary": "Sister school to RWA delivering traditional British National Curriculum in central Umm Suqeim.",
-    "website": "https://rafflesis.com",
+    "website": "https://www.rafflesis.com",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057181",
     "intel": {
@@ -27781,10 +27860,9 @@
     "officialDomain": "rafflesis.com",
     "name": "Raffles International School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.rafflesis.com/employment-opportunities-ris",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.6",
@@ -27808,9 +27886,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,000 - 16,000 / month",
     "summary": "Community British school situated in Dubai Investments Park with eco-friendly campus ethos.",
-    "website": "https://dovegreen-school.com",
+    "website": "https://www.dovegreenschool.com",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070860",
     "intel": {
@@ -27840,10 +27922,9 @@
     "officialDomain": "dovegreen-school.com",
     "name": "Dove Green Private School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.dovegreenschool.com/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.9",
@@ -27867,9 +27948,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "Historic IB continuum school established in 1991 under Al Habtoor Group.",
-    "website": "https://eischools.ae/jumeirah",
+    "website": "https://www.eischools.ae/jumeirah",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057185",
     "intel": {
@@ -27899,10 +27984,9 @@
     "officialDomain": "eischools.ae/jumeirah",
     "name": "Emirates International School Jumeirah",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.eischools.ae/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.9",
@@ -27926,9 +28010,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,000 - 17,500 / month",
     "summary": "Established Meadows campus offering full IB continuum for suburban expat families.",
-    "website": "https://eischools.ae/meadows",
+    "website": "https://www.eischools.ae/meadows",
     "housingprovision": "Provided housing or allowance",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057186",
     "intel": {
@@ -27958,10 +28046,9 @@
     "officialDomain": "eischools.ae/meadows",
     "name": "Emirates International School Meadows",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.eischools.ae/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "9.1",
@@ -27985,9 +28072,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 13,500 - 18,000 / month",
     "summary": "Massive Islamic British curriculum school in Al Khawaneej featuring state-of-the-art facilities.",
-    "website": "https://srs.ae",
+    "website": "https://srsdubai.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "British (NCfE / GCSE / A-Levels) & MOE",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1057195",
     "intel": {
@@ -28017,10 +28108,9 @@
     "officialDomain": "srs.ae",
     "name": "The School of Research Science",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://srsdubai.ae/careers",
+    "revalidationStatus": "pending"
   },
   {
     "financescore": "8.7",
@@ -28043,9 +28133,13 @@
     "phase": "All-through (K-12)",
     "salaryRange": "AED 12,500 - 16,500 / month",
     "summary": "Only bilingual Arabic/English IB World School in Dubai situated in Mirdif.",
-    "website": "https://daralmarefa.ae",
+    "website": "https://www.daralmarefa.ae",
     "housingprovision": "Provided accommodation or allowance",
-    "curriculum": "IB (PYP / MYP / DP) Bilingual Arabic/English",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "isTaxFree": true,
     "tesOrganizationId": "1070858",
     "intel": {
@@ -28075,10 +28169,9 @@
     "officialDomain": "daralmarefa.ae",
     "name": "Dar Al Marefa Private School",
     "region": "middle-east",
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "careersUrl": "https://www.daralmarefa.ae/careers",
+    "revalidationStatus": "pending"
   },
   {
     "id": "FLIS0366",
@@ -28091,7 +28184,11 @@
     "city": "Abu Dhabi",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "alyasminaacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
@@ -28112,10 +28209,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.alyasminaacademy.ae",
+    "careersUrl": "https://www.aldaracademies.com/join-our-team"
   },
   {
     "id": "FLIS0367",
@@ -28128,7 +28224,11 @@
     "city": "Abu Dhabi",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "Secondary only",
     "officialDomain": "albateenacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
@@ -28149,10 +28249,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.albateenacademy.ae",
+    "careersUrl": "https://www.aldaracademies.com/join-our-team"
   },
   {
     "id": "FLIS0368",
@@ -28164,7 +28263,12 @@
     "city": "Abu Dhabi",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels) / US Curriculum",
+    "curriculum": [
+      "UK National Curriculum",
+      "US Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "almamouraacademy.sch.ae",
     "careersPageUrl": "https://careers.aldaracademies.com",
@@ -28185,10 +28289,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.almamouraacademy.ae",
+    "careersUrl": "https://www.aldaracademies.com/join-our-team"
   },
   {
     "id": "FLIS0369",
@@ -28200,7 +28303,11 @@
     "city": "Al Ain",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "brightoncollegealain.ae",
     "careersPageUrl": "https://www.brightoncollegealain.ae/about-us/vacancies",
@@ -28221,10 +28328,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.brightoncollegealain.ae",
+    "careersUrl": "https://www.brightoncollegealain.ae/about-us/careers"
   },
   {
     "id": "FLIS0370",
@@ -28236,7 +28342,11 @@
     "city": "Jeddah",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "bisj.com",
     "careersPageUrl": "https://www.bisj.com/vacancies",
@@ -28263,10 +28373,9 @@
       "_nanoseconds": 477000000
     },
     "openJobsCount": 1,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.bis-jeddah.com",
+    "careersUrl": "https://www.bis-jeddah.com/employment-opportunities/current-vacancies"
   },
   {
     "id": "FLIS0371",
@@ -28278,7 +28387,11 @@
     "city": "Riyadh",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "kingscollegeriyadh.com",
     "careersPageUrl": "https://kingscollegeriyadh.com/careers",
@@ -28299,10 +28412,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.kingscollegeriyadh.com",
+    "careersUrl": "https://www.kingscollegeriyadh.com/careers"
   },
   {
     "id": "FLIS0372",
@@ -28314,7 +28426,10 @@
     "city": "Riyadh",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "American (AERO / AP / IB DP)",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "aisr.org",
     "careersPageUrl": "https://www.aisr.org/employment",
@@ -28335,10 +28450,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.aisr.org",
+    "careersUrl": "https://www.aisr.org/careers"
   },
   {
     "id": "FLIS0373",
@@ -28350,7 +28464,10 @@
     "city": "Riyadh",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "British / International Continuum",
+    "curriculum": [
+      "UK National Curriculum",
+      "International Early Years Curriculum"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "beechhallriyadh.com",
     "careersPageUrl": "https://beechhallriyadh.com/careers",
@@ -28371,10 +28488,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://beechhallschoolriyadh.com",
+    "careersUrl": "https://beechhallschoolriyadh.com/careers"
   },
   {
     "id": "FLIS0374",
@@ -28386,7 +28502,10 @@
     "city": "Singapore",
     "country": "Singapore",
     "region": "asia",
-    "curriculum": "American (AP / Advanced Topics)",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "sas.edu.sg",
     "careersPageUrl": "https://www.sas.edu.sg/careers",
@@ -28407,10 +28526,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.sas.edu.sg",
+    "careersUrl": "https://www.sas.edu.sg/careers"
   },
   {
     "id": "FLIS0375",
@@ -28422,7 +28540,11 @@
     "city": "Singapore",
     "country": "Singapore",
     "region": "asia",
-    "curriculum": "British (IGCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "singapore.dulwich.org",
     "careersPageUrl": "https://singapore.dulwich.org/careers",
@@ -28443,10 +28565,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://singapore.dulwich.org",
+    "careersUrl": "https://singapore.dulwich.org/careers"
   },
   {
     "id": "FLIS0376",
@@ -28458,7 +28579,11 @@
     "city": "Bangkok",
     "country": "Thailand",
     "region": "asia",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "nist.ac.th",
     "careersPageUrl": "https://www.nist.ac.th/employment",
@@ -28483,10 +28608,9 @@
       "_nanoseconds": 43000000
     },
     "openJobsCount": 1,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.nist.ac.th",
+    "careersUrl": "https://www.nist.ac.th/join-us/employment"
   },
   {
     "id": "FLIS0377",
@@ -28498,7 +28622,11 @@
     "city": "Bangkok",
     "country": "Thailand",
     "region": "asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "harrowschool.ac.th",
     "careersPageUrl": "https://www.harrowschool.ac.th/working-at-harrow",
@@ -28519,10 +28647,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.harrowschool.ac.th",
+    "careersUrl": "https://www.harrowschool.ac.th/careers"
   },
   {
     "id": "FLIS0378",
@@ -28534,7 +28661,11 @@
     "city": "Bangkok",
     "country": "Thailand",
     "region": "asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "shrewsbury.ac.th/riverside",
     "careersPageUrl": "https://www.shrewsbury.ac.th/riverside/careers",
@@ -28555,10 +28686,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.shrewsbury.ac.th/riverside",
+    "careersUrl": "https://www.shrewsbury.ac.th/riverside/recruitment"
   },
   {
     "id": "FLIS0379",
@@ -28570,7 +28700,11 @@
     "city": "Kuala Lumpur",
     "country": "Malaysia",
     "region": "asia",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "alice-smith.edu.my",
     "careersPageUrl": "https://www.alice-smith.edu.my/work-with-us",
@@ -28591,10 +28725,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.alice-smith.edu.my",
+    "careersUrl": "https://knowledge.alice-smith.edu.my/knowledge/working-with-us"
   },
   {
     "id": "FLIS0380",
@@ -28606,7 +28739,11 @@
     "city": "Kuala Lumpur",
     "country": "Malaysia",
     "region": "asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "nordangliaeducation.com/bis-kuala-lumpur",
     "careersPageUrl": "https://www.nordangliaeducation.com/bis-kuala-lumpur/careers",
@@ -28627,10 +28764,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.nordangliaeducation.com/biskl-kuala-lumpur",
+    "careersUrl": "https://www.nordangliaeducation.com/biskl-kuala-lumpur/careers"
   },
   {
     "id": "FLIS0381",
@@ -28642,7 +28778,10 @@
     "city": "Hong Kong",
     "country": "Hong Kong",
     "region": "asia",
-    "curriculum": "American (AP)",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "hkis.edu.hk",
     "careersPageUrl": "https://www.hkis.edu.hk/employment",
@@ -28663,10 +28802,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.hkis.edu.hk",
+    "careersUrl": "https://www.hkis.edu.hk/careers/job-openings"
   },
   {
     "id": "FLIS0382",
@@ -28678,7 +28816,11 @@
     "city": "Hong Kong",
     "country": "Hong Kong",
     "region": "asia",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "kellettschool.com",
     "careersPageUrl": "https://www.kellettschool.com/working-at-kellett",
@@ -28699,10 +28841,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.kellettschool.com",
+    "careersUrl": "https://www.kellettschool.com/working-at-kellett/vacancies"
   },
   {
     "id": "FLIS0383",
@@ -28714,7 +28855,11 @@
     "city": "Hong Kong",
     "country": "Hong Kong",
     "region": "asia",
-    "curriculum": "IB (MYP / DP) Dual-language English/Mandarin",
+    "curriculum": [
+      "Dual Language (English/Mandarin)",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "cis.edu.hk",
     "careersPageUrl": "https://www.cis.edu.hk/join-us/employment",
@@ -28735,10 +28880,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.cis.edu.hk",
+    "careersUrl": "https://www.cis.edu.hk/careers"
   },
   {
     "id": "FLIS0384",
@@ -28750,7 +28894,10 @@
     "city": "Tokyo",
     "country": "Japan",
     "region": "asia",
-    "curriculum": "American (AP)",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "asij.ac.jp",
     "careersPageUrl": "https://www.asij.ac.jp/careers",
@@ -28771,10 +28918,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.asij.ac.jp",
+    "careersUrl": "https://www.asij.ac.jp/careers"
   },
   {
     "id": "FLIS0385",
@@ -28786,7 +28932,11 @@
     "city": "Amsterdam",
     "country": "Netherlands",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "isa.nl",
     "careersPageUrl": "https://www.isa.nl/careers",
@@ -28807,10 +28957,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.isa.nl",
+    "careersUrl": "https://www.isa.nl/careers"
   },
   {
     "id": "FLIS0386",
@@ -28822,7 +28971,11 @@
     "city": "Munich",
     "country": "Germany",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "mis-munich.de",
     "careersPageUrl": "https://www.mis-munich.de/employment",
@@ -28843,10 +28996,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.mis-munich.de",
+    "careersUrl": "https://www.mis-munich.de/careers"
   },
   {
     "id": "FLIS0387",
@@ -28858,7 +29010,11 @@
     "city": "Zurich",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "IB DP / AP / International",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP",
+      "Advanced Placement (AP)"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "zis.ch",
     "careersPageUrl": "https://www.zis.ch/careers",
@@ -28879,10 +29035,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.zis.ch",
+    "careersUrl": "https://www.zis.ch/careers"
   },
   {
     "id": "FLIS0388",
@@ -28894,7 +29049,11 @@
     "city": "Paris",
     "country": "France",
     "region": "europe",
-    "curriculum": "American (AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "asparis.org",
     "careersPageUrl": "https://www.asparis.org/careers",
@@ -28915,10 +29074,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.286Z",
+    "website": "https://www.asparis.org",
+    "careersUrl": "https://www.asparis.org/about-us/careers"
   },
   {
     "id": "FLIS0389",
@@ -28931,7 +29089,12 @@
     "city": "Geneva",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP) Bilingual (EN/FR)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "Universal Learning Programme"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "ecolint.ch",
     "careersPageUrl": "https://www.ecolint.ch/careers",
@@ -28952,10 +29115,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.ecolint.ch",
+    "careersUrl": "https://www.ecolint.ch/our-school/job-opportunities"
   },
   {
     "id": "FLIS0390",
@@ -28967,7 +29129,11 @@
     "city": "Frankfurt",
     "country": "Germany",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "fis.edu",
     "careersPageUrl": "https://www.fis.edu/employment",
@@ -28988,10 +29154,9 @@
       "_seconds": 1790186821,
       "_nanoseconds": 937000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.fis.edu",
+    "careersUrl": "https://www.fis.edu/careers"
   },
   {
     "id": "FLIS0391",
@@ -29003,7 +29168,11 @@
     "city": "Salwa",
     "country": "Kuwait",
     "region": "middle-east",
-    "curriculum": "British (NCfE / EYFS / Key Stage 1-3)",
+    "curriculum": [
+      "UK National Curriculum",
+      "EYFS",
+      "IAPS"
+    ],
     "phase": "Primary & Middle (K-8)",
     "officialDomain": "tes.edu.kw",
     "careersPageUrl": "https://tes.edu.kw/careers",
@@ -29024,10 +29193,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://tes.edu.kw",
+    "careersUrl": "https://tes.edu.kw/careers"
   },
   {
     "id": "FLIS0392",
@@ -29038,7 +29206,11 @@
     "city": "Salwa",
     "country": "Kuwait",
     "region": "middle-east",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "kes.edu.kw",
     "careersPageUrl": "https://kes.edu.kw/work-at-kes",
@@ -29059,10 +29231,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.kes.edu.kw",
+    "careersUrl": "https://www.kes.edu.kw/careers"
   },
   {
     "id": "FLIS0393",
@@ -29074,7 +29245,11 @@
     "city": "Al Khobar",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "bisak.org",
     "careersPageUrl": "https://www.bisak.org/recruitment",
@@ -29095,10 +29270,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.bisak.org",
+    "careersUrl": "https://www.bisak.org/careers"
   },
   {
     "id": "FLIS0394",
@@ -29110,7 +29284,11 @@
     "city": "Thuwal",
     "country": "Saudi Arabia",
     "region": "middle-east",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "tks.kaust.edu.sa",
     "careersPageUrl": "https://tks.kaust.edu.sa/careers",
@@ -29131,10 +29309,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://tks.kaust.edu.sa",
+    "careersUrl": "https://tks.kaust.edu.sa/careers"
   },
   {
     "id": "FLIS0395",
@@ -29146,7 +29323,12 @@
     "city": "Abu Dhabi",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "BTEC"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "amityabudhabi.com",
     "careersPageUrl": "https://amityabudhabi.com/work-with-us",
@@ -29167,10 +29349,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.amityabudhabi.com",
+    "careersUrl": "https://www.amityabudhabi.com/careers"
   },
   {
     "id": "FLIS0396",
@@ -29182,7 +29363,11 @@
     "city": "Seoul",
     "country": "South Korea",
     "region": "asia",
-    "curriculum": "British (IGCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "seoul.dulwich.org",
     "careersPageUrl": "https://seoul.dulwich.org/careers",
@@ -29203,10 +29388,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://seoul.dulwich.org",
+    "careersUrl": "https://seoul.dulwich.org/careers"
   },
   {
     "id": "FLIS0397",
@@ -29218,7 +29402,11 @@
     "city": "Kobe",
     "country": "Japan",
     "region": "asia",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "canacad.ac.jp",
     "careersPageUrl": "https://www.canacad.ac.jp/careers",
@@ -29239,10 +29427,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.canacad.ac.jp",
+    "careersUrl": "https://www.canacad.ac.jp/careers"
   },
   {
     "id": "FLIS0398",
@@ -29255,7 +29442,11 @@
     "city": "Minoh",
     "country": "Japan",
     "region": "asia",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "senri.ed.jp",
     "careersPageUrl": "https://www.senri.ed.jp/employment",
@@ -29276,10 +29467,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://sois.kwansei.ac.jp/osaka-international-school",
+    "careersUrl": "https://sois.kwansei.ac.jp/careers"
   },
   {
     "id": "FLIS0399",
@@ -29292,7 +29482,11 @@
     "city": "Shanghai",
     "country": "China",
     "region": "asia",
-    "curriculum": "American (AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "saschina.org",
     "careersPageUrl": "https://www.saschina.org/careers",
@@ -29313,10 +29507,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.saschina.org",
+    "careersUrl": "https://www.saschina.org/careers"
   },
   {
     "id": "FLIS0400",
@@ -29329,7 +29522,10 @@
     "city": "Beijing",
     "country": "China",
     "region": "asia",
-    "curriculum": "American Standards / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "isb.bj.edu.cn",
     "careersPageUrl": "https://www.isb.bj.edu.cn/careers",
@@ -29354,10 +29550,9 @@
       "_nanoseconds": 43000000
     },
     "openJobsCount": 3,
-    "updatedAt": {
-      "_seconds": 1790189047,
-      "_nanoseconds": 303000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.isb.cn",
+    "careersUrl": "https://www.isb.cn/careers"
   },
   {
     "id": "FLIS0401",
@@ -29369,7 +29564,13 @@
     "city": "Bangkok",
     "country": "Thailand",
     "region": "asia",
-    "curriculum": "British (NCfE / IGCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP",
+      "IB CP",
+      "BTEC"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "nordangliaeducation.com/sta-bangkok",
     "careersPageUrl": "https://www.nordangliaeducation.com/sta-bangkok/careers",
@@ -29396,10 +29597,9 @@
       "_nanoseconds": 539000000
     },
     "openJobsCount": 2,
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.nordangliaeducation.com/st-andrews-bangkok",
+    "careersUrl": "https://www.nordangliaeducation.com/st-andrews-bangkok/careers"
   },
   {
     "id": "FLIS0402",
@@ -29411,7 +29611,12 @@
     "city": "Singapore",
     "country": "Singapore",
     "region": "asia",
-    "curriculum": "British (IGCSE) / IB DP",
+    "curriculum": [
+      "IPC",
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "sji-international.com.sg",
     "careersPageUrl": "https://www.sji-international.com.sg/join-us/careers",
@@ -29432,10 +29637,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.sji-international.com.sg",
+    "careersUrl": "https://www.sji-international.com.sg/careers"
   },
   {
     "id": "FLIS0403",
@@ -29447,7 +29651,12 @@
     "city": "Singapore",
     "country": "Singapore",
     "region": "asia",
-    "curriculum": "IB (PYP / MYP / DP) / IGCSE",
+    "curriculum": [
+      "IB PYP",
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "nexus.edu.sg",
     "careersPageUrl": "https://www.nexus.edu.sg/careers",
@@ -29468,10 +29677,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.nexus.edu.sg",
+    "careersUrl": "https://www.nexus.edu.sg/careers"
   },
   {
     "id": "FLIS0404",
@@ -29483,7 +29691,13 @@
     "city": "Singapore",
     "country": "Singapore",
     "region": "asia",
-    "curriculum": "American (AERO / AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "Advanced Placement (AP)"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "sais.edu.sg",
     "careersPageUrl": "https://www.sais.edu.sg/careers",
@@ -29504,10 +29718,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.sais.edu.sg",
+    "careersUrl": "https://www.sais.edu.sg/careers"
   },
   {
     "id": "FLIS0405",
@@ -29519,7 +29732,11 @@
     "city": "Mantin",
     "country": "Malaysia",
     "region": "asia",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "ktj.edu.my",
     "careersPageUrl": "https://www.ktj.edu.my/careers",
@@ -29540,10 +29757,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.ktj.edu.my",
+    "careersUrl": "https://www.ktj.edu.my/careers"
   },
   {
     "id": "FLIS0406",
@@ -29555,7 +29771,11 @@
     "city": "Rome",
     "country": "Italy",
     "region": "europe",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "stgeorge.school.it",
     "careersPageUrl": "https://www.stgeorge.school.it/join-us/vacancies",
@@ -29576,10 +29796,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.stgeorge.school.it",
+    "careersUrl": "https://www.stgeorge.school.it/careers"
   },
   {
     "id": "FLIS0407",
@@ -29591,7 +29810,10 @@
     "city": "Florence",
     "country": "Italy",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "isfitaly.org",
     "careersPageUrl": "https://www.isfitaly.org/careers",
@@ -29612,10 +29834,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.isfitaly.org",
+    "careersUrl": "https://www.isfitaly.org/careers"
   },
   {
     "id": "FLIS0408",
@@ -29627,7 +29848,11 @@
     "city": "Milan",
     "country": "Italy",
     "region": "europe",
-    "curriculum": "British (NCfE / GCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "britishschoolmilan.com",
     "careersPageUrl": "https://www.britishschoolmilan.com/working-with-us",
@@ -29648,10 +29873,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.britishschoolmilan.com",
+    "careersUrl": "https://www.britishschoolmilan.com/careers"
   },
   {
     "id": "FLIS0409",
@@ -29663,7 +29887,11 @@
     "city": "Basel",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "isbasel.ch",
     "careersPageUrl": "https://www.isbasel.ch/community/careers",
@@ -29684,10 +29912,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.isbasel.ch",
+    "careersUrl": "https://www.isbasel.ch/careers"
   },
   {
     "id": "FLIS0410",
@@ -29699,7 +29926,10 @@
     "city": "Rolle",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "IB DP / French Baccalauréat",
+    "curriculum": [
+      "IB DP",
+      "French Baccalaureate"
+    ],
     "phase": "All-through Boarding (Grades 3-12)",
     "officialDomain": "rosey.ch",
     "careersPageUrl": "https://www.rosey.ch/careers",
@@ -29720,10 +29950,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.rosey.ch",
+    "careersUrl": "https://www.rosey.ch/careers"
   },
   {
     "id": "FLIS0411",
@@ -29735,7 +29964,11 @@
     "city": "Villars-sur-Ollon",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "IB DP / French Baccalauréat / High School Diploma",
+    "curriculum": [
+      "IB DP",
+      "French Baccalaureate",
+      "US High School Diploma"
+    ],
     "phase": "Secondary Boarding (Grades 6-12)",
     "officialDomain": "nordangliaeducation.com/beau-soleil",
     "careersPageUrl": "https://www.nordangliaeducation.com/beau-soleil/careers",
@@ -29756,10 +29989,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.beausoleil.ch",
+    "careersUrl": "https://www.beausoleil.ch/careers"
   },
   {
     "id": "FLIS0412",
@@ -29771,7 +30003,11 @@
     "city": "Lugano",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "American (AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "tasis.ch",
     "careersPageUrl": "https://www.tasis.ch/employment",
@@ -29792,10 +30028,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:09:37.287Z",
+    "website": "https://www.tasis.ch",
+    "careersUrl": "https://www.tasis.ch/careers"
   },
   {
     "id": "FLIS0413",
@@ -29807,7 +30042,11 @@
     "city": "Thorpe",
     "country": "United Kingdom",
     "region": "europe",
-    "curriculum": "American (AP) / IB DP",
+    "curriculum": [
+      "US Curriculum",
+      "Advanced Placement (AP)",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "tasisengland.org",
     "careersPageUrl": "https://www.tasisengland.org/careers",
@@ -29828,10 +30067,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.tasisengland.org",
+    "careersUrl": "https://www.tasisengland.org/about/careers"
   },
   {
     "id": "FLIS0414",
@@ -29843,7 +30081,13 @@
     "city": "Tervuren",
     "country": "Belgium",
     "region": "europe",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB DP / BTEC)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "IB DP",
+      "BTEC"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "britishschool.be",
     "careersPageUrl": "https://www.britishschool.be/careers",
@@ -29864,10 +30108,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.britishschool.be",
+    "careersUrl": "https://www.britishschool.be/careers"
   },
   {
     "id": "FLIS0415",
@@ -29879,7 +30122,11 @@
     "city": "Haimhausen",
     "country": "Germany",
     "region": "europe",
-    "curriculum": "IB (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "bis-school.com",
     "careersPageUrl": "https://www.bis-school.com/community/careers",
@@ -29906,10 +30153,9 @@
       "_nanoseconds": 539000000
     },
     "openJobsCount": 9,
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.bis-school.com",
+    "careersUrl": "https://www.bis-school.com/careers"
   },
   {
     "id": "FLIS0416",
@@ -29921,7 +30167,12 @@
     "city": "Castelldefels",
     "country": "Spain",
     "region": "europe",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "IB DP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "britishschoolbarcelona.com",
     "careersPageUrl": "https://www.britishschoolbarcelona.com/careers",
@@ -29942,10 +30193,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.britishschoolbarcelona.com",
+    "careersUrl": "https://www.britishschoolbarcelona.com/careers"
   },
   {
     "id": "FLIS0417",
@@ -29957,7 +30207,11 @@
     "city": "Madrid",
     "country": "Spain",
     "region": "europe",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "madrid-soto.kingscollegeschools.org",
     "careersPageUrl": "https://www.inspirededu.com/careers",
@@ -29978,10 +30232,9 @@
       "_seconds": 1790187426,
       "_nanoseconds": 530000000
     },
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.kingscollegemadrid.es",
+    "careersUrl": "https://www.kingscollegemadrid.es/careers"
   },
   {
     "revalidationCompletedAt": {
@@ -30012,10 +30265,14 @@
     "housingprovision": "Allowance",
     "name": "Dubai British School Jumeira",
     "country": "United Arab Emirates",
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.dubaibritishschooljumeira.ae",
+    "careersUrl": "https://www.taaleem.ae/careers",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ]
   },
   {
     "revalidationCompletedAt": {
@@ -30048,10 +30305,14 @@
     "housingprovision": "Allowance",
     "name": "Dubai British School Jumeirah Park",
     "country": "United Arab Emirates",
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.dubaibritishschooljp.ae",
+    "careersUrl": "https://www.dubaibritishschooljp.ae/work-with-us/vacancies",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ]
   },
   {
     "revalidationCompletedAt": {
@@ -30082,10 +30343,14 @@
     "housingprovision": "Allowance",
     "name": "Dubai British School Mira",
     "country": "United Arab Emirates",
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:07:57.323Z",
+    "website": "https://www.dubaibritishschoolmira.ae",
+    "careersUrl": "https://www.taaleem.ae/careers",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ]
   },
   {
     "revalidationCompletedAt": {
@@ -30112,20 +30377,21 @@
     "openJobsCount": 0,
     "lastSweptDate": "2026-09-17T06:57:15.955Z",
     "lastSweptAtMillis": 1789628235955,
-    "careersUrl": "https://dess.sch.ae/work-at-dess",
+    "careersUrl": "https://www.dessc.sch.ae/careers",
     "isLocked": true,
     "salaryRange": "$4,100.00",
     "housingprovision": "Provided",
     "name": "Dubai English Speaking School Oud Metha",
     "country": "United Arab Emirates",
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.dessc.sch.ae",
+    "curriculum": [
+      "UK National Curriculum"
+    ]
   },
   {
     "country": "Bahrain",
-    "website": "https://st-chris.schoolrecruiter.com/",
+    "website": "https://www.st-chris.net",
     "campusName": "Senior School",
     "careersPageUrl": "https://st-chris.schoolrecruiter.com/",
     "city": "Isa Town",
@@ -30145,18 +30411,21 @@
     "lastScrapedAt": "2026-08-30T07:53:02.480Z",
     "isRevalidating": true,
     "revalidationError": null,
-    "revalidationStatus": "success",
+    "revalidationStatus": "pending",
     "lastSweptDate": "2026-09-17T06:57:16.283Z",
     "lastSweptAtMillis": 1789628236283,
-    "careersUrl": "https://st-chris.schoolrecruiter.com/",
+    "careersUrl": "https://www.st-chris.net/careers",
     "salaryRange": "$3,800.00",
     "schoolId": "flis0224_senior",
     "housingprovision": "Provided",
     "name": "St. Christopher's School Senior",
-    "updatedAt": {
-      "_seconds": 1790189051,
-      "_nanoseconds": 100000000
-    }
+    "updatedAt": "2026-09-24T13:19:51.148Z",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "IB DP"
+    ]
   },
   {
     "id": "FLIS0423",
@@ -30169,7 +30438,12 @@
     "city": "Dubai",
     "country": "United Arab Emirates",
     "region": "middle-east",
-    "curriculum": "IB (PYP / MYP / DP / IBCP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP",
+      "IB CP"
+    ],
     "phase": "All-through (K-12)",
     "officialDomain": "jbschool.ae",
     "careersPageUrl": "https://www.taaleem.ae/careers",
@@ -30190,10 +30464,7 @@
       "_seconds": 1790189376,
       "_nanoseconds": 907000000
     },
-    "updatedAt": {
-      "_seconds": 1790189376,
-      "_nanoseconds": 907000000
-    },
+    "updatedAt": "2026-09-24T13:11:57.386Z",
     "revalidationCompletedAt": {
       "_seconds": 1790190171,
       "_nanoseconds": 928000000
@@ -30338,7 +30609,9 @@
     },
     "lastScrapedAt": "2026-09-23T19:02:18.057Z",
     "revalidationError": null,
-    "revalidationStatus": "success"
+    "revalidationStatus": "success",
+    "website": "https://www.jbschool.ae",
+    "careersUrl": "https://www.taaleem.ae/careers"
   },
   {
     "id": "FLIS0424",
@@ -30350,7 +30623,11 @@
     "city": "Athens",
     "country": "Greece",
     "region": "europe",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "campion.edu.gr",
     "careersPageUrl": "https://www.campion.edu.gr/employment",
     "tesEmployerSlug": "campion-school-1057280",
@@ -30370,10 +30647,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.campion.edu.gr",
+    "careersUrl": "https://www.campion.edu.gr/careers"
   },
   {
     "id": "FLIS0425",
@@ -30385,7 +30661,11 @@
     "city": "Athens",
     "country": "Greece",
     "region": "europe",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "stcatherines.gr",
     "careersPageUrl": "https://www.stcatherines.gr/opportunities",
     "tesEmployerSlug": "st-catherines-british-school-1057281",
@@ -30404,10 +30684,7 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
+    "updatedAt": "2026-09-24T13:11:57.386Z",
     "lastSweptDate": "2026-09-23T18:53:23.443Z",
     "lastSweptAtMillis": 1790189603443,
     "lastJobSyncAt": {
@@ -30498,7 +30775,9 @@
     },
     "lastScrapedAt": "2026-09-23T19:02:19.827Z",
     "revalidationError": null,
-    "revalidationStatus": "success"
+    "revalidationStatus": "success",
+    "website": "https://www.stcatherines.gr",
+    "careersUrl": "https://www.stcatherines.gr/careers"
   },
   {
     "id": "FLIS0426",
@@ -30510,7 +30789,11 @@
     "city": "Montreux",
     "country": "Switzerland",
     "region": "europe",
-    "curriculum": "British (NCfE / IGCSE) / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "stgeorges.ch",
     "careersPageUrl": "https://www.inspirededu.com/careers",
     "tesEmployerSlug": "st-georges-international-school-1057285",
@@ -30529,17 +30812,16 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
+    "updatedAt": "2026-09-24T13:11:57.386Z",
     "lastSweptDate": "2026-09-23T18:53:31.630Z",
     "lastSweptAtMillis": 1790189611630,
     "lastJobSyncAt": {
       "_seconds": 1790189674,
       "_nanoseconds": 345000000
     },
-    "openJobsCount": 1
+    "openJobsCount": 1,
+    "website": "https://www.stgeorges.ch",
+    "careersUrl": "https://www.stgeorges.ch/careers"
   },
   {
     "id": "FLIS0427",
@@ -30548,7 +30830,11 @@
     "city": "Bratislava",
     "country": "Slovakia",
     "region": "europe",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "nordangliaeducation.com/bis-bratislava",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
     "tesEmployerSlug": "the-british-international-school-bratislava-1057289",
@@ -30568,10 +30854,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.nordangliaeducation.com/bis-bratislava",
+    "careersUrl": "https://www.nordangliaeducation.com/bis-bratislava/careers"
   },
   {
     "id": "FLIS0428",
@@ -30580,7 +30865,11 @@
     "city": "Almaty",
     "country": "Kazakhstan",
     "region": "central-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "haileybury.kz/en/almaty",
     "careersPageUrl": "https://www.haileybury.kz/en/almaty/vacancies",
     "tesEmployerSlug": "haileybury-almaty-1081101",
@@ -30600,10 +30889,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.haileybury.kz/en/almaty",
+    "careersUrl": "https://www.haileybury.kz/en/almaty/careers"
   },
   {
     "id": "FLIS0429",
@@ -30612,7 +30900,11 @@
     "city": "Astana",
     "country": "Kazakhstan",
     "region": "central-asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "haileybury.kz/en/astana",
     "careersPageUrl": "https://www.haileybury.kz/en/astana/vacancies",
     "tesEmployerSlug": "haileybury-astana-1081102",
@@ -30632,10 +30924,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.haileybury.kz/en/astana",
+    "careersUrl": "https://www.haileybury.kz/en/astana/careers"
   },
   {
     "id": "FLIS0430",
@@ -30644,7 +30935,11 @@
     "city": "Tashkent",
     "country": "Uzbekistan",
     "region": "central-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "nordangliaeducation.com/bst-tashkent",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
     "tesEmployerSlug": "the-british-school-of-tashkent-1188201",
@@ -30664,10 +30959,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.nordangliaeducation.com/bst-tashkent",
+    "careersUrl": "https://www.nordangliaeducation.com/bst-tashkent/careers"
   },
   {
     "id": "FLIS0431",
@@ -30679,7 +30973,11 @@
     "city": "Cairo",
     "country": "Egypt",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "bisc.edu.eg",
     "careersPageUrl": "https://www.bisc.edu.eg/careers",
     "tesEmployerSlug": "the-british-international-school-cairo-1057291",
@@ -30699,10 +30997,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.bisc.edu.eg",
+    "careersUrl": "https://www.bisc.edu.eg/careers"
   },
   {
     "id": "FLIS0432",
@@ -30714,7 +31011,12 @@
     "city": "Cairo",
     "country": "Egypt",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP",
+      "Dutch Curriculum"
+    ],
     "officialDomain": "ncbis.co",
     "careersPageUrl": "https://www.ncbis.co/work-with-us",
     "tesEmployerSlug": "new-cairo-british-international-school-1057292",
@@ -30734,10 +31036,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.ncbis.co.uk",
+    "careersUrl": "https://www.ncbis.co.uk/careers"
   },
   {
     "id": "FLIS0433",
@@ -30748,7 +31049,11 @@
     "city": "Cairo",
     "country": "Egypt",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "kingsschoolthecrown.com",
     "careersPageUrl": "https://www.inspirededu.com/careers",
     "tesEmployerSlug": "kings-school-the-crown-1260101",
@@ -30768,10 +31073,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.kingsschoolegypt.com",
+    "careersUrl": "https://www.kingsschoolegypt.com/enquire-now"
   },
   {
     "id": "FLIS0434",
@@ -30782,7 +31086,11 @@
     "city": "Alexandria",
     "country": "Egypt",
     "region": "middle-east",
-    "curriculum": "British (NCfE / GCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "bsalex.net",
     "careersPageUrl": "https://www.bsalex.net/vacancies",
     "tesEmployerSlug": "the-british-school-of-alexandria-1057293",
@@ -30802,10 +31110,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://bsalex.net",
+    "careersUrl": "https://bsalex.net/careers"
   },
   {
     "id": "FLIS0435",
@@ -30816,7 +31123,12 @@
     "city": "Bandar Seri Begawan",
     "country": "Brunei",
     "region": "southeast-asia",
-    "curriculum": "British (NCfE / GCSE / A-Levels / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels",
+      "IB DP"
+    ],
     "officialDomain": "jerudonginternationalschool.com",
     "careersPageUrl": "https://www.jerudonginternationalschool.com/careers",
     "tesEmployerSlug": "jerudong-international-school-1057295",
@@ -30836,10 +31148,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.jerudonginternationalschool.com",
+    "careersUrl": "https://www.jerudonginternationalschool.com/careers"
   },
   {
     "id": "FLIS0436",
@@ -30850,7 +31161,11 @@
     "city": "Bandar Seri Begawan",
     "country": "Brunei",
     "region": "southeast-asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "isb.edu.bn",
     "careersPageUrl": "https://www.isb.edu.bn/careers",
     "tesEmployerSlug": "international-school-brunei-1057296",
@@ -30870,10 +31185,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.isb.edu.bn",
+    "careersUrl": "https://www.isb.edu.bn/careers"
   },
   {
     "id": "FLIS0437",
@@ -30885,7 +31199,11 @@
     "city": "New Delhi",
     "country": "India",
     "region": "asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "british-school.org",
     "careersPageUrl": "https://www.british-school.org/work-with-us",
     "tesEmployerSlug": "the-british-school-new-delhi-1057298",
@@ -30905,10 +31223,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.british-school.org",
+    "careersUrl": "https://www.british-school.org/careers"
   },
   {
     "id": "FLIS0438",
@@ -30920,7 +31237,11 @@
     "city": "Guangzhou",
     "country": "China",
     "region": "east-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "nordangliaeducation.com/bsg-guangzhou",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
     "tesEmployerSlug": "the-british-school-of-guangzhou-1057299",
@@ -30940,10 +31261,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.nordangliaeducation.com/bsg-guangzhou",
+    "careersUrl": "https://www.nordangliaeducation.com/bsg-guangzhou/careers"
   },
   {
     "id": "FLIS0439",
@@ -30955,7 +31275,11 @@
     "city": "Suzhou",
     "country": "China",
     "region": "east-asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "suzhou.dulwich.org",
     "careersPageUrl": "https://www.dulwich.org/careers",
     "tesEmployerSlug": "dulwich-college-suzhou-1057300",
@@ -30975,10 +31299,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://suzhou.dulwich.org",
+    "careersUrl": "https://suzhou.dulwich.org/careers"
   },
   {
     "id": "FLIS0440",
@@ -30990,7 +31313,11 @@
     "city": "Shenzhen",
     "country": "China",
     "region": "east-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "harrowshenzhen.org.cn",
     "careersPageUrl": "https://www.harrowschools.com/careers",
     "tesEmployerSlug": "harrow-international-school-shenzhen-1230101",
@@ -31010,10 +31337,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:11:57.386Z",
+    "website": "https://www.harrowshenzhen.cn",
+    "careersUrl": "https://www.harrowshenzhen.cn/careers"
   },
   {
     "id": "FLIS0441",
@@ -31024,7 +31350,11 @@
     "city": "Tianjin",
     "country": "China",
     "region": "east-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "wellingtoncollege.cn/tianjin",
     "careersPageUrl": "https://www.wellingtoncollege.cn/careers",
     "tesEmployerSlug": "wellington-college-international-tianjin-1075101",
@@ -31044,10 +31374,7 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
+    "updatedAt": "2026-09-24T13:11:57.386Z",
     "revalidationCompletedAt": {
       "_seconds": 1790190141,
       "_nanoseconds": 395000000
@@ -31085,7 +31412,9 @@
     },
     "lastScrapedAt": "2026-09-23T19:02:21.387Z",
     "revalidationError": null,
-    "revalidationStatus": "success"
+    "revalidationStatus": "success",
+    "website": "https://tianjin.wellingtoncollege.cn",
+    "careersUrl": "https://tianjin.wellingtoncollege.cn/careers"
   },
   {
     "id": "FLIS0442",
@@ -31097,7 +31426,11 @@
     "city": "Hanoi",
     "country": "Vietnam",
     "region": "southeast-asia",
-    "curriculum": "British (NCfE / IGCSE / A-Levels)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "A-Levels"
+    ],
     "officialDomain": "brightoncollege.edu.vn",
     "careersPageUrl": "https://www.brightoncollege.edu.vn/careers",
     "tesEmployerSlug": "brighton-college-vietnam-1270101",
@@ -31117,10 +31450,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://brightoncollege.edu.vn",
+    "careersUrl": "https://brightoncollege.edu.vn/careers"
   },
   {
     "id": "FLIS0443",
@@ -31132,7 +31464,12 @@
     "city": "Hanoi",
     "country": "Vietnam",
     "region": "southeast-asia",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "IB PYP",
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "reigategrammar.edu.vn",
     "careersPageUrl": "https://www.reigategrammar.edu.vn/careers",
     "tesEmployerSlug": "reigate-grammar-school-vietnam-1220101",
@@ -31152,10 +31489,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://rgsv.edu.vn",
+    "careersUrl": "https://rgsv.edu.vn/careers"
   },
   {
     "id": "FLIS0444",
@@ -31166,7 +31502,10 @@
     "city": "Beijing",
     "country": "China",
     "region": "east-asia",
-    "curriculum": "British Primary (NCfE / EYFS / Key Stage 1-2)",
+    "curriculum": [
+      "UK National Curriculum",
+      "EYFS"
+    ],
     "officialDomain": "nordangliaeducation.com/bsb-sanlitun",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
     "tesEmployerSlug": "the-british-school-of-beijing-sanlitun-1057303",
@@ -31186,10 +31525,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.nordangliaeducation.com/bsb-sanlitun",
+    "careersUrl": "https://www.nordangliaeducation.com/bsb-sanlitun/careers"
   },
   {
     "id": "FLIS0445",
@@ -31201,7 +31539,12 @@
     "city": "Santiago",
     "country": "Chile",
     "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "Chilean National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "grange.cl",
     "careersPageUrl": "https://www.grange.cl/employment",
     "tesEmployerSlug": "the-grange-school-1057305",
@@ -31221,10 +31564,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.grange.cl",
+    "careersUrl": "https://www.grange.cl/careers"
   },
   {
     "id": "FLIS0446",
@@ -31235,7 +31577,11 @@
     "city": "Santiago",
     "country": "Chile",
     "region": "latin-america",
-    "curriculum": "IB Continuum (PYP / MYP / DP)",
+    "curriculum": [
+      "IB PYP",
+      "IB MYP",
+      "IB DP"
+    ],
     "officialDomain": "craighouse.cl",
     "careersPageUrl": "https://www.craighouse.cl/work-with-us",
     "tesEmployerSlug": "craighouse-school-1057306",
@@ -31255,10 +31601,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.craighouse.cl",
+    "careersUrl": "https://www.craighouse.cl/careers"
   },
   {
     "id": "FLIS0447",
@@ -31270,7 +31615,11 @@
     "city": "Montevideo",
     "country": "Uruguay",
     "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "british.edu.uy",
     "careersPageUrl": "https://www.british.edu.uy/work-with-us",
     "tesEmployerSlug": "the-british-schools-montevideo-1057307",
@@ -31290,10 +31639,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.british.edu.uy",
+    "careersUrl": "https://www.british.edu.uy/careers"
   },
   {
     "id": "FLIS0448",
@@ -31305,7 +31653,11 @@
     "city": "San José",
     "country": "Costa Rica",
     "region": "latin-america",
-    "curriculum": "British / IGCSE / IB DP",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "thebritishschool.ed.cr",
     "careersPageUrl": "https://www.thebritishschool.ed.cr/careers",
     "tesEmployerSlug": "the-british-school-of-costa-rica-1057308",
@@ -31325,10 +31677,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://thebritishschool.ed.cr",
+    "careersUrl": "https://thebritishschool.ed.cr/careers"
   },
   {
     "id": "FLIS0449",
@@ -31340,7 +31691,11 @@
     "city": "Mexico City",
     "country": "Mexico",
     "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "greengates.edu.mx",
     "careersPageUrl": "https://www.nordangliaeducation.com/careers",
     "tesEmployerSlug": "greengates-school-1057309",
@@ -31360,10 +31715,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.499Z",
+    "website": "https://www.nordangliaeducation.com/greengates-mexico",
+    "careersUrl": "https://www.nordangliaeducation.com/greengates-mexico/careers"
   },
   {
     "id": "FLIS0450",
@@ -31375,7 +31729,11 @@
     "city": "Caracas",
     "country": "Venezuela",
     "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "tbsc.org.ve",
     "careersPageUrl": "https://www.tbsc.org.ve/vacancies",
     "tesEmployerSlug": "the-british-school-of-caracas-1057310",
@@ -31395,10 +31753,9 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    }
+    "updatedAt": "2026-09-24T13:13:26.500Z",
+    "website": "https://www.tbsc.org.ve",
+    "careersUrl": "https://www.tbsc.org.ve/careers"
   },
   {
     "id": "FLIS0451",
@@ -31410,7 +31767,11 @@
     "city": "Rio de Janeiro",
     "country": "Brazil",
     "region": "latin-america",
-    "curriculum": "British (NCfE / IGCSE / IB DP)",
+    "curriculum": [
+      "UK National Curriculum",
+      "iGCSE",
+      "IB DP"
+    ],
     "officialDomain": "britishschool.g12.br",
     "careersPageUrl": "https://www.britishschool.g12.br/careers",
     "tesEmployerSlug": "the-british-school-of-rio-de-janeiro-1057311",
@@ -31430,10 +31791,7 @@
       "_seconds": 1790189591,
       "_nanoseconds": 727000000
     },
-    "updatedAt": {
-      "_seconds": 1790189591,
-      "_nanoseconds": 727000000
-    },
+    "updatedAt": "2026-09-24T13:13:26.500Z",
     "revalidationCompletedAt": {
       "_seconds": 1790190143,
       "_nanoseconds": 310000000
@@ -31471,7 +31829,9 @@
     },
     "lastScrapedAt": "2026-09-23T19:02:23.294Z",
     "revalidationError": null,
-    "revalidationStatus": "success"
+    "revalidationStatus": "success",
+    "website": "https://www.britishschool.g12.br",
+    "careersUrl": "https://www.britishschool.g12.br/careers"
   },
   {
     "financescore": "9.2",
