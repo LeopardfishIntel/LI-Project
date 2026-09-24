@@ -450,13 +450,24 @@ export function calculateBudget(params: BudgetParams) {
   const { rentWeight: initRentWeight } = getZoneLocationWeights(selectedSchool || targetData);
   const housingProv = selectedSchool?.housingprovision?.toLowerCase() || "";
   const isProv = isHousingProvided(selectedSchool?.housingprovision, selectedSchool?.intel?.housing?.provided);
+  
+  const explicitSubsidy = safeParse(selectedSchool?.housing_subsidy_rate || selectedSchool?.housingSubsidyRate);
+  let subsidyDiscount = 0;
+  if (explicitSubsidy > 0 && explicitSubsidy <= 1) {
+    subsidyDiscount = explicitSubsidy;
+  } else if (/(\d+)\s*%/i.test(housingProv)) {
+    subsidyDiscount = parseInt(housingProv.match(/(\d+)\s*%/i)![1], 10) / 100;
+  } else if (housingProv.includes('subsid')) {
+    subsidyDiscount = 0.5;
+  }
+
   if (housingOverride === null) {
-    if (isProv) {
+    if (isProv && subsidyDiscount === 0) {
       rentVal = 0;
     } else {
       rentVal = rentVal * initRentWeight;
-      if (housingProv.includes('subsidised')) {
-        rentVal = rentVal * 0.5; // 50% discount for subsidised housing
+      if (subsidyDiscount > 0) {
+        rentVal = rentVal * (1 - subsidyDiscount);
       }
     }
   }
@@ -616,7 +627,18 @@ export function calculateOutflows(
 
   // Rent
   let rentCost = 0;
-  if (!isHousingProvided) {
+  const provStr = String(schoolOrLocation?.housingprovision || schoolOrLocation?.housingProvision || '').toLowerCase();
+  const explicitSubsidy = safeParse(schoolOrLocation?.housing_subsidy_rate || schoolOrLocation?.housingSubsidyRate);
+  let subsidyRate = 0;
+  if (explicitSubsidy > 0 && explicitSubsidy <= 1) {
+    subsidyRate = explicitSubsidy;
+  } else if (/(\d+)\s*%/i.test(provStr)) {
+    subsidyRate = parseInt(provStr.match(/(\d+)\s*%/i)![1], 10) / 100;
+  } else if (provStr.includes('subsid')) {
+    subsidyRate = 0.5;
+  }
+
+  if (!isHousingProvided || subsidyRate > 0) {
     const rent1BR = Number(col.monthlyRent1BR ?? col.rent1br ?? col.apartment ?? 1200);
     const rent2BR = Number(col.monthlyRent2BR ?? col.rent2br ?? rent1BR * 1.4);
     const rent3BR = Number(col.monthlyRent3BR ?? col.rent3br ?? rent1BR * 1.8);
@@ -629,6 +651,9 @@ export function calculateOutflows(
       rentCost = rent1BR;
     }
     rentCost = rentCost * rentWeight;
+    if (subsidyRate > 0) {
+      rentCost = rentCost * (1 - subsidyRate);
+    }
   }
 
   const total =

@@ -1630,14 +1630,28 @@ function DecoderContent() {
       return safeParse(data) * mult; // Scalar fallback
     };
 
-    const housingStatusRaw = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation']) || '');
+    const housingStatusRaw = String(getSchoolField(activeSchool, ['housingprovision', 'housing', 'accommodation', 'housing_status']) || '');
     const isHousingProvidedByDefault = isHousingProvided(housingStatusRaw, activeSchool?.intel?.housing?.provided);
+
+    // Extract subsidy percentage (e.g. 0.90 for 90% subsidy):
+    let housingSubsidyRate: number = 0;
+    const explicitSubsidy = safeParse(activeSchool?.housing_subsidy_rate ?? activeSchool?.housingSubsidyRate);
+    if (explicitSubsidy > 0 && explicitSubsidy <= 1) {
+      housingSubsidyRate = explicitSubsidy;
+    } else if (/(\d+)\s*%/i.test(housingStatusRaw)) {
+      const match = housingStatusRaw.match(/(\d+)\s*%/i);
+      if (match) housingSubsidyRate = parseInt(match[1], 10) / 100;
+    } else if (housingStatusRaw.toLowerCase().includes('subsid')) {
+      housingSubsidyRate = 0.90;
+    }
+
+    const isSubsidized = housingSubsidyRate > 0 && housingSubsidyRate < 1;
 
     let isProvided = false;
     if (overrideBedrooms === 4) {
-      isProvided = true;
+      isProvided = !isSubsidized;
     } else if (overrideBedrooms === null && isHousingProvidedByDefault) {
-      isProvided = true;
+      isProvided = !isSubsidized;
     }
 
     const standardRentKey = (status === "Single") ? 'rent1br' : (status === "Couple" || status === "Family +1") ? 'rent2br' : 'rent3br';
@@ -1650,7 +1664,12 @@ function DecoderContent() {
       'rent2br': "2-Bed Residence",
       'rent3br': "3-Bed Residence"
     };
-    const propertyLabel = isProvided ? "Provided" : (propertyLabels[activeRentKey] || "Standard Residence");
+    const isSubsidizedActive = (overrideBedrooms === 4 || (overrideBedrooms === null && isHousingProvidedByDefault) || overrideBedrooms === 1 || overrideBedrooms === 2 || overrideBedrooms === 3) && isSubsidized;
+    const propertyLabel = isProvided
+      ? "Provided"
+      : isSubsidizedActive
+      ? `Subsidised (${Math.round(housingSubsidyRate * 100)}%)`
+      : (propertyLabels[activeRentKey] || "Standard Residence");
 
     const getF = (data: any, keys: string[]) => {
       const targetKeys = keys.map(k => k.toLowerCase().replace(/\s+/g, ''));
@@ -1671,6 +1690,11 @@ function DecoderContent() {
       baseRentUSD = rent3brVal / 3;
     } else {
       baseRentUSD = safeParse(getF(activeCOL, [activeRentKey]) || getF(activeCOL, [standardRentKey]) || getF(activeCOL, ['rent1br']) || 0);
+    }
+
+    // Apply subsidy discount if subsidized and not in 100% free provided mode
+    if (isSubsidized && !isProvided) {
+      baseRentUSD = baseRentUSD * (1 - housingSubsidyRate);
     }
 
     const rentCost = usdToLocal(baseRentUSD * rentMult);
@@ -1725,8 +1749,15 @@ function DecoderContent() {
         transportVal = safeParse(transportMap) || 120;
       }
     } else {
-      // 🚌 PUBLIC TRANSIT: Multiplies and scales dynamically across all family status profiles ($60 USD baseline)
-      if (sCountry === 'argentina') {
+      // 🚌 PUBLIC TRANSIT: Check if school reimburses 100% of daily commute pass
+      const isTransitReimbursed = activeSchool?.commuteReimbursed === true ||
+        String(activeSchool?.transportBenefit || '').toLowerCase().includes('reimburse') ||
+        String(activeSchool?.transportBenefit || '').toLowerCase().includes('100%') ||
+        String(activeSchool?.transport || '').toLowerCase().includes('reimburse');
+
+      if (isTransitReimbursed) {
+        transportVal = 0;
+      } else if (sCountry === 'argentina') {
         const argSingleUsd = (130000 / (currentRates['ARS'] || 1200)) * (currentRates['USD'] || 1.27);
         transportVal = argSingleUsd * (transitScalarMap[transportKey] || 1.0);
       } else if (sCountry === 'vietnam') {
@@ -1744,7 +1775,7 @@ function DecoderContent() {
         transportVal = baseSingle * (transitScalarMap[transportKey] || 1.0);
       }
 
-      if (!transportVal || transportVal <= 0) {
+      if (!isTransitReimbursed && (!transportVal || transportVal <= 0)) {
         transportVal = 60 * (transitScalarMap[transportKey] || 1.0);
       }
     }
@@ -1783,7 +1814,8 @@ function DecoderContent() {
       costs: { rent: rentCost, groceries: groceriesCost, utilities: utilitiesCost, connectivity: connectivityCost, internet: internetCost, mobile: mobileCost, transport: transportCost, social: socialCost, medical: medicalCost, manual: manualCost },
       propertyLabel, canDownsize, standardRentKey,
       totalIn, totalOut, surplus, surplusBenchmark, rateOfSaving,
-      housingStatus: isProvided ? 'provided' : 'custom',
+      housingStatus: isProvided ? 'provided' : (isSubsidized ? 'subsidized' : 'custom'),
+      housingSubsidyRate,
       isHousingProvidedByDefault,
       isConvertedFromAnnual, rawNetInput, baseNet,
       currency, reliability: activeCOL?.dataReliabilityScore,
@@ -3105,6 +3137,11 @@ function DecoderContent() {
                                 (cross border living)
                               </span>
                             )}
+                            {Boolean(analysis?.housingSubsidyRate && analysis.housingSubsidyRate > 0) && (
+                              <span className="text-[9px] font-bold text-teal-400 italic tracking-wider ml-6 leading-tight mt-0.5">
+                                ({Math.round(analysis.housingSubsidyRate * 100)}% school subsidy applied)
+                              </span>
+                            )}
                           </div>
 
                           <span className={cn("text-[13px] font-black tabular-nums text-white whitespace-nowrap lg:order-3 lg:ml-auto", analysis?.housingStatus === 'provided' && "italic")}>
@@ -3114,7 +3151,9 @@ function DecoderContent() {
 
                         <div className="flex justify-end lg:justify-center w-full lg:w-auto lg:order-2 lg:flex-1 lg:px-4">
                           <div className="flex bg-white/5 rounded-sm p-0.5 border border-white/10 shrink-0">
-                            <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Provided</button>
+                            <button onClick={() => setOverrideBedrooms(4)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 4 || (overrideBedrooms === null && analysis?.isHousingProvidedByDefault)) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>
+                              {analysis?.housingSubsidyRate ? `Subsidised (${Math.round(analysis.housingSubsidyRate * 100)}%)` : "Provided"}
+                            </button>
                             <button onClick={() => setOverrideBedrooms(0)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 0) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>Shared</button>
                             <button onClick={() => setOverrideBedrooms(1)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 1 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent1br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>1BR</button>
                             <button onClick={() => setOverrideBedrooms(2)} className={cn("px-1.5 py-0.5 text-[9px] font-black rounded-sm transition-all", (overrideBedrooms === 2 || (overrideBedrooms === null && !analysis?.isHousingProvidedByDefault && analysis?.standardRentKey === 'rent2br')) ? "bg-teal-500/20 text-teal-400 border border-teal-500/30 shadow-sm" : "text-slate-400 hover:text-teal-400")}>2BR</button>
