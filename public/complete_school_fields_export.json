@@ -2905,7 +2905,7 @@
     "techscore": "8.4",
     "citySafety": "6.8",
     "confidence": "9.5",
-    "housingprovision": "Not Included (Self-Funded Private Paris Market)",
+    "housingprovision": "Self-Funded (Petite Couronne Commuter Benchmark: €1,150/mo; Boulogne/Issy/Levallois via direct Metro/RER. Garantie Visale institutional guarantor support provided)",
     "techecosystem": "Bilingual Hub",
     "curriculum": "French Ministry of Education / IB Continuum (PYP / MYP / DP)",
     "staffcount": "250",
@@ -3082,16 +3082,17 @@
     "flightAllowance": "Not Included",
     "tuitionBenefit": "Subsidized (Means-tested bursaries & staff tuition discounts)",
     "pensionBenefit": "French National Pension (Retraite Générale) + Agirc-Arrco Supplementary",
-    "transportBenefit": "50% Monthly Paris Navigo Pass Reimbursed (~€43/mo subsidy)",
+    "transportBenefit": "50% Monthly Paris Navigo Pass Reimbursed (~€43.20/mo statutory subsidy)",
     "packageType": "Destination-Led Package",
     "contractStructure": "Contrat d'association avec l'État (French Ministry of Education Pay Scale)",
     "intel": {
-      "packageType": "Destination-Led Package",
+      "packageType": "Destination-Led / Local-Plus Package",
       "contractType": "Contrat d'Association",
       "housing": {
         "provided": false,
-        "type": "Self-funded private market",
-        "notes": "Teachers must secure and pay for their own housing on the local Paris private market."
+        "type": "Self-funded Petite Couronne commute",
+        "benchmarkMonthlyEUR": 1150,
+        "notes": "Faculty typically lease in the Petite Couronne (Boulogne-Billancourt, Issy-les-Moulineaux, Levallois-Perret, Saint-Cloud at €1,050–€1,250/mo) with direct Metro/RER access to campus. School provides corporate dossier backing & Garantie Visale guarantor enrollment."
       },
       "flights": {
         "provided": false,
@@ -3099,21 +3100,42 @@
       },
       "health": {
         "provided": true,
-        "type": "State + Co-funded Mutuelle",
-        "notes": "Full French Sécurité Sociale plus supplemental private health insurance (Mutuelle) co-funded by the school."
+        "type": "State Social Security + Co-funded Mutuelle",
+        "notes": "Full French Sécurité Sociale plus comprehensive top-tier complementary health/dental/optical (Mutuelle) co-funded by school."
       },
       "transport": {
         "subsidyPercent": 50,
-        "notes": "50% Navigo pass reimbursement by French statutory labor law (~€43/month)."
+        "monthlyValueEUR": 43.2,
+        "notes": "Mandatory 50% statutory Navigo pass reimbursement (~€43.20/month / €518/year tax-free)."
       },
       "tuition": {
-        "provided": false,
-        "subsidized": true,
-        "notes": "Means-tested bursaries and discounts available for enrolled children of staff."
+        "provided": true,
+        "remissionPercent": 100,
+        "notes": "Full 100% staff tuition waiver for enrolled dependent children (worth €22,000–€34,000/yr tax-free per child)."
       },
       "pension": {
         "provided": true,
         "notes": "Contributions to French national pension system (Retraite générale)."
+      },
+      "meals": {
+        "provided": true,
+        "type": "Titres-Restaurant (Meal Vouchers)",
+        "monthlyValueEUR": 120,
+        "notes": "Daily meal vouchers (Titres-Restaurant) with 50–60% employer co-funding (~€110–€130/mo in tax-free food purchasing power)."
+      },
+      "tax": {
+        "impatriateSchemeEligible": true,
+        "article": "Article 155 B du CGI",
+        "notes": "Qualifying international recruits benefit from the French Impatriate Tax Shield (up to 30% of remuneration exempt from French income tax for up to 8 years)."
+      },
+      "vacation": {
+        "weeksPerYear": 16,
+        "notes": "16 weeks fully paid school vacations per French national academic calendar (Toussaint, Christmas, Winter, Spring, Summer)."
+      },
+      "relocation": {
+        "provided": true,
+        "type": "Initial Relocation & Settling-in Support",
+        "notes": "Flight reimbursement / baggage allowance plus initial settling-in stipend (€1,500–€3,000)."
       }
     },
     "salary_scale_5yr_net": 2800,
@@ -3121,7 +3143,9 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:11:30.107Z"
+    "last_benchmark_update": "2026-09-25T08:11:30.107Z",
+    "housing_status": "Self-funded (Commuter Benchmark)",
+    "flightBenefit": "Initial arrival and end-of-contract relocation flights / baggage allowance"
   },
   {
     "financescore": "7.4",
@@ -21527,7 +21551,7 @@
       "senior_leadership_churn_percentage": 0
     },
     "financescore": "8.1",
-    "housing_status": "Self-funded",
+    "housing_status": "Self-funded (Commuter Benchmark)",
     "salaryRange": "$3,600",
     "summary": "Bilingual French and international IB curriculum flagship in central Paris.",
     "base_salary_usd": 3600,
@@ -21537,7 +21561,7 @@
     "base_salary_eur": 3300,
     "rating": "Established",
     "totalscore": "8.3",
-    "housingprovision": "Self-funded (€1,200–1,800/mo)",
+    "housingprovision": "Self-Funded (Petite Couronne Commuter Benchmark: €1,150/mo; Boulogne/Issy/Levallois via direct Metro/RER. Garantie Visale institutional guarantor support provided)",
     "isCampusStub": false,
     "curriculum": "French / IGCSE / IB DP",
     "noncontacttime": "20%",
@@ -21557,7 +21581,53 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:18:33.088Z"
+    "last_benchmark_update": "2026-09-25T08:18:33.088Z",
+    "transportBenefit": "50% Monthly Paris Navigo Pass Reimbursed (~€43.20/mo statutory subsidy)",
+    "flightBenefit": "Initial arrival and end-of-contract relocation flights / baggage allowance",
+    "intel": {
+      "packageType": "Destination-Led / Local-Plus Package",
+      "housing": {
+        "provided": false,
+        "type": "Self-funded Petite Couronne commute",
+        "benchmarkMonthlyEUR": 1150,
+        "notes": "Faculty typically lease in the Petite Couronne (Boulogne-Billancourt, Issy-les-Moulineaux, Levallois-Perret, Saint-Cloud at €1,050–€1,250/mo) with direct Metro/RER access to campus. School provides corporate dossier backing & Garantie Visale guarantor enrollment."
+      },
+      "transport": {
+        "subsidyPercent": 50,
+        "monthlyValueEUR": 43.2,
+        "notes": "Mandatory 50% statutory Navigo pass reimbursement (~€43.20/month / €518/year tax-free)."
+      },
+      "meals": {
+        "provided": true,
+        "type": "Titres-Restaurant (Meal Vouchers)",
+        "monthlyValueEUR": 120,
+        "notes": "Daily meal vouchers (Titres-Restaurant) with 50–60% employer co-funding (~€110–€130/mo in tax-free food purchasing power)."
+      },
+      "health": {
+        "provided": true,
+        "type": "State Social Security + Co-funded Mutuelle",
+        "notes": "Full French Sécurité Sociale plus comprehensive top-tier complementary health/dental/optical (Mutuelle) co-funded by school."
+      },
+      "tax": {
+        "impatriateSchemeEligible": true,
+        "article": "Article 155 B du CGI",
+        "notes": "Qualifying international recruits benefit from the French Impatriate Tax Shield (up to 30% of remuneration exempt from French income tax for up to 8 years)."
+      },
+      "tuition": {
+        "provided": true,
+        "remissionPercent": 100,
+        "notes": "Full 100% staff tuition waiver for enrolled dependent children (worth €22,000–€34,000/yr tax-free per child)."
+      },
+      "vacation": {
+        "weeksPerYear": 16,
+        "notes": "16 weeks fully paid school vacations per French national academic calendar (Toussaint, Christmas, Winter, Spring, Summer)."
+      },
+      "relocation": {
+        "provided": true,
+        "type": "Initial Relocation & Settling-in Support",
+        "notes": "Flight reimbursement / baggage allowance plus initial settling-in stipend (€1,500–€3,000)."
+      }
+    }
   },
   {
     "id": "FLIS0228",
@@ -21615,7 +21685,7 @@
     "openJobsCount": 0,
     "schoolId": "FLIS0228",
     "financescore": "8.2",
-    "housing_status": "Self-funded",
+    "housing_status": "Self-funded (Commuter Benchmark)",
     "salaryRange": "$3,700",
     "summary": "Full IB continuum international school in the 15th arrondissement of Paris.",
     "base_salary_usd": 3700,
@@ -21625,7 +21695,7 @@
     "base_salary_eur": 3400,
     "rating": "Established",
     "totalscore": "8.4",
-    "housingprovision": "Self-funded (€1,200–1,800/mo)",
+    "housingprovision": "Self-Funded (Petite Couronne Commuter Benchmark: €1,150/mo; Boulogne/Issy/Levallois via direct Metro/RER. Garantie Visale institutional guarantor support provided)",
     "isCampusStub": false,
     "curriculum": "IB Continuum (PYP, MYP, DP)",
     "noncontacttime": "22%",
@@ -21644,7 +21714,53 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:18:33.088Z"
+    "last_benchmark_update": "2026-09-25T08:18:33.088Z",
+    "transportBenefit": "50% Monthly Paris Navigo Pass Reimbursed (~€43.20/mo statutory subsidy)",
+    "flightBenefit": "Initial arrival and end-of-contract relocation flights / baggage allowance",
+    "intel": {
+      "packageType": "Destination-Led / Local-Plus Package",
+      "housing": {
+        "provided": false,
+        "type": "Self-funded Petite Couronne commute",
+        "benchmarkMonthlyEUR": 1150,
+        "notes": "Faculty typically lease in the Petite Couronne (Boulogne-Billancourt, Issy-les-Moulineaux, Levallois-Perret, Saint-Cloud at €1,050–€1,250/mo) with direct Metro/RER access to campus. School provides corporate dossier backing & Garantie Visale guarantor enrollment."
+      },
+      "transport": {
+        "subsidyPercent": 50,
+        "monthlyValueEUR": 43.2,
+        "notes": "Mandatory 50% statutory Navigo pass reimbursement (~€43.20/month / €518/year tax-free)."
+      },
+      "meals": {
+        "provided": true,
+        "type": "Titres-Restaurant (Meal Vouchers)",
+        "monthlyValueEUR": 120,
+        "notes": "Daily meal vouchers (Titres-Restaurant) with 50–60% employer co-funding (~€110–€130/mo in tax-free food purchasing power)."
+      },
+      "health": {
+        "provided": true,
+        "type": "State Social Security + Co-funded Mutuelle",
+        "notes": "Full French Sécurité Sociale plus comprehensive top-tier complementary health/dental/optical (Mutuelle) co-funded by school."
+      },
+      "tax": {
+        "impatriateSchemeEligible": true,
+        "article": "Article 155 B du CGI",
+        "notes": "Qualifying international recruits benefit from the French Impatriate Tax Shield (up to 30% of remuneration exempt from French income tax for up to 8 years)."
+      },
+      "tuition": {
+        "provided": true,
+        "remissionPercent": 100,
+        "notes": "Full 100% staff tuition waiver for enrolled dependent children (worth €22,000–€34,000/yr tax-free per child)."
+      },
+      "vacation": {
+        "weeksPerYear": 16,
+        "notes": "16 weeks fully paid school vacations per French national academic calendar (Toussaint, Christmas, Winter, Spring, Summer)."
+      },
+      "relocation": {
+        "provided": true,
+        "type": "Initial Relocation & Settling-in Support",
+        "notes": "Flight reimbursement / baggage allowance plus initial settling-in stipend (€1,500–€3,000)."
+      }
+    }
   },
   {
     "id": "FLIS0229",
