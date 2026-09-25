@@ -327,12 +327,13 @@
     "isCampusStub": false,
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.468Z",
-    "currency": "KRW",
-    "salary_scale_5yr_net": 5250000,
-    "net_salary": 5250000,
+    "currency": "JPY",
+    "salary_scale_5yr_net": 437500,
+    "net_salary": 437500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "Top academic IB continuum school in Koto-ku, Tokyo. Calibrated to net monthly take-home pay: JPY 437,500/mo (~$2,900 USD)."
   },
   {
     "financescore": "8.4",
@@ -8648,7 +8649,7 @@
     "techscore": "8.0",
     "citySafety": "8.5",
     "confidence": "7.8",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Smart Classrooms",
     "curriculum": "IB",
     "staffcount": "70",
@@ -8696,7 +8697,16 @@
     "net_salary": 15000,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "7.2",
@@ -8932,7 +8942,7 @@
     "techscore": "6.0",
     "citySafety": "8.5",
     "confidence": "8.2",
-    "housingprovision": "Included",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Basic LMS",
     "curriculum": "IB",
     "staffcount": "130",
@@ -8981,7 +8991,16 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.5",
@@ -9291,7 +9310,7 @@
     "techscore": "5.0",
     "citySafety": "8.5",
     "confidence": "8.0",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Standard",
     "curriculum": "UK/US",
     "staffcount": "85",
@@ -9340,7 +9359,16 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:14:16.426Z"
+    "last_benchmark_update": "2026-09-25T08:14:16.426Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "7.5",
@@ -10571,7 +10599,7 @@
     "techscore": "7.5",
     "citySafety": "9.0",
     "confidence": "8.1",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Standard LMS",
     "curriculum": "UK",
     "staffcount": "80",
@@ -10622,7 +10650,16 @@
     "net_salary": 14500,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "7.5",
@@ -18119,12 +18156,13 @@
     "isCampusStub": false,
     "openJobsCount": 0,
     "updatedAt": "2026-09-24T18:20:36.471Z",
-    "currency": "HKD",
-    "salary_scale_5yr_net": 43333,
-    "net_salary": 43333,
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2350,
+    "net_salary": 2350,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "Verified Austrian collective agreement (Kollektivvertrag) baseline: €2,350 net/month (paid 14x/year)."
   },
   {
     "financescore": "6.8",
@@ -21323,7 +21361,7 @@
     "summary": "UK curriculum school in Baku, For-Profit, with 1:10 ratio format and Microsoft LMS.",
     "techscore": "6.5",
     "confidence": "8.5",
-    "housingprovision": "Yes",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Microsoft",
     "citysafety": "6.8",
     "curriculum": "UK",
@@ -21378,7 +21416,16 @@
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:18:33.088Z"
+    "last_benchmark_update": "2026-09-25T08:18:33.088Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "id": "FLIS0227",
@@ -22789,7 +22836,7 @@
     "agency": "Malvern College Int'l Portal",
     "citySafety": "8.9",
     "confidence": "High (92%)",
-    "housingprovision": "Free furnished apartment / RMB 3,500 Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "High (Integrated LMS, STEM labs)",
     "citysafety": "8.9",
     "curriculum": "UK Curriculum, IGCSE, A-Levels, AP",
@@ -22822,7 +22869,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:19:39.231Z"
+    "last_benchmark_update": "2026-09-25T08:19:39.231Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "8.7",
@@ -22846,7 +22902,7 @@
     "agency": "Malvern College Int'l Portal",
     "citySafety": "8.8",
     "confidence": "High (91%)",
-    "housingprovision": "Free furnished apartment / RMB 3,500 Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "High (1:1 laptop program, STEM centers)",
     "citysafety": "8.8",
     "curriculum": "UK Curriculum, IGCSE, A-Levels",
@@ -22879,7 +22935,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:19:39.231Z"
+    "last_benchmark_update": "2026-09-25T08:19:39.231Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.2",
@@ -23773,7 +23838,7 @@
     "country": "Malaysia",
     "base_salary_usd": 5000,
     "base_salary_myr": 23000,
-    "housingprovision": "MYR 4,500–6,000/mo Stipend",
+    "housingprovision": "Provided housing allowance (MYR 5,000–7,000/mo) or modern Ampang Hilir condo",
     "housing_status": "Allowance",
     "savingspotential": 2800,
     "savingspotentialsingle": 2800,
@@ -23806,16 +23871,17 @@
     "careersUrl": "https://www.iskl.edu.my/about-us/careers-at-iskl",
     "numericalstaff": "170",
     "profit status": "Non-Profit",
-    "name": "Dubai International Academy",
-    "schoolname": "Dubai International Academy",
+    "name": "The International School of Kuala Lumpur (ISKL)",
+    "schoolname": "The International School of Kuala Lumpur (ISKL)",
     "updatedAt": "2026-09-24T18:20:36.472Z",
     "schoolId": "FLIS0250",
-    "currency": "AED",
+    "currency": "MYR",
     "salary_scale_5yr_net": 16500,
     "net_salary": 16500,
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "notes": "Premier parent-governed non-profit US/IB flagship in KL. Benchmark calibrated to net take-home pay: MYR 16,500/mo (~$3,550 USD)."
   },
   {
     "id": "FLIS0251",
@@ -25228,7 +25294,7 @@
     "website": "https://parkhouseschool.com",
     "agency": "TES, Direct Portal",
     "citySafety": "9.8",
-    "housingprovision": "Provided Furnished Apartment + Utilities Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
     "tesOrganizationId": "1003203",
@@ -25250,7 +25316,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:22:43.314Z"
+    "last_benchmark_update": "2026-09-25T08:22:43.314Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.5",
@@ -26329,7 +26404,7 @@
     "website": "https://oryxschool.qa",
     "agency": "TES, Direct Portal (Orbital Education)",
     "citySafety": "9.8",
-    "housingprovision": "Provided Luxury Compound Housing + Qatar Airways Staff Flight Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
     "tesOrganizationId": "1003206",
@@ -26351,7 +26426,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:23:29.071Z"
+    "last_benchmark_update": "2026-09-25T08:23:29.071Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.4",
@@ -26376,7 +26460,7 @@
     "website": "https://www.acs-schools.com/doha",
     "agency": "Search Associates, Schrole, TES",
     "citySafety": "9.8",
-    "housingprovision": "Provided Furnished Apartment / Villa or Generous Housing Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "citysafety": "9.8",
     "curriculum": "US Curriculum / AP / IB Diploma",
     "tesOrganizationId": "1003207",
@@ -26398,7 +26482,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.2",
@@ -26423,7 +26516,7 @@
     "website": "https://www.sherborneqatar.org",
     "agency": "TES, Direct Portal",
     "citySafety": "9.8",
-    "housingprovision": "Provided Furnished Compound Apartment or Housing Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "citysafety": "9.8",
     "curriculum": "British Curriculum / IGCSE / A-Levels",
     "tesOrganizationId": "1003208",
@@ -26444,7 +26537,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9",
@@ -26937,7 +27039,7 @@
     "schoolGroup": "Taaleem",
     "citySafety": "9.0",
     "confidence": "8.8",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Google Workspace",
     "citysafety": "9.0",
     "curriculum": "US",
@@ -26963,7 +27065,16 @@
     "net_salary": 14000,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "country": "United Arab Emirates",
@@ -27001,7 +27112,7 @@
     "schoolGroup": "Taaleem",
     "citySafety": "9.0",
     "confidence": "8.7",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Google Workspace",
     "citysafety": "9.0",
     "curriculum": "US",
@@ -27027,7 +27138,16 @@
     "net_salary": 14000,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "country": "United Arab Emirates",
@@ -27129,7 +27249,7 @@
     "schoolGroup": "Taaleem",
     "citySafety": "9.0",
     "confidence": "8.8",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "Google Workspace",
     "citysafety": "9.0",
     "curriculum": "US",
@@ -27154,7 +27274,16 @@
     "net_salary": 14000,
     "salary_benchmark_category": "MODELLED_ESTIMATE",
     "salary_confidence": "Medium",
-    "salary_source_year": "2025/2026"
+    "salary_source_year": "2025/2026",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "country": "United Arab Emirates",
@@ -27192,7 +27321,7 @@
     "schoolGroup": "Taaleem",
     "citySafety": "9.0",
     "confidence": "8.9",
-    "housingprovision": "Allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "techecosystem": "1:1 Digital / French Academic Cloud",
     "citysafety": "9.0",
     "curriculum": "French/IB",
@@ -27218,7 +27347,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:23:29.072Z"
+    "last_benchmark_update": "2026-09-25T08:23:29.072Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "financescore": "9.5",
@@ -30395,7 +30533,7 @@
     "salaryRange": "SAR 15,000 - 20,000 / month",
     "currency": "SAR",
     "isTaxFree": true,
-    "housingprovision": "Provided compound accommodation or allowance",
+    "housingprovision": "Provided (Expat Compound Villa / Corporate Leased Apartment)",
     "healthcoverage": "Comprehensive Medical Coverage",
     "classsize": "20",
     "financescore": "9.3",
@@ -30416,7 +30554,16 @@
     "salary_benchmark_category": "STRONG_MARKET_EVIDENCE",
     "salary_confidence": "High",
     "salary_source_year": "2025/2026",
-    "last_benchmark_update": "2026-09-25T08:24:21.607Z"
+    "last_benchmark_update": "2026-09-25T08:24:21.607Z",
+    "housing_status": "Provided",
+    "intel": {
+      "packageType": "Full Expat Package + Provided Accommodation",
+      "housing": {
+        "provided": true,
+        "type": "Provided Compound Residence / Corporate Leased Flat",
+        "notes": "School provides fully furnished accommodation / compound residence with utilities subsidized, isolating faculty from local rent expenses."
+      }
+    }
   },
   {
     "id": "FLIS0374",
