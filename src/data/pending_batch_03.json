@@ -1,0 +1,182 @@
+[
+  {
+    "id": "FLIS0054",
+    "name": "IS Lausanne",
+    "country": "Switzerland",
+    "city": "Lausanne",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 7917,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0056",
+    "name": "English College Prague",
+    "country": "Czechia",
+    "city": "Prague",
+    "currency": "CZK",
+    "salary_scale_5yr_net": 66000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0058",
+    "name": "St George's Montreux",
+    "country": "Switzerland",
+    "city": "Montreux",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 7167,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0059",
+    "name": "PaRK International School",
+    "country": "Portugal",
+    "city": "Lisbon",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0060",
+    "name": "Zurich Int'l",
+    "country": "Switzerland",
+    "city": "Zurich",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 8333,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0062",
+    "name": "St Peter's BCN",
+    "country": "Spain",
+    "city": "Barcelona",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2300,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0063",
+    "name": "Int'l College Spain",
+    "country": "Spain",
+    "city": "Madrid",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0064",
+    "name": "Aloha College",
+    "country": "Spain",
+    "city": "Marbella",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2350,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0066",
+    "name": "Leysin American",
+    "country": "Switzerland",
+    "city": "Leysin",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 6500,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0069",
+    "name": "American School BCN",
+    "country": "Spain",
+    "city": "Barcelona",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2900,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0070",
+    "name": "Haut-Lac Int'l",
+    "country": "Switzerland",
+    "city": "St-Légier",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 6800,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0072",
+    "name": "College du Leman",
+    "country": "Switzerland",
+    "city": "Geneva",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 7333,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0074",
+    "name": "Riverside Prague",
+    "country": "Czechia",
+    "city": "Prague",
+    "currency": "CZK",
+    "salary_scale_5yr_net": 70000,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0075",
+    "name": "IS Hellerup",
+    "country": "Denmark",
+    "city": "Copenhagen",
+    "currency": "DKK",
+    "salary_scale_5yr_net": 27000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0076",
+    "name": "St George's Cologne",
+    "country": "Germany",
+    "city": "Cologne",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2750,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0077",
+    "name": "IS Düsseldorf",
+    "country": "Germany",
+    "city": "Düsseldorf",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 3350,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0078",
+    "name": "IS Zug & Luzern",
+    "country": "Switzerland",
+    "city": "Zug",
+    "currency": "CHF",
+    "salary_scale_5yr_net": 8000,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  },
+  {
+    "id": "FLIS0079",
+    "name": "Metropolitan Frankfurt",
+    "country": "Germany",
+    "city": "Frankfurt",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2650,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0080",
+    "name": "Ermitage Int'l",
+    "country": "France",
+    "city": "Paris",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2400,
+    "salary_benchmark_category": "MODELLED_ESTIMATE"
+  },
+  {
+    "id": "FLIS0082",
+    "name": "St Julian's School",
+    "country": "Portugal",
+    "city": "Lisbon",
+    "currency": "EUR",
+    "salary_scale_5yr_net": 2700,
+    "salary_benchmark_category": "STRONG_MARKET_EVIDENCE"
+  }
+]
