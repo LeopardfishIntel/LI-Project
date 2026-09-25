@@ -283,6 +283,26 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
     if (borderCol) return borderCol;
   }
 
+  const countryMatches = costOfLivingList.filter((c: any) => {
+    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || c.countryName || ""));
+    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
+    const cId = cleanStr(c.id || c._id || "");
+    return cCountry === sCountry ||
+      cId === sCountry ||
+      cId.includes(sCountry) ||
+      (sCountry === "hongkong" && (cCity.includes("hongkong") || cId.includes("hongkong"))) ||
+      (sCountry === "unitedarabemirates" && (cCountry.includes("uae") || cId.includes("uae") || cCountry.includes("emirates"))) ||
+      (sCountry === "unitedkingdom" && (cCountry.includes("england") || cId.includes("england") || cId.includes("london") || cId.includes("uk"))) ||
+      (sCountry === "singapore" && (cCity.includes("singapore") || cId.includes("singapore")));
+  });
+
+  if (countryMatches.length === 0) {
+    if (sCountry === "portugal") return costOfLivingList.find((c: any) => cleanStr(c.country || "").includes("spain") || cleanStr(c.id || "").includes("spain")) || costOfLivingList[0];
+    if (sCountry === "cyprus" || sCountry === "azerbaijan") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("istanbul") || cleanStr(c.country || "").includes("turkey")) || costOfLivingList[0];
+    if (sCountry === "peru") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("bogota") || cleanStr(c.country || "").includes("colombia") || cleanStr(c.country || "").includes("chile")) || costOfLivingList[0];
+    return null;
+  }
+
   // 🇩🇪 GERMANY TIER ROUTING (Frankfurt, Munich, Cologne/NRW, Heidelberg, Berlin)
   if (sCountry === "germany") {
     if (sCity.includes("frankfurt")) {
@@ -333,26 +353,6 @@ export function findCostOfLiving(city: string, country: string, costOfLivingList
       const doc = countryMatches.find((c: any) => cleanStr(c.id).includes("bangkok"));
       if (doc) return doc;
     }
-  }
-
-  const countryMatches = costOfLivingList.filter((c: any) => {
-    const cCountry = cleanStr(canonicalCountry(c.country || c.country_name || c.countryName || ""));
-    const cCity = cleanStr(c.city || c.city_name || c.cityName || "");
-    const cId = cleanStr(c.id || c._id || "");
-    return cCountry === sCountry ||
-      cId === sCountry ||
-      cId.includes(sCountry) ||
-      (sCountry === "hongkong" && (cCity.includes("hongkong") || cId.includes("hongkong"))) ||
-      (sCountry === "unitedarabemirates" && (cCountry.includes("uae") || cId.includes("uae") || cCountry.includes("emirates"))) ||
-      (sCountry === "unitedkingdom" && (cCountry.includes("england") || cId.includes("england") || cId.includes("london") || cId.includes("uk"))) ||
-      (sCountry === "singapore" && (cCity.includes("singapore") || cId.includes("singapore")));
-  });
-
-  if (countryMatches.length === 0) {
-    if (sCountry === "portugal") return costOfLivingList.find((c: any) => cleanStr(c.country || "").includes("spain") || cleanStr(c.id || "").includes("spain")) || costOfLivingList[0];
-    if (sCountry === "cyprus" || sCountry === "azerbaijan") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("istanbul") || cleanStr(c.country || "").includes("turkey")) || costOfLivingList[0];
-    if (sCountry === "peru") return costOfLivingList.find((c: any) => cleanStr(c.id || "").includes("bogota") || cleanStr(c.country || "").includes("colombia") || cleanStr(c.country || "").includes("chile")) || costOfLivingList[0];
-    return null;
   }
 
   // 🇯🇵 JAPAN 3-TIER ROUTING (Kanto Metro vs Kansai Hub vs Regional)
