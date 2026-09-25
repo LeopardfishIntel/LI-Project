@@ -2659,22 +2659,22 @@
     "approvals": "IB, CIS",
     "academicscore": "9.7",
     "id": "FLIS0037",
-    "summary": "Paris bilingual power.",
+    "summary": "Prestigious Paris bilingual institution operating under a contrat d'association with the French state. Compensation follows official French Ministry scales with mandatory 50% Navigo transit subsidies and full French social security, while housing is self-funded.",
     "techscore": "8.4",
     "citySafety": "6.8",
     "confidence": "9.5",
-    "housingprovision": "Not Included",
+    "housingprovision": "Not Included (Self-Funded Private Paris Market)",
     "techecosystem": "Bilingual Hub",
-    "curriculum": "French / IB",
+    "curriculum": "French Ministry of Education / IB Continuum (PYP / MYP / DP)",
     "staffcount": "250",
     "schoolname": "Ecole Jeannine Manuel",
     "worklifescore": "7.5",
     "noncontacttime": "15%",
-    "healthcoverage": "Standard",
-    "salaryRange": "$2,075.00",
+    "healthcoverage": "Comprehensive (State Sécurité Sociale + Co-funded Mutuelle)",
+    "salaryRange": "EUR 26,000 - 38,000 / year (Net ~€2,075 - €2,850/mo)",
     "inspect": "Czech Ministry",
     "validated": "LFI",
-    "ownership": "PORG Foundation",
+    "ownership": "Non-Profit Foundation",
     "citysafety": "6.8",
     "lastSync": "2026-05-26T10:41:07.832Z",
     "scrapedJobsCount": 0,
@@ -2832,7 +2832,48 @@
     "isLocked": true,
     "isCampusStub": false,
     "openJobsCount": 0,
-    "updatedAt": "2026-09-24T18:20:36.469Z"
+    "updatedAt": "2026-09-25T05:09:36.623Z",
+    "region": "europe",
+    "salary_range": "EUR 26,000 - 38,000 / year (Net ~€2,075 - €2,850/mo)",
+    "currency": "EUR",
+    "isTaxFree": false,
+    "flightAllowance": "Not Included",
+    "tuitionBenefit": "Subsidized (Means-tested bursaries & staff tuition discounts)",
+    "pensionBenefit": "French National Pension (Retraite Générale) + Agirc-Arrco Supplementary",
+    "transportBenefit": "50% Monthly Paris Navigo Pass Reimbursed (~€43/mo subsidy)",
+    "packageType": "Destination-Led Package",
+    "contractStructure": "Contrat d'association avec l'État (French Ministry of Education Pay Scale)",
+    "intel": {
+      "packageType": "Destination-Led Package",
+      "contractType": "Contrat d'Association",
+      "housing": {
+        "provided": false,
+        "type": "Self-funded private market",
+        "notes": "Teachers must secure and pay for their own housing on the local Paris private market."
+      },
+      "flights": {
+        "provided": false,
+        "notes": "Annual flights are not provided."
+      },
+      "health": {
+        "provided": true,
+        "type": "State + Co-funded Mutuelle",
+        "notes": "Full French Sécurité Sociale plus supplemental private health insurance (Mutuelle) co-funded by the school."
+      },
+      "transport": {
+        "subsidyPercent": 50,
+        "notes": "50% Navigo pass reimbursement by French statutory labor law (~€43/month)."
+      },
+      "tuition": {
+        "provided": false,
+        "subsidized": true,
+        "notes": "Means-tested bursaries and discounts available for enrolled children of staff."
+      },
+      "pension": {
+        "provided": true,
+        "notes": "Contributions to French national pension system (Retraite générale)."
+      }
+    }
   },
   {
     "financescore": "7.4",
